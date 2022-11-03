@@ -378,7 +378,7 @@ namespace Chummer
                             else
                                 blnAnyMelee = true;
                             string strID = objWeapon.SourceIDString;
-                            string strWeaponName = objWeapon.CurrentDisplayName;
+                            string strWeaponName = await objWeapon.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                             string strDice = objWeapon.DicePool.ToString(GlobalSettings.CultureInfo);
                             string strAccuracy = objWeapon.DisplayAccuracy;
                             string strDamage = objWeapon.DisplayDamage;
@@ -395,7 +395,7 @@ namespace Chummer
                             {
                                 foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                                 {
-                                    sbdAccessories.AppendLine(objAccessory.CurrentDisplayName);
+                                    sbdAccessories.AppendLine(await objAccessory.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
                                 }
 
                                 if (sbdAccessories.Length > 0)

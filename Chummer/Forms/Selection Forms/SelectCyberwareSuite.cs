@@ -21,6 +21,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Equipment;
@@ -127,9 +129,9 @@ namespace Chummer
             }
         }
 
-        private void lstCyberware_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstCyberware_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string strSelectedSuite = lstCyberware.SelectedItem?.ToString();
+            string strSelectedSuite = await lstCyberware.DoThreadSafeFuncAsync(x => x.SelectedItem?.ToString()).ConfigureAwait(false);
             XmlNode xmlSuite = null;
             string strGrade;
             Grade objGrade = null;
@@ -149,10 +151,10 @@ namespace Chummer
 
             if (objGrade == null)
             {
-                lblCyberware.Text = string.Empty;
-                lblEssence.Text = string.Empty;
-                lblCost.Text = string.Empty;
-                lblGrade.Text = string.Empty;
+                await lblCyberware.DoThreadSafeAsync(x => x.Text = string.Empty).ConfigureAwait(false);
+                await lblEssence.DoThreadSafeAsync(x => x.Text = string.Empty).ConfigureAwait(false);
+                await lblCost.DoThreadSafeAsync(x => x.Text = string.Empty).ConfigureAwait(false);
+                await lblGrade.DoThreadSafeAsync(x => x.Text = string.Empty).ConfigureAwait(false);
                 return;
             }
 
@@ -166,16 +168,18 @@ namespace Chummer
             {
                 foreach (Cyberware objCyberware in lstSuiteCyberwares)
                 {
-                    WriteList(sbdCyberwareLabelString, objCyberware, 0);
+                    await WriteList(sbdCyberwareLabelString, objCyberware, 0).ConfigureAwait(false);
                     decTotalCost += objCyberware.TotalCost;
-                    decTotalESS += objCyberware.CalculatedESS;
+                    decTotalESS += await objCyberware.GetCalculatedESSAsync().ConfigureAwait(false);
                 }
-                lblCyberware.Text = sbdCyberwareLabelString.ToString();
+                await lblCyberware.DoThreadSafeAsync(x => x.Text = sbdCyberwareLabelString.ToString()).ConfigureAwait(false);
             }
 
-            lblEssence.Text = decTotalESS.ToString(_objCharacter.Settings.EssenceFormat, GlobalSettings.CultureInfo);
-            lblCost.Text = decTotalCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol");
-            lblGrade.Text = objGrade.CurrentDisplayName;
+            await lblEssence.DoThreadSafeAsync(x => x.Text = decTotalESS.ToString(_objCharacter.Settings.EssenceFormat, GlobalSettings.CultureInfo)).ConfigureAwait(false);
+            string strNuyen = await LanguageManager.GetStringAsync("String_NuyenSymbol").ConfigureAwait(false);
+            await lblCost.DoThreadSafeAsync(x => x.Text = decTotalCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + strNuyen).ConfigureAwait(false);
+            string strGradeName = await objGrade.GetCurrentDisplayNameAsync().ConfigureAwait(false);
+            await lblGrade.DoThreadSafeAsync(x => x.Text = strGradeName).ConfigureAwait(false);
             _decCost = decTotalCost;
         }
 
@@ -304,15 +308,16 @@ namespace Chummer
         /// <param name="objCyberwareLabelString">StringBuilder into which the cyberware list is written.</param>
         /// <param name="objCyberware">Cyberware to iterate through.</param>
         /// <param name="intDepth">Current dept in the list to determine how many spaces to print.</param>
-        private static void WriteList(StringBuilder objCyberwareLabelString, Cyberware objCyberware, int intDepth)
+        /// <param name="token">Cancellation token to listen to.</param>
+        private static async ValueTask WriteList(StringBuilder objCyberwareLabelString, Cyberware objCyberware, int intDepth, CancellationToken token = default)
         {
             for (int i = 0; i <= intDepth; ++i)
                 objCyberwareLabelString.Append("   ");
 
-            objCyberwareLabelString.AppendLine(objCyberware.CurrentDisplayName);
+            objCyberwareLabelString.AppendLine(await objCyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
 
             foreach (Cyberware objPlugin in objCyberware.Children)
-                WriteList(objCyberwareLabelString, objPlugin, intDepth + 1);
+                await WriteList(objCyberwareLabelString, objPlugin, intDepth + 1, token).ConfigureAwait(false);
         }
 
         #endregion Methods

@@ -333,6 +333,20 @@ namespace Chummer
             return strReturn;
         }
 
+        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
+
+        /// <summary>
+        /// Month and Week to display.
+        /// </summary>
+        public async ValueTask<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        {
+            string strReturn = string.Format(objCulture, await LanguageManager.GetStringAsync("String_WeekDisplay", strLanguage, token: token).ConfigureAwait(false)
+                                             , Year
+                                             , Month
+                                             , MonthWeek);
+            return strReturn;
+        }
+
         /// <summary>
         /// Week.
         /// </summary>

@@ -147,8 +147,8 @@ namespace Chummer
                     {
                         foreach (Lifestyle objLifestyle in _objCharacter.Lifestyles)
                         {
-                            ListItem objLifestyleItem = new ListItem(objLifestyle, objLifestyle.CurrentDisplayName);
-                            lstLifestyleItems.Add(new ListItem(objLifestyle, objLifestyle.CurrentDisplayName));
+                            ListItem objLifestyleItem = new ListItem(objLifestyle, await objLifestyle.GetCurrentDisplayNameAsync().ConfigureAwait(false));
+                            lstLifestyleItems.Add(objLifestyleItem);
                             // We already selected a lifestyle, so keep the selection if possible despite the refresh
                             if (objCurrentlySelectedLifestyle != null)
                             {

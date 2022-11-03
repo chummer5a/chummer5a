@@ -178,8 +178,8 @@ namespace Chummer
                 return Name;
             return await _objCharacter.TranslateExtraAsync(
                 !GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
-                    ? await LanguageManager.ReverseTranslateExtraAsync(Name, GlobalSettings.Language, _objCharacter, token: token)
-                    : Name, strLanguage, token: token);
+                    ? await LanguageManager.ReverseTranslateExtraAsync(Name, GlobalSettings.Language, _objCharacter, token: token).ConfigureAwait(false)
+                    : Name, strLanguage, token: token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -189,7 +189,7 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
-            return await DisplayNameShortAsync(strLanguage, token);
+            return await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
         }
 
         /// <summary>

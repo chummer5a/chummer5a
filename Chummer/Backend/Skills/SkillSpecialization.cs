@@ -386,7 +386,7 @@ namespace Chummer.Backend.Skills
             }
             Task<string> tskOld = Interlocked.Exchange(ref _tskNameLoader, null);
             if (tskOld != null)
-                await tskOld;
+                await tskOld.ConfigureAwait(false);
         }
     }
 }

@@ -544,7 +544,7 @@ namespace Chummer
                                                 {
                                                     blnRequirementForbidden = true;
                                                     sbdForbidden.AppendLine().Append('\t')
-                                                                .Append(objQuality.CurrentDisplayNameShort);
+                                                                .Append(await objQuality.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
                                                 }
                                             }
 
@@ -560,7 +560,7 @@ namespace Chummer
                                                 {
                                                     blnRequirementForbidden = true;
                                                     sbdForbidden.AppendLine().Append('\t')
-                                                                .Append(objQuality.CurrentDisplayName);
+                                                                .Append(await objQuality.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
                                                 }
                                             }
 
@@ -637,7 +637,7 @@ namespace Chummer
                                                 {
                                                     blnRequirementForbidden = true;
                                                     sbdForbidden.AppendLine().Append('\t')
-                                                                .Append(objQuality.CurrentDisplayName);
+                                                                .Append(await objQuality.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
                                                     break;
                                                 }
                                             }

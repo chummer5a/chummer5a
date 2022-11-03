@@ -4891,6 +4891,9 @@ namespace Chummer.Backend.Equipment
 
         public string CurrentDisplayRange => DisplayRange(GlobalSettings.Language);
 
+        public ValueTask<string> GetCurrentDisplayRangeAsync(CancellationToken token = default) =>
+            DisplayRangeAsync(GlobalSettings.Language, token);
+
         /// <summary>
         /// The string for the Weapon's Range category
         /// </summary>
@@ -4956,6 +4959,9 @@ namespace Chummer.Backend.Equipment
         }
 
         public string CurrentDisplayAlternateRange => DisplayAlternateRange(GlobalSettings.Language);
+
+        public ValueTask<string> GetCurrentDisplayAlternateRangeAsync(CancellationToken token = default) =>
+            DisplayAlternateRangeAsync(GlobalSettings.Language, token);
 
         /// <summary>
         /// The string for the Weapon's Range category (setter is English-only).

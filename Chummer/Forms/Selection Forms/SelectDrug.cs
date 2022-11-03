@@ -164,7 +164,7 @@ namespace Chummer
                     _intAvailModifier
                         = (await xmlGrade.SelectSingleNodeAndCacheExpressionAsync("avail", token).ConfigureAwait(false))
                         ?.ValueAsInt ?? 0;
-                    
+
                     await RefreshList(token: token).ConfigureAwait(false);
                 }
             }
@@ -435,7 +435,7 @@ namespace Chummer
             {
                 Interlocked.Decrement(ref _intLoading);
             }
-            
+
             await UpdateDrugInfo().ConfigureAwait(false);
         }
 
@@ -942,7 +942,7 @@ namespace Chummer
                     {
                         Interlocked.Decrement(ref _intLoading);
                     }
-                    
+
                     await lstDrug.DoThreadSafeAsync(x =>
                     {
                         if (!string.IsNullOrEmpty(strOldSelected))
@@ -1057,11 +1057,11 @@ namespace Chummer
                             continue;
                         if (!blnHideBannedGrades && !_objCharacter.Created && !_objCharacter.IgnoreRules && _objCharacter.BannedDrugGrades.Any(s => objWareGrade.Name.Contains(s)))
                         {
-                            lstGrade.Add(new ListItem(objWareGrade.SourceId.ToString("D"), '*' + objWareGrade.CurrentDisplayName));
+                            lstGrade.Add(new ListItem(objWareGrade.SourceId.ToString("D"), '*' + await objWareGrade.GetCurrentDisplayNameAsync(token)));
                         }
                         else
                         {
-                            lstGrade.Add(new ListItem(objWareGrade.SourceId.ToString("D"), objWareGrade.CurrentDisplayName));
+                            lstGrade.Add(new ListItem(objWareGrade.SourceId.ToString("D"), await objWareGrade.GetCurrentDisplayNameAsync(token)));
                         }*/
                     }
 

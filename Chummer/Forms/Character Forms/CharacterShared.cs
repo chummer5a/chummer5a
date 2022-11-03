@@ -2511,19 +2511,28 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                await treQualities.DoThreadSafeAsync(x =>
+                List<Tuple<TreeNode, Task<string>>> lstNames = new List<Tuple<TreeNode, Task<string>>>();
+                TreeNode objSelectedNode = await treQualities.DoThreadSafeFuncAsync(x =>
                 {
-                    TreeNode objSelectedNode = x.SelectedNode;
                     foreach (TreeNode objQualityTypeNode in x.Nodes)
                     {
                         foreach (TreeNode objQualityNode in objQualityTypeNode.Nodes)
                         {
-                            objQualityNode.Text = ((Quality) objQualityNode.Tag).CurrentDisplayName;
+                            if (objQualityNode.Tag is Quality objLoopQuality)
+                                lstNames.Add(new Tuple<TreeNode, Task<string>>(
+                                                 objQualityNode,
+                                                 objLoopQuality.GetCurrentDisplayNameAsync(token).AsTask()));
                         }
                     }
 
-                    x.SortCustomAlphabetically(objSelectedNode?.Tag);
+                    return x.SelectedNode;
                 }, token).ConfigureAwait(false);
+                foreach (Tuple<TreeNode, Task<string>> tupLoop in lstNames)
+                {
+                    string strLoopText = await tupLoop.Item2.ConfigureAwait(false);
+                    await treQualities.DoThreadSafeAsync(() => tupLoop.Item1.Text = strLoopText, token).ConfigureAwait(false);
+                }
+                await treQualities.DoThreadSafeAsync(x => x.SortCustomAlphabetically(objSelectedNode?.Tag), token).ConfigureAwait(false);
             }
             finally
             {
@@ -6372,7 +6381,7 @@ namespace Chummer
 
                             ListViewItem objItem = new ListViewItem
                             {
-                                Text = objWeek.CurrentDisplayName,
+                                Text = await objWeek.GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
                                 ForeColor = objWeek.PreferredColor
                             };
                             objItem.SubItems.Add(objNoteItem);
@@ -6408,7 +6417,7 @@ namespace Chummer
 
                             ListViewItem objItem = new ListViewItem
                             {
-                                Text = objWeek.CurrentDisplayName,
+                                Text = await objWeek.GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
                                 ForeColor = objWeek.PreferredColor
                             };
                             objItem.SubItems.Add(objNoteItem);
@@ -6446,7 +6455,7 @@ namespace Chummer
 
                             ListViewItem objItem = new ListViewItem
                             {
-                                Text = objWeek.CurrentDisplayName,
+                                Text = await objWeek.GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
                                 ForeColor = objWeek.PreferredColor
                             };
                             objItem.SubItems.Add(objNoteItem);
@@ -6477,7 +6486,7 @@ namespace Chummer
 
                             ListViewItem objItem = new ListViewItem
                             {
-                                Text = objWeek.CurrentDisplayName,
+                                Text = await objWeek.GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
                                 ForeColor = objWeek.PreferredColor
                             };
                             objItem.SubItems.Add(objNoteItem);
@@ -7236,7 +7245,7 @@ namespace Chummer
                             string.Format(
                                 await LanguageManager.GetStringAsync("Message_DeleteSustainedSpell",
                                                                      token: GenericToken).ConfigureAwait(false),
-                                objSustainedObject.CurrentDisplayName), GenericToken).ConfigureAwait(false))
+                                await objSustainedObject.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false)), GenericToken).ConfigureAwait(false))
                         return;
 
                     await CharacterObject.SustainedCollection.RemoveAsync(objSustainedObject, GenericToken).ConfigureAwait(false);
@@ -9103,7 +9112,7 @@ namespace Chummer
                                                   await LanguageManager.GetStringAsync(
                                                       "String_ExpensePurchaseVehicleGear", token: token).ConfigureAwait(false) +
                                                   await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) +
-                                                  objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
+                                                  await objGear.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), ExpenseType.Nuyen,
                                                   DateTime.Now);
                                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
                                 CharacterObject.Nuyen -= decCost;

@@ -2835,7 +2835,9 @@ namespace Chummer
                 object objSelected = (await treQualities.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
                                                         .ConfigureAwait(false))?.Tag;
                 await ReapplySpecificImprovements((objSelected as IHasInternalId)?.InternalId,
-                                                  (objSelected as IHasName)?.CurrentDisplayName, GenericToken)
+                                                  objSelected is IHasName objHasName
+                                                      ? await objHasName.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false)
+                                                      : string.Empty, GenericToken)
                     .ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -2851,7 +2853,9 @@ namespace Chummer
                 object objSelected = (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
                                                         .ConfigureAwait(false))?.Tag;
                 await ReapplySpecificImprovements((objSelected as IHasInternalId)?.InternalId,
-                                                  (objSelected as IHasName)?.CurrentDisplayName, GenericToken)
+                                                  objSelected is IHasName objHasName
+                                                      ? await objHasName.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false)
+                                                      : string.Empty, GenericToken)
                     .ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -2867,7 +2871,9 @@ namespace Chummer
                 object objSelected = (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
                                                         .ConfigureAwait(false))?.Tag;
                 await ReapplySpecificImprovements((objSelected as IHasInternalId)?.InternalId,
-                                                  (objSelected as IHasName)?.CurrentDisplayName, GenericToken)
+                                                  objSelected is IHasName objHasName
+                                                      ? await objHasName.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false)
+                                                      : string.Empty, GenericToken)
                     .ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -2883,7 +2889,9 @@ namespace Chummer
                 object objSelected = (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
                                                       .ConfigureAwait(false))?.Tag;
                 await ReapplySpecificImprovements((objSelected as IHasInternalId)?.InternalId,
-                                                  (objSelected as IHasName)?.CurrentDisplayName, GenericToken)
+                                                  objSelected is IHasName objHasName
+                                                      ? await objHasName.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false)
+                                                      : string.Empty, GenericToken)
                     .ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -2899,7 +2907,9 @@ namespace Chummer
                 object objSelected = (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
                                                         .ConfigureAwait(false))?.Tag;
                 await ReapplySpecificImprovements((objSelected as IHasInternalId)?.InternalId,
-                                                  (objSelected as IHasName)?.CurrentDisplayName, GenericToken)
+                                                  objSelected is IHasName objHasName
+                                                      ? await objHasName.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false)
+                                                      : string.Empty, GenericToken)
                     .ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -2915,7 +2925,9 @@ namespace Chummer
                 object objSelected = (await treMartialArts.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
                                                         .ConfigureAwait(false))?.Tag;
                 await ReapplySpecificImprovements((objSelected as IHasInternalId)?.InternalId,
-                                                  (objSelected as IHasName)?.CurrentDisplayName, GenericToken)
+                                                  objSelected is IHasName objHasName
+                                                      ? await objHasName.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false)
+                                                      : string.Empty, GenericToken)
                     .ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -2931,7 +2943,9 @@ namespace Chummer
                 object objSelected = (await treSpells.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
                                                      .ConfigureAwait(false))?.Tag;
                 await ReapplySpecificImprovements((objSelected as IHasInternalId)?.InternalId,
-                                                  (objSelected as IHasName)?.CurrentDisplayName, GenericToken)
+                                                  objSelected is IHasName objHasName
+                                                      ? await objHasName.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false)
+                                                      : string.Empty, GenericToken)
                     .ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -2947,7 +2961,9 @@ namespace Chummer
                 object objSelected = (await treComplexForms.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
                                                            .ConfigureAwait(false))?.Tag;
                 await ReapplySpecificImprovements((objSelected as IHasInternalId)?.InternalId,
-                                                  (objSelected as IHasName)?.CurrentDisplayName, GenericToken)
+                                                  objSelected is IHasName objHasName
+                                                      ? await objHasName.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false)
+                                                      : string.Empty, GenericToken)
                     .ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -2963,7 +2979,9 @@ namespace Chummer
                 object objSelected = (await treAIPrograms.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
                                                          .ConfigureAwait(false))?.Tag;
                 await ReapplySpecificImprovements((objSelected as IHasInternalId)?.InternalId,
-                                                  (objSelected as IHasName)?.CurrentDisplayName, GenericToken)
+                                                  objSelected is IHasName objHasName
+                                                      ? await objHasName.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false)
+                                                      : string.Empty, GenericToken)
                     .ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -2979,7 +2997,9 @@ namespace Chummer
                 object objSelected = (await treCritterPowers.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
                                                             .ConfigureAwait(false))?.Tag;
                 await ReapplySpecificImprovements((objSelected as IHasInternalId)?.InternalId,
-                                                  (objSelected as IHasName)?.CurrentDisplayName, GenericToken)
+                                                  objSelected is IHasName objHasName
+                                                      ? await objHasName.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false)
+                                                      : string.Empty, GenericToken)
                     .ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -2995,7 +3015,9 @@ namespace Chummer
                 object objSelected = (await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
                                                         .ConfigureAwait(false))?.Tag;
                 await ReapplySpecificImprovements((objSelected as IHasInternalId)?.InternalId,
-                                                  (objSelected as IHasName)?.CurrentDisplayName, GenericToken)
+                                                  objSelected is IHasName objHasName
+                                                      ? await objHasName.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false)
+                                                      : string.Empty, GenericToken)
                     .ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -3552,7 +3574,7 @@ namespace Chummer
 
                             foreach (Gear objGear in objCyberware.GearChildren)
                             {
-                                await objGear.ReaddImprovements(treCyberware, sbdOutdatedItems, lstInternalIdFilter)
+                                await objGear.ReaddImprovements(treCyberware, sbdOutdatedItems, lstInternalIdFilter, token: token)
                                              .ConfigureAwait(false);
                             }
                         }
@@ -3711,14 +3733,14 @@ namespace Chummer
 
                                 foreach (Gear objGear in objMod.GearChildren)
                                 {
-                                    await objGear.ReaddImprovements(treArmor, sbdOutdatedItems, lstInternalIdFilter)
+                                    await objGear.ReaddImprovements(treArmor, sbdOutdatedItems, lstInternalIdFilter, token: token)
                                                  .ConfigureAwait(false);
                                 }
                             }
 
                             foreach (Gear objGear in objArmor.GearChildren)
                             {
-                                await objGear.ReaddImprovements(treArmor, sbdOutdatedItems, lstInternalIdFilter)
+                                await objGear.ReaddImprovements(treArmor, sbdOutdatedItems, lstInternalIdFilter, token: token)
                                              .ConfigureAwait(false);
                             }
 
@@ -3728,7 +3750,7 @@ namespace Chummer
                         // Refresh Gear.
                         foreach (Gear objGear in CharacterObject.Gear)
                         {
-                            await objGear.ReaddImprovements(treGear, sbdOutdatedItems, lstInternalIdFilter)
+                            await objGear.ReaddImprovements(treGear, sbdOutdatedItems, lstInternalIdFilter, token: token)
                                          .ConfigureAwait(false);
                             await objGear.RefreshWirelessBonusesAsync(token).ConfigureAwait(false);
                         }
@@ -3740,7 +3762,7 @@ namespace Chummer
                             {
                                 foreach (Gear objGear in objAccessory.GearChildren)
                                 {
-                                    await objGear.ReaddImprovements(treWeapons, sbdOutdatedItems, lstInternalIdFilter)
+                                    await objGear.ReaddImprovements(treWeapons, sbdOutdatedItems, lstInternalIdFilter, token: token)
                                                  .ConfigureAwait(false);
                                 }
                             }
@@ -5606,105 +5628,124 @@ namespace Chummer
 
         private async void cmdCreateStackedFocus_Click(object sender, EventArgs e)
         {
-            int intFree = 0;
-            List<Gear> lstGear = new List<Gear>(2);
-            List<Gear> lstStack = new List<Gear>(2);
-
-            // Run through all of the Foci the character has and count the un-Bonded ones.
-            foreach (Gear objGear in CharacterObject.Gear)
+            try
             {
-                if ((objGear.Category == "Foci" || objGear.Category == "Metamagic Foci") && !objGear.Bonded)
+                int intFree = 0;
+                List<Gear> lstGear = new List<Gear>(2);
+                List<Gear> lstStack = new List<Gear>(2);
+
+                // Run through all of the Foci the character has and count the un-Bonded ones.
+                foreach (Gear objGear in CharacterObject.Gear)
                 {
-                    intFree++;
-                    lstGear.Add(objGear);
-                }
-            }
-
-            // If the character does not have at least 2 un-Bonded Foci, display an error and leave.
-            if (intFree < 2)
-            {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CannotStackFoci").ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_CannotStackFoci").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            string strDescription = await LanguageManager.GetStringAsync("String_SelectItemFocus").ConfigureAwait(false);
-            DialogResult eResult;
-            // Let the character select the Foci they'd like to stack, stopping when they either click Cancel or there are no more items left in the list.
-            do
-            {
-                using (ThreadSafeForm<SelectItem> frmPickItem = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
-                       {
-                           Description = strDescription,
-                           AllowAutoSelect = false
-                       }).ConfigureAwait(false))
-                {
-                    frmPickItem.MyForm.SetGearMode(lstGear);
-                    eResult = await frmPickItem.ShowDialogSafeAsync(this).ConfigureAwait(false);
-                    if (eResult != DialogResult.OK)
-                        continue;
-                    // Move the item from the Gear list to the Stack list.
-                    foreach (Gear objGear in lstGear)
+                    if ((objGear.Category == "Foci" || objGear.Category == "Metamagic Foci") && !objGear.Bonded)
                     {
-                        if (objGear.InternalId == frmPickItem.MyForm.SelectedItem)
-                        {
-                            objGear.Bonded = true;
-                            lstStack.Add(objGear);
-                            lstGear.Remove(objGear);
-                            break;
-                        }
+                        intFree++;
+                        lstGear.Add(objGear);
                     }
                 }
-            } while (lstGear.Count > 0 && eResult != DialogResult.Cancel);
 
-                    // Make sure at least 2 Foci were selected.
-            if (lstStack.Count < 2)
-            {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_StackedFocusMinimum").ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_CannotStackFoci").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
-
-            // Make sure the combined Force of the Foci do not exceed 6.
-            if (!CharacterObjectSettings.AllowHigherStackedFoci)
-            {
-                int intCombined = lstStack.Sum(objGear => objGear.Rating);
-                if (intCombined > 6)
+                // If the character does not have at least 2 un-Bonded Foci, display an error and leave.
+                if (intFree < 2)
                 {
-                    foreach (Gear objGear in lstStack)
-                        objGear.Bonded = false;
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_StackedFocusForce").ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_CannotStackFoci").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.ShowMessageBox(
+                        this, await LanguageManager.GetStringAsync("Message_CannotStackFoci").ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("MessageTitle_CannotStackFoci").ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
+
+                string strDescription
+                    = await LanguageManager.GetStringAsync("String_SelectItemFocus").ConfigureAwait(false);
+                DialogResult eResult;
+                // Let the character select the Foci they'd like to stack, stopping when they either click Cancel or there are no more items left in the list.
+                do
+                {
+                    using (ThreadSafeForm<SelectItem> frmPickItem = await ThreadSafeForm<SelectItem>.GetAsync(
+                               () => new SelectItem
+                               {
+                                   Description = strDescription,
+                                   AllowAutoSelect = false
+                               }).ConfigureAwait(false))
+                    {
+                        frmPickItem.MyForm.SetGearMode(lstGear);
+                        eResult = await frmPickItem.ShowDialogSafeAsync(this).ConfigureAwait(false);
+                        if (eResult != DialogResult.OK)
+                            continue;
+                        // Move the item from the Gear list to the Stack list.
+                        foreach (Gear objGear in lstGear)
+                        {
+                            if (objGear.InternalId == frmPickItem.MyForm.SelectedItem)
+                            {
+                                objGear.Bonded = true;
+                                lstStack.Add(objGear);
+                                lstGear.Remove(objGear);
+                                break;
+                            }
+                        }
+                    }
+                } while (lstGear.Count > 0 && eResult != DialogResult.Cancel);
+
+                // Make sure at least 2 Foci were selected.
+                if (lstStack.Count < 2)
+                {
+                    Program.ShowMessageBox(
+                        this, await LanguageManager.GetStringAsync("Message_StackedFocusMinimum").ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("MessageTitle_CannotStackFoci").ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    return;
+                }
+
+                // Make sure the combined Force of the Foci do not exceed 6.
+                if (!CharacterObjectSettings.AllowHigherStackedFoci)
+                {
+                    int intCombined = lstStack.Sum(objGear => objGear.Rating);
+                    if (intCombined > 6)
+                    {
+                        foreach (Gear objGear in lstStack)
+                            objGear.Bonded = false;
+                        Program.ShowMessageBox(
+                            this,
+                            await LanguageManager.GetStringAsync("Message_StackedFocusForce").ConfigureAwait(false),
+                            await LanguageManager.GetStringAsync("MessageTitle_CannotStackFoci").ConfigureAwait(false),
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
+                }
+
+                // Create the Stacked Focus.
+                StackedFocus objStack = new StackedFocus(CharacterObject);
+                foreach (Gear objGear in lstStack)
+                    await objStack.Gear.AddAsync(objGear).ConfigureAwait(false);
+                await CharacterObject.StackedFoci.AddAsync(objStack).ConfigureAwait(false);
+
+                // Remove the Gear from the character and replace it with a Stacked Focus item.
+                decimal decCost = 0;
+                foreach (Gear objGear in lstStack)
+                {
+                    decCost += objGear.TotalCost;
+                    await CharacterObject.Gear.RemoveAsync(objGear).ConfigureAwait(false);
+                }
+
+                Gear objStackItem = new Gear(CharacterObject)
+                {
+                    Category = "Stacked Focus",
+                    Name = "Stacked Focus: " + await objStack.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false),
+                    MinRating = string.Empty,
+                    MaxRating = string.Empty,
+                    Source = "SR5",
+                    Page = "1",
+                    Cost = decCost.ToString(GlobalSettings.CultureInfo),
+                    Avail = "0"
+                };
+
+                await CharacterObject.Gear.AddAsync(objStackItem).ConfigureAwait(false);
+
+                objStack.GearId = objStackItem.InternalId;
             }
-
-            // Create the Stacked Focus.
-            StackedFocus objStack = new StackedFocus(CharacterObject);
-            foreach (Gear objGear in lstStack)
-                await objStack.Gear.AddAsync(objGear).ConfigureAwait(false);
-            await CharacterObject.StackedFoci.AddAsync(objStack).ConfigureAwait(false);
-
-            // Remove the Gear from the character and replace it with a Stacked Focus item.
-            decimal decCost = 0;
-            foreach (Gear objGear in lstStack)
+            catch (OperationCanceledException)
             {
-                decCost += objGear.TotalCost;
-                await CharacterObject.Gear.RemoveAsync(objGear).ConfigureAwait(false);
+                //swallow this
             }
-
-            Gear objStackItem = new Gear(CharacterObject)
-            {
-                Category = "Stacked Focus",
-                Name = "Stacked Focus: " + objStack.CurrentDisplayName,
-                MinRating = string.Empty,
-                MaxRating = string.Empty,
-                Source = "SR5",
-                Page = "1",
-                Cost = decCost.ToString(GlobalSettings.CultureInfo),
-                Avail = "0"
-            };
-
-            await CharacterObject.Gear.AddAsync(objStackItem).ConfigureAwait(false);
-
-            objStack.GearId = objStackItem.InternalId;
         }
 
         private async void cmdAddArmor_Click(object sender, EventArgs e)
@@ -9151,9 +9192,9 @@ namespace Chummer
                             // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
                             await ImprovementManager.RemoveImprovementsAsync(CharacterObject, objCyberware.SourceType, objCyberware.InternalId).ConfigureAwait(false);
                             if (objCyberware.Bonus != null)
-                                await ImprovementManager.CreateImprovementsAsync(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.Bonus, objCyberware.Rating, objCyberware.CurrentDisplayNameShort).ConfigureAwait(false);
+                                await ImprovementManager.CreateImprovementsAsync(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.Bonus, objCyberware.Rating, await objCyberware.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false)).ConfigureAwait(false);
                             if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
-                                await ImprovementManager.CreateImprovementsAsync(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.WirelessBonus, objCyberware.Rating, objCyberware.CurrentDisplayNameShort).ConfigureAwait(false);
+                                await ImprovementManager.CreateImprovementsAsync(CharacterObject, objCyberware.SourceType, objCyberware.InternalId, objCyberware.WirelessBonus, objCyberware.Rating, await objCyberware.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false)).ConfigureAwait(false);
 
                             if (objCyberware.PairBonus != null)
                             {
@@ -9180,7 +9221,7 @@ namespace Chummer
                                     // Go down the list and create pair bonuses for every second item
                                     if (intCyberwaresCount > 0 && (intCyberwaresCount & 1) == 0)
                                     {
-                                        await ImprovementManager.CreateImprovementsAsync(CharacterObject, objLoopCyberware.SourceType, objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus, objLoopCyberware.Rating, objLoopCyberware.CurrentDisplayNameShort).ConfigureAwait(false);
+                                        await ImprovementManager.CreateImprovementsAsync(CharacterObject, objLoopCyberware.SourceType, objLoopCyberware.InternalId + "Pair", objLoopCyberware.PairBonus, objLoopCyberware.Rating, await objLoopCyberware.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false)).ConfigureAwait(false);
                                     }
                                     --intCyberwaresCount;
                                 }
@@ -10902,13 +10943,13 @@ namespace Chummer
                             if (objMod.Bonus != null)
                                 await ImprovementManager.CreateImprovementsAsync(
                                     CharacterObject, Improvement.ImprovementSource.ArmorMod, objMod.InternalId,
-                                    objMod.Bonus, objMod.Rating, objMod.CurrentDisplayNameShort).ConfigureAwait(false);
+                                    objMod.Bonus, objMod.Rating, await objMod.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false)).ConfigureAwait(false);
                             if (objMod.WirelessOn && objMod.WirelessBonus != null)
                                 await ImprovementManager.CreateImprovementsAsync(
                                                             CharacterObject, Improvement.ImprovementSource.ArmorMod,
                                                             objMod.InternalId,
                                                             objMod.WirelessBonus, objMod.Rating,
-                                                            objMod.CurrentDisplayNameShort)
+                                                            await objMod.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false))
                                                         .ConfigureAwait(false);
                         }
 
@@ -11034,7 +11075,7 @@ namespace Chummer
 
                     if (CharacterObject.MagicTradition.Type == TraditionType.MAG)
                     {
-                        CharacterObject.MagicTradition.ResetTradition();
+                        await CharacterObject.MagicTradition.ResetTraditionAsync(GenericToken).ConfigureAwait(false);
                         await RequestCharacterUpdate().ConfigureAwait(false);
                         await SetDirty(true).ConfigureAwait(false);
                     }
@@ -11086,7 +11127,7 @@ namespace Chummer
                     }
                     else
                     {
-                        CharacterObject.MagicTradition.ResetTradition();
+                        await CharacterObject.MagicTradition.ResetTraditionAsync(GenericToken).ConfigureAwait(false);
                         await cboTradition.DoThreadSafeAsync(
                             x => x.SelectedValue = CharacterObject.MagicTradition.SourceID, GenericToken).ConfigureAwait(false);
                     }
@@ -11135,7 +11176,7 @@ namespace Chummer
                 }
                 else
                 {
-                    CharacterObject.MagicTradition.ResetTradition();
+                    await CharacterObject.MagicTradition.ResetTraditionAsync(GenericToken).ConfigureAwait(false);
                     await cboTradition.DoThreadSafeAsync(x => x.SelectedValue = CharacterObject.MagicTradition.SourceID,
                                                          GenericToken).ConfigureAwait(false);
                 }
@@ -11194,7 +11235,7 @@ namespace Chummer
                 {
                     if (CharacterObject.MagicTradition.Type == TraditionType.RES)
                     {
-                        CharacterObject.MagicTradition.ResetTradition();
+                        await CharacterObject.MagicTradition.ResetTraditionAsync(GenericToken).ConfigureAwait(false);
                         await RequestCharacterUpdate().ConfigureAwait(false);
                         await SetDirty(true).ConfigureAwait(false);
                     }
@@ -11449,7 +11490,8 @@ namespace Chummer
                     objPower)
                 {
                     await cmdDeleteCritterPower.DoThreadSafeAsync(x => x.Enabled = objPower.Grade == 0, token).ConfigureAwait(false);
-                    await lblCritterPowerName.DoThreadSafeAsync(x => x.Text = objPower.CurrentDisplayName, token).ConfigureAwait(false);
+                    string strName = await objPower.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                    await lblCritterPowerName.DoThreadSafeAsync(x => x.Text = strName, token).ConfigureAwait(false);
                     string strText = await objPower.DisplayCategoryAsync(GlobalSettings.Language, token).ConfigureAwait(false);
                     await lblCritterPowerCategory.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
                     string strText2 = await objPower.DisplayTypeAsync(GlobalSettings.Language, token).ConfigureAwait(false);
@@ -11927,7 +11969,7 @@ namespace Chummer
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdNegativeQualityTooltip))
             {
-                await lstQualities.ForEachAsync(objLoopQuality =>
+                await lstQualities.ForEachAsync(async objLoopQuality =>
                 {
                     if (!objLoopQuality.ContributeToBP)
                         return;
@@ -11937,7 +11979,7 @@ namespace Chummer
                         if (blnDoUIUpdate)
                         {
                             sbdPositiveQualityTooltip.AppendFormat(
-                                GlobalSettings.CultureInfo, "{0}{1}({2})", objLoopQuality.CurrentDisplayName,
+                                GlobalSettings.CultureInfo, "{0}{1}({2})", await objLoopQuality.GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
                                 strSpace, objLoopQuality.BP * intKarmaQuality).AppendLine();
                         }
                     }
@@ -11947,13 +11989,13 @@ namespace Chummer
                         {
                             case QualityType.Positive:
                                 sbdPositiveQualityTooltip.AppendFormat(
-                                    GlobalSettings.CultureInfo, "{0}{1}({2})", objLoopQuality.CurrentDisplayName,
+                                    GlobalSettings.CultureInfo, "{0}{1}({2})", await objLoopQuality.GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
                                     strSpace, objLoopQuality.BP * intKarmaQuality).AppendLine();
                                 break;
 
                             case QualityType.Negative:
                                 sbdNegativeQualityTooltip.AppendFormat(
-                                    GlobalSettings.CultureInfo, "{0}{1}({2})", objLoopQuality.CurrentDisplayName,
+                                    GlobalSettings.CultureInfo, "{0}{1}({2})", await objLoopQuality.GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
                                     strSpace, objLoopQuality.BP * intKarmaQuality).AppendLine();
                                 break;
                         }
@@ -12042,7 +12084,7 @@ namespace Chummer
                 int intKarmaTechnique
                     = await CharacterObjectSettings.GetKarmaTechniqueAsync(token).ConfigureAwait(false);
                 await (await CharacterObject.GetMartialArtsAsync(token).ConfigureAwait(false)).ForEachAsync(
-                    objMartialArt =>
+                    async objMartialArt =>
                     {
                         token.ThrowIfCancellationRequested();
                         if (objMartialArt.IsQuality)
@@ -12055,7 +12097,7 @@ namespace Chummer
                             if (sbdMartialArtsBPToolTip.Length > 0)
                                 sbdMartialArtsBPToolTip.AppendLine().Append(strSpace).Append('+').Append(strSpace);
                             sbdMartialArtsBPToolTip
-                                .Append(objMartialArt.CurrentDisplayName).Append(strSpace).Append('(')
+                                .Append(await objMartialArt.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)).Append(strSpace).Append('(')
                                 .Append(intLoopCost.ToString(GlobalSettings.CultureInfo)).Append(')');
 
                             bool blnIsFirst = true;
@@ -12072,7 +12114,7 @@ namespace Chummer
                                 intMartialArtsPoints += intLoopCost;
 
                                 sbdMartialArtsBPToolTip.AppendLine().Append(strSpace).Append('+').Append(strSpace)
-                                                       .Append(objTechnique.CurrentDisplayName).Append(strSpace)
+                                                       .Append(await objTechnique.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)).Append(strSpace)
                                                        .Append('(')
                                                        .Append(intLoopCost.ToString(GlobalSettings.CultureInfo))
                                                        .Append(')');
@@ -13459,8 +13501,9 @@ namespace Chummer
                                   .DoThreadSafeAsync(x => x.Enabled = !objGear.IncludedInParent, token)
                                   .ConfigureAwait(false);
                             // gpbCyberwareCommon
+                            string strName = await objGear.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
                             await lblCyberwareName
-                                  .DoThreadSafeAsync(x => x.Text = objGear.CurrentDisplayNameShort, token)
+                                  .DoThreadSafeAsync(x => x.Text = strName, token)
                                   .ConfigureAwait(false);
                             await lblCyberwareCategory
                                   .DoThreadSafeAsync(x => x.Text = objGear.DisplayCategory(GlobalSettings.Language),
@@ -13708,7 +13751,8 @@ namespace Chummer
                                                  .ConfigureAwait(false);
                             token.ThrowIfCancellationRequested();
                             // gpbWeaponsCommon
-                            await lblWeaponName.DoThreadSafeAsync(x => x.Text = objWeapon.CurrentDisplayName, token)
+                            string strName = await objWeapon.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                            await lblWeaponName.DoThreadSafeAsync(x => x.Text = strName, token)
                                                .ConfigureAwait(false);
                             string strText = await objWeapon.DisplayCategoryAsync(GlobalSettings.Language, token)
                                                             .ConfigureAwait(false);
@@ -14032,8 +14076,9 @@ namespace Chummer
                                                                               objSelectedAccessory.ParentID), token)
                                                  .ConfigureAwait(false);
                             // gpbWeaponsCommon
+                            string strName = await objSelectedAccessory.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                             await lblWeaponName
-                                  .DoThreadSafeAsync(x => x.Text = objSelectedAccessory.CurrentDisplayName, token)
+                                  .DoThreadSafeAsync(x => x.Text = strName, token)
                                   .ConfigureAwait(false);
                             string strText = await LanguageManager
                                                    .GetStringAsync("String_WeaponAccessory", token: token)
@@ -14355,7 +14400,8 @@ namespace Chummer
                                                  .ConfigureAwait(false);
                             token.ThrowIfCancellationRequested();
                             // gpbWeaponsCommon
-                            await lblWeaponName.DoThreadSafeAsync(x => x.Text = objGear.CurrentDisplayNameShort, token)
+                            string strName = await objGear.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
+                            await lblWeaponName.DoThreadSafeAsync(x => x.Text = strName, token)
                                                .ConfigureAwait(false);
                             await lblWeaponCategory
                                   .DoThreadSafeAsync(x => x.Text = objGear.DisplayCategory(GlobalSettings.Language),
@@ -14992,13 +15038,16 @@ namespace Chummer
                                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                out StringBuilder sbdArmorEquipped))
                                     {
-                                        foreach (Armor objLoopArmor in CharacterObject.Armor.Where(
-                                                     objLoopArmor =>
-                                                         objLoopArmor.Equipped && objLoopArmor.Location == objLocation))
+                                        foreach (Armor objLoopArmor in CharacterObject.Armor)
                                         {
-                                            sbdArmorEquipped
-                                                .Append(objLoopArmor.CurrentDisplayName).Append(strSpace).Append('(')
-                                                .Append(objLoopArmor.DisplayArmorValue).AppendLine(')');
+                                            if (objLoopArmor.Equipped && objLoopArmor.Location == objLocation)
+                                            {
+                                                sbdArmorEquipped.Append(await objLoopArmor.GetCurrentDisplayNameAsync(token).ConfigureAwait(false))
+                                                                .Append(strSpace)
+                                                                .Append('(')
+                                                                .Append(objLoopArmor.DisplayArmorValue)
+                                                                .AppendLine(')');
+                                            }
                                         }
 
                                         token.ThrowIfCancellationRequested();
@@ -15038,14 +15087,16 @@ namespace Chummer
                                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                    out StringBuilder sbdArmorEquipped))
                                         {
-                                            foreach (Armor objLoopArmor in CharacterObject.Armor.Where(
-                                                         objLoopArmor =>
-                                                             objLoopArmor.Equipped && objLoopArmor.Location == null))
+                                            foreach (Armor objLoopArmor in CharacterObject.Armor)
                                             {
-                                                sbdArmorEquipped
-                                                    .Append(objLoopArmor.CurrentDisplayName).Append(strSpace)
-                                                    .Append('(')
-                                                    .Append(objLoopArmor.DisplayArmorValue).AppendLine(')');
+                                                if (objLoopArmor.Equipped && objLoopArmor.Location == null)
+                                                {
+                                                    sbdArmorEquipped.Append(await objLoopArmor.GetCurrentDisplayNameAsync(token).ConfigureAwait(false))
+                                                                    .Append(strSpace)
+                                                                    .Append('(')
+                                                                    .Append(objLoopArmor.DisplayArmorValue)
+                                                                    .AppendLine(')');
+                                                }
                                             }
 
                                             if (sbdArmorEquipped.Length > 0)
@@ -15176,7 +15227,8 @@ namespace Chummer
                                            .ConfigureAwait(false);
 
                         // gpbGearCommon
-                        await lblGearName.DoThreadSafeAsync(x => x.Text = objGear.CurrentDisplayNameShort, token)
+                        string strName = await objGear.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
+                        await lblGearName.DoThreadSafeAsync(x => x.Text = strName, token)
                                          .ConfigureAwait(false);
                         await lblGearCategory
                               .DoThreadSafeAsync(x => x.Text = objGear.DisplayCategory(GlobalSettings.Language), token)
@@ -16024,7 +16076,7 @@ namespace Chummer
                                                       string.Format(GlobalSettings.CultureInfo,
                                                                     await LanguageManager.GetStringAsync(
                                                                         "Message_MergeIdentical", token: token).ConfigureAwait(false),
-                                                                    objGear.CurrentDisplayNameShort),
+                                                                    await objGear.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false)),
                                                       await LanguageManager.GetStringAsync(
                                                           "MessageTitle_MergeIdentical", token: token).ConfigureAwait(false),
                                                       MessageBoxButtons.YesNo, MessageBoxIcon.Question)
@@ -18018,7 +18070,8 @@ namespace Chummer
                         await lblDrugName.DoThreadSafeAsync(x => x.Text = strName, token).ConfigureAwait(false);
                         await lblDrugAvail.DoThreadSafeAsync(x => x.Text = objDrug.DisplayTotalAvail, token)
                                           .ConfigureAwait(false);
-                        await lblDrugGrade.DoThreadSafeAsync(x => x.Text = objDrug.Grade.CurrentDisplayName, token)
+                        string strGradeName = await objDrug.Grade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                        await lblDrugGrade.DoThreadSafeAsync(x => x.Text = strGradeName, token)
                                           .ConfigureAwait(false);
                         await lblDrugCost.DoThreadSafeAsync(x => x.Text
                                                                 = objDrug.Cost.ToString(
@@ -18049,7 +18102,7 @@ namespace Chummer
                         {
                             foreach (DrugComponent objComponent in objDrug.Components)
                             {
-                                sbdComponents.AppendLine(objComponent.CurrentDisplayName);
+                                sbdComponents.AppendLine(await objComponent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
                             }
 
                             await lblDrugComponents.DoThreadSafeAsync(x => x.Text = sbdComponents.ToString(), token)
@@ -18272,7 +18325,7 @@ namespace Chummer
                     {
                         continue;
                     }
-                    lstCyberwareGrades.Add(new ListItem(objWareGrade.Name, objWareGrade.CurrentDisplayName));
+                    lstCyberwareGrades.Add(new ListItem(objWareGrade.Name, await objWareGrade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)));
                 }
 
                 await cboCyberwareGrade.PopulateWithListItemsAsync(lstCyberwareGrades, token).ConfigureAwait(false);

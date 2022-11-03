@@ -536,7 +536,7 @@ namespace Chummer
                         {
                             objVehicle.Create(objXmlVehicle.ToXmlNode(dummy), true, true, false, true);
                             string strID = objVehicle.SourceIDString;
-                            string strVehicleName = objVehicle.CurrentDisplayName;
+                            string strVehicleName = await objVehicle.GetCurrentDisplayNameAsync().ConfigureAwait(false);
                             string strAccel = objVehicle.TotalAccel;
                             string strArmor = objVehicle.TotalArmor.ToString(GlobalSettings.CultureInfo);
                             string strBody = objVehicle.TotalBody.ToString(GlobalSettings.CultureInfo);
@@ -550,7 +550,7 @@ namespace Chummer
                             {
                                 foreach (Gear objGear in objVehicle.GearChildren)
                                 {
-                                    sbdGear.AppendLine(objGear.CurrentDisplayName);
+                                    sbdGear.AppendLine(await objGear.GetCurrentDisplayNameAsync().ConfigureAwait(false));
                                 }
 
                                 if (sbdGear.Length > 0)
@@ -561,7 +561,7 @@ namespace Chummer
                                 {
                                     foreach (VehicleMod objMod in objVehicle.Mods)
                                     {
-                                        sbdMods.AppendLine(objMod.CurrentDisplayName);
+                                        sbdMods.AppendLine(await objMod.GetCurrentDisplayNameAsync().ConfigureAwait(false));
                                     }
 
                                     if (sbdMods.Length > 0)
@@ -573,7 +573,7 @@ namespace Chummer
                                             sbdWeapons.Length -= Environment.NewLine.Length;
                                         foreach (Weapon objWeapon in objVehicle.Weapons)
                                         {
-                                            sbdWeapons.AppendLine(objWeapon.CurrentDisplayName);
+                                            sbdWeapons.AppendLine(await objWeapon.GetCurrentDisplayNameAsync().ConfigureAwait(false));
                                         }
 
                                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -581,7 +581,7 @@ namespace Chummer
                                         {
                                             foreach (WeaponMount objWeaponMount in objVehicle.WeaponMounts)
                                             {
-                                                sbdWeaponMounts.AppendLine(objWeaponMount.CurrentDisplayName);
+                                                sbdWeaponMounts.AppendLine(await objWeaponMount.GetCurrentDisplayNameAsync().ConfigureAwait(false));
                                             }
 
                                             if (sbdWeaponMounts.Length > 0)

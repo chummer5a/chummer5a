@@ -3292,7 +3292,7 @@ namespace Chummer.Backend.Skills
                         });
                         return;
                     }
-                    
+
                     Specializations[intIndexToReplace] = new SkillSpecialization(CharacterObject, value);
                     // For safety's, remove all non-free specializations after the one we are replacing.
                     intIndexToReplace = Specializations.FindIndex(intIndexToReplace + 1, x => !x.Free);
@@ -3349,7 +3349,7 @@ namespace Chummer.Backend.Skills
                                                                }, token: token).ConfigureAwait(false);
                         return;
                     }
-                    
+
                     await Specializations.SetValueAtAsync(intIndexToReplace,
                                                           new SkillSpecialization(CharacterObject, value), token).ConfigureAwait(false);
                     // For safety's, remove all non-free specializations after the one we are replacing.
@@ -3619,7 +3619,7 @@ namespace Chummer.Backend.Skills
                                 continue;
                             sbdReturn.AppendLine().AppendLine().Append(strExtraStart)
                                 .Append(cyberware.CurrentDisplayName);
-                            if (cyberware.Grade.Name != "Standard")
+                            if (cyberware.Grade.Name != "Standard" && cyberware.Grade.Name != "None")
                             {
                                 sbdReturn.Append(strSpace).Append('(').Append(cyberware.Grade.CurrentDisplayName)
                                     .Append(')');
@@ -3703,7 +3703,7 @@ namespace Chummer.Backend.Skills
                                 .Append(LanguageManager.GetString("String_Colon")).Append(strSpace)
                                 .Append(CharacterObject.GetObjectName(objSwapSkillAttribute)).Append(strSpace)
                                 .Append(cyberware.CurrentDisplayName);
-                            if (cyberware.Grade.Name != "Standard")
+                            if (cyberware.Grade.Name != "Standard" && cyberware.Grade.Name != "None")
                             {
                                 sbdReturn.Append(strSpace).Append('(').Append(cyberware.Grade.CurrentDisplayName)
                                     .Append(')');
@@ -3940,9 +3940,9 @@ namespace Chummer.Backend.Skills
                                 continue;
                             sbdReturn.AppendLine().AppendLine().Append(strExtraStart)
                                 .Append(await cyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
-                            if (cyberware.Grade.Name != "Standard")
+                            if (cyberware.Grade.Name != "Standard" && cyberware.Grade.Name != "None")
                             {
-                                sbdReturn.Append(strSpace).Append('(').Append(cyberware.Grade.CurrentDisplayName)
+                                sbdReturn.Append(strSpace).Append('(').Append(await cyberware.Grade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false))
                                     .Append(')');
                             }
 
@@ -4036,10 +4036,10 @@ namespace Chummer.Backend.Skills
                                     .ConfigureAwait(false)).Append(strSpace)
                                 .Append(await CharacterObject.GetObjectNameAsync(objSwapSkillAttribute, token: token)
                                     .ConfigureAwait(false)).Append(strSpace)
-                                .Append(cyberware.CurrentDisplayName);
-                            if (cyberware.Grade.Name != "Standard")
+                                .Append(await cyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
+                            if (cyberware.Grade.Name != "Standard" && cyberware.Grade.Name != "None")
                             {
-                                sbdReturn.Append(strSpace).Append('(').Append(cyberware.Grade.CurrentDisplayName)
+                                sbdReturn.Append(strSpace).Append('(').Append(await cyberware.Grade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false))
                                     .Append(')');
                             }
 

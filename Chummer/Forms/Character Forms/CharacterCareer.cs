@@ -3879,20 +3879,23 @@ namespace Chummer
                                         : await treCyberware.DoThreadSafeFuncAsync(
                                             x => x.FindNode(objCyberware.InternalId), token).ConfigureAwait(false);
                                     if (objWareNode != null)
+                                    {
+                                        string strText = await objCyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                                         await treCyberware.DoThreadSafeAsync(
-                                                              () => objWareNode.Text = objCyberware.CurrentDisplayName,
+                                                              () => objWareNode.Text = strText,
                                                               token)
                                                           .ConfigureAwait(false);
+                                    }
                                 }
                                 else
                                 {
-                                    sbdOutdatedItems.AppendLine(objCyberware.CurrentDisplayName);
+                                    sbdOutdatedItems.AppendLine(await objCyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
                                 }
                             }
 
                             foreach (Gear objGear in objCyberware.GearChildren)
                             {
-                                await objGear.ReaddImprovements(treCyberware, sbdOutdatedItems, lstInternalIdFilter)
+                                await objGear.ReaddImprovements(treCyberware, sbdOutdatedItems, lstInternalIdFilter, token: token)
                                              .ConfigureAwait(false);
                             }
                         }
@@ -4051,14 +4054,14 @@ namespace Chummer
 
                                 foreach (Gear objGear in objMod.GearChildren)
                                 {
-                                    await objGear.ReaddImprovements(treArmor, sbdOutdatedItems, lstInternalIdFilter)
+                                    await objGear.ReaddImprovements(treArmor, sbdOutdatedItems, lstInternalIdFilter, token: token)
                                                  .ConfigureAwait(false);
                                 }
                             }
 
                             foreach (Gear objGear in objArmor.GearChildren)
                             {
-                                await objGear.ReaddImprovements(treArmor, sbdOutdatedItems, lstInternalIdFilter)
+                                await objGear.ReaddImprovements(treArmor, sbdOutdatedItems, lstInternalIdFilter, token: token)
                                              .ConfigureAwait(false);
                             }
 
@@ -4068,7 +4071,7 @@ namespace Chummer
                         // Refresh Gear.
                         foreach (Gear objGear in CharacterObject.Gear)
                         {
-                            await objGear.ReaddImprovements(treGear, sbdOutdatedItems, lstInternalIdFilter)
+                            await objGear.ReaddImprovements(treGear, sbdOutdatedItems, lstInternalIdFilter, token: token)
                                          .ConfigureAwait(false);
                             await objGear.RefreshWirelessBonusesAsync(token).ConfigureAwait(false);
                         }
@@ -4080,7 +4083,7 @@ namespace Chummer
                             {
                                 foreach (Gear objGear in objAccessory.GearChildren)
                                 {
-                                    await objGear.ReaddImprovements(treWeapons, sbdOutdatedItems, lstInternalIdFilter)
+                                    await objGear.ReaddImprovements(treWeapons, sbdOutdatedItems, lstInternalIdFilter, token: token)
                                                  .ConfigureAwait(false);
                                 }
                             }
@@ -5095,7 +5098,7 @@ namespace Chummer
                     if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
                                                                             await LanguageManager.GetStringAsync(
                                                                                 "Message_ConfirmKarmaExpenseSpend").ConfigureAwait(false),
-                                                                            objComplexForm.CurrentDisplayNameShort,
+                                                                            await objComplexForm.GetCurrentDisplayNameShortAsync().ConfigureAwait(false),
                                                                             intComplexFormKarmaCost.ToString(
                                                                                 GlobalSettings.CultureInfo))).ConfigureAwait(false))
                     {
@@ -5216,7 +5219,7 @@ namespace Chummer
 
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseWeapon", token: token).ConfigureAwait(false) + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + objWeapon.CurrentDisplayNameShort, ExpenseType.Nuyen,
+                    objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseWeapon", token: token).ConfigureAwait(false) + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + await objWeapon.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), ExpenseType.Nuyen,
                         DateTime.Now);
                     await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
                     CharacterObject.Nuyen -= decCost;
@@ -5389,7 +5392,7 @@ namespace Chummer
 
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicle", token: token).ConfigureAwait(false) + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + objVehicle.CurrentDisplayNameShort, ExpenseType.Nuyen,
+                    objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicle", token: token).ConfigureAwait(false) + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + await objVehicle.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), ExpenseType.Nuyen,
                         DateTime.Now);
                     await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
                     CharacterObject.Nuyen -= decCost;
@@ -5487,7 +5490,7 @@ namespace Chummer
 
                             // Create an Expense Log Entry for removing the Obsolete Mod.
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                            objExpense.Create(decCost * -1, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_ExpenseVehicleRetrofit", token: token).ConfigureAwait(false), objMod.Parent.CurrentDisplayName), ExpenseType.Nuyen, DateTime.Now);
+                            objExpense.Create(decCost * -1, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_ExpenseVehicleRetrofit", token: token).ConfigureAwait(false), await objMod.Parent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)), ExpenseType.Nuyen, DateTime.Now);
                             await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
 
                             // Adjust the character's Nuyen total.
@@ -6086,7 +6089,7 @@ namespace Chummer
                 objExpense.Create(
                     0,
                     await LanguageManager.GetStringAsync("String_ExpenseDecreaseLifestyle", token: GenericToken).ConfigureAwait(false)
-                    + await LanguageManager.GetStringAsync("String_Space", token: GenericToken).ConfigureAwait(false) + objLifestyle.CurrentDisplayNameShort,
+                    + await LanguageManager.GetStringAsync("String_Space", token: GenericToken).ConfigureAwait(false) + await objLifestyle.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false),
                     ExpenseType.Nuyen, DateTime.Now);
                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense).ConfigureAwait(false);
 
@@ -6150,7 +6153,7 @@ namespace Chummer
                         }
 
                         if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSpend").ConfigureAwait(false)
-                                                                                , objPower.CurrentDisplayName
+                                                                                , await objPower.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false)
                                                                                 , objPower.Karma.ToString(GlobalSettings.CultureInfo))).ConfigureAwait(false))
                             continue;
 
@@ -6709,7 +6712,7 @@ namespace Chummer
                 do
                 {
                     // Select the root Gear node then open the Select Gear window.
-                    blnAddAgain = await PickGear(objGear.Parent as IHasChildren<Gear>, objGear.Location, objGear, objGear.CurrentDisplayNameShort, token: GenericToken).ConfigureAwait(false);
+                    blnAddAgain = await PickGear(objGear.Parent as IHasChildren<Gear>, objGear.Location, objGear, await objGear.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false), token: GenericToken).ConfigureAwait(false);
                 }
                 while (blnAddAgain);
             }
@@ -7234,7 +7237,7 @@ namespace Chummer
                                                   : await LanguageManager
                                                           .GetStringAsync("Message_ConfirmKarmaExpenseLowerLevel",
                                                                           token: token).ConfigureAwait(false),
-                                              objSelectedQuality.CurrentDisplayNameShort, intTotalKarmaCost), token)
+                                              await objSelectedQuality.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), intTotalKarmaCost), token)
                             .ConfigureAwait(false))
                         return false;
 
@@ -7246,7 +7249,7 @@ namespace Chummer
                                             .ConfigureAwait(false)
                                       + await LanguageManager.GetStringAsync("String_Space", token: token)
                                                              .ConfigureAwait(false)
-                                      + objSelectedQuality.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
+                                      + await objSelectedQuality.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), ExpenseType.Karma, DateTime.Now);
                     await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
                                          .ConfigureAwait(false);
                     await CharacterObject.DecreaseKarmaAsync(intTotalKarmaCost, token).ConfigureAwait(false);
@@ -7522,7 +7525,7 @@ namespace Chummer
                                                                      token: GenericToken).ConfigureAwait(false)
                                 + await LanguageManager.GetStringAsync("String_Space", token: GenericToken)
                                                        .ConfigureAwait(false)
-                                + objQuality.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
+                                + await objQuality.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false), ExpenseType.Karma, DateTime.Now);
                             await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense).ConfigureAwait(false);
 
                             ExpenseUndo objUndo = new ExpenseUndo();
@@ -7900,7 +7903,7 @@ namespace Chummer
                 Gear objStackItem = new Gear(CharacterObject)
                 {
                     Category = "Stacked Focus",
-                    Name = "Stacked Focus: " + objStack.CurrentDisplayName,
+                    Name = "Stacked Focus: " + await objStack.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false),
                     Source = "SR5",
                     Page = "1",
                     Cost = decCost.ToString(GlobalSettings.CultureInfo),
@@ -8534,7 +8537,7 @@ namespace Chummer
                                               await LanguageManager.GetStringAsync(
                                                   "String_ExpensePurchaseWeaponAccessory").ConfigureAwait(false)
                                               + await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false)
-                                              + objAccessory.CurrentDisplayNameShort,
+                                              + await objAccessory.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false),
                                               ExpenseType.Nuyen, DateTime.Now);
                             await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense).ConfigureAwait(false);
                             CharacterObject.Nuyen -= decCost;
@@ -8607,7 +8610,7 @@ namespace Chummer
 
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseArmor", token: token).ConfigureAwait(false) + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + objArmor.CurrentDisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+                    objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseArmor", token: token).ConfigureAwait(false) + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + await objArmor.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), ExpenseType.Nuyen, DateTime.Now);
                     await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
                     CharacterObject.Nuyen -= decCost;
 
@@ -8779,7 +8782,7 @@ namespace Chummer
                             objExpense.Create(decCost * -1,
                                               await LanguageManager.GetStringAsync("String_ExpensePurchaseArmorMod").ConfigureAwait(false)
                                               + await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false)
-                                              + objMod.CurrentDisplayNameShort, ExpenseType.Nuyen,
+                                              + await objMod.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false), ExpenseType.Nuyen,
                                               DateTime.Now);
                             await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense).ConfigureAwait(false);
                             CharacterObject.Nuyen -= decCost;
@@ -8997,7 +9000,7 @@ namespace Chummer
                             objExpense.Create(decCost * -1,
                                               await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicleMod").ConfigureAwait(false)
                                               + await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false)
-                                              + objMod.CurrentDisplayNameShort, ExpenseType.Nuyen,
+                                              + await objMod.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false), ExpenseType.Nuyen,
                                               DateTime.Now);
                             await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense).ConfigureAwait(false);
                             CharacterObject.Nuyen -= decCost;
@@ -9132,7 +9135,7 @@ namespace Chummer
 
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicleWeapon", token: token).ConfigureAwait(false) + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + objWeapon.CurrentDisplayNameShort, ExpenseType.Nuyen,
+                    objExpense.Create(decCost * -1, await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicleWeapon", token: token).ConfigureAwait(false) + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + await objWeapon.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), ExpenseType.Nuyen,
                         DateTime.Now);
                     await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
                     CharacterObject.Nuyen -= decCost;
@@ -9203,7 +9206,7 @@ namespace Chummer
                 objExpense.Create(decCost * -1,
                                   await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicleWeaponAccessory").ConfigureAwait(false)
                                   + await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false)
-                                  + objNewWeaponMount.CurrentDisplayNameShort, ExpenseType.Nuyen,
+                                  + await objNewWeaponMount.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false), ExpenseType.Nuyen,
                                   DateTime.Now);
                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense).ConfigureAwait(false);
                 CharacterObject.Nuyen -= decCost;
@@ -9319,7 +9322,7 @@ namespace Chummer
                                               await LanguageManager.GetStringAsync(
                                                   "String_ExpensePurchaseVehicleWeaponAccessory").ConfigureAwait(false)
                                               + await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false)
-                                              + objAccessory.CurrentDisplayNameShort,
+                                              + await objAccessory.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false),
                                               ExpenseType.Nuyen, DateTime.Now);
                             await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense).ConfigureAwait(false);
                             CharacterObject.Nuyen -= decCost;
@@ -9668,7 +9671,7 @@ namespace Chummer
                                                   await LanguageManager.GetStringAsync(
                                                       "String_ExpensePurchaseVehicleGear").ConfigureAwait(false)
                                                   + await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false)
-                                                  + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
+                                                  + await objGear.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false), ExpenseType.Nuyen,
                                                   DateTime.Now);
                                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense).ConfigureAwait(false);
                                 CharacterObject.Nuyen -= decCost;
@@ -13435,7 +13438,7 @@ namespace Chummer
                 int intMonths = objLifestyle.Increments;
                 int intPosition = await CharacterObject.Lifestyles.IndexOfAsync(
                     CharacterObject.Lifestyles.FirstOrDefault(p => p.InternalId == objLifestyle.InternalId)).ConfigureAwait(false);
-                string strOldLifestyleName = objLifestyle.CurrentDisplayName;
+                string strOldLifestyleName = await objLifestyle.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
                 decimal decOldLifestyleTotalCost = objLifestyle.TotalCost;
 
                 if (objLifestyle.StyleType != LifestyleType.Standard)
@@ -13504,7 +13507,7 @@ namespace Chummer
                     -decAmount,
                     await LanguageManager.GetStringAsync("String_ExpenseModifiedLifestyle").ConfigureAwait(false)
                     + await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false) + strOldLifestyleName + strSpace + "->"
-                    + strSpace + objLifestyle.CurrentDisplayName, ExpenseType.Nuyen, DateTime.Now);
+                    + strSpace + await objLifestyle.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false), ExpenseType.Nuyen, DateTime.Now);
                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
 
                 await RequestCharacterUpdate().ConfigureAwait(false);
@@ -14041,7 +14044,7 @@ namespace Chummer
                                  objVehicleWeaponMount.AllowedWeapons.Contains(objWeapon.Name)) &&
                                 !objVehicleWeaponMount.IsWeaponsFull)
                                 lstItems.Add(new ListItem(objVehicleWeaponMount.InternalId,
-                                                          objVehicleWeaponMount.CurrentDisplayName));
+                                                          await objVehicleWeaponMount.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false)));
                             else
                                 foreach (VehicleMod objVehicleMod in objVehicleWeaponMount.Mods)
                                 {
@@ -14049,7 +14052,7 @@ namespace Chummer
                                          objVehicleMod.Name.StartsWith("Mechanical Arm", StringComparison.Ordinal)) &&
                                         objVehicleMod.Weapons.Count == 0)
                                         lstItems.Add(new ListItem(objVehicleMod.InternalId,
-                                                                  objVehicleMod.CurrentDisplayName));
+                                                                  await objVehicleMod.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false)));
                                 }
                         }
 
@@ -14058,7 +14061,7 @@ namespace Chummer
                             if ((objVehicleMod.Name.Contains("Drone Arm") ||
                                  objVehicleMod.Name.StartsWith("Mechanical Arm", StringComparison.Ordinal))
                                 && objVehicleMod.Weapons.Count == 0)
-                                lstItems.Add(new ListItem(objVehicleMod.InternalId, objVehicleMod.CurrentDisplayName));
+                                lstItems.Add(new ListItem(objVehicleMod.InternalId, await objVehicleMod.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false)));
                         }
 
                         if (lstItems.Count == 0)
@@ -15421,7 +15424,7 @@ namespace Chummer
                                 if (!await ImprovementManager.CreateImprovementsAsync(
                                         CharacterObject, Improvement.ImprovementSource.StackedFocus,
                                         objStackedFocus.InternalId, objGear.Bonus, objGear.Rating,
-                                        objGear.CurrentDisplayNameShort).ConfigureAwait(false))
+                                        await objGear.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false)).ConfigureAwait(false))
                                 {
                                     e.Cancel = true;
                                     break;
@@ -15438,7 +15441,7 @@ namespace Chummer
                                                                                    objStackedFocus.InternalId,
                                                                                    objGear.WirelessBonus,
                                                                                    objGear.Rating,
-                                                                                   objGear.CurrentDisplayNameShort)
+                                                                                   await objGear.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false))
                                                                                .ConfigureAwait(false))
                             {
                                 e.Cancel = true;
@@ -16058,7 +16061,8 @@ namespace Chummer
                 if (await treCritterPowers.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) is CritterPower objPower)
                 {
                     await cmdDeleteCritterPower.DoThreadSafeAsync(x => x.Enabled = objPower.Grade == 0, token).ConfigureAwait(false);
-                    await lblCritterPowerName.DoThreadSafeAsync(x => x.Text = objPower.CurrentDisplayName, token).ConfigureAwait(false);
+                    string strName = await objPower.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
+                    await lblCritterPowerName.DoThreadSafeAsync(x => x.Text = strName, token).ConfigureAwait(false);
                     string strText = await objPower.DisplayCategoryAsync(GlobalSettings.Language, token).ConfigureAwait(false);
                     await lblCritterPowerCategory.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
                     string strText2 = await objPower.DisplayTypeAsync(GlobalSettings.Language, token).ConfigureAwait(false);
@@ -17276,7 +17280,8 @@ namespace Chummer
                         await lblDrugName.DoThreadSafeAsync(x => x.Text = objDrug.Name, token).ConfigureAwait(false);
                         await lblDrugAvail.DoThreadSafeAsync(x => x.Text = objDrug.DisplayTotalAvail, token)
                                           .ConfigureAwait(false);
-                        await lblDrugGrade.DoThreadSafeAsync(x => x.Text = objDrug.Grade.CurrentDisplayName, token)
+                        string strGradeName = await objDrug.Grade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                        await lblDrugGrade.DoThreadSafeAsync(x => x.Text = strGradeName, token)
                                           .ConfigureAwait(false);
                         await lblDrugCost.DoThreadSafeAsync(x => x.Text
                                                                 = objDrug.Cost.ToString(
@@ -17309,7 +17314,7 @@ namespace Chummer
                         {
                             foreach (DrugComponent objComponent in objDrug.Components)
                             {
-                                sbdComponents.AppendLine(objComponent.CurrentDisplayName);
+                                sbdComponents.AppendLine(await objComponent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
                             }
 
                             await lblDrugComponents.DoThreadSafeAsync(x => x.Text = sbdComponents.ToString(), token)
@@ -17600,8 +17605,9 @@ namespace Chummer
                                                         token)
                                                     .ConfigureAwait(false);
                             // gpbCyberwareCommon
+                            string strName = await objCyberware.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
                             await lblCyberwareName
-                                  .DoThreadSafeAsync(x => x.Text = objCyberware.CurrentDisplayNameShort, token)
+                                  .DoThreadSafeAsync(x => x.Text = strName, token)
                                   .ConfigureAwait(false);
                             string strText = await objCyberware.DisplayCategoryAsync(GlobalSettings.Language, token)
                                                                .ConfigureAwait(false);
@@ -17611,8 +17617,9 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             await lblCyberwareGrade.DoThreadSafeAsync(x => x.Visible = true, token)
                                                    .ConfigureAwait(false);
+                            string strGradeName = await objCyberware.Grade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                             await lblCyberwareGrade
-                                  .DoThreadSafeAsync(x => x.Text = objCyberware.Grade.CurrentDisplayName, token)
+                                  .DoThreadSafeAsync(x => x.Text = strGradeName, token)
                                   .ConfigureAwait(false);
                             await lblCyberwareEssenceLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                           .ConfigureAwait(false);
@@ -17745,8 +17752,9 @@ namespace Chummer
                                   .ConfigureAwait(false);
                             token.ThrowIfCancellationRequested();
                             // gpbCyberwareCommon
+                            string strName = await objGear.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
                             await lblCyberwareName
-                                  .DoThreadSafeAsync(x => x.Text = objGear.CurrentDisplayNameShort, token)
+                                  .DoThreadSafeAsync(x => x.Text = strName, token)
                                   .ConfigureAwait(false);
                             await lblCyberwareCategory.DoThreadSafeAsync(
                                                           x => x.Text = objGear.DisplayCategory(GlobalSettings
@@ -17999,7 +18007,8 @@ namespace Chummer
                                                  .ConfigureAwait(false);
                             token.ThrowIfCancellationRequested();
                             // gpbWeaponsCommon
-                            await lblWeaponName.DoThreadSafeAsync(x => x.Text = objWeapon.CurrentDisplayName, token)
+                            string strName = await objWeapon.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                            await lblWeaponName.DoThreadSafeAsync(x => x.Text = strName, token)
                                                .ConfigureAwait(false);
                             string strText = await objWeapon.DisplayCategoryAsync(GlobalSettings.Language, token)
                                                             .ConfigureAwait(false);
@@ -18153,11 +18162,13 @@ namespace Chummer
                                 }, token).ConfigureAwait(false);
                                 await tlpWeaponsRanges.DoThreadSafeAsync(x => x.Visible = true, token)
                                                       .ConfigureAwait(false);
+                                string strRange = await objWeapon.GetCurrentDisplayRangeAsync(token).ConfigureAwait(false);
                                 await lblWeaponRangeMain
-                                      .DoThreadSafeAsync(x => x.Text = objWeapon.CurrentDisplayRange, token)
+                                      .DoThreadSafeAsync(x => x.Text = strRange, token)
                                       .ConfigureAwait(false);
+                                string strAlternateRange = await objWeapon.GetCurrentDisplayAlternateRangeAsync(token).ConfigureAwait(false);
                                 await lblWeaponRangeAlternate
-                                      .DoThreadSafeAsync(x => x.Text = objWeapon.CurrentDisplayAlternateRange, token)
+                                      .DoThreadSafeAsync(x => x.Text = strAlternateRange, token)
                                       .ConfigureAwait(false);
                                 Dictionary<string, string> dictionaryRanges
                                     = objWeapon.GetRangeStrings(GlobalSettings.CultureInfo);
@@ -18360,10 +18371,11 @@ namespace Chummer
                                         if (objWeapon.RequireAmmo)
                                         {
                                             Gear objGear = objClip.AmmoGear;
-                                            strAmmoName = objGear?.CurrentDisplayNameShort ??
-                                                          await LanguageManager.GetStringAsync(objClip.Ammo > 0
-                                                              ? "String_ExternalSource"
-                                                              : "String_Empty", token: token).ConfigureAwait(false);
+                                            strAmmoName = objGear != null
+                                                ? await objGear.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false)
+                                                : await LanguageManager.GetStringAsync(objClip.Ammo > 0
+                                                    ? "String_ExternalSource"
+                                                    : "String_Empty", token: token).ConfigureAwait(false);
                                             if (objWeapon.Clips.Count > 1)
                                                 strAmmoName += strSpace + '(' + string.Format(GlobalSettings.CultureInfo
                                                     , await LanguageManager
@@ -18379,7 +18391,7 @@ namespace Chummer
                                                 {
                                                     foreach (Gear objChild in objGear.Children)
                                                     {
-                                                        sbdPlugins.Append(objChild.CurrentDisplayNameShort).Append(',')
+                                                        sbdPlugins.Append(await objChild.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false)).Append(',')
                                                                   .Append(strSpace);
                                                     }
 
@@ -18474,8 +18486,9 @@ namespace Chummer
                                                                               objSelectedAccessory.ParentID), token)
                                                  .ConfigureAwait(false);
                             // gpbWeaponsCommon
+                            string strName = await objSelectedAccessory.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
                             await lblWeaponName
-                                  .DoThreadSafeAsync(x => x.Text = objSelectedAccessory.CurrentDisplayNameShort, token)
+                                  .DoThreadSafeAsync(x => x.Text = strName, token)
                                   .ConfigureAwait(false);
                             string strText = await LanguageManager
                                                    .GetStringAsync("String_WeaponAccessory", token: token)
@@ -18769,7 +18782,8 @@ namespace Chummer
                                                  .ConfigureAwait(false);
                             token.ThrowIfCancellationRequested();
                             // gpbWeaponsCommon
-                            await lblWeaponName.DoThreadSafeAsync(x => x.Text = objGear.CurrentDisplayNameShort, token)
+                            string strName = await objGear.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
+                            await lblWeaponName.DoThreadSafeAsync(x => x.Text = strName, token)
                                                .ConfigureAwait(false);
                             await lblWeaponCategory
                                   .DoThreadSafeAsync(x => x.Text = objGear.DisplayCategory(GlobalSettings.Language),
@@ -19260,7 +19274,7 @@ namespace Chummer
                                                          objLoopArmor.Equipped && objLoopArmor.Location == objLocation))
                                         {
                                             sbdArmorEquipped
-                                                .Append(objLoopArmor.CurrentDisplayName).Append(strSpace).Append('(')
+                                                .Append(await objLoopArmor.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)).Append(strSpace).Append('(')
                                                 .Append(objLoopArmor.DisplayArmorValue).AppendLine(')');
                                         }
 
@@ -19307,7 +19321,7 @@ namespace Chummer
                                                              objLoopArmor.Equipped && objLoopArmor.Location == null))
                                             {
                                                 sbdArmorEquipped
-                                                    .Append(objLoopArmor.CurrentDisplayName).Append(strSpace)
+                                                    .Append(await objLoopArmor.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)).Append(strSpace)
                                                     .Append('(').Append(objLoopArmor.DisplayArmorValue)
                                                     .AppendLine(')');
                                             }
@@ -19593,7 +19607,8 @@ namespace Chummer
                         await cmdDeleteGear.DoThreadSafeAsync(x => x.Enabled = !objGear.IncludedInParent, token)
                                            .ConfigureAwait(false);
                         // gpbGearCommon
-                        await lblGearName.DoThreadSafeAsync(x => x.Text = objGear.CurrentDisplayNameShort, token)
+                        string strName = await objGear.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
+                        await lblGearName.DoThreadSafeAsync(x => x.Text = strName, token)
                                          .ConfigureAwait(false);
                         await lblGearCategory
                               .DoThreadSafeAsync(x => x.Text = objGear.DisplayCategory(GlobalSettings.Language), token)
@@ -20379,7 +20394,7 @@ namespace Chummer
                         objExpense.Create(decCost * -1,
                                           await LanguageManager.GetStringAsync("String_ExpensePurchaseGear", token: token).ConfigureAwait(false)
                                           + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
-                                          + objGear.CurrentDisplayNameShort, ExpenseType.Nuyen,
+                                          + await objGear.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), ExpenseType.Nuyen,
                                           DateTime.Now);
                         await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
                         CharacterObject.Nuyen -= decCost;
@@ -20811,7 +20826,8 @@ namespace Chummer
                                                        .ConfigureAwait(false);
                         }
 
-                        await lblBaseLifestyle.DoThreadSafeAsync(x => x.Text = objLifestyle.CurrentDisplayName, token)
+                        string strBaseName = await objLifestyle.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                        await lblBaseLifestyle.DoThreadSafeAsync(x => x.Text = strBaseName, token)
                                               .ConfigureAwait(false);
                         await lblLifestyleQualitiesLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                         .ConfigureAwait(false);
@@ -21536,11 +21552,13 @@ namespace Chummer
                                 }, token).ConfigureAwait(false);
                                 await tlpVehiclesWeaponRanges.DoThreadSafeAsync(x => x.Visible = true, token)
                                                              .ConfigureAwait(false);
+                                string strRange = await objWeapon.GetCurrentDisplayRangeAsync(token).ConfigureAwait(false);
                                 await lblVehicleWeaponRangeMain
-                                      .DoThreadSafeAsync(x => x.Text = objWeapon.CurrentDisplayRange, token)
+                                      .DoThreadSafeAsync(x => x.Text = strRange, token)
                                       .ConfigureAwait(false);
+                                string strAlternateRange = await objWeapon.GetCurrentDisplayAlternateRangeAsync(token).ConfigureAwait(false);
                                 await lblVehicleWeaponRangeAlternate
-                                      .DoThreadSafeAsync(x => x.Text = objWeapon.CurrentDisplayAlternateRange, token)
+                                      .DoThreadSafeAsync(x => x.Text = strAlternateRange, token)
                                       .ConfigureAwait(false);
                                 Dictionary<string, string> dictionaryRanges
                                     = objWeapon.GetRangeStrings(GlobalSettings.CultureInfo);
@@ -21748,10 +21766,11 @@ namespace Chummer
                                         if (objWeapon.RequireAmmo)
                                         {
                                             Gear objGear = objClip.AmmoGear;
-                                            strAmmoName = objGear?.CurrentDisplayNameShort ??
-                                                          await LanguageManager.GetStringAsync(objClip.Ammo > 0
-                                                              ? "String_ExternalSource"
-                                                              : "String_Empty", token: token).ConfigureAwait(false);
+                                            strAmmoName = objGear != null
+                                                ? await objGear.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false)
+                                                : await LanguageManager.GetStringAsync(objClip.Ammo > 0
+                                                    ? "String_ExternalSource"
+                                                    : "String_Empty", token: token).ConfigureAwait(false);
                                             if (objWeapon.Clips.Count > 1)
                                                 strAmmoName += strSpace + '(' + string.Format(GlobalSettings.CultureInfo
                                                     , await LanguageManager
@@ -21767,7 +21786,7 @@ namespace Chummer
                                                 {
                                                     foreach (Gear objChild in objGear.Children)
                                                     {
-                                                        sbdPlugins.Append(objChild.CurrentDisplayNameShort).Append(',')
+                                                        sbdPlugins.Append(await objChild.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false)).Append(',')
                                                                   .Append(strSpace);
                                                     }
 
@@ -22893,11 +22912,13 @@ namespace Chummer
                     continue;
                 token.ThrowIfCancellationRequested();
                 // Update the name of the item in the TreeView.
-                TreeNode objNode = treVehicles.FindNode(objGear.InternalId);
-                if (objNode != null)
+                string strName = await objGear.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                await treVehicles.DoThreadSafeAsync(x =>
                 {
-                    await treVehicles.DoThreadSafeAsync(() => objNode.Text = objGear.CurrentDisplayName, token).ConfigureAwait(false);
-                }
+                    TreeNode objNode = x.FindNode(objGear.InternalId);
+                    if (objNode != null)
+                        objNode.Text = strName;
+                }, token).ConfigureAwait(false);
             }
         }
 
@@ -23373,7 +23394,7 @@ namespace Chummer
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                         objExpense.Create(CharacterObjectSettings.KarmaMetamagic * -1,
                                           strType + await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false)
-                                                  + objNewMetamagic.CurrentDisplayNameShort, ExpenseType.Karma,
+                                                  + await objNewMetamagic.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false), ExpenseType.Karma,
                                           DateTime.Now);
                         await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
 
@@ -23438,7 +23459,7 @@ namespace Chummer
                         string strType = LanguageManager.GetString("String_Art");
                         // Create the Expense Log Entry.
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                        objExpense.Create(CharacterObjectSettings.KarmaMetamagic * -1, strType + LanguageManager.GetString("String_Space") + objArt.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
+                        objExpense.Create(CharacterObjectSettings.KarmaMetamagic * -1, strType + LanguageManager.GetString("String_Space") + await objArt.GetCurrentDisplayNameShortAsync(GenericToken), ExpenseType.Karma, DateTime.Now);
                         CharacterObject.ExpenseEntries.AddWithSort(objExpense);
 
                         ExpenseUndo objUndo = new ExpenseUndo();
@@ -23628,7 +23649,7 @@ namespace Chummer
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(-intSpellKarmaCost,
                                       strType + await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false)
-                                              + objNewSpell.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
+                                              + await objNewSpell.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false), ExpenseType.Karma, DateTime.Now);
                     await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
 
                     ExpenseUndo objUndo = new ExpenseUndo();
@@ -23732,7 +23753,7 @@ namespace Chummer
                 ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                 objExpense.Create(CharacterObjectSettings.KarmaEnhancement * -1,
                                   strType + await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false)
-                                          + objEnhancement.CurrentDisplayNameShort, ExpenseType.Karma, DateTime.Now);
+                                          + await objEnhancement.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false), ExpenseType.Karma, DateTime.Now);
                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
 
                 ExpenseUndo objUndo = new ExpenseUndo();

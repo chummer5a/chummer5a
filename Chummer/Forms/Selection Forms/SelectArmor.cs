@@ -478,7 +478,7 @@ namespace Chummer
                                 objArmor.Create(objXmlArmor, 0, lstWeapons, true, true, true);
 
                                 string strArmorGuid = objArmor.SourceIDString;
-                                string strArmorName = objArmor.CurrentDisplayName;
+                                string strArmorName = await objArmor.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                                 int intArmor = objArmor.TotalArmor;
                                 decimal decCapacity
                                     = Convert.ToDecimal(objArmor.CalculatedCapacity(GlobalSettings.InvariantCultureInfo), GlobalSettings.InvariantCultureInfo);
@@ -488,12 +488,12 @@ namespace Chummer
                                 {
                                     foreach (ArmorMod objMod in objArmor.ArmorMods)
                                     {
-                                        sbdAccessories.AppendLine(objMod.CurrentDisplayName);
+                                        sbdAccessories.AppendLine(await objMod.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
                                     }
 
                                     foreach (Gear objGear in objArmor.GearChildren)
                                     {
-                                        sbdAccessories.AppendLine(objGear.CurrentDisplayName);
+                                        sbdAccessories.AppendLine(await objGear.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
                                     }
 
                                     if (sbdAccessories.Length > 0)

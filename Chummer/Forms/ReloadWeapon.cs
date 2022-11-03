@@ -78,7 +78,7 @@ namespace Chummer
                         {
                             foreach (Gear objChild in objGear.Children)
                             {
-                                sbdPlugins.Append(objChild.CurrentDisplayNameShort).Append(',').Append(strSpace);
+                                sbdPlugins.Append(await objChild.GetCurrentDisplayNameShortAsync()).Append(',').Append(strSpace);
                             }
 
                             // Remove the trailing comma.

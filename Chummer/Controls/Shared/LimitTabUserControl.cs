@@ -259,9 +259,10 @@ namespace Chummer.UI.Shared
                 {
                     int intTargetLimit = (int)Enum.Parse(typeof(LimitType), objLimitModifier.Limit);
                     TreeNode objParentNode = await GetLimitModifierParentNode(intTargetLimit).ConfigureAwait(false);
+                    string strKey = await objLimitModifier.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                     await treLimit.DoThreadSafeAsync(() =>
                     {
-                        if (!objParentNode.Nodes.ContainsKey(objLimitModifier.CurrentDisplayName))
+                        if (!objParentNode.Nodes.ContainsKey(strKey))
                         {
                             objParentNode.Nodes.Add(objLimitModifier.CreateTreeNode(
                                                         objLimitModifier.CanDelete
@@ -363,10 +364,11 @@ namespace Chummer.UI.Shared
                             {
                                 int intTargetLimit = (int)Enum.Parse(typeof(LimitType), objLimitModifier.Limit);
                                 TreeNode objParentNode = await GetLimitModifierParentNode(intTargetLimit).ConfigureAwait(false);
+                                string strKey = await objLimitModifier.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                                 await treLimit.DoThreadSafeAsync(x =>
                                 {
                                     TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
-                                    if (!lstParentNodeChildren.ContainsKey(objLimitModifier.CurrentDisplayName))
+                                    if (!lstParentNodeChildren.ContainsKey(strKey))
                                     {
                                         TreeNode objNode = objLimitModifier.CreateTreeNode(
                                             objLimitModifier.CanDelete ? cmsLimitModifier : cmsLimitModifierNotesOnly);
@@ -429,10 +431,11 @@ namespace Chummer.UI.Shared
                             {
                                 int intTargetLimit = (int)Enum.Parse(typeof(LimitType), objLimitModifier.Limit);
                                 TreeNode objParentNode = await GetLimitModifierParentNode(intTargetLimit).ConfigureAwait(false);
+                                string strKey = await objLimitModifier.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                                 await treLimit.DoThreadSafeAsync(x =>
                                 {
                                     TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
-                                    if (!lstParentNodeChildren.ContainsKey(objLimitModifier.CurrentDisplayName))
+                                    if (!lstParentNodeChildren.ContainsKey(strKey))
                                     {
                                         TreeNode objNode = objLimitModifier.CreateTreeNode(
                                             objLimitModifier.CanDelete ? cmsLimitModifier : cmsLimitModifierNotesOnly);

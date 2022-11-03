@@ -524,7 +524,7 @@ namespace Chummer
                     await objSource.SetControlAsync(lblSource, token: token).ConfigureAwait(false);
                     bool blnShowSource = !string.IsNullOrEmpty(await lblSource.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false));
                     await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = blnShowSource, token: token).ConfigureAwait(false);
-                
+
                     if (!string.IsNullOrEmpty(strForceGrade))
                     {
                         // Force the Cyberware to be a particular Grade.
@@ -1919,11 +1919,11 @@ namespace Chummer
                             && _objCharacter.Settings.BannedWareGrades.Any(s => objWareGrade.Name.Contains(s)))
                         {
                             lstGrade.Add(new ListItem(objWareGrade.SourceIDString,
-                                                      '*' + objWareGrade.CurrentDisplayName));
+                                                      '*' + await objWareGrade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)));
                         }
                         else
                         {
-                            lstGrade.Add(new ListItem(objWareGrade.SourceIDString, objWareGrade.CurrentDisplayName));
+                            lstGrade.Add(new ListItem(objWareGrade.SourceIDString, await objWareGrade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)));
                         }
                     }
 

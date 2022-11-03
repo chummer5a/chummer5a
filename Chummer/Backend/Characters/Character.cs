@@ -6915,35 +6915,35 @@ namespace Chummer
                                                                 Improvement.ImprovementSource.Quality,
                                                                 objQuality.InternalId,
                                                                 Improvement.ImprovementType.MadeMan,
-                                                                objQuality.CurrentDisplayNameShort, token: token)
+                                                                await objQuality.GetCurrentDisplayNameShortAsync(token), token: token)
                                                             .ConfigureAwait(false);
                                                         await ImprovementManager.CreateImprovementAsync(
                                                                 this, selectedContactUniqueId,
                                                                 Improvement.ImprovementSource.Quality,
                                                                 objQuality.InternalId,
                                                                 Improvement.ImprovementType.AddContact,
-                                                                objQuality.CurrentDisplayNameShort, token: token)
+                                                                await objQuality.GetCurrentDisplayNameShortAsync(token), token: token)
                                                             .ConfigureAwait(false);
                                                         await ImprovementManager.CreateImprovementAsync(
                                                                 this, selectedContactUniqueId,
                                                                 Improvement.ImprovementSource.Quality,
                                                                 objQuality.InternalId,
                                                                 Improvement.ImprovementType.ContactForcedLoyalty,
-                                                                objQuality.CurrentDisplayNameShort, token: token)
+                                                                await objQuality.GetCurrentDisplayNameShortAsync(token), token: token)
                                                             .ConfigureAwait(false);
                                                         await ImprovementManager.CreateImprovementAsync(
                                                                 this, selectedContactUniqueId,
                                                                 Improvement.ImprovementSource.Quality,
                                                                 objQuality.InternalId,
                                                                 Improvement.ImprovementType.ContactForceGroup,
-                                                                objQuality.CurrentDisplayNameShort, token: token)
+                                                                await objQuality.GetCurrentDisplayNameShortAsync(token), token: token)
                                                             .ConfigureAwait(false);
                                                         await ImprovementManager.CreateImprovementAsync(
                                                                 this, selectedContactUniqueId,
                                                                 Improvement.ImprovementSource.Quality,
                                                                 objQuality.InternalId,
                                                                 Improvement.ImprovementType.ContactMakeFree,
-                                                                objQuality.CurrentDisplayNameShort, token: token)
+                                                                await objQuality.GetCurrentDisplayNameShortAsync(token), token: token)
                                                             .ConfigureAwait(false);
                                                         await ImprovementManager.CommitAsync(this, token)
                                                             .ConfigureAwait(false);
@@ -7014,7 +7014,7 @@ namespace Chummer
                                                                 Improvement.ImprovementSource.Quality,
                                                                 objQuality.InternalId,
                                                                 Improvement.ImprovementType.CyberadeptDaemon,
-                                                                objQuality.CurrentDisplayNameShort, token: token)
+                                                                await objQuality.GetCurrentDisplayNameShortAsync(token), token: token)
                                                             .ConfigureAwait(false);
                                                         await ImprovementManager.CommitAsync(this, token)
                                                             .ConfigureAwait(false);
