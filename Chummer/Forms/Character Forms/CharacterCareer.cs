@@ -13596,48 +13596,56 @@ namespace Chummer
 
             try
             {
-                object objSelected = await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false);
-                if (objSelected == null)
-                    return;
-
-                bool blnChecked = await chkArmorEquipped.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false);
-
-                // Locate the selected Armor or Armor Mod.
-                switch (objSelected)
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
+                try
                 {
-                    case Armor objArmor:
-                        objArmor.Equipped = blnChecked;
-                        break;
-
-                    case ArmorMod objMod:
-                        objMod.Equipped = blnChecked;
-                        break;
-
-                    case Gear objGear:
-                        objGear.Equipped = blnChecked;
-                        if (blnChecked)
-                        {
-                            CharacterObject.Armor.FindArmorGear(objGear.InternalId, out Armor objParentArmor,
-                                                                out ArmorMod objParentMod);
-                            // Add the Gear's Improvements to the character.
-                            if (objParentArmor.Equipped && objParentMod?.Equipped != false)
-                            {
-                                await objGear.ChangeEquippedStatusAsync(true, token: GenericToken).ConfigureAwait(false);
-                            }
-                        }
-                        else
-                        {
-                            await objGear.ChangeEquippedStatusAsync(false, token: GenericToken).ConfigureAwait(false);
-                        }
-
-                        break;
-
-                    default:
+                    object objSelected = await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false);
+                    if (objSelected == null)
                         return;
-                }
 
-                await RequestCharacterUpdate().ConfigureAwait(false);
-                await SetDirty(true).ConfigureAwait(false);
+                    bool blnChecked = await chkArmorEquipped.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false);
+
+                    // Locate the selected Armor or Armor Mod.
+                    switch (objSelected)
+                    {
+                        case Armor objArmor:
+                            objArmor.Equipped = blnChecked;
+                            break;
+
+                        case ArmorMod objMod:
+                            objMod.Equipped = blnChecked;
+                            break;
+
+                        case Gear objGear:
+                            objGear.Equipped = blnChecked;
+                            if (blnChecked)
+                            {
+                                CharacterObject.Armor.FindArmorGear(objGear.InternalId, out Armor objParentArmor,
+                                                                    out ArmorMod objParentMod);
+                                // Add the Gear's Improvements to the character.
+                                if (objParentArmor.Equipped && objParentMod?.Equipped != false)
+                                {
+                                    await objGear.ChangeEquippedStatusAsync(true, token: GenericToken).ConfigureAwait(false);
+                                }
+                            }
+                            else
+                            {
+                                await objGear.ChangeEquippedStatusAsync(false, token: GenericToken).ConfigureAwait(false);
+                            }
+
+                            break;
+
+                        default:
+                            return;
+                    }
+
+                    await RequestCharacterUpdate().ConfigureAwait(false);
+                    await SetDirty(true).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                }
             }
             catch (OperationCanceledException)
             {
@@ -13649,13 +13657,21 @@ namespace Chummer
         {
             try
             {
-                // "Click" the first menu item available.
-                if (await cmsAmmoExpense.DoThreadSafeFuncAsync(() => cmsAmmoSingleShot.Enabled, GenericToken).ConfigureAwait(false))
-                    await DoSingleShot(GenericToken).ConfigureAwait(false);
-                else if (await cmsAmmoExpense.DoThreadSafeFuncAsync(() => cmsAmmoShortBurst.Enabled, GenericToken).ConfigureAwait(false))
-                    await DoShortBurst(GenericToken).ConfigureAwait(false);
-                else
-                    await DoLongBurst(GenericToken).ConfigureAwait(false);
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
+                try
+                {
+                    // "Click" the first menu item available.
+                    if (await cmsAmmoExpense.DoThreadSafeFuncAsync(() => cmsAmmoSingleShot.Enabled, GenericToken).ConfigureAwait(false))
+                        await DoSingleShot(GenericToken).ConfigureAwait(false);
+                    else if (await cmsAmmoExpense.DoThreadSafeFuncAsync(() => cmsAmmoShortBurst.Enabled, GenericToken).ConfigureAwait(false))
+                        await DoShortBurst(GenericToken).ConfigureAwait(false);
+                    else
+                        await DoLongBurst(GenericToken).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                }
             }
             catch (OperationCanceledException)
             {
@@ -13667,13 +13683,22 @@ namespace Chummer
         {
             try
             {
-                if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag,
-                                                             GenericToken).ConfigureAwait(false) is Weapon objWeapon))
-                    return;
-                await objWeapon.Reload(CharacterObject.Gear, treGear, GenericToken).ConfigureAwait(false);
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
+                try
+                {
+                    if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag,
+                                                                 GenericToken)
+                                          .ConfigureAwait(false) is Weapon objWeapon))
+                        return;
+                    await objWeapon.Reload(CharacterObject.Gear, treGear, GenericToken).ConfigureAwait(false);
 
-                await RequestCharacterUpdate().ConfigureAwait(false);
-                await SetDirty(true).ConfigureAwait(false);
+                    await RequestCharacterUpdate().ConfigureAwait(false);
+                    await SetDirty(true).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                }
             }
             catch (OperationCanceledException)
             {
@@ -13685,13 +13710,22 @@ namespace Chummer
         {
             try
             {
-                if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag,
-                                                             GenericToken).ConfigureAwait(false) is Weapon objWeapon))
-                    return;
-                await objWeapon.Unload(CharacterObject.Gear, treGear, GenericToken).ConfigureAwait(false);
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
+                try
+                {
+                    if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag,
+                                                                 GenericToken)
+                                          .ConfigureAwait(false) is Weapon objWeapon))
+                        return;
+                    await objWeapon.Unload(CharacterObject.Gear, treGear, GenericToken).ConfigureAwait(false);
 
-                await RequestCharacterUpdate().ConfigureAwait(false);
-                await SetDirty(true).ConfigureAwait(false);
+                    await RequestCharacterUpdate().ConfigureAwait(false);
+                    await SetDirty(true).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                }
             }
             catch (OperationCanceledException)
             {
@@ -13706,34 +13740,42 @@ namespace Chummer
 
             try
             {
-                object objSelected = await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false);
-                if (objSelected == null)
-                    return;
-
-                bool blnChecked = await chkWeaponEquipped.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false);
-                // Determine if this is a Weapon.
-                switch (objSelected)
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
+                try
                 {
-                    case Weapon objWeapon:
-                        objWeapon.Equipped = blnChecked;
-                        break;
-
-                    case Gear objGear:
-                        // Find the selected Gear.
-                        objGear.Equipped = blnChecked;
-                        await objGear.ChangeEquippedStatusAsync(blnChecked, token: GenericToken).ConfigureAwait(false);
-                        break;
-
-                    case WeaponAccessory objAccessory:
-                        objAccessory.Equipped = blnChecked;
-                        break;
-
-                    default:
+                    object objSelected = await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false);
+                    if (objSelected == null)
                         return;
-                }
 
-                await RequestCharacterUpdate().ConfigureAwait(false);
-                await SetDirty(true).ConfigureAwait(false);
+                    bool blnChecked = await chkWeaponEquipped.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false);
+                    // Determine if this is a Weapon.
+                    switch (objSelected)
+                    {
+                        case Weapon objWeapon:
+                            objWeapon.Equipped = blnChecked;
+                            break;
+
+                        case Gear objGear:
+                            // Find the selected Gear.
+                            objGear.Equipped = blnChecked;
+                            await objGear.ChangeEquippedStatusAsync(blnChecked, token: GenericToken).ConfigureAwait(false);
+                            break;
+
+                        case WeaponAccessory objAccessory:
+                            objAccessory.Equipped = blnChecked;
+                            break;
+
+                        default:
+                            return;
+                    }
+
+                    await RequestCharacterUpdate().ConfigureAwait(false);
+                    await SetDirty(true).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                }
             }
             catch (OperationCanceledException)
             {
@@ -13747,15 +13789,23 @@ namespace Chummer
                 return;
             try
             {
-                // Locate the selected Weapon Accessory or Modification.
-                if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false) is WeaponAccessory
-                        objAccessory))
-                    return;
-                objAccessory.IncludedInWeapon
-                    = await chkIncludedInWeapon.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false);
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
+                try
+                {
+                    // Locate the selected Weapon Accessory or Modification.
+                    if (!(await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false) is WeaponAccessory
+                            objAccessory))
+                        return;
+                    objAccessory.IncludedInWeapon
+                        = await chkIncludedInWeapon.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false);
 
-                await RequestCharacterUpdate().ConfigureAwait(false);
-                await SetDirty(true).ConfigureAwait(false);
+                    await RequestCharacterUpdate().ConfigureAwait(false);
+                    await SetDirty(true).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                }
             }
             catch (OperationCanceledException)
             {
@@ -15001,13 +15051,21 @@ namespace Chummer
         {
             try
             {
-                if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false) is Weapon
-                        objWeapon))
-                    return;
-                await objWeapon.Reload(objWeapon.ParentVehicle.GearChildren, treVehicles, GenericToken).ConfigureAwait(false);
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
+                try
+                {
+                    if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false) is Weapon
+                            objWeapon))
+                        return;
+                    await objWeapon.Reload(objWeapon.ParentVehicle.GearChildren, treVehicles, GenericToken).ConfigureAwait(false);
 
-                await RequestCharacterUpdate().ConfigureAwait(false);
-                await SetDirty(true).ConfigureAwait(false);
+                    await RequestCharacterUpdate().ConfigureAwait(false);
+                    await SetDirty(true).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                }
             }
             catch (OperationCanceledException)
             {
@@ -15019,13 +15077,21 @@ namespace Chummer
         {
             try
             {
-                if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false) is Weapon
-                        objWeapon))
-                    return;
-                await objWeapon.Unload(objWeapon.ParentVehicle.GearChildren, treGear, GenericToken).ConfigureAwait(false);
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
+                try
+                {
+                    if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false) is Weapon
+                            objWeapon))
+                        return;
+                    await objWeapon.Unload(objWeapon.ParentVehicle.GearChildren, treGear, GenericToken).ConfigureAwait(false);
 
-                await RequestCharacterUpdate().ConfigureAwait(false);
-                await SetDirty(true).ConfigureAwait(false);
+                    await RequestCharacterUpdate().ConfigureAwait(false);
+                    await SetDirty(true).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                }
             }
             catch (OperationCanceledException)
             {
@@ -15039,13 +15105,21 @@ namespace Chummer
                 return;
             try
             {
-                if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false) is ICanEquip
-                        objEquippable))
-                    return;
-                objEquippable.Equipped
-                    = await chkVehicleWeaponAccessoryInstalled.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false);
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
+                try
+                {
+                    if (!(await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false) is ICanEquip
+                            objEquippable))
+                        return;
+                    objEquippable.Equipped
+                        = await chkVehicleWeaponAccessoryInstalled.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false);
 
-                await SetDirty(true).ConfigureAwait(false);
+                    await SetDirty(true).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                }
             }
             catch (OperationCanceledException)
             {

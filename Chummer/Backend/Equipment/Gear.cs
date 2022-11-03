@@ -1979,13 +1979,13 @@ namespace Chummer.Backend.Equipment
             get => _objLoadedIntoClip;
             set
             {
-                if (_objLoadedIntoClip == value)
+                Clip objOldValue = Interlocked.Exchange(ref _objLoadedIntoClip, value);
+                if (objOldValue == value)
                     return;
-                if (_objLoadedIntoClip != null)
-                    _objLoadedIntoClip.AmmoGear = null;
-                _objLoadedIntoClip = value;
-                if (_objLoadedIntoClip != null)
-                    _objLoadedIntoClip.AmmoGear = this;
+                if (objOldValue != null)
+                    objOldValue.AmmoGear = null;
+                if (value != null)
+                    value.AmmoGear = this;
             }
         }
 

@@ -6724,10 +6724,13 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async ValueTask Reload(IAsyncCollection<Gear> lstGears, TreeView treGearView, CancellationToken token = default)
+        public async ValueTask Reload(IAsyncCollection<Gear> lstGears, TreeView treGearView,
+                                      CancellationToken token = default)
         {
             List<string> lstCount = new List<string>(1);
-            string ammoString = await CalculatedAmmoAsync(GlobalSettings.CultureInfo, GlobalSettings.DefaultLanguage, token).ConfigureAwait(false);
+            string ammoString
+                = await CalculatedAmmoAsync(GlobalSettings.CultureInfo, GlobalSettings.DefaultLanguage, token)
+                    .ConfigureAwait(false);
             if (!RequireAmmo)
             {
                 // For weapons that have ammo capacities but no requirement for ammo, these are charges
@@ -6754,9 +6757,10 @@ namespace Chummer.Backend.Equipment
                     strWeaponAmmo = strWeaponAmmo.ToLowerInvariant();
                     // Get rid of or belt, and + energy.
                     strWeaponAmmo = strWeaponAmmo.FastEscapeOnceFromEnd(" + energy")
-                        .Replace(" or belt", " or 250(belt)");
+                                                 .Replace(" or belt", " or 250(belt)");
 
-                    foreach (string strAmmo in strWeaponAmmo.SplitNoAlloc(" or ", StringSplitOptions.RemoveEmptyEntries))
+                    foreach (string strAmmo in
+                             strWeaponAmmo.SplitNoAlloc(" or ", StringSplitOptions.RemoveEmptyEntries))
                     {
                         lstCount.Add(AmmoCapacity(strAmmo));
                     }
@@ -6776,7 +6780,7 @@ namespace Chummer.Backend.Equipment
                 foreach (string strAmmo in lstCount)
                 {
                     if (int.TryParse(strAmmo, NumberStyles.Any, GlobalSettings.InvariantCultureInfo
-                        , out intMaxAmmoCount))
+                                     , out intMaxAmmoCount))
                     {
                         break;
                     }
@@ -6785,19 +6789,26 @@ namespace Chummer.Backend.Equipment
                 if (intMaxAmmoCount <= intCurrentAmmoCount)
                     return;
 
-                using (ThreadSafeForm<SelectNumber> frmNewAmmoCount = await ThreadSafeForm<SelectNumber>.GetAsync(() => new SelectNumber(0)
-                       {
-                           AllowCancel = true,
-                           Maximum = intMaxAmmoCount,
-                           Minimum = intCurrentAmmoCount,
-                           Description = string.Format(LanguageManager.GetString("Message_SelectNumberOfCharges"), CurrentDisplayName)
-                       }, token).ConfigureAwait(false))
+                string strDescription = string.Format(
+                    await LanguageManager.GetStringAsync("Message_SelectNumberOfCharges", token: token)
+                                         .ConfigureAwait(false),
+                    await GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
+                using (ThreadSafeForm<SelectNumber> frmNewAmmoCount = await ThreadSafeForm<SelectNumber>.GetAsync(
+                           () => new SelectNumber(0)
+                           {
+                               AllowCancel = true,
+                               Maximum = intMaxAmmoCount,
+                               Minimum = intCurrentAmmoCount,
+                               Description = strDescription
+                           }, token).ConfigureAwait(false))
                 {
-                    if (await frmNewAmmoCount.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false) != DialogResult.OK)
+                    if (await frmNewAmmoCount.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false)
+                        != DialogResult.OK)
                         return;
 
                     objInternalClip.Ammo = frmNewAmmoCount.MyForm.SelectedValue.ToInt32();
                 }
+
                 return;
             }
 
@@ -6819,10 +6830,10 @@ namespace Chummer.Backend.Equipment
                 strWeaponAmmo = strWeaponAmmo.ToLowerInvariant();
                 // Get rid of or belt, and + energy.
                 strWeaponAmmo = strWeaponAmmo.FastEscapeOnceFromEnd(" + energy")
-                    .Replace(" or belt", " or 250(belt)");
+                                             .Replace(" or belt", " or 250(belt)");
 
                 foreach (string strAmmo in
-                    strWeaponAmmo.SplitNoAlloc(" or ", StringSplitOptions.RemoveEmptyEntries))
+                         strWeaponAmmo.SplitNoAlloc(" or ", StringSplitOptions.RemoveEmptyEntries))
                 {
                     lstCount.Add(AmmoCapacity(strAmmo));
                 }
@@ -6840,10 +6851,12 @@ namespace Chummer.Backend.Equipment
             Gear objExternalSource = null;
             if (blnExternalSource)
             {
-                lstCount.Add(await LanguageManager.GetStringAsync("String_ExternalSource", token: token).ConfigureAwait(false));
+                lstCount.Add(await LanguageManager.GetStringAsync("String_ExternalSource", token: token)
+                                                  .ConfigureAwait(false));
                 objExternalSource = new Gear(_objCharacter)
                 {
-                    Name = await LanguageManager.GetStringAsync("String_ExternalSource", token: token).ConfigureAwait(false),
+                    Name = await LanguageManager.GetStringAsync("String_ExternalSource", token: token)
+                                                .ConfigureAwait(false),
                     SourceID = Guid.Empty
                 };
             }
@@ -6855,24 +6868,30 @@ namespace Chummer.Backend.Equipment
                 if (lstAmmo.Count == 0)
                 {
                     Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
-                                                                  await LanguageManager.GetStringAsync("Message_OutOfAmmoType", token: token).ConfigureAwait(false),
-                                                                  CurrentDisplayName),
-                                                    await LanguageManager.GetStringAsync("Message_OutOfAmmo", token: token).ConfigureAwait(false),
-                                                    icon: MessageBoxIcon.Warning);
+                                                         await LanguageManager
+                                                               .GetStringAsync("Message_OutOfAmmoType", token: token)
+                                                               .ConfigureAwait(false),
+                                                         await GetCurrentDisplayNameAsync(token).ConfigureAwait(false)),
+                                           await LanguageManager.GetStringAsync("Message_OutOfAmmo", token: token)
+                                                                .ConfigureAwait(false),
+                                           icon: MessageBoxIcon.Warning);
                     return;
                 }
             }
+
             if (objExternalSource != null)
                 lstAmmo.Add(objExternalSource);
 
             // Show the Ammunition Selection window.
-            using (ThreadSafeForm<ReloadWeapon> frmReloadWeapon = await ThreadSafeForm<ReloadWeapon>.GetAsync(() => new ReloadWeapon(this)
-                   {
-                       Ammo = lstAmmo,
-                       Count = lstCount
-                   }, token).ConfigureAwait(false))
+            using (ThreadSafeForm<ReloadWeapon> frmReloadWeapon = await ThreadSafeForm<ReloadWeapon>.GetAsync(
+                       () => new ReloadWeapon(this)
+                       {
+                           Ammo = lstAmmo,
+                           Count = lstCount
+                       }, token).ConfigureAwait(false))
             {
-                if (await frmReloadWeapon.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false) != DialogResult.OK)
+                if (await frmReloadWeapon.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false)
+                    != DialogResult.OK)
                     return;
 
                 Gear objCurrentlyLoadedAmmo = AmmoLoaded;
@@ -6885,7 +6904,8 @@ namespace Chummer.Backend.Equipment
 
                     // If the Ammo is coming from a Spare Clip, reduce the container quantity instead of the plugin quantity.
                     if (objSelectedAmmo.Parent is Gear objParent &&
-                        (objParent.Name.StartsWith("Spare Clip", StringComparison.Ordinal) || objParent.Name.StartsWith("Speed Loader", StringComparison.Ordinal)))
+                        (objParent.Name.StartsWith("Spare Clip", StringComparison.Ordinal)
+                         || objParent.Name.StartsWith("Speed Loader", StringComparison.Ordinal)))
                     {
                         if (objParent.Quantity > 1)
                         {
@@ -6895,19 +6915,25 @@ namespace Chummer.Backend.Equipment
                             objDuplicatedParent.Quantity = 1;
                             await lstGears.AddAsync(objDuplicatedParent, token).ConfigureAwait(false);
                             --objParent.Quantity;
-                            Gear objNewSelectedAmmo = objDuplicatedParent.Children.DeepFindById(frmReloadWeapon.MyForm.SelectedAmmo);
+                            Gear objNewSelectedAmmo
+                                = objDuplicatedParent.Children.DeepFindById(frmReloadWeapon.MyForm.SelectedAmmo);
                             if (objNewSelectedAmmo == null)
                             {
                                 objNewSelectedAmmo = new Gear(_objCharacter);
                                 objNewSelectedAmmo.Copy(objSelectedAmmo);
-                                await objDuplicatedParent.Children.AddAsync(objNewSelectedAmmo, token).ConfigureAwait(false);
+                                await objDuplicatedParent.Children.AddAsync(objNewSelectedAmmo, token)
+                                                         .ConfigureAwait(false);
                             }
+
                             objSelectedAmmo = objNewSelectedAmmo;
                         }
+
+                        string strParentText = await objParent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                         await treGearView.DoThreadSafeAsync(x =>
                         {
                             TreeNode objNode = x.FindNode(objParent.InternalId);
-                            objNode.Text = objParent.CurrentDisplayName;
+                            if (objNode != null)
+                                objNode.Text = strParentText;
                         }, token: token).ConfigureAwait(false);
                     }
 
@@ -6920,23 +6946,32 @@ namespace Chummer.Backend.Equipment
                             // We need more ammo for a full top-up than the quantity of gear, so just merge the gears and delete the old gear.
                             objCurrentlyLoadedAmmo.Quantity += objSelectedAmmo.Quantity;
                             await objSelectedAmmo.DeleteGearAsync(token: token).ConfigureAwait(false);
-                            GetClip(_intActiveAmmoSlot).Ammo = objCurrentlyLoadedAmmo.Quantity.ToInt32(); // Bypass AmmoRemaining so as not to alter the gear quantity
+                            GetClip(_intActiveAmmoSlot).Ammo
+                                = objCurrentlyLoadedAmmo.Quantity
+                                                        .ToInt32(); // Bypass AmmoRemaining so as not to alter the gear quantity
                         }
                         else
                         {
                             objCurrentlyLoadedAmmo.Quantity = decQty;
                             objSelectedAmmo.Quantity -= decTopUp;
+                            string strCurrentlyLoadedText = await objCurrentlyLoadedAmmo
+                                                                  .GetCurrentDisplayNameAsync(token)
+                                                                  .ConfigureAwait(false);
+                            string strSelectedText = await objSelectedAmmo
+                                                           .GetCurrentDisplayNameAsync(token)
+                                                           .ConfigureAwait(false);
                             await treGearView.DoThreadSafeAsync(x =>
                             {
                                 // Refresh the Gear tree.
                                 TreeNode objSelectedNode = x.FindNode(objCurrentlyLoadedAmmo.InternalId);
                                 if (objSelectedNode != null)
-                                    objSelectedNode.Text = objCurrentlyLoadedAmmo.CurrentDisplayName;
+                                    objSelectedNode.Text = strCurrentlyLoadedText;
                                 objSelectedNode = x.FindNode(objSelectedAmmo.InternalId);
                                 if (objSelectedNode != null)
-                                    objSelectedNode.Text = objSelectedAmmo.CurrentDisplayName;
+                                    objSelectedNode.Text = strSelectedText;
                             }, token: token).ConfigureAwait(false);
-                            GetClip(_intActiveAmmoSlot).Ammo = decQty.ToInt32(); // Bypass AmmoRemaining so as not to alter the gear quantity
+                            GetClip(_intActiveAmmoSlot).Ammo
+                                = decQty.ToInt32(); // Bypass AmmoRemaining so as not to alter the gear quantity
                         }
 
                         return;
@@ -6985,7 +7020,8 @@ namespace Chummer.Backend.Equipment
                 if (objCurrentlyLoadedAmmo != objSelectedAmmo && objCurrentlyLoadedAmmo != null)
                 {
                     string strId = objCurrentlyLoadedAmmo.InternalId;
-                    string strText = await objCurrentlyLoadedAmmo.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                    string strText = await objCurrentlyLoadedAmmo.GetCurrentDisplayNameAsync(token)
+                                                                 .ConfigureAwait(false);
                     await treGearView.DoThreadSafeAsync(x =>
                     {
                         // Refresh the Gear tree.
@@ -6994,7 +7030,9 @@ namespace Chummer.Backend.Equipment
                             objSelectedNode.Text = strText;
                     }, token: token).ConfigureAwait(false);
                 }
-                GetClip(_intActiveAmmoSlot).Ammo = decQty.ToInt32(); // Bypass AmmoRemaining so as not to alter the gear quantity
+
+                GetClip(_intActiveAmmoSlot).Ammo
+                    = decQty.ToInt32(); // Bypass AmmoRemaining so as not to alter the gear quantity
             }
         }
 
@@ -7004,11 +7042,13 @@ namespace Chummer.Backend.Equipment
             Gear objAmmo = await UnloadGearAsync(lstGears, objClip, token).ConfigureAwait(false);
             if (objAmmo == null)
                 return;
+            string strText = await objAmmo.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
             await treGearView.DoThreadSafeAsync(x =>
             {
                 // Refresh the Gear tree.
                 TreeNode objSelectedNode = x.FindNode(objAmmo.InternalId);
-                if (objSelectedNode != null) objSelectedNode.Text = objAmmo.CurrentDisplayName;
+                if (objSelectedNode != null)
+                    objSelectedNode.Text = strText;
             }, token: token).ConfigureAwait(false);
         }
 
