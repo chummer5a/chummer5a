@@ -24035,7 +24035,7 @@ namespace Chummer
                             + await objProgram.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false),
                             ExpenseType.Karma, DateTime.Now);
                         await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
-                        await CharacterObject.ModifyKarmaAsync(-boolIsAdvancedProgram ? intNewAIAdvancedProgramCost : intNewAIProgramCost, GenericToken).ConfigureAwait(false);
+                        await CharacterObject.ModifyKarmaAsync(boolIsAdvancedProgram ? -intNewAIAdvancedProgramCost : -intNewAIProgramCost, GenericToken).ConfigureAwait(false);
 
                         ExpenseUndo objUndo = new ExpenseUndo();
                         objUndo.CreateKarma(

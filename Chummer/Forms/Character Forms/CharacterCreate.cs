@@ -12331,10 +12331,10 @@ namespace Chummer
 
                 spells -= intTouchOnlySpells - Math.Max(0, intTouchOnlySpells - intLimitModTouchOnly);
 
-                int spellPoints = limit + intLimitMod;
-                int ritualPoints = limit + intLimitMod;
-                int prepPoints = limit + intLimitMod;
-                for (int i = limit + intLimitMod; i > 0; i--)
+                int spellPoints = intFreeSpells + intLimitMod;
+                int ritualPoints = intFreeSpells + intLimitMod;
+                int prepPoints = intFreeSpells + intLimitMod;
+                for (int i = intFreeSpells + intLimitMod; i > 0; i--)
                 {
                     token.ThrowIfCancellationRequested();
                     if (spells > 0)
@@ -12391,14 +12391,14 @@ namespace Chummer
                               .SetToolTipAsync(
                                   string.Format(GlobalSettings.CultureInfo, strFormat, preps, spellCost,
                                                 intPrepPointsUsed), token).ConfigureAwait(false);
-                    if (limit + intLimitMod > 0)
+                    if (intFreeSpells + intLimitMod > 0)
                     {
                         if (lblBuildPrepsBP != null)
                         {
                             string strText = string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}",
                                                            prepPoints + spellPoints + ritualPoints
-                                                           - 2 * (limit + intLimitMod), strOf,
-                                                           spellPoints + ritualPoints - (limit + intLimitMod));
+                                                           - 2 * (intFreeSpells + intLimitMod), strOf,
+                                                           spellPoints + ritualPoints - (intFreeSpells + intLimitMod));
                             if (intPrepPointsUsed > 0)
                                 strText += string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}{1}{3}", strColon,
                                                          strSpace, intPrepPointsUsed, strPoints);
@@ -12409,8 +12409,8 @@ namespace Chummer
                         {
                             string strText = string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}",
                                                            prepPoints + spellPoints + ritualPoints
-                                                           - 2 * (limit + intLimitMod), strOf,
-                                                           prepPoints + ritualPoints - (limit + intLimitMod));
+                                                           - 2 * (intFreeSpells + intLimitMod), strOf,
+                                                           prepPoints + ritualPoints - (intFreeSpells + intLimitMod));
                             if (intSpellPointsUsed > 0)
                                 strText += string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}{1}{3}", strColon,
                                                          strSpace, intSpellPointsUsed, strPoints);
@@ -12427,8 +12427,8 @@ namespace Chummer
                         {
                             string strText = string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}",
                                                            prepPoints + spellPoints + ritualPoints
-                                                           - 2 * (limit + intLimitMod), strOf,
-                                                           prepPoints + spellPoints - (limit + intLimitMod));
+                                                           - 2 * (intFreeSpells + intLimitMod), strOf,
+                                                           prepPoints + spellPoints - (intFreeSpells + intLimitMod));
                             if (intRitualPointsUsed > 0)
                                 strText += string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}{1}{3}", strColon,
                                                          strSpace, intRitualPointsUsed, strPoints);
