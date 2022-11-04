@@ -680,7 +680,7 @@ namespace Chummer
                                           ExpenseType.Karma,
                                           DateTime.Now);
                         await objCharacter.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
-                        await objCharacter.DecreaseKarmaAsync(intKarmaCost, token).ConfigureAwait(false);
+                        await objCharacter.ModifyKarmaAsync(-intKarmaCost, token).ConfigureAwait(false);
 
                         ExpenseUndo objUndo = new ExpenseUndo();
                         objUndo.CreateKarma(KarmaExpenseType.AddMartialArt, objMartialArt.InternalId);

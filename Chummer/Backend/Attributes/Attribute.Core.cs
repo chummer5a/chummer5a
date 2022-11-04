@@ -3002,7 +3002,7 @@ namespace Chummer.Backend.Attributes
                         await _objCharacter.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
                             .ConfigureAwait(false);
 
-                        await _objCharacter.DecreaseKarmaAsync(intPrice, token).ConfigureAwait(false);
+                        await _objCharacter.ModifyKarmaAsync(-intPrice, token).ConfigureAwait(false);
 
                         // Undo burned Edge if possible first
                         if (Abbrev == "EDG")

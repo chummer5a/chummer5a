@@ -790,20 +790,25 @@ namespace Chummer.UI.Powers
                     {
                         try
                         {
-                            if (ParentForm is CharacterCreate
-                                frmCreate)
-                                await frmCreate
-                                      .ReapplySpecificImprovements(
-                                          p.InternalId,
-                                          await p.GetCurrentDisplayNameAsync(MyToken).ConfigureAwait(false), MyToken)
-                                      .ConfigureAwait(false);
-                            else if (ParentForm is CharacterCareer
-                                     frmCareer)
-                                await frmCareer
-                                      .ReapplySpecificImprovements(
-                                          p.InternalId,
-                                          await p.GetCurrentDisplayNameAsync(MyToken).ConfigureAwait(false), MyToken)
-                                      .ConfigureAwait(false);
+                            switch (ParentForm)
+                            {
+                                case CharacterCreate
+                                    frmCreate:
+                                    await frmCreate
+                                        .ReapplySpecificImprovements(
+                                            p.InternalId,
+                                            await p.GetCurrentDisplayNameAsync(MyToken).ConfigureAwait(false), MyToken)
+                                        .ConfigureAwait(false);
+                                    break;
+                                case CharacterCareer
+                                    frmCareer:
+                                    await frmCareer
+                                        .ReapplySpecificImprovements(
+                                            p.InternalId,
+                                            await p.GetCurrentDisplayNameAsync(MyToken).ConfigureAwait(false), MyToken)
+                                        .ConfigureAwait(false);
+                                    break;
+                            }
                         }
                         catch (OperationCanceledException)
                         {

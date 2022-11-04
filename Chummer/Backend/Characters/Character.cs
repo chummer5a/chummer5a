@@ -16574,7 +16574,7 @@ namespace Chummer
         /// <summary>
         /// Karma.
         /// </summary>
-        public async ValueTask IncreaseKarmaAsync(int value, CancellationToken token = default)
+        public async ValueTask ModifyKarmaAsync(int value, CancellationToken token = default)
         {
             if (value == 0)
                 return;
@@ -16588,15 +16588,6 @@ namespace Chummer
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-        }
-
-        /// <summary>
-        /// Karma.
-        /// </summary>
-        public async ValueTask DecreaseKarmaAsync(int value, CancellationToken token = default)
-        {
-            if (value != 0)
-                await IncreaseKarmaAsync(-value, token).ConfigureAwait(false);
         }
 
         public string DisplayKarma

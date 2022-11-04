@@ -320,13 +320,13 @@ namespace Chummer
                 try
                 {
                     // Remove all priority-given qualities (relevant when switching from Priority/Sum-to-Ten to Karma)
-                    for (int i = _objCharacter.Qualities.Count - 1; i >= 0; --i)
+                    for (int i = await _objCharacter.Qualities.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
                     {
-                        if (i >= _objCharacter.Qualities.Count)
+                        if (i >= await _objCharacter.Qualities.GetCountAsync(token).ConfigureAwait(false))
                             continue;
-                        Quality objQuality = _objCharacter.Qualities[i];
+                        Quality objQuality = await _objCharacter.Qualities.GetValueAtAsync(i, token).ConfigureAwait(false);
                         if (objQuality.OriginSource == QualitySource.Heritage)
-                            objQuality.DeleteQuality();
+                            await objQuality.DeleteQualityAsync(token: token).ConfigureAwait(false);
                     }
 
                     // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
@@ -381,9 +381,9 @@ namespace Chummer
                                                  : string.Empty, token);
                         foreach (Quality objQuality in lstQualitiesToCheck)
                         {
-                            if ((await objQuality.GetNodeXPathAsync(token: token).ConfigureAwait(false))?.RequirementsMet(_objCharacter)
+                            if ((await objQuality.GetNodeXPathAsync(token: token).ConfigureAwait(false))?.RequirementsMet(_objCharacter, strIgnoreQuality: objQuality.Name)
                                 == false)
-                                objQuality.DeleteQuality();
+                                await objQuality.DeleteQualityAsync(token: token).ConfigureAwait(false);
                         }
                     }
 
@@ -391,9 +391,9 @@ namespace Chummer
                     foreach (CharacterAttrib objAttrib in _objCharacter.AttributeSection.Attributes)
                     {
                         // This ordering makes sure data bindings to numeric up-downs with maxima don't get broken
-                        int intBase = objAttrib.Base;
-                        objAttrib.Base = 0;
-                        objAttrib.Karma += intBase;
+                        int intBase = await objAttrib.GetBaseAsync(token).ConfigureAwait(false);
+                        await objAttrib.SetBaseAsync(0, token).ConfigureAwait(false);
+                        await objAttrib.SetKarmaAsync(await objAttrib.GetKarmaAsync(token).ConfigureAwait(false) + intBase, token).ConfigureAwait(false);
                     }
 
                     foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
@@ -401,7 +401,7 @@ namespace Chummer
                         // This ordering makes sure data bindings to numeric up-downs with maxima don't get broken
                         int intBase = await objSkill.GetBasePointsAsync(token).ConfigureAwait(false);
                         await objSkill.SetBasePointsAsync(0, token).ConfigureAwait(false);
-                        await objSkill.SetKarmaPointsAsync(await objSkill.GetBasePointsAsync(token).ConfigureAwait(false) + intBase, token).ConfigureAwait(false);
+                        await objSkill.SetKarmaPointsAsync(await objSkill.GetKarmaPointsAsync(token).ConfigureAwait(false) + intBase, token).ConfigureAwait(false);
                     }
 
                     foreach (SkillGroup objGroup in _objCharacter.SkillsSection.SkillGroups)
@@ -409,7 +409,7 @@ namespace Chummer
                         // This ordering makes sure data bindings to numeric up-downs with maxima don't get broken
                         int intBase = await objGroup.GetBasePointsAsync(token).ConfigureAwait(false);
                         await objGroup.SetBasePointsAsync(0, token).ConfigureAwait(false);
-                        await objGroup.SetKarmaPointsAsync(await objGroup.GetBasePointsAsync(token).ConfigureAwait(false) + intBase, token).ConfigureAwait(false);
+                        await objGroup.SetKarmaPointsAsync(await objGroup.GetKarmaPointsAsync(token).ConfigureAwait(false) + intBase, token).ConfigureAwait(false);
                     }
                 }
                 finally

@@ -858,14 +858,11 @@ namespace Chummer
             {
                 // Add a "1" to qualities that have levels, but for which we are only at level 1
                 XPathNavigator xmlDataNode = this.GetNodeXPath(strLanguage);
-                if (xmlDataNode != null)
+                XPathNavigator xmlMyLimitNode = xmlDataNode?.SelectSingleNodeAndCacheExpression("limit");
+                if (xmlMyLimitNode != null && int.TryParse(xmlMyLimitNode.Value, out int _)
+                                           && xmlDataNode.SelectSingleNodeAndCacheExpression("nolevels") != null)
                 {
-                    XPathNavigator xmlMyLimitNode = xmlDataNode.SelectSingleNodeAndCacheExpression("limit");
-                    if (xmlMyLimitNode != null && int.TryParse(xmlMyLimitNode.Value, out int _)
-                                               && xmlDataNode.SelectSingleNodeAndCacheExpression("nolevels") != null)
-                    {
-                        strReturn += strSpace + intLevels.ToString(objCulture);
-                    }
+                    strReturn += strSpace + intLevels.ToString(objCulture);
                 }
             }
 
@@ -1652,7 +1649,7 @@ namespace Chummer
                                       ExpenseType.Karma,
                                       DateTime.Now);
                     await _objCharacter.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
-                    await _objCharacter.DecreaseKarmaAsync(intKarmaCost, token).ConfigureAwait(false);
+                    await _objCharacter.ModifyKarmaAsync(-intKarmaCost, token).ConfigureAwait(false);
                 }
             }
             finally

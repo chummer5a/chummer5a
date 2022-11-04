@@ -839,33 +839,32 @@ namespace SevenZip.Compression.LZMA
                         Optimal opt = _optimum[posPrev];
                         if (pos < Base.kNumRepDistances)
                         {
-                            if (pos == 0)
+                            switch (pos)
                             {
-                                reps[0] = opt.Backs0;
-                                reps[1] = opt.Backs1;
-                                reps[2] = opt.Backs2;
-                                reps[3] = opt.Backs3;
-                            }
-                            else if (pos == 1)
-                            {
-                                reps[0] = opt.Backs1;
-                                reps[1] = opt.Backs0;
-                                reps[2] = opt.Backs2;
-                                reps[3] = opt.Backs3;
-                            }
-                            else if (pos == 2)
-                            {
-                                reps[0] = opt.Backs2;
-                                reps[1] = opt.Backs0;
-                                reps[2] = opt.Backs1;
-                                reps[3] = opt.Backs3;
-                            }
-                            else
-                            {
-                                reps[0] = opt.Backs3;
-                                reps[1] = opt.Backs0;
-                                reps[2] = opt.Backs1;
-                                reps[3] = opt.Backs2;
+                                case 0:
+                                    reps[0] = opt.Backs0;
+                                    reps[1] = opt.Backs1;
+                                    reps[2] = opt.Backs2;
+                                    reps[3] = opt.Backs3;
+                                    break;
+                                case 1:
+                                    reps[0] = opt.Backs1;
+                                    reps[1] = opt.Backs0;
+                                    reps[2] = opt.Backs2;
+                                    reps[3] = opt.Backs3;
+                                    break;
+                                case 2:
+                                    reps[0] = opt.Backs2;
+                                    reps[1] = opt.Backs0;
+                                    reps[2] = opt.Backs1;
+                                    reps[3] = opt.Backs3;
+                                    break;
+                                default:
+                                    reps[0] = opt.Backs3;
+                                    reps[1] = opt.Backs0;
+                                    reps[2] = opt.Backs1;
+                                    reps[3] = opt.Backs2;
+                                    break;
                             }
                         }
                         else

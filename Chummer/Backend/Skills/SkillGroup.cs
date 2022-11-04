@@ -940,7 +940,7 @@ namespace Chummer.Backend.Skills
                     await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
                                          .ConfigureAwait(false);
 
-                    await CharacterObject.DecreaseKarmaAsync(intPrice, token).ConfigureAwait(false);
+                    await CharacterObject.ModifyKarmaAsync(-intPrice, token).ConfigureAwait(false);
                 }
 
                 await SetKarmaAsync(await GetKarmaAsync(token).ConfigureAwait(false) + 1, token).ConfigureAwait(false);

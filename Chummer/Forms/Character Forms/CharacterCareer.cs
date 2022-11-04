@@ -4954,7 +4954,7 @@ namespace Chummer
                                               + await objSpell.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false),
                                               ExpenseType.Karma, DateTime.Now);
                             await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
-                            await CharacterObject.DecreaseKarmaAsync(intSpellKarmaCost, GenericToken).ConfigureAwait(false);
+                            await CharacterObject.ModifyKarmaAsync(-intSpellKarmaCost, GenericToken).ConfigureAwait(false);
 
                             ExpenseUndo objUndo = new ExpenseUndo();
                             objUndo.CreateKarma(KarmaExpenseType.AddSpell, objSpell.InternalId);
@@ -5115,7 +5115,7 @@ namespace Chummer
                                       + await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false)
                                       + await objComplexForm.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false), ExpenseType.Karma, DateTime.Now);
                     await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
-                    await CharacterObject.DecreaseKarmaAsync(intComplexFormKarmaCost, GenericToken).ConfigureAwait(false);
+                    await CharacterObject.ModifyKarmaAsync(-intComplexFormKarmaCost, GenericToken).ConfigureAwait(false);
 
                     ExpenseUndo objUndo = new ExpenseUndo();
                     objUndo.CreateKarma(KarmaExpenseType.AddComplexForm, objComplexForm.InternalId);
@@ -5716,7 +5716,7 @@ namespace Chummer
                                       + (CharacterObject.InitiateGrade + 1).ToString(GlobalSettings.CultureInfo),
                                       ExpenseType.Karma, DateTime.Now);
                     await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
-                    await CharacterObject.DecreaseKarmaAsync(intKarmaExpense, GenericToken).ConfigureAwait(false);
+                    await CharacterObject.ModifyKarmaAsync(-intKarmaExpense, GenericToken).ConfigureAwait(false);
 
                     // Create the Initiate Grade object.
                     InitiationGrade objGrade = new InitiationGrade(CharacterObject);
@@ -5814,7 +5814,7 @@ namespace Chummer
                                       + (CharacterObject.SubmersionGrade + 1).ToString(GlobalSettings.CultureInfo),
                                       ExpenseType.Karma, DateTime.Now);
                     await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
-                    await CharacterObject.DecreaseKarmaAsync(intKarmaExpense, GenericToken).ConfigureAwait(false);
+                    await CharacterObject.ModifyKarmaAsync(-intKarmaExpense, GenericToken).ConfigureAwait(false);
 
                     // Create the Initiate Grade object.
                     InitiationGrade objGrade = new InitiationGrade(CharacterObject);
@@ -5876,7 +5876,7 @@ namespace Chummer
                     objExpense.Undo = objUndo;
 
                     // Adjust the character's Karma total.
-                    await CharacterObject.IncreaseKarmaAsync(frmNewExpense.MyForm.Amount.ToInt32(), GenericToken).ConfigureAwait(false);
+                    await CharacterObject.ModifyKarmaAsync(frmNewExpense.MyForm.Amount.ToInt32(), GenericToken).ConfigureAwait(false);
 
                     if (frmNewExpense.MyForm.KarmaNuyenExchange)
                     {
@@ -5938,7 +5938,7 @@ namespace Chummer
                     objExpense.Undo = objUndo;
 
                     // Adjust the character's Karma total.
-                    await CharacterObject.DecreaseKarmaAsync(frmNewExpense.MyForm.Amount.ToInt32(), GenericToken).ConfigureAwait(false);
+                    await CharacterObject.ModifyKarmaAsync(-frmNewExpense.MyForm.Amount.ToInt32(), GenericToken).ConfigureAwait(false);
 
                     if (frmNewExpense.MyForm.KarmaNuyenExchange)
                     {
@@ -6010,7 +6010,7 @@ namespace Chummer
                         objExpense.Undo = objUndo;
 
                         // Adjust the character's Karma total.
-                        await CharacterObject.DecreaseKarmaAsync(intAmount, GenericToken).ConfigureAwait(false);
+                        await CharacterObject.ModifyKarmaAsync(-intAmount, GenericToken).ConfigureAwait(false);
                     }
                 }
             }
@@ -6067,7 +6067,7 @@ namespace Chummer
                         objExpense.Undo = objUndo;
 
                         // Adjust the character's Karma total.
-                        await CharacterObject.IncreaseKarmaAsync(intAmount, GenericToken).ConfigureAwait(false);
+                        await CharacterObject.ModifyKarmaAsync(intAmount, GenericToken).ConfigureAwait(false);
                     }
                 }
             }
@@ -6170,7 +6170,7 @@ namespace Chummer
                         objUndo.CreateKarma(KarmaExpenseType.AddCritterPower, objPower.InternalId);
                         objExpense.Undo = objUndo;
 
-                        await CharacterObject.DecreaseKarmaAsync(objPower.Karma, GenericToken).ConfigureAwait(false);
+                        await CharacterObject.ModifyKarmaAsync(-objPower.Karma, GenericToken).ConfigureAwait(false);
                         await CharacterObject.CritterPowers.AddAsync(objPower).ConfigureAwait(false);
                     }
                 }
@@ -6945,7 +6945,7 @@ namespace Chummer
                                     await CharacterObject.ExpenseEntries
                                                          .AddWithSortAsync(objExpense, token: GenericToken)
                                                          .ConfigureAwait(false);
-                                    await CharacterObject.DecreaseKarmaAsync(intKarmaCost, GenericToken)
+                                    await CharacterObject.ModifyKarmaAsync(-intKarmaCost, GenericToken)
                                                          .ConfigureAwait(false);
 
                                     ExpenseUndo objUndo = new ExpenseUndo();
@@ -7187,7 +7187,7 @@ namespace Chummer
                                           ExpenseType.Karma, DateTime.Now, true);
                         await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
                                              .ConfigureAwait(false);
-                        await CharacterObject.IncreaseKarmaAsync(intKarmaCost, token).ConfigureAwait(false);
+                        await CharacterObject.ModifyKarmaAsync(intKarmaCost, token).ConfigureAwait(false);
 
                         ExpenseUndo objUndo = new ExpenseUndo();
                         objUndo.CreateKarma(KarmaExpenseType.RemoveQuality, objSelectedQuality.SourceIDString);
@@ -7252,7 +7252,7 @@ namespace Chummer
                                       + await objSelectedQuality.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), ExpenseType.Karma, DateTime.Now);
                     await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
                                          .ConfigureAwait(false);
-                    await CharacterObject.DecreaseKarmaAsync(intTotalKarmaCost, token).ConfigureAwait(false);
+                    await CharacterObject.ModifyKarmaAsync(-intTotalKarmaCost, token).ConfigureAwait(false);
 
                     ExpenseUndo objUndo = new ExpenseUndo();
                     objUndo.CreateKarma(KarmaExpenseType.RemoveQuality, objSelectedQuality.SourceIDString);
@@ -7509,7 +7509,7 @@ namespace Chummer
                                               DateTime.Now);
                             await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken)
                                                  .ConfigureAwait(false);
-                            await CharacterObject.DecreaseKarmaAsync(intKarmaCost, GenericToken).ConfigureAwait(false);
+                            await CharacterObject.ModifyKarmaAsync(-intKarmaCost, GenericToken).ConfigureAwait(false);
 
                             ExpenseUndo objUndo = new ExpenseUndo();
                             objUndo.CreateKarma(KarmaExpenseType.AddQuality, objQuality.InternalId);
@@ -8318,7 +8318,7 @@ namespace Chummer
                                   + await LanguageManager.GetStringAsync("String_Space", token: GenericToken).ConfigureAwait(false) + strSelectedSpell,
                                   ExpenseType.Karma, DateTime.Now);
                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
-                await CharacterObject.DecreaseKarmaAsync(intKarmaCost, GenericToken).ConfigureAwait(false);
+                await CharacterObject.ModifyKarmaAsync(-intKarmaCost, GenericToken).ConfigureAwait(false);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
                 objUndo.CreateKarma(KarmaExpenseType.QuickeningMetamagic, string.Empty);
@@ -9508,7 +9508,7 @@ namespace Chummer
                                               + await objTechnique.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false),
                                               ExpenseType.Karma, DateTime.Now);
                             await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
-                            await CharacterObject.DecreaseKarmaAsync(karmaCost, GenericToken).ConfigureAwait(false);
+                            await CharacterObject.ModifyKarmaAsync(-karmaCost, GenericToken).ConfigureAwait(false);
 
                             ExpenseUndo objUndo = new ExpenseUndo();
                             objUndo.CreateKarma(KarmaExpenseType.AddMartialArtTechnique, objTechnique.InternalId);
@@ -10851,7 +10851,7 @@ namespace Chummer
                 }
 
                 // Refund the Karma amount and remove the Expense Entry.
-                await CharacterObject.DecreaseKarmaAsync(objExpense.Amount.ToInt32(), GenericToken).ConfigureAwait(false);
+                await CharacterObject.ModifyKarmaAsync(-objExpense.Amount.ToInt32(), GenericToken).ConfigureAwait(false);
                 await CharacterObject.ExpenseEntries.RemoveAsync(objExpense, GenericToken).ConfigureAwait(false);
 
                 await cboTradition.DoThreadSafeAsync(x =>
@@ -11928,7 +11928,7 @@ namespace Chummer
                                       + await objSpell.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false),
                                       ExpenseType.Karma, DateTime.Now);
                     await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
-                    await CharacterObject.DecreaseKarmaAsync(intSpellKarmaCost, GenericToken).ConfigureAwait(false);
+                    await CharacterObject.ModifyKarmaAsync(-intSpellKarmaCost, GenericToken).ConfigureAwait(false);
 
                     ExpenseUndo objUndo = new ExpenseUndo();
                     objUndo.CreateKarma(KarmaExpenseType.AddSpell, objSpell.InternalId);
@@ -15378,7 +15378,7 @@ namespace Chummer
                                       + await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false)
                                       + await objSelectedFocus.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false), ExpenseType.Karma, DateTime.Now);
                     await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
-                    await CharacterObject.DecreaseKarmaAsync(intKarmaExpense, GenericToken).ConfigureAwait(false);
+                    await CharacterObject.ModifyKarmaAsync(-intKarmaExpense, GenericToken).ConfigureAwait(false);
 
                     ExpenseUndo objUndo = new ExpenseUndo();
                     objUndo.CreateKarma(KarmaExpenseType.BindFocus, objSelectedFocus.InternalId);
@@ -15510,7 +15510,7 @@ namespace Chummer
                                                              .ConfigureAwait(false), ExpenseType.Karma, DateTime.Now);
                     await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken)
                                          .ConfigureAwait(false);
-                    await CharacterObject.DecreaseKarmaAsync(intKarmaExpense, GenericToken).ConfigureAwait(false);
+                    await CharacterObject.ModifyKarmaAsync(-intKarmaExpense, GenericToken).ConfigureAwait(false);
 
                     ExpenseUndo objUndo = new ExpenseUndo();
                     objUndo.CreateKarma(KarmaExpenseType.BindFocus, objStackedFocus.InternalId);
@@ -15946,7 +15946,7 @@ namespace Chummer
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                         objExpense.Create(intKarmaExpense * -1, strExpense, ExpenseType.Karma, DateTime.Now);
                         await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
-                        await CharacterObject.DecreaseKarmaAsync(intKarmaExpense, GenericToken).ConfigureAwait(false);
+                        await CharacterObject.ModifyKarmaAsync(-intKarmaExpense, GenericToken).ConfigureAwait(false);
 
                         ExpenseUndo objUndo = new ExpenseUndo();
                         objUndo.CreateKarma(KarmaExpenseType.JoinGroup, string.Empty);
@@ -16009,7 +16009,7 @@ namespace Chummer
                         ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                         objExpense.Create(intKarmaExpense * -1, strExpense, ExpenseType.Karma, DateTime.Now);
                         await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
-                        await CharacterObject.DecreaseKarmaAsync(intKarmaExpense, GenericToken).ConfigureAwait(false);
+                        await CharacterObject.ModifyKarmaAsync(-intKarmaExpense, GenericToken).ConfigureAwait(false);
 
                         ExpenseUndo objUndo = new ExpenseUndo();
                         objUndo.CreateKarma(KarmaExpenseType.LeaveGroup, string.Empty);
@@ -16175,7 +16175,7 @@ namespace Chummer
                     if (blnAllowEdit && intOldAmount != intNewAmount)
                     {
                         objExpense.Amount = intNewAmount;
-                        await CharacterObject.IncreaseKarmaAsync(intNewAmount - intOldAmount, GenericToken).ConfigureAwait(false);
+                        await CharacterObject.ModifyKarmaAsync(intNewAmount - intOldAmount, GenericToken).ConfigureAwait(false);
                         blnDoRepopulateList = true;
                     }
                     else
@@ -23292,7 +23292,7 @@ namespace Chummer
                 objExpense.Create(intKarmaCost * -1, await LanguageManager.GetStringAsync("String_PowerPoint").ConfigureAwait(false),
                                   ExpenseType.Karma, DateTime.Now);
                 await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
-                await CharacterObject.DecreaseKarmaAsync(intKarmaCost, GenericToken).ConfigureAwait(false);
+                await CharacterObject.ModifyKarmaAsync(-intKarmaCost, GenericToken).ConfigureAwait(false);
 
                 ExpenseUndo objUndo = new ExpenseUndo();
                 objUndo.CreateKarma(KarmaExpenseType.AddPowerPoint, string.Empty);
@@ -23403,7 +23403,7 @@ namespace Chummer
                         objExpense.Undo = objUndo;
 
                         // Adjust the character's Karma total.
-                        await CharacterObject.DecreaseKarmaAsync(CharacterObjectSettings.KarmaMetamagic, GenericToken).ConfigureAwait(false);
+                        await CharacterObject.ModifyKarmaAsync(-CharacterObjectSettings.KarmaMetamagic, GenericToken).ConfigureAwait(false);
                     }
                 }
             }
@@ -23568,7 +23568,7 @@ namespace Chummer
                     objExpense.Undo = objUndo;
 
                     // Adjust the character's Karma total.
-                    await CharacterObject.DecreaseKarmaAsync(intSpellKarmaCost, GenericToken).ConfigureAwait(false);
+                    await CharacterObject.ModifyKarmaAsync(-intSpellKarmaCost, GenericToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -23657,7 +23657,7 @@ namespace Chummer
                     objExpense.Undo = objUndo;
 
                     // Adjust the character's Karma total.
-                    await CharacterObject.DecreaseKarmaAsync(intSpellKarmaCost, GenericToken).ConfigureAwait(false);
+                    await CharacterObject.ModifyKarmaAsync(-intSpellKarmaCost, GenericToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -23761,7 +23761,7 @@ namespace Chummer
                 objExpense.Undo = objUndo;
 
                 // Adjust the character's Karma total.
-                await CharacterObject.DecreaseKarmaAsync(CharacterObjectSettings.KarmaEnhancement, GenericToken).ConfigureAwait(false);
+                await CharacterObject.ModifyKarmaAsync(-CharacterObjectSettings.KarmaEnhancement, GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -24035,7 +24035,7 @@ namespace Chummer
                             + await objProgram.GetCurrentDisplayNameShortAsync(GenericToken).ConfigureAwait(false),
                             ExpenseType.Karma, DateTime.Now);
                         await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
-                        await CharacterObject.DecreaseKarmaAsync(boolIsAdvancedProgram ? intNewAIAdvancedProgramCost : intNewAIProgramCost, GenericToken).ConfigureAwait(false);
+                        await CharacterObject.ModifyKarmaAsync(-boolIsAdvancedProgram ? intNewAIAdvancedProgramCost : intNewAIProgramCost, GenericToken).ConfigureAwait(false);
 
                         ExpenseUndo objUndo = new ExpenseUndo();
                         objUndo.CreateKarma(

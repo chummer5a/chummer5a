@@ -12227,7 +12227,6 @@ namespace Chummer
                 int prepCost = await CharacterObject.SpellKarmaCostAsync("Preparations", token).ConfigureAwait(false);
                 int intFreeSpells = await CharacterObject.GetFreeSpellsAsync(token).ConfigureAwait(false);
                 int intQualityKarmaToSpellPoints = 0;
-                int limit = intFreeSpells;
 
                 token.ThrowIfCancellationRequested();
 
@@ -12249,7 +12248,7 @@ namespace Chummer
                         {
                             intQualityKarmaToSpellPoints
                                 = Math.Min(
-                                    limit,
+                                    intFreeSpells,
                                     intMasteryQualityKarmaUsed * intKarmaQuality
                                     / intKarmaSpell);
                             spells += intQualityKarmaToSpellPoints;
@@ -12320,8 +12319,8 @@ namespace Chummer
                 {
                     if (await CharacterObjectSettings.GetPrioritySpellsAsAdeptPowersAsync(token).ConfigureAwait(false))
                     {
-                        spells += Math.Min(limit, intPPBought);
-                        intPPBought = Math.Max(0, intPPBought - limit);
+                        spells += Math.Min(intFreeSpells, intPPBought);
+                        intPPBought = Math.Max(0, intPPBought - intFreeSpells);
                     }
 
                     intAttributePointsUsed = intPPBought * await CharacterObjectSettings
@@ -19309,12 +19308,9 @@ namespace Chummer
                     //This needs to be added to Character.Nuyen to ensure that the ExpanseEntries are created accurately
                     CharacterObject.Nuyen += decStartingNuyen;
                     // See if the character has any Karma remaining.
-                    if (intBuildPoints > CharacterObjectSettings.KarmaCarryover)
-                        await CharacterObject.SetKarmaAsync(CharacterObject.EffectiveBuildMethodUsesPriorityTables
-                                                                ? CharacterObjectSettings.KarmaCarryover
-                                                                : 0, token).ConfigureAwait(false);
-                    else
-                        await CharacterObject.SetKarmaAsync(intBuildPoints, token).ConfigureAwait(false);
+                    await CharacterObject
+                        .SetKarmaAsync(Math.Min(intBuildPoints, CharacterObjectSettings.KarmaCarryover), token)
+                        .ConfigureAwait(false);
 
                     return true;
                 }

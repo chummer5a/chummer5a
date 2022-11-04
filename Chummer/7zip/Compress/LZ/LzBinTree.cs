@@ -380,7 +380,7 @@ namespace SevenZip.Compression.LZ
             }
         }
 
-        private void NormalizeLinks(uint[] items, uint numItems, uint subValue)
+        private static void NormalizeLinks(uint[] items, uint numItems, uint subValue)
         {
             unchecked
             {

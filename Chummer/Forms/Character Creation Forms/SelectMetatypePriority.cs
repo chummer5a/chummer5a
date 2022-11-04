@@ -1186,16 +1186,16 @@ namespace Chummer
                     try
                     {
                         // Clear out all priority-only qualities that the character bought normally (relevant when switching from Karma to Priority/Sum-to-Ten)
-                        for (int i = _objCharacter.Qualities.Count - 1; i >= 0; --i)
+                        for (int i = await _objCharacter.Qualities.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
                         {
-                            if (i >= _objCharacter.Qualities.Count)
+                            if (i >= await _objCharacter.Qualities.GetCountAsync(token).ConfigureAwait(false))
                                 continue;
-                            Quality objQuality = _objCharacter.Qualities[i];
+                            Quality objQuality = await _objCharacter.Qualities.GetValueAtAsync(i, token).ConfigureAwait(false);
                             if (objQuality.OriginSource == QualitySource.Selected
                                 && (await objQuality.GetNodeXPathAsync(token: token).ConfigureAwait(false))?.SelectSingleNode(
                                     "onlyprioritygiven")
                                 != null)
-                                objQuality.DeleteQuality();
+                                await objQuality.DeleteQualityAsync(token: token).ConfigureAwait(false);
                         }
 
                         string strSelectedMetavariant
@@ -1263,7 +1263,7 @@ namespace Chummer
                                 if ((await objQuality.GetNodeXPathAsync(token: token).ConfigureAwait(false))?.RequirementsMet(
                                         _objCharacter, strIgnoreQuality: objQuality.Name) == false)
                                 {
-                                    objQuality.DeleteQuality();
+                                    await objQuality.DeleteQualityAsync(token: token).ConfigureAwait(false);
                                 }
                             }
                         }
@@ -1385,7 +1385,7 @@ namespace Chummer
                                             if (objExistingQuality != null)
                                             {
                                                 lstOldPriorityQualities.Remove(objExistingQuality);
-                                                objQuality.DeleteQuality();
+                                                await objQuality.DeleteQualityAsync(token: token).ConfigureAwait(false);
                                             }
                                             else
                                                 await _objCharacter.Qualities.AddAsync(objQuality, token: token).ConfigureAwait(false);
@@ -1393,7 +1393,7 @@ namespace Chummer
 
                                         foreach (Quality objQuality in lstOldPriorityQualities)
                                         {
-                                            objQuality.DeleteQuality();
+                                            await objQuality.DeleteQualityAsync(token: token).ConfigureAwait(false);
                                         }
 
                                         // Set starting magic
