@@ -393,7 +393,7 @@ namespace Chummer
                         // This ordering makes sure data bindings to numeric up-downs with maxima don't get broken
                         int intBase = await objAttrib.GetBaseAsync(token).ConfigureAwait(false);
                         await objAttrib.SetBaseAsync(0, token).ConfigureAwait(false);
-                        await objAttrib.SetKarmaAsync(await objAttrib.GetKarmaAsync(token).ConfigureAwait(false) + intBase, token).ConfigureAwait(false);
+                        await objAttrib.ModifyKarmaAsync(intBase, token).ConfigureAwait(false);
                     }
 
                     foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
@@ -401,7 +401,7 @@ namespace Chummer
                         // This ordering makes sure data bindings to numeric up-downs with maxima don't get broken
                         int intBase = await objSkill.GetBasePointsAsync(token).ConfigureAwait(false);
                         await objSkill.SetBasePointsAsync(0, token).ConfigureAwait(false);
-                        await objSkill.SetKarmaPointsAsync(await objSkill.GetKarmaPointsAsync(token).ConfigureAwait(false) + intBase, token).ConfigureAwait(false);
+                        await objSkill.ModifyKarmaPointsAsync(intBase, token).ConfigureAwait(false);
                     }
 
                     foreach (SkillGroup objGroup in _objCharacter.SkillsSection.SkillGroups)
@@ -409,7 +409,7 @@ namespace Chummer
                         // This ordering makes sure data bindings to numeric up-downs with maxima don't get broken
                         int intBase = await objGroup.GetBasePointsAsync(token).ConfigureAwait(false);
                         await objGroup.SetBasePointsAsync(0, token).ConfigureAwait(false);
-                        await objGroup.SetKarmaPointsAsync(await objGroup.GetKarmaPointsAsync(token).ConfigureAwait(false) + intBase, token).ConfigureAwait(false);
+                        await objGroup.ModifyKarmaPointsAsync(intBase, token).ConfigureAwait(false);
                     }
                 }
                 finally

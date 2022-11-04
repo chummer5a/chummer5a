@@ -561,6 +561,25 @@ namespace Chummer.Backend.Attributes
         }
 
         /// <summary>
+        /// Current base value (priority points spent) of the CharacterAttribute.
+        /// </summary>
+        public async ValueTask ModifyBaseAsync(int value, CancellationToken token = default)
+        {
+            if (value == 0)
+                return;
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                _intBase += value;
+                OnPropertyChanged(nameof(Base));
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Total Value of Base Points as used by internal methods
         /// </summary>
         public int TotalBase
@@ -666,6 +685,25 @@ namespace Chummer.Backend.Attributes
                 {
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Current karma value of the CharacterAttribute.
+        /// </summary>
+        public async ValueTask ModifyKarmaAsync(int value, CancellationToken token = default)
+        {
+            if (value == 0)
+                return;
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                _intKarma += value;
+                OnPropertyChanged(nameof(Karma));
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

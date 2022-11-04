@@ -830,6 +830,25 @@ namespace Chummer.Backend.Skills
         }
 
         /// <summary>
+        /// How many points REALLY are in _base. Better than subclasses calculating Base - FreeBase()
+        /// </summary>
+        public async ValueTask ModifyBasePointsAsync(int value, CancellationToken token = default)
+        {
+            if (value == 0)
+                return;
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                _intBase += value;
+                OnPropertyChanged(nameof(BasePoints));
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// How many points REALLY are in _karma Better than subclasses calculating Karma - FreeKarma()
         /// </summary>
         public int KarmaPoints
@@ -882,6 +901,25 @@ namespace Chummer.Backend.Skills
                 {
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
+            }
+        }
+
+        /// <summary>
+        /// How many points REALLY are in _karma Better than subclasses calculating Karma - FreeKarma()
+        /// </summary>
+        public async ValueTask ModifyKarmaPointsAsync(int value, CancellationToken token = default)
+        {
+            if (value == 0)
+                return;
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                _intKarma += value;
+                OnPropertyChanged(nameof(KarmaPoints));
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1070,7 +1108,7 @@ namespace Chummer.Backend.Skills
                         int intMax = Math.Min(intOverMax, intKarmaPoints);
 
                         //reduce both by that amount
-                        await SetKarmaPointsAsync(intKarmaPoints - intMax, token).ConfigureAwait(false);
+                        await ModifyKarmaPointsAsync(-intMax, token).ConfigureAwait(false);
                         intOverMax -= intMax;
                     }
 
@@ -1181,7 +1219,7 @@ namespace Chummer.Backend.Skills
                     int intMax = Math.Min(intOverMax, intBasePoints);
 
                     //reduce both by that amount
-                    await SetBasePointsAsync(intBasePoints - intMax, token).ConfigureAwait(false);
+                    await ModifyBasePointsAsync(-intMax, token).ConfigureAwait(false);
                     intOverMax -= intMax;
                 }
 

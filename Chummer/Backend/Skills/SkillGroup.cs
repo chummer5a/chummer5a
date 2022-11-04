@@ -262,6 +262,25 @@ namespace Chummer.Backend.Skills
         }
 
         /// <summary>
+        /// How many points REALLY are in _base. Better than subclasses calculating Base - FreeBase()
+        /// </summary>
+        public async ValueTask ModifyBasePointsAsync(int value, CancellationToken token = default)
+        {
+            if (value == 0)
+                return;
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                _intSkillFromSp += value;
+                OnPropertyChanged(nameof(BasePoints));
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Amount of Karma Levels that has been provided by non-Improvement sources.
         /// </summary>
         public int KarmaPoints
@@ -314,6 +333,25 @@ namespace Chummer.Backend.Skills
                 {
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
+            }
+        }
+
+        /// <summary>
+        /// How many points REALLY are in _karma Better than subclasses calculating Karma - FreeKarma()
+        /// </summary>
+        public async ValueTask ModifyKarmaPointsAsync(int value, CancellationToken token = default)
+        {
+            if (value == 0)
+                return;
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                _intSkillFromKarma += value;
+                OnPropertyChanged(nameof(KarmaPoints));
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

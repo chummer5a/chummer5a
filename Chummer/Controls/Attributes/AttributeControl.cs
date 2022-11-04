@@ -176,11 +176,10 @@ namespace Chummer.UI.Attributes
                 {
                     using (await EnterReadLock.EnterAsync(AttributeObject).ConfigureAwait(false))
                     {
-                        int intBase = await AttributeObject.GetBaseAsync().ConfigureAwait(false);
-                        while (intBase > 0 && await AttributeObject.GetKarmaMaximumAsync().ConfigureAwait(false) < 0)
+                        while (await AttributeObject.GetBaseAsync().ConfigureAwait(false) > 0 &&
+                               await AttributeObject.GetKarmaMaximumAsync().ConfigureAwait(false) < 0)
                         {
-                            await AttributeObject.SetBaseAsync(intBase - 1).ConfigureAwait(false);
-                            --intBase;
+                            await AttributeObject.ModifyBaseAsync(-1).ConfigureAwait(false);
                         }
 
                         // Very rough fix for when Karma values somehow exceed KarmaMaximum after loading in. This shouldn't happen in the first place, but this ad-hoc patch will help fix crashes.
