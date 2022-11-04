@@ -17172,12 +17172,12 @@ namespace Chummer
                     IsRefreshing = false;
                 }
             }
-            else
+            else if (funcPropertyToUpdate != null)
             {
                 int intFillCount = Convert.ToInt32(await chkSender.DoThreadSafeFuncAsync(x => x.Tag, token).ConfigureAwait(false), GlobalSettings.InvariantCultureInfo);
                 if (!await chkSender.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
                     --intFillCount;
-                funcPropertyToUpdate?.Invoke(intFillCount);
+                funcPropertyToUpdate.Invoke(intFillCount);
             }
 
             await SetDirty(true, token).ConfigureAwait(false);

@@ -802,8 +802,8 @@ namespace Chummer
                             if (!string.IsNullOrWhiteSpace(strImprovedName) && !blnIncludeNonImproved)
                             {
                                 using (CancellationTokenSource objEmergencyRelease
-                                           = new CancellationTokenSource(
-                                               Utils.SleepEmergencyReleaseMaxTicks * Utils.DefaultSleepDuration))
+                                       = new CancellationTokenSource(
+                                           Utils.SleepEmergencyReleaseMaxTicks * Utils.DefaultSleepDuration))
                                 {
                                     CancellationToken objEmergencyReleaseToken = objEmergencyRelease.Token;
                                     using (CancellationTokenSource objCombinedTokenSource
@@ -818,7 +818,8 @@ namespace Chummer
                                                 if (blnSync)
                                                     Utils.SafeSleep(objCombinedTokenSource.Token);
                                                 else
-                                                    await Utils.SafeSleepAsync(objCombinedTokenSource.Token).ConfigureAwait(false);
+                                                    await Utils.SafeSleepAsync(objCombinedTokenSource.Token)
+                                                               .ConfigureAwait(false);
                                             }
                                         }
                                         // Emergency exit, so break if we are debugging and return the default value (just in case)
@@ -827,7 +828,8 @@ namespace Chummer
                                             if (objEmergencyReleaseToken.IsCancellationRequested)
                                             {
                                                 Utils.BreakIfDebug();
-                                                return new Tuple<decimal, List<Improvement>>(0, new List<Improvement>());
+                                                return new Tuple<decimal, List<Improvement>>(
+                                                    0, new List<Improvement>());
                                             }
 
                                             throw;
@@ -837,10 +839,15 @@ namespace Chummer
 
                                 ImprovementDictionaryKey objCacheKey
                                     = new ImprovementDictionaryKey(objCharacter, eImprovementType, strImprovedName);
-                                if (dicCachedValuesToUse.TryGetValue(objCacheKey,
-                                                                     out Tuple<decimal, List<Improvement>>
-                                                                         tupCachedValue)
-                                    && tupCachedValue.Item1 != decimal.MinValue)
+                                bool blnSuccess;
+                                Tuple<decimal, List<Improvement>> tupCachedValue;
+                                if (blnSync)
+                                    blnSuccess = dicCachedValuesToUse.TryGetValue(
+                                        objCacheKey, out tupCachedValue, token);
+                                else
+                                    (blnSuccess, tupCachedValue)
+                                        = await dicCachedValuesToUse.TryGetValueAsync(objCacheKey, token).ConfigureAwait(false);
+                                if (blnSuccess && tupCachedValue.Item1 != decimal.MinValue)
                                 {
                                     // To make sure we do not inadvertently alter the cached list
                                     return new Tuple<decimal, List<Improvement>>(
