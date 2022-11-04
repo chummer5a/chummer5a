@@ -1309,37 +1309,60 @@ namespace Chummer
                             {
                                 ImprovementDictionaryKey objLoopCacheKey =
                                     new ImprovementDictionaryKey(objCharacter, eImprovementType, strLoopImprovedName);
-                                // ReSharper disable once MethodHasAsyncOverload
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                if (!(blnSync ? dicCachedValuesToUse.TryAdd(objLoopCacheKey, tupNewValue) : await dicCachedValuesToUse.TryAddAsync(objLoopCacheKey, tupNewValue, token).ConfigureAwait(false)))
+                                IDisposable objCachedLocker = null;
+                                IAsyncDisposable objCachedLockerAsync = null;
+                                if (blnSync)
+                                    objCachedLocker = dicCachedValuesToUse.LockObject.EnterWriteLock(token);
+                                else
+                                    objCachedLockerAsync = await dicCachedValuesToUse.LockObject
+                                        .EnterWriteLockAsync(token).ConfigureAwait(false);
+                                try
                                 {
-                                    List<Improvement> lstTemp;
-                                    if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    if (!(blnSync
+                                            ? dicCachedValuesToUse.TryAdd(objLoopCacheKey, tupNewValue)
+                                            : await dicCachedValuesToUse
+                                                    .TryAddAsync(objLoopCacheKey, tupNewValue, token)
+                                                    .ConfigureAwait(false)))
                                     {
-                                        lstTemp = dicCachedValuesToUse.TryGetValue(
-                                            objLoopCacheKey, out Tuple<decimal, List<Improvement>> tupTemp)
-                                            ? tupTemp.Item2
-                                            : new List<Improvement>();
-                                    }
-                                    else
-                                    {
-                                        lstTemp = (await dicCachedValuesToUse.TryGetValueAsync(objLoopCacheKey, token).ConfigureAwait(false)).Item2.Item2;
-                                    }
-                                    if (!ReferenceEquals(lstTemp, tupNewValue.Item2))
-                                    {
-                                        lstTemp.Clear();
-                                        lstTemp.AddRange(tupNewValue.Item2);
-                                        tupNewValue = new Tuple<decimal, List<Improvement>>(decLoopValue, lstTemp);
-                                    }
+                                        List<Improvement> lstTemp;
+                                        if (blnSync)
+                                        {
+                                            lstTemp = dicCachedValuesToUse.TryGetValue(
+                                                objLoopCacheKey, out Tuple<decimal, List<Improvement>> tupTemp)
+                                                ? tupTemp.Item2
+                                                : new List<Improvement>();
+                                        }
+                                        else
+                                        {
+                                            lstTemp = (await dicCachedValuesToUse
+                                                             .TryGetValueAsync(objLoopCacheKey, token)
+                                                             .ConfigureAwait(false)).Item2.Item2;
+                                        }
 
-                                    if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverload
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        dicCachedValuesToUse.AddOrUpdate(objLoopCacheKey, tupNewValue,
-                                                                         (x, y) => tupNewValue);
-                                    else
-                                        await dicCachedValuesToUse.AddOrUpdateAsync(objLoopCacheKey, tupNewValue,
-                                            (x, y) => tupNewValue, token).ConfigureAwait(false);
+                                        if (!ReferenceEquals(lstTemp, tupNewValue.Item2))
+                                        {
+                                            lstTemp.Clear();
+                                            lstTemp.AddRange(tupNewValue.Item2);
+                                            tupNewValue = new Tuple<decimal, List<Improvement>>(decLoopValue, lstTemp);
+                                        }
+
+                                        if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            dicCachedValuesToUse.AddOrUpdate(objLoopCacheKey, tupNewValue,
+                                                                             (x, y) => tupNewValue);
+                                        else
+                                            await dicCachedValuesToUse.AddOrUpdateAsync(objLoopCacheKey, tupNewValue,
+                                                (x, y) => tupNewValue, token).ConfigureAwait(false);
+                                    }
+                                }
+                                finally
+                                {
+                                    objCachedLocker?.Dispose();
+                                    if (objCachedLockerAsync != null)
+                                        await objCachedLockerAsync.DisposeAsync().ConfigureAwait(false);
                                 }
                             }
 
