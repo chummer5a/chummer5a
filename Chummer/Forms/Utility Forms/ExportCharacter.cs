@@ -26,12 +26,12 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Xsl;
+using ExternalUtils.RegularExpressions.ExportCharacter;
 using Microsoft.IO;
 using Newtonsoft.Json;
 using NLog;
@@ -778,17 +778,11 @@ namespace Chummer
             return txtText.DoThreadSafeAsync(x => x.Text = strDisplayText, token);
         }
 
-        private static readonly Regex s_RgxMainMugshotReplaceExpression = new Regex(
-            "<mainmugshotbase64>[^\\s\\S]*</mainmugshotbase64>",
-            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
+        private static readonly MainMugshotReplacePattern s_RgxMainMugshotReplaceExpression = new MainMugshotReplacePattern();
 
-        private static readonly Regex s_RgxStringBase64ReplaceExpression = new Regex(
-            "<mainmugshotbase64>[^\\s\\S]*</mainmugshotbase64>",
-            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
+        private static readonly StringBase64ReplacePattern s_RgxStringBase64ReplaceExpression = new StringBase64ReplacePattern();
 
-        private static readonly Regex s_RgxBase64ReplaceExpression = new Regex(
-            "base64\": \"[^\\\"]*\",",
-            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
+        private static readonly Base64ReplacePattern s_RgxBase64ReplaceExpression = new Base64ReplacePattern();
 
         #endregion XML
 

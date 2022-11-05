@@ -24,6 +24,7 @@ using System.Reflection;
 using System.Resources;
 using System.Text.RegularExpressions;
 using System.Threading;
+using ExternalUtils.RegularExpressions.TranslateExceptionTelemetryProcessor;
 using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -122,13 +123,9 @@ namespace Chummer
             return result;
         }
 
-        private static readonly Regex s_RgxFirstReplacePattern
-            = new Regex(@"\\{([0-9]+)\}",
-                        RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled
-                        | RegexOptions.CultureInvariant);
-        private static readonly Regex s_RgxSecondReplacePattern
-            = new Regex(@"{([0-9]+)}",
-                        RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled
-                        | RegexOptions.CultureInvariant);
+        private static readonly FirstReplacePattern s_RgxFirstReplacePattern
+            = new FirstReplacePattern();
+        private static readonly SecondReplacePattern s_RgxSecondReplacePattern
+            = new SecondReplacePattern();
     }
 }

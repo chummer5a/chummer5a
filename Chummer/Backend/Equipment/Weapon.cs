@@ -34,6 +34,7 @@ using System.Xml;
 using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Skills;
+using ExternalUtils.RegularExpressions.Weapons;
 using NLog;
 
 namespace Chummer.Backend.Equipment
@@ -2069,14 +2070,8 @@ namespace Chummer.Backend.Equipment
             return strAmmo;
         }
 
-        private static readonly Regex s_RgxAmmoCapacityFirst
-            = new Regex(@"^[0-9]*[0-9]*x",
-                        RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled
-                        | RegexOptions.CultureInvariant);
-        private static readonly Regex s_RgxAmmoCapacitySecond
-            = new Regex(@"(?<=\))(x[0-9]*[0-9]*$)*",
-                        RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled
-                        | RegexOptions.CultureInvariant);
+        private static readonly AmmoCapacityFirstPattern s_RgxAmmoCapacityFirst = new AmmoCapacityFirstPattern();
+        private static readonly AmmoCapacitySecondPattern s_RgxAmmoCapacitySecond = new AmmoCapacitySecondPattern();
 
         /// <summary>
         /// The type of Ammunition loaded in the Weapon.
