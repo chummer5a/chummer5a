@@ -42,7 +42,8 @@ namespace Chummer
             return strInput == EmptyGuid;
         }
 
-        public static async Task<string> JoinAsync(string strSeparator, IEnumerable<Task<string>> lstStringTasks, CancellationToken token = default)
+        public static async Task<string> JoinAsync(string strSeparator, IEnumerable<Task<string>> lstStringTasks,
+                                                   CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             bool blnAddSeparator = false;
@@ -58,6 +59,7 @@ namespace Chummer
                     else
                         blnAddSeparator = true;
                 }
+
                 return sbdReturn.ToString();
             }
         }
@@ -70,7 +72,8 @@ namespace Chummer
         /// <param name="strNewValue">Substring with which <paramref name="strOldValue"/> gets replaced</param>
         /// <param name="eStringComparison">String Comparison to use when checking for identity</param>
         /// <returns>New string with all instances of <paramref name="strOldValue"/> replaced with <paramref name="strNewValue"/>, but where the equality check was custom-defined by <paramref name="eStringComparison"/></returns>
-        public static string Replace(this string strInput, string strOldValue, string strNewValue, StringComparison eStringComparison)
+        public static string Replace(this string strInput, string strOldValue, string strNewValue,
+                                     StringComparison eStringComparison)
         {
             if (string.IsNullOrEmpty(strInput) || string.IsNullOrEmpty(strOldValue))
                 return strInput;
@@ -140,8 +143,10 @@ namespace Chummer
                 {
                     ArrayPool<char>.Shared.Return(achrNewChars);
                 }
+
                 return strReturn;
             }
+
             // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
             unsafe
             {
@@ -208,8 +213,10 @@ namespace Chummer
                 {
                     ArrayPool<char>.Shared.Return(achrNewChars);
                 }
+
                 return strReturn;
             }
+
             // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
             unsafe
             {
@@ -245,7 +252,8 @@ namespace Chummer
         /// <param name="strSubstringToDelete">Substring to remove</param>
         /// <param name="eComparison">Comparison rules by which to find instances of the substring to remove. Useful for when case-insensitive removal is required.</param>
         /// <returns>New string with <paramref name="strSubstringToDelete"/> removed</returns>
-        public static string FastEscape(this string strInput, string strSubstringToDelete, StringComparison eComparison = StringComparison.Ordinal)
+        public static string FastEscape(this string strInput, string strSubstringToDelete,
+                                        StringComparison eComparison = StringComparison.Ordinal)
         {
             // It's actually faster to just run Replace(), albeit with our special comparison override, than to make our own fancy function
             return strInput.Replace(strSubstringToDelete, string.Empty, eComparison);
@@ -259,7 +267,9 @@ namespace Chummer
         /// <param name="strSubstringToDelete">Substring to remove.</param>
         /// <param name="eComparison">Comparison rules by which to find the substring to remove. Useful for when case-insensitive removal is required.</param>
         /// <returns>New string with the first instance of <paramref name="strSubstringToDelete"/> removed starting from <paramref name="intStartIndex"/>.</returns>
-        public static string FastEscapeOnceFromStart(this string strInput, string strSubstringToDelete, int intStartIndex = 0, StringComparison eComparison = StringComparison.Ordinal)
+        public static string FastEscapeOnceFromStart(this string strInput, string strSubstringToDelete,
+                                                     int intStartIndex = 0,
+                                                     StringComparison eComparison = StringComparison.Ordinal)
         {
             if (strSubstringToDelete == null)
                 return strInput;
@@ -283,7 +293,9 @@ namespace Chummer
         /// <param name="strSubstringToDelete">Substring to remove.</param>
         /// <param name="eComparison">Comparison rules by which to find the substring to remove. Useful for when case-insensitive removal is required.</param>
         /// <returns>New string with the last instance of <paramref name="strSubstringToDelete"/> removed starting from <paramref name="intStartIndex"/>.</returns>
-        public static string FastEscapeOnceFromEnd(this string strInput, string strSubstringToDelete, int intStartIndex = -1, StringComparison eComparison = StringComparison.Ordinal)
+        public static string FastEscapeOnceFromEnd(this string strInput, string strSubstringToDelete,
+                                                   int intStartIndex = -1,
+                                                   StringComparison eComparison = StringComparison.Ordinal)
         {
             if (string.IsNullOrEmpty(strInput) || strSubstringToDelete == null)
                 return strInput;
@@ -325,7 +337,7 @@ namespace Chummer
         {
             if (strInput == null)
                 throw new ArgumentNullException(nameof(strInput));
-            return strInput.Split(new[] { chrSeparator }, eSplitOptions);
+            return strInput.Split(new[] {chrSeparator}, eSplitOptions);
         }
 
         /// <summary>
@@ -340,7 +352,7 @@ namespace Chummer
         {
             if (strInput == null)
                 throw new ArgumentNullException(nameof(strInput));
-            return strInput.Split(new[] { strSeparator }, eSplitOptions);
+            return strInput.Split(new[] {strSeparator}, eSplitOptions);
         }
 
         /// <summary>
@@ -379,7 +391,8 @@ namespace Chummer
         /// <param name="chrSplit">Character to use for splitting.</param>
         /// <param name="eSplitOptions">Optional argument that can be used to skip over empty entries.</param>
         /// <returns>Enumerable containing substrings of <paramref name="strInput"/> split based on <paramref name="chrSplit"/></returns>
-        public static IEnumerable<string> SplitNoAlloc(this string strInput, char chrSplit, StringSplitOptions eSplitOptions = StringSplitOptions.None)
+        public static IEnumerable<string> SplitNoAlloc(this string strInput, char chrSplit,
+                                                       StringSplitOptions eSplitOptions = StringSplitOptions.None)
         {
             if (string.IsNullOrEmpty(strInput))
                 yield break;
@@ -404,7 +417,8 @@ namespace Chummer
         /// <param name="strSplit">String to use for splitting.</param>
         /// <param name="eSplitOptions">Optional argument that can be used to skip over empty entries.</param>
         /// <returns>Enumerable containing substrings of <paramref name="strInput"/> split based on <paramref name="strSplit"/></returns>
-        public static IEnumerable<string> SplitNoAlloc(this string strInput, string strSplit, StringSplitOptions eSplitOptions = StringSplitOptions.None)
+        public static IEnumerable<string> SplitNoAlloc(this string strInput, string strSplit,
+                                                       StringSplitOptions eSplitOptions = StringSplitOptions.None)
         {
             if (string.IsNullOrEmpty(strInput))
                 yield break;
@@ -413,6 +427,7 @@ namespace Chummer
                 yield return strInput;
                 yield break;
             }
+
             int intLoopLength;
             for (int intStart = 0; intStart < strInput.Length; intStart += intLoopLength + strSplit.Length)
             {
@@ -510,8 +525,10 @@ namespace Chummer
                 {
                     ArrayPool<char>.Shared.Return(achrNewChars);
                 }
+
                 return strReturn;
             }
+
             // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
             unsafe
             {
@@ -597,6 +614,7 @@ namespace Chummer
                 if (blnCharIsInList != blnWhitelist)
                     return false;
             }
+
             return true;
         }
 
@@ -608,7 +626,8 @@ namespace Chummer
         /// <param name="eComparison">Comparison rules by which to find the substring to remove. Useful for when case-insensitive removal is required.</param>
         /// <returns>Trimmed String</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string TrimStart(this string strInput, string strToTrim, StringComparison eComparison = StringComparison.Ordinal)
+        public static string TrimStart(this string strInput, string strToTrim,
+                                       StringComparison eComparison = StringComparison.Ordinal)
         {
             if (string.IsNullOrEmpty(strInput) || string.IsNullOrEmpty(strToTrim))
                 return strInput;
@@ -625,8 +644,8 @@ namespace Chummer
             {
                 intAmountToTrim += intTrimLength;
                 i = strInput.IndexOf(strToTrim, intAmountToTrim, eComparison);
-            }
-            while (i != -1);
+            } while (i != -1);
+
             return strInput.Substring(intAmountToTrim);
         }
 
@@ -638,7 +657,8 @@ namespace Chummer
         /// <param name="eComparison">Comparison rules by which to find the substring to remove. Useful for when case-insensitive removal is required.</param>
         /// <returns>Trimmed String</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string TrimEnd(this string strInput, string strToTrim, StringComparison eComparison = StringComparison.Ordinal)
+        public static string TrimEnd(this string strInput, string strToTrim,
+                                     StringComparison eComparison = StringComparison.Ordinal)
         {
             if (string.IsNullOrEmpty(strInput) || string.IsNullOrEmpty(strToTrim))
                 return strInput;
@@ -656,8 +676,8 @@ namespace Chummer
             {
                 intAmountToTrim += intTrimLength;
                 i = strInput.LastIndexOf(strToTrim, intInputLastIndex - intAmountToTrim, eComparison);
-            }
-            while (i != -1);
+            } while (i != -1);
+
             return strInput.Substring(0, intInputLastIndex - intTrimLength);
         }
 
@@ -673,11 +693,13 @@ namespace Chummer
         {
             if (!string.IsNullOrEmpty(strInput) && !string.IsNullOrEmpty(strToTrim)
                                                 // Need to make sure string actually starts with the substring, otherwise we don't want to be cutting out the beginning of the string
-                                                && (blnOmitCheck || strInput.StartsWith(strToTrim, StringComparison.Ordinal)))
+                                                && (blnOmitCheck
+                                                    || strInput.StartsWith(strToTrim, StringComparison.Ordinal)))
             {
                 int intTrimLength = strToTrim.Length;
                 return strInput.Substring(intTrimLength, strInput.Length - intTrimLength);
             }
+
             return strInput;
         }
 
@@ -700,7 +722,8 @@ namespace Chummer
                 {
                     string strStringToTrim = astrToTrim[i];
                     // Need to make sure string actually starts with the substring, otherwise we don't want to be cutting out the beginning of the string
-                    if (strStringToTrim.Length > intHowMuchToTrim && strInput.StartsWith(strStringToTrim, StringComparison.Ordinal))
+                    if (strStringToTrim.Length > intHowMuchToTrim
+                        && strInput.StartsWith(strStringToTrim, StringComparison.Ordinal))
                     {
                         intHowMuchToTrim = strStringToTrim.Length;
                     }
@@ -709,6 +732,7 @@ namespace Chummer
                 if (intHowMuchToTrim > 0)
                     return strInput.Substring(intHowMuchToTrim);
             }
+
             return strInput;
         }
 
@@ -725,6 +749,7 @@ namespace Chummer
             {
                 return strInput.Substring(1, strInput.Length - 1);
             }
+
             return strInput;
         }
 
@@ -754,10 +779,12 @@ namespace Chummer
         {
             if (!string.IsNullOrEmpty(strInput) && !string.IsNullOrEmpty(strToTrim)
                                                 // Need to make sure string actually ends with the substring, otherwise we don't want to be cutting out the end of the string
-                                                && (blnOmitCheck || strInput.EndsWith(strToTrim, StringComparison.Ordinal)))
+                                                && (blnOmitCheck
+                                                    || strInput.EndsWith(strToTrim, StringComparison.Ordinal)))
             {
                 return strInput.Substring(0, strInput.Length - strToTrim.Length);
             }
+
             return strInput;
         }
 
@@ -780,7 +807,8 @@ namespace Chummer
                 {
                     string strStringToTrim = astrToTrim[i];
                     // Need to make sure string actually ends with the substring, otherwise we don't want to be cutting out the end of the string
-                    if (strStringToTrim.Length > intHowMuchToTrim && strInput.EndsWith(strStringToTrim, StringComparison.Ordinal))
+                    if (strStringToTrim.Length > intHowMuchToTrim
+                        && strInput.EndsWith(strStringToTrim, StringComparison.Ordinal))
                     {
                         intHowMuchToTrim = strStringToTrim.Length;
                     }
@@ -789,6 +817,7 @@ namespace Chummer
                 if (intHowMuchToTrim > 0)
                     return strInput.Substring(0, strInput.Length - intHowMuchToTrim);
             }
+
             return strInput;
         }
 
@@ -807,6 +836,7 @@ namespace Chummer
                 if (strInput[intLength - 1] == chrToTrim)
                     return strInput.Substring(0, intLength - 1);
             }
+
             return strInput;
         }
 
@@ -854,6 +884,7 @@ namespace Chummer
                 if (chrCharToCheck == achrToCheck[i])
                     return true;
             }
+
             return false;
         }
 
@@ -877,6 +908,7 @@ namespace Chummer
                     }
                 }
             }
+
             return false;
         }
 
@@ -916,6 +948,7 @@ namespace Chummer
                 if (chrCharToCheck == achrToCheck[i])
                     return true;
             }
+
             return false;
         }
 
@@ -939,6 +972,7 @@ namespace Chummer
                     }
                 }
             }
+
             return false;
         }
 
@@ -952,7 +986,8 @@ namespace Chummer
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
         /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string CheapReplace(this string strInput, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
+        public static string CheapReplace(this string strInput, string strOldValue, Func<string> funcNewValueFactory,
+                                          StringComparison eStringComparison = StringComparison.Ordinal)
         {
             if (!string.IsNullOrEmpty(strInput) && funcNewValueFactory != null)
             {
@@ -980,7 +1015,11 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<string> CheapReplaceAsync(this string strInput, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal, CancellationToken token = default)
+        public static async Task<string> CheapReplaceAsync(this string strInput, string strOldValue,
+                                                           Func<string> funcNewValueFactory,
+                                                           StringComparison eStringComparison
+                                                               = StringComparison.Ordinal,
+                                                           CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (!string.IsNullOrEmpty(strInput) && funcNewValueFactory != null)
@@ -991,13 +1030,15 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         string strFactoryResult = string.Empty;
-                        using (CancellationTokenTaskSource<string> objCancelTaskSource = new CancellationTokenTaskSource<string>(token))
+                        using (CancellationTokenTaskSource<string> objCancelTaskSource
+                               = new CancellationTokenTaskSource<string>(token))
                         {
                             await Task.WhenAny(Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke,
                                                                       x => strFactoryResult
                                                                           = funcNewValueFactory.EndInvoke(x), null),
                                                objCancelTaskSource.Task).ConfigureAwait(false);
                         }
+
                         token.ThrowIfCancellationRequested();
                         return strInput.Replace(strOldValue, strFactoryResult);
                     }
@@ -1006,13 +1047,15 @@ namespace Chummer
                 {
                     token.ThrowIfCancellationRequested();
                     string strFactoryResult = string.Empty;
-                    using (CancellationTokenTaskSource<string> objCancelTaskSource = new CancellationTokenTaskSource<string>(token))
+                    using (CancellationTokenTaskSource<string> objCancelTaskSource
+                           = new CancellationTokenTaskSource<string>(token))
                     {
                         await Task.WhenAny(Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke,
                                                                   x => strFactoryResult
                                                                       = funcNewValueFactory.EndInvoke(x), null),
                                            objCancelTaskSource.Task).ConfigureAwait(false);
                     }
+
                     token.ThrowIfCancellationRequested();
                     return strInput.Replace(strOldValue, strFactoryResult, eStringComparison);
                 }
@@ -1033,10 +1076,15 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<string> CheapReplaceAsync(this ValueTask<string> strInputTask, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal, CancellationToken token = default)
+        public static async Task<string> CheapReplaceAsync(this ValueTask<string> strInputTask, string strOldValue,
+                                                           Func<string> funcNewValueFactory,
+                                                           StringComparison eStringComparison
+                                                               = StringComparison.Ordinal,
+                                                           CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return await CheapReplaceAsync(await strInputTask.ConfigureAwait(false), strOldValue, funcNewValueFactory, eStringComparison, token).ConfigureAwait(false);
+            return await CheapReplaceAsync(await strInputTask.ConfigureAwait(false), strOldValue, funcNewValueFactory,
+                                           eStringComparison, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1051,10 +1099,15 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<string> CheapReplaceAsync(this Task<string> strInputTask, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal, CancellationToken token = default)
+        public static async Task<string> CheapReplaceAsync(this Task<string> strInputTask, string strOldValue,
+                                                           Func<string> funcNewValueFactory,
+                                                           StringComparison eStringComparison
+                                                               = StringComparison.Ordinal,
+                                                           CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return await CheapReplaceAsync(await strInputTask.ConfigureAwait(false), strOldValue, funcNewValueFactory, eStringComparison, token).ConfigureAwait(false);
+            return await CheapReplaceAsync(await strInputTask.ConfigureAwait(false), strOldValue, funcNewValueFactory,
+                                           eStringComparison, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1069,7 +1122,11 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<string> CheapReplaceAsync(this string strInput, string strOldValue, Func<Task<string>> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal, CancellationToken token = default)
+        public static async Task<string> CheapReplaceAsync(this string strInput, string strOldValue,
+                                                           Func<Task<string>> funcNewValueFactory,
+                                                           StringComparison eStringComparison
+                                                               = StringComparison.Ordinal,
+                                                           CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (!string.IsNullOrEmpty(strInput) && funcNewValueFactory != null)
@@ -1108,10 +1165,15 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<string> CheapReplaceAsync(this ValueTask<string> strInputTask, string strOldValue, Func<Task<string>> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal, CancellationToken token = default)
+        public static async Task<string> CheapReplaceAsync(this ValueTask<string> strInputTask, string strOldValue,
+                                                           Func<Task<string>> funcNewValueFactory,
+                                                           StringComparison eStringComparison
+                                                               = StringComparison.Ordinal,
+                                                           CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return await CheapReplaceAsync(await strInputTask.ConfigureAwait(false), strOldValue, funcNewValueFactory, eStringComparison, token).ConfigureAwait(false);
+            return await CheapReplaceAsync(await strInputTask.ConfigureAwait(false), strOldValue, funcNewValueFactory,
+                                           eStringComparison, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1126,10 +1188,15 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<string> CheapReplaceAsync(this Task<string> strInputTask, string strOldValue, Func<Task<string>> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal, CancellationToken token = default)
+        public static async Task<string> CheapReplaceAsync(this Task<string> strInputTask, string strOldValue,
+                                                           Func<Task<string>> funcNewValueFactory,
+                                                           StringComparison eStringComparison
+                                                               = StringComparison.Ordinal,
+                                                           CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return await CheapReplaceAsync(await strInputTask.ConfigureAwait(false), strOldValue, funcNewValueFactory, eStringComparison, token).ConfigureAwait(false);
+            return await CheapReplaceAsync(await strInputTask.ConfigureAwait(false), strOldValue, funcNewValueFactory,
+                                           eStringComparison, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1348,15 +1415,16 @@ namespace Chummer
             if (string.IsNullOrEmpty(strToClean))
                 return string.Empty;
             string strReturn = strToClean
-                .Replace("&", "&amp;")
-                .Replace("&amp;amp;", "&amp;")
-                .Replace("<", "&lt;")
-                .Replace(">", "&gt;");
+                               .Replace("&", "&amp;")
+                               .Replace("&amp;amp;", "&amp;")
+                               .Replace("<", "&lt;")
+                               .Replace(">", "&gt;");
             return s_RgxLineEndingsExpression.Replace(strReturn, "<br />");
         }
 
         private static readonly ReadOnlyCollection<char> s_achrPathInvalidPathChars
             = Array.AsReadOnly(Path.GetInvalidPathChars());
+
         private static readonly ReadOnlyCollection<char> s_achrPathInvalidFileNameChars
             = Array.AsReadOnly(Path.GetInvalidFileNameChars());
 
@@ -1370,7 +1438,9 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strToClean))
                 return string.Empty;
-            foreach (char invalidChar in blnEscapeOnlyPathInvalidChars ? s_achrPathInvalidPathChars : s_achrPathInvalidFileNameChars)
+            foreach (char invalidChar in blnEscapeOnlyPathInvalidChars
+                         ? s_achrPathInvalidPathChars
+                         : s_achrPathInvalidFileNameChars)
                 strToClean = strToClean.Replace(invalidChar, '_');
             return strToClean;
         }
@@ -1386,17 +1456,18 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
-            if (strInput.IsRtf(token))
+            if (strInput.IsRtf())
                 return strInput;
             strInput = strInput.NormalizeWhiteSpace();
             s_RtbRtfManipulatorLock.SafeWait(token);
             try
             {
-                if (!s_RtbRtfManipulator.IsHandleCreated)
+                if (!s_RtbRtfManipulator.Value.IsHandleCreated)
                 {
-                    Utils.RunOnMainThread(() => s_RtbRtfManipulator.CreateControl(), token);
+                    Utils.RunOnMainThread(() => s_RtbRtfManipulator.Value.CreateControl(), token);
                 }
-                return s_RtbRtfManipulator.DoThreadSafeFunc(x =>
+
+                return s_RtbRtfManipulator.Value.DoThreadSafeFunc(x =>
                 {
                     x.Text = strInput;
                     return x.Rtf;
@@ -1421,17 +1492,19 @@ namespace Chummer
 
             async Task<string> InnerDo()
             {
-                if (await strInput.IsRtfAsync(token).ConfigureAwait(false))
+                if (strInput.IsRtf())
                     return strInput;
                 strInput = strInput.NormalizeWhiteSpace();
                 await s_RtbRtfManipulatorLock.WaitAsync(token).ConfigureAwait(false);
                 try
                 {
-                    if (!s_RtbRtfManipulator.IsHandleCreated)
+                    if (!s_RtbRtfManipulator.Value.IsHandleCreated)
                     {
-                        await Utils.RunOnMainThreadAsync(() => s_RtbRtfManipulator.CreateControl(), token).ConfigureAwait(false);
+                        await Utils.RunOnMainThreadAsync(() => s_RtbRtfManipulator.Value.CreateControl(), token)
+                                   .ConfigureAwait(false);
                     }
-                    return await s_RtbRtfManipulator.DoThreadSafeFuncAsync(x =>
+
+                    return await s_RtbRtfManipulator.Value.DoThreadSafeFuncAsync(x =>
                     {
                         x.Text = strInput;
                         return x.Rtf;
@@ -1456,37 +1529,10 @@ namespace Chummer
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
             string strInputTrimmed = strInput.TrimStart();
-            string strReturn;
-            if (strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal)
-                || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
-            {
-                s_RtbRtfManipulatorLock.SafeWait(token);
-                try
-                {
-                    if (!s_RtbRtfManipulator.IsHandleCreated)
-                    {
-                        Utils.RunOnMainThread(() => s_RtbRtfManipulator.CreateControl(), token);
-                    }
-                    try
-                    {
-                        strReturn = s_RtbRtfManipulator.DoThreadSafeFunc(x =>
-                        {
-                            x.Rtf = strInput;
-                            return x.Text;
-                        });
-                    }
-                    catch (ArgumentException)
-                    {
-                        strReturn = strInput;
-                    }
-                }
-                finally
-                {
-                    s_RtbRtfManipulatorLock.Release();
-                }
-            }
-            else
-                strReturn = strInput;
+            string strReturn = strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal)
+                               || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal)
+                ? strInput.StripRichTextFormat()
+                : strInput;
 
             return strReturn.NormalizeWhiteSpace();
         }
@@ -1499,47 +1545,20 @@ namespace Chummer
         /// <returns>Version of <paramref name="strInput"/> without RTF formatting codes</returns>
         public static Task<string> RtfToPlainTextAsync(this string strInput, CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
-            return string.IsNullOrEmpty(strInput) ? Task.FromResult(string.Empty) : InnerDo();
-
-            async Task<string> InnerDo()
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
+            if (string.IsNullOrEmpty(strInput))
+                return Task.FromResult(string.Empty);
+            return Task.Run(() =>
             {
                 string strInputTrimmed = strInput.TrimStart();
-                string strReturn;
-                if (strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal)
-                    || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
-                {
-                    await s_RtbRtfManipulatorLock.WaitAsync(token).ConfigureAwait(false);
-                    try
-                    {
-                        if (!s_RtbRtfManipulator.IsHandleCreated)
-                        {
-                            await Utils.RunOnMainThreadAsync(() => s_RtbRtfManipulator.CreateControl(), token).ConfigureAwait(false);
-                        }
-
-                        try
-                        {
-                            strReturn = await s_RtbRtfManipulator.DoThreadSafeFuncAsync(x =>
-                            {
-                                x.Rtf = strInput;
-                                return x.Text;
-                            }, token).ConfigureAwait(false);
-                        }
-                        catch (ArgumentException)
-                        {
-                            strReturn = strInput;
-                        }
-                    }
-                    finally
-                    {
-                        s_RtbRtfManipulatorLock.Release();
-                    }
-                }
-                else
-                    strReturn = strInput;
+                string strReturn = strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal)
+                                   || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal)
+                    ? strInput.StripRichTextFormat(token)
+                    : strInput;
 
                 return strReturn.NormalizeWhiteSpace();
-            }
+            }, token);
         }
 
         public static string RtfToHtml(this string strInput, CancellationToken token = default)
@@ -1547,100 +1566,41 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
-            string strReturn = strInput.IsRtf(token) ? Rtf.ToHtml(strInput) : strInput.CleanForHtml();
+            string strReturn = strInput.IsRtf() ? Rtf.ToHtml(strInput) : strInput.CleanForHtml();
             return strReturn.CleanStylisticLigatures().NormalizeWhiteSpace().CleanOfInvalidUnicodeChars();
         }
 
-        public static async Task<string> RtfToHtmlAsync(this string strInput, CancellationToken token = default)
+        public static Task<string> RtfToHtmlAsync(this string strInput, CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
             if (string.IsNullOrEmpty(strInput))
-                return string.Empty;
-            string strReturn = await strInput.IsRtfAsync(token).ConfigureAwait(false) ? Rtf.ToHtml(strInput) : strInput.CleanForHtml();
-            return strReturn.CleanStylisticLigatures().NormalizeWhiteSpace().CleanOfInvalidUnicodeChars();
+                return Task.FromResult(string.Empty);
+            return Task.Run(() =>
+            {
+                string strReturn = strInput.IsRtf()
+                    ? Rtf.ToHtml(strInput)
+                    : strInput.CleanForHtml();
+                return strReturn.CleanStylisticLigatures().NormalizeWhiteSpace().CleanOfInvalidUnicodeChars();
+            }, token);
         }
 
         /// <summary>
         /// Whether or not a string is an RTF document
         /// </summary>
         /// <param name="strInput">The string to check.</param>
-        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>True if <paramref name="strInput"/> is an RTF document, False otherwise.</returns>
-        public static bool IsRtf(this string strInput, CancellationToken token = default)
+        public static bool IsRtf(this string strInput)
         {
-            token.ThrowIfCancellationRequested();
-            if (!string.IsNullOrEmpty(strInput))
+            if (string.IsNullOrEmpty(strInput))
+                return false;
+            string strInputTrimmed = strInput.TrimStart();
+            if (strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal)
+                || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
             {
-                string strInputTrimmed = strInput.TrimStart();
-                if (strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal)
-                    || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
-                {
-                    s_RtbRtfManipulatorLock.SafeWait(token);
-                    try
-                    {
-                        if (!s_RtbRtfManipulator.IsHandleCreated)
-                        {
-                            Utils.RunOnMainThread(() => s_RtbRtfManipulator.CreateControl(), token);
-                        }
-                        try
-                        {
-                            s_RtbRtfManipulator.DoThreadSafe(x => x.Rtf = strInput);
-                        }
-                        catch (ArgumentException)
-                        {
-                            return false;
-                        }
-                    }
-                    finally
-                    {
-                        s_RtbRtfManipulatorLock.Release();
-                    }
-
-                    return true;
-                }
+                return s_RtfStripperRegex.IsMatch(strInputTrimmed);
             }
-            return false;
-        }
 
-        /// <summary>
-        /// Whether or not a string is an RTF document
-        /// </summary>
-        /// <param name="strInput">The string to check.</param>
-        /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>True if <paramref name="strInput"/> is an RTF document, False otherwise.</returns>
-        public static async ValueTask<bool> IsRtfAsync(this string strInput, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            if (!string.IsNullOrEmpty(strInput))
-            {
-                string strInputTrimmed = strInput.TrimStart();
-                if (strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal)
-                    || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
-                {
-                    await s_RtbRtfManipulatorLock.WaitAsync(token).ConfigureAwait(false);
-                    try
-                    {
-                        if (!s_RtbRtfManipulator.IsHandleCreated)
-                        {
-                            await Utils.RunOnMainThreadAsync(() => s_RtbRtfManipulator.CreateControl(), token).ConfigureAwait(false);
-                        }
-                        try
-                        {
-                            await s_RtbRtfManipulator.DoThreadSafeAsync(x => x.Rtf = strInput, token).ConfigureAwait(false);
-                        }
-                        catch (ArgumentException)
-                        {
-                            return false;
-                        }
-                    }
-                    finally
-                    {
-                        s_RtbRtfManipulatorLock.Release();
-                    }
-
-                    return true;
-                }
-            }
             return false;
         }
 
@@ -1667,16 +1627,262 @@ namespace Chummer
         }
 
         private static readonly Regex s_RgxHtmlTagExpression = new Regex(@"/<\/?[a-z][\s\S]*>/i",
-            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
+                                                                         RegexOptions.IgnoreCase
+                                                                         | RegexOptions.Multiline
+                                                                         | RegexOptions.Compiled
+                                                                         | RegexOptions.CultureInvariant);
 
         private static readonly Regex s_RgxLineEndingsExpression = new Regex(@"\r\n|\n\r|\n|\r",
-            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
+                                                                             RegexOptions.IgnoreCase
+                                                                             | RegexOptions.Multiline
+                                                                             | RegexOptions.Compiled
+                                                                             | RegexOptions.CultureInvariant);
 
         private static readonly Regex s_RgxEscapedLineEndingsExpression = new Regex(@"\\r\\n|\\n\\r|\\n|\\r",
             RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
 
         private static readonly DebuggableSemaphoreSlim s_RtbRtfManipulatorLock = new DebuggableSemaphoreSlim();
-        private static readonly RichTextBox s_RtbRtfManipulator = new RichTextBox();
+        private static readonly Lazy<RichTextBox> s_RtbRtfManipulator = new Lazy<RichTextBox>(() => Utils.RunOnMainThread(() => new RichTextBox()));
+
+        /// <summary>
+        /// Strip RTF Tags from RTF Text.
+        /// Translated by Chris Benard (with some modifications from Delnar_Ersike) from Python located at:
+        /// http://stackoverflow.com/a/188877/448
+        /// </summary>
+        /// <param name="inputRtf">RTF formatted text</param>
+        /// <param name="token">Cancellation token to use (if any).</param>
+        /// <returns>Plain text from RTF</returns>
+        public static string StripRichTextFormat(this string inputRtf, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(inputRtf))
+            {
+                return string.Empty;
+            }
+
+            Match objMatch = s_RtfStripperRegex.Match(inputRtf);
+
+            if (!objMatch.Success)
+            {
+                // Didn't match the regex
+                return inputRtf;
+            }
+
+            Stack<StackEntry> stkGroups = new Stack<StackEntry>();
+            bool blnIgnorable = false; // Whether this group (and all inside it) are "ignorable".
+            int intUCSkip = 1; // Number of ASCII characters to skip after a unicode character.
+            int intCurSkip = 0; // Number of ASCII characters left to skip
+
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            {
+                for (; objMatch.Success; objMatch = objMatch.NextMatch())
+                {
+                    token.ThrowIfCancellationRequested();
+                    string strBrace = objMatch.Groups[5].Value;
+
+                    if (!string.IsNullOrEmpty(strBrace))
+                    {
+                        intCurSkip = 0;
+                        switch (strBrace[0])
+                        {
+                            case '{':
+                                // Push state
+                                stkGroups.Push(new StackEntry(intUCSkip, blnIgnorable));
+                                break;
+                            case '}':
+                            {
+                                // Pop state
+                                StackEntry entry = stkGroups.Pop();
+                                intUCSkip = entry.NumberOfCharactersToSkip;
+                                blnIgnorable = entry.Ignorable;
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        string strCharacter = objMatch.Groups[4].Value;
+                        if (!string.IsNullOrEmpty(strCharacter)) // \x (not a letter)
+                        {
+                            intCurSkip = 0;
+                            char chrLoop = strCharacter[0];
+                            if (chrLoop == '~')
+                            {
+                                if (!blnIgnorable)
+                                {
+                                    sbdReturn.Append('\xA0');
+                                }
+                            }
+                            else if ("{}\\".Contains(chrLoop))
+                            {
+                                if (!blnIgnorable)
+                                {
+                                    sbdReturn.Append(strCharacter);
+                                }
+                            }
+                            else if (chrLoop == '*')
+                            {
+                                blnIgnorable = true;
+                            }
+                        }
+                        else
+                        {
+                            string strWord = objMatch.Groups[1].Value;
+                            if (!string.IsNullOrEmpty(strWord)) // \foo
+                            {
+                                intCurSkip = 0;
+                                if (s_SetRtfDestinations.Contains(strWord))
+                                {
+                                    blnIgnorable = true;
+                                }
+                                else if (!blnIgnorable)
+                                {
+                                    if (s_DicSpecialRtfCharacters.TryGetValue(strWord, out string strValue))
+                                    {
+                                        sbdReturn.Append(strValue);
+                                    }
+                                    else
+                                    {
+                                        string strArg = objMatch.Groups[2].Value;
+                                        switch (strWord)
+                                        {
+                                            case "uc":
+                                                intUCSkip = int.Parse(strArg);
+                                                break;
+                                            case "u":
+                                            {
+                                                int c = int.Parse(strArg);
+                                                if (c < 0)
+                                                {
+                                                    c += 0x10000;
+                                                }
+
+                                                sbdReturn.Append(char.ConvertFromUtf32(c));
+                                                intCurSkip = intUCSkip;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                string strHex = objMatch.Groups[3].Value;
+                                if (!string.IsNullOrEmpty(strHex)) // \'xx
+                                {
+                                    if (intCurSkip > 0)
+                                    {
+                                        --intCurSkip;
+                                    }
+                                    else if (!blnIgnorable)
+                                    {
+                                        int c = int.Parse(strHex, System.Globalization.NumberStyles.HexNumber);
+                                        sbdReturn.Append(char.ConvertFromUtf32(c));
+                                    }
+                                }
+                                else
+                                {
+                                    string strTChar = objMatch.Groups[6].Value;
+                                    if (!string.IsNullOrEmpty(strTChar))
+                                    {
+                                        if (intCurSkip > 0)
+                                        {
+                                            --intCurSkip;
+                                        }
+                                        else if (!blnIgnorable)
+                                        {
+                                            sbdReturn.Append(strTChar);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return sbdReturn.ToString();
+            }
+        }
+
+        private readonly struct StackEntry
+        {
+            public int NumberOfCharactersToSkip { get; }
+            public bool Ignorable { get; }
+
+            public StackEntry(int numberOfCharactersToSkip, bool ignorable)
+            {
+                NumberOfCharactersToSkip = numberOfCharactersToSkip;
+                Ignorable = ignorable;
+            }
+        }
+
+        private static readonly Regex s_RtfStripperRegex
+            = new Regex(@"\\([a-z]{1,32})(-?\d{1,10})?[ ]?|\\'([0-9a-f]{2})|\\([^a-z])|([{}])|[\r\n]+|(.)",
+                        RegexOptions.Singleline | RegexOptions.IgnoreCase | RegexOptions.Compiled
+                        | RegexOptions.CultureInvariant);
+
+        private static readonly IReadOnlyCollection<string> s_SetRtfDestinations = new HashSet<string>
+        {
+            "aftncn", "aftnsep", "aftnsepc", "annotation", "atnauthor", "atndate", "atnicn", "atnid",
+            "atnparent", "atnref", "atntime", "atrfend", "atrfstart", "author", "background",
+            "bkmkend", "bkmkstart", "blipuid", "buptim", "category", "colorschememapping",
+            "colortbl", "comment", "company", "creatim", "datafield", "datastore", "defchp", "defpap",
+            "do", "doccomm", "docvar", "dptxbxtext", "ebcend", "ebcstart", "factoidname", "falt",
+            "fchars", "ffdeftext", "ffentrymcr", "ffexitmcr", "ffformat", "ffhelptext", "ffl",
+            "ffname", "ffstattext", "field", "file", "filetbl", "fldinst", "fldrslt", "fldtype",
+            "fname", "fontemb", "fontfile", "fonttbl", "footer", "footerf", "footerl", "footerr",
+            "footnote", "formfield", "ftncn", "ftnsep", "ftnsepc", "g", "generator", "gridtbl",
+            "header", "headerf", "headerl", "headerr", "hl", "hlfr", "hlinkbase", "hlloc", "hlsrc",
+            "hsv", "htmltag", "info", "keycode", "keywords", "latentstyles", "lchars", "levelnumbers",
+            "leveltext", "lfolevel", "linkval", "list", "listlevel", "listname", "listoverride",
+            "listoverridetable", "listpicture", "liststylename", "listtable", "listtext",
+            "lsdlockedexcept", "macc", "maccPr", "mailmerge", "maln", "malnScr", "manager", "margPr",
+            "mbar", "mbarPr", "mbaseJc", "mbegChr", "mborderBox", "mborderBoxPr", "mbox", "mboxPr",
+            "mchr", "mcount", "mctrlPr", "md", "mdeg", "mdegHide", "mden", "mdiff", "mdPr", "me",
+            "mendChr", "meqArr", "meqArrPr", "mf", "mfName", "mfPr", "mfunc", "mfuncPr", "mgroupChr",
+            "mgroupChrPr", "mgrow", "mhideBot", "mhideLeft", "mhideRight", "mhideTop", "mhtmltag",
+            "mlim", "mlimloc", "mlimlow", "mlimlowPr", "mlimupp", "mlimuppPr", "mm", "mmaddfieldname",
+            "mmath", "mmathPict", "mmathPr", "mmaxdist", "mmc", "mmcJc", "mmconnectstr",
+            "mmconnectstrdata", "mmcPr", "mmcs", "mmdatasource", "mmheadersource", "mmmailsubject",
+            "mmodso", "mmodsofilter", "mmodsofldmpdata", "mmodsomappedname", "mmodsoname",
+            "mmodsorecipdata", "mmodsosort", "mmodsosrc", "mmodsotable", "mmodsoudl",
+            "mmodsoudldata", "mmodsouniquetag", "mmPr", "mmquery", "mmr", "mnary", "mnaryPr",
+            "mnoBreak", "mnum", "mobjDist", "moMath", "moMathPara", "moMathParaPr", "mopEmu",
+            "mphant", "mphantPr", "mplcHide", "mpos", "mr", "mrad", "mradPr", "mrPr", "msepChr",
+            "mshow", "mshp", "msPre", "msPrePr", "msSub", "msSubPr", "msSubSup", "msSubSupPr", "msSup",
+            "msSupPr", "mstrikeBLTR", "mstrikeH", "mstrikeTLBR", "mstrikeV", "msub", "msubHide",
+            "msup", "msupHide", "mtransp", "mtype", "mvertJc", "mvfmf", "mvfml", "mvtof", "mvtol",
+            "mzeroAsc", "mzeroDesc", "mzeroWid", "nesttableprops", "nextfile", "nonesttables",
+            "objalias", "objclass", "objdata", "object", "objname", "objsect", "objtime", "oldcprops",
+            "oldpprops", "oldsprops", "oldtprops", "oleclsid", "operator", "panose", "password",
+            "passwordhash", "pgp", "pgptbl", "picprop", "pict", "pn", "pnseclvl", "pntext", "pntxta",
+            "pntxtb", "printim", "private", "propname", "protend", "protstart", "protusertbl", "pxe",
+            "result", "revtbl", "revtim", "rsidtbl", "rxe", "shp", "shpgrp", "shpinst",
+            "shppict", "shprslt", "shptxt", "sn", "sp", "staticval", "stylesheet", "subject", "sv",
+            "svb", "tc", "template", "themedata", "title", "txe", "ud", "upr", "userprops",
+            "wgrffmtfilter", "windowcaption", "writereservation", "writereservhash", "xe", "xform",
+            "xmlattrname", "xmlattrvalue", "xmlclose", "xmlname", "xmlnstbl",
+            "xmlopen"
+        };
+
+        private static readonly IReadOnlyDictionary<string, string> s_DicSpecialRtfCharacters = new Dictionary<string, string>
+        {
+            {"par", "\n"},
+            {"sect", "\n\n"},
+            {"page", "\n\n"},
+            {"line", "\n"},
+            {"tab", "\t"},
+            {"emdash", "\u2014"},
+            {"endash", "\u2013"},
+            {"emspace", "\u2003"},
+            {"enspace", "\u2002"},
+            {"qmspace", "\u2005"},
+            {"bullet", "\u2022"},
+            {"lquote", "\u2018"},
+            {"rquote", "\u2019"},
+            {"ldblquote", "\u201C"},
+            {"rdblquote", "\u201D"},
+        };
 
         /// <summary>
         /// Converts the specified string, which encodes binary data as base-64 digits, to an equivalent 8-bit unsigned integer array.
