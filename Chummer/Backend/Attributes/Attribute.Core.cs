@@ -280,12 +280,12 @@ namespace Chummer.Backend.Attributes
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (value == _intMetatypeMin)
+                    if (_intMetatypeMin == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
-                        _intMetatypeMin = value;
-                        OnPropertyChanged();
+                        if (Interlocked.Exchange(ref _intMetatypeMin, value) != value)
+                            OnPropertyChanged();
                     }
                 }
             }
@@ -353,12 +353,12 @@ namespace Chummer.Backend.Attributes
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (value == _intMetatypeMax)
+                    if (_intMetatypeMax == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
-                        _intMetatypeMax = value;
-                        OnPropertyChanged();
+                        if (Interlocked.Exchange(ref _intMetatypeMax, value) != value)
+                            OnPropertyChanged();
                     }
                 }
             }
@@ -445,12 +445,12 @@ namespace Chummer.Backend.Attributes
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (value == _intMetatypeAugMax)
+                    if (_intMetatypeAugMax == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
-                        _intMetatypeAugMax = value;
-                        OnPropertyChanged();
+                        if (Interlocked.Exchange(ref _intMetatypeAugMax, value) != value)
+                            OnPropertyChanged();
                     }
                 }
             }
@@ -518,12 +518,12 @@ namespace Chummer.Backend.Attributes
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (value == _intBase)
+                    if (_intBase == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
-                        _intBase = value;
-                        OnPropertyChanged();
+                        if (Interlocked.Exchange(ref _intBase, value) != value)
+                            OnPropertyChanged();
                     }
                 }
             }
@@ -545,13 +545,13 @@ namespace Chummer.Backend.Attributes
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (value == _intBase)
+                if (_intBase == value)
                     return;
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
-                    _intBase = value;
-                    OnPropertyChanged(nameof(Base));
+                    if (Interlocked.Exchange(ref _intBase, value) != value)
+                        OnPropertyChanged(nameof(Base));
                 }
                 finally
                 {
@@ -570,7 +570,7 @@ namespace Chummer.Backend.Attributes
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
-                _intBase += value;
+                Interlocked.Add(ref _intBase, value);
                 OnPropertyChanged(nameof(Base));
             }
             finally
@@ -646,12 +646,12 @@ namespace Chummer.Backend.Attributes
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (value == _intKarma)
+                    if (_intKarma == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
-                        _intKarma = value;
-                        OnPropertyChanged();
+                        if (Interlocked.Exchange(ref _intKarma, value) != value)
+                            OnPropertyChanged();
                     }
                 }
             }
@@ -673,13 +673,13 @@ namespace Chummer.Backend.Attributes
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (value == _intKarma)
+                if (_intKarma == value)
                     return;
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
-                    _intKarma = value;
-                    OnPropertyChanged(nameof(Karma));
+                    if (Interlocked.Exchange(ref _intKarma, value) != value)
+                        OnPropertyChanged(nameof(Karma));
                 }
                 finally
                 {
@@ -698,7 +698,7 @@ namespace Chummer.Backend.Attributes
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
-                _intKarma += value;
+                Interlocked.Add(ref _intKarma, value);
                 OnPropertyChanged(nameof(Karma));
             }
             finally

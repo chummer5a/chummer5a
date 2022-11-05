@@ -77,17 +77,17 @@ namespace Chummer
             // Create the GUID for the new Power.
             _guiID = Guid.NewGuid();
             CharacterObject = objCharacter;
-            if (CharacterObject != null)
+            if (objCharacter != null)
             {
-                CharacterObject.PropertyChanged += OnCharacterChanged;
-                CharacterObject.Settings.PropertyChanged += OnCharacterSettingsChanged;
-                if (CharacterObject.Settings.MysAdeptSecondMAGAttribute && CharacterObject.IsMysticAdept)
+                objCharacter.PropertyChanged += OnCharacterChanged;
+                objCharacter.Settings.PropertyChanged += OnCharacterSettingsChanged;
+                if (objCharacter.Settings.MysAdeptSecondMAGAttribute && objCharacter.IsMysticAdept)
                 {
-                    MAGAttributeObject = CharacterObject.MAGAdept;
+                    MAGAttributeObject = objCharacter.MAGAdept;
                 }
                 else
                 {
-                    MAGAttributeObject = CharacterObject.MAG;
+                    MAGAttributeObject = objCharacter.MAG;
                 }
             }
         }
@@ -441,14 +441,14 @@ namespace Chummer
             get => _objMAGAttribute;
             private set
             {
-                if (_objMAGAttribute != value)
-                {
-                    if (_objMAGAttribute != null)
-                        _objMAGAttribute.PropertyChanged -= OnLinkedAttributeChanged;
-                    if (value != null)
-                        value.PropertyChanged += OnLinkedAttributeChanged;
-                    _objMAGAttribute = value;
-                }
+                CharacterAttrib objOldValue = Interlocked.Exchange(ref _objMAGAttribute, value);
+                if (objOldValue == value)
+                    return;
+                if (objOldValue != null)
+                    objOldValue.PropertyChanged -= OnLinkedAttributeChanged;
+                if (value != null)
+                    value.PropertyChanged += OnLinkedAttributeChanged;
+                OnPropertyChanged();
             }
         }
 
@@ -459,14 +459,14 @@ namespace Chummer
             get => _objBoostedSkill;
             private set
             {
-                if (_objBoostedSkill != value)
-                {
-                    if (_objBoostedSkill != null)
-                        _objBoostedSkill.PropertyChanged -= OnBoostedSkillChanged;
-                    if (value != null)
-                        value.PropertyChanged += OnBoostedSkillChanged;
-                    _objBoostedSkill = value;
-                }
+                Skill objOldValue = Interlocked.Exchange(ref _objBoostedSkill, value);
+                if (objOldValue == value)
+                    return;
+                if (objOldValue != null)
+                    objOldValue.PropertyChanged -= OnBoostedSkillChanged;
+                if (value != null)
+                    value.PropertyChanged += OnBoostedSkillChanged;
+                OnPropertyChanged();
             }
         }
 
@@ -493,18 +493,18 @@ namespace Chummer
             get => _strName;
             set
             {
-                if (_strName != value)
+                string strOldValue = Interlocked.Exchange(ref _strName, value);
+                if (strOldValue == value)
+                    return;
+                if (strOldValue == "Improved Ability (skill)")
                 {
-                    if (Name == "Improved Ability (skill)")
-                    {
-                        BoostedSkill = null;
-                    }
-                    else if (value == "Improved Ability (skill)")
-                    {
-                        BoostedSkill = CharacterObject.SkillsSection.GetActiveSkill(Extra);
-                    }
-                    _strName = value;
+                    BoostedSkill = null;
                 }
+                else if (value == "Improved Ability (skill)")
+                {
+                    BoostedSkill = CharacterObject.SkillsSection.GetActiveSkill(Extra);
+                }
+                OnPropertyChanged();
             }
         }
 
@@ -516,13 +516,11 @@ namespace Chummer
             get => _strExtra;
             set
             {
-                if (_strExtra != value)
+                if (Interlocked.Exchange(ref _strExtra, value) != value)
                 {
-                    _strExtra = value;
                     if (Name == "Improved Ability (skill)")
-                    {
                         BoostedSkill = CharacterObject.SkillsSection.GetActiveSkill(value);
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -913,7 +911,11 @@ namespace Chummer
         public string BonusSource
         {
             get => _strBonusSource;
-            set => _strBonusSource = value;
+            set
+            {
+                if (Interlocked.Exchange(ref _strBonusSource, value) != value)
+                    OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -955,7 +957,11 @@ namespace Chummer
         public string Source
         {
             get => _strSource;
-            set => _strSource = value;
+            set
+            {
+                if (Interlocked.Exchange(ref _strSource, value) != value)
+                    OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -964,7 +970,11 @@ namespace Chummer
         public string Page
         {
             get => _strPage;
-            set => _strPage = value;
+            set
+            {
+                if (Interlocked.Exchange(ref _strPage, value) != value)
+                    OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -1069,7 +1079,11 @@ namespace Chummer
         public string Notes
         {
             get => _strNotes;
-            set => _strNotes = value;
+            set
+            {
+                if (Interlocked.Exchange(ref _strNotes, value) != value)
+                    OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -1078,7 +1092,14 @@ namespace Chummer
         public Color NotesColor
         {
             get => _colNotes;
-            set => _colNotes = value;
+            set
+            {
+                if (_colNotes != value)
+                {
+                    _colNotes = value;
+                    OnPropertyChanged();
+                }
+            }
         }
 
         /// <summary>
@@ -1087,7 +1108,11 @@ namespace Chummer
         public string Action
         {
             get => _strAction;
-            set => _strAction = value;
+            set
+            {
+                if (Interlocked.Exchange(ref _strAction, value) != value)
+                    OnPropertyChanged();
+            }
         }
 
         /// <summary>

@@ -3203,12 +3203,12 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (value == _eBuildMethod)
+                    if (_eBuildMethod == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
-                        _eBuildMethod = value;
-                        OnPropertyChanged();
+                        if (InterlockedExtensions.Exchange(ref _eBuildMethod, value) != value)
+                            OnPropertyChanged();
                     }
                 }
             }

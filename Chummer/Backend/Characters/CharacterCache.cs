@@ -385,11 +385,10 @@ namespace Chummer
                 Image imgOldValue;
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    imgOldValue = _imgMugshot;
-                    if (imgOldValue == value)
+                    if (_imgMugshot == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                        _imgMugshot = value;
+                        imgOldValue = Interlocked.Exchange(ref _imgMugshot, value);
                 }
                 imgOldValue?.Dispose();
             }
@@ -454,13 +453,16 @@ namespace Chummer
             }
             set
             {
+                Task<string> tskOld;
                 using (EnterReadLock.Enter(LockObject))
                 {
                     if (_tskRunningDownloadTask == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                        _tskRunningDownloadTask = value;
+                        tskOld = Interlocked.Exchange(ref _tskRunningDownloadTask, value);
                 }
+                if (tskOld != null)
+                    Utils.SafelyRunSynchronously(() => tskOld);
             }
         }
 
@@ -523,8 +525,7 @@ namespace Chummer
                 _strMetavariant = objExistingCache.Metavariant;
                 _strPlayerName = objExistingCache.PlayerName;
                 _strSettingsFile = objExistingCache.SettingsFile;
-                _imgMugshot?.Dispose();
-                _imgMugshot = objExistingCache.Mugshot.Clone() as Image;
+                Interlocked.Exchange(ref _imgMugshot, objExistingCache.Mugshot.Clone() as Image)?.Dispose();
             }
         }
 
@@ -551,8 +552,7 @@ namespace Chummer
                     _strMetavariant = objExistingCache.Metavariant;
                     _strPlayerName = objExistingCache.PlayerName;
                     _strSettingsFile = objExistingCache.SettingsFile;
-                    _imgMugshot?.Dispose();
-                    _imgMugshot = objExistingCache.Mugshot.Clone() as Image;
+                    Interlocked.Exchange(ref _imgMugshot, objExistingCache.Mugshot.Clone() as Image)?.Dispose();
                 }
             }
             finally
@@ -912,21 +912,22 @@ namespace Chummer
 
                     if (!string.IsNullOrEmpty(strMugshotBase64))
                     {
-                        _imgMugshot?.Dispose();
+                        Image imgNewMugshot;
                         if (blnSync)
                         {
                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             using (Image imgMugshot = strMugshotBase64.ToImage())
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                _imgMugshot = imgMugshot.GetCompressedImage();
+                                imgNewMugshot = imgMugshot.GetCompressedImage();
                         }
                         else
                         {
                             using (Image imgMugshot
                                    = await strMugshotBase64.ToImageAsync(token: token).ConfigureAwait(false))
-                                _imgMugshot = await imgMugshot.GetCompressedImageAsync(token: token)
-                                                              .ConfigureAwait(false);
+                                imgNewMugshot = await imgMugshot.GetCompressedImageAsync(token: token)
+                                                                .ConfigureAwait(false);
                         }
+                        Interlocked.Exchange(ref _imgMugshot, imgNewMugshot)?.Dispose();
                     }
                 }
                 else
@@ -1080,8 +1081,9 @@ namespace Chummer
                 return;
             using (LockObject.EnterWriteLock())
             {
-                _imgMugshot?.Dispose();
-                _tskRunningDownloadTask?.Dispose();
+                Interlocked.Exchange(ref _imgMugshot, null)?.Dispose();
+                if (_tskRunningDownloadTask != null)
+                    Utils.SafelyRunSynchronously(() => _tskRunningDownloadTask);
                 _dicMyPluginData.Dispose();
             }
 
@@ -1096,8 +1098,9 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
-                _imgMugshot?.Dispose();
-                _tskRunningDownloadTask?.Dispose();
+                Interlocked.Exchange(ref _imgMugshot, null)?.Dispose();
+                if (_tskRunningDownloadTask != null)
+                    await _tskRunningDownloadTask;
                 await _dicMyPluginData.DisposeAsync().ConfigureAwait(false);
             }
             finally

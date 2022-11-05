@@ -1106,18 +1106,17 @@ namespace Chummer
             get => _blnUseLogging;
             set
             {
-                if (_blnUseLogging != value)
+                if (_blnUseLogging == value)
+                    return;
+                _blnUseLogging = value;
+                // Sets up logging if the option is changed during runtime
+                if (value)
                 {
-                    _blnUseLogging = value;
-                    // Sets up logging if the option is changed during runtime
-                    if (value)
-                    {
-                        if (!LogManager.IsLoggingEnabled())
-                            LogManager.ResumeLogging();
-                    }
-                    else if (LogManager.IsLoggingEnabled())
-                        LogManager.SuspendLogging();
+                    if (!LogManager.IsLoggingEnabled())
+                        LogManager.ResumeLogging();
                 }
+                else if (LogManager.IsLoggingEnabled())
+                    LogManager.SuspendLogging();
             }
         }
 
@@ -1139,9 +1138,10 @@ namespace Chummer
             get => _enumUseLoggingApplicationInsights;
             set
             {
-                _enumUseLoggingApplicationInsights = value;
-                // Sets up logging if the option is changed during runtime
-                TelemetryConfiguration.Active.DisableTelemetry = _enumUseLoggingApplicationInsights == UseAILogging.OnlyLocal;
+                if (InterlockedExtensions.Exchange(ref _enumUseLoggingApplicationInsights, value) != value)
+                    // Sets up logging if the option is changed during runtime
+                    TelemetryConfiguration.Active.DisableTelemetry
+                        = _enumUseLoggingApplicationInsights == UseAILogging.OnlyLocal;
             }
         }
 
@@ -1256,10 +1256,8 @@ namespace Chummer
             get => _intEmulatedBrowserVersion;
             set
             {
-                if (_intEmulatedBrowserVersion == value)
-                    return;
-                _intEmulatedBrowserVersion = value;
-                Utils.SetupWebBrowserRegistryKeys();
+                if (Interlocked.Exchange(ref _intEmulatedBrowserVersion, value) != value)
+                    Utils.SetupWebBrowserRegistryKeys();
             }
         }
 
@@ -1271,9 +1269,8 @@ namespace Chummer
             get => _strLanguage;
             set
             {
-                if (value == _strLanguage)
+                if (Interlocked.Exchange(ref _strLanguage, value) == value)
                     return;
-                _strLanguage = value;
                 try
                 {
                     _objLanguageCultureInfo = CultureInfo.GetCultureInfo(value);
@@ -1308,14 +1305,13 @@ namespace Chummer
             }
         }
 
-        public static async ValueTask SetLanguageAsync(string strValue, CancellationToken token = default)
+        public static async ValueTask SetLanguageAsync(string value, CancellationToken token = default)
         {
-            if (strValue == _strLanguage)
+            if (Interlocked.Exchange(ref _strLanguage, value) == value)
                 return;
-            _strLanguage = strValue;
             try
             {
-                _objLanguageCultureInfo = CultureInfo.GetCultureInfo(strValue);
+                _objLanguageCultureInfo = CultureInfo.GetCultureInfo(value);
             }
             catch (CultureNotFoundException)
             {
@@ -1408,11 +1404,8 @@ namespace Chummer
             get => _xmlClipboard;
             set
             {
-                if (_xmlClipboard != value)
-                {
-                    _xmlClipboard = value;
+                if (Interlocked.Exchange(ref _xmlClipboard, value) != value)
                     ClipboardChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)));
-                }
             }
         }
 
@@ -1664,6 +1657,8 @@ namespace Chummer
             get => _blnShowCharacterCustomDataWarning;
             set
             {
+                if (_blnShowCharacterCustomDataWarning == value)
+                    return;
                 _blnShowCharacterCustomDataWarning = value;
                 using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Chummer5"))
                 {
@@ -1734,9 +1729,8 @@ namespace Chummer
             get => _strImageFolder;
             set
             {
-                if (_strImageFolder != value)
+                if (Interlocked.Exchange(ref _strImageFolder, value) != value)
                 {
-                    _strImageFolder = value;
                     using (RegistryKey objRegistry = Registry.CurrentUser.CreateSubKey("Software\\Chummer5"))
                         objRegistry?.SetValue("recentimagefolder", value);
                 }

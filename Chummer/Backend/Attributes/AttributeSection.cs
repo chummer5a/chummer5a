@@ -1991,14 +1991,17 @@ namespace Chummer.Backend.Attributes
                         return;
                     using (LockObject.EnterWriteLock())
                     {
-                        _eAttributeCategory = value;
-                        if (_objCharacter.Created)
+                        if (InterlockedExtensions.Exchange(ref _eAttributeCategory, value) != value)
                         {
-                            ResetBindings();
-                            ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.MetatypeMaximum),
-                                                                         nameof(CharacterAttrib.MetatypeMinimum));
+                            if (_objCharacter.Created)
+                            {
+                                ResetBindings();
+                                ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.MetatypeMaximum),
+                                                                             nameof(CharacterAttrib.MetatypeMinimum));
+                            }
+
+                            OnPropertyChanged();
                         }
-                        OnPropertyChanged();
                     }
                 }
             }

@@ -636,11 +636,10 @@ namespace Chummer
             get => _strName;
             set
             {
-                if (_strName != value)
+                if (Interlocked.Exchange(ref _strName, value) != value)
                 {
                     _objCachedMyXmlNode = null;
                     _objCachedMyXPathNode = null;
-                    _strName = value;
                     OnPropertyChanged();
                 }
             }
@@ -654,11 +653,8 @@ namespace Chummer
             get => LinkedCharacter != null ? LinkedCharacter.CharacterName : _strCritterName;
             set
             {
-                if (_strCritterName != value)
-                {
-                    _strCritterName = value;
+                if (Interlocked.Exchange(ref _strCritterName, value) != value)
                     OnPropertyChanged();
-                }
             }
         }
 
@@ -877,7 +873,13 @@ namespace Chummer
         public Color NotesColor
         {
             get => _colNotes;
-            set => _colNotes = value;
+            set
+            {
+                if (_colNotes == value)
+                    return;
+                _colNotes = value;
+                OnPropertyChanged();
+            }
         }
 
         private bool _blnFettered;

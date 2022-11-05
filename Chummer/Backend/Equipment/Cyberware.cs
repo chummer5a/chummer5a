@@ -3694,9 +3694,9 @@ namespace Chummer.Backend.Equipment
             set
             {
                 Grade objOldGrade = Interlocked.Exchange(ref _objGrade, value);
-                if (objOldGrade == value || value == null)
+                if (objOldGrade == value)
                     return;
-                bool blnGradeEssenceChanged = objOldGrade.Essence != value.Essence;
+                bool blnGradeEssenceChanged = value == null || objOldGrade.Essence != value.Essence;
                 // Run through all of the child pieces and make sure their Grade matches.
                 foreach (Cyberware objChild in Children)
                 {

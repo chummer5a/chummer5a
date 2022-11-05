@@ -567,11 +567,12 @@ namespace Chummer.Backend.Skills
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (value == _strType)
+                    if (_strType == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
-                        _strType = value;
+                        if (Interlocked.Exchange(ref _strType, value) == value)
+                            return;
 
                         //2018-22-03: Causes any attempt to alter the Type for skills with names that match
                         //default skills to reset to the default Type for that skill. If we want to disable
@@ -608,12 +609,13 @@ namespace Chummer.Backend.Skills
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (value == _strType)
+                if (_strType == value)
                     return;
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
-                    _strType = value;
+                    if (Interlocked.Exchange(ref _strType, value) == value)
+                        return;
 
                     //2018-22-03: Causes any attempt to alter the Type for skills with names that match
                     //default skills to reset to the default Type for that skill. If we want to disable
