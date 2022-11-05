@@ -41,7 +41,7 @@ namespace Chummer
         private string DisplayDebug()
         {
             return string.Format(GlobalSettings.InvariantCultureInfo, "{0} ({1}, {2}) 🡐 {3}, {4}, {5}",
-                                 _objImprovementType, _decVal, _intRating, _objImprovementSource, _strSourceName,
+                                 _eImprovementType, _decVal, _intRating, _eImprovementSource, _strSourceName,
                                  _strImprovedName);
         }
 
@@ -419,8 +419,8 @@ namespace Chummer
         private string _strCondition = string.Empty;
         private string _strUniqueName = string.Empty;
         private string _strTarget = string.Empty;
-        private ImprovementType _objImprovementType;
-        private ImprovementSource _objImprovementSource;
+        private ImprovementType _eImprovementType;
+        private ImprovementSource _eImprovementSource;
         private bool _blnCustom;
         private string _strCustomName = string.Empty;
         private string _strCustomId = string.Empty;
@@ -499,8 +499,8 @@ namespace Chummer
             objWriter.WriteElementString("rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("exclude", _strExclude);
             objWriter.WriteElementString("condition", _strCondition);
-            objWriter.WriteElementString("improvementttype", _objImprovementType.ToString());
-            objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
+            objWriter.WriteElementString("improvementttype", _eImprovementType.ToString());
+            objWriter.WriteElementString("improvementsource", _eImprovementSource.ToString());
             objWriter.WriteElementString("custom", _blnCustom.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("customname", _strCustomName);
             objWriter.WriteElementString("customid", _strCustomId);
@@ -538,21 +538,21 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("exclude", ref _strExclude);
             objNode.TryGetStringFieldQuickly("condition", ref _strCondition);
             if (objNode["improvementttype"] != null)
-                _objImprovementType = ConvertToImprovementType(objNode["improvementttype"].InnerText);
+                _eImprovementType = ConvertToImprovementType(objNode["improvementttype"].InnerText);
             if (objNode["improvementsource"] != null)
-                _objImprovementSource = ConvertToImprovementSource(objNode["improvementsource"].InnerText);
+                _eImprovementSource = ConvertToImprovementSource(objNode["improvementsource"].InnerText);
             // Legacy shims
             if (_objCharacter.LastSavedVersion <= new Version(5, 214, 112)
-                && (_objImprovementSource == ImprovementSource.Initiation
-                    || _objImprovementSource == ImprovementSource.Submersion)
-                && _objImprovementType == ImprovementType.Attribute
+                && (_eImprovementSource == ImprovementSource.Initiation
+                    || _eImprovementSource == ImprovementSource.Submersion)
+                && _eImprovementType == ImprovementType.Attribute
                 && _intMax > 1 && _intRating == 1)
             {
                 _intRating = _intMax;
                 _intMax = 1;
             }
 
-            switch (_objImprovementType)
+            switch (_eImprovementType)
             {
                 case ImprovementType.LimitModifier
                     when string.IsNullOrEmpty(_strCondition) && !string.IsNullOrEmpty(_strExclude):
@@ -678,19 +678,19 @@ namespace Chummer
         /// </summary>
         public ImprovementType ImproveType
         {
-            get => _objImprovementType;
+            get => _eImprovementType;
             set
             {
-                if (_objImprovementType == value)
+                if (_eImprovementType == value)
                     return;
                 if (Enabled)
                 {
-                    ImprovementManager.ClearCachedValue(_objCharacter, _objImprovementType, ImprovedName);
+                    ImprovementManager.ClearCachedValue(_objCharacter, _eImprovementType, ImprovedName);
                     ImprovementManager.ClearCachedValue(_objCharacter, value, ImprovedName);
                     this.Yield().ProcessRelevantEvents();
                 }
 
-                _objImprovementType = value;
+                _eImprovementType = value;
 
                 if (Enabled)
                     this.Yield().ProcessRelevantEvents();
@@ -702,14 +702,14 @@ namespace Chummer
         /// </summary>
         public ImprovementSource ImproveSource
         {
-            get => _objImprovementSource;
+            get => _eImprovementSource;
             set
             {
-                if (_objImprovementSource == value)
+                if (_eImprovementSource == value)
                     return;
                 if (Enabled)
                     this.Yield().ProcessRelevantEvents();
-                _objImprovementSource = value;
+                _eImprovementSource = value;
                 if (Enabled)
                 {
                     ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);

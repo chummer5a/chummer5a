@@ -751,11 +751,8 @@ namespace Chummer
                         value = intSkillValue;
                     }
                 }
-                if (_intServicesOwed != value)
-                {
-                    _intServicesOwed = value;
+                if (Interlocked.Exchange(ref _intServicesOwed, value) != value)
                     OnPropertyChanged();
-                }
             }
         }
 
@@ -778,9 +775,8 @@ namespace Chummer
                         break;
                 }
 
-                if (_intForce == value) return;
-                _intForce = value;
-                OnPropertyChanged();
+                if (Interlocked.Exchange(ref _intForce, value) != value)
+                    OnPropertyChanged();
             }
         }
 
@@ -822,13 +818,11 @@ namespace Chummer
             get => _eEntityType;
             set
             {
-                if (_eEntityType != value)
-                {
-                    _objCachedMyXmlNode = null;
-                    _objCachedMyXPathNode = null;
-                    _eEntityType = value;
-                    OnPropertyChanged();
-                }
+                if (InterlockedExtensions.Exchange(ref _eEntityType, value) == value)
+                    return;
+                _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
+                OnPropertyChanged();
             }
         }
 
@@ -840,9 +834,8 @@ namespace Chummer
             get => _strFileName;
             set
             {
-                if (_strFileName != value)
+                if (Interlocked.Exchange(ref _strFileName, value) != value)
                 {
-                    _strFileName = value;
                     RefreshLinkedCharacter(!string.IsNullOrEmpty(value));
                     OnPropertyChanged();
                 }
@@ -857,9 +850,8 @@ namespace Chummer
             get => _strRelativeName;
             set
             {
-                if (_strRelativeName != value)
+                if (Interlocked.Exchange(ref _strRelativeName, value) != value)
                 {
-                    _strRelativeName = value;
                     RefreshLinkedCharacter(!string.IsNullOrEmpty(value));
                     OnPropertyChanged();
                 }
@@ -874,11 +866,8 @@ namespace Chummer
             get => _strNotes;
             set
             {
-                if (_strNotes != value)
-                {
-                    _strNotes = value;
+                if (Interlocked.Exchange(ref _strNotes, value) != value)
                     OnPropertyChanged();
-                }
             }
         }
 
@@ -1148,8 +1137,7 @@ namespace Chummer
                 string strFile = blnUseRelative ? Path.GetFullPath(RelativeFileName) : FileName;
                 if (strFile.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase) || strFile.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
                 {
-                    _objLinkedCharacter = Program.OpenCharacters.Find(x => x.FileName == strFile);
-                    if (_objLinkedCharacter == null)
+                    if ((_objLinkedCharacter = Program.OpenCharacters.Find(x => x.FileName == strFile)) == null)
                     {
                         using (ThreadSafeForm<LoadingBar> frmLoadingBar = Program.CreateAndShowProgressBar(strFile, Character.NumLoadingSections))
                             _objLinkedCharacter = Program.LoadCharacter(strFile, string.Empty, false, false, frmLoadingBar.MyForm);
@@ -1271,27 +1259,11 @@ namespace Chummer
                     LinkedCharacter.MainMugshotIndex = value;
                 else
                 {
-                    if (value < -1)
+                    if (value < -1 || value >= Mugshots.Count)
                         value = -1;
-                    else if (value >= 0)
-                    {
-                        using (EnterReadLock.Enter(CharacterObject.LockObject))
-                        {
-                            if (value >= Mugshots.Count)
-                                value = -1;
-                        }
-                    }
 
-                    using (EnterReadLock.Enter(CharacterObject.LockObject))
-                    {
-                        if (_intMainMugshotIndex == value)
-                            return;
-                        using (CharacterObject.LockObject.EnterWriteLock())
-                        {
-                            _intMainMugshotIndex = value;
-                            OnPropertyChanged();
-                        }
-                    }
+                    if (Interlocked.Exchange(ref _intMainMugshotIndex, value) != value)
+                        OnPropertyChanged();
                 }
             }
         }

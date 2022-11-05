@@ -295,11 +295,10 @@ namespace Chummer
             get => _eImprovementSource;
             set
             {
-                if (_eImprovementSource == value)
+                if (InterlockedExtensions.Exchange(ref _eImprovementSource, value) == value)
                     return;
                 _objCachedMyXmlNode = null;
                 _objCachedMyXPathNode = null;
-                _eImprovementSource = value;
             }
         }
 

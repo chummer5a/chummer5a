@@ -188,11 +188,11 @@ namespace Chummer
     public class ListViewColumnSorter : IComparer
     {
         private int _intColumnToSort;
-        private SortOrder _objOrderOfSort;
+        private SortOrder _eOrderOfSort;
 
         public int Compare(object x, object y)
         {
-            if (_objOrderOfSort == SortOrder.None)
+            if (_eOrderOfSort == SortOrder.None)
                 return 0;
 
             int intCompareResult;
@@ -246,7 +246,7 @@ namespace Chummer
             }
 
             // Calculate correct return value based on object comparison
-            if (_objOrderOfSort == SortOrder.Ascending)
+            if (_eOrderOfSort == SortOrder.Ascending)
                 return intCompareResult;
             return -intCompareResult;
         }
@@ -265,8 +265,8 @@ namespace Chummer
         /// </summary>
         public SortOrder Order
         {
-            get => _objOrderOfSort;
-            set => _objOrderOfSort = value;
+            get => _eOrderOfSort;
+            set => _eOrderOfSort = value;
         }
     }
 

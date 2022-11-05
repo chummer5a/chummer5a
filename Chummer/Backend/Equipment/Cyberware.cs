@@ -2175,11 +2175,10 @@ namespace Chummer.Backend.Equipment
             get => _eImprovementSource;
             set
             {
-                if (_eImprovementSource == value)
+                if (InterlockedExtensions.Exchange(ref _eImprovementSource, value) == value)
                     return;
                 _objCachedMyXmlNode = null;
                 _objCachedMyXPathNode = null;
-                _eImprovementSource = value;
             }
         }
 
@@ -4055,10 +4054,9 @@ namespace Chummer.Backend.Equipment
             get => _objParent;
             set
             {
-                if (_objParent != value)
+                bool blnOldEquipped = IsModularCurrentlyEquipped;
+                if (Interlocked.Exchange(ref _objParent, value) != value)
                 {
-                    bool blnOldEquipped = IsModularCurrentlyEquipped;
-                    _objParent = value;
                     ParentVehicle = value?.ParentVehicle;
                     if (IsModularCurrentlyEquipped != blnOldEquipped)
                     {
@@ -4096,9 +4094,8 @@ namespace Chummer.Backend.Equipment
             get => _objParentVehicle;
             set
             {
-                if (_objParentVehicle != value)
+                if (Interlocked.Exchange(ref _objParentVehicle, value) != value)
                 {
-                    _objParentVehicle = value;
                     bool blnEquipped = IsModularCurrentlyEquipped;
                     foreach (Gear objGear in GearChildren)
                     {

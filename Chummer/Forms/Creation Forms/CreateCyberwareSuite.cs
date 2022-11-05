@@ -28,20 +28,20 @@ namespace Chummer
     public sealed partial class CreateCyberwareSuite : Form
     {
         private readonly Character _objCharacter;
-        private readonly Improvement.ImprovementSource _objSource;
+        private readonly Improvement.ImprovementSource _eSource;
         private readonly string _strType;
 
         #region Control Events
 
-        public CreateCyberwareSuite(Character objCharacter, Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Cyberware)
+        public CreateCyberwareSuite(Character objCharacter, Improvement.ImprovementSource eSource = Improvement.ImprovementSource.Cyberware)
         {
             InitializeComponent();
-            _objSource = objSource;
+            _eSource = eSource;
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
             _objCharacter = objCharacter;
 
-            if (_objSource == Improvement.ImprovementSource.Cyberware)
+            if (_eSource == Improvement.ImprovementSource.Cyberware)
                 _strType = "cyberware";
             else
             {
@@ -146,7 +146,7 @@ namespace Chummer
                     // Determine the Grade of Cyberware.
                     foreach (Cyberware objCyberware in _objCharacter.Cyberware)
                     {
-                        if (objCyberware.SourceType == _objSource)
+                        if (objCyberware.SourceType == _eSource)
                         {
                             strGrade = objCyberware.Grade.Name;
                             break;
@@ -167,7 +167,7 @@ namespace Chummer
                     // Write out the Cyberware.
                     foreach (Cyberware objCyberware in _objCharacter.Cyberware)
                     {
-                        if (objCyberware.SourceType == _objSource)
+                        if (objCyberware.SourceType == _eSource)
                         {
                             // <cyberware>
                             await objWriter.WriteStartElementAsync(_strType).ConfigureAwait(false);

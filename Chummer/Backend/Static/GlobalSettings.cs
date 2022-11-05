@@ -112,21 +112,21 @@ namespace Chummer
             {
                 if (_objPdfDocument == null)
                 {
-                    Uri uriPath = new Uri(Path);
-                    if (File.Exists(uriPath.LocalPath))
+                    string strPath = new Uri(Path).LocalPath;
+                    if (File.Exists(strPath))
                     {
                         try
                         {
-                            _objPdfReader = new PdfReader(uriPath.LocalPath);
-                            _objPdfDocument = new PdfDocument(_objPdfReader);
+                            PdfDocument objReturn = new PdfDocument(_objPdfReader);
+                            Interlocked.Exchange(ref _objPdfDocument, objReturn)?.Close();
+                            Interlocked.Exchange(ref _objPdfReader, new PdfReader(strPath))?.Close();
+                            return objReturn;
                         }
                         catch (Exception e)
                         {
-                            Log.Warn(e, $"Exception while loading {uriPath.LocalPath}: " + e.Message);
-                            _objPdfDocument?.Close();
-                            _objPdfDocument = null;
-                            _objPdfReader?.Close();
-                            _objPdfReader = null;
+                            Log.Warn(e, $"Exception while loading {strPath}: " + e.Message);
+                            Interlocked.Exchange(ref _objPdfDocument, null)?.Close();
+                            Interlocked.Exchange(ref _objPdfReader, null)?.Close();
                         }
                     }
                 }
@@ -1173,12 +1173,11 @@ namespace Chummer
         /// </summary>
         public static ColorMode ColorModeSetting => _eColorMode;
 
-        public static Task SetColorModeSettingAsync(ColorMode eNewValue, CancellationToken token = default)
+        public static Task SetColorModeSettingAsync(ColorMode value, CancellationToken token = default)
         {
-            if (_eColorMode == eNewValue)
+            if (InterlockedExtensions.Exchange(ref _eColorMode, value) == value)
                 return Task.CompletedTask;
-            _eColorMode = eNewValue;
-            switch (eNewValue)
+            switch (value)
             {
                 case ColorMode.Automatic:
                     return ColorManager.AutoApplyLightDarkModeAsync(token);

@@ -441,12 +441,9 @@ namespace Chummer
             get => _eExpenseType;
             set
             {
-                if (_eExpenseType != value)
-                {
-                    _eExpenseType = value;
-                    if (Amount > 0 && !Refund)
-                        _objCharacter?.OnMultiplePropertyChanged(nameof(Character.CareerNuyen), nameof(Character.CareerKarma));
-                }
+                if (InterlockedExtensions.Exchange(ref _eExpenseType, value) != value && Amount > 0 && !Refund)
+                    _objCharacter?.OnMultiplePropertyChanged(nameof(Character.CareerNuyen),
+                                                             nameof(Character.CareerKarma));
             }
         }
 

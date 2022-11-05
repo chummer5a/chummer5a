@@ -127,7 +127,11 @@ namespace Chummer
                 if (string.IsNullOrEmpty(strOldSettingKey))
                 {
                     if (_objSelectedSetting == null)
-                        _objSelectedSetting = await GetInitialSetting(token).ConfigureAwait(false);
+                    {
+                        Interlocked.CompareExchange(ref _objSelectedSetting,
+                                                    await GetInitialSetting(token).ConfigureAwait(false), null);
+                    }
+
                     strOldSettingKey = _objSelectedSetting != null
                         ? await _objSelectedSetting.GetDictionaryKeyAsync(token).ConfigureAwait(false)
                         : string.Empty;
@@ -191,10 +195,17 @@ namespace Chummer
                     await SourceString.Blank.SetControlAsync(lblSource, _objGenericToken).ConfigureAwait(false);
                     await PopulateCharacterSettings(_objGenericToken).ConfigureAwait(false);
                     await LoadContent(_objGenericToken).ConfigureAwait(false);
-                    if (_objSelectedSetting == null)
-                        _objSelectedSetting = await GetInitialSetting(_objGenericToken).ConfigureAwait(false);
-                    if (_objSelectedSetting != null)
-                        _objSelectedSetting.PropertyChanged += OnSelectedSettingChanged;
+                    CharacterSettings objSettings = _objSelectedSetting;
+                    if (objSettings == null)
+                    {
+                        CharacterSettings objNewSettings
+                            = await GetInitialSetting(_objGenericToken).ConfigureAwait(false);
+                        objSettings = Interlocked.CompareExchange(ref _objSelectedSetting, objNewSettings, null)
+                                      ?? objNewSettings;
+                    }
+
+                    if (objSettings != null)
+                        objSettings.PropertyChanged += OnSelectedSettingChanged;
                 }
                 finally
                 {
@@ -298,13 +309,13 @@ namespace Chummer
                         }
                     }
 
-                    if (objSettings != _objSelectedSetting)
+                    CharacterSettings objPreviousSettings = Interlocked.Exchange(ref _objSelectedSetting, objSettings);
+                    if (objPreviousSettings != objSettings)
                     {
-                        if (_objSelectedSetting != null)
-                            _objSelectedSetting.PropertyChanged -= OnSelectedSettingChanged;
-                        _objSelectedSetting = objSettings;
-                        if (_objSelectedSetting != null)
-                            _objSelectedSetting.PropertyChanged += OnSelectedSettingChanged;
+                        if (objPreviousSettings != null)
+                            objPreviousSettings.PropertyChanged -= OnSelectedSettingChanged;
+                        if (objSettings != null)
+                            objSettings.PropertyChanged += OnSelectedSettingChanged;
 
                         await LoadContent(_objGenericToken).ConfigureAwait(false);
                     }
@@ -339,7 +350,8 @@ namespace Chummer
                     _lstItems.Clear();
                     _lstFileNamesWithItems.Clear();
                     if (_objSelectedSetting == null)
-                        _objSelectedSetting = await GetInitialSetting(token).ConfigureAwait(false);
+                        Interlocked.CompareExchange(ref _objSelectedSetting,
+                                                    await GetInitialSetting(token).ConfigureAwait(false), null);
                     string strSourceFilter;
                     using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                     out HashSet<string> setValidCodes))
@@ -653,7 +665,7 @@ namespace Chummer
                         {
                             Interlocked.Decrement(ref _intSkipRefresh);
                         }
-                        
+
                         if (objOldSelectedValue is MasterIndexEntry objOldSelectedEntry)
                             await lstItems.DoThreadSafeFuncAsync(
                                 x => x.SelectedIndex

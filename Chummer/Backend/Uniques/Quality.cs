@@ -739,10 +739,8 @@ namespace Chummer
             get => _eQualityType;
             set
             {
-                if (_eQualityType == value)
-                    return;
-                _eQualityType = value;
-                OnPropertyChanged();
+                if (InterlockedExtensions.Exchange(ref _eQualityType, value) != value)
+                    OnPropertyChanged();
             }
         }
 
@@ -754,10 +752,8 @@ namespace Chummer
             get => _eQualitySource;
             set
             {
-                if (_eQualitySource == value)
-                    return;
-                _eQualitySource = value;
-                OnPropertyChanged();
+                if (InterlockedExtensions.Exchange(ref _eQualitySource, value) != value)
+                    OnPropertyChanged();
             }
         }
 

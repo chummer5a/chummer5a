@@ -25,7 +25,7 @@ namespace Chummer
 {
     public sealed partial class CreateExpense : Form
     {
-        private ExpenseType _objMode = ExpenseType.Karma;
+        private ExpenseType _eMode = ExpenseType.Karma;
         private readonly CharacterSettings _objCharacterSettings;
 
         #region Control Events
@@ -59,7 +59,7 @@ namespace Chummer
 
         private async void cmdOK_Click(object sender, EventArgs e)
         {
-            if (KarmaNuyenExchange && _objMode == ExpenseType.Nuyen && await nudAmount.DoThreadSafeFuncAsync(x => x.Value).ConfigureAwait(false) % _objCharacterSettings.NuyenPerBPWftP != 0)
+            if (KarmaNuyenExchange && _eMode == ExpenseType.Nuyen && await nudAmount.DoThreadSafeFuncAsync(x => x.Value).ConfigureAwait(false) % _objCharacterSettings.NuyenPerBPWftP != 0)
             {
                 Program.ShowMessageBox(
                     this,
@@ -98,7 +98,7 @@ namespace Chummer
             get
             {
                 decimal decReturn = nudAmount.Value;
-                if (_objMode == ExpenseType.Nuyen)
+                if (_eMode == ExpenseType.Nuyen)
                     decReturn *= (nudPercent.Value / 100.0m);
                 return decReturn;
             }
@@ -170,7 +170,7 @@ namespace Chummer
                     nudPercent.Visible = false;
                     lblPercent.Visible = false;
                 }
-                _objMode = value;
+                _eMode = value;
             }
         }
 
@@ -205,7 +205,7 @@ namespace Chummer
                 txtDescription.Text = KarmaNuyenExchangeString;
             }
 
-            if (chkKarmaNuyenExchange.Checked && _objMode == ExpenseType.Nuyen)
+            if (chkKarmaNuyenExchange.Checked && _eMode == ExpenseType.Nuyen)
             {
                 nudAmount.Increment = _objCharacterSettings.NuyenPerBPWftP;
                 nudAmount.Value = _objCharacterSettings.NuyenPerBPWftP;

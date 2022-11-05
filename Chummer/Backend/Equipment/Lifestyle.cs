@@ -1238,10 +1238,8 @@ namespace Chummer.Backend.Equipment
             get => _eType;
             set
             {
-                if (_eType == value)
-                    return;
-                _eType = value;
-                OnPropertyChanged();
+                if (InterlockedExtensions.Exchange(ref _eType, value) != value)
+                    OnPropertyChanged();
             }
         }
 
@@ -1253,10 +1251,8 @@ namespace Chummer.Backend.Equipment
             get => _eIncrement;
             set
             {
-                if (_eIncrement == value)
-                    return;
-                _eIncrement = value;
-                OnPropertyChanged();
+                if (InterlockedExtensions.Exchange(ref _eIncrement, value) != value)
+                    OnPropertyChanged();
             }
         }
 

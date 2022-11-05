@@ -52,11 +52,20 @@ namespace Chummer
                 return;
             // Fill the background.
             if (_objBackColorBrush == null)
-                _objBackColorBrush = new SolidBrush(BackColor);
+            {
+                SolidBrush objNewBrush = new SolidBrush(BackColor);
+                if (Interlocked.CompareExchange(ref _objBackColorBrush, objNewBrush, null) != null)
+                    objNewBrush.Dispose();
+            }
+
             e.Graphics.FillRectangle(_objBackColorBrush, 0, 0, intWidth, intHeight);
             // Draw the line.
             if (_objForeColorPen == null)
-                _objForeColorPen = new Pen(ForeColor);
+            {
+                Pen objNewPen = new Pen(ForeColor);
+                if (Interlocked.CompareExchange(ref _objForeColorPen, objNewPen, null) != null)
+                    objNewPen.Dispose();
+            }
             int intMargin = (4 * e.Graphics.DpiX / 96.0f).StandardRound();
             e.Graphics.DrawLine(_objForeColorPen, intMargin, intHeight / 2, intWidth - intMargin, intHeight / 2);
         }

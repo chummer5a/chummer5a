@@ -503,11 +503,10 @@ namespace Chummer.Backend.Uniques
             get => _eTraditionType;
             set
             {
-                if (_eTraditionType == value)
+                if (InterlockedExtensions.Exchange(ref _eTraditionType, value) == value)
                     return;
                 _xmlCachedMyXmlNode = null;
                 _objCachedMyXPathNode = null;
-                _eTraditionType = value;
                 OnPropertyChanged();
             }
         }

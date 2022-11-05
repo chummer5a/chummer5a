@@ -563,9 +563,8 @@ namespace Chummer.Backend.Equipment
             get => _objWeaponMountParent;
             set
             {
-                if (_objWeaponMountParent == value)
+                if (Interlocked.Exchange(ref _objWeaponMountParent, value) == value)
                     return;
-                _objWeaponMountParent = value;
                 Vehicle objNewParent = value?.Parent;
                 if (objNewParent != null)
                     Parent = objNewParent;

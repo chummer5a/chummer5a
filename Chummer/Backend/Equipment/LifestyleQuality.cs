@@ -626,10 +626,8 @@ namespace Chummer.Backend.Equipment
             get => _eOriginSource;
             set
             {
-                if (_eOriginSource == value)
-                    return;
-                _eOriginSource = value;
-                OnPropertyChanged();
+                if (InterlockedExtensions.Exchange(ref _eOriginSource, value) != value)
+                    OnPropertyChanged();
             }
         }
 

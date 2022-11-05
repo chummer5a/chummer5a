@@ -125,10 +125,8 @@ namespace Chummer.UI.Table
             get => _eSortType;
             set
             {
-                if (_eSortType == value)
-                    return;
-                _eSortType = value;
-                this.DoThreadSafe(x => x.Invalidate());
+                if (InterlockedExtensions.Exchange(ref _eSortType, value) != value)
+                    this.DoThreadSafe(x => x.Invalidate());
             }
         }
 
