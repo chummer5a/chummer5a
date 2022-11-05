@@ -82,17 +82,19 @@ namespace Chummer
 
         private static JoinableTaskContext MyJoinableTaskContext { get; set; }
 
-        public static void CreateSynchronizationContext()
+        public static JoinableTaskContext CreateSynchronizationContext()
         {
             if (Program.IsMainThread)
             {
                 using (new DummyForm()) // New Form needs to be created (or Application.Run() called) before Synchronization.Current is set
                 {
                     MySynchronizationContext = SynchronizationContext.Current;
-                    MyJoinableTaskContext
+                    return MyJoinableTaskContext
                         = new JoinableTaskContext(Thread.CurrentThread, SynchronizationContext.Current);
                 }
             }
+
+            return default;
         }
 
         // Need this as a Lazy, otherwise it won't fire properly in the designer if we just cache it, and the check itself is also quite expensive
@@ -356,10 +358,10 @@ namespace Chummer
         public static string GetSettingsFolderPath => s_strGetSettingsFolderPath.Value;
 
         private static readonly Lazy<JoinableTaskFactory> s_objJoinableTaskFactory
-            = new Lazy<JoinableTaskFactory>(() => new JoinableTaskFactory(
-                                                IsRunningInVisualStudio
-                                                    ? new JoinableTaskContext()
-                                                    : MyJoinableTaskContext));
+            = new Lazy<JoinableTaskFactory>(() => IsRunningInVisualStudio
+                                                ? new JoinableTaskFactory(new JoinableTaskContext())
+                                                : new JoinableTaskFactory(
+                                                    MyJoinableTaskContext ?? CreateSynchronizationContext()));
 
         public static JoinableTaskFactory JoinableTaskFactory => s_objJoinableTaskFactory.Value;
 

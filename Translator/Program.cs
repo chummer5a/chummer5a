@@ -18,6 +18,7 @@
  */
 using System;
 using System.Windows.Forms;
+using Chummer;
 
 [assembly: CLSCompliant(true)]
 
@@ -32,6 +33,7 @@ namespace Translator
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            Utils.CreateSynchronizationContext();
             _frmMain = new TranslatorMain();
             Application.Run(_frmMain);
         }
