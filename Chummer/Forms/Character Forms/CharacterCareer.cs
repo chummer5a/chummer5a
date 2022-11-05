@@ -17104,7 +17104,7 @@ namespace Chummer
 
                 int intBoxTag = Convert.ToInt32(await chkSender.DoThreadSafeFuncAsync(x => x.Tag, token).ConfigureAwait(false), GlobalSettings.InvariantCultureInfo);
 
-                int intFillCount = await chkSender.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false) ? 1 : 0;
+                int intFillCount = (await chkSender.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false)).ToInt32();
 
                 // If this is being checked, make sure everything before it is checked off.
                 IsRefreshing = true;

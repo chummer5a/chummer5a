@@ -1131,7 +1131,7 @@ namespace Chummer
                     {
                         if (blnAddRecentNode)
                         {
-                            treList.Nodes.Insert(objFavoriteNode != null ? 1 : 0, objRecentNode);
+                            treList.Nodes.Insert((objFavoriteNode != null).ToInt32(), objRecentNode);
                         }
                         else if (lstRecentsNodes != null)
                         {

@@ -1423,12 +1423,10 @@ namespace Chummer
 
                 if (_intCachedFreeFromImprovement < 0)
                 {
-                    _intCachedFreeFromImprovement = ImprovementManager
-                                                    .GetCachedImprovementListForValueOf(
-                                                        CharacterObject, Improvement.ImprovementType.ContactMakeFree,
-                                                        UniqueId).Count > 0
-                        ? 1
-                        : 0;
+                    _intCachedFreeFromImprovement = (ImprovementManager
+                                                     .GetCachedImprovementListForValueOf(
+                                                         CharacterObject, Improvement.ImprovementType.ContactMakeFree,
+                                                         UniqueId).Count > 0).ToInt32();
                 }
 
                 return _intCachedFreeFromImprovement > 0;
@@ -1446,12 +1444,12 @@ namespace Chummer
 
             if (_intCachedFreeFromImprovement < 0)
             {
-                _intCachedFreeFromImprovement = (await ImprovementManager
-                                                       .GetCachedImprovementListForValueOfAsync(
-                                                           CharacterObject, Improvement.ImprovementType.ContactMakeFree,
-                                                           UniqueId, token: token).ConfigureAwait(false)).Count > 0
-                    ? 1
-                    : 0;
+                _intCachedFreeFromImprovement = ((await ImprovementManager
+                                                        .GetCachedImprovementListForValueOfAsync(
+                                                            CharacterObject,
+                                                            Improvement.ImprovementType.ContactMakeFree,
+                                                            UniqueId, token: token).ConfigureAwait(false)).Count > 0)
+                    .ToInt32();
             }
 
             return _intCachedFreeFromImprovement > 0;
@@ -1463,12 +1461,10 @@ namespace Chummer
             {
                 if (_intCachedFreeFromImprovement < 0)
                 {
-                    _intCachedFreeFromImprovement = ImprovementManager
-                                                    .GetCachedImprovementListForValueOf(
-                                                        CharacterObject, Improvement.ImprovementType.ContactMakeFree,
-                                                        UniqueId).Count > 0
-                        ? 1
-                        : 0;
+                    _intCachedFreeFromImprovement = (ImprovementManager
+                                                     .GetCachedImprovementListForValueOf(
+                                                         CharacterObject, Improvement.ImprovementType.ContactMakeFree,
+                                                         UniqueId).Count > 0).ToInt32();
                 }
 
                 return _intCachedFreeFromImprovement < 1;
@@ -1479,12 +1475,12 @@ namespace Chummer
         {
             if (_intCachedFreeFromImprovement < 0)
             {
-                _intCachedFreeFromImprovement = (await ImprovementManager
-                                                       .GetCachedImprovementListForValueOfAsync(
-                                                           CharacterObject, Improvement.ImprovementType.ContactMakeFree,
-                                                           UniqueId, token: token).ConfigureAwait(false)).Count > 0
-                    ? 1
-                    : 0;
+                _intCachedFreeFromImprovement = ((await ImprovementManager
+                                                        .GetCachedImprovementListForValueOfAsync(
+                                                            CharacterObject,
+                                                            Improvement.ImprovementType.ContactMakeFree,
+                                                            UniqueId, token: token).ConfigureAwait(false)).Count > 0)
+                    .ToInt32();
             }
 
             return _intCachedFreeFromImprovement < 1;
@@ -1508,13 +1504,11 @@ namespace Chummer
             {
                 if (_intCachedGroupEnabled < 0)
                 {
-                    _intCachedGroupEnabled = !ReadOnly && ImprovementManager
-                                                          .GetCachedImprovementListForValueOf(
-                                                              CharacterObject,
-                                                              Improvement.ImprovementType.ContactForceGroup, UniqueId)
-                                                          .Count == 0
-                        ? 1
-                        : 0;
+                    _intCachedGroupEnabled = (!ReadOnly && ImprovementManager
+                                                           .GetCachedImprovementListForValueOf(
+                                                               CharacterObject,
+                                                               Improvement.ImprovementType.ContactForceGroup, UniqueId)
+                                                           .Count == 0).ToInt32();
                 }
 
                 return _intCachedGroupEnabled > 0;
@@ -1528,14 +1522,12 @@ namespace Chummer
         {
             if (_intCachedGroupEnabled < 0)
             {
-                _intCachedGroupEnabled = !ReadOnly && (await ImprovementManager
-                                                             .GetCachedImprovementListForValueOfAsync(
-                                                                 CharacterObject,
-                                                                 Improvement.ImprovementType.ContactForceGroup,
-                                                                 UniqueId, token: token).ConfigureAwait(false))
-                    .Count == 0
-                        ? 1
-                        : 0;
+                _intCachedGroupEnabled = (!ReadOnly && (await ImprovementManager
+                                                              .GetCachedImprovementListForValueOfAsync(
+                                                                  CharacterObject,
+                                                                  Improvement.ImprovementType.ContactForceGroup,
+                                                                  UniqueId, token: token).ConfigureAwait(false)).Count
+                    == 0).ToInt32();
             }
 
             return _intCachedGroupEnabled > 0;

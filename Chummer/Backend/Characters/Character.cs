@@ -28058,7 +28058,7 @@ namespace Chummer
                 {
                     if (_intCachedInitiationEnabled < 0)
                     {
-                        _intCachedInitiationEnabled = !InitiationForceDisabled && (MAGEnabled || RESEnabled) ? 1 : 0;
+                        _intCachedInitiationEnabled = (!InitiationForceDisabled && (MAGEnabled || RESEnabled)).ToInt32();
                     }
 
                     return _intCachedInitiationEnabled > 0;

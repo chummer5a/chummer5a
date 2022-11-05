@@ -392,6 +392,7 @@
     <Compile Include="Backend\Interfaces\IHasLockObject.cs" />
     <Compile Include="Backend\Interfaces\IHasXmlDataNode.cs" />
     <Compile Include="Backend\Static\Extensions\BoolArrayExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\BoolExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\CollectionExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\DecimalExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\DispatcherExtensions.cs" />

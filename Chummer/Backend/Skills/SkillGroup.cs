@@ -378,14 +378,12 @@ namespace Chummer.Backend.Skills
                                     _intCachedBaseUnbroken = 0;
                                 else if (_objCharacter.Settings.StrictSkillGroupsInCreateMode && !_objCharacter.Created)
                                     _intCachedBaseUnbroken =
-                                        SkillList.All(x => x.BasePoints + x.FreeBase <= 0)
-                                        && SkillList.All(x => x.KarmaPoints + x.FreeKarma <= 0)
-                                            ? 1
-                                            : 0;
+                                        (SkillList.All(x => x.BasePoints + x.FreeBase <= 0)
+                                         && SkillList.All(x => x.KarmaPoints + x.FreeKarma <= 0)).ToInt32();
                                 else if (_objCharacter.Settings.UsePointsOnBrokenGroups)
-                                    _intCachedBaseUnbroken = KarmaUnbroken ? 1 : 0;
+                                    _intCachedBaseUnbroken = KarmaUnbroken.ToInt32();
                                 else
-                                    _intCachedBaseUnbroken = SkillList.All(x => x.BasePoints + x.FreeBase <= 0) ? 1 : 0;
+                                    _intCachedBaseUnbroken = SkillList.All(x => x.BasePoints + x.FreeBase <= 0).ToInt32();
                             }
                         }
                     }
@@ -422,29 +420,25 @@ namespace Chummer.Backend.Skills
                                 if (await objSettings.GetStrictSkillGroupsInCreateModeAsync(token).ConfigureAwait(false)
                                     && !await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                                     _intCachedBaseUnbroken =
-                                        await SkillList.AllAsync(
-                                            async x => await x.GetBasePointsAsync(token).ConfigureAwait(false) +
-                                                       await x.GetFreeBaseAsync(token).ConfigureAwait(false) <=
-                                                       0,
-                                            token: token).ConfigureAwait(false)
-                                        && await SkillList.AllAsync(
-                                            async x => await x.GetKarmaPointsAsync(token).ConfigureAwait(false) +
-                                                       await x.GetFreeKarmaAsync(token).ConfigureAwait(false) <=
-                                                       0, token: token).ConfigureAwait(false)
-                                            ? 1
-                                            : 0;
+                                        (await SkillList.AllAsync(
+                                             async x => await x.GetBasePointsAsync(token).ConfigureAwait(false) +
+                                                        await x.GetFreeBaseAsync(token).ConfigureAwait(false) <=
+                                                        0,
+                                             token: token).ConfigureAwait(false)
+                                         && await SkillList.AllAsync(
+                                             async x => await x.GetKarmaPointsAsync(token).ConfigureAwait(false) +
+                                                        await x.GetFreeKarmaAsync(token).ConfigureAwait(false) <=
+                                                        0, token: token).ConfigureAwait(false)).ToInt32();
                                 else if (await objSettings.GetUsePointsOnBrokenGroupsAsync(token).ConfigureAwait(false))
                                     _intCachedBaseUnbroken =
-                                        await GetKarmaUnbrokenAsync(token).ConfigureAwait(false) ? 1 : 0;
+                                        (await GetKarmaUnbrokenAsync(token).ConfigureAwait(false)).ToInt32();
                                 else
                                     _intCachedBaseUnbroken
-                                        = await SkillList.AllAsync(
+                                        = (await SkillList.AllAsync(
                                             async x => await x.GetBasePointsAsync(token).ConfigureAwait(false) +
                                                        await x.GetFreeBaseAsync(token).ConfigureAwait(false) <=
                                                        0,
-                                            token: token).ConfigureAwait(false)
-                                            ? 1
-                                            : 0;
+                                            token: token).ConfigureAwait(false)).ToInt32();
                             }
                         }
                     }
@@ -479,18 +473,17 @@ namespace Chummer.Backend.Skills
                                 if (IsDisabled || SkillList.Count == 0)
                                     _intCachedKarmaUnbroken = 0;
                                 else if (_objCharacter.Settings.StrictSkillGroupsInCreateMode && !_objCharacter.Created)
-                                    _intCachedKarmaUnbroken = SkillList.All(x => x.BasePoints + x.FreeBase <= 0)
-                                                              && SkillList.All(x => x.KarmaPoints + x.FreeKarma <= 0)
-                                        ? 1
-                                        : 0;
+                                    _intCachedKarmaUnbroken = (SkillList.All(x => x.BasePoints + x.FreeBase <= 0)
+                                                               && SkillList.All(x => x.KarmaPoints + x.FreeKarma <= 0))
+                                        .ToInt32();
                                 else
                                 {
                                     int intHigh = SkillList.Max(x => x.BasePoints + x.FreeBase);
 
                                     _intCachedKarmaUnbroken = SkillList.All(x =>
-                                        x.BasePoints + x.FreeBase + x.KarmaPoints + x.FreeKarma >= intHigh)
-                                        ? 1
-                                        : 0;
+                                                                                x.BasePoints + x.FreeBase
+                                                                                + x.KarmaPoints + x.FreeKarma
+                                                                                >= intHigh).ToInt32();
                                 }
                             }
                         }
@@ -519,19 +512,18 @@ namespace Chummer.Backend.Skills
                             if (await GetIsDisabledAsync(token).ConfigureAwait(false) || SkillList.Count == 0)
                                 _intCachedKarmaUnbroken = 0;
                             else if (await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false))
-                                         .GetStrictSkillGroupsInCreateModeAsync(token).ConfigureAwait(false)
+                                           .GetStrictSkillGroupsInCreateModeAsync(token).ConfigureAwait(false)
                                      && !await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                                 _intCachedBaseUnbroken =
-                                    await SkillList.AllAsync(
-                                        async x =>
-                                            await x.GetBasePointsAsync(token).ConfigureAwait(false) + await x.GetFreeBaseAsync(token).ConfigureAwait(false) <= 0,
-                                        token: token).ConfigureAwait(false)
-                                    && await SkillList.AllAsync(
-                                        async x => await x.GetKarmaPointsAsync(token).ConfigureAwait(false) +
-                                            await x.GetFreeKarmaAsync(token).ConfigureAwait(false) <= 0,
-                                        token: token).ConfigureAwait(false)
-                                        ? 1
-                                        : 0;
+                                    (await SkillList.AllAsync(
+                                         async x =>
+                                             await x.GetBasePointsAsync(token).ConfigureAwait(false)
+                                             + await x.GetFreeBaseAsync(token).ConfigureAwait(false) <= 0,
+                                         token: token).ConfigureAwait(false)
+                                     && await SkillList.AllAsync(
+                                         async x => await x.GetKarmaPointsAsync(token).ConfigureAwait(false) +
+                                             await x.GetFreeKarmaAsync(token).ConfigureAwait(false) <= 0,
+                                         token: token).ConfigureAwait(false)).ToInt32();
                             else
                             {
                                 int intHigh = await SkillList.MaxAsync(
@@ -539,15 +531,18 @@ namespace Chummer.Backend.Skills
                                     token: token).ConfigureAwait(false);
 
                                 _intCachedKarmaUnbroken
-                                    = await SkillList.AllAsync(
-                                            async x => await x.GetBasePointsAsync(token).ConfigureAwait(false) +
-                                                await x.GetFreeBaseAsync(token).ConfigureAwait(false) +
-                                                await x.GetKarmaPointsAsync(token).ConfigureAwait(false)
-                                                + await x.GetFreeKarmaAsync(token).ConfigureAwait(false) >= intHigh,
-                                            token: token)
-                                        .ConfigureAwait(false)
-                                        ? 1
-                                        : 0;
+                                    = (await SkillList.AllAsync(
+                                                          async x => await x.GetBasePointsAsync(token)
+                                                                            .ConfigureAwait(false) +
+                                                                     await x.GetFreeBaseAsync(token)
+                                                                            .ConfigureAwait(false) +
+                                                                     await x.GetKarmaPointsAsync(token)
+                                                                            .ConfigureAwait(false)
+                                                                     + await x.GetFreeKarmaAsync(token)
+                                                                              .ConfigureAwait(false)
+                                                                     >= intHigh,
+                                                          token: token)
+                                                      .ConfigureAwait(false)).ToInt32();
                             }
                         }
                     }
@@ -575,20 +570,19 @@ namespace Chummer.Backend.Skills
                         {
                             if (_intCachedIsDisabled < 0) // Just in case
                             {
-                                _intCachedIsDisabled = ImprovementManager
-                                                           .GetCachedImprovementListForValueOf(
-                                                               _objCharacter,
-                                                               Improvement.ImprovementType.SkillGroupDisable,
-                                                               Name)
-                                                           .Count > 0
-                                                       || ImprovementManager
+                                _intCachedIsDisabled = (ImprovementManager
+                                                        .GetCachedImprovementListForValueOf(
+                                                            _objCharacter,
+                                                            Improvement.ImprovementType.SkillGroupDisable,
+                                                            Name)
+                                                        .Count > 0
+                                                        || ImprovementManager
                                                            .GetCachedImprovementListForValueOf(
                                                                _objCharacter,
                                                                Improvement.ImprovementType.SkillGroupCategoryDisable)
                                                            .Any(
-                                                               x => GetRelevantSkillCategories.Contains(x.ImprovedName))
-                                    ? 1
-                                    : 0;
+                                                               x => GetRelevantSkillCategories
+                                                                   .Contains(x.ImprovedName))).ToInt32();
                             }
                         }
                     }
@@ -609,21 +603,21 @@ namespace Chummer.Backend.Skills
                     {
                         if (_intCachedIsDisabled < 0)
                         {
-                            _intCachedIsDisabled = (await ImprovementManager
-                                                       .GetCachedImprovementListForValueOfAsync(
-                                                           _objCharacter, Improvement.ImprovementType.SkillGroupDisable,
-                                                           Name,
-                                                           token: token).ConfigureAwait(false))
-                                                   .Count > 0
-                                                   || (await ImprovementManager
-                                                       .GetCachedImprovementListForValueOfAsync(
-                                                           _objCharacter,
-                                                           Improvement.ImprovementType.SkillGroupCategoryDisable,
-                                                           token: token).ConfigureAwait(false))
-                                                   .Any(
-                                                       x => GetRelevantSkillCategories.Contains(x.ImprovedName))
-                                ? 1
-                                : 0;
+                            _intCachedIsDisabled = ((await ImprovementManager
+                                                           .GetCachedImprovementListForValueOfAsync(
+                                                               _objCharacter,
+                                                               Improvement.ImprovementType.SkillGroupDisable,
+                                                               Name,
+                                                               token: token).ConfigureAwait(false))
+                                                    .Count > 0
+                                                    || (await ImprovementManager
+                                                              .GetCachedImprovementListForValueOfAsync(
+                                                                  _objCharacter,
+                                                                  Improvement.ImprovementType.SkillGroupCategoryDisable,
+                                                                  token: token).ConfigureAwait(false))
+                                                    .Any(
+                                                        x => GetRelevantSkillCategories.Contains(x.ImprovedName)))
+                                .ToInt32();
                         }
                     }
                     finally
@@ -753,9 +747,7 @@ namespace Chummer.Backend.Skills
                                         _intCachedHasAnyBreakingSkills = SkillList.Any(x => x != objFirstEnabledSkill
                                             && x.TotalBaseRating
                                             != intFirstSkillTotalBaseRating
-                                            && x.Enabled)
-                                            ? 1
-                                            : 0;
+                                            && x.Enabled).ToInt32();
                                     }
                                 }
                             }
@@ -810,14 +802,12 @@ namespace Chummer.Backend.Skills
                                     int intFirstSkillTotalBaseRating = await objFirstEnabledSkill
                                                                              .GetTotalBaseRatingAsync(token)
                                                                              .ConfigureAwait(false);
-                                    _intCachedHasAnyBreakingSkills = await SkillList.AnyAsync(
+                                    _intCachedHasAnyBreakingSkills = (await SkillList.AnyAsync(
                                             async x => x != objFirstEnabledSkill
                                                        && await x.GetTotalBaseRatingAsync(token).ConfigureAwait(false)
                                                        != intFirstSkillTotalBaseRating
                                                        && await x.GetEnabledAsync(token).ConfigureAwait(false), token)
-                                        .ConfigureAwait(false)
-                                        ? 1
-                                        : 0;
+                                        .ConfigureAwait(false)).ToInt32();
                                 }
                             }
                         }

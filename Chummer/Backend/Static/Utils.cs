@@ -1518,7 +1518,7 @@ namespace Chummer
         /// <summary>
         /// This member makes sure we aren't swamping the program with massive amounts of Application.DoEvents() calls
         /// </summary>
-        private static int _intIsOkToRunDoEvents = DefaultIsOkToRunDoEvents ? 1 : 0;
+        private static int _intIsOkToRunDoEvents = DefaultIsOkToRunDoEvents.ToInt32();
 
 #pragma warning disable VSTHRD002
 #pragma warning disable VSTHRD104 // Offer async methods

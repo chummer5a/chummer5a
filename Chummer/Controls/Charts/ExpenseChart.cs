@@ -141,7 +141,7 @@ namespace Chummer.UI.Charts
             get => _intNuyenMode > 0;
             set
             {
-                int intNewValue = value ? 1 : 0;
+                int intNewValue = value.ToInt32();
                 if (Interlocked.Exchange(ref _intNuyenMode, intNewValue) == intNewValue)
                     return;
                 chtCartesian.SuspendLayout();

@@ -899,11 +899,9 @@ namespace Chummer
             get
             {
                 if (_intCachedAllowFettering < 0)
-                    _intCachedAllowFettering = EntityType == SpiritType.Spirit
-                                               || EntityType == SpiritType.Sprite
-                                               && CharacterObject.AllowSpriteFettering
-                        ? 1
-                        : 0;
+                    _intCachedAllowFettering = (EntityType == SpiritType.Spirit
+                                                || EntityType == SpiritType.Sprite
+                                                && CharacterObject.AllowSpriteFettering).ToInt32();
                 return _intCachedAllowFettering > 0;
             }
         }
@@ -917,9 +915,7 @@ namespace Chummer
             get
             {
                 if (_intCachedAllowFettering < 0)
-                    _intCachedAllowFettering = CharacterObject.AllowSpriteFettering
-                        ? 1
-                        : 0;
+                    _intCachedAllowFettering = CharacterObject.AllowSpriteFettering.ToInt32();
                 return _blnFettered && _intCachedAllowFettering > 0;
             }
 
@@ -930,10 +926,12 @@ namespace Chummer
                 if (value)
                 {
                     //Technomancers require the Sprite Pet Complex Form to Fetter sprites.
-                    if (!CharacterObject.AllowSpriteFettering && EntityType == SpiritType.Sprite) return;
+                    if (!CharacterObject.AllowSpriteFettering && EntityType == SpiritType.Sprite)
+                        return;
 
                     //Only one Fettered spirit is permitted.
-                    if (CharacterObject.Spirits.Any(objSpirit => objSpirit.Fettered)) return;
+                    if (CharacterObject.Spirits.Any(objSpirit => objSpirit.Fettered))
+                        return;
 
                     if (CharacterObject.Created)
                     {

@@ -61,7 +61,7 @@ namespace Chummer
             e.Graphics.DrawLine(_objForeColorPen, intMargin, intHeight / 2, intWidth - intMargin, intHeight / 2);
         }
 
-        private int _intDefaultColorScheme = ColorManager.IsLightMode ? 1 : 0;
+        private int _intDefaultColorScheme = ColorManager.IsLightMode.ToInt32();
         private Color _objBackColor;
         private Color _objForeColor;
         private SolidBrush _objBackColorBrush;
@@ -72,7 +72,7 @@ namespace Chummer
             get => _intDefaultColorScheme > 0;
             set
             {
-                int intNewValue = value ? 1 : 0;
+                int intNewValue = value.ToInt32();
                 if (Interlocked.Exchange(ref _intDefaultColorScheme, intNewValue) == intNewValue)
                     return;
                 Invalidate();

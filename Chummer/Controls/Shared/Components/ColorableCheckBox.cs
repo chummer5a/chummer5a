@@ -69,7 +69,7 @@ namespace Chummer
             get => _intRealEnabled > 0;
             set
             {
-                int intNewValue = value ? 1 : 0;
+                int intNewValue = value.ToInt32();
                 if (Interlocked.Exchange(ref _intRealEnabled, intNewValue) == intNewValue)
                     return;
                 Interlocked.Decrement(ref _intEnabledBeingSetFromOutside);
@@ -104,14 +104,14 @@ namespace Chummer
             }
         }
 
-        private int _intDefaultColorScheme = ColorManager.IsLightMode ? 1 : 0;
+        private int _intDefaultColorScheme = ColorManager.IsLightMode.ToInt32();
 
         public bool DefaultColorScheme
         {
             get => _intDefaultColorScheme > 0;
             set
             {
-                int intNewValue = value ? 1 : 0;
+                int intNewValue = value.ToInt32();
                 if (Interlocked.Exchange(ref _intDefaultColorScheme, intNewValue) == intNewValue)
                     return;
                 Interlocked.Decrement(ref _intEnabledBeingSetFromOutside);

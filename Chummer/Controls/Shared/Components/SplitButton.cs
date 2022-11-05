@@ -123,7 +123,7 @@ namespace Chummer
             get => _intShowSplit > 0;
             set
             {
-                int intNewValue = value ? 1 : 0;
+                int intNewValue = value.ToInt32();
                 if (Interlocked.Exchange(ref _intShowSplit, intNewValue) == intNewValue)
                     return;
                 if (Disposing || IsDisposed)
@@ -861,7 +861,8 @@ namespace Chummer
 
             if (e.CloseReason == ToolStripDropDownCloseReason.AppClicked)
             {
-                _intSkipNextOpen = (_dropDownRectangle.Contains(PointToClient(Cursor.Position))) && MouseButtons == MouseButtons.Left ? 1 : 0;
+                _intSkipNextOpen = (_dropDownRectangle.Contains(PointToClient(Cursor.Position))
+                                    && MouseButtons == MouseButtons.Left).ToInt32();
             }
         }
 

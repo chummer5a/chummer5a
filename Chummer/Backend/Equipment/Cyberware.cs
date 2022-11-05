@@ -1024,7 +1024,7 @@ namespace Chummer.Backend.Equipment
                             }
 
                             // If we have at least one cyberware with which we could pair, set count to 1 so that it passes the modulus to add the PairBonus. Otherwise, set to 0 so it doesn't pass.
-                            intCount = intCount > 0 ? 1 : 0;
+                            intCount = (intCount > 0).ToInt32();
                         }
 
                         if ((intCount & 1) == 1)
@@ -1891,7 +1891,7 @@ namespace Chummer.Backend.Equipment
                                 }
 
                                 // If we have at least one cyberware with which we could pair, set count to 1 so that it passes the modulus to add the PairBonus. Otherwise, set to 0 so it doesn't pass.
-                                intCount = intCount > 0 ? 1 : 0;
+                                intCount = (intCount > 0).ToInt32();
                             }
 
                             if ((intCount & 1) == 1)
@@ -2733,7 +2733,7 @@ namespace Chummer.Backend.Equipment
                             }
 
                             // If we have at least one cyberware with which we could pair, set count to 1 so that it passes the modulus to add the PairBonus. Otherwise, set to 0 so it doesn't pass.
-                            intCount = intCount > 0 ? 1 : 0;
+                            intCount = (intCount > 0).ToInt32();
                         }
 
                         if (intCount % 2 == 1)
@@ -2913,7 +2913,7 @@ namespace Chummer.Backend.Equipment
                             }
 
                             // If we have at least one cyberware with which we could pair, set count to 1 so that it passes the modulus to add the PairBonus. Otherwise, set to 0 so it doesn't pass.
-                            intCount = intCount > 0 ? 1 : 0;
+                            intCount = (intCount > 0).ToInt32();
                         }
 
                         if (intCount % 2 == 1)
@@ -3116,7 +3116,7 @@ namespace Chummer.Backend.Equipment
                         }
 
                         // If we have at least one cyberware with which we could pair, set count to 1 so that it passes the modulus to add the PairBonus. Otherwise, set to 0 so it doesn't pass.
-                        intCount = intCount > 0 ? 1 : 0;
+                        intCount = (intCount > 0).ToInt32();
                     }
 
                     if ((intCount & 1) == 1)
@@ -3249,7 +3249,7 @@ namespace Chummer.Backend.Equipment
                         }
 
                         // If we have at least one cyberware with which we could pair, set count to 1 so that it passes the modulus to add the PairBonus. Otherwise, set to 0 so it doesn't pass.
-                        intCount = intCount > 0 ? 1 : 0;
+                        intCount = (intCount > 0).ToInt32();
                     }
 
                     if ((intCount & 1) == 1)
@@ -3480,7 +3480,7 @@ namespace Chummer.Backend.Equipment
                                     }
 
                                     // If we have at least one cyberware with which we could pair, set count to 1 so that it passes the modulus to add the PairBonus. Otherwise, set to 0 so it doesn't pass.
-                                    intCount = intCount > 0 ? 1 : 0;
+                                    intCount = (intCount > 0).ToInt32();
                                 }
 
                                 if ((intCount & 1) == 1)

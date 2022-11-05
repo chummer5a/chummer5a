@@ -2255,20 +2255,18 @@ namespace Chummer.Backend.Skills
                             return _intCachedCanHaveSpecs > 0;
                         }
 
-                        _intCachedCanHaveSpecs = !IsExoticSkill && TotalBaseRating > 0 && KarmaUnlocked &&
-                                                 !(ImprovementManager
-                                                       .GetCachedImprovementListForValueOf(
-                                                           CharacterObject,
-                                                           Improvement.ImprovementType.BlockSkillSpecializations,
-                                                           DictionaryKey, true).Count > 0
-                                                   || ImprovementManager
+                        _intCachedCanHaveSpecs = (!IsExoticSkill && TotalBaseRating > 0 && KarmaUnlocked &&
+                                                  !(ImprovementManager
+                                                    .GetCachedImprovementListForValueOf(
+                                                        CharacterObject,
+                                                        Improvement.ImprovementType.BlockSkillSpecializations,
+                                                        DictionaryKey, true).Count > 0
+                                                    || ImprovementManager
                                                        .GetCachedImprovementListForValueOf(
                                                            CharacterObject,
                                                            Improvement.ImprovementType
-                                                               .BlockSkillCategorySpecializations,
-                                                           SkillCategory).Count > 0)
-                            ? 1
-                            : 0;
+                                                                      .BlockSkillCategorySpecializations,
+                                                           SkillCategory).Count > 0)).ToInt32();
                         if (_intCachedCanHaveSpecs <= 0 && Specializations.Count > 0)
                         {
                             Specializations.Clear();
@@ -2299,20 +2297,21 @@ namespace Chummer.Backend.Skills
                         return _intCachedCanHaveSpecs > 0;
                     }
 
-                    _intCachedCanHaveSpecs = !IsExoticSkill && await GetTotalBaseRatingAsync(token).ConfigureAwait(false) > 0 && await GetKarmaUnlockedAsync(token).ConfigureAwait(false) &&
-                                             !((await ImprovementManager
-                                                      .GetCachedImprovementListForValueOfAsync(
-                                                          CharacterObject,
-                                                          Improvement.ImprovementType.BlockSkillSpecializations,
-                                                          DictionaryKey, true, token).ConfigureAwait(false)).Count > 0
-                                               || (await ImprovementManager
-                                                         .GetCachedImprovementListForValueOfAsync(
-                                                             CharacterObject,
-                                                             Improvement.ImprovementType
-                                                                        .BlockSkillCategorySpecializations,
-                                                             SkillCategory, token: token).ConfigureAwait(false)).Count > 0)
-                        ? 1
-                        : 0;
+                    _intCachedCanHaveSpecs = (!IsExoticSkill
+                                              && await GetTotalBaseRatingAsync(token).ConfigureAwait(false) > 0
+                                              && await GetKarmaUnlockedAsync(token).ConfigureAwait(false) &&
+                                              !((await ImprovementManager
+                                                       .GetCachedImprovementListForValueOfAsync(
+                                                           CharacterObject,
+                                                           Improvement.ImprovementType.BlockSkillSpecializations,
+                                                           DictionaryKey, true, token).ConfigureAwait(false)).Count > 0
+                                                || (await ImprovementManager
+                                                          .GetCachedImprovementListForValueOfAsync(
+                                                              CharacterObject,
+                                                              Improvement.ImprovementType
+                                                                         .BlockSkillCategorySpecializations,
+                                                              SkillCategory, token: token).ConfigureAwait(false)).Count
+                                                > 0)).ToInt32();
                     if (_intCachedCanHaveSpecs <= 0 && Specializations.Count > 0)
                     {
                         await Specializations.ClearAsync(token).ConfigureAwait(false);
@@ -2499,15 +2498,15 @@ namespace Chummer.Backend.Skills
                         {
                             case "MAG":
                             case "MAGAdept":
-                                _intCachedEnabled = CharacterObject.MAGEnabled ? 1 : 0;
+                                _intCachedEnabled = CharacterObject.MAGEnabled.ToInt32();
                                 break;
 
                             case "RES":
-                                _intCachedEnabled = CharacterObject.RESEnabled ? 1 : 0;
+                                _intCachedEnabled = CharacterObject.RESEnabled.ToInt32();
                                 break;
 
                             case "DEP":
-                                _intCachedEnabled = CharacterObject.DEPEnabled ? 1 : 0;
+                                _intCachedEnabled = CharacterObject.DEPEnabled.ToInt32();
                                 break;
 
                             default:
@@ -2610,21 +2609,18 @@ namespace Chummer.Backend.Skills
                     {
                         case "MAG":
                         case "MAGAdept":
-                            _intCachedEnabled = await CharacterObject.GetMAGEnabledAsync(token).ConfigureAwait(false)
-                                ? 1
-                                : 0;
+                            _intCachedEnabled = (await CharacterObject.GetMAGEnabledAsync(token).ConfigureAwait(false))
+                                .ToInt32();
                             break;
 
                         case "RES":
-                            _intCachedEnabled = await CharacterObject.GetRESEnabledAsync(token).ConfigureAwait(false)
-                                ? 1
-                                : 0;
+                            _intCachedEnabled = (await CharacterObject.GetRESEnabledAsync(token).ConfigureAwait(false))
+                                .ToInt32();
                             break;
 
                         case "DEP":
-                            _intCachedEnabled = await CharacterObject.GetDEPEnabledAsync(token).ConfigureAwait(false)
-                                ? 1
-                                : 0;
+                            _intCachedEnabled = (await CharacterObject.GetDEPEnabledAsync(token).ConfigureAwait(false))
+                                .ToInt32();
                             break;
 
                         default:
@@ -2742,10 +2738,8 @@ namespace Chummer.Backend.Skills
                         using (LockObject.EnterWriteLock())
                         {
                             if (_intCachedCanUpgradeCareer < 0)
-                                _intCachedCanUpgradeCareer = CharacterObject.Karma >= UpgradeKarmaCost &&
-                                                             RatingMaximum > TotalBaseRating
-                                    ? 1
-                                    : 0;
+                                _intCachedCanUpgradeCareer = (CharacterObject.Karma >= UpgradeKarmaCost &&
+                                                              RatingMaximum > TotalBaseRating).ToInt32();
                         }
                     }
 
@@ -2764,10 +2758,13 @@ namespace Chummer.Backend.Skills
                     try
                     {
                         if (_intCachedCanUpgradeCareer < 0)
-                            _intCachedCanUpgradeCareer = await CharacterObject.GetKarmaAsync(token).ConfigureAwait(false) >= await GetUpgradeKarmaCostAsync(token).ConfigureAwait(false) &&
-                                                         await GetRatingMaximumAsync(token).ConfigureAwait(false) > await GetTotalBaseRatingAsync(token).ConfigureAwait(false)
-                                ? 1
-                                : 0;
+                            _intCachedCanUpgradeCareer = (await CharacterObject.GetKarmaAsync(token)
+                                                                               .ConfigureAwait(false)
+                                                          >= await GetUpgradeKarmaCostAsync(token).ConfigureAwait(false)
+                                                          &&
+                                                          await GetRatingMaximumAsync(token).ConfigureAwait(false)
+                                                          > await GetTotalBaseRatingAsync(token).ConfigureAwait(false))
+                                .ToInt32();
                     }
                     finally
                     {
@@ -6110,7 +6107,7 @@ namespace Chummer.Backend.Skills
                                     else
                                         intPrice += decExtraSpecCost.StandardRound(); //Spec
 
-                                    _intCachedCanAffordSpecialization = intPrice <= CharacterObject.Karma ? 1 : 0;
+                                    _intCachedCanAffordSpecialization = (intPrice <= CharacterObject.Karma).ToInt32();
                                 }
                             }
                         }
@@ -6175,7 +6172,7 @@ namespace Chummer.Backend.Skills
                                     intPrice += decExtraSpecCost.StandardRound(); //Spec
 
                                 _intCachedCanAffordSpecialization
-                                    = intPrice <= await CharacterObject.GetKarmaAsync(token).ConfigureAwait(false) ? 1 : 0;
+                                    = (intPrice <= await CharacterObject.GetKarmaAsync(token).ConfigureAwait(false)).ToInt32();
                             }
                         }
                     }
@@ -6381,18 +6378,16 @@ namespace Chummer.Backend.Skills
                         {
                             if (_intCachedForcedBuyWithKarma < 0) // Just in case
                             {
-                                _intCachedForcedBuyWithKarma = !CharacterObject.IgnoreRules
-                                                               && Specializations.Any(x => !x.Free)
-                                                               && ((KarmaPoints > 0
-                                                                    && BasePoints + FreeBase == 0
-                                                                    && !CharacterObject.Settings
-                                                                        .AllowPointBuySpecializationsOnKarmaSkills)
-                                                                   || (CharacterObject.Settings
-                                                                           .SpecializationsBreakSkillGroups
-                                                                       && (SkillGroupObject?.Karma > 0
-                                                                           || SkillGroupObject?.Base > 0)))
-                                    ? 1
-                                    : 0;
+                                _intCachedForcedBuyWithKarma = (!CharacterObject.IgnoreRules
+                                                                && Specializations.Any(x => !x.Free)
+                                                                && ((KarmaPoints > 0
+                                                                     && BasePoints + FreeBase == 0
+                                                                     && !CharacterObject.Settings
+                                                                         .AllowPointBuySpecializationsOnKarmaSkills)
+                                                                    || (CharacterObject.Settings
+                                                                            .SpecializationsBreakSkillGroups
+                                                                        && (SkillGroupObject?.Karma > 0
+                                                                            || SkillGroupObject?.Base > 0)))).ToInt32();
                             }
                         }
                     }
@@ -6419,19 +6414,19 @@ namespace Chummer.Backend.Skills
                             CharacterSettings objSettings =
                                 await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
                             _intCachedForcedNotBuyWithKarma =
-                                !await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false)
-                                && await Specializations.AnyAsync(x => !x.Free, token: token).ConfigureAwait(false)
-                                && ((await GetKarmaPointsAsync(token).ConfigureAwait(false) > 0
-                                     && await GetBasePointsAsync(token).ConfigureAwait(false) + await GetFreeBaseAsync(token).ConfigureAwait(false) == 0
-                                     && !await objSettings.GetAllowPointBuySpecializationsOnKarmaSkillsAsync(token)
-                                         .ConfigureAwait(false))
-                                    || (await objSettings.GetSpecializationsBreakSkillGroupsAsync(token)
-                                            .ConfigureAwait(false)
-                                        && SkillGroupObject != null
-                                        && (await SkillGroupObject.GetKarmaAsync(token).ConfigureAwait(false) > 0
-                                            || await SkillGroupObject.GetBaseAsync(token).ConfigureAwait(false) > 0)))
-                                    ? 1
-                                    : 0;
+                                (!await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false)
+                                 && await Specializations.AnyAsync(x => !x.Free, token: token).ConfigureAwait(false)
+                                 && ((await GetKarmaPointsAsync(token).ConfigureAwait(false) > 0
+                                      && await GetBasePointsAsync(token).ConfigureAwait(false)
+                                      + await GetFreeBaseAsync(token).ConfigureAwait(false) == 0
+                                      && !await objSettings.GetAllowPointBuySpecializationsOnKarmaSkillsAsync(token)
+                                                           .ConfigureAwait(false))
+                                     || (await objSettings.GetSpecializationsBreakSkillGroupsAsync(token)
+                                                          .ConfigureAwait(false)
+                                         && SkillGroupObject != null
+                                         && (await SkillGroupObject.GetKarmaAsync(token).ConfigureAwait(false) > 0
+                                             || await SkillGroupObject.GetBaseAsync(token).ConfigureAwait(false) > 0))))
+                                .ToInt32();
                         }
                     }
                     finally
@@ -6461,14 +6456,12 @@ namespace Chummer.Backend.Skills
                         {
                             if (_intCachedForcedNotBuyWithKarma < 0) // Just in case
                             {
-                                _intCachedForcedNotBuyWithKarma = TotalBaseRating == 0
-                                                                  || (CharacterObject.Settings
-                                                                          .StrictSkillGroupsInCreateMode
-                                                                      && !CharacterObject.Created
-                                                                      && !CharacterObject.IgnoreRules
-                                                                      && SkillGroupObject?.Karma > 0)
-                                    ? 1
-                                    : 0;
+                                _intCachedForcedNotBuyWithKarma = (TotalBaseRating == 0
+                                                                   || (CharacterObject.Settings
+                                                                           .StrictSkillGroupsInCreateMode
+                                                                       && !CharacterObject.Created
+                                                                       && !CharacterObject.IgnoreRules
+                                                                       && SkillGroupObject?.Karma > 0)).ToInt32();
                             }
                         }
                     }
@@ -6493,20 +6486,18 @@ namespace Chummer.Backend.Skills
                         if (_intCachedForcedNotBuyWithKarma < 0)
                         {
                             _intCachedForcedNotBuyWithKarma =
-                                await GetTotalBaseRatingAsync(token).ConfigureAwait(false) == 0
-                                || (await (await CharacterObject.GetSettingsAsync(token)
-                                            .ConfigureAwait(false))
-                                        .GetStrictSkillGroupsInCreateModeAsync(token)
-                                        .ConfigureAwait(false)
-                                    && !await CharacterObject.GetCreatedAsync(token)
-                                        .ConfigureAwait(false)
-                                    && !await CharacterObject.GetIgnoreRulesAsync(token)
-                                        .ConfigureAwait(false)
-                                    && SkillGroupObject != null
-                                    && await SkillGroupObject.GetKarmaAsync(token)
-                                        .ConfigureAwait(false) > 0)
-                                    ? 1
-                                    : 0;
+                                (await GetTotalBaseRatingAsync(token).ConfigureAwait(false) == 0
+                                 || (await (await CharacterObject.GetSettingsAsync(token)
+                                                                 .ConfigureAwait(false))
+                                           .GetStrictSkillGroupsInCreateModeAsync(token)
+                                           .ConfigureAwait(false)
+                                     && !await CharacterObject.GetCreatedAsync(token)
+                                                              .ConfigureAwait(false)
+                                     && !await CharacterObject.GetIgnoreRulesAsync(token)
+                                                              .ConfigureAwait(false)
+                                     && SkillGroupObject != null
+                                     && await SkillGroupObject.GetKarmaAsync(token)
+                                                              .ConfigureAwait(false) > 0)).ToInt32();
                         }
                     }
                     finally

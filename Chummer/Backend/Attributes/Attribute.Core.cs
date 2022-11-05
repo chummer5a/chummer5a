@@ -2676,7 +2676,7 @@ namespace Chummer.Backend.Attributes
                             if (_intCachedCanUpgradeCareer < 0) // Second check in case another task already set this
                             {
                                 _intCachedCanUpgradeCareer =
-                                    _objCharacter.Karma >= UpgradeKarmaCost && TotalMaximum > Value ? 1 : 0;
+                                    (_objCharacter.Karma >= UpgradeKarmaCost && TotalMaximum > Value).ToInt32();
                             }
                         }
                     }
@@ -2698,11 +2698,10 @@ namespace Chummer.Backend.Attributes
                         if (_intCachedCanUpgradeCareer < 0) // Second check in case another task already set this
                         {
                             _intCachedCanUpgradeCareer =
-                                await _objCharacter.GetKarmaAsync(token).ConfigureAwait(false) >= await GetUpgradeKarmaCostAsync(token).ConfigureAwait(false)
-                                && await GetTotalMaximumAsync(token).ConfigureAwait(false) >
-                                await GetValueAsync(token).ConfigureAwait(false)
-                                    ? 1
-                                    : 0;
+                                (await _objCharacter.GetKarmaAsync(token).ConfigureAwait(false)
+                                 >= await GetUpgradeKarmaCostAsync(token).ConfigureAwait(false)
+                                 && await GetTotalMaximumAsync(token).ConfigureAwait(false) >
+                                 await GetValueAsync(token).ConfigureAwait(false)).ToInt32();
                         }
                     }
                     finally

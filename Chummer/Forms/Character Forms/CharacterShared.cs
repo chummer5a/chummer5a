@@ -4365,7 +4365,7 @@ namespace Chummer
                                 await objVehicle.RefreshChildrenWeapons(
                                     treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                     cmsVehicleWeaponAccessoryGear,
-                                    () => objVehicle.Mods.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0),
+                                    () => objVehicle.Mods.Count + (objVehicle.WeaponMounts.Count > 0).ToInt32(),
                                     y, MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                             await objVehicle.Mods.AddTaggedCollectionChangedAsync(
@@ -4484,13 +4484,13 @@ namespace Chummer
                                 await objVehicle.RefreshChildrenGears(
                                     treVehicles, cmsVehicleGear, null,
                                     () => objVehicle.Mods.Count + objVehicle.Weapons.Count
-                                                                + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0),
+                                                                + (objVehicle.WeaponMounts.Count > 0).ToInt32(),
                                     y, MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                             async void FuncVehicleLocationsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                 await RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation,
                                                                 () => objVehicle.Mods.Count + objVehicle.Weapons.Count
-                                                                    + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0)
+                                                                    + (objVehicle.WeaponMounts.Count > 0).ToInt32()
                                                                     + objVehicle.GearChildren.Count(
                                                                         z => z.Location == null), y, token).ConfigureAwait(false);
 
@@ -4547,7 +4547,7 @@ namespace Chummer
                                     await objVehicle.RefreshChildrenWeapons(
                                         treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                         cmsVehicleWeaponAccessoryGear,
-                                        () => objVehicle.Mods.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0),
+                                        () => objVehicle.Mods.Count + (objVehicle.WeaponMounts.Count > 0).ToInt32(),
                                         y, MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                 await objVehicle.Mods.AddTaggedCollectionChangedAsync(
@@ -4666,14 +4666,14 @@ namespace Chummer
                                     await objVehicle.RefreshChildrenGears(
                                         treVehicles, cmsVehicleGear, null,
                                         () => objVehicle.Mods.Count + objVehicle.Weapons.Count
-                                                                    + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0),
+                                                                    + (objVehicle.WeaponMounts.Count > 0).ToInt32(),
                                         y, MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                 async void FuncVehicleLocationsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                     await RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation,
                                                                     () => objVehicle.Mods.Count
                                                                           + objVehicle.Weapons.Count
-                                                                          + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0)
+                                                                          + (objVehicle.WeaponMounts.Count > 0).ToInt32()
                                                                           + objVehicle.GearChildren.Count(
                                                                               z => z.Location == null), y, token).ConfigureAwait(false);
 
@@ -4807,7 +4807,7 @@ namespace Chummer
                                     await objVehicle.RefreshChildrenWeapons(
                                         treVehicles, cmsVehicleWeapon, cmsVehicleWeaponAccessory,
                                         cmsVehicleWeaponAccessoryGear,
-                                        () => objVehicle.Mods.Count + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0),
+                                        () => objVehicle.Mods.Count + (objVehicle.WeaponMounts.Count > 0).ToInt32(),
                                         y, MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                 await objVehicle.Mods.AddTaggedCollectionChangedAsync(
@@ -4926,14 +4926,14 @@ namespace Chummer
                                     await objVehicle.RefreshChildrenGears(
                                         treVehicles, cmsVehicleGear, null,
                                         () => objVehicle.Mods.Count + objVehicle.Weapons.Count
-                                                                    + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0),
+                                                                    + (objVehicle.WeaponMounts.Count > 0).ToInt32(),
                                         y, MakeDirtyWithCharacterUpdate, token: token).ConfigureAwait(false);
 
                                 async void FuncVehicleLocationsToAdd(object x, NotifyCollectionChangedEventArgs y) =>
                                     await RefreshLocationsInVehicle(treVehicles, objVehicle, cmsVehicleLocation,
                                                                     () => objVehicle.Mods.Count
                                                                           + objVehicle.Weapons.Count
-                                                                          + (objVehicle.WeaponMounts.Count > 0 ? 1 : 0)
+                                                                          + (objVehicle.WeaponMounts.Count > 0).ToInt32()
                                                                           + objVehicle.GearChildren.Count(
                                                                               z => z.Location == null), y, token).ConfigureAwait(false);
 
