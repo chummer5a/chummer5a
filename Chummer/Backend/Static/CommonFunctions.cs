@@ -50,7 +50,8 @@ namespace Chummer
 
         private static readonly DebuggableSemaphoreSlim s_ObjXPathNavigatorDocumentLock = new DebuggableSemaphoreSlim();
 
-        private static readonly ThreadSafeStack<XPathNavigator> s_StkXPathNavigatorPool = new ThreadSafeStack<XPathNavigator>(1);
+        private static readonly ThreadSafeStack<XPathNavigator> s_StkXPathNavigatorPool
+            = new ThreadSafeStack<XPathNavigator>(1);
 
         private static readonly LockingDictionary<string, Tuple<bool, object>> s_DicCompiledEvaluations =
             new LockingDictionary<string, Tuple<bool, object>>();

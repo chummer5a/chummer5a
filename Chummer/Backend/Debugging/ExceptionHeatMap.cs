@@ -23,10 +23,11 @@ using System.Diagnostics;
 using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Text;
+using System.Threading.Tasks;
 
 namespace Chummer.Backend
 {
-    public sealed class ExceptionHeatMap : IDisposable
+    public sealed class ExceptionHeatMap : IDisposable, IAsyncDisposable
     {
         private readonly Lazy<LockingDictionary<string, int>> _map = new Lazy<LockingDictionary<string, int>>(() => new LockingDictionary<string, int>());
 
@@ -73,6 +74,13 @@ namespace Chummer.Backend
         {
             if (_map.IsValueCreated)
                 _map.Value.Dispose();
+        }
+
+        /// <inheritdoc />
+        public async ValueTask DisposeAsync()
+        {
+            if (_map.IsValueCreated)
+                await _map.Value.DisposeAsync().ConfigureAwait(false);
         }
     }
 }

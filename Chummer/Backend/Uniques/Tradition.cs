@@ -701,7 +701,7 @@ namespace Chummer.Backend.Uniques
                         if (!value.Contains(strAttribute))
                             _objCharacter.GetAttribute(strAttribute).PropertyChanged -= RefreshDrainValue;
                     }
-                    if (value.Contains(strAttribute))
+                    else if (value.Contains(strAttribute))
                         _objCharacter.GetAttribute(strAttribute).PropertyChanged += RefreshDrainValue;
                 }
 

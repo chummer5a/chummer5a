@@ -1218,16 +1218,7 @@ namespace Chummer
         /// <summary>
         /// Character's portraits encoded using Base64.
         /// </summary>
-        public ThreadSafeList<Image> Mugshots
-        {
-            get
-            {
-                using (EnterReadLock.Enter(CharacterObject.LockObject))
-                {
-                    return LinkedCharacter != null ? LinkedCharacter.Mugshots : _lstMugshots;
-                }
-            }
-        }
+        public ThreadSafeList<Image> Mugshots => LinkedCharacter != null ? LinkedCharacter.Mugshots : _lstMugshots;
 
         /// <summary>
         /// Character's main portrait encoded using Base64.
@@ -1253,6 +1244,7 @@ namespace Chummer
                         MainMugshotIndex = -1;
                         return;
                     }
+
                     int intNewMainMugshotIndex = Mugshots.IndexOf(value);
                     if (intNewMainMugshotIndex != -1)
                     {
@@ -1261,7 +1253,7 @@ namespace Chummer
                     else
                     {
                         Mugshots.Add(value);
-                        MainMugshotIndex = Mugshots.Count - 1;
+                        MainMugshotIndex = Mugshots.IndexOf(value);
                     }
                 }
             }
