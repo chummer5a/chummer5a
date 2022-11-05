@@ -4862,6 +4862,75 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Fire off all events relevant to an improvement, making sure each event is only fired once.
+        /// </summary>
+        /// <param name="objImprovement">Improvement whose events to fire</param>
+        /// <param name="lstExtraImprovedName">Additional ImprovedName versions to check, if any.</param>
+        /// <param name="lstExtraImprovementTypes">Additional ImprovementType versions to check, if any.</param>
+        /// <param name="lstExtraUniqueName">Additional UniqueName versions to check, if any.</param>
+        /// <param name="lstExtraTarget">Additional Target versions to check, if any.</param>
+        public static void ProcessRelevantEvents(this Improvement objImprovement, ICollection<string> lstExtraImprovedName = null, IEnumerable<Improvement.ImprovementType> lstExtraImprovementTypes = null, ICollection<string> lstExtraUniqueName = null, ICollection<string> lstExtraTarget = null)
+        {
+            if (objImprovement?.SetupComplete != true)
+                return;
+            // Create a hashset of events to fire to make sure we only ever fire each event once
+            using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
+                       Utils.DictionaryForMultiplePropertyChangedPool,
+                       out Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties))
+            {
+                try
+                {
+                    foreach ((INotifyMultiplePropertyChanged objToNotify, string strProperty) in objImprovement
+                                 .GetRelevantPropertyChangers(lstExtraImprovedName: lstExtraImprovedName,
+                                                              lstExtraUniqueName: lstExtraUniqueName,
+                                                              lstExtraTarget: lstExtraTarget))
+                    {
+                        if (!dicChangedProperties.TryGetValue(objToNotify,
+                                                              out HashSet<string> setLoopPropertiesChanged))
+                        {
+                            setLoopPropertiesChanged = Utils.StringHashSetPool.Get();
+                            dicChangedProperties.Add(objToNotify, setLoopPropertiesChanged);
+                        }
+
+                        setLoopPropertiesChanged.Add(strProperty);
+                    }
+
+                    if (lstExtraImprovementTypes != null)
+                    {
+                        foreach (Improvement.ImprovementType eOverrideType in lstExtraImprovementTypes)
+                        {
+                            foreach ((INotifyMultiplePropertyChanged objToNotify, string strProperty) in objImprovement
+                                         .GetRelevantPropertyChangers(lstExtraImprovedName: lstExtraImprovedName,
+                                                                      eOverrideType: eOverrideType,
+                                                                      lstExtraUniqueName: lstExtraUniqueName,
+                                                                      lstExtraTarget: lstExtraTarget))
+                            {
+                                if (!dicChangedProperties.TryGetValue(objToNotify,
+                                                                      out HashSet<string> setLoopPropertiesChanged))
+                                {
+                                    setLoopPropertiesChanged = Utils.StringHashSetPool.Get();
+                                    dicChangedProperties.Add(objToNotify, setLoopPropertiesChanged);
+                                }
+
+                                setLoopPropertiesChanged.Add(strProperty);
+                            }
+                        }
+                    }
+
+                    // Fire each event once
+                    foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpChangedProperties in
+                             dicChangedProperties)
+                        kvpChangedProperties.Key.OnMultiplePropertyChanged(kvpChangedProperties.Value.ToList());
+                }
+                finally
+                {
+                    foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
+                        Utils.StringHashSetPool.Return(setToReturn);
+                }
+            }
+        }
+
+        /// <summary>
         /// Fire off all events relevant to an enumerable of improvements, making sure each event is only fired once.
         /// </summary>
         /// <param name="lstImprovements">Enumerable of improvements whose events to fire</param>
