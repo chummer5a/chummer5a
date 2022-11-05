@@ -52,7 +52,7 @@ namespace Chummer
                 lstMethod.Add(new ListItem("Standard", await LanguageManager.GetStringAsync("String_DiceRoller_Standard").ConfigureAwait(false)));
                 lstMethod.Add(new ListItem("Large", await LanguageManager.GetStringAsync("String_DiceRoller_Large").ConfigureAwait(false)));
                 lstMethod.Add(new ListItem("ReallyLarge", await LanguageManager.GetStringAsync("String_DiceRoller_ReallyLarge").ConfigureAwait(false)));
-                
+
                 await cboMethod.PopulateWithListItemsAsync(lstMethod).ConfigureAwait(false);
                 await cboMethod.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);
             }
@@ -251,8 +251,8 @@ namespace Chummer
 
             foreach (DiceRollerListViewItem objItem in _lstResults)
             {
-                objItem.Target = intTarget;
-                objItem.GlitchMin = intGlitchMin;
+                await objItem.SetTargetAsync(intTarget);
+                await objItem.SetGlitchMinAsync(intGlitchMin);
             }
 
             // Remove everything that is not a hit

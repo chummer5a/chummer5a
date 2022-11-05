@@ -258,7 +258,7 @@ namespace Chummer.UI.Skills
                 }
 
                 DoDataBindings();
-                
+
                 this.UpdateLightDarkMode(token: objMyToken);
                 this.TranslateWinForm(blnDoResumeLayout: false, token: objMyToken);
 
@@ -956,16 +956,16 @@ namespace Chummer.UI.Skills
             get => _objAttributeActive;
             set
             {
-                if (_objAttributeActive == value)
+                CharacterAttrib objOldAttrib = Interlocked.Exchange(ref _objAttributeActive, value);
+                if (objOldAttrib == value)
                     return;
-                if (_objAttributeActive != null)
-                    _objAttributeActive.PropertyChanged -= Attribute_PropertyChanged;
-                _objAttributeActive = value;
-                if (_objAttributeActive != null)
-                    _objAttributeActive.PropertyChanged += Attribute_PropertyChanged;
-                btnAttribute.DoThreadSafe(x => x.Font = _objAttributeActive == _objSkill.AttributeObject
-                                              ? _fntNormal
-                                              : _fntItalic);
+                if (objOldAttrib != null)
+                    objOldAttrib.PropertyChanged -= Attribute_PropertyChanged;
+                if (value != null)
+                    value.PropertyChanged += Attribute_PropertyChanged;
+                btnAttribute.Font = value == _objSkill.AttributeObject
+                    ? _fntNormal
+                    : _fntItalic;
                 RefreshPoolTooltipAndDisplay();
                 CustomAttributeChanged?.Invoke(this, EventArgs.Empty);
             }
@@ -973,16 +973,15 @@ namespace Chummer.UI.Skills
 
         private async ValueTask SetAttributeActiveAsync(CharacterAttrib value, CancellationToken token = default)
         {
-            if (_objAttributeActive == value)
+            CharacterAttrib objOldAttrib = Interlocked.Exchange(ref _objAttributeActive, value);
+            if (objOldAttrib == value)
                 return;
-            if (_objAttributeActive != null)
-                _objAttributeActive.PropertyChanged -= Attribute_PropertyChanged;
-            _objAttributeActive = value;
-            if (_objAttributeActive != null)
-                _objAttributeActive.PropertyChanged += Attribute_PropertyChanged;
-            await btnAttribute.DoThreadSafeAsync(x => x.Font = _objAttributeActive == _objSkill.AttributeObject
-                                                     ? _fntNormal
-                                                     : _fntItalic, token).ConfigureAwait(false);
+            if (objOldAttrib != null)
+                objOldAttrib.PropertyChanged -= Attribute_PropertyChanged;
+            if (value != null)
+                value.PropertyChanged += Attribute_PropertyChanged;
+            Font objFont = value == _objSkill.AttributeObject ? _fntNormal : _fntItalic;
+            await btnAttribute.DoThreadSafeAsync(x => x.Font = objFont, token).ConfigureAwait(false);
             await RefreshPoolTooltipAndDisplayAsync(token).ConfigureAwait(false);
             CustomAttributeChanged?.Invoke(this, EventArgs.Empty);
         }
@@ -992,12 +991,12 @@ namespace Chummer.UI.Skills
         public bool CustomAttributeSet => AttributeActive != _objSkill.AttributeObject;
 
         [UsedImplicitly]
-        public int NameWidth => lblName.DoThreadSafeFunc(x => x.PreferredWidth + x.Margin.Right) + pnlAttributes.DoThreadSafeFunc(x => x.Margin.Left + x.Width);
+        public int NameWidth => lblName.PreferredWidth + lblName.Margin.Right + pnlAttributes.Margin.Left + pnlAttributes.Width;
 
         [UsedImplicitly]
         public int NudSkillWidth =>
             !_objSkill.CharacterObject.Created && _objSkill.CharacterObject.EffectiveBuildMethodUsesPriorityTables
-                ? nudSkill.DoThreadSafeFunc(x => x.Width)
+                ? nudSkill.Width
                 : 0;
 
         [UsedImplicitly]
@@ -1189,11 +1188,8 @@ namespace Chummer.UI.Skills
         {
             string backgroundCalcPool = await _objSkill.DisplayOtherAttributeAsync(AttributeActive.Abbrev, token).ConfigureAwait(false);
             string backgroundCalcTooltip = await _objSkill.CompileDicepoolTooltipAsync(AttributeActive.Abbrev, token: token).ConfigureAwait(false);
-            await lblModifiedRating.DoThreadSafeAsync(x =>
-            {
-                x.Text = backgroundCalcPool;
-                x.ToolTipText = backgroundCalcTooltip;
-            }, token: token).ConfigureAwait(false);
+            await lblModifiedRating.DoThreadSafeAsync(x => x.Text = backgroundCalcPool, token: token).ConfigureAwait(false);
+            await lblModifiedRating.SetToolTipTextAsync(backgroundCalcTooltip, token).ConfigureAwait(false);
         }
 
         // Hacky solutions to data binding causing cursor to reset whenever the user is typing something in: have text changes start a timer, and have a 1s delay in the timer update fire the text update

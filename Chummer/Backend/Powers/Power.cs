@@ -624,11 +624,8 @@ namespace Chummer
             set
             {
                 string strNewValue = value.ToString(GlobalSettings.InvariantCultureInfo);
-                if (_strPointsPerLevel != strNewValue)
-                {
-                    _strPointsPerLevel = strNewValue;
+                if (Interlocked.Exchange(ref _strPointsPerLevel, strNewValue) != strNewValue)
                     OnPropertyChanged();
-                }
             }
         }
 
@@ -662,11 +659,8 @@ namespace Chummer
             set
             {
                 string strNewValue = value.ToString(GlobalSettings.InvariantCultureInfo);
-                if (_strAdeptWayDiscount != strNewValue)
-                {
-                    _strAdeptWayDiscount = strNewValue;
+                if (Interlocked.Exchange(ref _strAdeptWayDiscount, strNewValue) != strNewValue)
                     OnPropertyChanged();
-                }
             }
         }
 
@@ -695,11 +689,8 @@ namespace Chummer
             }
             set
             {
-                if (_intRating != value)
-                {
-                    _intRating = value;
+                if (Interlocked.Exchange(ref _intRating, value) != value)
                     OnPropertyChanged();
-                }
             }
         }
 
@@ -1037,9 +1028,8 @@ namespace Chummer
             get => _intMaxLevels;
             set
             {
-                if (_intMaxLevels == value) return;
-                _intMaxLevels = value;
-                OnPropertyChanged();
+                if (Interlocked.Exchange(ref _intMaxLevels, value) != value)
+                    OnPropertyChanged();
             }
         }
 
@@ -1051,11 +1041,10 @@ namespace Chummer
             get => _blnDiscountedAdeptWay;
             set
             {
-                if (value != _blnDiscountedAdeptWay)
-                {
-                    _blnDiscountedAdeptWay = value;
-                    OnPropertyChanged();
-                }
+                if (_blnDiscountedAdeptWay == value)
+                    return;
+                _blnDiscountedAdeptWay = value;
+                OnPropertyChanged();
             }
         }
 
@@ -1067,11 +1056,10 @@ namespace Chummer
             get => _blnDiscountedGeas;
             set
             {
-                if (value != _blnDiscountedGeas)
-                {
-                    _blnDiscountedGeas = value;
-                    OnPropertyChanged();
-                }
+                if (_blnDiscountedGeas == value)
+                    return;
+                _blnDiscountedGeas = value;
+                OnPropertyChanged();
             }
         }
 

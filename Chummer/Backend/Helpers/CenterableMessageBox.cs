@@ -20,6 +20,7 @@
 using System;
 using System.Drawing;
 using System.Runtime.InteropServices;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -179,14 +180,14 @@ namespace Chummer
         private static void Initialize()
         {
             if (_hHook != IntPtr.Zero)
-            {
                 throw new NotSupportedException("multiple calls are not supported");
-            }
 
-            if (_owner != null)
-            {
-                _hHook = NativeMethods.SetWindowsHookEx(WH_CALLWNDPROCRET, s_HookProc, IntPtr.Zero, Environment.CurrentManagedThreadId);
-            }
+            if (_owner != null
+                && Interlocked.CompareExchange(
+                    ref _hHook,
+                    NativeMethods.SetWindowsHookEx(WH_CALLWNDPROCRET, s_HookProc, IntPtr.Zero,
+                                                   Environment.CurrentManagedThreadId), IntPtr.Zero) != IntPtr.Zero)
+                throw new NotSupportedException("multiple calls are not supported");
         }
 
         private static IntPtr MessageBoxHookProc(int nCode, IntPtr wParam, IntPtr lParam)
@@ -207,8 +208,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    NativeMethods.UnhookWindowsHookEx(_hHook);
-                    _hHook = IntPtr.Zero;
+                    NativeMethods.UnhookWindowsHookEx(Interlocked.Exchange(ref _hHook, IntPtr.Zero));
                 }
             }
 

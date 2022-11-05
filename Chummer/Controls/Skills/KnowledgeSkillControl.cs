@@ -906,19 +906,19 @@ namespace Chummer.UI.Skills
         }
 
         [UsedImplicitly]
-        public int NameWidth => tlpLeft.DoThreadSafeFunc(x => x.Width) -
+        public int NameWidth => tlpLeft.Width -
                                 (_objSkill.AllowNameChange
-                                    ? cboName.DoThreadSafeFunc(x => x.Margin.Left + x.Margin.Right)
-                                    : lblName.DoThreadSafeFunc(x => x.Margin.Left + x.Margin.Right));
+                                    ? cboName.Margin.Left + cboName.Margin.Right
+                                    : lblName.Margin.Left + lblName.Margin.Right);
 
         [UsedImplicitly]
         public int NudSkillWidth =>
             !_objSkill.CharacterObject.Created && _objSkill.CharacterObject.SkillsSection.HasKnowledgePoints
-                ? nudSkill.DoThreadSafeFunc(x => x.Width)
+                ? nudSkill.Width
                 : 0;
 
         [UsedImplicitly]
-        public int RightButtonsWidth => tlpRight.DoThreadSafeFunc(x => x.Width);
+        public int RightButtonsWidth => tlpRight.Width;
 
         /// <summary>
         /// I'm not super pleased with how this works, but it's functional so w/e.

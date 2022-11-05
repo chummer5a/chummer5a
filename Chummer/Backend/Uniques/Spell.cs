@@ -383,12 +383,10 @@ namespace Chummer
             get => _strName;
             set
             {
-                if (_strName != value)
-                {
-                    _objCachedMyXmlNode = null;
-                    _objCachedMyXPathNode = null;
-                    _strName = value;
-                }
+                if (Interlocked.Exchange(ref _strName, value) == value)
+                    return;
+                _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
             }
         }
 
@@ -409,9 +407,8 @@ namespace Chummer
             get => _strDescriptors;
             set
             {
-                if (_strDescriptors == value)
+                if (Interlocked.Exchange(ref _strDescriptors, value) == value)
                     return;
-                _strDescriptors = value;
                 UpdateHashDescriptors();
                 if (Extended)
                 {

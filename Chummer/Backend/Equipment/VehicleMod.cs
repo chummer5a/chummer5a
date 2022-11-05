@@ -595,12 +595,10 @@ namespace Chummer.Backend.Equipment
             get => _strName;
             set
             {
-                if (_strName != value)
-                {
-                    _objCachedMyXmlNode = null;
-                    _objCachedMyXPathNode = null;
-                    _strName = value;
-                }
+                if (Interlocked.Exchange(ref _strName, value) == value)
+                    return;
+                _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
             }
         }
 
@@ -680,12 +678,9 @@ namespace Chummer.Backend.Equipment
             set
             {
                 int intNewRating = Math.Max(0, value);
-                if (_intRating != intNewRating)
-                {
-                    _intRating = intNewRating;
-                    if (!IncludedInVehicle && Equipped && _objCharacter.IsAI && _objCharacter.HomeNode is Vehicle)
-                        _objCharacter.OnPropertyChanged(nameof(Character.PhysicalCM));
-                }
+                if (Interlocked.Exchange(ref _intRating, intNewRating) != intNewRating && !IncludedInVehicle && Equipped
+                    && _objCharacter.IsAI && _objCharacter.HomeNode is Vehicle)
+                    _objCharacter.OnPropertyChanged(nameof(Character.PhysicalCM));
             }
         }
 
@@ -789,12 +784,9 @@ namespace Chummer.Backend.Equipment
             get => _nodBonus;
             set
             {
-                if (_nodBonus != value)
-                {
-                    _nodBonus = value;
-                    if (!IncludedInVehicle && Equipped && _objCharacter.IsAI && _objCharacter.HomeNode is Vehicle)
-                        _objCharacter.OnPropertyChanged(nameof(Character.PhysicalCM));
-                }
+                if (Interlocked.Exchange(ref _nodBonus, value) != value && !IncludedInVehicle && Equipped
+                    && _objCharacter.IsAI && _objCharacter.HomeNode is Vehicle)
+                    _objCharacter.OnPropertyChanged(nameof(Character.PhysicalCM));
             }
         }
 
@@ -902,9 +894,8 @@ namespace Chummer.Backend.Equipment
             get => _objParent;
             set
             {
-                if (_objParent == value)
+                if (Interlocked.Exchange(ref _objParent, value) == value)
                     return;
-                _objParent = value;
                 if (WeaponMountParent?.Parent != value)
                     WeaponMountParent = null;
                 foreach (Weapon objChild in Weapons)

@@ -1042,11 +1042,10 @@ namespace Chummer.Backend.Equipment
             get => _strName;
             set
             {
-                if (_strName == value)
+                if (Interlocked.Exchange(ref _strName, value) == value)
                     return;
                 _objCachedMyXmlNode = null;
                 _objCachedMyXPathNode = null;
-                _strName = value;
             }
         }
 
@@ -1128,8 +1127,7 @@ namespace Chummer.Backend.Equipment
             get => _intDamage;
             set
             {
-                int intOldValue = _intDamage;
-                _intDamage = value;
+                int intOldValue = Interlocked.Exchange(ref _intDamage, value);
 
                 int.TryParse(ArmorValue, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                     out int intTotalArmor);
@@ -1163,9 +1161,8 @@ namespace Chummer.Backend.Equipment
             set
             {
                 int intNewValue = Math.Min(value, MaxRating);
-                if (_intRating == intNewValue)
+                if (Interlocked.Exchange(ref _intRating, intNewValue) == intNewValue)
                     return;
-                _intRating = intNewValue;
                 if (Equipped && _objCharacter != null && (ArmorValue.Contains("Rating") || ArmorOverrideValue.Contains("Rating")))
                 {
                     _objCharacter.OnPropertyChanged(nameof(Character.GetArmorRating));
@@ -1492,7 +1489,7 @@ namespace Chummer.Backend.Equipment
             get => _blnWirelessOn;
             set
             {
-                if (value == _blnWirelessOn)
+                if (_blnWirelessOn == value)
                     return;
                 _blnWirelessOn = value;
                 RefreshWirelessBonuses();

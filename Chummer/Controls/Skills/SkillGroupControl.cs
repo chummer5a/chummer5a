@@ -306,7 +306,7 @@ namespace Chummer.UI.Skills
 
         #region Properties
 
-        public int NameWidth => lblName.DoThreadSafeFunc(x => x.PreferredWidth);
+        public int NameWidth => lblName.PreferredWidth;
 
         #endregion Properties
 

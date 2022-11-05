@@ -26,6 +26,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -647,20 +648,19 @@ namespace Chummer
             get => _strImprovedName;
             set
             {
-                if (_strImprovedName != value)
+                if (_strImprovedName == value)
+                    return;
+                if (Enabled)
                 {
-                    if (Enabled)
-                    {
-                        ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, _strImprovedName);
-                        ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, value);
-                        this.Yield().ProcessRelevantEvents();
-                    }
-
-                    _strImprovedName = value;
-
-                    if (Enabled)
-                        this.Yield().ProcessRelevantEvents();
+                    ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, _strImprovedName);
+                    ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, value);
+                    this.Yield().ProcessRelevantEvents();
                 }
+
+                _strImprovedName = value;
+
+                if (Enabled)
+                    this.Yield().ProcessRelevantEvents();
             }
         }
 
@@ -681,20 +681,19 @@ namespace Chummer
             get => _objImprovementType;
             set
             {
-                if (_objImprovementType != value)
+                if (_objImprovementType == value)
+                    return;
+                if (Enabled)
                 {
-                    if (Enabled)
-                    {
-                        ImprovementManager.ClearCachedValue(_objCharacter, _objImprovementType, ImprovedName);
-                        ImprovementManager.ClearCachedValue(_objCharacter, value, ImprovedName);
-                        this.Yield().ProcessRelevantEvents();
-                    }
-
-                    _objImprovementType = value;
-
-                    if (Enabled)
-                        this.Yield().ProcessRelevantEvents();
+                    ImprovementManager.ClearCachedValue(_objCharacter, _objImprovementType, ImprovedName);
+                    ImprovementManager.ClearCachedValue(_objCharacter, value, ImprovedName);
+                    this.Yield().ProcessRelevantEvents();
                 }
+
+                _objImprovementType = value;
+
+                if (Enabled)
+                    this.Yield().ProcessRelevantEvents();
             }
         }
 
@@ -706,16 +705,15 @@ namespace Chummer
             get => _objImprovementSource;
             set
             {
-                if (_objImprovementSource != value)
+                if (_objImprovementSource == value)
+                    return;
+                if (Enabled)
+                    this.Yield().ProcessRelevantEvents();
+                _objImprovementSource = value;
+                if (Enabled)
                 {
-                    if (Enabled)
-                        this.Yield().ProcessRelevantEvents();
-                    _objImprovementSource = value;
-                    if (Enabled)
-                    {
-                        ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
-                        this.Yield().ProcessRelevantEvents();
-                    }
+                    ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
+                    this.Yield().ProcessRelevantEvents();
                 }
             }
         }
@@ -728,14 +726,10 @@ namespace Chummer
             get => _intMin;
             set
             {
-                if (_intMin != value)
+                if (Interlocked.Exchange(ref _intMin, value) != value && Enabled)
                 {
-                    _intMin = value;
-                    if (Enabled)
-                    {
-                        ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
-                        this.Yield().ProcessRelevantEvents();
-                    }
+                    ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
+                    this.Yield().ProcessRelevantEvents();
                 }
             }
         }
@@ -748,14 +742,10 @@ namespace Chummer
             get => _intMax;
             set
             {
-                if (_intMax != value)
+                if (Interlocked.Exchange(ref _intMax, value) != value && Enabled)
                 {
-                    _intMax = value;
-                    if (Enabled)
-                    {
-                        ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
-                        this.Yield().ProcessRelevantEvents();
-                    }
+                    ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
+                    this.Yield().ProcessRelevantEvents();
                 }
             }
         }
@@ -768,14 +758,10 @@ namespace Chummer
             get => _intAugMax;
             set
             {
-                if (_intAugMax != value)
+                if (Interlocked.Exchange(ref _intAugMax, value) != value && Enabled)
                 {
-                    _intAugMax = value;
-                    if (Enabled)
-                    {
-                        ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
-                        this.Yield().ProcessRelevantEvents();
-                    }
+                    ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
+                    this.Yield().ProcessRelevantEvents();
                 }
             }
         }
@@ -828,14 +814,10 @@ namespace Chummer
             get => _intRating;
             set
             {
-                if (_intRating != value)
+                if (Interlocked.Exchange(ref _intRating, value) != value && Enabled)
                 {
-                    _intRating = value;
-                    if (Enabled)
-                    {
-                        ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
-                        this.Yield().ProcessRelevantEvents();
-                    }
+                    ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
+                    this.Yield().ProcessRelevantEvents();
                 }
             }
         }
@@ -848,14 +830,13 @@ namespace Chummer
             get => _strExclude;
             set
             {
-                if (_strExclude != value)
-                {
-                    if (Enabled)
-                        this.Yield().ProcessRelevantEvents();
-                    _strExclude = value;
-                    if (Enabled)
-                        this.Yield().ProcessRelevantEvents();
-                }
+                if (_strExclude == value)
+                    return;
+                if (Enabled)
+                    this.Yield().ProcessRelevantEvents();
+                _strExclude = value;
+                if (Enabled)
+                    this.Yield().ProcessRelevantEvents();
             }
         }
 
@@ -867,14 +848,13 @@ namespace Chummer
             get => _strCondition;
             set
             {
-                if (_strCondition != value)
-                {
-                    if (Enabled)
-                        this.Yield().ProcessRelevantEvents();
-                    _strCondition = value;
-                    if (Enabled)
-                        this.Yield().ProcessRelevantEvents();
-                }
+                if (_strCondition == value)
+                    return;
+                if (Enabled)
+                    this.Yield().ProcessRelevantEvents();
+                _strCondition = value;
+                if (Enabled)
+                    this.Yield().ProcessRelevantEvents();
             }
         }
 
@@ -886,16 +866,15 @@ namespace Chummer
             get => _strUniqueName;
             set
             {
-                if (_strUniqueName != value)
+                if (_strUniqueName == value)
+                    return;
+                if (Enabled)
+                    this.Yield().ProcessRelevantEvents();
+                _strUniqueName = value;
+                if (Enabled)
                 {
-                    if (Enabled)
-                        this.Yield().ProcessRelevantEvents();
-                    _strUniqueName = value;
-                    if (Enabled)
-                    {
-                        ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
-                        this.Yield().ProcessRelevantEvents();
-                    }
+                    ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
+                    this.Yield().ProcessRelevantEvents();
                 }
             }
         }
@@ -908,16 +887,15 @@ namespace Chummer
             get => _blnAddToRating;
             set
             {
-                if (_blnAddToRating != value)
+                if (_blnAddToRating == value)
+                    return;
+                if (Enabled)
+                    this.Yield().ProcessRelevantEvents();
+                _blnAddToRating = value;
+                if (Enabled)
                 {
-                    if (Enabled)
-                        this.Yield().ProcessRelevantEvents();
-                    _blnAddToRating = value;
-                    if (Enabled)
-                    {
-                        ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
-                        this.Yield().ProcessRelevantEvents();
-                    }
+                    ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
+                    this.Yield().ProcessRelevantEvents();
                 }
             }
         }
@@ -930,14 +908,13 @@ namespace Chummer
             get => _strTarget;
             set
             {
-                if (_strTarget != value)
-                {
-                    if (Enabled)
-                        this.Yield().ProcessRelevantEvents();
-                    _strTarget = value;
-                    if (Enabled)
-                        this.Yield().ProcessRelevantEvents();
-                }
+                if (_strTarget == value)
+                    return;
+                if (Enabled)
+                    this.Yield().ProcessRelevantEvents();
+                _strTarget = value;
+                if (Enabled)
+                    this.Yield().ProcessRelevantEvents();
             }
         }
 
@@ -949,12 +926,11 @@ namespace Chummer
             get => _blnEnabled;
             set
             {
-                if (_blnEnabled != value)
-                {
-                    _blnEnabled = value;
-                    ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
-                    this.Yield().ProcessRelevantEvents();
-                }
+                if (_blnEnabled == value)
+                    return;
+                _blnEnabled = value;
+                ImprovementManager.ClearCachedValue(_objCharacter, ImproveType, ImprovedName);
+                this.Yield().ProcessRelevantEvents();
             }
         }
 

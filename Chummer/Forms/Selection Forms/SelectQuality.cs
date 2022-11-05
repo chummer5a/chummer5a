@@ -71,7 +71,7 @@ namespace Chummer
             {
                 _lstCategory.Insert(0, new ListItem("Show All", await LanguageManager.GetStringAsync("String_ShowAll").ConfigureAwait(false)));
             }
-            
+
             await cboCategory.PopulateWithListItemsAsync(_lstCategory).ConfigureAwait(false);
             // Select the first Category in the list.
             await cboCategory.DoThreadSafeAsync(x =>
@@ -452,15 +452,12 @@ namespace Chummer
                                                          await LanguageManager.GetStringAsync("String_SpellPoints", token: token).ConfigureAwait(false));
                             string strBPTooltip
                                 = await LanguageManager.GetStringAsync("Tip_SelectSpell_MasteryQuality", token: token).ConfigureAwait(false);
-                            await lblBP.DoThreadSafeAsync(x =>
-                            {
-                                x.Text += strBP;
-                                x.ToolTipText = strBPTooltip;
-                            }, token: token).ConfigureAwait(false);
+                            await lblBP.DoThreadSafeAsync(x => x.Text += strBP, token: token).ConfigureAwait(false);
+                            await lblBP.SetToolTipTextAsync(strBPTooltip, token).ConfigureAwait(false);
                         }
                         else
                         {
-                            await lblBP.DoThreadSafeAsync(x => x.ToolTipText = string.Empty, token: token).ConfigureAwait(false);
+                            await lblBP.SetToolTipTextAsync(string.Empty, token).ConfigureAwait(false);
                         }
                     }
                 }

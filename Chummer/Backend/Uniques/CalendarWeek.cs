@@ -156,11 +156,8 @@ namespace Chummer
             get => _intYear;
             set
             {
-                if (_intYear != value)
-                {
-                    _intYear = value;
+                if (Interlocked.Exchange(ref _intYear, value) != value)
                     OnPropertyChanged();
-                }
             }
         }
 
@@ -355,11 +352,8 @@ namespace Chummer
             get => _intWeek;
             set
             {
-                if (_intWeek != value)
-                {
-                    _intWeek = value;
+                if (Interlocked.Exchange(ref _intWeek, value) != value)
                     OnPropertyChanged();
-                }
             }
         }
 
@@ -371,11 +365,8 @@ namespace Chummer
             get => _strNotes;
             set
             {
-                if (_strNotes != value)
-                {
-                    _strNotes = value;
+                if (Interlocked.Exchange(ref _strNotes, value) != value)
                     OnPropertyChanged();
-                }
             }
         }
 

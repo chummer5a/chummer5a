@@ -362,14 +362,13 @@ namespace Chummer
             }
             set
             {
-                if (_strName != value)
+                if (Interlocked.Exchange(ref _strName, value) != value)
                 {
                     if (SourceID == Guid.Empty)
                     {
                         _objCachedMyXmlNode = null;
                         _objCachedMyXPathNode = null;
                     }
-                    _strName = value;
                     if (_objCharacter.MentorSpirits.Count > 0 && _objCharacter.MentorSpirits[0] == this)
                         _objCharacter.OnPropertyChanged(nameof(Character.FirstMentorSpiritDisplayName));
                 }
@@ -384,12 +383,9 @@ namespace Chummer
             get => _strExtra;
             set
             {
-                if (_strExtra != value)
-                {
-                    _strExtra = value;
-                    if (_objCharacter.MentorSpirits.Count > 0 && _objCharacter.MentorSpirits[0] == this)
-                        _objCharacter.OnPropertyChanged(nameof(Character.FirstMentorSpiritDisplayName));
-                }
+                if (Interlocked.Exchange(ref _strExtra, value) != value && _objCharacter.MentorSpirits.Count > 0
+                                                                        && _objCharacter.MentorSpirits[0] == this)
+                    _objCharacter.OnPropertyChanged(nameof(Character.FirstMentorSpiritDisplayName));
             }
         }
 

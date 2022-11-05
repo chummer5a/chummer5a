@@ -579,10 +579,8 @@ namespace Chummer
             get => _strName;
             set
             {
-                if (_strName == value)
-                    return;
-                _strName = value;
-                OnPropertyChanged();
+                if (Interlocked.Exchange(ref _strName, value) != value)
+                    OnPropertyChanged();
             }
         }
 
@@ -615,10 +613,8 @@ namespace Chummer
             get => _strSource;
             set
             {
-                if (_strSource == value)
-                    return;
-                _strSource = value;
-                OnPropertyChanged();
+                if (Interlocked.Exchange(ref _strSource, value) != value)
+                    OnPropertyChanged();
             }
         }
 
@@ -630,10 +626,8 @@ namespace Chummer
             get => _strPage;
             set
             {
-                if (_strPage == value)
-                    return;
-                _strPage = value;
-                OnPropertyChanged();
+                if (Interlocked.Exchange(ref _strPage, value) != value)
+                    OnPropertyChanged();
             }
         }
 
@@ -677,10 +671,8 @@ namespace Chummer
             get => _strSourceName;
             set
             {
-                if (_strSourceName == value)
-                    return;
-                _strSourceName = value;
-                OnPropertyChanged();
+                if (Interlocked.Exchange(ref _strSourceName, value) != value)
+                    OnPropertyChanged();
             }
         }
 
@@ -708,10 +700,8 @@ namespace Chummer
             get => _nodBonus;
             set
             {
-                if (_nodBonus == value)
-                    return;
-                _nodBonus = value;
-                OnPropertyChanged();
+                if (Interlocked.Exchange(ref _nodBonus, value) != value)
+                    OnPropertyChanged();
             }
         }
 
@@ -723,10 +713,8 @@ namespace Chummer
             get => _nodFirstLevelBonus;
             set
             {
-                if (_nodFirstLevelBonus == value)
-                    return;
-                _nodFirstLevelBonus = value;
-                OnPropertyChanged();
+                if (Interlocked.Exchange(ref _nodFirstLevelBonus, value) != value)
+                    OnPropertyChanged();
             }
         }
 
@@ -738,10 +726,8 @@ namespace Chummer
             get => _nodNaturalWeaponsNode;
             set
             {
-                if (_nodNaturalWeaponsNode == value)
-                    return;
-                _nodNaturalWeaponsNode = value;
-                OnPropertyChanged();
+                if (Interlocked.Exchange(ref _nodNaturalWeaponsNode, value) != value)
+                    OnPropertyChanged();
             }
         }
 
@@ -804,10 +790,8 @@ namespace Chummer
             }
             set
             {
-                if (_intBP == value)
-                    return;
-                _intBP = value;
-                OnPropertyChanged();
+                if (Interlocked.Exchange(ref _intBP, value) != value)
+                    OnPropertyChanged();
             }
         }
 
@@ -1108,10 +1092,9 @@ namespace Chummer
             }
             set
             {
-                if (_strNotes == value)
+                if (Interlocked.Exchange(ref _strNotes, value) == value)
                     return;
                 _strCachedNotes = string.Empty;
-                _strNotes = value;
                 OnPropertyChanged();
             }
         }

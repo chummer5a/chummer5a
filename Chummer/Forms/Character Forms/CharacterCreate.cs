@@ -13147,7 +13147,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             // Initiation Grade cost.
             decDeductions += await (await CharacterObject.GetLifestylesAsync(token).ConfigureAwait(false))
-                                   .SumParallelAsync(x => x.TotalCost, token).ConfigureAwait(false)
+                                   .SumParallelAsync(x => x.GetTotalCostAsync(token).AsTask(), token).ConfigureAwait(false)
                              + 10000 * await (await CharacterObject.GetInitiationGradesAsync(token)
                                                                    .ConfigureAwait(false))
                                              .CountAsync(x => x.Schooling, token).ConfigureAwait(false);
@@ -16308,13 +16308,11 @@ namespace Chummer
                     await lblLifestyleStartingNuyen.DoThreadSafeAsync(x => x.Text = strText, token)
                                                    .ConfigureAwait(false);
                     await objLifestyle.SetSourceDetailAsync(lblLifestyleSource, token).ConfigureAwait(false);
-                    await lblLifestyleTotalCost.DoThreadSafeAsync(x => x.Text
-                                                                      = objLifestyle.TotalCost.ToString(
-                                                                            CharacterObjectSettings.NuyenFormat,
-                                                                            GlobalSettings.CultureInfo)
-                                                                        + LanguageManager.GetString(
-                                                                            "String_NuyenSymbol", token: token), token)
-                                               .ConfigureAwait(false);
+                    string strCost
+                        = (await objLifestyle.GetTotalCostAsync(token).ConfigureAwait(false)).ToString(
+                            CharacterObjectSettings.NuyenFormat, GlobalSettings.CultureInfo) + await LanguageManager
+                            .GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
+                    await lblLifestyleTotalCost.DoThreadSafeAsync(x => x.Text = strCost, token).ConfigureAwait(false);
                     string strCostLabelString;
                     string strIncrementString;
                     // Change the Cost/Month label.

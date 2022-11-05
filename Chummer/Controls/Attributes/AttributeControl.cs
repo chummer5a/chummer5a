@@ -314,7 +314,7 @@ namespace Chummer.UI.Attributes
         private async void nudBase_ValueChanged(object sender, EventArgs e)
         {
             int intValue = await ((NumericUpDownEx)sender).DoThreadSafeFuncAsync(x => x.ValueAsInt).ConfigureAwait(false);
-            if (intValue == _oldBase)
+            if (Interlocked.Exchange(ref _oldBase, intValue) == intValue)
                 return;
             CharacterAttrib objAttribute = await GetAttributeObjectAsync().ConfigureAwait(false);
             using (await EnterReadLock.EnterAsync(objAttribute).ConfigureAwait(false))
@@ -346,13 +346,13 @@ namespace Chummer.UI.Attributes
             }
 
             await this.DoThreadSafeAsync(x => x.ValueChanged?.Invoke(this, e)).ConfigureAwait(false);
-            _oldBase = intValue;
         }
 
         private async void nudKarma_ValueChanged(object sender, EventArgs e)
         {
             int intValue = await ((NumericUpDownEx)sender).DoThreadSafeFuncAsync(x => x.ValueAsInt).ConfigureAwait(false);
-            if (intValue == _oldKarma)
+            int intOldKarma = Interlocked.Exchange(ref _oldKarma, intValue);
+            if (intOldKarma == intValue)
                 return;
             CharacterAttrib objAttribute = await GetAttributeObjectAsync().ConfigureAwait(false);
             using (await EnterReadLock.EnterAsync(objAttribute).ConfigureAwait(false))
@@ -366,16 +366,20 @@ namespace Chummer.UI.Attributes
                 {
                     // It's possible that the attribute maximum was reduced by an improvement, so confirm the appropriate value to bounce up/down to.
                     int intKarmaMaximum = await objAttribute.GetKarmaMaximumAsync().ConfigureAwait(false);
-                    if (_oldKarma > intKarmaMaximum)
+                    if (intOldKarma > intKarmaMaximum)
                     {
-                        _oldKarma = intKarmaMaximum - 1;
+                        if (Interlocked.CompareExchange(ref _oldKarma, intKarmaMaximum - 1, intValue) == intValue)
+                            intValue = intKarmaMaximum - 1;
+                        intOldKarma = intKarmaMaximum - 1;
                     }
 
-                    if (_oldKarma < 0)
+                    if (intOldKarma < 0)
                     {
+                        Interlocked.CompareExchange(ref _oldKarma, 0, intValue);
+                        int intOldKarmaLocal = intOldKarma;
                         await nudBase.DoThreadSafeAsync(x =>
                         {
-                            decimal newValue = Math.Max(x.Value - _oldKarma, 0);
+                            decimal newValue = Math.Max(x.Value - intOldKarmaLocal, 0);
                             if (newValue > x.Maximum)
                             {
                                 newValue = x.Maximum;
@@ -388,16 +392,15 @@ namespace Chummer.UI.Attributes
 
                             x.Value = newValue;
                         }).ConfigureAwait(false);
-                        _oldKarma = 0;
+                        intOldKarma = 0;
                     }
 
-                    await nudKarma.DoThreadSafeAsync(x => x.Value = _oldKarma).ConfigureAwait(false);
+                    await nudKarma.DoThreadSafeAsync(x => x.Value = intOldKarma).ConfigureAwait(false);
                     return;
                 }
             }
 
             await this.DoThreadSafeAsync(x => x.ValueChanged?.Invoke(this, e)).ConfigureAwait(false);
-            _oldKarma = intValue;
         }
 
         /// <summary>

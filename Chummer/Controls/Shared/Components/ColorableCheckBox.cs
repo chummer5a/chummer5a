@@ -49,9 +49,8 @@ namespace Chummer
         protected override void OnEnabledChanged(EventArgs e)
         {
             // Safety check to make sure that if base Enabled property is set on the base class instead of this one, we still end up coloring things properly
-            if (_intEnabledBeingSetFromOutside > 0)
+            if (Interlocked.CompareExchange(ref _intEnabledBeingSetFromOutside, 0, 1) > 0)
             {
-                Interlocked.Decrement(ref _intEnabledBeingSetFromOutside);
                 try
                 {
                     Enabled = base.Enabled;
@@ -91,7 +90,7 @@ namespace Chummer
                 {
                     Interlocked.Increment(ref _intEnabledBeingSetFromOutside);
                 }
-                
+
                 if (value)
                 {
                     FlatAppearance.MouseDownBackColor = ColorManager.ControlDarkest;
@@ -105,16 +104,16 @@ namespace Chummer
             }
         }
 
-        private bool _blnDefaultColorScheme = ColorManager.IsLightMode;
+        private int _intDefaultColorScheme = ColorManager.IsLightMode ? 1 : 0;
 
         public bool DefaultColorScheme
         {
-            get => _blnDefaultColorScheme;
+            get => _intDefaultColorScheme > 0;
             set
             {
-                if (_blnDefaultColorScheme == value)
+                int intNewValue = value ? 1 : 0;
+                if (Interlocked.Exchange(ref _intDefaultColorScheme, intNewValue) == intNewValue)
                     return;
-                _blnDefaultColorScheme = value;
                 Interlocked.Decrement(ref _intEnabledBeingSetFromOutside);
                 try
                 {

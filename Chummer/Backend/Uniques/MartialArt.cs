@@ -371,14 +371,13 @@ namespace Chummer
             get => _strName;
             set
             {
-                if (_strName == value)
+                if (Interlocked.Exchange(ref _strName, value) == value)
                     return;
                 if (SourceID == Guid.Empty)
                 {
                     _objCachedMyXmlNode = null;
                     _objCachedMyXPathNode = null;
                 }
-                _strName = value;
             }
         }
 

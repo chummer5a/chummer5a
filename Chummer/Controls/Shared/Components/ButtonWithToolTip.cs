@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -38,20 +39,20 @@ namespace Chummer
             set
             {
                 value = _intToolTipWrap > 0 ? value.WordWrap(_intToolTipWrap) : value.WordWrap();
-                if (_strToolTipText == value)
+                if (Interlocked.Exchange(ref _strToolTipText, value) == value)
                     return;
-                _strToolTipText = value;
                 this.DoThreadSafe(x => _objToolTip.SetToolTip(x, value.CleanForHtml()));
             }
         }
 
-        public Task SetToolTipTextAsync(string value)
+        public Task SetToolTipTextAsync(string value, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
             value = _intToolTipWrap > 0 ? value.WordWrap(_intToolTipWrap) : value.WordWrap();
-            if (_strToolTipText == value)
-                return Task.CompletedTask;
-            _strToolTipText = value;
-            return this.DoThreadSafeAsync(x => _objToolTip.SetToolTip(x, value.CleanForHtml()));
+            return Interlocked.Exchange(ref _strToolTipText, value) != value
+                ? this.DoThreadSafeAsync(x => _objToolTip.SetToolTip(x, value.CleanForHtml()), token: token)
+                : Task.CompletedTask;
         }
 
         public ButtonWithToolTip() : this(ToolTipFactory.ToolTip)

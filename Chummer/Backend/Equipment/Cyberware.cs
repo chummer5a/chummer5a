@@ -2191,13 +2191,13 @@ namespace Chummer.Backend.Equipment
             get => _strName;
             set
             {
-                if (_strName == value) return;
-                string strOldValue = _strName;
-                _lstIncludeInPairBonus.Remove(_strName);
+                string strOldValue = Interlocked.Exchange(ref _strName, value);
+                if (strOldValue == value)
+                    return;
+                _lstIncludeInPairBonus.Remove(strOldValue);
                 _lstIncludeInPairBonus.Add(value);
-                _lstIncludeInWirelessPairBonus.Remove(_strName);
+                _lstIncludeInWirelessPairBonus.Remove(strOldValue);
                 _lstIncludeInWirelessPairBonus.Add(value);
-                _strName = value;
                 if (_objParent?.Category != "Cyberlimb" || _objParent.Parent?.InheritAttributes == false ||
                     _objParent.ParentVehicle != null || _objCharacter.Settings.DontUseCyberlimbCalculation ||
                     string.IsNullOrWhiteSpace(_objParent.LimbSlot) ||
@@ -2374,27 +2374,24 @@ namespace Chummer.Backend.Equipment
             get => _strCategory;
             set
             {
-                if (_strCategory != value)
+                string strOldValue = Interlocked.Exchange(ref _strCategory, value);
+                if (strOldValue != value && (value == "Cyberlimb" || strOldValue == "Cyberlimb")
+                                         && Parent?.InheritAttributes != false &&
+                                         ParentVehicle == null && !_objCharacter.Settings.DontUseCyberlimbCalculation &&
+                                         !string.IsNullOrWhiteSpace(LimbSlot) &&
+                                         !_objCharacter.Settings.ExcludeLimbSlot.Contains(LimbSlot))
                 {
-                    string strOldValue = _strCategory;
-                    _strCategory = value;
-                    if ((value == "Cyberlimb" || strOldValue == "Cyberlimb") && Parent?.InheritAttributes != false &&
-                        ParentVehicle == null && !_objCharacter.Settings.DontUseCyberlimbCalculation &&
-                        !string.IsNullOrWhiteSpace(LimbSlot) &&
-                        !_objCharacter.Settings.ExcludeLimbSlot.Contains(LimbSlot))
+                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList
+                                 .Concat(_objCharacter.AttributeSection.SpecialAttributeList))
                     {
-                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList
-                            .Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                        if (CyberlimbAttributeAbbrevs.Contains(objCharacterAttrib.Abbrev))
                         {
-                            if (CyberlimbAttributeAbbrevs.Contains(objCharacterAttrib.Abbrev))
-                            {
-                                objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
-                            }
+                            objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
                         }
-
-                        if (_objCharacter.Settings.CyberlegMovement && LimbSlot == "leg")
-                            _objCharacter.OnPropertyChanged(nameof(Character.GetMovement));
                     }
+
+                    if (_objCharacter.Settings.CyberlegMovement && LimbSlot == "leg")
+                        _objCharacter.OnPropertyChanged(nameof(Character.GetMovement));
                 }
             }
         }
@@ -2407,28 +2404,24 @@ namespace Chummer.Backend.Equipment
             get => _strLimbSlot;
             set
             {
-                if (_strLimbSlot != value)
+                string strOldValue = Interlocked.Exchange(ref _strLimbSlot, value);
+                if (strOldValue != value && (Category == "Cyberlimb" && Parent?.InheritAttributes != false && ParentVehicle == null &&
+                                             !_objCharacter.Settings.DontUseCyberlimbCalculation &&
+                                             (!string.IsNullOrWhiteSpace(value) && !_objCharacter.Settings.ExcludeLimbSlot.Contains(value)) ||
+                                             (!string.IsNullOrWhiteSpace(strOldValue) &&
+                                              !_objCharacter.Settings.ExcludeLimbSlot.Contains(strOldValue))))
                 {
-                    string strOldValue = _strLimbSlot;
-                    _strLimbSlot = value;
-                    if (Category == "Cyberlimb" && Parent?.InheritAttributes != false && ParentVehicle == null &&
-                        !_objCharacter.Settings.DontUseCyberlimbCalculation &&
-                        (!string.IsNullOrWhiteSpace(value) && !_objCharacter.Settings.ExcludeLimbSlot.Contains(value)) ||
-                        (!string.IsNullOrWhiteSpace(strOldValue) &&
-                         !_objCharacter.Settings.ExcludeLimbSlot.Contains(strOldValue)))
+                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList
+                                 .Concat(_objCharacter.AttributeSection.SpecialAttributeList))
                     {
-                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList
-                            .Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                        if (CyberlimbAttributeAbbrevs.Contains(objCharacterAttrib.Abbrev))
                         {
-                            if (CyberlimbAttributeAbbrevs.Contains(objCharacterAttrib.Abbrev))
-                            {
-                                objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
-                            }
+                            objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
                         }
-
-                        if (_objCharacter.Settings.CyberlegMovement && (value == "leg" || strOldValue == "leg"))
-                            _objCharacter.OnPropertyChanged(nameof(Character.GetMovement));
                     }
+
+                    if (_objCharacter.Settings.CyberlegMovement && (value == "leg" || strOldValue == "leg"))
+                        _objCharacter.OnPropertyChanged(nameof(Character.GetMovement));
                 }
             }
         }
@@ -2451,26 +2444,23 @@ namespace Chummer.Backend.Equipment
             set
             {
                 string strNewValue = value.ToString(GlobalSettings.InvariantCultureInfo);
-                if (_strLimbSlotCount != strNewValue)
+                if (Interlocked.Exchange(ref _strLimbSlotCount, strNewValue) != strNewValue && Category == "Cyberlimb"
+                    && Parent?.InheritAttributes != false && ParentVehicle == null &&
+                    !_objCharacter.Settings.DontUseCyberlimbCalculation &&
+                    !string.IsNullOrWhiteSpace(LimbSlot) &&
+                    !_objCharacter.Settings.ExcludeLimbSlot.Contains(LimbSlot))
                 {
-                    _strLimbSlotCount = strNewValue;
-                    if (Category == "Cyberlimb" && Parent?.InheritAttributes != false && ParentVehicle == null &&
-                        !_objCharacter.Settings.DontUseCyberlimbCalculation &&
-                        !string.IsNullOrWhiteSpace(LimbSlot) &&
-                        !_objCharacter.Settings.ExcludeLimbSlot.Contains(LimbSlot))
+                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList
+                                 .Concat(_objCharacter.AttributeSection.SpecialAttributeList))
                     {
-                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.AttributeSection.AttributeList
-                            .Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                        if (CyberlimbAttributeAbbrevs.Contains(objCharacterAttrib.Abbrev))
                         {
-                            if (CyberlimbAttributeAbbrevs.Contains(objCharacterAttrib.Abbrev))
-                            {
-                                objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
-                            }
+                            objCharacterAttrib.OnPropertyChanged(nameof(CharacterAttrib.TotalValue));
                         }
-
-                        if (_objCharacter.Settings.CyberlegMovement && LimbSlot == "leg")
-                            _objCharacter.OnPropertyChanged(nameof(Character.GetMovement));
                     }
+
+                    if (_objCharacter.Settings.CyberlegMovement && LimbSlot == "leg")
+                        _objCharacter.OnPropertyChanged(nameof(Character.GetMovement));
                 }
             }
         }
@@ -3372,9 +3362,8 @@ namespace Chummer.Backend.Equipment
             set
             {
                 int intNewValue = Math.Max(Math.Min(value, MaxRating), MinRating);
-                if (_intRating == intNewValue)
+                if (Interlocked.Exchange(ref _intRating, intNewValue) == intNewValue)
                     return;
-                _intRating = intNewValue;
                 if (GearChildren.Count > 0)
                 {
                     foreach (Gear objChild in GearChildren.Where(x =>
@@ -3705,28 +3694,27 @@ namespace Chummer.Backend.Equipment
             }
             set
             {
-                if (_objGrade != value && value != null)
+                Grade objOldGrade = Interlocked.Exchange(ref _objGrade, value);
+                if (objOldGrade == value || value == null)
+                    return;
+                bool blnGradeEssenceChanged = objOldGrade.Essence != value.Essence;
+                // Run through all of the child pieces and make sure their Grade matches.
+                foreach (Cyberware objChild in Children)
                 {
-                    bool blnGradeEssenceChanged = _objGrade.Essence != value.Essence;
-                    _objGrade = value;
-                    // Run through all of the child pieces and make sure their Grade matches.
-                    foreach (Cyberware objChild in Children)
+                    int intMyProcessPropertyChanges = _intProcessPropertyChanges;
+                    int intOldChildProcessPropertyChanges = Interlocked.Exchange(ref objChild._intProcessPropertyChanges, _intProcessPropertyChanges);
+                    try
                     {
-                        int intMyProcessPropertyChanges = _intProcessPropertyChanges;
-                        int intOldChildProcessPropertyChanges = Interlocked.Exchange(ref objChild._intProcessPropertyChanges, _intProcessPropertyChanges);
-                        try
-                        {
-                            objChild.Grade = value;
-                        }
-                        finally
-                        {
-                            Interlocked.CompareExchange(ref objChild._intProcessPropertyChanges,
-                                                        intOldChildProcessPropertyChanges, intMyProcessPropertyChanges);
-                        }
+                        objChild.Grade = value;
                     }
-                    if (blnGradeEssenceChanged)
-                        DoPropertyChanges(false, true);
+                    finally
+                    {
+                        Interlocked.CompareExchange(ref objChild._intProcessPropertyChanges,
+                                                    intOldChildProcessPropertyChanges, intMyProcessPropertyChanges);
+                    }
                 }
+                if (blnGradeEssenceChanged)
+                    DoPropertyChanges(false, true);
             }
         }
 
@@ -3756,13 +3744,9 @@ namespace Chummer.Backend.Equipment
             get => _intEssenceDiscount;
             set
             {
-                if (_intEssenceDiscount != value)
-                {
-                    _intEssenceDiscount = value;
-                    if ((Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount) &&
-                        ParentVehicle == null)
-                        _objCharacter.OnPropertyChanged(EssencePropertyName);
-                }
+                if (Interlocked.Exchange(ref _intEssenceDiscount, value) != value && (Parent == null || AddToParentESS)
+                    && string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
+                    _objCharacter.OnPropertyChanged(EssencePropertyName);
             }
         }
 
@@ -4033,9 +4017,9 @@ namespace Chummer.Backend.Equipment
             get => _blnAddToParentESS;
             set
             {
-                if (_blnAddToParentESS != value)
+                bool blnOldValue = _blnAddToParentESS;
+                if (blnOldValue != value)
                 {
-                    bool blnOldValue = _blnAddToParentESS;
                     _blnAddToParentESS = value;
                     if ((Parent == null || AddToParentESS || blnOldValue) &&
                         string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)
@@ -4052,9 +4036,9 @@ namespace Chummer.Backend.Equipment
             get => _blnAddToParentCapacity;
             set
             {
-                if (_blnAddToParentCapacity != value)
+                bool blnOldValue = _blnAddToParentCapacity;
+                if (blnOldValue != value)
                 {
-                    bool blnOldValue = _blnAddToParentCapacity;
                     _blnAddToParentCapacity = value;
                     if ((Parent == null || AddToParentCapacity || blnOldValue) &&
                         string.IsNullOrEmpty(PlugsIntoModularMount) && ParentVehicle == null)

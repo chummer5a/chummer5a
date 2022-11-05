@@ -94,12 +94,11 @@ namespace Chummer.UI.Shared.Components
             get => _intDicePool;
             set
             {
-                if (_intDicePool == value)
+                if (Interlocked.Exchange(ref _intDicePool, value) == value)
                     return;
-                _intDicePool = value;
                 lblDicePool.Text = CanBeRolled
-                    ? _intDicePool.ToString(GlobalSettings.CultureInfo)
-                    : _intDicePool.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+                    ? value.ToString(GlobalSettings.CultureInfo)
+                    : value.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
             }
         }
 
@@ -108,6 +107,9 @@ namespace Chummer.UI.Shared.Components
             get => lblDicePool.ToolTipText;
             set => lblDicePool.ToolTipText = value;
         }
+
+        public Task SetToolTipTextAsync(string value, CancellationToken token = default) =>
+            lblDicePool.SetToolTipTextAsync(value, token);
 
         public ToolTip ToolTipObject => lblDicePool.ToolTipObject;
     }

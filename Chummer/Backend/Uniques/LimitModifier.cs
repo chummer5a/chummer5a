@@ -222,8 +222,8 @@ namespace Chummer
             }
             set
             {
-                if (value == _strCondition) return;
-                _strCondition = value;
+                if (Interlocked.Exchange(ref _strCondition, value) == value)
+                    return;
                 _strCachedCondition = string.Empty;
                 _strCachedDisplayCondition = string.Empty;
                 _strCachedDisplayConditionLanguage = string.Empty;

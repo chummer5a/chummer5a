@@ -322,11 +322,10 @@ namespace Chummer
             get => _strName;
             set
             {
-                if (_strName == value)
+                if (Interlocked.Exchange(ref _strName, value) == value)
                     return;
                 _objCachedMyXmlNode = null;
                 _objCachedMyXPathNode = null;
-                _strName = value;
             }
         }
 

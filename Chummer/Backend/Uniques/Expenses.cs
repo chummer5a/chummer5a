@@ -239,7 +239,7 @@ namespace Chummer
         private DateTime _datDate;
         private decimal _decAmount;
         private string _strReason = string.Empty;
-        private ExpenseType _objExpenseType;
+        private ExpenseType _eExpenseType;
         private bool _blnRefund;
         private bool _blnForceCareerVisible;
 
@@ -284,7 +284,7 @@ namespace Chummer
             _decAmount = decAmount;
             _strReason = strReason;
             _datDate = datDate;
-            _objExpenseType = objExpenseType;
+            _eExpenseType = objExpenseType;
             _blnRefund = blnRefund;
 
             return this; //Allow chaining
@@ -303,7 +303,7 @@ namespace Chummer
             objWriter.WriteElementString("date", _datDate.ToString("s", GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("amount", _decAmount.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("reason", _strReason);
-            objWriter.WriteElementString("type", _objExpenseType.ToString());
+            objWriter.WriteElementString("type", _eExpenseType.ToString());
             objWriter.WriteElementString("refund", _blnRefund.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("forcecareervisible", _blnForceCareerVisible.ToString(GlobalSettings.InvariantCultureInfo));
             Undo?.Save(objWriter);
@@ -324,7 +324,7 @@ namespace Chummer
             if (objNode.TryGetStringFieldQuickly("reason", ref _strReason))
                 _strReason = _strReason.TrimEndOnce(" (" + LanguageManager.GetString("String_Expense_Refund") + ')').Replace("🡒", "->");
             if (objNode["type"] != null)
-                _objExpenseType = ConvertToExpenseType(objNode["type"].InnerText);
+                _eExpenseType = ConvertToExpenseType(objNode["type"].InnerText);
             objNode.TryGetBoolFieldQuickly("refund", ref _blnRefund);
             objNode.TryGetBoolFieldQuickly("forcecareervisible", ref _blnForceCareerVisible);
 
@@ -438,12 +438,12 @@ namespace Chummer
         /// </summary>
         public ExpenseType Type
         {
-            get => _objExpenseType;
+            get => _eExpenseType;
             set
             {
-                if (_objExpenseType != value)
+                if (_eExpenseType != value)
                 {
-                    _objExpenseType = value;
+                    _eExpenseType = value;
                     if (Amount > 0 && !Refund)
                         _objCharacter?.OnMultiplePropertyChanged(nameof(Character.CareerNuyen), nameof(Character.CareerKarma));
                 }
@@ -516,7 +516,7 @@ namespace Chummer
                 int intReturn = Date.CompareTo(other.Date);
                 if (intReturn == 0)
                 {
-                    intReturn = _objExpenseType.CompareTo(other._objExpenseType);
+                    intReturn = _eExpenseType.CompareTo(other._eExpenseType);
                     if (intReturn == 0)
                     {
                         intReturn = string.CompareOrdinal(Reason, other.Reason);
@@ -545,7 +545,7 @@ namespace Chummer
                     intBackupReturn = Date.CompareTo(other.Date);
                     if (intBackupReturn == 0)
                     {
-                        intBackupReturn = _objExpenseType.CompareTo(other._objExpenseType);
+                        intBackupReturn = _eExpenseType.CompareTo(other._eExpenseType);
                         if (intBackupReturn == 0)
                         {
                             intBackupReturn = string.CompareOrdinal(Reason, other.Reason);

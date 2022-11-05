@@ -13439,7 +13439,7 @@ namespace Chummer
                 int intPosition = await CharacterObject.Lifestyles.IndexOfAsync(
                     CharacterObject.Lifestyles.FirstOrDefault(p => p.InternalId == objLifestyle.InternalId)).ConfigureAwait(false);
                 string strOldLifestyleName = await objLifestyle.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
-                decimal decOldLifestyleTotalCost = objLifestyle.TotalCost;
+                decimal decOldLifestyleTotalCost = await objLifestyle.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
 
                 if (objLifestyle.StyleType != LifestyleType.Standard)
                 {
@@ -13487,7 +13487,7 @@ namespace Chummer
 
                 objLifestyle.Increments = intMonths;
 
-                decimal decAmount = Math.Max(objLifestyle.TotalCost - decOldLifestyleTotalCost, 0);
+                decimal decAmount = Math.Max(await objLifestyle.GetTotalCostAsync().ConfigureAwait(false) - decOldLifestyleTotalCost, 0);
                 if (decAmount > CharacterObject.Nuyen)
                 {
                     Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen").ConfigureAwait(false),

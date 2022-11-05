@@ -617,12 +617,12 @@ namespace Chummer.Backend.Equipment
                                                token).ConfigureAwait(false);
                 await objWriter
                       .WriteElementStringAsync("totalmonthlycost",
-                                               TotalMonthlyCost.ToString(
+                                               (await GetTotalMonthlyCostAsync(token).ConfigureAwait(false)).ToString(
                                                    _objCharacter.Settings.NuyenFormat, objCulture), token)
                       .ConfigureAwait(false);
                 await objWriter
                       .WriteElementStringAsync("totalcost",
-                                               TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture),
+                                               (await GetTotalCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat, objCulture),
                                                token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("dice", Dice.ToString(objCulture), token).ConfigureAwait(false);
                 await objWriter
@@ -734,10 +734,8 @@ namespace Chummer.Backend.Equipment
             get => _strName;
             set
             {
-                if (_strName == value)
-                    return;
-                _strName = value;
-                OnPropertyChanged();
+                if (Interlocked.Exchange(ref _strName, value) != value)
+                    OnPropertyChanged();
             }
         }
 
@@ -814,10 +812,8 @@ namespace Chummer.Backend.Equipment
             get => _strSource;
             set
             {
-                if (_strSource == value)
-                    return;
-                _strSource = value;
-                OnPropertyChanged();
+                if (Interlocked.Exchange(ref _strSource, value) != value)
+                    OnPropertyChanged();
             }
         }
 
@@ -829,10 +825,8 @@ namespace Chummer.Backend.Equipment
             get => _strPage;
             set
             {
-                if (_strPage == value)
-                    return;
-                _strPage = value;
-                OnPropertyChanged();
+                if (Interlocked.Exchange(ref _strPage, value) != value)
+                    OnPropertyChanged();
             }
         }
 
@@ -891,10 +885,8 @@ namespace Chummer.Backend.Equipment
             get => _intDice;
             set
             {
-                if (_intDice == value)
-                    return;
-                _intDice = value;
-                OnPropertyChanged();
+                if (Interlocked.Exchange(ref _intDice, value) != value)
+                    OnPropertyChanged();
             }
         }
 
@@ -921,10 +913,8 @@ namespace Chummer.Backend.Equipment
             get => _intIncrements;
             set
             {
-                if (_intIncrements == value)
-                    return;
-                _intIncrements = value;
-                OnPropertyChanged();
+                if (Interlocked.Exchange(ref _intIncrements, value) != value)
+                    OnPropertyChanged();
             }
         }
 
@@ -957,9 +947,8 @@ namespace Chummer.Backend.Equipment
             get => _strBaseLifestyle;
             set
             {
-                if (_strBaseLifestyle == value)
+                if (Interlocked.Exchange(ref _strBaseLifestyle, value) == value)
                     return;
-                _strBaseLifestyle = value;
                 XmlDocument xmlLifestyleDocument = _objCharacter.LoadData("lifestyles.xml");
                 // This needs a handler for translations, will fix later.
                 if (value == "Bolt Hole")
@@ -1030,10 +1019,8 @@ namespace Chummer.Backend.Equipment
             get => _intBonusLP;
             set
             {
-                if (_intBonusLP == value)
-                    return;
-                _intBonusLP = value;
-                OnPropertyChanged();
+                if (Interlocked.Exchange(ref _intBonusLP, value) != value)
+                    OnPropertyChanged();
             }
         }
 
@@ -1047,10 +1034,8 @@ namespace Chummer.Backend.Equipment
             get => _intComforts;
             set
             {
-                if (_intComforts == value)
-                    return;
-                _intComforts = value;
-                OnPropertyChanged();
+                if (Interlocked.Exchange(ref _intComforts, value) != value)
+                    OnPropertyChanged();
             }
         }
 
@@ -1062,10 +1047,8 @@ namespace Chummer.Backend.Equipment
             get => _intBaseComforts;
             set
             {
-                if (_intBaseComforts == value)
-                    return;
-                _intBaseComforts = value;
-                OnPropertyChanged();
+                if (Interlocked.Exchange(ref _intBaseComforts, value) != value)
+                    OnPropertyChanged();
             }
         }
 
@@ -1077,10 +1060,8 @@ namespace Chummer.Backend.Equipment
             get => _intBaseArea;
             set
             {
-                if (_intBaseArea == value)
-                    return;
-                _intBaseArea = value;
-                OnPropertyChanged();
+                if (Interlocked.Exchange(ref _intBaseArea, value) != value)
+                    OnPropertyChanged();
             }
         }
 
@@ -1092,10 +1073,8 @@ namespace Chummer.Backend.Equipment
             get => _intBaseSecurity;
             set
             {
-                if (_intBaseSecurity == value)
-                    return;
-                _intBaseSecurity = value;
-                OnPropertyChanged();
+                if (Interlocked.Exchange(ref _intBaseSecurity, value) != value)
+                    OnPropertyChanged();
             }
         }
 
@@ -1107,10 +1086,8 @@ namespace Chummer.Backend.Equipment
             get => _intArea;
             set
             {
-                if (_intArea == value)
-                    return;
-                _intArea = value;
-                OnPropertyChanged();
+                if (Interlocked.Exchange(ref _intArea, value) != value)
+                    OnPropertyChanged();
             }
         }
 
@@ -1131,10 +1108,8 @@ namespace Chummer.Backend.Equipment
             get => _intSecurity;
             set
             {
-                if (_intSecurity == value)
-                    return;
-                _intSecurity = value;
-                OnPropertyChanged();
+                if (Interlocked.Exchange(ref _intSecurity, value) != value)
+                    OnPropertyChanged();
             }
         }
 
@@ -1161,10 +1136,8 @@ namespace Chummer.Backend.Equipment
             get => _intAreaMaximum;
             set
             {
-                if (_intAreaMaximum == value)
-                    return;
-                _intAreaMaximum = value;
-                OnPropertyChanged();
+                if (Interlocked.Exchange(ref _intAreaMaximum, value) != value)
+                    OnPropertyChanged();
             }
         }
 
@@ -1173,10 +1146,8 @@ namespace Chummer.Backend.Equipment
             get => _intComfortsMaximum;
             set
             {
-                if (_intComfortsMaximum == value)
-                    return;
-                _intComfortsMaximum = value;
-                OnPropertyChanged();
+                if (Interlocked.Exchange(ref _intComfortsMaximum, value) != value)
+                    OnPropertyChanged();
             }
         }
 
@@ -1185,10 +1156,8 @@ namespace Chummer.Backend.Equipment
             get => _intSecurityMaximum;
             set
             {
-                if (_intSecurityMaximum == value)
-                    return;
-                _intSecurityMaximum = value;
-                OnPropertyChanged();
+                if (Interlocked.Exchange(ref _intSecurityMaximum, value) != value)
+                    OnPropertyChanged();
             }
         }
 
@@ -1241,10 +1210,8 @@ namespace Chummer.Backend.Equipment
             get => _strNotes;
             set
             {
-                if (_strNotes == value)
-                    return;
-                _strNotes = value;
-                OnPropertyChanged();
+                if (Interlocked.Exchange(ref _strNotes, value) != value)
+                    OnPropertyChanged();
             }
         }
 
@@ -1301,10 +1268,8 @@ namespace Chummer.Backend.Equipment
             get => _intRoommates;
             set
             {
-                if (_intRoommates == value)
-                    return;
-                _intRoommates = value;
-                OnPropertyChanged();
+                if (Interlocked.Exchange(ref _intRoommates, value) != value)
+                    OnPropertyChanged();
             }
         }
 
@@ -1425,10 +1390,8 @@ namespace Chummer.Backend.Equipment
             get => _intSortOrder;
             set
             {
-                if (_intSortOrder == value)
-                    return;
-                _intSortOrder = value;
-                OnPropertyChanged();
+                if (Interlocked.Exchange(ref _intSortOrder, value) != value)
+                    OnPropertyChanged();
             }
         }
 
@@ -1490,10 +1453,8 @@ namespace Chummer.Backend.Equipment
             get => _strCity;
             set
             {
-                if (_strCity == value)
-                    return;
-                _strCity = value;
-                OnPropertyChanged();
+                if (Interlocked.Exchange(ref _strCity, value) != value)
+                    OnPropertyChanged();
             }
         }
 
@@ -1502,10 +1463,8 @@ namespace Chummer.Backend.Equipment
             get => _strDistrict;
             set
             {
-                if (_strDistrict == value)
-                    return;
-                _strDistrict = value;
-                OnPropertyChanged();
+                if (Interlocked.Exchange(ref _strDistrict, value) != value)
+                    OnPropertyChanged();
             }
         }
 
@@ -1514,10 +1473,8 @@ namespace Chummer.Backend.Equipment
             get => _strBorough;
             set
             {
-                if (_strBorough == value)
-                    return;
-                _strBorough = value;
-                OnPropertyChanged();
+                if (Interlocked.Exchange(ref _strBorough, value) != value)
+                    OnPropertyChanged();
             }
         }
 
@@ -1529,6 +1486,9 @@ namespace Chummer.Backend.Equipment
         /// Total cost of the Lifestyle, counting all purchased months.
         /// </summary>
         public decimal TotalCost => TotalMonthlyCost * Increments;
+
+        public async ValueTask<decimal> GetTotalCostAsync(CancellationToken token = default) =>
+            await GetTotalMonthlyCostAsync(token).ConfigureAwait(false) * Increments;
 
         public decimal CostMultiplier
         {
@@ -1876,7 +1836,7 @@ namespace Chummer.Backend.Equipment
             objUndo.CreateNuyen(NuyenExpenseType.IncreaseLifestyle, InternalId);
             objExpense.Undo = objUndo;
 
-            ++Increments;
+            Interlocked.Increment(ref _intIncrements);
         }
 
         private void LifestyleQualitiesOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)

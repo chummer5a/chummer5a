@@ -2225,9 +2225,8 @@ namespace Chummer.Backend.Equipment
             get => _objParent;
             set
             {
-                if (_objParent != value)
+                if (Interlocked.Exchange(ref _objParent, value) != value)
                 {
-                    _objParent = value;
                     // Includes ParentVehicle setter
                     ParentMount = value?.ParentMount;
                 }
@@ -2296,9 +2295,8 @@ namespace Chummer.Backend.Equipment
             get => _objMountedVehicle;
             set
             {
-                if (_objMountedVehicle != value)
+                if (Interlocked.Exchange(ref _objMountedVehicle, value) != value)
                 {
-                    _objMountedVehicle = value;
                     foreach (WeaponAccessory objAccessory in WeaponAccessories)
                     {
                         foreach (Gear objGear in objAccessory.GearChildren)
@@ -2330,9 +2328,8 @@ namespace Chummer.Backend.Equipment
             get => _objWeaponMount;
             set
             {
-                if (_objWeaponMount != value)
+                if (Interlocked.Exchange(ref _objWeaponMount, value) != value)
                 {
-                    _objWeaponMount = value;
                     ParentVehicle = value?.Parent;
                     if (value != null)
                         ParentVehicleMod = null;
@@ -2350,9 +2347,8 @@ namespace Chummer.Backend.Equipment
             get => _objVehicleMod;
             set
             {
-                if (_objVehicleMod != value)
+                if (Interlocked.Exchange(ref _objVehicleMod, value) != value)
                 {
-                    _objVehicleMod = value;
                     ParentVehicle = value?.Parent;
                     if (value != null)
                         ParentMount = null;

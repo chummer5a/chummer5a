@@ -865,8 +865,14 @@ namespace Chummer.UI.Skills
                     cboDisplayFilter.DropDownStyle = ComboBoxStyle.DropDownList;
                     _blnActiveSkillSearchMode = false;
                     _lstActiveSkills.SuspendLayout();
-                    _lstActiveSkills.Filter(selectedItem.Item2);
-                    _lstActiveSkills.ResumeLayout();
+                    try
+                    {
+                        _lstActiveSkills.Filter(selectedItem.Item2);
+                    }
+                    finally
+                    {
+                        _lstActiveSkills.ResumeLayout();
+                    }
                 }
             }
         }

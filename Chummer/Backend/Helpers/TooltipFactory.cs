@@ -44,12 +44,14 @@ namespace Chummer
 
         public static void SetToolTip(this Control c, string caption)
         {
-            c.DoThreadSafe(x => ToolTip.SetToolTip(x, caption.CleanForHtml()));
+            caption = caption.CleanForHtml();
+            c.DoThreadSafe(x => ToolTip.SetToolTip(x, caption));
         }
 
         public static Task SetToolTipAsync(this Control c, string caption, CancellationToken token = default)
         {
-            return c.DoThreadSafeAsync(x => ToolTip.SetToolTip(x, caption.CleanForHtml()), token);
+            caption = caption.CleanForHtml();
+            return c.DoThreadSafeAsync(x => ToolTip.SetToolTip(x, caption), token);
         }
     }
 }

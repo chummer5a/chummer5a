@@ -20,6 +20,7 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Threading;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 
@@ -34,9 +35,9 @@ namespace Chummer
         private const int SplitSectionWidth = 18;
 
         private static readonly int BorderSize = SystemInformation.Border3DSize.Width * 2;
-        private bool _skipNextOpen;
+        private int _intSkipNextOpen;
         private Rectangle _dropDownRectangle;
-        private bool _showSplit;
+        private int _intShowSplit;
 
         private bool _isSplitMenuVisible;
 
@@ -68,10 +69,13 @@ namespace Chummer
             get => m_SplitMenu;
             set
             {
+                ContextMenu objOldValue = Interlocked.Exchange(ref m_SplitMenu, value);
+                if (objOldValue == value)
+                    return;
                 //remove the event handlers for the old SplitMenu
-                if (m_SplitMenu != null)
+                if (objOldValue != null)
                 {
-                    m_SplitMenu.Popup -= SplitMenu_Popup;
+                    objOldValue.Popup -= SplitMenu_Popup;
                 }
 
                 //add the event handlers for the new SplitMenu
@@ -82,8 +86,6 @@ namespace Chummer
                 }
                 else
                     ShowSplit = false;
-
-                m_SplitMenu = value;
             }
         }
 
@@ -93,11 +95,14 @@ namespace Chummer
             get => m_SplitMenuStrip;
             set
             {
+                ContextMenuStrip objOldValue = Interlocked.Exchange(ref m_SplitMenuStrip, value);
+                if (objOldValue == value)
+                    return;
                 //remove the event handlers for the old SplitMenuStrip
-                if (m_SplitMenuStrip != null)
+                if (objOldValue != null)
                 {
-                    m_SplitMenuStrip.Closing -= SplitMenuStrip_Closing;
-                    m_SplitMenuStrip.Opening -= SplitMenuStrip_Opening;
+                    objOldValue.Closing -= SplitMenuStrip_Closing;
+                    objOldValue.Opening -= SplitMenuStrip_Opening;
                 }
 
                 //add the event handlers for the new SplitMenuStrip
@@ -109,19 +114,18 @@ namespace Chummer
                 }
                 else
                     ShowSplit = false;
-
-                m_SplitMenuStrip = value;
             }
         }
 
         [DefaultValue(false)]
         public bool ShowSplit
         {
+            get => _intShowSplit > 0;
             set
             {
-                if (value == _showSplit)
+                int intNewValue = value ? 1 : 0;
+                if (Interlocked.Exchange(ref _intShowSplit, intNewValue) == intNewValue)
                     return;
-                _showSplit = value;
                 if (Disposing || IsDisposed)
                     return;
                 Invalidate();
@@ -147,7 +151,7 @@ namespace Chummer
 
         protected override bool IsInputKey(Keys keyData)
         {
-            if (keyData.Equals(Keys.Down) && _showSplit && !Disposing && !IsDisposed)
+            if (keyData.Equals(Keys.Down) && ShowSplit && !Disposing && !IsDisposed)
                 return true;
 
             return base.IsInputKey(keyData);
@@ -155,7 +159,7 @@ namespace Chummer
 
         protected override void OnGotFocus(EventArgs e)
         {
-            if (!_showSplit || Disposing || IsDisposed)
+            if (!ShowSplit || Disposing || IsDisposed)
             {
                 base.OnGotFocus(e);
                 return;
@@ -169,7 +173,7 @@ namespace Chummer
 
         protected override void OnKeyDown(KeyEventArgs kevent)
         {
-            if (_showSplit && !Disposing && !IsDisposed)
+            if (ShowSplit && !Disposing && !IsDisposed)
             {
                 switch (kevent.KeyCode)
                 {
@@ -220,7 +224,7 @@ namespace Chummer
 
         protected override void OnLostFocus(EventArgs e)
         {
-            if (!_showSplit || Disposing || IsDisposed)
+            if (!ShowSplit || Disposing || IsDisposed)
             {
                 base.OnLostFocus(e);
                 return;
@@ -236,7 +240,7 @@ namespace Chummer
 
         protected override void OnMouseEnter(EventArgs e)
         {
-            if (!_showSplit || Disposing || IsDisposed)
+            if (!ShowSplit || Disposing || IsDisposed)
             {
                 base.OnMouseEnter(e);
                 return;
@@ -252,7 +256,7 @@ namespace Chummer
 
         protected override void OnMouseLeave(EventArgs e)
         {
-            if (!_showSplit || Disposing || IsDisposed)
+            if (!ShowSplit || Disposing || IsDisposed)
             {
                 base.OnMouseLeave(e);
                 return;
@@ -268,7 +272,7 @@ namespace Chummer
 
         protected override void OnMouseDown(MouseEventArgs mevent)
         {
-            if (!_showSplit || Disposing || IsDisposed)
+            if (!ShowSplit || Disposing || IsDisposed)
             {
                 base.OnMouseDown(mevent);
                 return;
@@ -276,7 +280,7 @@ namespace Chummer
 
             //handle ContextMenu re-clicking the drop-down region to close the menu
             if (m_SplitMenu != null && mevent.Button == MouseButtons.Left && !isMouseEntered)
-                _skipNextOpen = true;
+                _intSkipNextOpen = 1;
 
             if (_dropDownRectangle.Contains(mevent.Location) && !_isSplitMenuVisible && mevent.Button == MouseButtons.Left)
             {
@@ -290,7 +294,7 @@ namespace Chummer
 
         protected override void OnMouseUp(MouseEventArgs mevent)
         {
-            if (!_showSplit || Disposing || IsDisposed)
+            if (!ShowSplit || Disposing || IsDisposed)
             {
                 base.OnMouseUp(mevent);
                 return;
@@ -316,7 +320,7 @@ namespace Chummer
         {
             base.OnPaint(pevent);
 
-            if (!_showSplit || Disposing || IsDisposed)
+            if (!ShowSplit || Disposing || IsDisposed)
                 return;
 
             Graphics g = pevent.Graphics;
@@ -434,7 +438,7 @@ namespace Chummer
             Size preferredSize = base.GetPreferredSize(proposedSize);
 
             //autosize correctly for splitbuttons
-            if (_showSplit && !Disposing && !IsDisposed)
+            if (ShowSplit && !Disposing && !IsDisposed)
             {
                 if (AutoSize)
                     return CalculateButtonAutoSize(preferredSize);
@@ -489,7 +493,7 @@ namespace Chummer
             sizeReturn.Width += 2 * Padding.Horizontal + 6;
 
             //pad the splitButton arrow region
-            if (_showSplit)
+            if (ShowSplit)
                 sizeReturn.Width += SplitSectionWidth;
 
             // Make sure we are not smaller than the base class' preferred size
@@ -825,11 +829,10 @@ namespace Chummer
 
         private void ShowContextMenuStrip()
         {
-            if (_skipNextOpen)
+            if (Interlocked.CompareExchange(ref _intSkipNextOpen, 0, 1) == 1)
             {
                 // we were called because we're closing the context menu strip
                 // when clicking the dropdown button.
-                _skipNextOpen = false;
                 return;
             }
 
@@ -858,7 +861,7 @@ namespace Chummer
 
             if (e.CloseReason == ToolStripDropDownCloseReason.AppClicked)
             {
-                _skipNextOpen = (_dropDownRectangle.Contains(PointToClient(Cursor.Position))) && MouseButtons == MouseButtons.Left;
+                _intSkipNextOpen = (_dropDownRectangle.Contains(PointToClient(Cursor.Position))) && MouseButtons == MouseButtons.Left ? 1 : 0;
             }
         }
 

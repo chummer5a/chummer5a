@@ -576,11 +576,10 @@ namespace Chummer.Backend.Equipment
             get => _strName;
             set
             {
-                if (_strName == value)
+                if (Interlocked.Exchange(ref _strName, value) == value)
                     return;
                 _objCachedMyXmlNode = null;
                 _objCachedMyXPathNode = null;
-                _strName = value;
             }
         }
 
@@ -682,14 +681,10 @@ namespace Chummer.Backend.Equipment
             get => _intArmorValue;
             set
             {
-                if (_intArmorValue != value)
+                if (Interlocked.Exchange(ref _intArmorValue, value) != value && Equipped && Parent?.Equipped == true)
                 {
-                    _intArmorValue = value;
-                    if (Equipped && Parent?.Equipped == true)
-                    {
-                        _objCharacter?.OnPropertyChanged(nameof(Character.GetArmorRating));
-                        _objCharacter?.RefreshArmorEncumbrance();
-                    }
+                    _objCharacter?.OnPropertyChanged(nameof(Character.GetArmorRating));
+                    _objCharacter?.RefreshArmorEncumbrance();
                 }
             }
         }
@@ -735,13 +730,12 @@ namespace Chummer.Backend.Equipment
             set
             {
                 int intNewRating = Math.Min(value, MaximumRating);
-                if (_intRating == intNewRating)
-                    return;
-                _intRating = intNewRating;
-                if (GearChildren.Count > 0)
+                if (Interlocked.Exchange(ref _intRating, intNewRating) != intNewRating && GearChildren.Count > 0)
                 {
-                    foreach (Gear objChild in GearChildren.Where(x => x.MaxRating.Contains("Parent") || x.MinRating.Contains("Parent")))
+                    foreach (Gear objChild in GearChildren)
                     {
+                        if (!objChild.MaxRating.Contains("Parent") && !objChild.MinRating.Contains("Parent"))
+                            continue;
                         // This will update a child's rating if it would become out of bounds due to its parent's rating changing
                         int intCurrentRating = objChild.Rating;
                         objChild.Rating = intCurrentRating;

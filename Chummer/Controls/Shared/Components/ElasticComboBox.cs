@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -36,9 +37,8 @@ namespace Chummer
             set
             {
                 value = _intToolTipWrap > 0 ? value.WordWrap(_intToolTipWrap) : value.WordWrap();
-                if (_strToolTipText == value)
+                if (Interlocked.Exchange(ref _strToolTipText, value) == value)
                     return;
-                _strToolTipText = value;
                 _objToolTip.SetToolTip(this, value.CleanForHtml());
             }
         }

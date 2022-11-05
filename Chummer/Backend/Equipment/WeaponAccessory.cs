@@ -678,12 +678,10 @@ namespace Chummer.Backend.Equipment
             get => _strName;
             set
             {
-                if (_strName != value)
-                {
-                    _objCachedMyXmlNode = null;
-                    _objCachedMyXPathNode = null;
-                    _strName = value;
-                }
+                if (Interlocked.Exchange(ref _strName, value) == value)
+                    return;
+                _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
             }
         }
 
@@ -944,9 +942,8 @@ namespace Chummer.Backend.Equipment
             get => _intRating;
             set
             {
-                if (_intRating == value)
+                if (Interlocked.Exchange(ref _intRating, value) == value)
                     return;
-                _intRating = value;
                 if (GearChildren.Count > 0)
                 {
                     foreach (Gear objChild in GearChildren.Where(x => x.MaxRating.Contains("Parent") || x.MinRating.Contains("Parent")))
@@ -1242,24 +1239,20 @@ namespace Chummer.Backend.Equipment
             get => _objParent;
             set
             {
-                if (_objParent != value)
+                if (Interlocked.Exchange(ref _objParent, value) != value && Parent != null)
                 {
-                    _objParent = value;
-                    if (Parent != null)
+                    if (Parent.ParentVehicle != null)
                     {
-                        if (Parent.ParentVehicle != null)
+                        foreach (Gear objGear in GearChildren)
                         {
-                            foreach (Gear objGear in GearChildren)
-                            {
-                                objGear.ChangeEquippedStatus(false);
-                            }
+                            objGear.ChangeEquippedStatus(false);
                         }
-                        else if (Equipped)
+                    }
+                    else if (Equipped)
+                    {
+                        foreach (Gear objGear in GearChildren)
                         {
-                            foreach (Gear objGear in GearChildren)
-                            {
-                                objGear.ChangeEquippedStatus(true);
-                            }
+                            objGear.ChangeEquippedStatus(true);
                         }
                     }
                 }

@@ -691,19 +691,18 @@ namespace Chummer.Backend.Uniques
             }
             set
             {
-                if (_strDrainExpression == value)
+                string strOldExpression = Interlocked.Exchange(ref _strDrainExpression, value);
+                if (strOldExpression == value)
                     return;
-                foreach (string strOldDrainAttribute in AttributeSection.AttributeStrings)
+                foreach (string strAttribute in AttributeSection.AttributeStrings)
                 {
-                    if (_strDrainExpression.Contains(strOldDrainAttribute))
-                        _objCharacter.GetAttribute(strOldDrainAttribute).PropertyChanged -= RefreshDrainValue;
-                }
-
-                _strDrainExpression = value;
-                foreach (string strNewDrainAttribute in AttributeSection.AttributeStrings)
-                {
-                    if (value.Contains(strNewDrainAttribute))
-                        _objCharacter.GetAttribute(strNewDrainAttribute).PropertyChanged += RefreshDrainValue;
+                    if (strOldExpression.Contains(strAttribute))
+                    {
+                        if (!value.Contains(strAttribute))
+                            _objCharacter.GetAttribute(strAttribute).PropertyChanged -= RefreshDrainValue;
+                    }
+                    if (value.Contains(strAttribute))
+                        _objCharacter.GetAttribute(strAttribute).PropertyChanged += RefreshDrainValue;
                 }
 
                 OnPropertyChanged();
@@ -823,11 +822,8 @@ namespace Chummer.Backend.Uniques
             get => Type == TraditionType.None ? string.Empty : _strSpiritCombat;
             set
             {
-                if (Type != TraditionType.None && _strSpiritCombat != value)
-                {
-                    _strSpiritCombat = value;
+                if (Type != TraditionType.None && Interlocked.Exchange(ref _strSpiritCombat, value) != value)
                     OnPropertyChanged();
-                }
             }
         }
 
@@ -872,11 +868,8 @@ namespace Chummer.Backend.Uniques
             get => Type == TraditionType.None ? string.Empty : _strSpiritDetection;
             set
             {
-                if (Type != TraditionType.None && _strSpiritDetection != value)
-                {
-                    _strSpiritDetection = value;
+                if (Type != TraditionType.None && Interlocked.Exchange(ref _strSpiritDetection, value) != value)
                     OnPropertyChanged();
-                }
             }
         }
 
@@ -921,11 +914,8 @@ namespace Chummer.Backend.Uniques
             get => Type == TraditionType.None ? string.Empty : _strSpiritHealth;
             set
             {
-                if (Type != TraditionType.None && _strSpiritHealth != value)
-                {
-                    _strSpiritHealth = value;
+                if (Type != TraditionType.None && Interlocked.Exchange(ref _strSpiritHealth, value) != value)
                     OnPropertyChanged();
-                }
             }
         }
 
@@ -970,11 +960,8 @@ namespace Chummer.Backend.Uniques
             get => Type == TraditionType.None ? string.Empty : _strSpiritIllusion;
             set
             {
-                if (Type != TraditionType.None && _strSpiritIllusion != value)
-                {
-                    _strSpiritIllusion = value;
+                if (Type != TraditionType.None && Interlocked.Exchange(ref _strSpiritIllusion, value) != value)
                     OnPropertyChanged();
-                }
             }
         }
 
@@ -1019,11 +1006,8 @@ namespace Chummer.Backend.Uniques
             get => Type == TraditionType.None ? string.Empty : _strSpiritManipulation;
             set
             {
-                if (Type != TraditionType.None && _strSpiritManipulation != value)
-                {
-                    _strSpiritManipulation = value;
+                if (Type != TraditionType.None && Interlocked.Exchange(ref _strSpiritManipulation, value) != value)
                     OnPropertyChanged();
-                }
             }
         }
 

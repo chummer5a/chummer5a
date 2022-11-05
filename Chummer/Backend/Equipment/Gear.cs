@@ -1599,11 +1599,10 @@ namespace Chummer.Backend.Equipment
             get => _strName;
             set
             {
-                if (_strName == value)
+                if (Interlocked.Exchange(ref _strName, value) == value)
                     return;
                 _objCachedMyXmlNode = null;
                 _objCachedMyXPathNode = null;
-                _strName = value;
                 OnPropertyChanged();
             }
         }
@@ -1616,11 +1615,8 @@ namespace Chummer.Backend.Equipment
             get => _strGearName;
             set
             {
-                if (_strGearName != value)
-                {
-                    _strGearName = value;
+                if (Interlocked.Exchange(ref _strGearName, value) != value)
                     OnPropertyChanged();
-                }
             }
         }
 
@@ -1645,11 +1641,10 @@ namespace Chummer.Backend.Equipment
             get => _strCategory;
             set
             {
-                if (_strCategory == value)
+                if (Interlocked.Exchange(ref _strCategory, value) == value)
                     return;
                 _objCachedMyXmlNode = null;
                 _objCachedMyXPathNode = null;
-                _strCategory = value;
                 OnPropertyChanged();
             }
         }
@@ -1783,13 +1778,11 @@ namespace Chummer.Backend.Equipment
             set
             {
                 int intNewValue = Math.Max(Math.Min(value, MaxRatingValue), MinRatingValue);
-                if (_intRating != intNewValue)
+                if (Interlocked.Exchange(ref _intRating, intNewValue) != intNewValue && Children.Count > 0)
                 {
-                    _intRating = intNewValue;
-                    if (Children.Count > 0)
+                    foreach (Gear objChild in Children)
                     {
-                        foreach (Gear objChild in Children.Where(x =>
-                            x.MaxRating.Contains("Parent") || x.MinRating.Contains("Parent")))
+                        if (objChild.MaxRating.Contains("Parent") || objChild.MinRating.Contains("Parent"))
                         {
                             // This will update a child's rating if it would become out of bounds due to its parent's rating changing
                             int intCurrentRating = objChild.Rating;
@@ -1867,9 +1860,7 @@ namespace Chummer.Backend.Equipment
             {
                 string strNewValue = _objCharacter.ReverseTranslateExtra(value);
                 if (Interlocked.Exchange(ref _strExtra, strNewValue) != strNewValue)
-                {
                     OnPropertyChanged();
-                }
             }
         }
 
@@ -1899,7 +1890,7 @@ namespace Chummer.Backend.Equipment
             get => _blnWirelessOn;
             set
             {
-                if (value == _blnWirelessOn)
+                if (_blnWirelessOn == value)
                     return;
                 _blnWirelessOn = value;
                 RefreshWirelessBonuses();
@@ -2024,11 +2015,8 @@ namespace Chummer.Backend.Equipment
             get => _strNotes;
             set
             {
-                if (_strNotes != value)
-                {
-                    _strNotes = value;
+                if (Interlocked.Exchange(ref _strNotes, value) != value)
                     OnPropertyChanged();
-                }
             }
         }
 
@@ -2238,9 +2226,8 @@ namespace Chummer.Backend.Equipment
             get => _objParent;
             set
             {
-                if (_objParent == value)
+                if (Interlocked.Exchange(ref _objParent, value) == value)
                     return;
-                _objParent = value;
                 Rating = Math.Max(MinRatingValue, Math.Min(MaxRatingValue, Rating));
             }
         }
@@ -2400,11 +2387,8 @@ namespace Chummer.Backend.Equipment
             get => _strParentID;
             set
             {
-                if (_strParentID != value)
-                {
-                    _strParentID = value;
+                if (Interlocked.Exchange(ref _strParentID, value) != value)
                     OnPropertyChanged();
-                }
             }
         }
 

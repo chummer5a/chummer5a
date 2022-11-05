@@ -19,6 +19,7 @@
 
 using System;
 using System.Drawing;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -60,7 +61,7 @@ namespace Chummer
             e.Graphics.DrawLine(_objForeColorPen, intMargin, intHeight / 2, intWidth - intMargin, intHeight / 2);
         }
 
-        private bool _blnDefaultColorScheme = ColorManager.IsLightMode;
+        private int _intDefaultColorScheme = ColorManager.IsLightMode ? 1 : 0;
         private Color _objBackColor;
         private Color _objForeColor;
         private SolidBrush _objBackColorBrush;
@@ -68,12 +69,12 @@ namespace Chummer
 
         public bool DefaultColorScheme
         {
-            get => _blnDefaultColorScheme;
+            get => _intDefaultColorScheme > 0;
             set
             {
-                if (_blnDefaultColorScheme == value)
+                int intNewValue = value ? 1 : 0;
+                if (Interlocked.Exchange(ref _intDefaultColorScheme, intNewValue) == intNewValue)
                     return;
-                _blnDefaultColorScheme = value;
                 Invalidate();
             }
         }
@@ -87,8 +88,7 @@ namespace Chummer
                 if (_objBackColor == value)
                     return;
                 _objBackColor = value;
-                _objBackColorBrush?.Dispose();
-                _objBackColorBrush = new SolidBrush(value);
+                Interlocked.Exchange(ref _objBackColorBrush, new SolidBrush(value))?.Dispose();
             }
         }
 
@@ -101,8 +101,7 @@ namespace Chummer
                 if (_objForeColor == value)
                     return;
                 _objForeColor = value;
-                _objForeColorPen?.Dispose();
-                _objForeColorPen = new Pen(value);
+                Interlocked.Exchange(ref _objForeColorPen, new Pen(value))?.Dispose();
             }
         }
     }

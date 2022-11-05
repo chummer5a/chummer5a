@@ -216,10 +216,8 @@ namespace Chummer
             get => _intForce;
             set
             {
-                if (_intForce == value)
-                    return;
-                _intForce = value;
-                OnPropertyChanged();
+                if (Interlocked.Exchange(ref _intForce, value) != value)
+                    OnPropertyChanged();
             }
         }
 
@@ -231,10 +229,8 @@ namespace Chummer
             get => _intNetHits;
             set
             {
-                if (_intNetHits == value)
-                    return;
-                _intNetHits = value;
-                OnPropertyChanged();
+                if (Interlocked.Exchange(ref _intNetHits, value) != value)
+                    OnPropertyChanged();
             }
         }
 
