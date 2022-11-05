@@ -20786,12 +20786,12 @@ namespace Chummer
                                                                              await LanguageManager.GetStringAsync(
                                                                                  "Tab_IncreaseLifestyleMonths",
                                                                                  token: token).ConfigureAwait(false),
-                                                                             strIncrementString)).ConfigureAwait(false);
+                                                                             strIncrementString), token).ConfigureAwait(false);
                     await cmdDecreaseLifestyleMonths.SetToolTipTextAsync(string.Format(GlobalSettings.CultureInfo,
                                                                              await LanguageManager.GetStringAsync(
                                                                                  "Tab_DecreaseLifestyleMonths",
                                                                                  token: token).ConfigureAwait(false),
-                                                                             strIncrementString)).ConfigureAwait(false);
+                                                                             strIncrementString), token).ConfigureAwait(false);
                     token.ThrowIfCancellationRequested();
                     if (!string.IsNullOrEmpty(objLifestyle.BaseLifestyle))
                     {
@@ -23560,7 +23560,7 @@ namespace Chummer
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(-intSpellKarmaCost,
                                       strType + await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false)
-                                              + objNewSpell.GetCurrentDisplayNameShortAsync(GenericToken), ExpenseType.Karma, DateTime.Now);
+                                              + await objNewSpell.GetCurrentDisplayNameShortAsync(GenericToken), ExpenseType.Karma, DateTime.Now);
                     await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
 
                     ExpenseUndo objUndo = new ExpenseUndo();

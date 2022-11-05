@@ -2399,7 +2399,7 @@ namespace Chummer.Backend.Equipment
 
         public XmlNode GetNode(string strLanguage, string strName, string strCategory, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => GetNodeCoreAsync(true, strLanguage, strName, strCategory, token));
+            return Utils.SafelyRunSynchronously(() => GetNodeCoreAsync(true, strLanguage, strName, strCategory, token), token);
         }
 
         public Task<XmlNode> GetNodeAsync(string strLanguage, string strName, string strCategory, CancellationToken token = default)
@@ -2446,7 +2446,7 @@ namespace Chummer.Backend.Equipment
 
         public XPathNavigator GetNodeXPath(string strLanguage, string strName, string strCategory, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => GetNodeXPathCoreAsync(true, strLanguage, strName, strCategory, token));
+            return Utils.SafelyRunSynchronously(() => GetNodeXPathCoreAsync(true, strLanguage, strName, strCategory, token), token);
         }
 
         public Task<XPathNavigator> GetNodeXPathAsync(string strLanguage, string strName, string strCategory, CancellationToken token = default)
@@ -3748,7 +3748,7 @@ namespace Chummer.Backend.Equipment
             }
 
             foreach (Gear objGear in Children)
-                await objGear.ChangeEquippedStatusAsync(blnEquipped, true).ConfigureAwait(false);
+                await objGear.ChangeEquippedStatusAsync(blnEquipped, true, token).ConfigureAwait(false);
 
             if (!blnSkipEncumbranceOnPropertyChanged)
                 _objCharacter?.OnPropertyChanged(nameof(Character.TotalCarriedWeight));

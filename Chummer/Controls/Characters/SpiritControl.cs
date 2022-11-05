@@ -640,7 +640,7 @@ namespace Chummer
                     // Link the newly-created Critter to the Spirit.
                     string strText = await LanguageManager.GetStringAsync(
                         _objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile", token: token).ConfigureAwait(false);
-                    await cmdLink.SetToolTipTextAsync(strText).ConfigureAwait(false);
+                    await cmdLink.SetToolTipTextAsync(strText, token).ConfigureAwait(false);
                     ContactDetailChanged?.Invoke(this, EventArgs.Empty);
 
                     await Program.OpenCharacter(objCharacter, token: token).ConfigureAwait(false);

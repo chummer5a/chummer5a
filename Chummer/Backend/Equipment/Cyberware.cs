@@ -4603,7 +4603,7 @@ namespace Chummer.Backend.Equipment
                 (bool blnIsSuccess, object objProcess) = blnSync
                     // ReSharper disable once MethodHasAsyncOverload
                     ? CommonFunctions.EvaluateInvariantXPath(
-                        strESS.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)))
+                        strESS.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)), token)
                     : await CommonFunctions.EvaluateInvariantXPathAsync(
                         strESS.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
                 decReturn = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo) : 0;
@@ -4679,7 +4679,7 @@ namespace Chummer.Backend.Equipment
                             List<Improvement> lstUsedImprovements = blnSync
                                 // ReSharper disable once MethodHasAsyncOverload
                                 ? ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter,
-                                    Improvement.ImprovementType.BasicBiowareEssCost)
+                                    Improvement.ImprovementType.BasicBiowareEssCost, token: token)
                                 : await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter,
                                     Improvement.ImprovementType.BasicBiowareEssCost, token: token).ConfigureAwait(false);
                             if (lstUsedImprovements.Count != 0)
@@ -4714,7 +4714,7 @@ namespace Chummer.Backend.Equipment
                     if (eBaseMultiplier != Improvement.ImprovementType.None)
                     {
                         List<Improvement> lstUsedImprovements =
-                            ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, eBaseMultiplier);
+                            ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, eBaseMultiplier, token: token);
                         if (lstUsedImprovements.Count != 0)
                         {
                             foreach (Improvement objImprovement in lstUsedImprovements)
@@ -4724,7 +4724,7 @@ namespace Chummer.Backend.Equipment
                     if (eTotalMultiplier != Improvement.ImprovementType.None)
                     {
                         List<Improvement> lstUsedImprovements =
-                            ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, eTotalMultiplier);
+                            ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, eTotalMultiplier, token: token);
                         if (lstUsedImprovements.Count != 0)
                         {
                             foreach (Improvement objImprovement in lstUsedImprovements)
@@ -4771,7 +4771,7 @@ namespace Chummer.Backend.Equipment
                     (bool blnIsSuccess, object objProcess) = blnSync
                         // ReSharper disable once MethodHasAsyncOverload
                         ? CommonFunctions.EvaluateInvariantXPath(
-                            strPostModifierExpression.Replace("{Modifier}", decTotalModifier.ToString(GlobalSettings.InvariantCultureInfo)))
+                            strPostModifierExpression.Replace("{Modifier}", decTotalModifier.ToString(GlobalSettings.InvariantCultureInfo)), token)
                         : await CommonFunctions.EvaluateInvariantXPathAsync(
                             strPostModifierExpression.Replace("{Modifier}", decTotalModifier.ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
                     if (blnIsSuccess)
@@ -4790,12 +4790,12 @@ namespace Chummer.Backend.Equipment
                     decReturn += Children.Sum(objChild => objChild.AddToParentESS && !objChild.PrototypeTranshuman,
                                               objChild =>
                                                   objChild.GetCalculatedESSPrototypeInvariant(
-                                                      objChild.Rating, objGrade));
+                                                      objChild.Rating, objGrade), token);
                 else
                     decReturn += Children.Sum(objChild => objChild.AddToParentESS,
                                               objChild =>
                                                   objChild.GetCalculatedESSPrototypeInvariant(
-                                                      objChild.Rating, objGrade));
+                                                      objChild.Rating, objGrade), token);
             }
             else if (_objCharacter?.IsPrototypeTranshuman == true)
                 decReturn += await Children.SumAsync(

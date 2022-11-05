@@ -793,7 +793,7 @@ namespace Chummer
                                                                             Improvement.ImprovementType.AdeptPowerFreeLevels,
                                                                             Name, token: token).ConfigureAwait(false))
                             .Sum(objImprovement => objImprovement.UniqueName == Extra,
-                                 objImprovement => objImprovement.Rating);
+                                 objImprovement => objImprovement.Rating, token);
             // The power has an extra cost, so free PP from things like Qi Foci have to be charged first.
             if (Rating + intReturn == 0 && ExtraPointCost > 0)
             {
@@ -945,7 +945,7 @@ namespace Chummer
                                                                             Improvement.ImprovementType.AdeptPowerFreePoints,
                                                                             Name, token: token).ConfigureAwait(false))
                             .Sum(objImprovement => objImprovement.UniqueName == Extra,
-                                 objImprovement => objImprovement.Rating);
+                                 objImprovement => objImprovement.Rating, token);
             return intRating * 0.25m;
         }
 

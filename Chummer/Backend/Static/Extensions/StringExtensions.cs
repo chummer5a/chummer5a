@@ -1531,7 +1531,7 @@ namespace Chummer
             string strInputTrimmed = strInput.TrimStart();
             string strReturn = strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal)
                                || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal)
-                ? strInput.StripRichTextFormat()
+                ? strInput.StripRichTextFormat(token)
                 : strInput;
 
             return strReturn.NormalizeWhiteSpace();

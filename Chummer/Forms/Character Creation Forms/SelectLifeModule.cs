@@ -96,7 +96,7 @@ namespace Chummer
                         TreeNode[] aobjNodes = await BuildList(
                             xmlNode.SelectNodes("versions/version["
                                                 + await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false)
-                                                + "or not(source)]")).ConfigureAwait(false);
+                                                + "or not(source)]"), token).ConfigureAwait(false);
                         treNode.Nodes.AddRange(aobjNodes);
                     }
 

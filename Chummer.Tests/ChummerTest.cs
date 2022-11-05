@@ -330,8 +330,8 @@ namespace Chummer.Tests
             Debug.WriteLine("Finished pre-loading language files");
             foreach (Character objCharacter in GetTestCharacters())
             {
-                string strFileName = Path.GetFileName(objCharacter.FileName) ?? LanguageManager.GetString("String_Unknown");
-                Debug.WriteLine("Checking " + strFileName);
+                Debug.WriteLine("Checking " + (Path.GetFileName(objCharacter.FileName)
+                                               ?? LanguageManager.GetString("String_Unknown")));
                 foreach (string strExportLanguage in lstExportLanguages)
                 {
                     DoAndSaveExport(objCharacter, strExportLanguage);

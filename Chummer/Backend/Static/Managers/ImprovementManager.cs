@@ -675,7 +675,7 @@ namespace Chummer
                                                                      bool blnUnconditionalOnly, bool blnIncludeNonImproved, CancellationToken token = default)
         {
             return Utils.SafelyRunSynchronously(() => MetaValueOfCoreAsync(true, objCharacter, eImprovementType, funcValueGetter, dicCachedValuesToUse,
-                                                                           blnAddToRating, strImprovedName, blnUnconditionalOnly, blnIncludeNonImproved, token));
+                                                                           blnAddToRating, strImprovedName, blnUnconditionalOnly, blnIncludeNonImproved, token), token);
         }
 
         /// <summary>
@@ -1330,7 +1330,7 @@ namespace Chummer
                                         if (blnSync)
                                         {
                                             lstTemp = dicCachedValuesToUse.TryGetValue(
-                                                objLoopCacheKey, out Tuple<decimal, List<Improvement>> tupTemp)
+                                                objLoopCacheKey, out Tuple<decimal, List<Improvement>> tupTemp, token)
                                                 ? tupTemp.Item2
                                                 : new List<Improvement>();
                                         }
@@ -1965,7 +1965,7 @@ namespace Chummer
                 if (objCharacter != null)
                 {
                     if (blnSync)
-                        objSyncLocker = objCharacter.LockObject.EnterWriteLock();
+                        objSyncLocker = objCharacter.LockObject.EnterWriteLock(token);
                     else
                         objAsyncLocker = await objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 }
@@ -2040,7 +2040,7 @@ namespace Chummer
                                 {
                                     if ((blnSync
                                             // ReSharper disable once MethodHasAsyncOverload
-                                            ? frmPickText.ShowDialogSafe(objCharacter)
+                                            ? frmPickText.ShowDialogSafe(objCharacter, token)
                                             : await frmPickText.ShowDialogSafeAsync(objCharacter, token).ConfigureAwait(false))
                                         == DialogResult.Cancel)
                                     {
@@ -2077,7 +2077,7 @@ namespace Chummer
                                 XPathNavigator xmlDoc
                                     = blnSync
                                         // ReSharper disable once MethodHasAsyncOverload
-                                        ? objCharacter.LoadDataXPath(strXmlFile)
+                                        ? objCharacter.LoadDataXPath(strXmlFile, token: token)
                                         : await objCharacter.LoadDataXPathAsync(strXmlFile, token: token).ConfigureAwait(false);
                                 using (new FetchSafelyFromPool<List<ListItem>>(
                                            Utils.ListItemListPool, out List<ListItem> lstItems))
@@ -2115,7 +2115,7 @@ namespace Chummer
                                                                 blnSync
                                                                     // ReSharper disable once MethodHasAsyncOverload
                                                                     ? objCharacter.TranslateExtra(
-                                                                        strValue, strPreferFile: strXmlFile)
+                                                                        strValue, strPreferFile: strXmlFile, token: token)
                                                                     : await objCharacter.TranslateExtraAsync(
                                                                         strValue, strPreferFile: strXmlFile,
                                                                         token: token).ConfigureAwait(false)));
@@ -2128,7 +2128,7 @@ namespace Chummer
                                                             blnSync
                                                                 // ReSharper disable once MethodHasAsyncOverload
                                                                 ? objCharacter.TranslateExtra(
-                                                                    strName, strPreferFile: strXmlFile)
+                                                                    strName, strPreferFile: strXmlFile, token: token)
                                                                 : await objCharacter.TranslateExtraAsync(
                                                                         strName, strPreferFile: strXmlFile,
                                                                         token: token)
@@ -2206,7 +2206,7 @@ namespace Chummer
 
                                         DialogResult eReturn = blnSync
                                             // ReSharper disable once MethodHasAsyncOverload
-                                            ? frmSelect.ShowDialogSafe(objCharacter)
+                                            ? frmSelect.ShowDialogSafe(objCharacter, token)
                                             : await frmSelect.ShowDialogSafeAsync(objCharacter, token).ConfigureAwait(false);
                                         if (eReturn == DialogResult.Cancel)
                                         {
@@ -2514,7 +2514,7 @@ namespace Chummer
                 bool blnCharacterHasSkillsoftAccess
                     = (blnSync
                           // ReSharper disable once MethodHasAsyncOverload
-                          ? ValueOf(objCharacter, Improvement.ImprovementType.SkillsoftAccess)
+                          ? ValueOf(objCharacter, Improvement.ImprovementType.SkillsoftAccess, token: token)
                           : await ValueOfAsync(objCharacter, Improvement.ImprovementType.SkillsoftAccess, token: token)
                               .ConfigureAwait(false))
                       > 0;
@@ -3897,7 +3897,7 @@ namespace Chummer
             IDisposable objLocker = null;
             IAsyncDisposable objLockerAsync = null;
             if (blnSync)
-                objLocker = objCharacter.LockObject.EnterWriteLock();
+                objLocker = objCharacter.LockObject.EnterWriteLock(token);
             else
                 objLockerAsync = await objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
@@ -4135,7 +4135,7 @@ namespace Chummer
                                     string strNewName = objCyberware.Grade.Name.FastEscapeOnceFromEnd("(Adapsin)")
                                                                     .Trim();
                                     // Determine which GradeList to use for the Cyberware.
-                                    objCyberware.Grade = objCharacter.GetGrades(objCyberware.SourceType, true)
+                                    objCyberware.Grade = objCharacter.GetGrades(objCyberware.SourceType, true, token)
                                                                      .FirstOrDefault(x => x.Name == strNewName);
                                 }
                             }
