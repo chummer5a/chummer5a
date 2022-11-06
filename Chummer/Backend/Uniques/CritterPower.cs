@@ -292,11 +292,11 @@ namespace Chummer
             get => _intRating;
             set
             {
-                if (Extra == Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                int intOldValue = Interlocked.Exchange(ref _intRating, value);
+                if (Extra == intOldValue.ToString(GlobalSettings.InvariantCultureInfo))
                 {
                     Extra = value.ToString(GlobalSettings.InvariantCultureInfo);
                 }
-                _intRating = value;
             }
         }
 

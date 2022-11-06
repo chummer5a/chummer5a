@@ -2356,8 +2356,8 @@ namespace Chummer.Backend.Skills
                         return;
                     using (LockObject.EnterWriteLock())
                     {
-                        _intSkillPointsMaximum = value;
-                        OnPropertyChanged();
+                        if (Interlocked.Exchange(ref _intSkillPointsMaximum, value) != value)
+                            OnPropertyChanged();
                     }
                 }
             }
@@ -2402,8 +2402,8 @@ namespace Chummer.Backend.Skills
                         return;
                     using (LockObject.EnterWriteLock())
                     {
-                        _intSkillGroupPointsMaximum = value;
-                        OnPropertyChanged();
+                        if (Interlocked.Exchange(ref _intSkillGroupPointsMaximum, value) != value)
+                            OnPropertyChanged();
                     }
                 }
             }

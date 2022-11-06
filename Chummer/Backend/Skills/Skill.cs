@@ -67,8 +67,8 @@ namespace Chummer.Backend.Skills
                         return;
                     using (LockObject.EnterWriteLock())
                     {
-                        _objAttribute = value;
-                        OnPropertyChanged();
+                        if (Interlocked.Exchange(ref _objAttribute, value) != value)
+                            OnPropertyChanged();
                     }
                 }
             }
@@ -4299,8 +4299,8 @@ namespace Chummer.Backend.Skills
                         return;
                     using (LockObject.EnterWriteLock())
                     {
-                        _strNotes = value;
-                        OnPropertyChanged();
+                        if (Interlocked.Exchange(ref _strNotes, value) != value)
+                            OnPropertyChanged();
                     }
                 }
             }

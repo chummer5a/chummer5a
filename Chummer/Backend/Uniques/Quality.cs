@@ -1101,7 +1101,13 @@ namespace Chummer
         public Color NotesColor
         {
             get => _colNotes;
-            set => _colNotes = value;
+            set
+            {
+                if (_colNotes == value)
+                    return;
+                _colNotes = value;
+                OnPropertyChanged();
+            }
         }
 
         private int _intCachedSuppressed = -1;

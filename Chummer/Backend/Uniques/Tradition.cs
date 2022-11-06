@@ -492,7 +492,11 @@ namespace Chummer.Backend.Uniques
         public XmlNode Bonus
         {
             get => _nodBonus;
-            set => _nodBonus = value;
+            set
+            {
+                if (Interlocked.Exchange(ref _nodBonus, value) != value)
+                    OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -529,7 +533,11 @@ namespace Chummer.Backend.Uniques
         public string Name
         {
             get => _strName;
-            set => _strName = value;
+            set
+            {
+                if (Interlocked.Exchange(ref _strName, value) != value)
+                    OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -1049,7 +1057,11 @@ namespace Chummer.Backend.Uniques
         public string Source
         {
             get => _strSource;
-            set => _strSource = value;
+            set
+            {
+                if (Interlocked.Exchange(ref _strSource, value) != value)
+                    OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -1058,7 +1070,11 @@ namespace Chummer.Backend.Uniques
         public string Page
         {
             get => _strPage;
-            set => _strPage = value;
+            set
+            {
+                if (Interlocked.Exchange(ref _strPage, value) != value)
+                    OnPropertyChanged();
+            }
         }
 
         /// <summary>
@@ -1067,7 +1083,11 @@ namespace Chummer.Backend.Uniques
         public string Notes
         {
             get => _strNotes;
-            set => _strNotes = value;
+            set
+            {
+                if (Interlocked.Exchange(ref _strNotes, value) != value)
+                    OnPropertyChanged();
+            }
         }
 
         /// <summary>

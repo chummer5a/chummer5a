@@ -94,13 +94,10 @@ namespace Chummer
             get => _strPath;
             set
             {
-                if (_strPath == value)
+                if (Interlocked.Exchange(ref _strPath, value) == value)
                     return;
-                _strPath = value;
-                _objPdfDocument?.Close();
-                _objPdfDocument = null;
-                _objPdfReader?.Close();
-                _objPdfReader = null;
+                Interlocked.Exchange(ref _objPdfDocument, null)?.Close();
+                Interlocked.Exchange(ref _objPdfReader, null)?.Close();
             }
         }
 
