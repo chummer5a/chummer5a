@@ -756,7 +756,7 @@ namespace Chummer.UI.Table
                     try
                     {
                         int intLimit;
-                        if (intNewCount > intOldCount)
+                        if (intNewCount > intOldCount && value != null)
                         {
                             intLimit = intOldCount;
                             for (int j = intOldCount; j < intNewCount; j++)
