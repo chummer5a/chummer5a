@@ -23,7 +23,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Globalization;
 using System.IO;
-using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -34,9 +34,9 @@ namespace Translator
     public partial class TranslatorMain
     {
         private readonly BackgroundWorker _workerDataProcessor = new BackgroundWorker();
-        private bool _blnQueueDataProcessorRun;
+        private int _intQueueDataProcessorRun;
         private readonly BackgroundWorker _workerStringsProcessor = new BackgroundWorker();
-        private bool _blnQueueStringsProcessorRun;
+        private int _intQueueStringsProcessorRun;
         private string _strLanguageToLoad = string.Empty;
         private readonly string[] _astrArgs = new string[3];
         private readonly List<TranslateData> _lstOpenTranslateWindows = new List<TranslateData>();
@@ -61,12 +61,12 @@ namespace Translator
 
         private void RunQueuedWorkers(object sender, EventArgs e)
         {
-            if (_blnQueueDataProcessorRun && !_workerDataProcessor.IsBusy)
+            if (_intQueueDataProcessorRun > 0 && !_workerDataProcessor.IsBusy)
             {
                 _workerDataProcessor.RunWorkerAsync();
             }
 
-            if (_blnQueueStringsProcessorRun && !_workerStringsProcessor.IsBusy)
+            if (_intQueueStringsProcessorRun > 0 && !_workerStringsProcessor.IsBusy)
             {
                 _workerStringsProcessor.RunWorkerAsync();
             }
@@ -257,13 +257,15 @@ namespace Translator
                             try
                             {
                                 string strPath = Path.Combine(Utils.GetLanguageFolderPath, strLowerCode + "_data.xml");
-                                if (File.Exists(strPath + ".old"))
-                                    File.Delete(strPath + ".old");
-                                File.Move(strPath, strPath + ".old");
+                                if (Utils.SafeDeleteFile(strPath + ".old", true))
+                                    File.Move(strPath, strPath + ".old");
+                                else
+                                    throw new IOException();
                                 strPath = Path.Combine(Utils.GetLanguageFolderPath, strLowerCode + "xml");
-                                if (File.Exists(strPath + ".old"))
-                                    File.Delete(strPath + ".old");
-                                File.Move(strPath, strPath + ".old");
+                                if (Utils.SafeDeleteFile(strPath + ".old", true))
+                                    File.Move(strPath, strPath + ".old");
+                                else
+                                    throw new IOException();
                             }
                             catch (IOException)
                             {
@@ -286,17 +288,18 @@ namespace Translator
             Cursor = Cursors.AppStarting;
             pbProcessProgress.Value = 0;
 
-            TranslateData frmOpenTranslate = _lstOpenTranslateWindows.FirstOrDefault(x => x.Language == _strLanguageToLoad);
+            string strNewLanguage = (objTextInfoForCapitalization ?? (new CultureInfo("en-US", false)).TextInfo)
+                .ToTitleCase(txtLanguageName.Text) + " (" + txtLanguageCode.Text.ToLower() + '-' + txtRegionCode.Text.ToUpper() + ')';
+            string strOldLanguage = Interlocked.Exchange(ref _strLanguageToLoad, strNewLanguage);
+            TranslateData frmOpenTranslate = _lstOpenTranslateWindows.Find(x => x.Language == strOldLanguage);
             if (frmOpenTranslate != null)
             {
                 frmOpenTranslate.Close();
                 _lstOpenTranslateWindows.Remove(frmOpenTranslate);
             }
 
-            _strLanguageToLoad = (objTextInfoForCapitalization ?? (new CultureInfo("en-US", false)).TextInfo)
-                                 .ToTitleCase(txtLanguageName.Text) + " (" + txtLanguageCode.Text.ToLower() + '-' + txtRegionCode.Text.ToUpper() + ')';
             _astrArgs[0] = strLowerCode;
-            _astrArgs[1] = _strLanguageToLoad;
+            _astrArgs[1] = strNewLanguage;
             _astrArgs[2] = bool.TrueString;
 
             if (_workerDataProcessor.IsBusy)
@@ -306,8 +309,8 @@ namespace Translator
 
             cmdCancel.Enabled = true;
 
-            _blnQueueStringsProcessorRun = true;
-            _blnQueueDataProcessorRun = true;
+            Interlocked.CompareExchange(ref _intQueueStringsProcessorRun, 1, 0);
+            Interlocked.CompareExchange(ref _intQueueDataProcessorRun, 1, 0);
         }
 
         private void cmdEdit_Click(object sender, EventArgs e)
@@ -337,9 +340,9 @@ namespace Translator
             Cursor = Cursors.AppStarting;
             pbProcessProgress.Value = 0;
 
-            _strLanguageToLoad = cboLanguages.Text;
-
-            TranslateData frmOpenTranslate = _lstOpenTranslateWindows.Find(x => x.Language == _strLanguageToLoad);
+            string strNewLanguage = cboLanguages.Text;
+            string strOldLanguage = Interlocked.Exchange(ref _strLanguageToLoad, strNewLanguage);
+            TranslateData frmOpenTranslate = _lstOpenTranslateWindows.Find(x => x.Language == strOldLanguage);
             if (frmOpenTranslate != null)
             {
                 frmOpenTranslate.Close();
@@ -350,7 +353,7 @@ namespace Translator
             if (intIndex == -1)
                 intIndex = cboLanguages.Text.IndexOf('（');
             _astrArgs[0] = cboLanguages.Text.Substring(intIndex + 1, 5).ToLower();
-            _astrArgs[1] = _strLanguageToLoad;
+            _astrArgs[1] = strNewLanguage;
             _astrArgs[2] = bool.FalseString;
 
             if (_workerDataProcessor.IsBusy)
@@ -360,8 +363,8 @@ namespace Translator
 
             cmdCancel.Enabled = true;
 
-            _blnQueueStringsProcessorRun = true;
-            _blnQueueDataProcessorRun = true;
+            Interlocked.CompareExchange(ref _intQueueStringsProcessorRun, 1, 0);
+            Interlocked.CompareExchange(ref _intQueueDataProcessorRun, 1, 0);
         }
 
         private void cmdRebuild_Click(object sender, EventArgs e)
@@ -378,9 +381,9 @@ namespace Translator
             Cursor = Cursors.AppStarting;
             pbProcessProgress.Value = 0;
 
-            _strLanguageToLoad = cboLanguages.Text;
-
-            TranslateData frmOpenTranslate = _lstOpenTranslateWindows.Find(x => x.Language == _strLanguageToLoad);
+            string strNewLanguage = cboLanguages.Text;
+            string strOldLanguage = Interlocked.Exchange(ref _strLanguageToLoad, strNewLanguage);
+            TranslateData frmOpenTranslate = _lstOpenTranslateWindows.Find(x => x.Language == strOldLanguage);
             if (frmOpenTranslate != null)
             {
                 frmOpenTranslate.Close();
@@ -391,7 +394,7 @@ namespace Translator
             if (intIndex == -1)
                 intIndex = cboLanguages.Text.IndexOf('（');
             _astrArgs[0] = cboLanguages.Text.Substring(intIndex + 1, 5).ToLower();
-            _astrArgs[1] = _strLanguageToLoad;
+            _astrArgs[1] = strNewLanguage;
             _astrArgs[2] = bool.TrueString;
 
             if (_workerDataProcessor.IsBusy)
@@ -401,8 +404,8 @@ namespace Translator
 
             cmdCancel.Enabled = true;
 
-            _blnQueueStringsProcessorRun = true;
-            _blnQueueDataProcessorRun = true;
+            Interlocked.CompareExchange(ref _intQueueStringsProcessorRun, 1, 0);
+            Interlocked.CompareExchange(ref _intQueueDataProcessorRun, 1, 0);
         }
 
         private void frmTranslatorMain_Load(object sender, EventArgs e)
@@ -424,38 +427,41 @@ namespace Translator
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
-            _blnQueueStringsProcessorRun = false;
-            _blnQueueDataProcessorRun = false;
+            Interlocked.CompareExchange(ref _intQueueStringsProcessorRun, 0, 1);
+            Interlocked.CompareExchange(ref _intQueueDataProcessorRun, 0, 1);
             if (_workerDataProcessor.IsBusy)
                 _workerDataProcessor.CancelAsync();
             if (_workerStringsProcessor.IsBusy)
                 _workerStringsProcessor.CancelAsync();
 
-            if (!string.IsNullOrEmpty(_strLanguageToLoad))
+            string strLanguage = _strLanguageToLoad;
+            if (!string.IsNullOrEmpty(strLanguage))
             {
-                int intParenthesesIndex = _strLanguageToLoad.IndexOf('(');
+                int intParenthesesIndex = strLanguage.IndexOf('(');
                 if (intParenthesesIndex == -1)
-                    intParenthesesIndex = _strLanguageToLoad.IndexOf('（');
-                if (intParenthesesIndex + 5 < _strLanguageToLoad.Length)
+                    intParenthesesIndex = strLanguage.IndexOf('（');
+                if (intParenthesesIndex + 5 < strLanguage.Length)
                 {
-                    string strCode = _strLanguageToLoad.Substring(intParenthesesIndex + 1, 5).ToLower();
+                    string strCode = strLanguage.Substring(intParenthesesIndex + 1, 5).ToLower();
 
                     try
                     {
                         string strPath = Path.Combine(Utils.GetLanguageFolderPath, strCode + "_data.xml");
                         if (File.Exists(strPath + ".old"))
                         {
-                            if (File.Exists(strPath))
-                                File.Delete(strPath);
-                            File.Move(strPath, strPath + ".old");
+                            if (Utils.SafeDeleteFile(strPath, true))
+                                File.Move(strPath, strPath + ".old");
+                            else
+                                throw new IOException();
                         }
 
                         strPath = Path.Combine(Utils.GetLanguageFolderPath, strCode + "xml");
                         if (File.Exists(strPath + ".old"))
                         {
-                            if (File.Exists(strPath))
-                                File.Delete(strPath);
-                            File.Move(strPath, strPath + ".old");
+                            if (Utils.SafeDeleteFile(strPath, true))
+                                File.Move(strPath, strPath + ".old");
+                            else
+                                throw new IOException();
                         }
                     }
                     catch (IOException)
@@ -545,7 +551,11 @@ namespace Translator
 
         private void DoStringsProcessing(object sender, DoWorkEventArgs e)
         {
-            _blnQueueStringsProcessorRun = false;
+            if (Interlocked.CompareExchange(ref _intQueueStringsProcessorRun, 0, 1) == 0)
+            {
+                e.Cancel = true;
+                return;
+            }
             string strFilePath = Path.Combine(Utils.GetLanguageFolderPath, _astrArgs[0] + ".xml");
 
             XmlDocument objDoc = new XmlDocument();
@@ -662,7 +672,11 @@ namespace Translator
 
         private void DoDataProcessing(object sender, DoWorkEventArgs e)
         {
-            _blnQueueDataProcessorRun = false;
+            if (Interlocked.CompareExchange(ref _intQueueDataProcessorRun, 0, 1) == 0)
+            {
+                e.Cancel = true;
+                return;
+            }
             string strFilePath = Path.Combine(Utils.GetLanguageFolderPath, _astrArgs[0] + "_data.xml");
             XmlDocument objDataDoc = new XmlDocument();
             if (File.Exists(strFilePath))
@@ -6099,7 +6113,7 @@ namespace Translator
                 xmlRootNode = objDataDoc.CreateElement("chummer");
                 objDataDoc.AppendChild(xmlRootNode);
             }
-            
+
             XmlNode xmlRootSettingsFileNode = objDataDoc.SelectSingleNode("/chummer/chummer[@file = \"settings.xml\"]");
             if (xmlRootSettingsFileNode == null)
             {

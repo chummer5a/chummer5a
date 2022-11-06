@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -35,14 +36,15 @@ namespace Translator
 {
     public partial class TranslateData : Form
     {
-        private bool _blnLoading;
+        private int _intLoading;
         private readonly XmlDocument _objDataDoc = new XmlDocument();
         private readonly XmlDocument _objTranslationDoc = new XmlDocument();
         private readonly BackgroundWorker _workerSectionLoader = new BackgroundWorker();
-        private bool _blnQueueSectionLoaderRun;
+        private int _intQueueSectionLoaderRun;
         private readonly string[] _strSectionLoaderArgs = new string[2];
         private readonly BackgroundWorker _workerStringsLoader = new BackgroundWorker();
-        private bool _blnQueueStringsLoaderRun;
+        private int _intQueueStringsLoaderRun;
+        private readonly ConcurrentStack<CursorWait> _stkApplicationCursorWaits = new ConcurrentStack<CursorWait>();
 
         [Obsolete("This constructor is for use by form designers only.", true)]
         public TranslateData()
@@ -76,12 +78,12 @@ namespace Translator
 
         private void RunQueuedWorkers(object sender, EventArgs e)
         {
-            if (_blnQueueSectionLoaderRun && !_workerSectionLoader.IsBusy)
+            if (_intQueueSectionLoaderRun > 0 && !_workerSectionLoader.IsBusy)
             {
                 _workerSectionLoader.RunWorkerAsync();
             }
 
-            if (_blnQueueStringsLoaderRun && !_workerStringsLoader.IsBusy)
+            if (_intQueueStringsLoaderRun > 0 && !_workerStringsLoader.IsBusy)
             {
                 _workerStringsLoader.RunWorkerAsync();
             }
@@ -97,6 +99,9 @@ namespace Translator
                 _workerSectionLoader.CancelAsync();
             if (_workerStringsLoader.IsBusy)
                 _workerStringsLoader.CancelAsync();
+
+            while (_stkApplicationCursorWaits.TryPop(out CursorWait objCursorWait))
+                objCursorWait.Dispose();
 
             Program.MainForm.OpenTranslateWindows.Remove(this);
         }
@@ -170,14 +175,14 @@ namespace Translator
                 {
                     pbTranslateProgressBar.Value = 0;
                 }
-                
+
                 MessageBox.Show("Search text was not found.");
             }
         }
 
         private void cboFile_SelectedIndexChanged(object sender, EventArgs e)
         {
-            _blnLoading = true;
+            Interlocked.Increment(ref _intLoading);
             try
             {
                 if (cboFile.SelectedIndex == 0)
@@ -193,7 +198,7 @@ namespace Translator
             }
             finally
             {
-                _blnLoading = false;
+                Interlocked.Decrement(ref _intLoading);
             }
         }
 
@@ -210,7 +215,7 @@ namespace Translator
 
         private void dgvSection_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            if (_blnLoading || e.RowIndex < 0)
+            if (_intLoading > 0 || e.RowIndex < 0)
                 return;
             DataGridViewRow item = dgvSection.Rows[e.RowIndex];
             TranslatedIndicator(item);
@@ -224,8 +229,8 @@ namespace Translator
             string strBaseXPath = "/chummer/chummer[@file = " + cboFile.Text.CleanXPath() + "]/" + strSection;
             if (cboFile.Text == "tips.xml")
             {
-                XmlNode xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "/*[id = " + strId.CleanXPath() + "]") ??
-                                       _objDataDoc.SelectSingleNode(strBaseXPath + "/*[text = " + strEnglish.CleanXPath() + "]");
+                XmlNode xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "/*[id = " + strId.CleanXPath() + ']') ??
+                                       _objDataDoc.SelectSingleNode(strBaseXPath + "/*[text = " + strEnglish.CleanXPath() + ']');
                 if (xmlNodeLocal != null)
                 {
                     XmlElement element = xmlNodeLocal["translate"];
@@ -254,11 +259,11 @@ namespace Translator
             }
             else
             {
-                XmlNode xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "/*[id = " + strId.CleanXPath() + "]") ??
-                                       _objDataDoc.SelectSingleNode(strBaseXPath + "/*[name = " + strEnglish.CleanXPath() + "]");
+                XmlNode xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "/*[id = " + strId.CleanXPath() + ']') ??
+                                       _objDataDoc.SelectSingleNode(strBaseXPath + "/*[name = " + strEnglish.CleanXPath() + ']');
                 if (xmlNodeLocal == null)
                 {
-                    xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "/*[. = " + strEnglish.CleanXPath() + "]");
+                    xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "/*[. = " + strEnglish.CleanXPath() + ']');
                     XmlAttributeCollection objAttributes = xmlNodeLocal?.Attributes;
                     if (objAttributes != null)
                     {
@@ -356,7 +361,7 @@ namespace Translator
 
         private void dgvTranslate_CellValueChanged(object sender, DataGridViewCellEventArgs e)
         {
-            if (_blnLoading || e.RowIndex < 0)
+            if (_intLoading > 0 || e.RowIndex < 0)
                 return;
             DataGridViewRow item = dgvTranslate.Rows[e.RowIndex];
             TranslatedIndicator(item);
@@ -364,7 +369,7 @@ namespace Translator
             string strEnglish = item.Cells["English"].Value.ToString();
             bool blnSetTranslatedAttribute = strTranslated != strEnglish && Convert.ToBoolean(item.Cells["Translated?"].Value);
             string strKey = item.Cells["Key"].Value.ToString();
-            XmlNode xmlNodeLocal = _objTranslationDoc.SelectSingleNode("/chummer/strings/string[key = " + strKey.CleanXPath() + "]");
+            XmlNode xmlNodeLocal = _objTranslationDoc.SelectSingleNode("/chummer/strings/string[key = " + strKey.CleanXPath() + ']');
             if (xmlNodeLocal != null)
             {
                 XmlElement xmlElement = xmlNodeLocal["text"];
@@ -393,7 +398,7 @@ namespace Translator
             else
             {
                 XmlNode newNode = _objTranslationDoc.CreateNode(XmlNodeType.Element, "string", null);
-                
+
                 XmlElement elem = _objTranslationDoc.CreateElement("key");
                 XmlText xmlString = _objTranslationDoc.CreateTextNode(strKey);
                 newNode.AppendChild(elem);
@@ -480,7 +485,12 @@ namespace Translator
 
         private void DoLoadStrings(object sender, DoWorkEventArgs e)
         {
-            _blnQueueStringsLoaderRun = false;
+            if (Interlocked.CompareExchange(ref _intQueueStringsLoaderRun, 0, 1) == 0)
+            {
+                e.Cancel = true;
+                return;
+            }
+
             XmlDocument xmlDocument = new XmlDocument();
             xmlDocument.Load(Path.Combine(Utils.GetLanguageFolderPath, GlobalSettings.DefaultLanguage + ".xml"));
             if (_workerStringsLoader.CancellationPending)
@@ -515,7 +525,7 @@ namespace Translator
                         string strEnglish = xmlNodeEnglish["text"]?.InnerText ?? string.Empty;
                         string strTranslated = strEnglish;
                         bool blnTranslated = false;
-                        XmlNode xmlNodeLocal = _objTranslationDoc.SelectSingleNode("/chummer/strings/string[key = " + strKey.CleanXPath() + "]");
+                        XmlNode xmlNodeLocal = _objTranslationDoc.SelectSingleNode("/chummer/strings/string[key = " + strKey.CleanXPath() + ']');
                         if (xmlNodeLocal != null)
                         {
                             strTranslated = xmlNodeLocal["text"]?.InnerText ?? string.Empty;
@@ -595,13 +605,19 @@ namespace Translator
             finally
             {
                 pbTranslateProgressBar.Value = 0;
-                UseWaitCursor = false;
+                if (_stkApplicationCursorWaits.TryPop(out CursorWait objCursorWait))
+                    objCursorWait.Dispose();
             }
         }
 
         private void DoLoadSection(object sender, DoWorkEventArgs e)
         {
-            _blnQueueSectionLoaderRun = false;
+            if (Interlocked.CompareExchange(ref _intQueueSectionLoaderRun, 0, 1) == 0)
+            {
+                e.Cancel = true;
+                return;
+            }
+
             string strFileName = _strSectionLoaderArgs[0];
             string strSection = _strSectionLoaderArgs[1];
             bool blnHasNameOnPage = strFileName == "qualities.xml";
@@ -738,9 +754,9 @@ namespace Translator
                                             // if we have an Id get the Node using it
                                             XmlNode xmlNodeLocal = !string.IsNullOrEmpty(strId)
                                                 ? xmlDocument.SelectSingleNode(
-                                                    "/chummer/" + strSection + "/*[id = " + strId.CleanXPath() + "]")
+                                                    "/chummer/" + strSection + "/*[id = " + strId.CleanXPath() + ']')
                                                 : xmlDocument.SelectSingleNode(
-                                                    "/chummer/" + strSection + "/*[name = " + strName.CleanXPath() + "]");
+                                                    "/chummer/" + strSection + "/*[name = " + strName.CleanXPath() + ']');
 #if DEBUG
                                             if (xmlNodeLocal == null)
                                                 MessageBox.Show(strName);
@@ -890,7 +906,8 @@ namespace Translator
             }
             finally
             {
-                UseWaitCursor = false;
+                if (_stkApplicationCursorWaits.TryPop(out CursorWait objCursorWait))
+                    objCursorWait.Dispose();
             }
         }
 
@@ -900,19 +917,19 @@ namespace Translator
 
         private void LoadSection()
         {
-            if (_blnLoading || cboSection.SelectedIndex < 0)
+            if (_intLoading > 0 || cboSection.SelectedIndex < 0)
                 return;
 
             if (_workerSectionLoader.IsBusy)
                 _workerSectionLoader.CancelAsync();
 
-            UseWaitCursor = true;
+            _stkApplicationCursorWaits.Push(CursorWait.New());
             pbTranslateProgressBar.Value = 0;
 
             _strSectionLoaderArgs[0] = cboFile.Text;
             _strSectionLoaderArgs[1] = cboSection.Text;
 
-            _blnQueueSectionLoaderRun = true;
+            Interlocked.CompareExchange(ref _intQueueSectionLoaderRun, 1, 0);
         }
 
         private void LoadSections()
@@ -921,7 +938,7 @@ namespace Translator
             {
                 List<string> lstSectionStrings = null;
                 XmlNode xmlNode
-                    = _objDataDoc.SelectSingleNode("/chummer/chummer[@file = " + cboFile.Text.CleanXPath() + "]");
+                    = _objDataDoc.SelectSingleNode("/chummer/chummer[@file = " + cboFile.Text.CleanXPath() + ']');
                 if (xmlNode != null)
                 {
                     lstSectionStrings = new List<string>(xmlNode.ChildNodes.Count);
@@ -938,7 +955,7 @@ namespace Translator
 
                 string strOldSelected = cboSection.SelectedValue?.ToString() ?? string.Empty;
 
-                _blnLoading = true;
+                Interlocked.Increment(ref _intLoading);
                 try
                 {
                     cboSection.BeginUpdate();
@@ -958,7 +975,7 @@ namespace Translator
                 }
                 finally
                 {
-                    _blnLoading = false;
+                    Interlocked.Decrement(ref _intLoading);
                 }
 
                 if (string.IsNullOrEmpty(strOldSelected))
@@ -977,10 +994,10 @@ namespace Translator
             if (_workerStringsLoader.IsBusy)
                 _workerStringsLoader.CancelAsync();
 
-            UseWaitCursor = true;
+            _stkApplicationCursorWaits.Push(CursorWait.New());
             pbTranslateProgressBar.Value = 0;
 
-            _blnQueueStringsLoaderRun = true;
+            Interlocked.CompareExchange(ref _intQueueStringsLoaderRun, 1, 0);
         }
 
         private void Save(XmlDocument objXmlDocument, bool blnData = true)
