@@ -2950,7 +2950,7 @@ namespace Chummer
                         if (objTargetGroup.GetRelevantSkillCategories.Contains(ImprovedName)
                             || (lstExtraImprovedName != null
                                 && objTargetGroup.GetRelevantSkillCategories.Any(
-                                    x => lstExtraImprovedName.Contains(x))))
+                                    lstExtraImprovedName.Contains)))
                         {
                             yield return new Tuple<INotifyMultiplePropertyChanged, string>(
                                 objTargetGroup, nameof(SkillGroup.IsDisabled));
@@ -2967,7 +2967,7 @@ namespace Chummer
                         if (objTargetGroup.GetRelevantSkillCategories.Contains(ImprovedName)
                             || (lstExtraImprovedName != null
                                 && objTargetGroup.GetRelevantSkillCategories.Any(
-                                    x => lstExtraImprovedName.Contains(x))))
+                                    lstExtraImprovedName.Contains)))
                         {
                             yield return new Tuple<INotifyMultiplePropertyChanged, string>(
                                 objTargetGroup, nameof(SkillGroup.UpgradeKarmaCost));
