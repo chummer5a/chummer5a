@@ -45,14 +45,48 @@
     <pdfargument>
       <name>Web Browser</name>
       <value>"file://{absolutepath}#page={page}"</value>
+      <appnames>
+        <appname>iexplore.exe</appname> <!-- Internet Explorer -->
+        <appname>msedge.exe</appname> <!-- Microsoft Edge -->
+        <appname>chrome.exe</appname> <!-- Google Chrome -->
+        <appname>firefox.exe</appname> <!-- Mozilla Firefox -->
+        <appname>safari.exe</appname> <!-- Apple Safari -->
+        <appname>opera.exe</appname> <!-- Opera Browser -->
+        <appname>qqbrowser.exe</appname> <!-- QQ Browser -->
+        <appname>sogouexplorer.exe</appname> <!-- Sogou Explorer -->
+        <appname>browser.exe</appname> <!-- Yandex Browser -->
+        <appname>brave.exe</appname> <!-- Brave Browser -->
+      </appnames>
     </pdfargument>
     <pdfargument>
       <name>Acrobat-style</name>
       <value>/A "page={page}" "{localpath}"</value>
+      <appnames>
+        <appname>AcroRd32.exe</appname> <!-- Adobe Acrobat Reader -->
+        <appname>Acrobat.exe</appname> <!-- Adobe Acrobat Writer/Pro -->
+        <appname>FoxitReader.exe</appname> <!-- Foxit PDF Reader -->
+        <appname>FoxitPDFReader.exe</appname> <!-- Foxit PDF Reader -->
+        <appname>FoxitReaderPortable.exe</appname> <!-- Foxit PDF Reader -->
+        <appname>PDFXCView.exe</appname> <!-- PDF X-Change Viewer -->
+        <appname>PDFXEdit.exe</appname> <!-- PDF X-Change Editor -->
+        <appname>PDFXHost32.exe</appname> <!-- PDF X-Change Editor -->
+        <appname>PDFXHost64.exe</appname> <!-- PDF X-Change Editor -->
+      </appnames>
     </pdfargument>
     <pdfargument>
       <name>Acrobat-style - New instance</name>
       <value>/A /N "page={page}" "{localpath}"</value>
+      <appnames>
+        <appname>AcroRd32.exe</appname> <!-- Adobe Acrobat Reader -->
+        <appname>Acrobat.exe</appname> <!-- Adobe Acrobat Writer/Pro -->
+        <appname>FoxitReader.exe</appname> <!-- Foxit PDF Reader -->
+        <appname>FoxitPDFReader.exe</appname> <!-- Foxit PDF Reader -->
+        <appname>FoxitReaderPortable.exe</appname> <!-- Foxit PDF Reader -->
+        <appname>PDFXCView.exe</appname> <!-- PDF X-Change Viewer -->
+        <appname>PDFXEdit.exe</appname> <!-- PDF X-Change Editor -->
+        <appname>PDFXHost32.exe</appname> <!-- PDF X-Change Editor -->
+        <appname>PDFXHost64.exe</appname> <!-- PDF X-Change Editor -->
+      </appnames>
     </pdfargument>
     <pdfargument>
       <name>Unix-style</name>
@@ -61,10 +95,18 @@
     <pdfargument>
       <name>Sumatra - Re-use instance</name>
       <value>-reuse-instance -page {page} "{localpath}"</value>
+      <appnames>
+        <appname>sumatrapdf.exe</appname> <!-- Sumatra PDF -->
+        <appname>sumatrapdfportable.exe</appname> <!-- Sumatra PDF -->
+      </appnames>
     </pdfargument>
     <pdfargument>
       <name>Sumatra</name>
       <value>-page {page} "{localpath}"</value>
+      <appnames>
+        <appname>sumatrapdf.exe</appname> <!-- Sumatra PDF -->
+        <appname>sumatrapdfportable.exe</appname> <!-- Sumatra PDF -->
+      </appnames>
     </pdfargument>
   </pdfarguments>
   <blackmarketpipelinecategories>

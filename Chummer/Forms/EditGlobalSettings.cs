@@ -49,7 +49,7 @@ namespace Chummer
         private readonly HashSet<CustomDataDirectoryInfo> _setCustomDataDirectoryInfos;
 
         // List of sourcebook infos, needed to make sure we don't directly modify ones in the options unless we save our options
-        private readonly Dictionary<string, SourcebookInfo> _dicSourcebookInfos;
+        private readonly LockingDictionary<string, SourcebookInfo> _dicSourcebookInfos;
 
         private bool _blnDirty;
         private int _intSkipRefresh;
@@ -57,6 +57,9 @@ namespace Chummer
         private string _strSelectedLanguage = GlobalSettings.Language;
         private CultureInfo _objSelectedCultureInfo = GlobalSettings.CultureInfo;
         private ColorMode _eSelectedColorModeSetting = GlobalSettings.ColorModeSetting;
+
+        private readonly LockingDictionary<string, HashSet<string>> _dicCachedPdfAppNames
+            = new LockingDictionary<string, HashSet<string>>();
 
         #region Form Events
 
@@ -74,7 +77,14 @@ namespace Chummer
 
             _setCustomDataDirectoryInfos
                 = new HashSet<CustomDataDirectoryInfo>(GlobalSettings.CustomDataDirectoryInfos);
-            _dicSourcebookInfos = new Dictionary<string, SourcebookInfo>(GlobalSettings.SourcebookInfos);
+            _dicSourcebookInfos = new LockingDictionary<string, SourcebookInfo>(GlobalSettings.SourcebookInfos);
+            Disposed += (sender, args) =>
+            {
+                _dicSourcebookInfos.Dispose();
+                foreach (HashSet<string> setLoop in _dicCachedPdfAppNames.Values)
+                    Utils.StringHashSetPool.Return(setLoop);
+                _dicCachedPdfAppNames.Dispose();
+            };
             if (!string.IsNullOrEmpty(strActiveTab))
             {
                 int intActiveTabIndex = tabOptions.TabPages.IndexOfKey(strActiveTab);
@@ -295,11 +305,7 @@ namespace Chummer
             string strSelectedCode = lstGlobalSourcebookInfos.SelectedValue?.ToString() ?? string.Empty;
 
             // Find the selected item in the Sourcebook List.
-            SourcebookInfo objSource = _dicSourcebookInfos.ContainsKey(strSelectedCode)
-                ? _dicSourcebookInfos[strSelectedCode]
-                : null;
-
-            if (objSource != null)
+            if (_dicSourcebookInfos.TryGetValue(strSelectedCode, out SourcebookInfo objSource) && objSource != null)
             {
                 grpSelectedSourcebook.Enabled = true;
                 txtPDFLocation.Text = objSource.Path;
@@ -311,28 +317,35 @@ namespace Chummer
             }
         }
 
-        private void nudPDFOffset_ValueChanged(object sender, EventArgs e)
+        private async void nudPDFOffset_ValueChanged(object sender, EventArgs e)
         {
             if (_intSkipRefresh > 0 || _intLoading > 0)
                 return;
 
-            int intOffset = decimal.ToInt32(nudPDFOffset.Value);
-            string strTag = lstGlobalSourcebookInfos.SelectedValue?.ToString() ?? string.Empty;
-            SourcebookInfo objFoundSource
-                = _dicSourcebookInfos.ContainsKey(strTag) ? _dicSourcebookInfos[strTag] : null;
-
-            if (objFoundSource != null)
+            int intOffset = await nudPDFOffset.DoThreadSafeFuncAsync(x => x.ValueAsInt).ConfigureAwait(false);
+            string strTag = await lstGlobalSourcebookInfos
+                                  .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString() ?? string.Empty)
+                                  .ConfigureAwait(false);
+            (bool blnSuccess, SourcebookInfo objFoundSource)
+                = await _dicSourcebookInfos.TryGetValueAsync(strTag).ConfigureAwait(false);
+            if (blnSuccess && objFoundSource != null)
             {
                 objFoundSource.Offset = intOffset;
             }
             else
             {
-                // If the Sourcebook was not found in the options, add it.
-                _dicSourcebookInfos.Add(strTag, new SourcebookInfo
+                objFoundSource = new SourcebookInfo
                 {
                     Code = strTag,
                     Offset = intOffset
-                });
+                };
+                // If the Sourcebook was not found in the options, add it.
+                await _dicSourcebookInfos.AddOrUpdateAsync(strTag, objFoundSource, (x, y) =>
+                {
+                    y.Offset = intOffset;
+                    objFoundSource.Dispose();
+                    return y;
+                }).ConfigureAwait(false);
             }
         }
 
@@ -1197,6 +1210,41 @@ namespace Chummer
                 if (eResult != DialogResult.OK)
                     return;
                 await txtPDFAppPath.DoThreadSafeAsync(x => x.Text = strFileName, token).ConfigureAwait(false);
+
+                string strAppNameUpper = Path.GetFileName(strFileName).ToUpperInvariant();
+                string strSelectedPdfParams = await cboPDFParameters
+                                                    .DoThreadSafeFuncAsync(
+                                                        x => x.SelectedValue?.ToString() ?? string.Empty, token: token)
+                                                    .ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(strSelectedPdfParams))
+                {
+                    (bool blnSuccess, HashSet<string> setAppNames) = await _dicCachedPdfAppNames
+                                                                     .TryGetValueAsync(strSelectedPdfParams, token)
+                                                                     .ConfigureAwait(false);
+                    if (blnSuccess && setAppNames.Contains(strAppNameUpper))
+                        return;
+                }
+
+                await _dicCachedPdfAppNames.ForEachWithBreakAsync(async kvpEntry =>
+                {
+                    if (kvpEntry.Value.Contains(strAppNameUpper))
+                    {
+                        string strNewSelected = kvpEntry.Key;
+                        await cboPDFParameters.DoThreadSafeAsync(x =>
+                        {
+                            x.SelectedValue = strNewSelected;
+                            if (x.SelectedIndex == -1)
+                            {
+                                x.SelectedValue = strSelectedPdfParams;
+                                if (x.SelectedIndex == -1)
+                                    x.SelectedIndex = 0;
+                            }
+                        }, token).ConfigureAwait(false);
+                        return false;
+                    }
+
+                    return true;
+                }, token: token).ConfigureAwait(false);
             }
             finally
             {
@@ -1621,7 +1669,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 await dicSourcebookInfos.ClearAsync(token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
-                foreach (SourcebookInfo objInfo in _dicSourcebookInfos.Values)
+                foreach (SourcebookInfo objInfo in await _dicSourcebookInfos.GetValuesAsync(token).ConfigureAwait(false))
                     await dicSourcebookInfos.AddAsync(objInfo.Code, objInfo, token).ConfigureAwait(false);
             }
             finally
@@ -1838,6 +1886,26 @@ namespace Chummer
                         && GlobalSettings.PdfParameters == strValue)
                     {
                         intIndex = lstPdfParameters.Count - 1;
+                    }
+
+                    (bool blnSuccess, HashSet<string> setAppNames) = await _dicCachedPdfAppNames.TryGetValueAsync(strValue, token).ConfigureAwait(false);
+                    if (!blnSuccess)
+                    {
+                        setAppNames = Utils.StringHashSetPool.Get();
+                        await _dicCachedPdfAppNames.AddOrUpdateAsync(strValue, setAppNames, (x, y) =>
+                        {
+                            Utils.StringHashSetPool.Return(setAppNames);
+                            setAppNames = y;
+                            return y;
+                        }, token).ConfigureAwait(false);
+                    }
+
+                    foreach (XPathNavigator objAppNameNode in await objXmlNode
+                                                                    .SelectAndCacheExpressionAsync(
+                                                                        "appnames/appname", token)
+                                                                    .ConfigureAwait(false))
+                    {
+                        setAppNames.Add(objAppNameNode.Value.ToUpperInvariant());
                     }
                 }
 
@@ -2249,21 +2317,26 @@ namespace Chummer
             string strTag = await lstGlobalSourcebookInfos
                                   .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false)
                             ?? string.Empty;
-            SourcebookInfo objFoundSource
-                = _dicSourcebookInfos.ContainsKey(strTag) ? _dicSourcebookInfos[strTag] : null;
-            token.ThrowIfCancellationRequested();
-            if (objFoundSource != null)
+            (bool blnSuccess, SourcebookInfo objFoundSource)
+                = await _dicSourcebookInfos.TryGetValueAsync(strTag, token).ConfigureAwait(false);
+            if (blnSuccess && objFoundSource != null)
             {
                 objFoundSource.Path = strPath;
             }
             else
             {
-                // If the Sourcebook was not found in the options, add it.
-                _dicSourcebookInfos.Add(strTag, new SourcebookInfo
+                objFoundSource = new SourcebookInfo
                 {
                     Code = strTag,
                     Path = strPath
-                });
+                };
+                // If the Sourcebook was not found in the options, add it.
+                await _dicSourcebookInfos.AddOrUpdateAsync(strTag, objFoundSource, (x, y) =>
+                {
+                    y.Path = strPath;
+                    objFoundSource.Dispose();
+                    return y;
+                }, token).ConfigureAwait(false);
             }
         }
 
@@ -2390,12 +2463,17 @@ namespace Chummer
                     await Task.WhenAll(lstLoadingTasks).ConfigureAwait(false);
                     foreach (Task<SourcebookInfo> tskLoop in lstLoadingTasks)
                     {
-                        SourcebookInfo info = await tskLoop.ConfigureAwait(false);
+                        SourcebookInfo objInfo = await tskLoop.ConfigureAwait(false);
                         // ReSharper disable once AccessToDisposedClosure
-                        if (info == null || await dicResults.ContainsKeyAsync(info.Code, token).ConfigureAwait(false))
+                        if (objInfo == null)
                             continue;
-                        // ReSharper disable once AccessToDisposedClosure
-                        await dicResults.TryAddAsync(info.Code, info, token).ConfigureAwait(false);
+                        await dicResults.AddOrUpdateAsync(objInfo.Code, objInfo, (x, y) =>
+                        {
+                            y.Path = objInfo.Path;
+                            y.Offset = objInfo.Offset;
+                            objInfo.Dispose();
+                            return y;
+                        }, token);
                     }
 
                     intCounter = 0;
@@ -2405,12 +2483,17 @@ namespace Chummer
                 await Task.WhenAll(lstLoadingTasks).ConfigureAwait(false);
                 foreach (Task<SourcebookInfo> tskLoop in lstLoadingTasks)
                 {
-                    SourcebookInfo info = await tskLoop.ConfigureAwait(false);
+                    SourcebookInfo objInfo = await tskLoop.ConfigureAwait(false);
                     // ReSharper disable once AccessToDisposedClosure
-                    if (info == null || await dicResults.ContainsKeyAsync(info.Code, token).ConfigureAwait(false))
+                    if (objInfo == null)
                         continue;
-                    // ReSharper disable once AccessToDisposedClosure
-                    await dicResults.TryAddAsync(info.Code, info, token).ConfigureAwait(false);
+                    await dicResults.AddOrUpdateAsync(objInfo.Code, objInfo, (x, y) =>
+                    {
+                        y.Path = objInfo.Path;
+                        y.Offset = objInfo.Offset;
+                        objInfo.Dispose();
+                        return y;
+                    }, token);
                 }
 
                 async Task<SourcebookInfo> GetSourcebookInfo(string strBookFile)
@@ -2423,7 +2506,15 @@ namespace Chummer
                 }
 
                 foreach (KeyValuePair<string, SourcebookInfo> kvpInfo in dicResults)
-                    _dicSourcebookInfos[kvpInfo.Key] = kvpInfo.Value;
+                {
+                    await _dicSourcebookInfos.AddOrUpdateAsync(kvpInfo.Key, kvpInfo.Value, (x, y) =>
+                    {
+                        y.Path = kvpInfo.Value.Path;
+                        y.Offset = kvpInfo.Value.Offset;
+                        kvpInfo.Value.Dispose();
+                        return y;
+                    }, token).ConfigureAwait(false);
+                }
 
                 return (await dicResults.GetValuesAsync(token).ConfigureAwait(false)).ToList();
             }

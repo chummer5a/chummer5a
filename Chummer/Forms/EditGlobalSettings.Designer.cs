@@ -479,7 +479,7 @@ namespace Chummer
             this.tlpGlobalOptions.Controls.Add(this.tlpGlobalOptionsTop, 0, 0);
             this.tlpGlobalOptions.Controls.Add(this.tlpLoggingOptions, 1, 3);
             this.tlpGlobalOptions.Controls.Add(this.tlpCharacterRosterPath, 3, 11);
-            this.tlpGlobalOptions.Controls.Add(this.tlpPDFAppPath, 3, 14);
+            this.tlpGlobalOptions.Controls.Add(this.tlpPDFAppPath, 3, 13);
             this.tlpGlobalOptions.Controls.Add(this.tlpMugshotCompression, 3, 12);
             this.tlpGlobalOptions.Controls.Add(this.tlpColorMode, 0, 2);
             this.tlpGlobalOptions.Controls.Add(this.chkLiveCustomData, 0, 15);
@@ -498,10 +498,6 @@ namespace Chummer
             this.tlpGlobalOptions.Controls.Add(this.chkPrintToFileFirst, 0, 14);
             this.tlpGlobalOptions.Controls.Add(this.flpEnablePlugins, 2, 17);
             this.tlpGlobalOptions.Controls.Add(this.chkLifeModule, 2, 16);
-            this.tlpGlobalOptions.Controls.Add(this.lblPDFParametersLabel, 2, 15);
-            this.tlpGlobalOptions.Controls.Add(this.cboPDFParameters, 3, 15);
-            this.tlpGlobalOptions.Controls.Add(this.lblPDFAppPath, 2, 14);
-            this.tlpGlobalOptions.Controls.Add(this.flpBrowserVersion, 2, 13);
             this.tlpGlobalOptions.Controls.Add(this.lblMugshotCompression, 2, 12);
             this.tlpGlobalOptions.Controls.Add(this.lblCharacterRosterLabel, 2, 11);
             this.tlpGlobalOptions.Controls.Add(this.lblDefaultCharacterSetting, 2, 10);
@@ -512,6 +508,10 @@ namespace Chummer
             this.tlpGlobalOptions.Controls.Add(this.chkCreateBackupOnCareer, 0, 11);
             this.tlpGlobalOptions.Controls.Add(this.chkSaveCompressionLevel, 0, 12);
             this.tlpGlobalOptions.Controls.Add(this.cboChum5lzCompressionLevel, 1, 12);
+            this.tlpGlobalOptions.Controls.Add(this.lblPDFAppPath, 2, 13);
+            this.tlpGlobalOptions.Controls.Add(this.lblPDFParametersLabel, 2, 14);
+            this.tlpGlobalOptions.Controls.Add(this.cboPDFParameters, 3, 14);
+            this.tlpGlobalOptions.Controls.Add(this.flpBrowserVersion, 2, 15);
             this.tlpGlobalOptions.Dock = System.Windows.Forms.DockStyle.Top;
             this.tlpGlobalOptions.Location = new System.Drawing.Point(303, 0);
             this.tlpGlobalOptions.Margin = new System.Windows.Forms.Padding(0);
@@ -1083,7 +1083,7 @@ namespace Chummer
             this.tlpPDFAppPath.Controls.Add(this.cmdPDFAppPath, 1, 0);
             this.tlpPDFAppPath.Controls.Add(this.cmdRemovePDFAppPath, 2, 0);
             this.tlpPDFAppPath.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpPDFAppPath.Location = new System.Drawing.Point(662, 476);
+            this.tlpPDFAppPath.Location = new System.Drawing.Point(662, 450);
             this.tlpPDFAppPath.Margin = new System.Windows.Forms.Padding(0);
             this.tlpPDFAppPath.Name = "tlpPDFAppPath";
             this.tlpPDFAppPath.RowCount = 1;
@@ -1416,7 +1416,7 @@ namespace Chummer
             this.chkAllowHoverIncrement.CheckState = System.Windows.Forms.CheckState.Checked;
             this.tlpGlobalOptions.SetColumnSpan(this.chkAllowHoverIncrement, 2);
             this.chkAllowHoverIncrement.DefaultColorScheme = true;
-            this.chkAllowHoverIncrement.Location = new System.Drawing.Point(3, 454);
+            this.chkAllowHoverIncrement.Location = new System.Drawing.Point(3, 456);
             this.chkAllowHoverIncrement.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkAllowHoverIncrement.Name = "chkAllowHoverIncrement";
             this.chkAllowHoverIncrement.Size = new System.Drawing.Size(410, 17);
@@ -1464,7 +1464,7 @@ namespace Chummer
             this.chkPrintToFileFirst.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkPrintToFileFirst.AutoSize = true;
             this.chkPrintToFileFirst.DefaultColorScheme = true;
-            this.chkPrintToFileFirst.Location = new System.Drawing.Point(3, 482);
+            this.chkPrintToFileFirst.Location = new System.Drawing.Point(3, 485);
             this.chkPrintToFileFirst.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkPrintToFileFirst.Name = "chkPrintToFileFirst";
             this.chkPrintToFileFirst.Size = new System.Drawing.Size(130, 17);
@@ -1536,7 +1536,7 @@ namespace Chummer
             // 
             this.lblPDFParametersLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblPDFParametersLabel.AutoSize = true;
-            this.lblPDFParametersLabel.Location = new System.Drawing.Point(572, 513);
+            this.lblPDFParametersLabel.Location = new System.Drawing.Point(572, 487);
             this.lblPDFParametersLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblPDFParametersLabel.Name = "lblPDFParametersLabel";
             this.lblPDFParametersLabel.Size = new System.Drawing.Size(87, 13);
@@ -1550,7 +1550,7 @@ namespace Chummer
             this.cboPDFParameters.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboPDFParameters.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboPDFParameters.FormattingEnabled = true;
-            this.cboPDFParameters.Location = new System.Drawing.Point(665, 509);
+            this.cboPDFParameters.Location = new System.Drawing.Point(665, 483);
             this.cboPDFParameters.Name = "cboPDFParameters";
             this.cboPDFParameters.Size = new System.Drawing.Size(216, 21);
             this.cboPDFParameters.TabIndex = 26;
@@ -1561,7 +1561,7 @@ namespace Chummer
             // 
             this.lblPDFAppPath.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblPDFAppPath.AutoSize = true;
-            this.lblPDFAppPath.Location = new System.Drawing.Point(518, 484);
+            this.lblPDFAppPath.Location = new System.Drawing.Point(518, 458);
             this.lblPDFAppPath.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblPDFAppPath.Name = "lblPDFAppPath";
             this.lblPDFAppPath.Size = new System.Drawing.Size(141, 13);
@@ -1577,7 +1577,7 @@ namespace Chummer
             this.tlpGlobalOptions.SetColumnSpan(this.flpBrowserVersion, 2);
             this.flpBrowserVersion.Controls.Add(this.lblBrowserVersion);
             this.flpBrowserVersion.Controls.Add(this.nudBrowserVersion);
-            this.flpBrowserVersion.Location = new System.Drawing.Point(441, 450);
+            this.flpBrowserVersion.Location = new System.Drawing.Point(441, 507);
             this.flpBrowserVersion.Margin = new System.Windows.Forms.Padding(0);
             this.flpBrowserVersion.Name = "flpBrowserVersion";
             this.flpBrowserVersion.Size = new System.Drawing.Size(237, 26);
