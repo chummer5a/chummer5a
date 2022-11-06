@@ -517,13 +517,13 @@ namespace Chummer.UI.Attributes
             get => _activeButton;
             set
             {
-                if (value == ActiveButton)
+                ButtonWithToolTip objOldValue = Interlocked.Exchange(ref _activeButton, value);
+                if (objOldValue == value)
                     return;
-                ActiveButton?.ToolTipObject.Hide(this);
-                _activeButton = value;
-                if (ActiveButton?.Visible == true)
+                objOldValue?.ToolTipObject.Hide(this);
+                if (value?.Visible == true)
                 {
-                    ActiveButton.ToolTipObject.Show(ActiveButton.ToolTipText, this);
+                    value.ToolTipObject.Show(value.ToolTipText, this);
                 }
             }
         }

@@ -42,9 +42,8 @@ namespace Chummer
             get => _strCharacterFile;
             set
             {
-                if (_strCharacterFile == value)
+                if (Interlocked.Exchange(ref _strCharacterFile, value) == value)
                     return;
-                _strCharacterFile = value;
                 if (this.IsNullOrDisposed())
                     return;
                 string strDisplayText = string.Format(GlobalSettings.CultureInfo,

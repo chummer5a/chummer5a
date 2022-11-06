@@ -740,16 +740,16 @@ namespace Chummer.UI.Table
             set
             {
                 int intOldCount = 0;
-                if (_lstItems != null)
+                ThreadSafeBindingList<T> lstOldItems = Interlocked.Exchange(ref _lstItems, value);
+                if (lstOldItems != null)
                 {
                     // remove listener from old items
-                    _lstItems.ListChanged -= ItemsChanged;
-                    intOldCount = _lstItems.Count;
+                    lstOldItems.ListChanged -= ItemsChanged;
+                    intOldCount = lstOldItems.Count;
                     _lstPermutation.Clear();
                 }
 
-                _lstItems = value;
-                int intNewCount = _lstItems?.Count ?? 0;
+                int intNewCount = value?.Count ?? 0;
                 using (CursorWait.New(this))
                 {
                     SuspendLayout();
@@ -806,10 +806,13 @@ namespace Chummer.UI.Table
                             _lstPermutation.Add(i);
                         }
 
-                        for (int i = 0; i < intLimit; i++)
+                        if (value != null)
                         {
-                            int i1 = i;
-                            Utils.SafelyRunSynchronously(() => UpdateRow(i1, value[i1]).AsTask());
+                            for (int i = 0; i < intLimit; i++)
+                            {
+                                int i1 = i;
+                                Utils.SafelyRunSynchronously(() => UpdateRow(i1, value[i1]).AsTask());
+                            }
                         }
 
                         Sort(false);
@@ -821,9 +824,9 @@ namespace Chummer.UI.Table
                     }
                 }
 
-                if (_lstItems != null)
+                if (value != null)
                 {
-                    _lstItems.ListChanged += ItemsChanged;
+                    value.ListChanged += ItemsChanged;
                 }
             }
         }
@@ -844,8 +847,8 @@ namespace Chummer.UI.Table
             get => _eSortType;
             set
             {
-                _eSortType = value;
-                Sort();
+                if (InterlockedExtensions.Exchange(ref _eSortType, value) != value)
+                    Sort();
             }
         }
 

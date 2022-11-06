@@ -114,13 +114,11 @@ namespace Chummer.Controls.Shared
             get => _intListItemControlHeight;
             set
             {
-                if (_intListItemControlHeight != value)
+                if (Interlocked.Exchange(ref _intListItemControlHeight, value) == value)
+                    return;
+                foreach (ControlWithMetaData objControl in _lstContentList)
                 {
-                    _intListItemControlHeight = value;
-                    foreach (ControlWithMetaData objControl in _lstContentList)
-                    {
-                        objControl.UpdateHeight();
-                    }
+                    objControl.UpdateHeight();
                 }
             }
         }

@@ -521,8 +521,9 @@ namespace Chummer
             get => _strLatestVersion;
             set
             {
-                _strLatestVersion = value;
-                _strTempLatestVersionZipPath = Path.Combine(Utils.GetTempPath(), "chummer" + _strLatestVersion + ".zip");
+                if (Interlocked.Exchange(ref _strLatestVersion, value) != value)
+                    _strTempLatestVersionZipPath
+                        = Path.Combine(Utils.GetTempPath(), "chummer" + value + ".zip");
             }
         }
 
@@ -1178,7 +1179,7 @@ namespace Chummer
             }
             catch (OperationCanceledException)
             {
-                //Swallow this. Closing the form cancels the download which is a change of download progress so token is already cancelled. 
+                //Swallow this. Closing the form cancels the download which is a change of download progress so token is already cancelled.
             }
         }
 

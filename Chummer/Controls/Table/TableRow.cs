@@ -79,10 +79,8 @@ namespace Chummer.UI.Table
             get => _intIndex;
             set
             {
-                if (_intIndex == value)
-                    return;
-                _intIndex = value;
-                Update(Index, Selected);
+                if (Interlocked.Exchange(ref _intIndex, value) != value)
+                    Update(Index, Selected);
             }
         }
 

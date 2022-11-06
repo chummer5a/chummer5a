@@ -21,9 +21,11 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Drawing.Drawing2D;
+using System.Threading;
 using System.Windows.Forms;
 using System.Xml.XPath;
 using NLog;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Chummer
 {
@@ -229,8 +231,8 @@ namespace Chummer
             get => _characterObject;
             set
             {
-                _lstUsedTips.Clear();
-                _characterObject = value;
+                if (Interlocked.Exchange(ref _characterObject, value) != value)
+                    _lstUsedTips.Clear();
             }
         }
 

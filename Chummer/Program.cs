@@ -714,9 +714,8 @@ namespace Chummer
             get => _frmMainForm;
             set
             {
-                if (_frmMainForm == value)
+                if (Interlocked.Exchange(ref _frmMainForm, value) == value)
                     return;
-                _frmMainForm = value;
                 if (value == null)
                     return;
                 // Set up this way instead of using foreach because on-assign actions can add more on-assign actions

@@ -109,14 +109,20 @@ namespace Chummer
             get => _intDice;
             set
             {
-                if (_intDice == value)
+                if (Interlocked.Exchange(ref _intDice, value) == value)
                     return;
-                _intDice = value;
                 nudDiceResult.SuspendLayout();
-                nudDiceResult.MinimumAsInt = int.MinValue; // Temporarily set this to avoid crashing if we shift from something with more than 6 dice to something with less.
-                nudDiceResult.MaximumAsInt = value * 6;
-                nudDiceResult.MinimumAsInt = value;
-                nudDiceResult.ResumeLayout();
+                try
+                {
+                    nudDiceResult.MinimumAsInt
+                        = int.MinValue; // Temporarily set this to avoid crashing if we shift from something with more than 6 dice to something with less.
+                    nudDiceResult.MaximumAsInt = value * 6;
+                    nudDiceResult.MinimumAsInt = value;
+                }
+                finally
+                {
+                    nudDiceResult.ResumeLayout();
+                }
             }
         }
 

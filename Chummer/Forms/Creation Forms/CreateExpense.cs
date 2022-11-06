@@ -155,6 +155,8 @@ namespace Chummer
         {
             set
             {
+                if (InterlockedExtensions.Exchange(ref _eMode, value) == value)
+                    return;
                 if (value == ExpenseType.Nuyen)
                 {
                     lblKarma.Text = LanguageManager.GetString("Label_Expense_NuyenAmount");
@@ -170,7 +172,6 @@ namespace Chummer
                     nudPercent.Visible = false;
                     lblPercent.Visible = false;
                 }
-                _eMode = value;
             }
         }
 

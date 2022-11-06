@@ -274,7 +274,8 @@ namespace Chummer
         {
             set
             {
-                _objParentWeapon = value;
+                if (Interlocked.Exchange(ref _objParentWeapon, value) == value)
+                    return;
                 _lstAllowedMounts.Clear();
                 if (value != null)
                 {

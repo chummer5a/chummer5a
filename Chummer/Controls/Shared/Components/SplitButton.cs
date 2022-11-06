@@ -138,9 +138,8 @@ namespace Chummer
             get => _state;
             set
             {
-                if (_state.Equals(value))
+                if (InterlockedExtensions.Exchange(ref _state, value) == value)
                     return;
-                _state = value;
                 if (Disposing || IsDisposed)
                     return;
                 Invalidate();

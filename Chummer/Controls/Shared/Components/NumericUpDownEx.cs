@@ -269,9 +269,9 @@ namespace Chummer
             get => _showUpDownButtons;
             set
             {
-                _showUpDownButtons = value;
-                // update UpDownButtons visibility
-                UpdateUpDownButtonsVisibility();
+                if (InterlockedExtensions.Exchange(ref _showUpDownButtons, value) != value)
+                    // update UpDownButtons visibility
+                    UpdateUpDownButtonsVisibility();
             }
         }
 
