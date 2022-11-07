@@ -50,12 +50,24 @@ namespace Chummer.Backend.Skills
             {
                 if (_objCharacter != null)
                 {
-                    _objCharacter.PropertyChanged -= OnCharacterPropertyChanged;
-                    _objCharacter.Settings.PropertyChanged -= OnCharacterSettingsPropertyChanged;
+                    using (_objCharacter.LockObject.EnterWriteLock())
+                        _objCharacter.PropertyChanged -= OnCharacterPropertyChanged;
+                    using (_objCharacter.Settings.LockObject.EnterWriteLock())
+                        _objCharacter.Settings.PropertyChanged -= OnCharacterSettingsPropertyChanged;
                 }
 
                 foreach (Skill objSkill in _lstAffectedSkills)
-                    objSkill.PropertyChanged -= SkillOnPropertyChanged;
+                {
+                    try
+                    {
+                        using (objSkill.LockObject.EnterWriteLock())
+                            objSkill.PropertyChanged -= SkillOnPropertyChanged;
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        // swallow this
+                    }
+                }
             }
             LockObject.Dispose();
         }
@@ -67,12 +79,46 @@ namespace Chummer.Backend.Skills
             {
                 if (_objCharacter != null)
                 {
-                    _objCharacter.PropertyChanged -= OnCharacterPropertyChanged;
-                    _objCharacter.Settings.PropertyChanged -= OnCharacterSettingsPropertyChanged;
+                    IAsyncDisposable objLocker2 = await _objCharacter.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                    try
+                    {
+                        _objCharacter.PropertyChanged -= OnCharacterPropertyChanged;
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+                    objLocker2 = await _objCharacter.Settings.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                    try
+                    {
+                        _objCharacter.Settings.PropertyChanged -= OnCharacterSettingsPropertyChanged;
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
                 }
 
                 foreach (Skill objSkill in _lstAffectedSkills)
-                    objSkill.PropertyChanged -= SkillOnPropertyChanged;
+                {
+                    try
+                    {
+                        IAsyncDisposable objLocker2
+                            = await objSkill.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                        try
+                        {
+                            objSkill.PropertyChanged -= SkillOnPropertyChanged;
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        // swallow this
+                    }
+                }
             }
             finally
             {
@@ -219,13 +265,10 @@ namespace Chummer.Backend.Skills
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intSkillFromSp == value)
+                    // No need to write lock because interlocked guarantees safety
+                    if (Interlocked.Exchange(ref _intSkillFromSp, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _intSkillFromSp, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -246,18 +289,10 @@ namespace Chummer.Backend.Skills
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (_intSkillFromSp == value)
+                // No need to write lock because interlocked guarantees safety
+                if (Interlocked.Exchange(ref _intSkillFromSp, value) == value)
                     return;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
-                {
-                    if (Interlocked.Exchange(ref _intSkillFromSp, value) != value)
-                        OnPropertyChanged(nameof(BasePoints));
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
+                OnPropertyChanged(nameof(BasePoints));
             }
         }
 
@@ -268,15 +303,11 @@ namespace Chummer.Backend.Skills
         {
             if (value == 0)
                 return;
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
+                // No need to write lock because interlocked guarantees safety
                 Interlocked.Add(ref _intSkillFromSp, value);
                 OnPropertyChanged(nameof(BasePoints));
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -294,13 +325,10 @@ namespace Chummer.Backend.Skills
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intSkillFromKarma == value)
+                    // No need to write lock because interlocked guarantees safety
+                    if (Interlocked.Exchange(ref _intSkillFromKarma, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _intSkillFromKarma, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -321,18 +349,10 @@ namespace Chummer.Backend.Skills
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (_intSkillFromKarma == value)
+                // No need to write lock because interlocked guarantees safety
+                if (Interlocked.Exchange(ref _intSkillFromKarma, value) == value)
                     return;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
-                {
-                    if (Interlocked.Exchange(ref _intSkillFromKarma, value) != value)
-                        OnPropertyChanged(nameof(KarmaPoints));
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
+                OnPropertyChanged(nameof(KarmaPoints));
             }
         }
 
@@ -343,15 +363,11 @@ namespace Chummer.Backend.Skills
         {
             if (value == 0)
                 return;
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
+                // No need to write lock because interlocked guarantees safety
                 Interlocked.Add(ref _intSkillFromKarma, value);
                 OnPropertyChanged(nameof(KarmaPoints));
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1062,6 +1078,7 @@ namespace Chummer.Backend.Skills
 
         public void Add(Skill skill)
         {
+            using (EnterReadLock.Enter(skill))
             using (EnterReadLock.Enter(LockObject))
             {
                 Guid guidAddedSkillId = skill.SkillId;
@@ -1071,7 +1088,8 @@ namespace Chummer.Backend.Skills
                 using (LockObject.EnterWriteLock())
                 {
                     _lstAffectedSkills.Add(skill);
-                    skill.PropertyChanged += SkillOnPropertyChanged;
+                    using (skill.LockObject.EnterWriteLock())
+                        skill.PropertyChanged += SkillOnPropertyChanged;
                     if (_objCharacter?.SkillsSection?.IsLoading != true)
                         OnPropertyChanged(nameof(SkillList));
                 }
@@ -1080,6 +1098,7 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask AddAsync(Skill skill, CancellationToken token = default)
         {
+            using (await EnterReadLock.EnterAsync(skill, token).ConfigureAwait(false))
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
                 Guid guidAddedSkillId = await skill.GetSkillIdAsync(token).ConfigureAwait(false);
@@ -1094,7 +1113,15 @@ namespace Chummer.Backend.Skills
                 try
                 {
                     _lstAffectedSkills.Add(skill);
-                    skill.PropertyChanged += SkillOnPropertyChanged;
+                    IAsyncDisposable objLocker2 = await skill.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        skill.PropertyChanged += SkillOnPropertyChanged;
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
                     if (_objCharacter?.SkillsSection?.IsLoading != true)
                         OnPropertyChanged(nameof(SkillList));
                 }
@@ -1107,11 +1134,13 @@ namespace Chummer.Backend.Skills
 
         public void Remove(Skill skill)
         {
+            using (EnterReadLock.Enter(skill))
             using (LockObject.EnterWriteLock())
             {
                 if (!_lstAffectedSkills.Remove(skill))
                     return;
-                skill.PropertyChanged -= SkillOnPropertyChanged;
+                using (skill.LockObject.EnterWriteLock())
+                    skill.PropertyChanged -= SkillOnPropertyChanged;
                 if (_objCharacter?.SkillsSection?.IsLoading != true)
                     OnPropertyChanged(nameof(SkillList));
             }
@@ -1119,18 +1148,31 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask RemoveAsync(Skill skill, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            using (await EnterReadLock.EnterAsync(skill, token).ConfigureAwait(false))
             {
-                if (!_lstAffectedSkills.Remove(skill))
-                    return;
-                skill.PropertyChanged -= SkillOnPropertyChanged;
-                if (_objCharacter?.SkillsSection?.IsLoading != true)
-                    OnPropertyChanged(nameof(SkillList));
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    if (!_lstAffectedSkills.Remove(skill))
+                        return;
+                    IAsyncDisposable objLocker2
+                        = await skill.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        skill.PropertyChanged -= SkillOnPropertyChanged;
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+
+                    if (_objCharacter?.SkillsSection?.IsLoading != true)
+                        OnPropertyChanged(nameof(SkillList));
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
             }
         }
 
@@ -1329,10 +1371,12 @@ namespace Chummer.Backend.Skills
         {
             _objCharacter = objCharacter;
             _strGroupName = strGroupName;
-            if (_objCharacter != null)
+            if (objCharacter != null)
             {
-                _objCharacter.PropertyChanged += OnCharacterPropertyChanged;
-                _objCharacter.Settings.PropertyChanged += OnCharacterSettingsPropertyChanged;
+                using (objCharacter.LockObject.EnterWriteLock())
+                    objCharacter.PropertyChanged += OnCharacterPropertyChanged;
+                using (objCharacter.Settings.LockObject.EnterWriteLock())
+                    objCharacter.Settings.PropertyChanged += OnCharacterSettingsPropertyChanged;
             }
         }
 
@@ -1356,13 +1400,10 @@ namespace Chummer.Backend.Skills
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strGroupName == value)
+                    // No need to write lock because interlocked guarantees safety
+                    if (Interlocked.Exchange(ref _strGroupName, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _strGroupName, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -1731,16 +1772,19 @@ namespace Chummer.Backend.Skills
                         }
                     }
 
-                    Utils.RunOnMainThread(() =>
+                    if (PropertyChanged != null)
                     {
-                        if (PropertyChanged != null)
+                        Utils.RunOnMainThread(() =>
                         {
-                            foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                            if (PropertyChanged != null)
                             {
-                                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                                foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                                {
+                                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
                 }
                 finally
                 {

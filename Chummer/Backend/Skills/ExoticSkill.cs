@@ -103,13 +103,10 @@ namespace Chummer.Backend.Skills
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strSpecific == value)
+                    // No need to write lock because interlocked guarantees safety
+                    if (Interlocked.Exchange(ref _strSpecific, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        _strSpecific = value;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }

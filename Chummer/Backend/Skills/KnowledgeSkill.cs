@@ -195,7 +195,7 @@ namespace Chummer.Backend.Skills
 
         private string _strType = string.Empty;
 
-        private bool _blnIsNativeLanguage;
+        private int _intIsNativeLanguage;
 
         public bool ForcedName { get; }
 
@@ -264,8 +264,8 @@ namespace Chummer.Backend.Skills
                     {
                         LoadSkillFromData(value);
                         Name = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -285,12 +285,12 @@ namespace Chummer.Backend.Skills
                 {
                     await LoadSkillFromDataAsync(value, token).ConfigureAwait(false);
                     await SetNameAsync(value, token).ConfigureAwait(false);
-                    OnPropertyChanged(nameof(WritableName));
                 }
                 finally
                 {
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
+                OnPropertyChanged(nameof(WritableName));
             }
         }
 
@@ -567,13 +567,11 @@ namespace Chummer.Backend.Skills
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strType == value)
+                    // Interlocked guarantees thread safety here without write lock
+                    if (Interlocked.Exchange(ref _strType, value) == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
-                        if (Interlocked.Exchange(ref _strType, value) == value)
-                            return;
-
                         //2018-22-03: Causes any attempt to alter the Type for skills with names that match
                         //default skills to reset to the default Type for that skill. If we want to disable
                         //that behavior, better to disable it via the control.
@@ -591,10 +589,10 @@ namespace Chummer.Backend.Skills
                             DefaultAttribute = strNewAttributeValue;
                         }
 
-                        OnPropertyChanged();
                         if (!IsLanguage)
                             IsNativeLanguage = false;
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -609,14 +607,12 @@ namespace Chummer.Backend.Skills
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (_strType == value)
+                // Interlocked guarantees thread safety here without write lock
+                if (Interlocked.Exchange(ref _strType, value) == value)
                     return;
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
-                    if (Interlocked.Exchange(ref _strType, value) == value)
-                        return;
-
                     //2018-22-03: Causes any attempt to alter the Type for skills with names that match
                     //default skills to reset to the default Type for that skill. If we want to disable
                     //that behavior, better to disable it via the control.
@@ -634,7 +630,6 @@ namespace Chummer.Backend.Skills
                         await SetDefaultAttributeAsync(strNewAttributeValue, token).ConfigureAwait(false);
                     }
 
-                    OnPropertyChanged(nameof(Type));
                     if (!await GetIsLanguageAsync(token).ConfigureAwait(false))
                         await SetIsNativeLanguageAsync(false, token).ConfigureAwait(false);
                 }
@@ -642,6 +637,7 @@ namespace Chummer.Backend.Skills
                 {
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
+                OnPropertyChanged(nameof(Type));
             }
         }
 
@@ -657,17 +653,18 @@ namespace Chummer.Backend.Skills
             get
             {
                 using (EnterReadLock.Enter(LockObject))
-                    return _blnIsNativeLanguage;
+                    return _intIsNativeLanguage > 0;
             }
             set
             {
+                int intNewValue = value.ToInt32();
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_blnIsNativeLanguage == value)
+                    // Interlocked guarantees thread safety here without write lock
+                    if (Interlocked.Exchange(ref _intIsNativeLanguage, intNewValue) == intNewValue)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
-                        _blnIsNativeLanguage = value;
                         if (value)
                         {
                             Base = 0;
@@ -675,9 +672,8 @@ namespace Chummer.Backend.Skills
                             BuyWithKarma = false;
                             Specializations.Clear();
                         }
-
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -685,19 +681,20 @@ namespace Chummer.Backend.Skills
         public override async ValueTask<bool> GetIsNativeLanguageAsync(CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
-                return _blnIsNativeLanguage;
+                return _intIsNativeLanguage > 0;
         }
 
         public override async ValueTask SetIsNativeLanguageAsync(bool value, CancellationToken token = default)
         {
+            int intNewValue = value.ToInt32();
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (_blnIsNativeLanguage == value)
+                // Interlocked guarantees thread safety here without write lock
+                if (Interlocked.Exchange(ref _intIsNativeLanguage, intNewValue) == intNewValue)
                     return;
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
-                    _blnIsNativeLanguage = value;
                     if (value)
                     {
                         await SetBaseAsync(0, token).ConfigureAwait(false);
@@ -705,13 +702,12 @@ namespace Chummer.Backend.Skills
                         await SetBuyWithKarmaAsync(false, token).ConfigureAwait(false);
                         await Specializations.ClearAsync(token).ConfigureAwait(false);
                     }
-
-                    OnPropertyChanged(nameof(IsNativeLanguage));
                 }
                 finally
                 {
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
+                OnPropertyChanged(nameof(IsNativeLanguage));
             }
         }
 
@@ -1280,7 +1276,8 @@ namespace Chummer.Backend.Skills
                 }
 
                 // Legacy sweep for native language skills
-                if (!xmlNode.TryGetBoolFieldQuickly("isnativelanguage", ref _blnIsNativeLanguage) && IsLanguage &&
+                blnTemp = false;
+                if (!xmlNode.TryGetBoolFieldQuickly("isnativelanguage", ref blnTemp) && IsLanguage &&
                     CharacterObject.LastSavedVersion <= new Version(5, 212, 72))
                 {
                     int intKarma = 0;
@@ -1290,8 +1287,10 @@ namespace Chummer.Backend.Skills
                     if (intKarma == 0 && intBase == 0 &&
                         CharacterObject.SkillsSection.KnowledgeSkills.Count(x => x.IsNativeLanguage) < 1 +
                         ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.NativeLanguageLimit))
-                        _blnIsNativeLanguage = true;
+                        blnTemp = true;
                 }
+
+                _intIsNativeLanguage = blnTemp.ToInt32();
             }
         }
     }

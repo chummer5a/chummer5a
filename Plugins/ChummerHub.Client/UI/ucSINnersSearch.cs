@@ -184,13 +184,18 @@ namespace ChummerHub.Client.UI
                     }
                 case "Chummer.Backend.Uniques.Tradition":
                     {
-                        List<Tradition> traditions = Tradition.GetTraditions(MySearchCharacter.MyCharacter);
+                        List<Tradition> traditions = Tradition.GetTraditions(MySearchCharacter.MyCharacter).ToList();
                         cb = new ComboBox
                         {
                             DataSource = traditions,
                             DropDownStyle = ComboBoxStyle.DropDownList,
                             FlatStyle = FlatStyle.Standard,
                             DisplayMember = "Name"
+                        };
+                        cb.Disposed += (sender, args) =>
+                        {
+                            foreach (Tradition objTradition in traditions)
+                                objTradition.Dispose();
                         };
                         cb.SelectedValueChanged += (sender, e) =>
                         {

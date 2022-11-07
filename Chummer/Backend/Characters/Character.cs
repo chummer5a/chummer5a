@@ -316,13 +316,18 @@ namespace Chummer
                      && !SettingsManager.LoadedCharacterSettings.TryGetValue(GlobalSettings.DefaultCharacterSettingDefaultValue, out _objSettings))
                 _objSettings = SettingsManager.LoadedCharacterSettings.Values.First();
 
-            Settings.PropertyChanged += OptionsOnPropertyChanged;
+            using (_objSettings.LockObject.EnterWriteLock())
+                _objSettings.PropertyChanged += OptionsOnPropertyChanged;
             _objAttributeSection = new AttributeSection(this);
-            AttributeSection.Reset(true);
-            AttributeSection.PropertyChanged += AttributeSectionOnPropertyChanged;
+            using (_objAttributeSection.LockObject.EnterWriteLock())
+            {
+                _objAttributeSection.Reset(true);
+                _objAttributeSection.PropertyChanged += AttributeSectionOnPropertyChanged;
+            }
 
             _objSkillsSection = new SkillsSection(this);
-            SkillsSection.Reset(true);
+            using (_objSkillsSection.LockObject.EnterWriteLock())
+                _objSkillsSection.Reset(true);
 
             _lstCyberware.CollectionChanged += CyberwareOnCollectionChanged;
             _lstArmor.CollectionChanged += ArmorOnCollectionChanged;
@@ -599,205 +604,608 @@ namespace Chummer
 
         public void RefreshAttributeBindings()
         {
-            using (LockObject.EnterWriteLock())
+            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(AttributeSection.LockObject))
+            using (EnterReadLock.Enter(AttributeSection.Attributes.LockObject))
             {
-                // First remove all existing bindings
-                foreach (CharacterAttrib objAttribute in AttributeSection.Attributes)
+                foreach (CharacterAttrib objAttrib in AttributeSection.Attributes)
+                    objAttrib.LockObject.EnterReadLock();
+                try
                 {
-                    switch (objAttribute.Abbrev)
+                    // First remove all existing bindings
+                    foreach (CharacterAttrib objAttribute in AttributeSection.Attributes)
                     {
-                        case "BOD":
-                            objAttribute.PropertyChanged -= RefreshBODDependentProperties;
-                            break;
+                        switch (objAttribute.Abbrev)
+                        {
+                            case "BOD":
+                                using (objAttribute.LockObject.EnterWriteLock())
+                                    objAttribute.PropertyChanged -= RefreshBODDependentProperties;
+                                break;
 
-                        case "AGI":
-                            objAttribute.PropertyChanged -= RefreshAGIDependentProperties;
-                            break;
+                            case "AGI":
+                                using (objAttribute.LockObject.EnterWriteLock())
+                                    objAttribute.PropertyChanged -= RefreshAGIDependentProperties;
+                                break;
 
-                        case "REA":
-                            objAttribute.PropertyChanged -= RefreshREADependentProperties;
-                            break;
+                            case "REA":
+                                using (objAttribute.LockObject.EnterWriteLock())
+                                    objAttribute.PropertyChanged -= RefreshREADependentProperties;
+                                break;
 
-                        case "STR":
-                            objAttribute.PropertyChanged -= RefreshSTRDependentProperties;
-                            break;
+                            case "STR":
+                                using (objAttribute.LockObject.EnterWriteLock())
+                                    objAttribute.PropertyChanged -= RefreshSTRDependentProperties;
+                                break;
 
-                        case "CHA":
-                            objAttribute.PropertyChanged -= RefreshCHADependentProperties;
-                            break;
+                            case "CHA":
+                                using (objAttribute.LockObject.EnterWriteLock())
+                                    objAttribute.PropertyChanged -= RefreshCHADependentProperties;
+                                break;
 
-                        case "INT":
-                            objAttribute.PropertyChanged -= RefreshINTDependentProperties;
-                            break;
+                            case "INT":
+                                using (objAttribute.LockObject.EnterWriteLock())
+                                    objAttribute.PropertyChanged -= RefreshINTDependentProperties;
+                                break;
 
-                        case "LOG":
-                            objAttribute.PropertyChanged -= RefreshLOGDependentProperties;
-                            break;
+                            case "LOG":
+                                using (objAttribute.LockObject.EnterWriteLock())
+                                    objAttribute.PropertyChanged -= RefreshLOGDependentProperties;
+                                break;
 
-                        case "WIL":
-                            objAttribute.PropertyChanged -= RefreshWILDependentProperties;
-                            break;
+                            case "WIL":
+                                using (objAttribute.LockObject.EnterWriteLock())
+                                    objAttribute.PropertyChanged -= RefreshWILDependentProperties;
+                                break;
 
-                        case "EDG":
-                            objAttribute.PropertyChanged -= RefreshEDGDependentProperties;
-                            break;
+                            case "EDG":
+                                using (objAttribute.LockObject.EnterWriteLock())
+                                    objAttribute.PropertyChanged -= RefreshEDGDependentProperties;
+                                break;
 
-                        case "MAG":
-                            objAttribute.PropertyChanged -= RefreshMAGDependentProperties;
-                            break;
+                            case "MAG":
+                                using (objAttribute.LockObject.EnterWriteLock())
+                                    objAttribute.PropertyChanged -= RefreshMAGDependentProperties;
+                                break;
 
-                        case "MAGAdept":
-                            objAttribute.PropertyChanged -= RefreshMAGAdeptDependentProperties;
-                            break;
+                            case "MAGAdept":
+                                using (objAttribute.LockObject.EnterWriteLock())
+                                    objAttribute.PropertyChanged -= RefreshMAGAdeptDependentProperties;
+                                break;
 
-                        case "RES":
-                            objAttribute.PropertyChanged -= RefreshRESDependentProperties;
-                            break;
+                            case "RES":
+                                using (objAttribute.LockObject.EnterWriteLock())
+                                    objAttribute.PropertyChanged -= RefreshRESDependentProperties;
+                                break;
 
-                        case "DEP":
-                            objAttribute.PropertyChanged -= RefreshDEPDependentProperties;
-                            break;
+                            case "DEP":
+                                using (objAttribute.LockObject.EnterWriteLock())
+                                    objAttribute.PropertyChanged -= RefreshDEPDependentProperties;
+                                break;
 
-                        case "ESS":
-                            objAttribute.PropertyChanged -= RefreshESSDependentProperties;
-                            break;
+                            case "ESS":
+                                using (objAttribute.LockObject.EnterWriteLock())
+                                    objAttribute.PropertyChanged -= RefreshESSDependentProperties;
+                                break;
+                        }
                     }
-                }
 
-                BOD.PropertyChanged += RefreshBODDependentProperties;
-                AGI.PropertyChanged += RefreshAGIDependentProperties;
-                REA.PropertyChanged += RefreshREADependentProperties;
-                STR.PropertyChanged += RefreshSTRDependentProperties;
-                CHA.PropertyChanged += RefreshCHADependentProperties;
-                INT.PropertyChanged += RefreshINTDependentProperties;
-                LOG.PropertyChanged += RefreshLOGDependentProperties;
-                WIL.PropertyChanged += RefreshWILDependentProperties;
-                EDG.PropertyChanged += RefreshEDGDependentProperties;
-                MAG.PropertyChanged += RefreshMAGDependentProperties;
-                RES.PropertyChanged += RefreshRESDependentProperties;
-                DEP.PropertyChanged += RefreshDEPDependentProperties;
-                ESS.PropertyChanged += RefreshESSDependentProperties;
-                // This needs to be explicitly set because a MAGAdept call could redirect to MAG, and we don't want that
-                AttributeSection.GetAttributeByName("MAGAdept").PropertyChanged += RefreshMAGAdeptDependentProperties;
+                    using (BOD.LockObject.EnterWriteLock())
+                        BOD.PropertyChanged += RefreshBODDependentProperties;
+                    using (AGI.LockObject.EnterWriteLock())
+                        AGI.PropertyChanged += RefreshAGIDependentProperties;
+                    using (REA.LockObject.EnterWriteLock())
+                        REA.PropertyChanged += RefreshREADependentProperties;
+                    using (STR.LockObject.EnterWriteLock())
+                        STR.PropertyChanged += RefreshSTRDependentProperties;
+                    using (CHA.LockObject.EnterWriteLock())
+                        CHA.PropertyChanged += RefreshCHADependentProperties;
+                    using (INT.LockObject.EnterWriteLock())
+                        INT.PropertyChanged += RefreshINTDependentProperties;
+                    using (LOG.LockObject.EnterWriteLock())
+                        LOG.PropertyChanged += RefreshLOGDependentProperties;
+                    using (WIL.LockObject.EnterWriteLock())
+                        WIL.PropertyChanged += RefreshWILDependentProperties;
+                    using (EDG.LockObject.EnterWriteLock())
+                        EDG.PropertyChanged += RefreshEDGDependentProperties;
+                    using (MAG.LockObject.EnterWriteLock())
+                        MAG.PropertyChanged += RefreshMAGDependentProperties;
+                    using (RES.LockObject.EnterWriteLock())
+                        RES.PropertyChanged += RefreshRESDependentProperties;
+                    using (DEP.LockObject.EnterWriteLock())
+                        DEP.PropertyChanged += RefreshDEPDependentProperties;
+                    using (ESS.LockObject.EnterWriteLock())
+                        ESS.PropertyChanged += RefreshESSDependentProperties;
+                    // This needs to be explicitly set because a MAGAdept call could redirect to MAG, and we don't want that
+                    CharacterAttrib objMagAdept = AttributeSection.GetAttributeByName("MAGAdept");
+                    using (objMagAdept.LockObject.EnterWriteLock())
+                        objMagAdept.PropertyChanged += RefreshMAGAdeptDependentProperties;
+                }
+                finally
+                {
+                    foreach (CharacterAttrib objAttrib in AttributeSection.Attributes)
+                        objAttrib.LockObject.EnterReadLock();
+                }
             }
         }
 
         public async ValueTask RefreshAttributeBindingsAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                // First remove all existing bindings
                 AttributeSection objAttributeSection = await GetAttributeSectionAsync(token).ConfigureAwait(false);
-                await (await objAttributeSection.GetAttributesAsync(token).ConfigureAwait(false)).ForEachAsync(objAttribute =>
+                using (await EnterReadLock.EnterAsync(objAttributeSection.LockObject, token).ConfigureAwait(false))
                 {
-                    switch (objAttribute.Abbrev)
+                    ThreadSafeObservableCollection<CharacterAttrib> objAttributes
+                        = await objAttributeSection.GetAttributesAsync(token).ConfigureAwait(false);
+                    using (await EnterReadLock.EnterAsync(objAttributes.LockObject, token).ConfigureAwait(false))
                     {
-                        case "BOD":
-                            objAttribute.PropertyChanged -= RefreshBODDependentProperties;
-                            break;
+                        Stack<CharacterAttrib> stkLockedAttribs
+                            = new Stack<CharacterAttrib>(
+                                await objAttributes.GetCountAsync(token).ConfigureAwait(false));
+                        try
+                        {
+                            await objAttributes.ForEachAsync(
+                                async objAttribute =>
+                                {
+                                    await objAttribute.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                                    stkLockedAttribs.Push(objAttribute);
+                                }, token).ConfigureAwait(false);
+                            // First remove all existing bindings
+                            await objAttributes.ForEachAsync(
+                                async objAttribute =>
+                                {
+                                    switch (objAttribute.Abbrev)
+                                    {
+                                        case "BOD":
+                                        {
+                                            IAsyncDisposable objLocker = await objAttribute.LockObject
+                                                .EnterWriteLockAsync(token).ConfigureAwait(false);
+                                            try
+                                            {
+                                                objAttribute.PropertyChanged -= RefreshBODDependentProperties;
+                                            }
+                                            finally
+                                            {
+                                                await objLocker.DisposeAsync().ConfigureAwait(false);
+                                            }
 
-                        case "AGI":
-                            objAttribute.PropertyChanged -= RefreshAGIDependentProperties;
-                            break;
+                                            break;
+                                        }
+                                        case "AGI":
+                                        {
+                                            IAsyncDisposable objLocker = await objAttribute.LockObject
+                                                .EnterWriteLockAsync(token).ConfigureAwait(false);
+                                            try
+                                            {
+                                                objAttribute.PropertyChanged -= RefreshAGIDependentProperties;
+                                            }
+                                            finally
+                                            {
+                                                await objLocker.DisposeAsync().ConfigureAwait(false);
+                                            }
 
-                        case "REA":
-                            objAttribute.PropertyChanged -= RefreshREADependentProperties;
-                            break;
+                                            break;
+                                        }
+                                        case "REA":
+                                        {
+                                            IAsyncDisposable objLocker = await objAttribute.LockObject
+                                                .EnterWriteLockAsync(token).ConfigureAwait(false);
+                                            try
+                                            {
+                                                objAttribute.PropertyChanged -= RefreshREADependentProperties;
+                                            }
+                                            finally
+                                            {
+                                                await objLocker.DisposeAsync().ConfigureAwait(false);
+                                            }
 
-                        case "STR":
-                            objAttribute.PropertyChanged -= RefreshSTRDependentProperties;
-                            break;
+                                            break;
+                                        }
+                                        case "STR":
+                                        {
+                                            IAsyncDisposable objLocker = await objAttribute.LockObject
+                                                .EnterWriteLockAsync(token).ConfigureAwait(false);
+                                            try
+                                            {
+                                                objAttribute.PropertyChanged -= RefreshSTRDependentProperties;
+                                            }
+                                            finally
+                                            {
+                                                await objLocker.DisposeAsync().ConfigureAwait(false);
+                                            }
 
-                        case "CHA":
-                            objAttribute.PropertyChanged -= RefreshCHADependentProperties;
-                            break;
+                                            break;
+                                        }
+                                        case "CHA":
+                                        {
+                                            IAsyncDisposable objLocker = await objAttribute.LockObject
+                                                .EnterWriteLockAsync(token).ConfigureAwait(false);
+                                            try
+                                            {
+                                                objAttribute.PropertyChanged -= RefreshCHADependentProperties;
+                                            }
+                                            finally
+                                            {
+                                                await objLocker.DisposeAsync().ConfigureAwait(false);
+                                            }
 
-                        case "INT":
-                            objAttribute.PropertyChanged -= RefreshINTDependentProperties;
-                            break;
+                                            break;
+                                        }
+                                        case "INT":
+                                        {
+                                            IAsyncDisposable objLocker = await objAttribute.LockObject
+                                                .EnterWriteLockAsync(token).ConfigureAwait(false);
+                                            try
+                                            {
+                                                objAttribute.PropertyChanged -= RefreshINTDependentProperties;
+                                            }
+                                            finally
+                                            {
+                                                await objLocker.DisposeAsync().ConfigureAwait(false);
+                                            }
 
-                        case "LOG":
-                            objAttribute.PropertyChanged -= RefreshLOGDependentProperties;
-                            break;
+                                            break;
+                                        }
+                                        case "LOG":
+                                        {
+                                            IAsyncDisposable objLocker = await objAttribute.LockObject
+                                                .EnterWriteLockAsync(token).ConfigureAwait(false);
+                                            try
+                                            {
+                                                objAttribute.PropertyChanged -= RefreshLOGDependentProperties;
+                                            }
+                                            finally
+                                            {
+                                                await objLocker.DisposeAsync().ConfigureAwait(false);
+                                            }
 
-                        case "WIL":
-                            objAttribute.PropertyChanged -= RefreshWILDependentProperties;
-                            break;
+                                            break;
+                                        }
+                                        case "WIL":
+                                        {
+                                            IAsyncDisposable objLocker = await objAttribute.LockObject
+                                                .EnterWriteLockAsync(token).ConfigureAwait(false);
+                                            try
+                                            {
+                                                objAttribute.PropertyChanged -= RefreshWILDependentProperties;
+                                            }
+                                            finally
+                                            {
+                                                await objLocker.DisposeAsync().ConfigureAwait(false);
+                                            }
 
-                        case "EDG":
-                            objAttribute.PropertyChanged -= RefreshEDGDependentProperties;
-                            break;
+                                            break;
+                                        }
+                                        case "EDG":
+                                        {
+                                            IAsyncDisposable objLocker = await objAttribute.LockObject
+                                                .EnterWriteLockAsync(token).ConfigureAwait(false);
+                                            try
+                                            {
+                                                objAttribute.PropertyChanged -= RefreshEDGDependentProperties;
+                                            }
+                                            finally
+                                            {
+                                                await objLocker.DisposeAsync().ConfigureAwait(false);
+                                            }
 
-                        case "MAG":
-                            objAttribute.PropertyChanged -= RefreshMAGDependentProperties;
-                            break;
+                                            break;
+                                        }
+                                        case "MAG":
+                                        {
+                                            IAsyncDisposable objLocker = await objAttribute.LockObject
+                                                .EnterWriteLockAsync(token).ConfigureAwait(false);
+                                            try
+                                            {
+                                                objAttribute.PropertyChanged -= RefreshMAGDependentProperties;
+                                            }
+                                            finally
+                                            {
+                                                await objLocker.DisposeAsync().ConfigureAwait(false);
+                                            }
 
-                        case "MAGAdept":
-                            objAttribute.PropertyChanged -= RefreshMAGAdeptDependentProperties;
-                            break;
+                                            break;
+                                        }
+                                        case "MAGAdept":
+                                        {
+                                            IAsyncDisposable objLocker = await objAttribute.LockObject
+                                                .EnterWriteLockAsync(token).ConfigureAwait(false);
+                                            try
+                                            {
+                                                objAttribute.PropertyChanged -= RefreshMAGAdeptDependentProperties;
+                                            }
+                                            finally
+                                            {
+                                                await objLocker.DisposeAsync().ConfigureAwait(false);
+                                            }
 
-                        case "RES":
-                            objAttribute.PropertyChanged -= RefreshRESDependentProperties;
-                            break;
+                                            break;
+                                        }
+                                        case "RES":
+                                        {
+                                            IAsyncDisposable objLocker = await objAttribute.LockObject
+                                                .EnterWriteLockAsync(token).ConfigureAwait(false);
+                                            try
+                                            {
+                                                objAttribute.PropertyChanged -= RefreshRESDependentProperties;
+                                            }
+                                            finally
+                                            {
+                                                await objLocker.DisposeAsync().ConfigureAwait(false);
+                                            }
 
-                        case "DEP":
-                            objAttribute.PropertyChanged -= RefreshDEPDependentProperties;
-                            break;
+                                            break;
+                                        }
+                                        case "DEP":
+                                        {
+                                            IAsyncDisposable objLocker = await objAttribute.LockObject
+                                                .EnterWriteLockAsync(token).ConfigureAwait(false);
+                                            try
+                                            {
+                                                objAttribute.PropertyChanged -= RefreshDEPDependentProperties;
+                                            }
+                                            finally
+                                            {
+                                                await objLocker.DisposeAsync().ConfigureAwait(false);
+                                            }
 
-                        case "ESS":
-                            objAttribute.PropertyChanged -= RefreshESSDependentProperties;
-                            break;
+                                            break;
+                                        }
+                                        case "ESS":
+                                        {
+                                            IAsyncDisposable objLocker = await objAttribute.LockObject
+                                                .EnterWriteLockAsync(token).ConfigureAwait(false);
+                                            try
+                                            {
+                                                objAttribute.PropertyChanged -= RefreshESSDependentProperties;
+                                            }
+                                            finally
+                                            {
+                                                await objLocker.DisposeAsync().ConfigureAwait(false);
+                                            }
+
+                                            break;
+                                        }
+                                    }
+                                }, token).ConfigureAwait(false);
+
+                            CharacterAttrib objLoopAttribute
+                                = await GetAttributeAsync("BOD", token: token).ConfigureAwait(false);
+                            if (objLoopAttribute != null)
+                            {
+                                IAsyncDisposable objLocker = await objLoopAttribute.LockObject
+                                    .EnterWriteLockAsync(token)
+                                    .ConfigureAwait(false);
+                                try
+                                {
+                                    objLoopAttribute.PropertyChanged += RefreshBODDependentProperties;
+                                }
+                                finally
+                                {
+                                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                                }
+                            }
+
+                            objLoopAttribute = await GetAttributeAsync("AGI", token: token).ConfigureAwait(false);
+                            if (objLoopAttribute != null)
+                            {
+                                IAsyncDisposable objLocker = await objLoopAttribute.LockObject
+                                    .EnterWriteLockAsync(token)
+                                    .ConfigureAwait(false);
+                                try
+                                {
+                                    objLoopAttribute.PropertyChanged += RefreshAGIDependentProperties;
+                                }
+                                finally
+                                {
+                                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                                }
+                            }
+
+                            objLoopAttribute = await GetAttributeAsync("REA", token: token).ConfigureAwait(false);
+                            if (objLoopAttribute != null)
+                            {
+                                IAsyncDisposable objLocker = await objLoopAttribute.LockObject
+                                    .EnterWriteLockAsync(token)
+                                    .ConfigureAwait(false);
+                                try
+                                {
+                                    objLoopAttribute.PropertyChanged += RefreshREADependentProperties;
+                                }
+                                finally
+                                {
+                                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                                }
+                            }
+
+                            objLoopAttribute = await GetAttributeAsync("STR", token: token).ConfigureAwait(false);
+                            if (objLoopAttribute != null)
+                            {
+                                IAsyncDisposable objLocker = await objLoopAttribute.LockObject
+                                    .EnterWriteLockAsync(token)
+                                    .ConfigureAwait(false);
+                                try
+                                {
+                                    objLoopAttribute.PropertyChanged += RefreshSTRDependentProperties;
+                                }
+                                finally
+                                {
+                                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                                }
+                            }
+
+                            objLoopAttribute = await GetAttributeAsync("CHA", token: token).ConfigureAwait(false);
+                            if (objLoopAttribute != null)
+                            {
+                                IAsyncDisposable objLocker = await objLoopAttribute.LockObject
+                                    .EnterWriteLockAsync(token)
+                                    .ConfigureAwait(false);
+                                try
+                                {
+                                    objLoopAttribute.PropertyChanged += RefreshCHADependentProperties;
+                                }
+                                finally
+                                {
+                                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                                }
+                            }
+
+                            objLoopAttribute = await GetAttributeAsync("INT", token: token).ConfigureAwait(false);
+                            if (objLoopAttribute != null)
+                            {
+                                IAsyncDisposable objLocker = await objLoopAttribute.LockObject
+                                    .EnterWriteLockAsync(token)
+                                    .ConfigureAwait(false);
+                                try
+                                {
+                                    objLoopAttribute.PropertyChanged += RefreshINTDependentProperties;
+                                }
+                                finally
+                                {
+                                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                                }
+                            }
+
+                            objLoopAttribute = await GetAttributeAsync("LOG", token: token).ConfigureAwait(false);
+                            if (objLoopAttribute != null)
+                            {
+                                IAsyncDisposable objLocker = await objLoopAttribute.LockObject
+                                    .EnterWriteLockAsync(token)
+                                    .ConfigureAwait(false);
+                                try
+                                {
+                                    objLoopAttribute.PropertyChanged += RefreshLOGDependentProperties;
+                                }
+                                finally
+                                {
+                                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                                }
+                            }
+
+                            objLoopAttribute = await GetAttributeAsync("WIL", token: token).ConfigureAwait(false);
+                            if (objLoopAttribute != null)
+                            {
+                                IAsyncDisposable objLocker = await objLoopAttribute.LockObject
+                                    .EnterWriteLockAsync(token)
+                                    .ConfigureAwait(false);
+                                try
+                                {
+                                    objLoopAttribute.PropertyChanged += RefreshWILDependentProperties;
+                                }
+                                finally
+                                {
+                                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                                }
+                            }
+
+                            objLoopAttribute = await GetAttributeAsync("EDG", token: token).ConfigureAwait(false);
+                            if (objLoopAttribute != null)
+                            {
+                                IAsyncDisposable objLocker = await objLoopAttribute.LockObject
+                                    .EnterWriteLockAsync(token)
+                                    .ConfigureAwait(false);
+                                try
+                                {
+                                    objLoopAttribute.PropertyChanged += RefreshEDGDependentProperties;
+                                }
+                                finally
+                                {
+                                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                                }
+                            }
+
+                            objLoopAttribute = await GetAttributeAsync("MAG", token: token).ConfigureAwait(false);
+                            if (objLoopAttribute != null)
+                            {
+                                IAsyncDisposable objLocker = await objLoopAttribute.LockObject
+                                    .EnterWriteLockAsync(token)
+                                    .ConfigureAwait(false);
+                                try
+                                {
+                                    objLoopAttribute.PropertyChanged += RefreshMAGDependentProperties;
+                                }
+                                finally
+                                {
+                                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                                }
+                            }
+
+                            objLoopAttribute = await GetAttributeAsync("RES", token: token).ConfigureAwait(false);
+                            if (objLoopAttribute != null)
+                            {
+                                IAsyncDisposable objLocker = await objLoopAttribute.LockObject
+                                    .EnterWriteLockAsync(token)
+                                    .ConfigureAwait(false);
+                                try
+                                {
+                                    objLoopAttribute.PropertyChanged += RefreshRESDependentProperties;
+                                }
+                                finally
+                                {
+                                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                                }
+                            }
+
+                            objLoopAttribute = await GetAttributeAsync("DEP", token: token).ConfigureAwait(false);
+                            if (objLoopAttribute != null)
+                            {
+                                IAsyncDisposable objLocker = await objLoopAttribute.LockObject
+                                    .EnterWriteLockAsync(token)
+                                    .ConfigureAwait(false);
+                                try
+                                {
+                                    objLoopAttribute.PropertyChanged += RefreshDEPDependentProperties;
+                                }
+                                finally
+                                {
+                                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                                }
+                            }
+
+                            objLoopAttribute = await GetAttributeAsync("ESS", token: token).ConfigureAwait(false);
+                            if (objLoopAttribute != null)
+                            {
+                                IAsyncDisposable objLocker = await objLoopAttribute.LockObject
+                                    .EnterWriteLockAsync(token)
+                                    .ConfigureAwait(false);
+                                try
+                                {
+                                    objLoopAttribute.PropertyChanged += RefreshESSDependentProperties;
+                                }
+                                finally
+                                {
+                                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                                }
+                            }
+
+                            // This needs to be explicitly set because a MAGAdept call could redirect to MAG, and we don't want that
+                            objLoopAttribute = await objAttributeSection
+                                                     .GetAttributeByNameAsync("MAGAdept", token: token)
+                                                     .ConfigureAwait(false);
+                            if (objLoopAttribute != null)
+                            {
+                                IAsyncDisposable objLocker = await objLoopAttribute.LockObject
+                                    .EnterWriteLockAsync(token)
+                                    .ConfigureAwait(false);
+                                try
+                                {
+                                    objLoopAttribute.PropertyChanged += RefreshMAGAdeptDependentProperties;
+                                }
+                                finally
+                                {
+                                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                                }
+                            }
+                        }
+                        finally
+                        {
+                            while (stkLockedAttribs.Peek() != null)
+                            {
+                                stkLockedAttribs.Pop().LockObject.ExitReadLock();
+                            }
+                        }
                     }
-                }, token).ConfigureAwait(false);
-
-                CharacterAttrib objLoopAttribute = await GetAttributeAsync("BOD", token: token).ConfigureAwait(false);
-                if (objLoopAttribute != null)
-                    objLoopAttribute.PropertyChanged += RefreshBODDependentProperties;
-                objLoopAttribute = await GetAttributeAsync("AGI", token: token).ConfigureAwait(false);
-                if (objLoopAttribute != null)
-                    objLoopAttribute.PropertyChanged += RefreshAGIDependentProperties;
-                objLoopAttribute = await GetAttributeAsync("REA", token: token).ConfigureAwait(false);
-                if (objLoopAttribute != null)
-                    objLoopAttribute.PropertyChanged += RefreshREADependentProperties;
-                objLoopAttribute = await GetAttributeAsync("STR", token: token).ConfigureAwait(false);
-                if (objLoopAttribute != null)
-                    objLoopAttribute.PropertyChanged += RefreshSTRDependentProperties;
-                objLoopAttribute = await GetAttributeAsync("CHA", token: token).ConfigureAwait(false);
-                if (objLoopAttribute != null)
-                    objLoopAttribute.PropertyChanged += RefreshCHADependentProperties;
-                objLoopAttribute = await GetAttributeAsync("INT", token: token).ConfigureAwait(false);
-                if (objLoopAttribute != null)
-                    objLoopAttribute.PropertyChanged += RefreshINTDependentProperties;
-                objLoopAttribute = await GetAttributeAsync("LOG", token: token).ConfigureAwait(false);
-                if (objLoopAttribute != null)
-                    objLoopAttribute.PropertyChanged += RefreshLOGDependentProperties;
-                objLoopAttribute = await GetAttributeAsync("WIL", token: token).ConfigureAwait(false);
-                if (objLoopAttribute != null)
-                    objLoopAttribute.PropertyChanged += RefreshWILDependentProperties;
-                objLoopAttribute = await GetAttributeAsync("EDG", token: token).ConfigureAwait(false);
-                if (objLoopAttribute != null)
-                    objLoopAttribute.PropertyChanged += RefreshEDGDependentProperties;
-                objLoopAttribute = await GetAttributeAsync("MAG", token: token).ConfigureAwait(false);
-                if (objLoopAttribute != null)
-                    objLoopAttribute.PropertyChanged += RefreshMAGDependentProperties;
-                objLoopAttribute = await GetAttributeAsync("RES", token: token).ConfigureAwait(false);
-                if (objLoopAttribute != null)
-                    objLoopAttribute.PropertyChanged += RefreshRESDependentProperties;
-                objLoopAttribute = await GetAttributeAsync("DEP", token: token).ConfigureAwait(false);
-                if (objLoopAttribute != null)
-                    objLoopAttribute.PropertyChanged += RefreshDEPDependentProperties;
-                objLoopAttribute = await GetAttributeAsync("ESS", token: token).ConfigureAwait(false);
-                if (objLoopAttribute != null)
-                    objLoopAttribute.PropertyChanged += RefreshESSDependentProperties;
-                // This needs to be explicitly set because a MAGAdept call could redirect to MAG, and we don't want that
-                objLoopAttribute = await objAttributeSection.GetAttributeByNameAsync("MAGAdept", token: token).ConfigureAwait(false);
-                if (objLoopAttribute != null)
-                    objLoopAttribute.PropertyChanged += RefreshMAGAdeptDependentProperties;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
             }
         }
 
@@ -4969,18 +5377,12 @@ namespace Chummer
                 {
                     if (Interlocked.Increment(ref _intIsLoading) == 1)
                     {
-                        using (LockObject.EnterWriteLock())
-                        {
-                            OnPropertyChanged();
-                        }
+                        OnPropertyChanged();
                     }
                 }
                 else if (Interlocked.Decrement(ref _intIsLoading) == 0)
                 {
-                    using (LockObject.EnterWriteLock())
-                    {
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -6896,35 +7298,35 @@ namespace Chummer
                                                                 Improvement.ImprovementSource.Quality,
                                                                 objQuality.InternalId,
                                                                 Improvement.ImprovementType.MadeMan,
-                                                                await objQuality.GetCurrentDisplayNameShortAsync(token), token: token)
+                                                                await objQuality.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token)
                                                             .ConfigureAwait(false);
                                                         await ImprovementManager.CreateImprovementAsync(
                                                                 this, selectedContactUniqueId,
                                                                 Improvement.ImprovementSource.Quality,
                                                                 objQuality.InternalId,
                                                                 Improvement.ImprovementType.AddContact,
-                                                                await objQuality.GetCurrentDisplayNameShortAsync(token), token: token)
+                                                                await objQuality.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token)
                                                             .ConfigureAwait(false);
                                                         await ImprovementManager.CreateImprovementAsync(
                                                                 this, selectedContactUniqueId,
                                                                 Improvement.ImprovementSource.Quality,
                                                                 objQuality.InternalId,
                                                                 Improvement.ImprovementType.ContactForcedLoyalty,
-                                                                await objQuality.GetCurrentDisplayNameShortAsync(token), token: token)
+                                                                await objQuality.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token)
                                                             .ConfigureAwait(false);
                                                         await ImprovementManager.CreateImprovementAsync(
                                                                 this, selectedContactUniqueId,
                                                                 Improvement.ImprovementSource.Quality,
                                                                 objQuality.InternalId,
                                                                 Improvement.ImprovementType.ContactForceGroup,
-                                                                await objQuality.GetCurrentDisplayNameShortAsync(token), token: token)
+                                                                await objQuality.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token)
                                                             .ConfigureAwait(false);
                                                         await ImprovementManager.CreateImprovementAsync(
                                                                 this, selectedContactUniqueId,
                                                                 Improvement.ImprovementSource.Quality,
                                                                 objQuality.InternalId,
                                                                 Improvement.ImprovementType.ContactMakeFree,
-                                                                await objQuality.GetCurrentDisplayNameShortAsync(token), token: token)
+                                                                await objQuality.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token)
                                                             .ConfigureAwait(false);
                                                         await ImprovementManager.CommitAsync(this, token)
                                                             .ConfigureAwait(false);
@@ -6983,7 +7385,7 @@ namespace Chummer
                                                                 Improvement.ImprovementSource.Quality,
                                                                 objQuality.InternalId,
                                                                 Improvement.ImprovementType.CyberadeptDaemon,
-                                                                await objQuality.GetCurrentDisplayNameShortAsync(token), token: token)
+                                                                await objQuality.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token)
                                                             .ConfigureAwait(false);
                                                         await ImprovementManager.CommitAsync(this, token)
                                                             .ConfigureAwait(false);
@@ -10989,6 +11391,8 @@ namespace Chummer
             using (LockObject.EnterWriteLock()) // Wait for all pending locks to get freed before disposing
             {
                 Interlocked.Exchange(ref _lstInternalIdsNeedingReapplyImprovements, null);
+                using (_objSettings.LockObject.EnterWriteLock())
+                    _objSettings.PropertyChanged -= OptionsOnPropertyChanged;
                 ImprovementManager.ClearCachedValues(this);
                 _lstLinkedCharacters.Clear(); // Clear this list because it relates to Contacts and Spirits disposal
                 _lstLinkedCharacters.Dispose();
@@ -11066,6 +11470,7 @@ namespace Chummer
                 if (!SettingsManager.LoadedCharacterSettings.ContainsKey(_objSettings.DictionaryKey))
                     _objSettings.Dispose();
                 _objCachedEssenceLock.Dispose();
+                _objTradition.Dispose();
             }
 
             LockObject.Dispose();
@@ -11090,6 +11495,15 @@ namespace Chummer
             try
             {
                 Interlocked.Exchange(ref _lstInternalIdsNeedingReapplyImprovements, null);
+                IAsyncDisposable objLocker2 = await _objSettings.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                try
+                {
+                    _objSettings.PropertyChanged -= OptionsOnPropertyChanged;
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
                 await ImprovementManager.ClearCachedValuesAsync(this).ConfigureAwait(false);
                 await _lstLinkedCharacters.ClearAsync()
                                           .ConfigureAwait(
@@ -11144,6 +11558,7 @@ namespace Chummer
                            .ContainsKeyAsync(await _objSettings.GetDictionaryKeyAsync().ConfigureAwait(false)).ConfigureAwait(false))
                     await _objSettings.DisposeAsync().ConfigureAwait(false);
                 await _objCachedEssenceLock.DisposeAsync().ConfigureAwait(false);
+                await _objTradition.DisposeAsync().ConfigureAwait(false);
             }
             finally
             {
@@ -14369,40 +14784,61 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (ReferenceEquals(_objSettings, value))
-                        return;
-                    using (LockObject.EnterWriteLock())
+                    value?.LockObject.EnterReadLock();
+                    try
                     {
                         CharacterSettings objOldSettings = Interlocked.Exchange(ref _objSettings, value);
-                        if (ReferenceEquals(objOldSettings, value))
-                            return;
-                        bool blnActuallyDifferentSettings = true;
-                        if (objOldSettings != null)
+                        objOldSettings?.LockObject.EnterReadLock();
+                        try
                         {
-                            blnActuallyDifferentSettings = !objOldSettings.HasIdenticalSettings(value);
-                            objOldSettings.PropertyChanged -= OptionsOnPropertyChanged;
-                        }
-                        if (value != null)
-                            value.PropertyChanged += OptionsOnPropertyChanged;
-                        if (!blnActuallyDifferentSettings || IsLoading)
-                            return;
-                        OnPropertyChanged();
-                        if (value != null)
-                        {
-                            Utils.SafelyRunSynchronously(async () =>
+                            if (ReferenceEquals(objOldSettings, value))
+                                return;
+                            bool blnActuallyDifferentSettings = true;
+                            if (objOldSettings != null)
                             {
-                                foreach (string strProperty in value.GetDifferingPropertyNames(objOldSettings))
-                                    await DoOptionsOnPropertyChanged(this, new PropertyChangedEventArgs(strProperty)).ConfigureAwait(false);
-                            });
-                        }
-                        else
-                        {
-                            Utils.SafelyRunSynchronously(async () =>
+                                blnActuallyDifferentSettings = !objOldSettings.HasIdenticalSettings(value);
+                                using (objOldSettings.LockObject.EnterWriteLock())
+                                    objOldSettings.PropertyChanged -= OptionsOnPropertyChanged;
+                            }
+
+                            if (value != null)
                             {
-                                foreach (string strProperty in objOldSettings.GetDifferingPropertyNames(value))
-                                    await DoOptionsOnPropertyChanged(this, new PropertyChangedEventArgs(strProperty)).ConfigureAwait(false);
-                            });
+                                using (value.LockObject.EnterWriteLock())
+                                    value.PropertyChanged += OptionsOnPropertyChanged;
+                            }
+
+                            if (!blnActuallyDifferentSettings || IsLoading)
+                                return;
+                            OnPropertyChanged();
+                            if (value != null)
+                            {
+                                Utils.SafelyRunSynchronously(async () =>
+                                {
+                                    foreach (string strProperty in value.GetDifferingPropertyNames(objOldSettings))
+                                        await DoOptionsOnPropertyChanged(
+                                                this, new PropertyChangedEventArgs(strProperty))
+                                            .ConfigureAwait(false);
+                                });
+                            }
+                            else
+                            {
+                                Utils.SafelyRunSynchronously(async () =>
+                                {
+                                    foreach (string strProperty in objOldSettings.GetDifferingPropertyNames(null))
+                                        await DoOptionsOnPropertyChanged(
+                                                this, new PropertyChangedEventArgs(strProperty))
+                                            .ConfigureAwait(false);
+                                });
+                            }
                         }
+                        finally
+                        {
+                            objOldSettings?.LockObject.ExitReadLock();
+                        }
+                    }
+                    finally
+                    {
+                        value?.LockObject.ExitReadLock();
                     }
                 }
             }
@@ -14424,40 +14860,72 @@ namespace Chummer
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (ReferenceEquals(_objSettings, value))
-                    return;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                if (value != null)
+                    await value.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     CharacterSettings objOldSettings = Interlocked.Exchange(ref _objSettings, value);
-                    if (ReferenceEquals(objOldSettings, value))
-                        return;
-                    bool blnActuallyDifferentSettings = true;
                     if (objOldSettings != null)
+                        await objOldSettings.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                    try
                     {
-                        blnActuallyDifferentSettings = !await objOldSettings.HasIdenticalSettingsAsync(value, token).ConfigureAwait(false);
-                        objOldSettings.PropertyChanged -= OptionsOnPropertyChanged;
-                    }
+                        if (ReferenceEquals(objOldSettings, value))
+                            return;
+                        bool blnActuallyDifferentSettings = true;
+                        if (objOldSettings != null)
+                        {
+                            blnActuallyDifferentSettings = !await objOldSettings.HasIdenticalSettingsAsync(value, token)
+                                .ConfigureAwait(false);
+                            IAsyncDisposable objLocker = await objOldSettings.LockObject.EnterWriteLockAsync(token)
+                                                                             .ConfigureAwait(false);
+                            try
+                            {
+                                objOldSettings.PropertyChanged -= OptionsOnPropertyChanged;
+                            }
+                            finally
+                            {
+                                await objLocker.DisposeAsync().ConfigureAwait(false);
+                            }
+                        }
 
-                    if (value != null)
-                        value.PropertyChanged += OptionsOnPropertyChanged;
-                    if (!blnActuallyDifferentSettings || IsLoading)
-                        return;
-                    OnPropertyChanged();
-                    if (value != null)
-                    {
-                        foreach (string strProperty in value.GetDifferingPropertyNames(objOldSettings))
-                            await DoOptionsOnPropertyChanged(this, new PropertyChangedEventArgs(strProperty)).ConfigureAwait(false);
+                        if (value != null)
+                        {
+                            IAsyncDisposable objLocker
+                                = await value.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                            try
+                            {
+                                value.PropertyChanged += OptionsOnPropertyChanged;
+                            }
+                            finally
+                            {
+                                await objLocker.DisposeAsync().ConfigureAwait(false);
+                            }
+                        }
+
+                        if (!blnActuallyDifferentSettings || IsLoading)
+                            return;
+                        OnPropertyChanged();
+                        if (value != null)
+                        {
+                            foreach (string strProperty in value.GetDifferingPropertyNames(objOldSettings))
+                                await DoOptionsOnPropertyChanged(this, new PropertyChangedEventArgs(strProperty))
+                                    .ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            foreach (string strProperty in objOldSettings.GetDifferingPropertyNames(null))
+                                await DoOptionsOnPropertyChanged(this, new PropertyChangedEventArgs(strProperty))
+                                    .ConfigureAwait(false);
+                        }
                     }
-                    else
+                    finally
                     {
-                        foreach (string strProperty in objOldSettings.GetDifferingPropertyNames(value))
-                            await DoOptionsOnPropertyChanged(this, new PropertyChangedEventArgs(strProperty)).ConfigureAwait(false);
+                        objOldSettings?.LockObject.ExitReadLock();
                     }
                 }
                 finally
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    value?.LockObject.ExitReadLock();
                 }
             }
         }
@@ -14490,13 +14958,9 @@ namespace Chummer
 
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strFileName == strNewValue)
+                    if (Interlocked.Exchange(ref _strFileName, strNewValue) == strNewValue)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _strFileName, strNewValue) != strNewValue)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -14583,13 +15047,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strName == value)
+                    if (Interlocked.Exchange(ref _strName, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _strName, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -14674,13 +15134,9 @@ namespace Chummer
                 {
                     if (value >= Mugshots.Count)
                         value = -1;
-                    if (_intMainMugshotIndex == value)
+                    if (Interlocked.Exchange(ref _intMainMugshotIndex, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _intMainMugshotIndex, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -14900,12 +15356,11 @@ namespace Chummer
                         throw new InvalidOperationException(nameof(SettingsKey));
                     using (LockObject.EnterWriteLock())
                     {
-                        if (Interlocked.Exchange(ref _strSettingsKey, value) != value)
-                        {
-                            OnPropertyChanged();
-                            Settings = objNewSettings;
-                        }
+                        if (Interlocked.Exchange(ref _strSettingsKey, value) == value)
+                            return;
+                        Settings = objNewSettings;
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -14932,16 +15387,15 @@ namespace Chummer
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
-                    if (Interlocked.Exchange(ref _strSettingsKey, value) != value)
-                    {
-                        OnPropertyChanged(nameof(SettingsKey));
-                        await SetSettingsAsync(objNewSettings, token).ConfigureAwait(false);
-                    }
+                    if (Interlocked.Exchange(ref _strSettingsKey, value) == value)
+                        return;
+                    await SetSettingsAsync(objNewSettings, token).ConfigureAwait(false);
                 }
                 finally
                 {
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
+                OnPropertyChanged();
             }
         }
 
@@ -14960,13 +15414,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strPriorityMetatype == value)
+                    if (Interlocked.Exchange(ref _strPriorityMetatype, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _strPriorityMetatype, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -14986,13 +15436,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strPriorityAttributes == value)
+                    if (Interlocked.Exchange(ref _strPriorityAttributes, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _strPriorityAttributes, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -15012,13 +15458,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strPrioritySpecial == value)
+                    if (Interlocked.Exchange(ref _strPrioritySpecial, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _strPrioritySpecial, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -15038,13 +15480,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strPrioritySkills == value)
+                    if (Interlocked.Exchange(ref _strPrioritySkills, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _strPrioritySkills, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -15064,13 +15502,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strPriorityResources == value)
+                    if (Interlocked.Exchange(ref _strPriorityResources, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _strPriorityResources, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -15090,13 +15524,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strPriorityTalent == value)
+                    if (Interlocked.Exchange(ref _strPriorityTalent, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _strPriorityTalent, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -15127,13 +15557,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strGender == value)
+                    if (Interlocked.Exchange(ref _strGender, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _strGender, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -15198,13 +15624,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strAge == value)
+                    if (Interlocked.Exchange(ref _strAge, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _strAge, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -15232,13 +15654,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strEyes == value)
+                    if (Interlocked.Exchange(ref _strEyes, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _strEyes, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -15257,13 +15675,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strHeight == value)
+                    if (Interlocked.Exchange(ref _strHeight, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _strHeight, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -15282,13 +15696,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strWeight == value)
+                    if (Interlocked.Exchange(ref _strWeight, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _strWeight, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -15307,13 +15717,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strSkin == value)
+                    if (Interlocked.Exchange(ref _strSkin, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _strSkin, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -15332,13 +15738,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strHair == value)
+                    if (Interlocked.Exchange(ref _strHair, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _strHair, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -15360,22 +15762,17 @@ namespace Chummer
                     value = string.Empty;
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strDescription == value)
+                    string strOldValue = Interlocked.Exchange(ref _strDescription, value);
+                    if (strOldValue == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        string strOldValue = Interlocked.Exchange(ref _strDescription, value);
-                        if (strOldValue == value)
-                            return;
-                        string strNewHtml = value.RtfToHtml();
-                        string strOldText = strOldValue.RtfToPlainText();
-                        string strOldHtml = strOldValue.RtfToHtml();
-                        // There's something wonky with Rtf comparison, so do an HTML comparison to be sure that something was definitely changed
-                        if ((!string.IsNullOrWhiteSpace(strOldText) || !string.IsNullOrWhiteSpace(strNewText))
-                            && (!string.IsNullOrWhiteSpace(strOldHtml) || !string.IsNullOrWhiteSpace(strNewHtml))
-                            && strOldHtml != strNewHtml)
-                            OnPropertyChanged();
-                    }
+                    string strNewHtml = value.RtfToHtml();
+                    string strOldText = strOldValue.RtfToPlainText();
+                    string strOldHtml = strOldValue.RtfToHtml();
+                    // There's something wonky with Rtf comparison, so do an HTML comparison to be sure that something was definitely changed
+                    if ((!string.IsNullOrWhiteSpace(strOldText) || !string.IsNullOrWhiteSpace(strNewText))
+                        && (!string.IsNullOrWhiteSpace(strOldHtml) || !string.IsNullOrWhiteSpace(strNewHtml))
+                        && strOldHtml != strNewHtml)
+                        OnPropertyChanged();
                 }
             }
         }
@@ -15397,22 +15794,17 @@ namespace Chummer
                     value = string.Empty;
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strBackground == value)
+                    string strOldValue = Interlocked.Exchange(ref _strBackground, value);
+                    if (strOldValue == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        string strOldValue = Interlocked.Exchange(ref _strBackground, value);
-                        if (strOldValue == value)
-                            return;
-                        string strNewHtml = value.RtfToHtml();
-                        string strOldText = strOldValue.RtfToPlainText();
-                        string strOldHtml = strOldValue.RtfToHtml();
-                        // There's something wonky with Rtf comparison, so do an HTML comparison to be sure that something was definitely changed
-                        if ((!string.IsNullOrWhiteSpace(strOldText) || !string.IsNullOrWhiteSpace(strNewText))
-                            && (!string.IsNullOrWhiteSpace(strOldHtml) || !string.IsNullOrWhiteSpace(strNewHtml))
-                            && strOldHtml != strNewHtml)
-                            OnPropertyChanged();
-                    }
+                    string strNewHtml = value.RtfToHtml();
+                    string strOldText = strOldValue.RtfToPlainText();
+                    string strOldHtml = strOldValue.RtfToHtml();
+                    // There's something wonky with Rtf comparison, so do an HTML comparison to be sure that something was definitely changed
+                    if ((!string.IsNullOrWhiteSpace(strOldText) || !string.IsNullOrWhiteSpace(strNewText))
+                        && (!string.IsNullOrWhiteSpace(strOldHtml) || !string.IsNullOrWhiteSpace(strNewHtml))
+                        && strOldHtml != strNewHtml)
+                        OnPropertyChanged();
                 }
             }
         }
@@ -15434,22 +15826,17 @@ namespace Chummer
                     value = string.Empty;
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strConcept == value)
+                    string strOldValue = Interlocked.Exchange(ref _strConcept, value);
+                    if (strOldValue == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        string strOldValue = Interlocked.Exchange(ref _strConcept, value);
-                        if (strOldValue == value)
-                            return;
-                        string strNewHtml = value.RtfToHtml();
-                        string strOldText = strOldValue.RtfToPlainText();
-                        string strOldHtml = strOldValue.RtfToHtml();
-                        // There's something wonky with Rtf comparison, so do an HTML comparison to be sure that something was definitely changed
-                        if ((!string.IsNullOrWhiteSpace(strOldText) || !string.IsNullOrWhiteSpace(strNewText))
-                            && (!string.IsNullOrWhiteSpace(strOldHtml) || !string.IsNullOrWhiteSpace(strNewHtml))
-                            && strOldHtml != strNewHtml)
-                            OnPropertyChanged();
-                    }
+                    string strNewHtml = value.RtfToHtml();
+                    string strOldText = strOldValue.RtfToPlainText();
+                    string strOldHtml = strOldValue.RtfToHtml();
+                    // There's something wonky with Rtf comparison, so do an HTML comparison to be sure that something was definitely changed
+                    if ((!string.IsNullOrWhiteSpace(strOldText) || !string.IsNullOrWhiteSpace(strNewText))
+                        && (!string.IsNullOrWhiteSpace(strOldHtml) || !string.IsNullOrWhiteSpace(strNewHtml))
+                        && strOldHtml != strNewHtml)
+                        OnPropertyChanged();
                 }
             }
         }
@@ -15471,22 +15858,17 @@ namespace Chummer
                     value = string.Empty;
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strNotes == value)
+                    string strOldValue = Interlocked.Exchange(ref _strNotes, value);
+                    if (strOldValue == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        string strOldValue = Interlocked.Exchange(ref _strNotes, value);
-                        if (strOldValue == value)
-                            return;
-                        string strNewHtml = value.RtfToHtml();
-                        string strOldText = strOldValue.RtfToPlainText();
-                        string strOldHtml = strOldValue.RtfToHtml();
-                        // There's something wonky with Rtf comparison, so do an HTML comparison to be sure that something was definitely changed
-                        if ((!string.IsNullOrWhiteSpace(strOldText) || !string.IsNullOrWhiteSpace(strNewText))
-                            && (!string.IsNullOrWhiteSpace(strOldHtml) || !string.IsNullOrWhiteSpace(strNewHtml))
-                            && strOldHtml != strNewHtml)
-                            OnPropertyChanged();
-                    }
+                    string strNewHtml = value.RtfToHtml();
+                    string strOldText = strOldValue.RtfToPlainText();
+                    string strOldHtml = strOldValue.RtfToHtml();
+                    // There's something wonky with Rtf comparison, so do an HTML comparison to be sure that something was definitely changed
+                    if ((!string.IsNullOrWhiteSpace(strOldText) || !string.IsNullOrWhiteSpace(strNewText))
+                        && (!string.IsNullOrWhiteSpace(strOldHtml) || !string.IsNullOrWhiteSpace(strNewHtml))
+                        && strOldHtml != strNewHtml)
+                        OnPropertyChanged();
                 }
             }
         }
@@ -15508,22 +15890,17 @@ namespace Chummer
                     value = string.Empty;
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strGameNotes == value)
+                    string strOldValue = Interlocked.Exchange(ref _strGameNotes, value);
+                    if (strOldValue == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        string strOldValue = Interlocked.Exchange(ref _strGameNotes, value);
-                        if (strOldValue == value)
-                            return;
-                        string strNewHtml = value.RtfToHtml();
-                        string strOldText = strOldValue.RtfToPlainText();
-                        string strOldHtml = strOldValue.RtfToHtml();
-                        // There's something wonky with Rtf comparison, so do an HTML comparison to be sure that something was definitely changed
-                        if ((!string.IsNullOrWhiteSpace(strOldText) || !string.IsNullOrWhiteSpace(strNewText))
-                            && (!string.IsNullOrWhiteSpace(strOldHtml) || !string.IsNullOrWhiteSpace(strNewHtml))
-                            && strOldHtml != strNewHtml)
-                            OnPropertyChanged();
-                    }
+                    string strNewHtml = value.RtfToHtml();
+                    string strOldText = strOldValue.RtfToPlainText();
+                    string strOldHtml = strOldValue.RtfToHtml();
+                    // There's something wonky with Rtf comparison, so do an HTML comparison to be sure that something was definitely changed
+                    if ((!string.IsNullOrWhiteSpace(strOldText) || !string.IsNullOrWhiteSpace(strNewText))
+                        && (!string.IsNullOrWhiteSpace(strOldHtml) || !string.IsNullOrWhiteSpace(strNewHtml))
+                        && strOldHtml != strNewHtml)
+                        OnPropertyChanged();
                 }
             }
         }
@@ -15542,13 +15919,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strPrimaryArm == value)
+                    if (Interlocked.Exchange(ref _strPrimaryArm, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _strPrimaryArm, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -15568,13 +15941,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strPlayerName == value)
+                    if (Interlocked.Exchange(ref _strPlayerName, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _strPlayerName, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -15594,13 +15963,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strAlias == value)
+                    if (Interlocked.Exchange(ref _strAlias, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _strAlias, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -15670,13 +16035,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intStreetCred == value)
+                    if (Interlocked.Exchange(ref _intStreetCred, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _intStreetCred, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -15695,13 +16056,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intBurntStreetCred == value)
+                    if (Interlocked.Exchange(ref _intBurntStreetCred, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _intBurntStreetCred, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -15721,13 +16078,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intNotoriety == value)
+                    if (Interlocked.Exchange(ref _intNotoriety, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _intNotoriety, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -15746,13 +16099,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intPublicAwareness == value)
+                    if (Interlocked.Exchange(ref _intPublicAwareness, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _intPublicAwareness, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -15872,13 +16221,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intBaseAstralReputation == value)
+                    if (Interlocked.Exchange(ref _intBaseAstralReputation, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _intBaseAstralReputation, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -15942,13 +16287,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intBaseWildReputation == value)
+                    if (Interlocked.Exchange(ref _intBaseWildReputation, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _intBaseWildReputation, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -15979,17 +16320,13 @@ namespace Chummer
                             using (LockObject.EnterWriteLock())
                             {
                                 objVehicle.PhysicalCMFilled = value;
-                                OnPropertyChanged();
                             }
+                            OnPropertyChanged();
                         }
                     }
-                    else if (_intPhysicalCMFilled != value)
+                    else if (Interlocked.Exchange(ref _intPhysicalCMFilled, value) != value)
                     {
-                        using (LockObject.EnterWriteLock())
-                        {
-                            if (Interlocked.Exchange(ref _intPhysicalCMFilled, value) != value)
-                                OnPropertyChanged();
-                        }
+                        OnPropertyChanged();
                     }
                 }
             }
@@ -16025,17 +16362,13 @@ namespace Chummer
                             using (LockObject.EnterWriteLock())
                             {
                                 HomeNode.MatrixCMFilled = value;
-                                OnPropertyChanged();
                             }
+                            OnPropertyChanged();
                         }
                     }
-                    else if (_intStunCMFilled != value)
+                    else if (Interlocked.Exchange(ref _intStunCMFilled, value) != value)
                     {
-                        using (LockObject.EnterWriteLock())
-                        {
-                            if (Interlocked.Exchange(ref _intStunCMFilled, value) != value)
-                                OnPropertyChanged();
-                        }
+                        OnPropertyChanged();
                     }
                 }
             }
@@ -16070,8 +16403,8 @@ namespace Chummer
                     using (LockObject.EnterWriteLock())
                     {
                         _blnIgnoreRules = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -16166,13 +16499,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intContactPointsUsed == value)
+                    if (Interlocked.Exchange(ref _intContactPointsUsed, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _intContactPointsUsed, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -16181,18 +16510,9 @@ namespace Chummer
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (_intContactPointsUsed == value)
+                if (Interlocked.Exchange(ref _intContactPointsUsed, value) == value)
                     return;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
-                {
-                    if (Interlocked.Exchange(ref _intContactPointsUsed, value) != value)
-                        OnPropertyChanged();
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
+                OnPropertyChanged();
             }
         }
 
@@ -16347,13 +16667,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intCFPLimit == value)
+                    if (Interlocked.Exchange(ref _intCFPLimit, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _intCFPLimit, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -16381,13 +16697,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intAINormalProgramLimit == value)
+                    if (Interlocked.Exchange(ref _intAINormalProgramLimit, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _intAINormalProgramLimit, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -16415,13 +16727,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intAIAdvancedProgramLimit == value)
+                    if (Interlocked.Exchange(ref _intAIAdvancedProgramLimit, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _intAIAdvancedProgramLimit, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -16449,13 +16757,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intFreeSpells == value)
+                    if (Interlocked.Exchange(ref _intFreeSpells, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _intFreeSpells, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -16483,13 +16787,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intKarma == value)
+                    if (Interlocked.Exchange(ref _intKarma, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _intKarma, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -16510,18 +16810,9 @@ namespace Chummer
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (_intKarma == value)
+                if (Interlocked.Exchange(ref _intKarma, value) == value)
                     return;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
-                {
-                    if (Interlocked.Exchange(ref _intKarma, value) != value)
-                        OnPropertyChanged(nameof(Karma));
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
+                OnPropertyChanged();
             }
         }
 
@@ -16532,15 +16823,10 @@ namespace Chummer
         {
             if (value == 0)
                 return;
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
                 Interlocked.Add(ref _intKarma, value);
                 OnPropertyChanged(nameof(Karma));
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -16567,13 +16853,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intSpecial == value)
+                    if (Interlocked.Exchange(ref _intSpecial, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _intSpecial, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -16592,13 +16874,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intTotalSpecial == value)
+                    if (Interlocked.Exchange(ref _intTotalSpecial, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _intTotalSpecial, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -16617,13 +16895,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intAttributes == value)
+                    if (Interlocked.Exchange(ref _intAttributes, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _intAttributes, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -16642,13 +16916,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intTotalAttributes == value)
+                    if (Interlocked.Exchange(ref _intTotalAttributes, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _intTotalAttributes, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -16743,13 +17013,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intEdgeUsed == value)
+                    if (Interlocked.Exchange(ref _intEdgeUsed, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _intEdgeUsed, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -16798,8 +17064,8 @@ namespace Chummer
                     using (LockObject.EnterWriteLock())
                     {
                         _blnIsCritter = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -16858,8 +17124,8 @@ namespace Chummer
                     using (LockObject.EnterWriteLock())
                     {
                         _blnPossessed = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -17518,15 +17784,16 @@ namespace Chummer
                 {
                     if (_blnMAGEnabled == value)
                         return;
+                    if (IsLoading)
+                    {
+                        using (LockObject.EnterWriteLock())
+                            _blnMAGEnabled = value;
+                        OnPropertyChanged();
+                        return;
+                    }
                     using (LockObject.EnterWriteLock())
                     {
                         _blnMAGEnabled = value;
-                        if (IsLoading)
-                        {
-                            OnPropertyChanged();
-                            return;
-                        }
-
                         if (value)
                         {
                             // Career mode, so no extra calculations need to be done for EssenceAtSpecialStart
@@ -17739,9 +18006,8 @@ namespace Chummer
                             if (!Created && !RESEnabled && !DEPEnabled)
                                 EssenceAtSpecialStart = decimal.MinValue;
                         }
-
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -17764,16 +18030,24 @@ namespace Chummer
             {
                 if (_blnMAGEnabled == value)
                     return;
+                if (IsLoading)
+                {
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        _blnMAGEnabled = value;
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+                    OnPropertyChanged();
+                    return;
+                }
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     _blnMAGEnabled = value;
-                    if (IsLoading)
-                    {
-                        OnPropertyChanged(nameof(MAGEnabled));
-                        return;
-                    }
-
                     if (value)
                     {
                         // Career mode, so no extra calculations need to be done for EssenceAtSpecialStart
@@ -18008,13 +18282,12 @@ namespace Chummer
                             && !await GetDEPEnabledAsync(token).ConfigureAwait(false))
                             await SetEssenceAtSpecialStartAsync(decimal.MinValue, token).ConfigureAwait(false);
                     }
-
-                    OnPropertyChanged(nameof(MAGEnabled));
                 }
                 finally
                 {
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
+                OnPropertyChanged(nameof(MAGEnabled));
             }
         }
 
@@ -18569,15 +18842,16 @@ namespace Chummer
                 {
                     if (_blnRESEnabled == value)
                         return;
+                    if (IsLoading)
+                    {
+                        using (LockObject.EnterWriteLock())
+                            _blnRESEnabled = value;
+                        OnPropertyChanged();
+                        return;
+                    }
                     using (LockObject.EnterWriteLock())
                     {
                         _blnRESEnabled = value;
-                        if (IsLoading)
-                        {
-                            OnPropertyChanged();
-                            return;
-                        }
-
                         if (value)
                         {
                             // Career mode, so no extra calculations need to be done for EssenceAtSpecialStart
@@ -18816,8 +19090,8 @@ namespace Chummer
                         }
 
                         ImprovementManager.ClearCachedValue(this, Improvement.ImprovementType.MatrixInitiativeDice);
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -18840,16 +19114,24 @@ namespace Chummer
             {
                 if (_blnRESEnabled == value)
                     return;
+                if (IsLoading)
+                {
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        _blnRESEnabled = value;
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+                    OnPropertyChanged();
+                    return;
+                }
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     _blnRESEnabled = value;
-                    if (IsLoading)
-                    {
-                        OnPropertyChanged(nameof(RESEnabled));
-                        return;
-                    }
-
                     if (value)
                     {
                         // Career mode, so no extra calculations need to be done for EssenceAtSpecialStart
@@ -19086,12 +19368,12 @@ namespace Chummer
                     }
 
                     await ImprovementManager.ClearCachedValueAsync(this, Improvement.ImprovementType.MatrixInitiativeDice, token: token).ConfigureAwait(false);
-                    OnPropertyChanged(nameof(RESEnabled));
                 }
                 finally
                 {
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
+                OnPropertyChanged(nameof(RESEnabled));
             }
         }
 
@@ -19112,15 +19394,16 @@ namespace Chummer
                 {
                     if (_blnDEPEnabled == value)
                         return;
+                    if (IsLoading)
+                    {
+                        using (LockObject.EnterWriteLock())
+                            _blnDEPEnabled = value;
+                        OnPropertyChanged();
+                        return;
+                    }
                     using (LockObject.EnterWriteLock())
                     {
                         _blnDEPEnabled = value;
-                        if (IsLoading)
-                        {
-                            OnPropertyChanged();
-                            return;
-                        }
-
                         if (value)
                         {
                             // Career mode, so no extra calculations need to be done for EssenceAtSpecialStart
@@ -19305,9 +19588,8 @@ namespace Chummer
                         }
                         else if (!Created && !RESEnabled && !MAGEnabled)
                             EssenceAtSpecialStart = decimal.MinValue;
-
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -19330,16 +19612,24 @@ namespace Chummer
             {
                 if (_blnDEPEnabled == value)
                     return;
+                if (IsLoading)
+                {
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        _blnDEPEnabled = value;
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+                    OnPropertyChanged();
+                    return;
+                }
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     _blnDEPEnabled = value;
-                    if (IsLoading)
-                    {
-                        OnPropertyChanged(nameof(DEPEnabled));
-                        return;
-                    }
-
                     if (value)
                     {
                         // Career mode, so no extra calculations need to be done for EssenceAtSpecialStart
@@ -19545,13 +19835,12 @@ namespace Chummer
                              && !await GetRESEnabledAsync(token).ConfigureAwait(false)
                              && !await GetMAGEnabledAsync(token).ConfigureAwait(false))
                         await SetEssenceAtSpecialStartAsync(decimal.MinValue, token).ConfigureAwait(false);
-
-                    OnPropertyChanged(nameof(DEPEnabled));
                 }
                 finally
                 {
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
+                OnPropertyChanged(nameof(DEPEnabled));
             }
         }
 
@@ -19682,9 +19971,8 @@ namespace Chummer
                                 }
                             }
                         }
-
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -19816,13 +20104,12 @@ namespace Chummer
                             }
                         }, token).ConfigureAwait(false);
                     }
-
-                    OnPropertyChanged(nameof(SubmersionGrade));
                 }
                 finally
                 {
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
+                OnPropertyChanged(nameof(SubmersionGrade));
             }
         }
 
@@ -19845,8 +20132,8 @@ namespace Chummer
                     using (LockObject.EnterWriteLock())
                     {
                         _blnGroupMember = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -19875,13 +20162,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strGroupName == value)
+                    if (Interlocked.Exchange(ref _strGroupName, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _strGroupName, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -19900,13 +20183,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strGroupNotes == value)
+                    if (Interlocked.Exchange(ref _strGroupNotes, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _strGroupNotes, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -23043,13 +23322,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intCurrentCounterspellingDice == value)
+                    if (Interlocked.Exchange(ref _intCurrentCounterspellingDice, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _intCurrentCounterspellingDice, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -23065,13 +23340,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intCurrentLiftCarryHits == value)
+                    if (Interlocked.Exchange(ref _intCurrentLiftCarryHits, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _intCurrentLiftCarryHits, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -26309,13 +26580,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strMetatype == value)
+                    if (Interlocked.Exchange(ref _strMetatype, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _strMetatype, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -26345,8 +26612,8 @@ namespace Chummer
                     using (LockObject.EnterWriteLock())
                     {
                         _guiMetatype = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -26398,13 +26665,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strMetavariant == value)
+                    if (Interlocked.Exchange(ref _strMetavariant, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _strMetavariant, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -26434,8 +26697,8 @@ namespace Chummer
                     using (LockObject.EnterWriteLock())
                     {
                         _guiMetavariant = value;
-                        OnPropertyChanged();
                     }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -26540,18 +26803,12 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strMetatypeCategory == value)
+                    string strOldValue = Interlocked.Exchange(ref _strMetatypeCategory, value);
+                    if (strOldValue == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        string strOldValue = Interlocked.Exchange(ref _strMetatypeCategory, value);
-                        if (strOldValue != value)
-                        {
-                            OnPropertyChanged();
-                            if (strOldValue == "Cyberzombie" || value == "Cyberzombie")
-                                RefreshEssenceLossImprovements();
-                        }
-                    }
+                    OnPropertyChanged();
+                    if (strOldValue == "Cyberzombie" || value == "Cyberzombie")
+                        RefreshEssenceLossImprovements();
                 }
             }
         }
@@ -26659,13 +26916,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strMovement == value)
+                    if (Interlocked.Exchange(ref _strMovement, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _strMovement, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -26723,13 +26976,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strRun == value)
+                    if (Interlocked.Exchange(ref _strRun, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _strRun, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -26789,13 +27038,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strRunAlt == value)
+                    if (Interlocked.Exchange(ref _strRunAlt, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _strRunAlt, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -26853,13 +27098,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strWalk == value)
+                    if (Interlocked.Exchange(ref _strWalk, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _strWalk, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -26919,13 +27160,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strWalkAlt == value)
+                    if (Interlocked.Exchange(ref _strWalkAlt, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _strWalkAlt, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -26983,13 +27220,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strSprint == value)
+                    if (Interlocked.Exchange(ref _strSprint, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _strSprint, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -27049,13 +27282,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strSprintAlt == value)
+                    if (Interlocked.Exchange(ref _strSprintAlt, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _strSprintAlt, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -27702,13 +27931,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intMetatypeBP == value)
+                    if (Interlocked.Exchange(ref _intMetatypeBP, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _intMetatypeBP, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -29593,8 +29818,7 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intInitPasses == int.MinValue)
-                        _intInitPasses = InitiativeDice;
+                    Interlocked.CompareExchange(ref _intInitPasses, InitiativeDice, int.MinValue);
                     return _intInitPasses;
                 }
             }
@@ -29602,13 +29826,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intInitPasses == value)
+                    if (Interlocked.Exchange(ref _intInitPasses, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _intInitPasses, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -29725,13 +29945,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_objActiveCommlink == value)
+                    if (Interlocked.Exchange(ref _objActiveCommlink, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _objActiveCommlink, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -29752,13 +29968,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_objHomeNode == value)
+                    if (Interlocked.Exchange(ref _objHomeNode, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _objHomeNode, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -32245,13 +32457,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intSustainingPenalty == value)
+                    if (Interlocked.Exchange(ref _intSustainingPenalty, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _intSustainingPenalty, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -36871,13 +37079,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strSource == value)
+                    if (Interlocked.Exchange(ref _strSource, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _strSource, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -36896,13 +37100,9 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_strPage == value)
+                    if (Interlocked.Exchange(ref _strPage, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _strPage, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }

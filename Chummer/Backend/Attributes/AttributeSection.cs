@@ -70,16 +70,19 @@ namespace Chummer.Backend.Attributes
                     if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                         return;
 
-                    Utils.RunOnMainThread(() =>
+                    if (PropertyChanged != null)
                     {
-                        if (PropertyChanged != null)
+                        Utils.RunOnMainThread(() =>
                         {
-                            foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                            if (PropertyChanged != null)
                             {
-                                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                                foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                                {
+                                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
                 }
                 finally
                 {
@@ -1781,8 +1784,9 @@ namespace Chummer.Backend.Attributes
                 }
                 finally
                 {
-                    Interlocked.Decrement(ref _intLoading);
                     if (blnFirstTime)
+                        Interlocked.Add(ref _intLoading, -2);
+                    else
                         Interlocked.Decrement(ref _intLoading);
                 }
             }
@@ -1834,8 +1838,9 @@ namespace Chummer.Backend.Attributes
                 }
                 finally
                 {
-                    Interlocked.Decrement(ref _intLoading);
                     if (blnFirstTime)
+                        Interlocked.Add(ref _intLoading, -2);
+                    else
                         Interlocked.Decrement(ref _intLoading);
                 }
             }
@@ -1987,22 +1992,18 @@ namespace Chummer.Backend.Attributes
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_eAttributeCategory == value)
+                    // No need to write lock because interlocked guarantees safety
+                    if (InterlockedExtensions.Exchange(ref _eAttributeCategory, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (InterlockedExtensions.Exchange(ref _eAttributeCategory, value) != value)
-                        {
-                            if (_objCharacter.Created)
-                            {
-                                ResetBindings();
-                                ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.MetatypeMaximum),
-                                                                             nameof(CharacterAttrib.MetatypeMinimum));
-                            }
 
-                            OnPropertyChanged();
-                        }
+                    if (_objCharacter.Created)
+                    {
+                        ResetBindings();
+                        ForceAttributePropertyChangedNotificationAll(nameof(CharacterAttrib.MetatypeMaximum),
+                                                                     nameof(CharacterAttrib.MetatypeMinimum));
                     }
+
+                    OnPropertyChanged();
                 }
             }
         }

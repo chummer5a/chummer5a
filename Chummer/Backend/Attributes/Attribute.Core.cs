@@ -67,10 +67,12 @@ namespace Chummer.Backend.Attributes
             _strAbbrev = abbrev;
             _enumMetatypeCategory = enumCategory;
             _objCharacter = character;
-            if (_objCharacter != null)
+            if (character != null)
             {
-                _objCharacter.PropertyChanged += OnCharacterChanged;
-                _objCharacter.Settings.PropertyChanged += OnCharacterSettingsPropertyChanged;
+                using (character.LockObject.EnterWriteLock())
+                    character.PropertyChanged += OnCharacterChanged;
+                using (character.Settings.LockObject.EnterWriteLock())
+                    character.Settings.PropertyChanged += OnCharacterSettingsPropertyChanged;
             }
         }
 
@@ -280,13 +282,10 @@ namespace Chummer.Backend.Attributes
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intMetatypeMin == value)
+                    // No need to write lock because interlocked guarantees safety
+                    if (Interlocked.Exchange(ref _intMetatypeMin, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _intMetatypeMin, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -353,13 +352,10 @@ namespace Chummer.Backend.Attributes
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intMetatypeMax == value)
+                    // No need to write lock because interlocked guarantees safety
+                    if (Interlocked.Exchange(ref _intMetatypeMax, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _intMetatypeMax, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -445,13 +441,10 @@ namespace Chummer.Backend.Attributes
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intMetatypeAugMax == value)
+                    // No need to write lock because interlocked guarantees safety
+                    if (Interlocked.Exchange(ref _intMetatypeAugMax, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _intMetatypeAugMax, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -518,13 +511,10 @@ namespace Chummer.Backend.Attributes
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intBase == value)
+                    // No need to write lock because interlocked guarantees safety
+                    if (Interlocked.Exchange(ref _intBase, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _intBase, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -545,18 +535,10 @@ namespace Chummer.Backend.Attributes
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (_intBase == value)
+                // No need to write lock because interlocked guarantees safety
+                if (Interlocked.Exchange(ref _intBase, value) == value)
                     return;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
-                {
-                    if (Interlocked.Exchange(ref _intBase, value) != value)
-                        OnPropertyChanged(nameof(Base));
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
+                OnPropertyChanged(nameof(Base));
             }
         }
 
@@ -567,15 +549,11 @@ namespace Chummer.Backend.Attributes
         {
             if (value == 0)
                 return;
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
+                // No need to write lock because interlocked guarantees safety
                 Interlocked.Add(ref _intBase, value);
                 OnPropertyChanged(nameof(Base));
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -646,13 +624,10 @@ namespace Chummer.Backend.Attributes
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intKarma == value)
+                    // No need to write lock because interlocked guarantees safety
+                    if (Interlocked.Exchange(ref _intKarma, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (Interlocked.Exchange(ref _intKarma, value) != value)
-                            OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -673,18 +648,10 @@ namespace Chummer.Backend.Attributes
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (_intKarma == value)
+                // No need to write lock because interlocked guarantees safety
+                if (Interlocked.Exchange(ref _intKarma, value) == value)
                     return;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
-                {
-                    if (Interlocked.Exchange(ref _intKarma, value) != value)
-                        OnPropertyChanged(nameof(Karma));
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
+                OnPropertyChanged(nameof(Karma));
             }
         }
 
@@ -695,15 +662,11 @@ namespace Chummer.Backend.Attributes
         {
             if (value == 0)
                 return;
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
+                // No need to write lock because interlocked guarantees safety
                 Interlocked.Add(ref _intKarma, value);
                 OnPropertyChanged(nameof(Karma));
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2831,16 +2794,19 @@ namespace Chummer.Backend.Attributes
                             _strCachedToolTip = string.Empty;
                     }
 
-                    Utils.RunOnMainThread(() =>
+                    if (PropertyChanged != null)
                     {
-                        if (PropertyChanged != null)
+                        Utils.RunOnMainThread(() =>
                         {
-                            foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                            if (PropertyChanged != null)
                             {
-                                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                                foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                                {
+                                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
                 }
                 finally
                 {
@@ -3131,8 +3097,10 @@ namespace Chummer.Backend.Attributes
             {
                 if (_objCharacter != null)
                 {
-                    _objCharacter.PropertyChanged -= OnCharacterChanged;
-                    _objCharacter.Settings.PropertyChanged -= OnCharacterSettingsPropertyChanged;
+                    using (_objCharacter.LockObject.EnterWriteLock())
+                        _objCharacter.PropertyChanged -= OnCharacterChanged;
+                    using (_objCharacter.Settings.LockObject.EnterWriteLock())
+                        _objCharacter.Settings.PropertyChanged -= OnCharacterSettingsPropertyChanged;
                 }
             }
             LockObject.Dispose();
@@ -3146,8 +3114,24 @@ namespace Chummer.Backend.Attributes
             {
                 if (_objCharacter != null)
                 {
-                    _objCharacter.PropertyChanged -= OnCharacterChanged;
-                    _objCharacter.Settings.PropertyChanged -= OnCharacterSettingsPropertyChanged;
+                    IAsyncDisposable objLocker2 = await _objCharacter.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                    try
+                    {
+                        _objCharacter.PropertyChanged -= OnCharacterChanged;
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+                    objLocker2 = await _objCharacter.Settings.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                    try
+                    {
+                        _objCharacter.Settings.PropertyChanged -= OnCharacterSettingsPropertyChanged;
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
                 }
             }
             finally
