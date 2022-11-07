@@ -55,7 +55,7 @@ namespace Chummer
         private string _strBuildMethod;
         private string _strEssence;
         private Image _imgMugshot;
-        private bool _blnCreated;
+        private int _intCreated;
         private string _strSettingsFile;
         private readonly LockingDictionary<string, object> _dicMyPluginData = new LockingDictionary<string, object>();
         private Task<string> _tskRunningDownloadTask;
@@ -76,12 +76,7 @@ namespace Chummer
             set
             {
                 using (EnterReadLock.Enter(LockObject))
-                {
-                    if (_strFilePath == value)
-                        return;
-                    using (LockObject.EnterWriteLock())
-                        _strFilePath = value;
-                }
+                    Interlocked.Exchange(ref _strFilePath, value);
             }
         }
 
@@ -95,12 +90,7 @@ namespace Chummer
             set
             {
                 using (EnterReadLock.Enter(LockObject))
-                {
-                    if (_strFileName == value)
-                        return;
-                    using (LockObject.EnterWriteLock())
-                        _strFileName = value;
-                }
+                    Interlocked.Exchange(ref _strFileName, value);
             }
         }
 
@@ -114,12 +104,7 @@ namespace Chummer
             set
             {
                 using (EnterReadLock.Enter(LockObject))
-                {
-                    if (_strErrorText == value)
-                        return;
-                    using (LockObject.EnterWriteLock())
-                        _strErrorText = value;
-                }
+                    Interlocked.Exchange(ref _strErrorText, value);
             }
         }
 
@@ -133,12 +118,7 @@ namespace Chummer
             set
             {
                 using (EnterReadLock.Enter(LockObject))
-                {
-                    if (_strDescription == value)
-                        return;
-                    using (LockObject.EnterWriteLock())
-                        _strDescription = value;
-                }
+                    Interlocked.Exchange(ref _strDescription, value);
             }
         }
 
@@ -152,12 +132,7 @@ namespace Chummer
             set
             {
                 using (EnterReadLock.Enter(LockObject))
-                {
-                    if (_strBackground == value)
-                        return;
-                    using (LockObject.EnterWriteLock())
-                        _strBackground = value;
-                }
+                    Interlocked.Exchange(ref _strBackground, value);
             }
         }
 
@@ -171,12 +146,7 @@ namespace Chummer
             set
             {
                 using (EnterReadLock.Enter(LockObject))
-                {
-                    if (_strGameNotes == value)
-                        return;
-                    using (LockObject.EnterWriteLock())
-                        _strGameNotes = value;
-                }
+                    Interlocked.Exchange(ref _strGameNotes, value);
             }
         }
 
@@ -190,12 +160,7 @@ namespace Chummer
             set
             {
                 using (EnterReadLock.Enter(LockObject))
-                {
-                    if (_strCharacterNotes == value)
-                        return;
-                    using (LockObject.EnterWriteLock())
-                        _strCharacterNotes = value;
-                }
+                    Interlocked.Exchange(ref _strCharacterNotes, value);
             }
         }
 
@@ -209,12 +174,7 @@ namespace Chummer
             set
             {
                 using (EnterReadLock.Enter(LockObject))
-                {
-                    if (_strConcept == value)
-                        return;
-                    using (LockObject.EnterWriteLock())
-                        _strConcept = value;
-                }
+                    Interlocked.Exchange(ref _strConcept, value);
             }
         }
 
@@ -228,12 +188,7 @@ namespace Chummer
             set
             {
                 using (EnterReadLock.Enter(LockObject))
-                {
-                    if (_strKarma == value)
-                        return;
-                    using (LockObject.EnterWriteLock())
-                        _strKarma = value;
-                }
+                    Interlocked.Exchange(ref _strKarma, value);
             }
         }
 
@@ -247,12 +202,7 @@ namespace Chummer
             set
             {
                 using (EnterReadLock.Enter(LockObject))
-                {
-                    if (_strMetatype == value)
-                        return;
-                    using (LockObject.EnterWriteLock())
-                        _strMetatype = value;
-                }
+                    Interlocked.Exchange(ref _strMetatype, value);
             }
         }
 
@@ -266,12 +216,7 @@ namespace Chummer
             set
             {
                 using (EnterReadLock.Enter(LockObject))
-                {
-                    if (_strMetavariant == value)
-                        return;
-                    using (LockObject.EnterWriteLock())
-                        _strMetavariant = value;
-                }
+                    Interlocked.Exchange(ref _strMetavariant, value);
             }
         }
 
@@ -285,12 +230,7 @@ namespace Chummer
             set
             {
                 using (EnterReadLock.Enter(LockObject))
-                {
-                    if (_strPlayerName == value)
-                        return;
-                    using (LockObject.EnterWriteLock())
-                        _strPlayerName = value;
-                }
+                    Interlocked.Exchange(ref _strPlayerName, value);
             }
         }
 
@@ -304,12 +244,7 @@ namespace Chummer
             set
             {
                 using (EnterReadLock.Enter(LockObject))
-                {
-                    if (_strCharacterName == value)
-                        return;
-                    using (LockObject.EnterWriteLock())
-                        _strCharacterName = value;
-                }
+                    Interlocked.Exchange(ref _strCharacterName, value);
             }
         }
 
@@ -323,12 +258,7 @@ namespace Chummer
             set
             {
                 using (EnterReadLock.Enter(LockObject))
-                {
-                    if (_strCharacterAlias == value)
-                        return;
-                    using (LockObject.EnterWriteLock())
-                        _strCharacterAlias = value;
-                }
+                    Interlocked.Exchange(ref _strCharacterAlias, value);
             }
         }
 
@@ -342,12 +272,7 @@ namespace Chummer
             set
             {
                 using (EnterReadLock.Enter(LockObject))
-                {
-                    if (_strBuildMethod == value)
-                        return;
-                    using (LockObject.EnterWriteLock())
-                        _strBuildMethod = value;
-                }
+                    Interlocked.Exchange(ref _strBuildMethod, value);
             }
         }
 
@@ -361,12 +286,7 @@ namespace Chummer
             set
             {
                 using (EnterReadLock.Enter(LockObject))
-                {
-                    if (_strEssence == value)
-                        return;
-                    using (LockObject.EnterWriteLock())
-                        _strEssence = value;
-                }
+                    Interlocked.Exchange(ref _strEssence, value);
             }
         }
 
@@ -382,15 +302,8 @@ namespace Chummer
             }
             private set
             {
-                Image imgOldValue;
                 using (EnterReadLock.Enter(LockObject))
-                {
-                    if (_imgMugshot == value)
-                        return;
-                    using (LockObject.EnterWriteLock())
-                        imgOldValue = Interlocked.Exchange(ref _imgMugshot, value);
-                }
-                imgOldValue?.Dispose();
+                    Interlocked.Exchange(ref _imgMugshot, value)?.Dispose();
             }
         }
 
@@ -399,17 +312,13 @@ namespace Chummer
             get
             {
                 using (EnterReadLock.Enter(LockObject))
-                    return _blnCreated;
+                    return _intCreated > 0;
             }
             set
             {
+                int intNewValue = value.ToInt32();
                 using (EnterReadLock.Enter(LockObject))
-                {
-                    if (_blnCreated == value)
-                        return;
-                    using (LockObject.EnterWriteLock())
-                        _blnCreated = value;
-                }
+                    Interlocked.Exchange(ref _intCreated, intNewValue);
             }
         }
 
@@ -423,12 +332,7 @@ namespace Chummer
             set
             {
                 using (EnterReadLock.Enter(LockObject))
-                {
-                    if (_strSettingsFile == value)
-                        return;
-                    using (LockObject.EnterWriteLock())
-                        _strSettingsFile = value;
-                }
+                    Interlocked.Exchange(ref _strSettingsFile, value);
             }
         }
 
@@ -455,13 +359,8 @@ namespace Chummer
             {
                 Task<string> tskOld;
                 using (EnterReadLock.Enter(LockObject))
-                {
-                    if (_tskRunningDownloadTask == value)
-                        return;
-                    using (LockObject.EnterWriteLock())
-                        tskOld = Interlocked.Exchange(ref _tskRunningDownloadTask, value);
-                }
-                if (tskOld != null)
+                    tskOld = Interlocked.Exchange(ref _tskRunningDownloadTask, value);
+                if (tskOld != null && tskOld != value)
                     Utils.SafelyRunSynchronously(() => tskOld);
             }
         }
@@ -515,7 +414,7 @@ namespace Chummer
                 _strCharacterName = objExistingCache.CharacterName;
                 _strCharacterNotes = objExistingCache.CharacterNotes;
                 _strConcept = objExistingCache.Concept;
-                _blnCreated = objExistingCache.Created;
+                _intCreated = objExistingCache.Created.ToInt32();
                 _strDescription = objExistingCache.Description;
                 _strEssence = objExistingCache.Essence;
                 _strGameNotes = objExistingCache.GameNotes;
@@ -542,7 +441,7 @@ namespace Chummer
                     _strCharacterName = objExistingCache.CharacterName;
                     _strCharacterNotes = objExistingCache.CharacterNotes;
                     _strConcept = objExistingCache.Concept;
-                    _blnCreated = objExistingCache.Created;
+                    _intCreated = objExistingCache.Created.ToInt32();
                     _strDescription = objExistingCache.Description;
                     _strEssence = objExistingCache.Essence;
                     _strGameNotes = objExistingCache.GameNotes;
@@ -584,12 +483,7 @@ namespace Chummer
             set
             {
                 using (EnterReadLock.Enter(LockObject))
-                {
-                    if (_onMyDoubleClick == value)
-                        return;
-                    using (LockObject.EnterWriteLock())
-                        _onMyDoubleClick = value;
-                }
+                    Interlocked.Exchange(ref _onMyDoubleClick, value);
             }
         }
 
@@ -606,12 +500,7 @@ namespace Chummer
             set
             {
                 using (EnterReadLock.Enter(LockObject))
-                {
-                    if (_onMyContextMenuDeleteClick == value)
-                        return;
-                    using (LockObject.EnterWriteLock())
-                        _onMyContextMenuDeleteClick = value;
-                }
+                    Interlocked.Exchange(ref _onMyContextMenuDeleteClick, value);
             }
         }
 
@@ -628,12 +517,7 @@ namespace Chummer
             set
             {
                 using (EnterReadLock.Enter(LockObject))
-                {
-                    if (_onMyAfterSelect == value)
-                        return;
-                    using (LockObject.EnterWriteLock())
-                        _onMyAfterSelect = value;
-                }
+                    Interlocked.Exchange(ref _onMyAfterSelect, value);
             }
         }
 
@@ -650,12 +534,7 @@ namespace Chummer
             set
             {
                 using (EnterReadLock.Enter(LockObject))
-                {
-                    if (_onMyKeyDown == value)
-                        return;
-                    using (LockObject.EnterWriteLock())
-                        _onMyKeyDown = value;
-                }
+                    Interlocked.Exchange(ref _onMyKeyDown, value);
             }
         }
 
@@ -787,8 +666,8 @@ namespace Chummer
                         _strPlayerName = xmlSourceNode.SelectSingleNodeAndCacheExpression("playername")?.Value;
                         _strCharacterName = xmlSourceNode.SelectSingleNodeAndCacheExpression("name")?.Value;
                         _strCharacterAlias = xmlSourceNode.SelectSingleNodeAndCacheExpression("alias")?.Value;
-                        _blnCreated = xmlSourceNode.SelectSingleNodeAndCacheExpression("created")?.Value
-                                      == bool.TrueString;
+                        _intCreated = (xmlSourceNode.SelectSingleNodeAndCacheExpression("created")?.Value
+                                       == bool.TrueString).ToInt32();
                         _strEssence = xmlSourceNode.SelectSingleNodeAndCacheExpression("totaless")?.Value;
                         // ReSharper restore MethodHasAsyncOverloadWithCancellation
                     }
@@ -830,9 +709,9 @@ namespace Chummer
                         _strCharacterAlias = (await xmlSourceNode
                                                     .SelectSingleNodeAndCacheExpressionAsync("alias", token: token)
                                                     .ConfigureAwait(false))?.Value;
-                        _blnCreated = (await xmlSourceNode
-                                             .SelectSingleNodeAndCacheExpressionAsync("created", token: token)
-                                             .ConfigureAwait(false))?.Value == bool.TrueString;
+                        _intCreated = ((await xmlSourceNode
+                                              .SelectSingleNodeAndCacheExpressionAsync("created", token: token)
+                                              .ConfigureAwait(false))?.Value == bool.TrueString).ToInt32();
                         _strEssence = (await xmlSourceNode
                                              .SelectSingleNodeAndCacheExpressionAsync("totaless", token: token)
                                              .ConfigureAwait(false))?.Value;
@@ -1082,8 +961,9 @@ namespace Chummer
             using (LockObject.EnterWriteLock())
             {
                 Interlocked.Exchange(ref _imgMugshot, null)?.Dispose();
-                if (_tskRunningDownloadTask != null)
-                    Utils.SafelyRunSynchronously(() => _tskRunningDownloadTask);
+                Task tskOld = Interlocked.Exchange(ref _tskRunningDownloadTask, null);
+                if (tskOld != null)
+                    Utils.SafelyRunSynchronously(() => tskOld);
                 _dicMyPluginData.Dispose();
             }
 
@@ -1099,8 +979,9 @@ namespace Chummer
             try
             {
                 Interlocked.Exchange(ref _imgMugshot, null)?.Dispose();
-                if (_tskRunningDownloadTask != null)
-                    await _tskRunningDownloadTask;
+                Task tskOld = Interlocked.Exchange(ref _tskRunningDownloadTask, null);
+                if (tskOld != null)
+                    await tskOld.ConfigureAwait(false);
                 await _dicMyPluginData.DisposeAsync().ConfigureAwait(false);
             }
             finally

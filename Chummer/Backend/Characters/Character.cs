@@ -15107,9 +15107,12 @@ namespace Chummer
                     }
                     else
                     {
-                        using (LockObject.EnterWriteLock())
-                            Mugshots.Add(value);
-                        MainMugshotIndex = Mugshots.IndexOf(value);
+                        using (EnterReadLock.Enter(Mugshots))
+                        {
+                            using (LockObject.EnterWriteLock())
+                                Mugshots.Add(value);
+                            MainMugshotIndex = Mugshots.IndexOf(value);
+                        }
                     }
                 }
             }

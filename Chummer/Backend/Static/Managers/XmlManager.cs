@@ -47,18 +47,13 @@ namespace Chummer
             public bool GetDuplicatesChecked(CancellationToken token = default)
             {
                 using (EnterReadLock.Enter(LockObject, token))
-                    return _blnDuplicatesChecked;
+                    return _intDuplicatesChecked > 0;
             }
 
             public void SetDuplicatesChecked(bool blnNewValue, CancellationToken token = default)
             {
                 using (EnterReadLock.Enter(LockObject, token))
-                {
-                    if (_blnDuplicatesChecked == blnNewValue)
-                        return;
-                    using (LockObject.EnterWriteLock(token))
-                        _blnDuplicatesChecked = blnNewValue;
-                }
+                    Interlocked.Exchange(ref _intDuplicatesChecked, blnNewValue.ToInt32());
             }
 
             /// <summary>
@@ -67,31 +62,19 @@ namespace Chummer
             public async ValueTask<bool> GetDuplicatesCheckedAsync(CancellationToken token = default)
             {
                 using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
-                    return _blnDuplicatesChecked;
+                    return _intDuplicatesChecked > 0;
             }
 
             public async ValueTask SetDuplicatesCheckedAsync(bool blnNewValue, CancellationToken token = default)
             {
                 using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
-                {
-                    if (_blnDuplicatesChecked == blnNewValue)
-                        return;
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
-                    {
-                        _blnDuplicatesChecked = blnNewValue;
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
-                }
+                    Interlocked.Exchange(ref _intDuplicatesChecked, blnNewValue.ToInt32());
             }
 
             private XmlDocument _xmlContent = new XmlDocument { XmlResolver = null };
             private XPathDocument _objXPathContent;
-            private bool _blnDuplicatesChecked = Utils.IsUnitTest;
-            private bool _blnInitialLoadComplete;
+            private int _intDuplicatesChecked = Utils.IsUnitTest.ToInt32();
+            private int _intInitialLoadComplete;
 
             /// <summary>
             /// XmlDocument that is created by merging the base data file and data translation file. Does not include custom content since this must be loaded each time.
@@ -101,10 +84,10 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 while (true)
                 {
-                    bool blnLoadComplete;
+                    int intLoadComplete;
                     using (EnterReadLock.Enter(LockObject, token))
-                        blnLoadComplete = _blnInitialLoadComplete;
-                    if (blnLoadComplete)
+                        intLoadComplete = _intInitialLoadComplete;
+                    if (intLoadComplete > 0)
                         break;
                     Utils.SafeSleep(token);
                 }
@@ -120,10 +103,10 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 while (true)
                 {
-                    bool blnLoadComplete;
+                    int intLoadComplete;
                     using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
-                        blnLoadComplete = _blnInitialLoadComplete;
-                    if (blnLoadComplete)
+                        intLoadComplete = _intInitialLoadComplete;
+                    if (intLoadComplete > 0)
                         break;
                     await Utils.SafeSleepAsync(token).ConfigureAwait(false);
                 }
@@ -138,25 +121,24 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject, token))
                 {
-                    if (objContent == _xmlContent)
+                    if (Interlocked.Exchange(ref _xmlContent, objContent) == objContent)
                         return;
                     using (LockObject.EnterWriteLock(token))
                     {
-                        _xmlContent = objContent;
                         if (objContent != null)
                         {
-                            _blnInitialLoadComplete = true;
+                            Interlocked.Increment(ref _intInitialLoadComplete);
                             using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                             {
                                 objContent.Save(objStream);
                                 objStream.Position = 0;
                                 using (XmlReader objXmlReader
                                        = XmlReader.Create(objStream, GlobalSettings.SafeXmlReaderSettings))
-                                    _objXPathContent = new XPathDocument(objXmlReader);
+                                    Interlocked.Exchange(ref _objXPathContent, new XPathDocument(objXmlReader));
                             }
                         }
                         else
-                            _objXPathContent = null;
+                            Interlocked.Exchange(ref _objXPathContent, null);
                     }
                 }
             }
@@ -168,26 +150,24 @@ namespace Chummer
             {
                 using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
                 {
-                    if (objContent == _xmlContent)
+                    if (Interlocked.Exchange(ref _xmlContent, objContent) == objContent)
                         return;
                     IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
-                        _xmlContent = objContent;
                         if (objContent != null)
                         {
-                            _blnInitialLoadComplete = true;
+                            Interlocked.Increment(ref _intInitialLoadComplete);
                             using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                             {
                                 objContent.Save(objStream);
                                 objStream.Position = 0;
-                                using (XmlReader objXmlReader
-                                       = XmlReader.Create(objStream, GlobalSettings.SafeXmlReaderSettings))
-                                    _objXPathContent = new XPathDocument(objXmlReader);
+                                using (XmlReader objXmlReader = XmlReader.Create(objStream, GlobalSettings.SafeXmlReaderSettings))
+                                    Interlocked.Exchange(ref _objXPathContent, new XPathDocument(objXmlReader));
                             }
                         }
                         else
-                            _objXPathContent = null;
+                            Interlocked.Exchange(ref _objXPathContent, null);
                     }
                     finally
                     {
@@ -204,10 +184,10 @@ namespace Chummer
             {
                 while (true)
                 {
-                    bool blnLoadComplete;
+                    int intLoadComplete;
                     using (EnterReadLock.Enter(LockObject, token))
-                        blnLoadComplete = _blnInitialLoadComplete;
-                    if (blnLoadComplete)
+                        intLoadComplete = _intInitialLoadComplete;
+                    if (intLoadComplete > 0)
                         break;
                     Utils.SafeSleep(token);
                 }
@@ -223,10 +203,10 @@ namespace Chummer
             {
                 while (true)
                 {
-                    bool blnLoadComplete;
+                    int intLoadComplete;
                     using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
-                        blnLoadComplete = _blnInitialLoadComplete;
-                    if (blnLoadComplete)
+                        intLoadComplete = _intInitialLoadComplete;
+                    if (intLoadComplete > 0)
                         break;
                     await Utils.SafeSleepAsync(token).ConfigureAwait(false);
                 }

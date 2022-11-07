@@ -1336,11 +1336,10 @@ namespace Chummer
             get => _colNotes;
             set
             {
-                if (_colNotes != value)
-                {
-                    _colNotes = value;
-                    OnPropertyChanged();
-                }
+                if (_colNotes == value)
+                    return;
+                _colNotes = value;
+                OnPropertyChanged();
             }
         }
 
@@ -1365,11 +1364,10 @@ namespace Chummer
             get => _objColour;
             set
             {
-                if (_objColour != value)
-                {
-                    _objColour = value;
-                    OnPropertyChanged();
-                }
+                if (_objColour == value)
+                    return;
+                _objColour = value;
+                OnPropertyChanged();
             }
         }
 
@@ -1508,11 +1506,10 @@ namespace Chummer
             get => _blnBlackmail;
             set
             {
-                if (_blnBlackmail != value)
-                {
-                    _blnBlackmail = value;
-                    OnPropertyChanged();
-                }
+                if (_blnBlackmail == value)
+                    return;
+                _blnBlackmail = value;
+                OnPropertyChanged();
             }
         }
 
@@ -1521,11 +1518,10 @@ namespace Chummer
             get => _blnFamily;
             set
             {
-                if (_blnFamily != value)
-                {
-                    _blnFamily = value;
-                    OnPropertyChanged();
-                }
+                if (_blnFamily == value)
+                    return;
+                _blnFamily = value;
+                OnPropertyChanged();
             }
         }
 
@@ -1732,8 +1728,11 @@ namespace Chummer
                     }
                     else
                     {
-                        Mugshots.Add(value);
-                        MainMugshotIndex = Mugshots.IndexOf(value);
+                        using (EnterReadLock.Enter(Mugshots))
+                        {
+                            Mugshots.Add(value);
+                            MainMugshotIndex = Mugshots.IndexOf(value);
+                        }
                     }
                 }
             }
