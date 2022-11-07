@@ -4131,7 +4131,7 @@ namespace Chummer.Backend.Equipment
         }
 
         public async ValueTask ReaddImprovements(TreeView treGears, StringBuilder sbdOutdatedItems,
-                                                 ICollection<string> lstInternalIdFilter,
+                                                 IReadOnlyCollection<string> lstInternalIdFilter,
                                                  Improvement.ImprovementSource eSource
                                                      = Improvement.ImprovementSource.Gear, bool blnStackEquipped = true,
                                                  CancellationToken token = default)

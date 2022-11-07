@@ -23,6 +23,7 @@ using Chummer.Backend.Skills;
 using Chummer.Backend.Uniques;
 using NLog;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -1357,7 +1358,9 @@ namespace Chummer
                                 await Program.PluginLoader.CallPlugins(this, op_load_frm_create).ConfigureAwait(false);
                             }
 
-                            if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0
+                            ConcurrentBag<string> lstInternalIdsNeedingReapplyImprovements
+                                = await CharacterObject.TakeInternalIdsNeedingReapplyImprovementsAsync(GenericToken).ConfigureAwait(false);
+                            if (lstInternalIdsNeedingReapplyImprovements?.Count > 0
                                 && !Utils.IsUnitTest
                                 && Program.ShowMessageBox(this,
                                                           await LanguageManager.GetStringAsync(
@@ -1368,10 +1371,8 @@ namespace Chummer
                                                           MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation)
                                 == DialogResult.Yes)
                             {
-                                await DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements,
+                                await DoReapplyImprovements(lstInternalIdsNeedingReapplyImprovements,
                                                             GenericToken).ConfigureAwait(false);
-                                await CharacterObject.InternalIdsNeedingReapplyImprovements.ClearAsync()
-                                                     .ConfigureAwait(false);
                             }
 
                             op_load_frm_create.SetSuccess(true);
@@ -3051,7 +3052,7 @@ namespace Chummer
             await DoReapplyImprovements(strSelectedId.Yield().ToList(), token: token).ConfigureAwait(false);
         }
 
-        private async ValueTask DoReapplyImprovements(ICollection<string> lstInternalIdFilter = null,
+        private async ValueTask DoReapplyImprovements(IReadOnlyCollection<string> lstInternalIdFilter = null,
                                                       CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -12985,15 +12986,16 @@ namespace Chummer
 
                     IsDirty = false;
 
-                    if (CharacterObject.InternalIdsNeedingReapplyImprovements.Count > 0 && !Utils.IsUnitTest
-                        && Program.ShowMessageBox(
-                            this, await LanguageManager.GetStringAsync("Message_ImprovementLoadError", token: GenericToken).ConfigureAwait(false),
-                            await LanguageManager.GetStringAsync("MessageTitle_ImprovementLoadError", token: GenericToken).ConfigureAwait(false),
-                            MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
+                    ConcurrentBag<string> lstInternalIdsNeedingReapplyImprovements
+                        = await CharacterObject.TakeInternalIdsNeedingReapplyImprovementsAsync(GenericToken).ConfigureAwait(false);
+                    if (lstInternalIdsNeedingReapplyImprovements?.Count > 0 && !Utils.IsUnitTest
+                                                                           && Program.ShowMessageBox(
+                                                                               this, await LanguageManager.GetStringAsync("Message_ImprovementLoadError", token: GenericToken).ConfigureAwait(false),
+                                                                               await LanguageManager.GetStringAsync("MessageTitle_ImprovementLoadError", token: GenericToken).ConfigureAwait(false),
+                                                                               MessageBoxButtons.YesNo, MessageBoxIcon.Exclamation) == DialogResult.Yes)
                     {
-                        await DoReapplyImprovements(CharacterObject.InternalIdsNeedingReapplyImprovements,
+                        await DoReapplyImprovements(lstInternalIdsNeedingReapplyImprovements,
                                                     GenericToken).ConfigureAwait(false);
-                        await CharacterObject.InternalIdsNeedingReapplyImprovements.ClearAsync().ConfigureAwait(false);
                     }
                 }
                 finally

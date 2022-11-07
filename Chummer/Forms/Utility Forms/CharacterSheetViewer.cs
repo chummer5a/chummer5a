@@ -45,7 +45,7 @@ namespace Chummer
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
-        private readonly ThreadSafeList<Character> _lstCharacters = new ThreadSafeList<Character>();
+        private readonly ThreadSafeList<Character> _lstCharacters = new ThreadSafeList<Character>(1);
         private XmlDocument _objCharacterXml = new XmlDocument { XmlResolver = null };
         private string _strSelectedSheet = GlobalSettings.DefaultCharacterSheet;
         private int _intLoading;

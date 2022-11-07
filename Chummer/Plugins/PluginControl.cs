@@ -374,7 +374,7 @@ namespace Chummer.Plugins
         }
 
         [ImportMany(typeof(IPlugin))]
-        public ThreadSafeList<IPlugin> MyPlugins { get; } = new ThreadSafeList<IPlugin>();
+        public ThreadSafeList<IPlugin> MyPlugins { get; } = new ThreadSafeList<IPlugin>(1);
 
         public IReadOnlyList<IPlugin> MyActivePlugins
         {

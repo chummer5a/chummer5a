@@ -21,6 +21,7 @@ using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Skills;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Collections.Specialized;
@@ -258,7 +259,7 @@ namespace Chummer
         private SortedDictionary<decimal, Tuple<string, string>> _dicAvailabilityMap;
 
         //private readonly List<LifeModule> _lstLifeModules = new List<LifeModule>(10);
-        private readonly ThreadSafeList<string> _lstInternalIdsNeedingReapplyImprovements = new ThreadSafeList<string>(1);
+        private ConcurrentBag<string> _lstInternalIdsNeedingReapplyImprovements = new ConcurrentBag<string>();
 
         // Character Version
         private string _strVersionCreated = Application.ProductVersion.FastEscapeOnceFromStart("0.0.");
@@ -4985,26 +4986,26 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Queue of methods to execute after loading has finished. Return value signals whether loading should continue after execution (True) or terminate/cancel (False).
+        /// Add a function to the queue of methods to execute after loading has finished. Return value signals whether loading should continue after execution (True) or terminate/cancel (False).
         /// </summary>
-        public ThreadSafeQueue<Func<bool>> PostLoadMethods
+        public bool EnqueuePostLoadMethod(Func<bool> value)
         {
-            get
+            // Only need read lock because collection is concurrent anyway
+            using (EnterReadLock.Enter(LockObject))
             {
-                using (EnterReadLock.Enter(LockObject))
-                    return _quePostLoadMethods;
+                return _setPostLoadMethods.TryAdd(value);
             }
         }
 
         /// <summary>
         /// Queue of asynchronous methods to execute after loading has finished. Return value signals whether loading should continue after execution (True) or terminate/cancel (False).
         /// </summary>
-        public ThreadSafeQueue<Func<CancellationToken, Task<bool>>> PostLoadMethodsAsync
+        public bool EnqueuePostLoadAsyncMethod(Func<CancellationToken, Task<bool>> value)
         {
-            get
+            // Only need read lock because collection is concurrent anyway
+            using (EnterReadLock.Enter(LockObject))
             {
-                using (EnterReadLock.Enter(LockObject))
-                    return _quePostLoadMethodsAsync;
+                return _setPostLoadAsyncMethods.TryAdd(value);
             }
         }
 
@@ -6357,11 +6358,9 @@ namespace Chummer
                             List<Improvement> lstCyberadeptSweepGrades =
                                 new List<Improvement>(InitiationGrades.Count);
 
-                            if (blnSync)
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                _lstInternalIdsNeedingReapplyImprovements.Clear();
-                            else
-                                await _lstInternalIdsNeedingReapplyImprovements.ClearAsync(token).ConfigureAwait(false);
+                            // Fastest way to clear is to just create a new bag and then interlock at the end
+                            ConcurrentBag<string> lstInternalIdsNeedingReapplyImprovements
+                                = new ConcurrentBag<string>();
 
                             if (frmLoadingForm != null)
                             {
@@ -6490,13 +6489,8 @@ namespace Chummer
                                             Improvement.ImprovementType.SkillsoftAccess &&
                                             objImprovement.Value == 0)
                                         {
-                                            if (blnSync)
-                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                _lstInternalIdsNeedingReapplyImprovements.Add(objImprovement
-                                                    .SourceName);
-                                            else
-                                                await _lstInternalIdsNeedingReapplyImprovements.AddAsync(objImprovement
-                                                    .SourceName, token).ConfigureAwait(false);
+                                            lstInternalIdsNeedingReapplyImprovements.Add(objImprovement
+                                                .SourceName);
                                         }
                                         // Cyberadept fix
                                         else if (LastSavedVersion <= new Version(5, 212, 78)
@@ -6524,14 +6518,8 @@ namespace Chummer
                                     }
                                     catch (ArgumentException)
                                     {
-                                        if (blnSync)
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            _lstInternalIdsNeedingReapplyImprovements.Add(
-                                                objXmlImprovement["sourcename"]?.InnerText);
-                                        else
-                                            await _lstInternalIdsNeedingReapplyImprovements.AddAsync(
-                                                    objXmlImprovement["sourcename"]?.InnerText, token)
-                                                .ConfigureAwait(false);
+                                        lstInternalIdsNeedingReapplyImprovements.Add(
+                                            objXmlImprovement["sourcename"]?.InnerText);
                                     }
                                 }
 
@@ -6747,15 +6735,8 @@ namespace Chummer
                                                     }
                                                     else
                                                     {
-                                                        // Failed to re-apply the improvements immediately, so let's just add it for processing when the character is opened
-                                                        if (blnSync)
-                                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                            _lstInternalIdsNeedingReapplyImprovements.Add(
-                                                                objQuality.InternalId);
-                                                        else
-                                                            await _lstInternalIdsNeedingReapplyImprovements
-                                                                  .AddAsync(objQuality.InternalId, token)
-                                                                  .ConfigureAwait(false);
+                                                        lstInternalIdsNeedingReapplyImprovements.Add(
+                                                            objQuality.InternalId);
                                                     }
 
                                                     objQuality.NaturalWeaponsNode = objNode["naturalweapons"];
@@ -6958,14 +6939,8 @@ namespace Chummer
                                                     // Old handling of SASS' Inspired quality was both hardcoded and wrong
                                                     // Since SASS' Inspired requires the player to choose a specialization, we always need a prompt,
                                                     // so add the quality to the list for processing when the character is opened.
-                                                    if (blnSync)
-                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                        _lstInternalIdsNeedingReapplyImprovements.Add(
-                                                            objQuality.InternalId);
-                                                    else
-                                                        await _lstInternalIdsNeedingReapplyImprovements
-                                                              .AddAsync(objQuality.InternalId, token)
-                                                              .ConfigureAwait(false);
+                                                    lstInternalIdsNeedingReapplyImprovements.Add(
+                                                        objQuality.InternalId);
                                                 }
 
                                                 if (LastSavedVersion <= new Version(5, 212, 56)
@@ -6973,14 +6948,8 @@ namespace Chummer
                                                     && objQuality.Bonus == null)
                                                 {
                                                     // Chain Breaker bonus requires manual selection of two spirit types, so we need a prompt.
-                                                    if (blnSync)
-                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                        _lstInternalIdsNeedingReapplyImprovements.Add(
-                                                            objQuality.InternalId);
-                                                    else
-                                                        await _lstInternalIdsNeedingReapplyImprovements
-                                                              .AddAsync(objQuality.InternalId, token)
-                                                              .ConfigureAwait(false);
+                                                    lstInternalIdsNeedingReapplyImprovements.Add(
+                                                        objQuality.InternalId);
                                                 }
 
                                                 if (LastSavedVersion <= new Version(5, 212, 78)
@@ -7725,12 +7694,8 @@ namespace Chummer
                                                     dicPairableCyberwares.Add(objCyberware, 1);
                                             }
                                         }
-                                        else if (blnSync)
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            _lstInternalIdsNeedingReapplyImprovements.Add(objCyberware.InternalId);
                                         else
-                                            await _lstInternalIdsNeedingReapplyImprovements
-                                                  .AddAsync(objCyberware.InternalId, token).ConfigureAwait(false);
+                                            lstInternalIdsNeedingReapplyImprovements.Add(objCyberware.InternalId);
                                     }
                                 }
 
@@ -7853,12 +7818,8 @@ namespace Chummer
                                                         dicPairableCyberwares.Add(objCyberware, 1);
                                                 }
                                             }
-                                            else if (blnSync)
-                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                _lstInternalIdsNeedingReapplyImprovements.Add(objCyberware.InternalId);
                                             else
-                                                await _lstInternalIdsNeedingReapplyImprovements
-                                                      .AddAsync(objCyberware.InternalId, token).ConfigureAwait(false);
+                                                lstInternalIdsNeedingReapplyImprovements.Add(objCyberware.InternalId);
                                         }
                                     }
                                 }
@@ -8012,12 +7973,7 @@ namespace Chummer
                                             if (blnDoEnhancedAccuracyRefresh
                                                 && strPowerName == "Enhanced Accuracy (skill)")
                                             {
-                                                if (blnSync)
-                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                    _lstInternalIdsNeedingReapplyImprovements.Add(strGuid);
-                                                else
-                                                    await _lstInternalIdsNeedingReapplyImprovements
-                                                          .AddAsync(strGuid, token).ConfigureAwait(false);
+                                                lstInternalIdsNeedingReapplyImprovements.Add(strGuid);
                                             }
 
                                             if (!string.IsNullOrEmpty(strGuid))
@@ -8432,14 +8388,8 @@ namespace Chummer
                                     else
                                     {
                                         // Failed to re-apply the improvements immediately, so let's just add it for processing when the character is opened
-                                        if (blnSync)
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            _lstInternalIdsNeedingReapplyImprovements.Add(
-                                                objLivingPersonaQuality.InternalId);
-                                        else
-                                            await _lstInternalIdsNeedingReapplyImprovements
-                                                  .AddAsync(objLivingPersonaQuality.InternalId, token)
-                                                  .ConfigureAwait(false);
+                                        lstInternalIdsNeedingReapplyImprovements.Add(
+                                            objLivingPersonaQuality.InternalId);
                                     }
 
                                     objLivingPersonaQuality.NaturalWeaponsNode = objNode["naturalweapons"];
@@ -9120,12 +9070,7 @@ namespace Chummer
                                         !string.IsNullOrEmpty(imp.ImprovedName)))
                                 {
                                     // Selecting bonuses for a mentor spirit mid-load is confusing, so just show the error and let the player manually re-apply
-                                    if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        _lstInternalIdsNeedingReapplyImprovements.Add(objMentorQuality.InternalId);
-                                    else
-                                        await _lstInternalIdsNeedingReapplyImprovements
-                                              .AddAsync(objMentorQuality.InternalId, token).ConfigureAwait(false);
+                                    lstInternalIdsNeedingReapplyImprovements.Add(objMentorQuality.InternalId);
                                 }
 
                                 //Timekeeper.Finish("load_char_mentorspiritfix");
@@ -9166,6 +9111,14 @@ namespace Chummer
                                 }
 
                                 //Timekeeper.Finish("load_plugins");
+                            }
+
+                            ConcurrentBag<string> lstOldIds = Interlocked.Exchange(ref _lstInternalIdsNeedingReapplyImprovements,
+                                                 lstInternalIdsNeedingReapplyImprovements);
+                            if (lstOldIds != null)
+                            {
+                                foreach (string strOldId in lstOldIds)
+                                    lstInternalIdsNeedingReapplyImprovements.Add(strOldId);
                             }
                         }
                         finally
@@ -9286,34 +9239,28 @@ namespace Chummer
                                 else
                                     await ClearInitiationsAsync(token).ConfigureAwait(false);
                             }
-                            foreach (Func<bool> funcToCall in PostLoadMethods)
+
+                            while (_setPostLoadMethods.TryTake(out Func<bool> funcToCall))
+                            {
                                 if (!funcToCall.Invoke())
                                     return false;
+                            }
+
                             if (blnSync)
                             {
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                PostLoadMethods.Clear();
-
-                                foreach (Func<CancellationToken, Task<bool>> funcToCall in PostLoadMethodsAsync)
+                                while (_setPostLoadAsyncMethods.TryTake(out Func<CancellationToken, Task<bool>> funcToCall))
                                 {
                                     if (!Utils.SafelyRunSynchronously(() => funcToCall.Invoke(token)))
                                         return false;
                                 }
-
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                PostLoadMethodsAsync.Clear();
                             }
                             else
                             {
-                                await PostLoadMethods.ClearAsync(token).ConfigureAwait(false);
-
-                                foreach (Func<CancellationToken, Task<bool>> funcToCall in PostLoadMethodsAsync)
+                                while (_setPostLoadAsyncMethods.TryTake(out Func<CancellationToken, Task<bool>> funcToCall))
                                 {
                                     if (!await funcToCall.Invoke(token).ConfigureAwait(false))
                                         return false;
                                 }
-
-                                await PostLoadMethodsAsync.ClearAsync(token).ConfigureAwait(false);
                             }
                             //Timekeeper.Finish("load_char_improvementrefreshers");
                         }
@@ -11041,6 +10988,7 @@ namespace Chummer
 
             using (LockObject.EnterWriteLock()) // Wait for all pending locks to get freed before disposing
             {
+                Interlocked.Exchange(ref _lstInternalIdsNeedingReapplyImprovements, null);
                 ImprovementManager.ClearCachedValues(this);
                 _lstLinkedCharacters.Clear(); // Clear this list because it relates to Contacts and Spirits disposal
                 _lstLinkedCharacters.Dispose();
@@ -11090,7 +11038,6 @@ namespace Chummer
                 _lstEnhancements.Dispose();
                 _lstImprovements.Dispose();
                 _lstInitiationGrades.Dispose();
-                _lstInternalIdsNeedingReapplyImprovements.Dispose();
                 _lstCalendar.Dispose();
                 foreach (Drug objItem in _lstDrugs)
                     objItem.Dispose();
@@ -11112,8 +11059,6 @@ namespace Chummer
                 _lstPrioritySkills.Dispose();
                 _objSkillsSection.Dispose();
                 _objAttributeSection.Dispose();
-                _quePostLoadMethods.Dispose();
-                _quePostLoadMethodsAsync.Dispose();
                 _setDoOnSaveCompleted.Dispose();
                 _setDoOnSaveCompletedAsync.Dispose();
                 if (_stkPushText.IsValueCreated)
@@ -11144,6 +11089,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
+                Interlocked.Exchange(ref _lstInternalIdsNeedingReapplyImprovements, null);
                 await ImprovementManager.ClearCachedValuesAsync(this).ConfigureAwait(false);
                 await _lstLinkedCharacters.ClearAsync()
                                           .ConfigureAwait(
@@ -11174,7 +11120,6 @@ namespace Chummer
                 await _lstEnhancements.DisposeAsync().ConfigureAwait(false);
                 await _lstImprovements.DisposeAsync().ConfigureAwait(false);
                 await _lstInitiationGrades.DisposeAsync().ConfigureAwait(false);
-                await _lstInternalIdsNeedingReapplyImprovements.DisposeAsync().ConfigureAwait(false);
                 await _lstCalendar.DisposeAsync().ConfigureAwait(false);
                 await _lstDrugs.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
                 await _lstDrugs.DisposeAsync().ConfigureAwait(false);
@@ -11191,8 +11136,6 @@ namespace Chummer
                 await _lstPrioritySkills.DisposeAsync().ConfigureAwait(false);
                 await _objSkillsSection.DisposeAsync().ConfigureAwait(false);
                 await _objAttributeSection.DisposeAsync().ConfigureAwait(false);
-                await _quePostLoadMethods.DisposeAsync().ConfigureAwait(false);
-                await _quePostLoadMethodsAsync.DisposeAsync().ConfigureAwait(false);
                 await _setDoOnSaveCompleted.DisposeAsync().ConfigureAwait(false);
                 await _setDoOnSaveCompletedAsync.DisposeAsync().ConfigureAwait(false);
                 if (_stkPushText.IsValueCreated)
@@ -15820,8 +15763,7 @@ namespace Chummer
             {
                 if (IsLoading) // Not all improvements are guaranteed to have been loaded in, so just skip the refresh until the end
                 {
-                    if (!PostLoadMethods.Contains(RefreshAstralReputationImprovements))
-                        PostLoadMethods.Enqueue(RefreshAstralReputationImprovements);
+                    EnqueuePostLoadMethod(RefreshAstralReputationImprovements);
                     return true;
                 }
 
@@ -22741,15 +22683,23 @@ namespace Chummer
         }
 
         /// <summary>
-        /// List of internal IDs that need their improvements re-applied.
+        /// Take out the list of internal IDs that need their improvements re-applied (and then immediately re-apply them).
         /// </summary>
-        public ThreadSafeList<string> InternalIdsNeedingReapplyImprovements
+        public ConcurrentBag<string> TakeInternalIdsNeedingReapplyImprovements(CancellationToken token = default)
         {
-            get
-            {
-                using (EnterReadLock.Enter(LockObject))
-                    return _lstInternalIdsNeedingReapplyImprovements;
-            }
+            // Only need read lock because we use interlocked to make sure access is still write-safe
+            using (EnterReadLock.Enter(LockObject, token))
+                return Interlocked.Exchange(ref _lstInternalIdsNeedingReapplyImprovements, null);
+        }
+
+        /// <summary>
+        /// Take out the list of internal IDs that need their improvements re-applied (and then immediately re-apply them).
+        /// </summary>
+        public async ValueTask<ConcurrentBag<string>> TakeInternalIdsNeedingReapplyImprovementsAsync(CancellationToken token = default)
+        {
+            // Only need read lock because we use interlocked to make sure access is still write-safe
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return Interlocked.Exchange(ref _lstInternalIdsNeedingReapplyImprovements, null);
         }
 
         #endregion List Properties
@@ -29848,8 +29798,7 @@ namespace Chummer
             {
                 if (IsLoading) // If we are in the middle of loading, just queue a single refresh to happen at the end of the process
                 {
-                    if (!PostLoadMethods.Contains(RefreshRedlinerImprovements))
-                        PostLoadMethods.Enqueue(RefreshRedlinerImprovements);
+                    EnqueuePostLoadMethod(RefreshRedlinerImprovements);
                     return true;
                 }
 
@@ -32097,8 +32046,7 @@ namespace Chummer
             {
                 if (IsLoading) // If we are in the middle of loading, just queue a single refresh to happen at the end of the process
                 {
-                    if (!PostLoadMethods.Contains(RefreshSustainingPenalties))
-                        PostLoadMethods.Enqueue(RefreshSustainingPenalties);
+                    EnqueuePostLoadMethod(RefreshSustainingPenalties);
                     return true;
                 }
 
@@ -32186,8 +32134,7 @@ namespace Chummer
             {
                 if (IsLoading) // If we are in the middle of loading, just queue a single refresh to happen at the end of the process
                 {
-                    if (!await PostLoadMethodsAsync.ContainsAsync(RefreshSustainingPenaltiesAsync, token).ConfigureAwait(false))
-                        await PostLoadMethodsAsync.EnqueueAsync(RefreshSustainingPenaltiesAsync, token).ConfigureAwait(false);
+                    EnqueuePostLoadAsyncMethod(RefreshSustainingPenaltiesAsync);
                     return true;
                 }
 
@@ -32285,7 +32232,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Dicepool modifie the character has from sustaining spells. Should be negative
+        /// Dicepool modified the character has from sustaining spells. Should be negative
         /// </summary>
         public int SustainingPenalty
         {
@@ -36886,8 +36833,8 @@ namespace Chummer
         private SourceString _objCachedSourceDetail;
         private readonly SkillsSection _objSkillsSection;
         private readonly AttributeSection _objAttributeSection;
-        private readonly ThreadSafeQueue<Func<bool>> _quePostLoadMethods = new ThreadSafeQueue<Func<bool>>();
-        private readonly ThreadSafeQueue<Func<CancellationToken, Task<bool>>> _quePostLoadMethodsAsync = new ThreadSafeQueue<Func<CancellationToken, Task<bool>>>();
+        private readonly ConcurrentHashSet<Func<bool>> _setPostLoadMethods = new ConcurrentHashSet<Func<bool>>();
+        private readonly ConcurrentHashSet<Func<CancellationToken, Task<bool>>> _setPostLoadAsyncMethods = new ConcurrentHashSet<Func<CancellationToken, Task<bool>>>();
 
         public SourceString SourceDetail
         {

@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Drawing;
 using System.Drawing.Imaging;
 using System.IO;
@@ -100,270 +101,299 @@ namespace Chummer
                 return null;
             }
 
-            ThreadSafeList<XPathNavigator> lstCharacterXmlStatblocks = new ThreadSafeList<XPathNavigator>(3);
+            ConcurrentBag<XPathNavigator> lstCharacterXmlStatblocks = new ConcurrentBag<XPathNavigator>();
             try
             {
-                try
+                using (ZipArchive zipArchive
+                       = ZipFile.Open(strFile, ZipArchiveMode.Read, Encoding.GetEncoding(850)))
                 {
-                    using (ZipArchive zipArchive
-                           = ZipFile.Open(strFile, ZipArchiveMode.Read, Encoding.GetEncoding(850)))
+                    // NOTE: Cannot parallelize because ZipFile.Open creates one handle on the entire zip file that gets messed up if we try to get it to read multiple files at once
+                    foreach (ZipArchiveEntry objEntry in zipArchive.Entries)
                     {
-                        // NOTE: Cannot parallelize because ZipFile.Open creates one handle on the entire zip file that gets messed up if we try to get it to read multiple files at once
-                        foreach (ZipArchiveEntry objEntry in zipArchive.Entries)
+                        string strEntryFullName = objEntry.FullName;
+                        if (strEntryFullName.EndsWith(".xml", StringComparison.OrdinalIgnoreCase)
+                            && strEntryFullName.StartsWith("statblocks_xml", StringComparison.Ordinal))
                         {
-                            string strEntryFullName = objEntry.FullName;
-                            if (strEntryFullName.EndsWith(".xml", StringComparison.OrdinalIgnoreCase)
-                                && strEntryFullName.StartsWith("statblocks_xml", StringComparison.Ordinal))
+                            // If we run into any problems loading the character cache, fail out early.
+                            try
                             {
-                                // If we run into any problems loading the character cache, fail out early.
-                                try
+                                await Task.Run(() =>
                                 {
-                                    await Task.Run(() =>
-                                    {
-                                        XPathDocument xmlSourceDoc;
-                                        using (StreamReader sr = new StreamReader(objEntry.Open(), true))
-                                        using (XmlReader objXmlReader
-                                               = XmlReader.Create(sr, GlobalSettings.SafeXmlReaderSettings))
-                                            xmlSourceDoc = new XPathDocument(objXmlReader);
-                                        XPathNavigator objToAdd = xmlSourceDoc.CreateNavigator();
-                                        lstCharacterXmlStatblocks.Add(objToAdd);
-                                    }, token).ConfigureAwait(false);
-                                }
-                                // If we run into any problems loading the character cache, fail out early.
-                                catch (IOException)
-                                {
-                                    Utils.BreakIfDebug();
-                                }
-                                catch (XmlException)
-                                {
-                                    Utils.BreakIfDebug();
-                                }
+                                    XPathDocument xmlSourceDoc;
+                                    using (StreamReader sr = new StreamReader(objEntry.Open(), true))
+                                    using (XmlReader objXmlReader
+                                           = XmlReader.Create(sr, GlobalSettings.SafeXmlReaderSettings))
+                                        xmlSourceDoc = new XPathDocument(objXmlReader);
+                                    XPathNavigator objToAdd = xmlSourceDoc.CreateNavigator();
+                                    lstCharacterXmlStatblocks.Add(objToAdd);
+                                }, token).ConfigureAwait(false);
                             }
-                            else if (strEntryFullName.StartsWith("images", StringComparison.Ordinal)
-                                     && strEntryFullName.Contains('.'))
+                            // If we run into any problems loading the character cache, fail out early.
+                            catch (IOException)
                             {
-                                string strKey = Path.GetFileName(strEntryFullName);
-                                using (Bitmap bmpMugshot = new Bitmap(objEntry.Open(), true))
+                                Utils.BreakIfDebug();
+                            }
+                            catch (XmlException)
+                            {
+                                Utils.BreakIfDebug();
+                            }
+                        }
+                        else if (strEntryFullName.StartsWith("images", StringComparison.Ordinal)
+                                 && strEntryFullName.Contains('.'))
+                        {
+                            string strKey = Path.GetFileName(strEntryFullName);
+                            using (Bitmap bmpMugshot = new Bitmap(objEntry.Open(), true))
+                            {
+                                Bitmap bmpNewMugshot = bmpMugshot.PixelFormat == PixelFormat.Format32bppPArgb
+                                    ? bmpMugshot.Clone() as Bitmap // Clone makes sure file handle is closed
+                                    : bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb);
+                                while (!await _dicImages.TryAddAsync(strKey, bmpNewMugshot, token)
+                                                        .ConfigureAwait(false))
                                 {
-                                    Bitmap bmpNewMugshot = bmpMugshot.PixelFormat == PixelFormat.Format32bppPArgb
-                                        ? bmpMugshot.Clone() as Bitmap // Clone makes sure file handle is closed
-                                        : bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb);
-                                    while (!await _dicImages.TryAddAsync(strKey, bmpNewMugshot, token).ConfigureAwait(false))
-                                    {
-                                        (bool blnSuccess, Bitmap bmpOldMugshot) =
-                                            await _dicImages.TryRemoveAsync(strKey, token).ConfigureAwait(false);
-                                        if (blnSuccess)
-                                            bmpOldMugshot?.Dispose();
-                                    }
+                                    (bool blnSuccess, Bitmap bmpOldMugshot) =
+                                        await _dicImages.TryRemoveAsync(strKey, token).ConfigureAwait(false);
+                                    if (blnSuccess)
+                                        bmpOldMugshot?.Dispose();
                                 }
                             }
                         }
                     }
                 }
-                catch (IOException)
-                {
-                    Program.ShowMessageBox(
-                        this,
-                        string.Format(GlobalSettings.CultureInfo,
-                                      await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token).ConfigureAwait(false),
-                                      strFile));
-                    return null;
-                }
-                catch (NotSupportedException)
-                {
-                    Program.ShowMessageBox(
-                        this,
-                        string.Format(GlobalSettings.CultureInfo,
-                                      await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token).ConfigureAwait(false),
-                                      strFile));
-                    return null;
-                }
-                catch (UnauthorizedAccessException)
-                {
-                    Program.ShowMessageBox(
-                        this, await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token).ConfigureAwait(false));
-                    return null;
-                }
+            }
+            catch (IOException)
+            {
+                Program.ShowMessageBox(
+                    this,
+                    string.Format(GlobalSettings.CultureInfo,
+                                  await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token)
+                                                       .ConfigureAwait(false),
+                                  strFile));
+                return null;
+            }
+            catch (NotSupportedException)
+            {
+                Program.ShowMessageBox(
+                    this,
+                    string.Format(GlobalSettings.CultureInfo,
+                                  await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token)
+                                                       .ConfigureAwait(false),
+                                  strFile));
+                return null;
+            }
+            catch (UnauthorizedAccessException)
+            {
+                Program.ShowMessageBox(
+                    this,
+                    await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token)
+                                         .ConfigureAwait(false));
+                return null;
+            }
 
-                string strFileText
-                    = await strFile.CheapReplaceAsync(Utils.GetStartupPath, () => '<' + Application.ProductName + '>', token: token).ConfigureAwait(false);
-                TreeNode nodRootNode = new TreeNode
-                {
-                    Text = strFileText,
-                    ToolTipText = strFileText
-                };
+            string strFileText
+                = await strFile
+                        .CheapReplaceAsync(Utils.GetStartupPath, () => '<' + Application.ProductName + '>',
+                                           token: token).ConfigureAwait(false);
+            TreeNode nodRootNode = new TreeNode
+            {
+                Text = strFileText,
+                ToolTipText = strFileText
+            };
 
-                XPathNavigator xmlMetatypesDocument = await XmlManager.LoadXPathAsync("metatypes.xml", token: token).ConfigureAwait(false);
-                foreach (XPathNavigator xmlCharacterDocument in lstCharacterXmlStatblocks)
+            XPathNavigator xmlMetatypesDocument
+                = await XmlManager.LoadXPathAsync("metatypes.xml", token: token).ConfigureAwait(false);
+            foreach (XPathNavigator xmlCharacterDocument in lstCharacterXmlStatblocks)
+            {
+                XPathNavigator xmlBaseCharacterNode
+                    = await xmlCharacterDocument
+                            .SelectSingleNodeAndCacheExpressionAsync("/document/public/character", token)
+                            .ConfigureAwait(false);
+                if (xmlBaseCharacterNode != null)
                 {
-                    XPathNavigator xmlBaseCharacterNode
-                        = await xmlCharacterDocument.SelectSingleNodeAndCacheExpressionAsync("/document/public/character", token).ConfigureAwait(false);
-                    if (xmlBaseCharacterNode != null)
+                    HeroLabCharacterCache objCache = new HeroLabCharacterCache
                     {
-                        HeroLabCharacterCache objCache = new HeroLabCharacterCache
+                        PlayerName = (await xmlBaseCharacterNode
+                                            .SelectSingleNodeAndCacheExpressionAsync("@playername", token)
+                                            .ConfigureAwait(false))?.Value ?? string.Empty
+                    };
+                    string strNameString
+                        = (await xmlBaseCharacterNode.SelectSingleNodeAndCacheExpressionAsync("@name", token)
+                                                     .ConfigureAwait(false))?.Value ?? string.Empty;
+                    objCache.CharacterId = strNameString;
+                    if (!string.IsNullOrEmpty(strNameString))
+                    {
+                        int intAsIndex = strNameString.IndexOf(" as ", StringComparison.Ordinal);
+                        if (intAsIndex != -1)
                         {
-                            PlayerName = (await xmlBaseCharacterNode.SelectSingleNodeAndCacheExpressionAsync("@playername", token).ConfigureAwait(false))?.Value ?? string.Empty
-                        };
-                        string strNameString = (await xmlBaseCharacterNode.SelectSingleNodeAndCacheExpressionAsync("@name", token).ConfigureAwait(false))?.Value ?? string.Empty;
-                        objCache.CharacterId = strNameString;
-                        if (!string.IsNullOrEmpty(strNameString))
-                        {
-                            int intAsIndex = strNameString.IndexOf(" as ", StringComparison.Ordinal);
-                            if (intAsIndex != -1)
-                            {
-                                objCache.CharacterName = strNameString.Substring(0, intAsIndex);
-                                objCache.CharacterAlias
-                                    = strNameString.Substring(intAsIndex).TrimStart(" as ").Trim('\'');
-                            }
-                            else
-                            {
-                                objCache.CharacterName = strNameString;
-                            }
+                            objCache.CharacterName = strNameString.Substring(0, intAsIndex);
+                            objCache.CharacterAlias
+                                = strNameString.Substring(intAsIndex).TrimStart(" as ").Trim('\'');
                         }
-
-                        string strRaceString = (await xmlBaseCharacterNode.SelectSingleNodeAndCacheExpressionAsync("race/@name", token).ConfigureAwait(false))?.Value;
-                        if (strRaceString == "Metasapient")
-                            strRaceString = "A.I.";
-                        if (!string.IsNullOrEmpty(strRaceString))
+                        else
                         {
-                            foreach (XPathNavigator xmlMetatype in await xmlMetatypesDocument.SelectAndCacheExpressionAsync(
-                                         "/chummer/metatypes/metatype", token).ConfigureAwait(false))
+                            objCache.CharacterName = strNameString;
+                        }
+                    }
+
+                    string strRaceString = (await xmlBaseCharacterNode
+                                                  .SelectSingleNodeAndCacheExpressionAsync("race/@name", token)
+                                                  .ConfigureAwait(false))?.Value;
+                    if (strRaceString == "Metasapient")
+                        strRaceString = "A.I.";
+                    if (!string.IsNullOrEmpty(strRaceString))
+                    {
+                        foreach (XPathNavigator xmlMetatype in await xmlMetatypesDocument.SelectAndCacheExpressionAsync(
+                                     "/chummer/metatypes/metatype", token).ConfigureAwait(false))
+                        {
+                            string strMetatypeName
+                                = (await xmlMetatype.SelectSingleNodeAndCacheExpressionAsync("name", token)
+                                                    .ConfigureAwait(false))?.Value ?? string.Empty;
+                            if (strMetatypeName == strRaceString)
                             {
-                                string strMetatypeName = (await xmlMetatype.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value ?? string.Empty;
-                                if (strMetatypeName == strRaceString)
+                                objCache.Metatype = strMetatypeName;
+                                objCache.Metavariant = "None";
+                                break;
+                            }
+
+                            foreach (XPathNavigator xmlMetavariant in
+                                     await xmlMetatype
+                                           .SelectAndCacheExpressionAsync("metavariants/metavariant", token: token)
+                                           .ConfigureAwait(false))
+                            {
+                                string strMetavariantName
+                                    = (await xmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("name", token)
+                                                           .ConfigureAwait(false))?.Value ?? string.Empty;
+                                if (strMetavariantName == strRaceString)
                                 {
                                     objCache.Metatype = strMetatypeName;
-                                    objCache.Metavariant = "None";
+                                    objCache.Metavariant = strMetavariantName;
                                     break;
                                 }
-
-                                foreach (XPathNavigator xmlMetavariant in
-                                         await xmlMetatype.SelectAndCacheExpressionAsync("metavariants/metavariant", token: token).ConfigureAwait(false))
-                                {
-                                    string strMetavariantName
-                                        = (await xmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value ?? string.Empty;
-                                    if (strMetavariantName == strRaceString)
-                                    {
-                                        objCache.Metatype = strMetatypeName;
-                                        objCache.Metavariant = strMetavariantName;
-                                        break;
-                                    }
-                                }
                             }
                         }
-
-                        objCache.Description = (await xmlBaseCharacterNode.SelectSingleNodeAndCacheExpressionAsync("personal/description", token).ConfigureAwait(false))?.Value;
-                        objCache.Karma = (await xmlBaseCharacterNode.SelectSingleNodeAndCacheExpressionAsync("karma/@total", token).ConfigureAwait(false))?.Value ?? "0";
-                        objCache.Essence = (await xmlBaseCharacterNode
-                                                  .SelectSingleNodeAndCacheExpressionAsync("attributes/attribute[@name = \"Essence\"]/@text", token).ConfigureAwait(false))?.Value;
-                        objCache.BuildMethod
-                            = (await xmlBaseCharacterNode.SelectSingleNodeAndCacheExpressionAsync("creation/bp/@total", token).ConfigureAwait(false))?.ValueAsInt <= 100
-                                ? CharacterBuildMethod.Priority
-                                : CharacterBuildMethod.Karma;
-
-                        string strSettingsSummary =
-                            (await xmlBaseCharacterNode.SelectSingleNodeAndCacheExpressionAsync("settings/@summary", token).ConfigureAwait(false))?.Value;
-                        if (!string.IsNullOrEmpty(strSettingsSummary))
-                        {
-                            int intSemicolonIndex;
-                            bool blnDoFullHouse = false;
-                            int intSourcebooksIndex
-                                = strSettingsSummary.IndexOf("Core Rulebooks:", StringComparison.OrdinalIgnoreCase);
-                            if (intSourcebooksIndex != -1)
-                            {
-                                intSemicolonIndex = strSettingsSummary.IndexOf(';', intSourcebooksIndex);
-                                if (intSourcebooksIndex + 16 < intSemicolonIndex)
-                                {
-                                    blnDoFullHouse
-                                        = true; // We probably have multiple books enabled, so use Full House instead
-                                }
-                            }
-
-                            string strHeroLabSettingsName = "Standard";
-
-                            int intCharCreationSystemsIndex =
-                                strSettingsSummary.IndexOf("Character Creation Systems:",
-                                                           StringComparison.OrdinalIgnoreCase);
-                            if (intCharCreationSystemsIndex != -1)
-                            {
-                                intSemicolonIndex = strSettingsSummary.IndexOf(';', intCharCreationSystemsIndex);
-                                if (intCharCreationSystemsIndex + 28 <= intSemicolonIndex)
-                                {
-                                    strHeroLabSettingsName = strSettingsSummary.Substring(
-                                                                                   intCharCreationSystemsIndex + 28,
-                                                                                   strSettingsSummary.IndexOf(
-                                                                                       ';', intCharCreationSystemsIndex)
-                                                                                   - 28 - intCharCreationSystemsIndex)
-                                                                               .Trim();
-                                    if (strHeroLabSettingsName == "Established Runners")
-                                        strHeroLabSettingsName = "Standard";
-                                }
-                            }
-
-                            if (strHeroLabSettingsName == "Standard")
-                            {
-                                if (blnDoFullHouse)
-                                {
-                                    strHeroLabSettingsName = objCache.BuildMethod == CharacterBuildMethod.Karma
-                                        ? "Full House (Point Buy)"
-                                        : "Full House";
-                                }
-                                else if (objCache.BuildMethod == CharacterBuildMethod.Karma)
-                                    strHeroLabSettingsName = "Point Buy";
-                            }
-
-                            objCache.SettingsName = strHeroLabSettingsName;
-                        }
-
-                        objCache.Created = objCache.Karma != "0";
-                        if (!objCache.Created)
-                        {
-                            XPathNodeIterator xmlJournalEntries
-                                = await xmlBaseCharacterNode.SelectAndCacheExpressionAsync("journals/journal", token: token).ConfigureAwait(false);
-                            if (xmlJournalEntries?.Count > 1)
-                            {
-                                objCache.Created = true;
-                            }
-                            else if (xmlJournalEntries?.Count == 1 && xmlJournalEntries.Current != null
-                                                                   && (await xmlJournalEntries.Current
-                                                                       .SelectSingleNodeAndCacheExpressionAsync(
-                                                                           "@name", token).ConfigureAwait(false))?.Value != "Title")
-                            {
-                                objCache.Created = true;
-                            }
-                        }
-
-                        string strImageString = (await xmlBaseCharacterNode.SelectSingleNodeAndCacheExpressionAsync("images/image/@filename", token).ConfigureAwait(false))?.Value;
-                        if (!string.IsNullOrEmpty(strImageString))
-                        {
-                            (bool blnSuccess, Bitmap objTemp) = await _dicImages.TryGetValueAsync(strImageString, token).ConfigureAwait(false);
-                            if (blnSuccess)
-                            {
-                                objCache.Mugshot = objTemp;
-                            }
-                        }
-
-                        objCache.FilePath = strFile;
-                        TreeNode objNode = new TreeNode
-                        {
-                            Text = await CalculatedName(objCache, token).ConfigureAwait(false),
-                            ToolTipText = await strFile.CheapReplaceAsync(Utils.GetStartupPath,
-                                                                          () => '<' + Application.ProductName + '>', token: token).ConfigureAwait(false)
-                        };
-                        nodRootNode.Nodes.Add(objNode);
-
-                        await _lstCharacterCache.AddAsync(objCache, token).ConfigureAwait(false);
-                        objNode.Tag = await _lstCharacterCache.IndexOfAsync(objCache, token).ConfigureAwait(false);
                     }
-                }
 
-                nodRootNode.Expand();
-                return nodRootNode;
+                    objCache.Description = (await xmlBaseCharacterNode
+                                                  .SelectSingleNodeAndCacheExpressionAsync(
+                                                      "personal/description", token).ConfigureAwait(false))?.Value;
+                    objCache.Karma
+                        = (await xmlBaseCharacterNode.SelectSingleNodeAndCacheExpressionAsync("karma/@total", token)
+                                                     .ConfigureAwait(false))?.Value ?? "0";
+                    objCache.Essence = (await xmlBaseCharacterNode
+                                              .SelectSingleNodeAndCacheExpressionAsync(
+                                                  "attributes/attribute[@name = \"Essence\"]/@text", token)
+                                              .ConfigureAwait(false))?.Value;
+                    objCache.BuildMethod
+                        = (await xmlBaseCharacterNode
+                                 .SelectSingleNodeAndCacheExpressionAsync("creation/bp/@total", token)
+                                 .ConfigureAwait(false))?.ValueAsInt <= 100
+                            ? CharacterBuildMethod.Priority
+                            : CharacterBuildMethod.Karma;
+
+                    string strSettingsSummary =
+                        (await xmlBaseCharacterNode.SelectSingleNodeAndCacheExpressionAsync("settings/@summary", token)
+                                                   .ConfigureAwait(false))?.Value;
+                    if (!string.IsNullOrEmpty(strSettingsSummary))
+                    {
+                        int intSemicolonIndex;
+                        bool blnDoFullHouse = false;
+                        int intSourcebooksIndex
+                            = strSettingsSummary.IndexOf("Core Rulebooks:", StringComparison.OrdinalIgnoreCase);
+                        if (intSourcebooksIndex != -1)
+                        {
+                            intSemicolonIndex = strSettingsSummary.IndexOf(';', intSourcebooksIndex);
+                            if (intSourcebooksIndex + 16 < intSemicolonIndex)
+                            {
+                                blnDoFullHouse
+                                    = true; // We probably have multiple books enabled, so use Full House instead
+                            }
+                        }
+
+                        string strHeroLabSettingsName = "Standard";
+
+                        int intCharCreationSystemsIndex =
+                            strSettingsSummary.IndexOf("Character Creation Systems:",
+                                                       StringComparison.OrdinalIgnoreCase);
+                        if (intCharCreationSystemsIndex != -1)
+                        {
+                            intSemicolonIndex = strSettingsSummary.IndexOf(';', intCharCreationSystemsIndex);
+                            if (intCharCreationSystemsIndex + 28 <= intSemicolonIndex)
+                            {
+                                strHeroLabSettingsName = strSettingsSummary.Substring(
+                                                                               intCharCreationSystemsIndex + 28,
+                                                                               strSettingsSummary.IndexOf(
+                                                                                   ';', intCharCreationSystemsIndex)
+                                                                               - 28 - intCharCreationSystemsIndex)
+                                                                           .Trim();
+                                if (strHeroLabSettingsName == "Established Runners")
+                                    strHeroLabSettingsName = "Standard";
+                            }
+                        }
+
+                        if (strHeroLabSettingsName == "Standard")
+                        {
+                            if (blnDoFullHouse)
+                            {
+                                strHeroLabSettingsName = objCache.BuildMethod == CharacterBuildMethod.Karma
+                                    ? "Full House (Point Buy)"
+                                    : "Full House";
+                            }
+                            else if (objCache.BuildMethod == CharacterBuildMethod.Karma)
+                                strHeroLabSettingsName = "Point Buy";
+                        }
+
+                        objCache.SettingsName = strHeroLabSettingsName;
+                    }
+
+                    objCache.Created = objCache.Karma != "0";
+                    if (!objCache.Created)
+                    {
+                        XPathNodeIterator xmlJournalEntries
+                            = await xmlBaseCharacterNode.SelectAndCacheExpressionAsync("journals/journal", token: token)
+                                                        .ConfigureAwait(false);
+                        if (xmlJournalEntries?.Count > 1)
+                        {
+                            objCache.Created = true;
+                        }
+                        else if (xmlJournalEntries?.Count == 1 && xmlJournalEntries.Current != null
+                                                               && (await xmlJournalEntries.Current
+                                                                   .SelectSingleNodeAndCacheExpressionAsync(
+                                                                       "@name", token).ConfigureAwait(false))?.Value
+                                                               != "Title")
+                        {
+                            objCache.Created = true;
+                        }
+                    }
+
+                    string strImageString = (await xmlBaseCharacterNode
+                                                   .SelectSingleNodeAndCacheExpressionAsync(
+                                                       "images/image/@filename", token).ConfigureAwait(false))?.Value;
+                    if (!string.IsNullOrEmpty(strImageString))
+                    {
+                        (bool blnSuccess, Bitmap objTemp)
+                            = await _dicImages.TryGetValueAsync(strImageString, token).ConfigureAwait(false);
+                        if (blnSuccess)
+                        {
+                            objCache.Mugshot = objTemp;
+                        }
+                    }
+
+                    objCache.FilePath = strFile;
+                    TreeNode objNode = new TreeNode
+                    {
+                        Text = await CalculatedName(objCache, token).ConfigureAwait(false),
+                        ToolTipText = await strFile.CheapReplaceAsync(Utils.GetStartupPath,
+                                                                      () => '<' + Application.ProductName + '>',
+                                                                      token: token).ConfigureAwait(false)
+                    };
+                    nodRootNode.Nodes.Add(objNode);
+
+                    await _lstCharacterCache.AddAsync(objCache, token).ConfigureAwait(false);
+                    objNode.Tag = await _lstCharacterCache.IndexOfAsync(objCache, token).ConfigureAwait(false);
+                }
             }
-            finally
-            {
-                await lstCharacterXmlStatblocks.DisposeAsync().ConfigureAwait(false);
-            }
+
+            nodRootNode.Expand();
+            return nodRootNode;
         }
 
         #region Classes

@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Diagnostics;
@@ -50,8 +51,8 @@ namespace Chummer
 
         private static readonly DebuggableSemaphoreSlim s_ObjXPathNavigatorDocumentLock = new DebuggableSemaphoreSlim();
 
-        private static readonly ThreadSafeStack<XPathNavigator> s_StkXPathNavigatorPool
-            = new ThreadSafeStack<XPathNavigator>(1);
+        private static readonly ConcurrentStack<XPathNavigator> s_StkXPathNavigatorPool
+            = new ConcurrentStack<XPathNavigator>();
 
         private static readonly LockingDictionary<string, Tuple<bool, object>> s_DicCompiledEvaluations =
             new LockingDictionary<string, Tuple<bool, object>>();
@@ -99,8 +100,7 @@ namespace Chummer
             {
                 try
                 {
-                    (bool blnHasEvaluator, XPathNavigator objEvaluator) = await s_StkXPathNavigatorPool.TryTakeAsync(token).ConfigureAwait(false);
-                    if (!blnHasEvaluator)
+                    if (!s_StkXPathNavigatorPool.TryPop(out XPathNavigator objEvaluator))
                     {
                         await s_ObjXPathNavigatorDocumentLock.WaitAsync(token).ConfigureAwait(false);
                         try
@@ -119,7 +119,7 @@ namespace Chummer
                     }
                     finally
                     {
-                        await s_StkXPathNavigatorPool.PushAsync(objEvaluator, token).ConfigureAwait(false);
+                        s_StkXPathNavigatorPool.Push(objEvaluator);
                     }
 
                     blnIsSuccess = objReturn != null;
@@ -184,7 +184,7 @@ namespace Chummer
             {
                 try
                 {
-                    if (!s_StkXPathNavigatorPool.TryTake(out XPathNavigator objEvaluator))
+                    if (!s_StkXPathNavigatorPool.TryPop(out XPathNavigator objEvaluator))
                     {
                         s_ObjXPathNavigatorDocumentLock.SafeWait(token);
                         try
@@ -247,8 +247,7 @@ namespace Chummer
             bool blnIsSuccess;
             try
             {
-                (bool blnHasEvaluator, XPathNavigator objEvaluator) = await s_StkXPathNavigatorPool.TryTakeAsync(token).ConfigureAwait(false);
-                if (!blnHasEvaluator)
+                if (!s_StkXPathNavigatorPool.TryPop(out XPathNavigator objEvaluator))
                 {
                     await s_ObjXPathNavigatorDocumentLock.WaitAsync(token).ConfigureAwait(false);
                     try
@@ -267,7 +266,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    await s_StkXPathNavigatorPool.PushAsync(objEvaluator, token).ConfigureAwait(false);
+                    s_StkXPathNavigatorPool.Push(objEvaluator);
                 }
 
                 blnIsSuccess = objReturn != null;
@@ -309,7 +308,7 @@ namespace Chummer
             object objReturn;
             try
             {
-                if (!s_StkXPathNavigatorPool.TryTake(out XPathNavigator objEvaluator))
+                if (!s_StkXPathNavigatorPool.TryPop(out XPathNavigator objEvaluator))
                 {
                     s_ObjXPathNavigatorDocumentLock.SafeWait(token);
                     try

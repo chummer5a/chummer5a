@@ -1300,9 +1300,11 @@ namespace Chummer
                                 x => x.OpenCharacterListForExport(lstCharacters, blnIncludeInMru, token)), token);
         }
 
-        public static LoadingBar TopMostLoadingBar => s_lstLoadingBars.Count > 0 ? s_lstLoadingBars[0] : null;
+        public static LoadingBar TopMostLoadingBar => s_frmTopMostLoadingBar;
 
-        private static readonly ThreadSafeList<LoadingBar> s_lstLoadingBars = new ThreadSafeList<LoadingBar>(3);
+        private static LoadingBar s_frmTopMostLoadingBar;
+
+        private static readonly ConcurrentHashSet<LoadingBar> s_setLoadingBars = new ConcurrentHashSet<LoadingBar>();
 
         /// <summary>
         /// Syntactic sugar for creating and displaying a LoadingBar screen with specific text and progress bar size.
@@ -1317,10 +1319,16 @@ namespace Chummer
                 frmReturn.MyForm.Reset(intCount);
             frmReturn.MyForm.DoThreadSafe(x =>
             {
-                x.Closed += (sender, args) => s_lstLoadingBars.Remove(x);
+                x.Closed += (sender, args) =>
+                {
+                    s_setLoadingBars.Remove(x);
+                    Interlocked.CompareExchange(ref s_frmTopMostLoadingBar, null, x);
+                };
                 x.Show();
             });
-            s_lstLoadingBars.Add(frmReturn);
+            Interlocked.CompareExchange(ref s_frmTopMostLoadingBar, frmReturn.MyForm, null);
+            if (!s_setLoadingBars.TryAdd(frmReturn.MyForm))
+                throw new InvalidOperationException();
             return frmReturn;
         }
 
@@ -1339,10 +1347,16 @@ namespace Chummer
                 await frmReturn.MyForm.ResetAsync(intCount, token).ConfigureAwait(false);
             await frmReturn.MyForm.DoThreadSafeAsync(x =>
             {
-                x.Closed += (sender, args) => s_lstLoadingBars.Remove(x);
+                x.Closed += (sender, args) =>
+                {
+                    s_setLoadingBars.Remove(x);
+                    Interlocked.CompareExchange(ref s_frmTopMostLoadingBar, null, x);
+                };
                 x.Show();
             }, token).ConfigureAwait(false);
-            await s_lstLoadingBars.AddAsync(frmReturn.MyForm, token).ConfigureAwait(false);
+            Interlocked.CompareExchange(ref s_frmTopMostLoadingBar, frmReturn.MyForm, null);
+            if (!s_setLoadingBars.TryAdd(frmReturn.MyForm))
+                throw new InvalidOperationException();
             return frmReturn;
         }
 

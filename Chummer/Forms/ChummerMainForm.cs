@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
@@ -93,7 +94,6 @@ namespace Chummer
                 _lstOpenCharacterEditorForms.Dispose();
                 _lstOpenCharacterSheetViewers.Dispose();
                 _lstOpenCharacterExportForms.Dispose();
-                _lstCharactersToReopen.Dispose();
             };
 
             _lstOpenCharacterEditorForms.BeforeClearCollectionChanged += OpenCharacterEditorFormsOnBeforeClearCollectionChanged;
@@ -395,7 +395,7 @@ namespace Chummer
         }
 
         private bool _blnSkipReopenUntilAllClear;
-        private readonly ThreadSafeList<Character> _lstCharactersToReopen = new ThreadSafeList<Character>();
+        private ConcurrentBag<Character> _lstCharactersToReopen = new ConcurrentBag<Character>();
 
         private async void OpenCharacterEditorFormsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
@@ -408,7 +408,7 @@ namespace Chummer
                 {
                     if (objOldForm is CharacterCreate objOldCreateForm && objOldCreateForm.IsReopenQueued)
                     {
-                        await _lstCharactersToReopen.AddAsync(objOldCreateForm.CharacterObject, _objGenericToken).ConfigureAwait(false);
+                        _lstCharactersToReopen.Add(objOldCreateForm.CharacterObject);
                         continue;
                     }
                     Character objCharacter = objOldForm.CharacterObject;
@@ -462,7 +462,7 @@ namespace Chummer
                         {
                             if (objOldForm is CharacterCreate objOldCreateForm && objOldCreateForm.IsReopenQueued)
                             {
-                                await _lstCharactersToReopen.AddAsync(objOldCreateForm.CharacterObject, _objGenericToken).ConfigureAwait(false);
+                                _lstCharactersToReopen.Add(objOldCreateForm.CharacterObject);
                                 continue;
                             }
                             Character objCharacter = objOldForm.CharacterObject;
@@ -494,7 +494,7 @@ namespace Chummer
                                     continue;
                                 if (objOldForm is CharacterCreate objOldCreateForm && objOldCreateForm.IsReopenQueued)
                                 {
-                                    await _lstCharactersToReopen.AddAsync(objOldCreateForm.CharacterObject, _objGenericToken).ConfigureAwait(false);
+                                    _lstCharactersToReopen.Add(objOldCreateForm.CharacterObject);
                                     continue;
                                 }
                                 Character objCharacter = objOldForm.CharacterObject;
@@ -612,285 +612,276 @@ namespace Chummer
 
                             Program.MainForm = this;
 
-                            ThreadSafeList<Character> lstCharactersToLoad = new ThreadSafeList<Character>(1);
-                            try
+                            ConcurrentBag<Character> lstCharactersToLoad = new ConcurrentBag<Character>();
+                            using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                                   = await Program.CreateAndShowProgressBarAsync(
+                                                      Text,
+                                                      GlobalSettings.AllowEasterEggs ? 4 : 3, _objGenericToken)
+                                                  .ConfigureAwait(false))
                             {
-                                using (ThreadSafeForm<LoadingBar> frmLoadingBar
-                                       = await Program.CreateAndShowProgressBarAsync(
-                                                          Text,
-                                                          GlobalSettings.AllowEasterEggs ? 4 : 3, _objGenericToken)
-                                                      .ConfigureAwait(false))
+                                Task objCharacterLoadingTask = null;
+                                await frmLoadingBar.MyForm.PerformStepAsync(
+                                    await LanguageManager.GetStringAsync("String_UI", token: _objGenericToken)
+                                                         .ConfigureAwait(false),
+                                    token: _objGenericToken).ConfigureAwait(false);
+
+                                Program.OpenCharacters.CollectionChanged += OpenCharactersOnCollectionChanged;
+
+                                // Retrieve the arguments passed to the application. If more than 1 is passed, we're being given the name of a file to open.
+                                bool blnShowTest = false;
+                                if (!Utils.IsUnitTest)
                                 {
-                                    Task objCharacterLoadingTask = null;
-                                    await frmLoadingBar.MyForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync("String_UI", token: _objGenericToken)
-                                                             .ConfigureAwait(false),
-                                        token: _objGenericToken).ConfigureAwait(false);
-
-                                    Program.OpenCharacters.CollectionChanged += OpenCharactersOnCollectionChanged;
-
-                                    // Retrieve the arguments passed to the application. If more than 1 is passed, we're being given the name of a file to open.
-                                    bool blnShowTest = false;
-                                    if (!Utils.IsUnitTest)
+                                    string[] strArgs = Environment.GetCommandLineArgs();
+                                    ProcessCommandLineArguments(strArgs, out blnShowTest,
+                                                                out HashSet<string> setFilesToLoad,
+                                                                opFrmChummerMain);
+                                    try
                                     {
-                                        string[] strArgs = Environment.GetCommandLineArgs();
-                                        ProcessCommandLineArguments(strArgs, out blnShowTest,
-                                                                    out HashSet<string> setFilesToLoad,
-                                                                    opFrmChummerMain);
-                                        try
+                                        if (Directory.Exists(Utils.GetAutosavesFolderPath))
                                         {
-                                            if (Directory.Exists(Utils.GetAutosavesFolderPath))
+                                            // Always process newest autosave if all MRUs are empty
+                                            bool blnAnyAutosaveInMru
+                                                = GlobalSettings.MostRecentlyUsedCharacters.Count == 0 &&
+                                                  GlobalSettings.FavoriteCharacters.Count == 0;
+                                            FileInfo objMostRecentAutosave = null;
+                                            List<string> lstOldAutosaves = new List<string>(10);
+                                            DateTime objOldAutosaveTimeThreshold =
+                                                DateTime.UtcNow.Subtract(TimeSpan.FromDays(90));
+                                            foreach (string strAutosave in Directory
+                                                                           .EnumerateFiles(
+                                                                               Utils.GetAutosavesFolderPath,
+                                                                               "*.chum5",
+                                                                               SearchOption.AllDirectories)
+                                                                           .Concat(Directory.EnumerateFiles(
+                                                                               Utils.GetAutosavesFolderPath,
+                                                                               "*.chum5lz",
+                                                                               SearchOption.AllDirectories)))
                                             {
-                                                // Always process newest autosave if all MRUs are empty
-                                                bool blnAnyAutosaveInMru
-                                                    = GlobalSettings.MostRecentlyUsedCharacters.Count == 0 &&
-                                                      GlobalSettings.FavoriteCharacters.Count == 0;
-                                                FileInfo objMostRecentAutosave = null;
-                                                List<string> lstOldAutosaves = new List<string>(10);
-                                                DateTime objOldAutosaveTimeThreshold =
-                                                    DateTime.UtcNow.Subtract(TimeSpan.FromDays(90));
-                                                foreach (string strAutosave in Directory
-                                                                               .EnumerateFiles(
-                                                                                   Utils.GetAutosavesFolderPath,
-                                                                                   "*.chum5",
-                                                                                   SearchOption.AllDirectories)
-                                                                               .Concat(Directory.EnumerateFiles(
-                                                                                   Utils.GetAutosavesFolderPath,
-                                                                                   "*.chum5lz",
-                                                                                   SearchOption.AllDirectories)))
+                                                FileInfo objAutosave;
+                                                try
                                                 {
-                                                    FileInfo objAutosave;
-                                                    try
-                                                    {
-                                                        objAutosave = new FileInfo(strAutosave);
-                                                    }
-                                                    catch (SecurityException)
-                                                    {
-                                                        continue;
-                                                    }
-                                                    catch (UnauthorizedAccessException)
-                                                    {
-                                                        continue;
-                                                    }
-
-                                                    if (objMostRecentAutosave == null || objAutosave.LastWriteTimeUtc >
-                                                        objMostRecentAutosave.LastWriteTimeUtc)
-                                                        objMostRecentAutosave = objAutosave;
-                                                    string strAutosaveName
-                                                        = Path.GetFileNameWithoutExtension(objAutosave.Name);
-                                                    if (GlobalSettings.MostRecentlyUsedCharacters.Any(x =>
-                                                            Path.GetFileNameWithoutExtension(x) == strAutosaveName)
-                                                        ||
-                                                        GlobalSettings.FavoriteCharacters.Any(x =>
-                                                            Path.GetFileNameWithoutExtension(x) == strAutosaveName))
-                                                        blnAnyAutosaveInMru = true;
-                                                    else if (objAutosave != objMostRecentAutosave &&
-                                                             objAutosave.LastWriteTimeUtc < objOldAutosaveTimeThreshold
-                                                             &&
-                                                             !setFilesToLoad.Contains(strAutosave))
-                                                        lstOldAutosaves.Add(strAutosave);
+                                                    objAutosave = new FileInfo(strAutosave);
+                                                }
+                                                catch (SecurityException)
+                                                {
+                                                    continue;
+                                                }
+                                                catch (UnauthorizedAccessException)
+                                                {
+                                                    continue;
                                                 }
 
-                                                if (objMostRecentAutosave != null)
+                                                if (objMostRecentAutosave == null || objAutosave.LastWriteTimeUtc >
+                                                    objMostRecentAutosave.LastWriteTimeUtc)
+                                                    objMostRecentAutosave = objAutosave;
+                                                string strAutosaveName
+                                                    = Path.GetFileNameWithoutExtension(objAutosave.Name);
+                                                if (GlobalSettings.MostRecentlyUsedCharacters.Any(x =>
+                                                        Path.GetFileNameWithoutExtension(x) == strAutosaveName)
+                                                    ||
+                                                    GlobalSettings.FavoriteCharacters.Any(x =>
+                                                        Path.GetFileNameWithoutExtension(x) == strAutosaveName))
+                                                    blnAnyAutosaveInMru = true;
+                                                else if (objAutosave != objMostRecentAutosave &&
+                                                         objAutosave.LastWriteTimeUtc < objOldAutosaveTimeThreshold
+                                                         &&
+                                                         !setFilesToLoad.Contains(strAutosave))
+                                                    lstOldAutosaves.Add(strAutosave);
+                                            }
+
+                                            if (objMostRecentAutosave != null)
+                                            {
+                                                // Might have had a crash for an unsaved character, so prompt if we want to load them
+                                                if (blnAnyAutosaveInMru &&
+                                                    !setFilesToLoad.Contains(objMostRecentAutosave.FullName))
                                                 {
-                                                    // Might have had a crash for an unsaved character, so prompt if we want to load them
-                                                    if (blnAnyAutosaveInMru &&
-                                                        !setFilesToLoad.Contains(objMostRecentAutosave.FullName))
+                                                    string strAutosaveName
+                                                        = Path.GetFileNameWithoutExtension(
+                                                            objMostRecentAutosave.Name);
+                                                    if (GlobalSettings.MostRecentlyUsedCharacters.All(
+                                                            x => Path.GetFileNameWithoutExtension(x)
+                                                                 != strAutosaveName) &&
+                                                        GlobalSettings.FavoriteCharacters.All(
+                                                            x => Path.GetFileNameWithoutExtension(x)
+                                                                 != strAutosaveName))
                                                     {
-                                                        string strAutosaveName
-                                                            = Path.GetFileNameWithoutExtension(
-                                                                objMostRecentAutosave.Name);
-                                                        if (GlobalSettings.MostRecentlyUsedCharacters.All(
-                                                                x => Path.GetFileNameWithoutExtension(x)
-                                                                     != strAutosaveName) &&
-                                                            GlobalSettings.FavoriteCharacters.All(
-                                                                x => Path.GetFileNameWithoutExtension(x)
-                                                                     != strAutosaveName))
-                                                        {
-                                                            if (Program.ShowMessageBox(
-                                                                    string.Format(GlobalSettings.CultureInfo,
-                                                                        await LanguageManager.GetStringAsync(
-                                                                                "Message_PossibleCrashAutosaveFound",
-                                                                                token: _objGenericToken)
-                                                                            .ConfigureAwait(false),
-                                                                        objMostRecentAutosave.Name,
-                                                                        objMostRecentAutosave.LastWriteTimeUtc
-                                                                            .ToLocalTime()),
-                                                                    await LanguageManager.GetStringAsync(
-                                                                        "MessageTitle_AutosaveFound",
-                                                                        token: _objGenericToken).ConfigureAwait(false),
-                                                                    MessageBoxButtons.YesNo, MessageBoxIcon.Question)
-                                                                == DialogResult.Yes)
-                                                                setFilesToLoad.Add(objMostRecentAutosave.FullName);
-                                                            else
-                                                                lstOldAutosaves.Add(objMostRecentAutosave.FullName);
-                                                        }
-                                                        else if (objMostRecentAutosave.LastWriteTimeUtc
-                                                                 < objOldAutosaveTimeThreshold)
+                                                        if (Program.ShowMessageBox(
+                                                                string.Format(GlobalSettings.CultureInfo,
+                                                                              await LanguageManager.GetStringAsync(
+                                                                                      "Message_PossibleCrashAutosaveFound",
+                                                                                      token: _objGenericToken)
+                                                                                  .ConfigureAwait(false),
+                                                                              objMostRecentAutosave.Name,
+                                                                              objMostRecentAutosave.LastWriteTimeUtc
+                                                                                  .ToLocalTime()),
+                                                                await LanguageManager.GetStringAsync(
+                                                                    "MessageTitle_AutosaveFound",
+                                                                    token: _objGenericToken).ConfigureAwait(false),
+                                                                MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                                                            == DialogResult.Yes)
+                                                            setFilesToLoad.Add(objMostRecentAutosave.FullName);
+                                                        else
                                                             lstOldAutosaves.Add(objMostRecentAutosave.FullName);
                                                     }
                                                     else if (objMostRecentAutosave.LastWriteTimeUtc
                                                              < objOldAutosaveTimeThreshold)
                                                         lstOldAutosaves.Add(objMostRecentAutosave.FullName);
                                                 }
-
-                                                // Delete all old autosaves
-                                                List<Task> lstTasks = new List<Task>(lstOldAutosaves.Count);
-                                                foreach (string strOldAutosave in lstOldAutosaves)
-                                                {
-                                                    lstTasks.Add(
-                                                        Utils.SafeDeleteFileAsync(
-                                                            strOldAutosave, token: _objGenericToken));
-                                                }
-
-                                                await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                                                else if (objMostRecentAutosave.LastWriteTimeUtc
+                                                         < objOldAutosaveTimeThreshold)
+                                                    lstOldAutosaves.Add(objMostRecentAutosave.FullName);
                                             }
 
-                                            if (setFilesToLoad.Count > 0)
+                                            // Delete all old autosaves
+                                            List<Task> lstTasks = new List<Task>(lstOldAutosaves.Count);
+                                            foreach (string strOldAutosave in lstOldAutosaves)
                                             {
-                                                await frmLoadingBar.MyForm.ResetAsync(
-                                                    (GlobalSettings.AllowEasterEggs ? 3 : 2)
-                                                    + setFilesToLoad.Count * Character.NumLoadingSections,
-                                                    _objGenericToken).ConfigureAwait(false);
-                                                List<Task> tskLoadingTasks = new List<Task>(setFilesToLoad.Count);
-                                                foreach (string strFile in setFilesToLoad)
-                                                {
-                                                    tskLoadingTasks.Add(Task.Run(async () =>
-                                                    {
-                                                        Character objCharacter
-                                                            = await Program.LoadCharacterAsync(
-                                                                // ReSharper disable once AccessToDisposedClosure
-                                                                strFile, frmLoadingBar: frmLoadingBar.MyForm,
-                                                                token: _objGenericToken).ConfigureAwait(false);
-                                                        // ReSharper disable once AccessToDisposedClosure
-                                                        await lstCharactersToLoad
-                                                              .AddAsync(objCharacter, _objGenericToken)
-                                                              .ConfigureAwait(false);
-                                                    }, _objGenericToken));
-                                                }
-
-                                                objCharacterLoadingTask = Task.WhenAll(tskLoadingTasks);
+                                                lstTasks.Add(
+                                                    Utils.SafeDeleteFileAsync(
+                                                        strOldAutosave, token: _objGenericToken));
                                             }
+
+                                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                                        }
+
+                                        if (setFilesToLoad.Count > 0)
+                                        {
+                                            await frmLoadingBar.MyForm.ResetAsync(
+                                                (GlobalSettings.AllowEasterEggs ? 3 : 2)
+                                                + setFilesToLoad.Count * Character.NumLoadingSections,
+                                                _objGenericToken).ConfigureAwait(false);
+                                            List<Task> tskLoadingTasks = new List<Task>(setFilesToLoad.Count);
+                                            foreach (string strFile in setFilesToLoad)
+                                            {
+                                                tskLoadingTasks.Add(Task.Run(async () =>
+                                                {
+                                                    Character objCharacter
+                                                        = await Program.LoadCharacterAsync(
+                                                            // ReSharper disable once AccessToDisposedClosure
+                                                            strFile, frmLoadingBar: frmLoadingBar.MyForm,
+                                                            token: _objGenericToken).ConfigureAwait(false);
+                                                    // ReSharper disable once AccessToDisposedClosure
+                                                    lstCharactersToLoad.Add(objCharacter);
+                                                }, _objGenericToken));
+                                            }
+
+                                            objCharacterLoadingTask = Task.WhenAll(tskLoadingTasks);
+                                        }
+                                    }
+                                    finally
+                                    {
+                                        Utils.StringHashSetPool.Return(setFilesToLoad);
+                                    }
+                                }
+
+                                await frmLoadingBar.MyForm.PerformStepAsync(
+                                    await LanguageManager.GetStringAsync(
+                                        "Title_MasterIndex", token: _objGenericToken).ConfigureAwait(false),
+                                    token: _objGenericToken).ConfigureAwait(false);
+
+                                MasterIndex frmMasterIndex = MasterIndex;
+                                if (frmMasterIndex != null)
+                                {
+                                    await frmMasterIndex.DoThreadSafeAsync(x =>
+                                    {
+                                        if (CharacterRoster == null)
+                                            x.WindowState = FormWindowState.Maximized;
+                                        _objGenericToken.ThrowIfCancellationRequested();
+                                        x.Show();
+                                    }, token: _objGenericToken).ConfigureAwait(false);
+                                }
+
+                                await frmLoadingBar.MyForm.PerformStepAsync(
+                                    await LanguageManager.GetStringAsync(
+                                        "String_CharacterRoster", token: _objGenericToken).ConfigureAwait(false),
+                                    token: _objGenericToken).ConfigureAwait(false);
+
+                                CharacterRoster frmCharacterRoster = CharacterRoster;
+                                if (frmCharacterRoster != null)
+                                {
+                                    await frmCharacterRoster.DoThreadSafeAsync(x =>
+                                    {
+                                        if (MasterIndex == null)
+                                            x.WindowState = FormWindowState.Maximized;
+                                        _objGenericToken.ThrowIfCancellationRequested();
+                                        x.Show();
+                                    }, token: _objGenericToken).ConfigureAwait(false);
+                                }
+
+                                if (GlobalSettings.AllowEasterEggs)
+                                {
+                                    await frmLoadingBar.MyForm.PerformStepAsync(
+                                        await LanguageManager.GetStringAsync(
+                                            "String_Chummy", token: _objGenericToken).ConfigureAwait(false),
+                                        token: _objGenericToken).ConfigureAwait(false);
+                                    _mascotChummy = await this.DoThreadSafeFuncAsync(x =>
+                                    {
+                                        Chummy objReturn = new Chummy(null);
+                                        try
+                                        {
+                                            return objReturn;
                                         }
                                         finally
                                         {
-                                            Utils.StringHashSetPool.Return(setFilesToLoad);
-                                        }
-                                    }
-
-                                    await frmLoadingBar.MyForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync(
-                                            "Title_MasterIndex", token: _objGenericToken).ConfigureAwait(false),
-                                        token: _objGenericToken).ConfigureAwait(false);
-
-                                    MasterIndex frmMasterIndex = MasterIndex;
-                                    if (frmMasterIndex != null)
-                                    {
-                                        await frmMasterIndex.DoThreadSafeAsync(x =>
-                                        {
-                                            if (CharacterRoster == null)
-                                                x.WindowState = FormWindowState.Maximized;
-                                            _objGenericToken.ThrowIfCancellationRequested();
-                                            x.Show();
-                                        }, token: _objGenericToken).ConfigureAwait(false);
-                                    }
-
-                                    await frmLoadingBar.MyForm.PerformStepAsync(
-                                        await LanguageManager.GetStringAsync(
-                                            "String_CharacterRoster", token: _objGenericToken).ConfigureAwait(false),
-                                        token: _objGenericToken).ConfigureAwait(false);
-
-                                    CharacterRoster frmCharacterRoster = CharacterRoster;
-                                    if (frmCharacterRoster != null)
-                                    {
-                                        await frmCharacterRoster.DoThreadSafeAsync(x =>
-                                        {
-                                            if (MasterIndex == null)
-                                                x.WindowState = FormWindowState.Maximized;
-                                            _objGenericToken.ThrowIfCancellationRequested();
-                                            x.Show();
-                                        }, token: _objGenericToken).ConfigureAwait(false);
-                                    }
-
-                                    if (GlobalSettings.AllowEasterEggs)
-                                    {
-                                        await frmLoadingBar.MyForm.PerformStepAsync(
-                                            await LanguageManager.GetStringAsync(
-                                                "String_Chummy", token: _objGenericToken).ConfigureAwait(false),
-                                            token: _objGenericToken).ConfigureAwait(false);
-                                        _mascotChummy = await this.DoThreadSafeFuncAsync(x =>
-                                        {
-                                            Chummy objReturn = new Chummy(null);
-                                            try
-                                            {
-                                                return objReturn;
-                                            }
-                                            finally
-                                            {
-                                                x.Disposed += (o, args) => objReturn.Dispose();
-                                            }
-                                        }, token: _objGenericToken).ConfigureAwait(false);
-                                        await _mascotChummy.DoThreadSafeAsync(
-                                            x => x.Show(this), token: _objGenericToken).ConfigureAwait(false);
-                                    }
-
-                                    // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
-                                    frmMasterIndex = MasterIndex;
-                                    frmCharacterRoster = CharacterRoster;
-                                    if (frmMasterIndex != null && frmCharacterRoster != null)
-                                    {
-                                        await frmMasterIndex.DoThreadSafeAsync(
-                                            x => x.WindowState = FormWindowState.Maximized,
-                                            token: _objGenericToken).ConfigureAwait(false);
-                                        await frmCharacterRoster.DoThreadSafeAsync(
-                                                                    x => x.WindowState = FormWindowState.Maximized,
-                                                                    token: _objGenericToken)
-                                                                .ConfigureAwait(false);
-                                    }
-
-                                    if (blnShowTest)
-                                    {
-                                        TestDataEntries frmTestData
-                                            = await this.DoThreadSafeFuncAsync(
-                                                            () => new TestDataEntries(), token: _objGenericToken)
-                                                        .ConfigureAwait(false);
-                                        await frmTestData.DoThreadSafeAsync(x => x.Show(), token: _objGenericToken)
-                                                         .ConfigureAwait(false);
-                                    }
-
-                                    await Program.PluginLoader.CallPlugins(
-                                        toolsMenu, opFrmChummerMain, _objGenericToken).ConfigureAwait(false);
-
-                                    // Set the Tag for each ToolStrip item so it can be translated.
-                                    await menuStrip.DoThreadSafeAsync(x =>
-                                    {
-                                        foreach (ToolStripMenuItem tssItem in x.Items.OfType<ToolStripMenuItem>())
-                                        {
-                                            tssItem.UpdateLightDarkMode(token: _objGenericToken);
-                                            tssItem.TranslateToolStripItemsRecursively(token: _objGenericToken);
+                                            x.Disposed += (o, args) => objReturn.Dispose();
                                         }
                                     }, token: _objGenericToken).ConfigureAwait(false);
-                                    await mnuProcessFile.DoThreadSafeAsync(x =>
-                                    {
-                                        foreach (ToolStripMenuItem tssItem in x.Items.OfType<ToolStripMenuItem>())
-                                        {
-                                            tssItem.UpdateLightDarkMode(token: _objGenericToken);
-                                            tssItem.TranslateToolStripItemsRecursively(token: _objGenericToken);
-                                        }
-                                    }, token: _objGenericToken).ConfigureAwait(false);
-
-                                    if (objCharacterLoadingTask?.IsCompleted == false)
-                                        await objCharacterLoadingTask.ConfigureAwait(false);
+                                    await _mascotChummy.DoThreadSafeAsync(
+                                        x => x.Show(this), token: _objGenericToken).ConfigureAwait(false);
                                 }
 
-                                if (lstCharactersToLoad.Count > 0)
-                                    await OpenCharacterList(lstCharactersToLoad, token: _objGenericToken)
-                                        .ConfigureAwait(false);
+                                // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
+                                frmMasterIndex = MasterIndex;
+                                frmCharacterRoster = CharacterRoster;
+                                if (frmMasterIndex != null && frmCharacterRoster != null)
+                                {
+                                    await frmMasterIndex.DoThreadSafeAsync(
+                                        x => x.WindowState = FormWindowState.Maximized,
+                                        token: _objGenericToken).ConfigureAwait(false);
+                                    await frmCharacterRoster.DoThreadSafeAsync(
+                                                                x => x.WindowState = FormWindowState.Maximized,
+                                                                token: _objGenericToken)
+                                                            .ConfigureAwait(false);
+                                }
+
+                                if (blnShowTest)
+                                {
+                                    TestDataEntries frmTestData
+                                        = await this.DoThreadSafeFuncAsync(
+                                                        () => new TestDataEntries(), token: _objGenericToken)
+                                                    .ConfigureAwait(false);
+                                    await frmTestData.DoThreadSafeAsync(x => x.Show(), token: _objGenericToken)
+                                                     .ConfigureAwait(false);
+                                }
+
+                                await Program.PluginLoader.CallPlugins(
+                                    toolsMenu, opFrmChummerMain, _objGenericToken).ConfigureAwait(false);
+
+                                // Set the Tag for each ToolStrip item so it can be translated.
+                                await menuStrip.DoThreadSafeAsync(x =>
+                                {
+                                    foreach (ToolStripMenuItem tssItem in x.Items.OfType<ToolStripMenuItem>())
+                                    {
+                                        tssItem.UpdateLightDarkMode(token: _objGenericToken);
+                                        tssItem.TranslateToolStripItemsRecursively(token: _objGenericToken);
+                                    }
+                                }, token: _objGenericToken).ConfigureAwait(false);
+                                await mnuProcessFile.DoThreadSafeAsync(x =>
+                                {
+                                    foreach (ToolStripMenuItem tssItem in x.Items.OfType<ToolStripMenuItem>())
+                                    {
+                                        tssItem.UpdateLightDarkMode(token: _objGenericToken);
+                                        tssItem.TranslateToolStripItemsRecursively(token: _objGenericToken);
+                                    }
+                                }, token: _objGenericToken).ConfigureAwait(false);
+
+                                if (objCharacterLoadingTask?.IsCompleted == false)
+                                    await objCharacterLoadingTask.ConfigureAwait(false);
                             }
-                            finally
-                            {
-                                await lstCharactersToLoad.DisposeAsync().ConfigureAwait(false);
-                            }
+
+                            if (lstCharactersToLoad.Count > 0)
+                                await OpenCharacterList(lstCharactersToLoad, token: _objGenericToken)
+                                    .ConfigureAwait(false);
                         }
                         catch (Exception ex)
                         {
@@ -1884,17 +1875,7 @@ namespace Chummer
                     _blnSkipReopenUntilAllClear = false;
                 }
 
-                List<Character> lstLocal;
-                IAsyncDisposable objLocker = await _lstCharactersToReopen.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
-                {
-                    lstLocal = await _lstCharactersToReopen.ToListAsync(token).ConfigureAwait(false);
-                    await _lstCharactersToReopen.ClearAsync(token).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
+                ConcurrentBag<Character> lstLocal = Interlocked.Exchange(ref _lstCharactersToReopen, new ConcurrentBag<Character>());
 
                 await Program.OpenCharacterList(lstLocal, token: token).ConfigureAwait(false);
             }
