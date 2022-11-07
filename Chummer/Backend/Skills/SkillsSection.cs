@@ -2509,8 +2509,8 @@ namespace Chummer.Backend.Skills
                 objExistingSkill.Notes += objNewSkill.Notes;
                 objExistingSkill.NotesColor = objNewSkill.NotesColor;
                 objExistingSkill.Specializations.AddRangeWithSort(objNewSkill.Specializations, CompareSpecializations);
-                objNewSkill.Remove();
             }
+            objNewSkill.Remove();
         }
 
         private static async Task MergeSkillsAsync(Skill objExistingSkill, Skill objNewSkill, CancellationToken token = default)
@@ -2535,8 +2535,8 @@ namespace Chummer.Backend.Skills
                 await objExistingSkill.Specializations
                                       .AddAsyncRangeWithSortAsync(objNewSkill.Specializations, CompareSpecializations,
                                                                   token: token).ConfigureAwait(false);
-                await objNewSkill.RemoveAsync(token).ConfigureAwait(false);
             }
+            await objNewSkill.RemoveAsync(token).ConfigureAwait(false);
         }
 
         private List<ListItem> _lstDefaultKnowledgeSkills;
