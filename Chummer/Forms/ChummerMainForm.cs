@@ -879,7 +879,7 @@ namespace Chummer
                                     await objCharacterLoadingTask.ConfigureAwait(false);
                             }
 
-                            if (lstCharactersToLoad.Count > 0)
+                            if (!lstCharactersToLoad.IsEmpty)
                                 await OpenCharacterList(lstCharactersToLoad, token: _objGenericToken)
                                     .ConfigureAwait(false);
                         }

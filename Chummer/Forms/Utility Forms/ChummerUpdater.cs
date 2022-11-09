@@ -426,22 +426,31 @@ namespace Chummer
 
             if (File.Exists(_strTempLatestVersionChangelogPath))
             {
-                if (!await Utils.SafeDeleteFileAsync(_strTempLatestVersionChangelogPath + ".old", !SilentMode, token: token).ConfigureAwait(false))
+                if (!await Utils
+                           .SafeDeleteFileAsync(_strTempLatestVersionChangelogPath + ".old", !SilentMode, token: token)
+                           .ConfigureAwait(false))
                     return;
                 File.Move(_strTempLatestVersionChangelogPath, _strTempLatestVersionChangelogPath + ".old");
             }
+
             string strUrl = "https://raw.githubusercontent.com/chummer5a/chummer5a/" + LatestVersion + "/Chummer/changelog.txt";
             try
             {
                 Uri uriConnectionAddress = new Uri(strUrl);
-                if (!await Utils.SafeDeleteFileAsync(_strTempLatestVersionChangelogPath + ".tmp", !SilentMode, token: token).ConfigureAwait(false))
+                if (!await Utils
+                           .SafeDeleteFileAsync(_strTempLatestVersionChangelogPath + ".tmp", !SilentMode, token: token)
+                           .ConfigureAwait(false))
                     return;
-                await _clientChangelogDownloader.DownloadFileTaskAsync(uriConnectionAddress, _strTempLatestVersionChangelogPath + ".tmp").ConfigureAwait(false);
+                await _clientChangelogDownloader
+                      .DownloadFileTaskAsync(uriConnectionAddress, _strTempLatestVersionChangelogPath + ".tmp")
+                      .ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
                 File.Move(_strTempLatestVersionChangelogPath + ".tmp", _strTempLatestVersionChangelogPath);
             }
             catch (WebException ex)
             {
+                if (File.Exists(_strTempLatestVersionChangelogPath + ".old"))
+                    File.Move(_strTempLatestVersionChangelogPath + ".old", _strTempLatestVersionChangelogPath);
                 string strException = ex.ToString();
                 int intNewLineLocation = strException.IndexOf(Environment.NewLine, StringComparison.Ordinal);
                 if (intNewLineLocation == -1)
@@ -451,13 +460,18 @@ namespace Chummer
                 _strExceptionString = strException;
                 if (!SilentMode)
                     Program.ShowMessageBox(this,
-                        string.Format(GlobalSettings.CultureInfo,
-                            await LanguageManager.GetStringAsync("Warning_Update_CouldNotConnectException", token: token).ConfigureAwait(false), strException),
-                        Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                           string.Format(GlobalSettings.CultureInfo,
+                                                         await LanguageManager
+                                                               .GetStringAsync(
+                                                                   "Warning_Update_CouldNotConnectException",
+                                                                   token: token).ConfigureAwait(false), strException),
+                                           Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
             catch (UriFormatException ex)
             {
+                if (File.Exists(_strTempLatestVersionChangelogPath + ".old"))
+                    File.Move(_strTempLatestVersionChangelogPath + ".old", _strTempLatestVersionChangelogPath);
                 string strException = ex.ToString();
                 int intNewLineLocation = strException.IndexOf(Environment.NewLine, StringComparison.Ordinal);
                 if (intNewLineLocation == -1)
@@ -467,10 +481,19 @@ namespace Chummer
                 _strExceptionString = strException;
                 if (!SilentMode)
                     Program.ShowMessageBox(this,
-                        string.Format(GlobalSettings.CultureInfo,
-                            await LanguageManager.GetStringAsync("Warning_Update_CouldNotConnectException", token: token).ConfigureAwait(false), strException),
-                        Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                           string.Format(GlobalSettings.CultureInfo,
+                                                         await LanguageManager
+                                                               .GetStringAsync(
+                                                                   "Warning_Update_CouldNotConnectException",
+                                                                   token: token).ConfigureAwait(false), strException),
+                                           Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
+            }
+            catch
+            {
+                if (File.Exists(_strTempLatestVersionChangelogPath + ".old"))
+                    File.Move(_strTempLatestVersionChangelogPath + ".old", _strTempLatestVersionChangelogPath);
+                throw;
             }
 
             _blnIsConnected = true;
@@ -1089,7 +1112,7 @@ namespace Chummer
                     {
                         try
                         {
-                            string strOriginal = strBackupFileName.Substring(0, strBackupFileName.Length - 4);
+                            string strOriginal = Path.GetFileNameWithoutExtension(strBackupFileName);
                             if (File.Exists(strOriginal)
                                 && !await Utils.SafeDeleteFileAsync(strOriginal, false, token: token)
                                                .ConfigureAwait(false))
