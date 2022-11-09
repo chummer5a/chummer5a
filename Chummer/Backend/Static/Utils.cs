@@ -674,6 +674,10 @@ namespace Chummer
                         }
                     }
                     token.ThrowIfCancellationRequested();
+                    // Need these two to handle disposal of file handles
+                    GC.Collect();
+                    GC.WaitForPendingFinalizers();
+                    token.ThrowIfCancellationRequested();
                     if (blnSync)
                         Directory.Delete(strPath, true);
                     else
