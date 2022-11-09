@@ -243,6 +243,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             CancellationTokenSource objNewSource = new CancellationTokenSource();
+            CancellationToken objToken = objNewSource.Token;
             CancellationTokenSource objTemp
                 = Interlocked.Exchange(ref _objConnectionLoaderCancellationTokenSource, objNewSource);
             if (objTemp?.IsCancellationRequested == false)
@@ -275,7 +276,6 @@ namespace Chummer
                 objNewSource.Dispose();
                 throw;
             }
-            CancellationToken objToken = objNewSource.Token;
             _tskConnectionLoader = Task.Run(async () =>
             {
                 await LoadConnection(objToken).ConfigureAwait(false);
@@ -490,6 +490,7 @@ namespace Chummer
                 if (value)
                 {
                     CancellationTokenSource objNewSource = new CancellationTokenSource();
+                    CancellationToken objToken = objNewSource.Token;
                     CancellationTokenSource objTemp
                         = Interlocked.Exchange(ref _objChangelogDownloaderCancellationTokenSource, objNewSource);
                     if (objTemp?.IsCancellationRequested == false)
@@ -500,7 +501,6 @@ namespace Chummer
                     if ((_tskConnectionLoader == null || (_tskConnectionLoader.IsCompleted && (_tskConnectionLoader.IsCanceled ||
                                                                                                _tskConnectionLoader.IsFaulted))) && _tskChangelogDownloader?.IsCompleted != false)
                     {
-                        CancellationToken objToken = objNewSource.Token;
                         _tskChangelogDownloader = Task.Run(() => DownloadChangelog(objToken), objToken);
                     }
                     else

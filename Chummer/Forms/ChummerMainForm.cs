@@ -1178,6 +1178,7 @@ namespace Chummer
             try
             {
                 CancellationTokenSource objNewSource = new CancellationTokenSource();
+                CancellationToken objNewToken = objNewSource.Token;
                 CancellationTokenSource objTemp
                     = Interlocked.Exchange(ref _objVersionUpdaterCancellationTokenSource, objNewSource);
                 if (objTemp?.IsCancellationRequested == false)
@@ -1222,7 +1223,6 @@ namespace Chummer
                     throw;
                 }
 
-                CancellationToken objNewToken = objNewSource.Token;
                 _tskVersionUpdate = Task.Run(async () =>
                 {
                     while (true)

@@ -427,6 +427,7 @@ namespace Chummer
         private async void RefreshWatchList(object sender, EventArgs e)
         {
             CancellationTokenSource objNewSource = new CancellationTokenSource();
+            CancellationToken innerToken = objNewSource.Token;
             CancellationTokenSource objTemp
                 = Interlocked.Exchange(ref _objWatchFolderRefreshCancellationTokenSource, objNewSource);
             if (objTemp?.IsCancellationRequested == false)
@@ -457,8 +458,6 @@ namespace Chummer
                 objNewSource.Dispose();
                 return;
             }
-
-            CancellationToken innerToken = objNewSource.Token;
 
             try
             {

@@ -81,6 +81,7 @@ namespace Chummer
             if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x), token: _objGenericToken).ConfigureAwait(false) != DialogResult.OK)
                 return;
             CancellationTokenSource objNewSource = new CancellationTokenSource();
+            CancellationToken objToken = objNewSource.Token;
             CancellationTokenSource objTemp = Interlocked.Exchange(ref _objPrinterCancellationTokenSource, objNewSource);
             if (objTemp?.IsCancellationRequested == false)
             {
@@ -113,7 +114,6 @@ namespace Chummer
 
             if (_frmPrintView != null)
             {
-                CancellationToken objToken = objNewSource.Token;
                 _tskPrinter = Task.Run(() => DoPrint(objToken), objToken);
             }
             else
@@ -133,6 +133,7 @@ namespace Chummer
                 if (objSelectedNode != null)
                 {
                     CancellationTokenSource objNewSource = new CancellationTokenSource();
+                    CancellationToken objToken = objNewSource.Token;
                     CancellationTokenSource objTemp = Interlocked.Exchange(ref _objPrinterCancellationTokenSource, objNewSource);
                     if (objTemp?.IsCancellationRequested == false)
                     {
@@ -161,7 +162,6 @@ namespace Chummer
                     }
                     if (_frmPrintView != null)
                     {
-                        CancellationToken objToken = objNewSource.Token;
                         _tskPrinter = Task.Run(() => DoPrint(objToken), objToken);
                     }
                     else
@@ -180,6 +180,7 @@ namespace Chummer
         private async void cmdPrint_Click(object sender, EventArgs e)
         {
             CancellationTokenSource objNewSource = new CancellationTokenSource();
+            CancellationToken objToken = objNewSource.Token;
             CancellationTokenSource objTemp = Interlocked.Exchange(ref _objPrinterCancellationTokenSource, objNewSource);
             if (objTemp?.IsCancellationRequested == false)
             {
@@ -205,7 +206,6 @@ namespace Chummer
                 objNewSource.Dispose();
                 throw;
             }
-            CancellationToken objToken = objNewSource.Token;
             _tskPrinter = Task.Run(() => DoPrint(objToken), objToken);
         }
 
