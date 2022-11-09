@@ -1199,7 +1199,7 @@ namespace Chummer
                         }
                         finally
                         {
-                            while (stkLockedAttribs.Peek() != null)
+                            while (stkLockedAttribs.Count > 0)
                             {
                                 stkLockedAttribs.Pop().LockObject.ExitReadLock();
                             }
