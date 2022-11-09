@@ -421,6 +421,7 @@ namespace Chummer
                             else
                             {
                                 CancellationTokenSource objNewSource = new CancellationTokenSource();
+                                CancellationToken objToken = objNewSource.Token;
                                 CancellationTokenSource objTemp
                                     = Interlocked.Exchange(ref _objXmlGeneratorCancellationTokenSource, objNewSource);
                                 if (objTemp?.IsCancellationRequested == false)
@@ -457,7 +458,6 @@ namespace Chummer
                                     throw;
                                 }
 
-                                CancellationToken objToken = objNewSource.Token;
                                 _tskXmlGenerator = _strXslt == "JSON"
                                     ? Task.Run(() => GenerateJson(objToken), objToken)
                                     : Task.Run(() => GenerateXml(objToken), objToken);
@@ -473,6 +473,7 @@ namespace Chummer
                 {
                     token.ThrowIfCancellationRequested();
                     CancellationTokenSource objNewSource = new CancellationTokenSource();
+                    CancellationToken objToken = objNewSource.Token;
                     CancellationTokenSource objTemp
                         = Interlocked.Exchange(ref _objCharacterXmlGeneratorCancellationTokenSource, objNewSource);
                     if (objTemp?.IsCancellationRequested == false)
@@ -509,7 +510,6 @@ namespace Chummer
                         throw;
                     }
 
-                    CancellationToken objToken = objNewSource.Token;
                     _tskCharacterXmlGenerator = Task.Run(() => GenerateCharacterXml(objToken), objToken);
                 }
             }
