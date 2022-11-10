@@ -63,35 +63,62 @@ namespace Chummer
 
         #region Form Events
 
-        [Obsolete("This constructor is for use by form designers only.", true)]
-        public CharacterCreate()
+        private void ConstructorCommon()
         {
             InitializeComponent();
             tabSkillsUc.MyToken = GenericToken;
             tabPowerUc.MyToken = GenericToken;
-            _fntNormal = new Font(treQualities.Font, FontStyle.Regular);
-            _fntStrikeout = new Font(treQualities.Font, FontStyle.Strikeout);
             Disposed += (sender, args) =>
             {
                 _fntNormal.Dispose();
                 _fntStrikeout.Dispose();
+                // These tabs might not necessarily be present in our form, so check to dispose them manually
+                if (!tabInitiation.IsDisposed)
+                {
+                    tabInitiation.Dispose();
+                }
+                if (!tabMagician.IsDisposed)
+                {
+                    tabMagician.Dispose();
+                }
+                if (!tabAdept.IsDisposed)
+                {
+                    tabAdept.Dispose();
+                }
+                if (!tabTechnomancer.IsDisposed)
+                {
+                    tabTechnomancer.Dispose();
+                }
+                if (!tabAdvancedPrograms.IsDisposed)
+                {
+                    tabAdvancedPrograms.Dispose();
+                }
+                if (!tabCritter.IsDisposed)
+                {
+                    tabCritter.Dispose();
+                }
+                if (!tabEnemies.IsDisposed)
+                {
+                    tabEnemies.Dispose();
+                }
             };
+        }
+
+        [Obsolete("This constructor is for use by form designers only.", true)]
+        public CharacterCreate()
+        {
+            ConstructorCommon();
+            _fntNormal = new Font(treQualities.Font, FontStyle.Regular);
+            _fntStrikeout = new Font(treQualities.Font, FontStyle.Strikeout);
         }
 
         public CharacterCreate(Character objCharacter) : base(objCharacter)
         {
-            InitializeComponent();
-            tabSkillsUc.MyToken = GenericToken;
-            tabSkillsUc.CachedCharacter = objCharacter;
-            tabPowerUc.MyToken = GenericToken;
-            tabPowerUc.CachedCharacter = objCharacter;
+            ConstructorCommon();
             _fntNormal = new Font(treQualities.Font, FontStyle.Regular);
             _fntStrikeout = new Font(treQualities.Font, FontStyle.Strikeout);
-            Disposed += (sender, args) =>
-            {
-                _fntNormal.Dispose();
-                _fntStrikeout.Dispose();
-            };
+            tabSkillsUc.CachedCharacter = objCharacter;
+            tabPowerUc.CachedCharacter = objCharacter;
 
             GlobalSettings.ClipboardChanged += RefreshPasteStatus;
             tabCharacterTabs.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
@@ -101,8 +128,12 @@ namespace Chummer
             tabStreetGearTabs.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
 
             // Add EventHandlers for the various events MAG, RES, Qualities, etc.
-            CharacterObject.PropertyChanged += OnCharacterPropertyChanged;
-            CharacterObject.SettingsPropertyChanged += OnCharacterSettingsPropertyChanged;
+            using (objCharacter.LockObject.EnterWriteLock())
+            {
+                objCharacter.PropertyChanged += OnCharacterPropertyChanged;
+                objCharacter.SettingsPropertyChanged += OnCharacterSettingsPropertyChanged;
+            }
+
             tabSkillsUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
             lmtControl.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
             lmtControl.MakeDirty += MakeDirty;
@@ -593,7 +624,6 @@ namespace Chummer
                                         using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                    out List<ListItem> lstSpirit))
                                         {
-                                            lstSpirit.Add(ListItem.Blank);
                                             if (xmlTraditionsBaseChummerNode != null)
                                             {
                                                 foreach (XPathNavigator xmlSpirit in await xmlTraditionsBaseChummerNode
@@ -618,6 +648,7 @@ namespace Chummer
                                             }
 
                                             lstSpirit.Sort(CompareListItems.CompareNames);
+                                            lstSpirit.Insert(0, ListItem.Blank);
 
                                             async ValueTask BindSpiritVisibility(ElasticComboBox cboBox, Label lblName,
                                                 string strSpirit)
@@ -1482,8 +1513,11 @@ namespace Chummer
                     CharacterObject.Cyberware.CollectionChanged -= CyberwareCollectionChanged;
                     CharacterObject.Vehicles.CollectionChanged -= VehicleCollectionChanged;
                     CharacterObject.VehicleLocations.CollectionChanged -= VehicleLocationCollectionChanged;
-                    CharacterObject.PropertyChanged -= OnCharacterPropertyChanged;
-                    CharacterObject.SettingsPropertyChanged -= OnCharacterSettingsPropertyChanged;
+                    using (CharacterObject.LockObject.EnterWriteLock())
+                    {
+                        CharacterObject.PropertyChanged -= OnCharacterPropertyChanged;
+                        CharacterObject.SettingsPropertyChanged -= OnCharacterSettingsPropertyChanged;
+                    }
 
                     SetupCommonCollectionDatabindings(false);
 
@@ -2459,7 +2493,6 @@ namespace Chummer
                                     using (new FetchSafelyFromPool<List<ListItem>>(
                                                Utils.ListItemListPool, out List<ListItem> lstSpirit))
                                     {
-                                        lstSpirit.Add(ListItem.Blank);
                                         if (xmlTraditionsBaseChummerNode != null)
                                         {
                                             foreach (XPathNavigator xmlSpirit in await xmlTraditionsBaseChummerNode
@@ -2481,6 +2514,7 @@ namespace Chummer
                                         }
 
                                         lstSpirit.Sort(CompareListItems.CompareNames);
+                                        lstSpirit.Insert(0, ListItem.Blank);
                                         await cboSpiritCombat.PopulateWithListItemsAsync(lstSpirit, GenericToken).ConfigureAwait(false);
                                         await cboSpiritDetection.PopulateWithListItemsAsync(lstSpirit, GenericToken).ConfigureAwait(false);
                                         await cboSpiritHealth.PopulateWithListItemsAsync(lstSpirit, GenericToken).ConfigureAwait(false);

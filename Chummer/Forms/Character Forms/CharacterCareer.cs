@@ -60,35 +60,62 @@ namespace Chummer
 
         #region Form Events
 
-        [Obsolete("This constructor is for use by form designers only.", true)]
-        public CharacterCareer()
+        private void ConstructorCommon()
         {
             InitializeComponent();
             tabSkillsUc.MyToken = GenericToken;
             tabPowerUc.MyToken = GenericToken;
-            _fntNormal = new Font(treQualities.Font, FontStyle.Regular);
-            _fntStrikeout = new Font(treQualities.Font, FontStyle.Strikeout);
             Disposed += (sender, args) =>
             {
                 _fntNormal.Dispose();
                 _fntStrikeout.Dispose();
+                // These tabs might not necessarily be present in our form, so check to dispose them manually
+                if (!tabInitiation.IsDisposed)
+                {
+                    tabInitiation.Dispose();
+                }
+                if (!tabMagician.IsDisposed)
+                {
+                    tabMagician.Dispose();
+                }
+                if (!tabAdept.IsDisposed)
+                {
+                    tabAdept.Dispose();
+                }
+                if (!tabTechnomancer.IsDisposed)
+                {
+                    tabTechnomancer.Dispose();
+                }
+                if (!tabAdvancedPrograms.IsDisposed)
+                {
+                    tabAdvancedPrograms.Dispose();
+                }
+                if (!tabCritter.IsDisposed)
+                {
+                    tabCritter.Dispose();
+                }
+                if (!tabEnemies.IsDisposed)
+                {
+                    tabEnemies.Dispose();
+                }
             };
+        }
+
+        [Obsolete("This constructor is for use by form designers only.", true)]
+        public CharacterCareer()
+        {
+            ConstructorCommon();
+            _fntNormal = new Font(treQualities.Font, FontStyle.Regular);
+            _fntStrikeout = new Font(treQualities.Font, FontStyle.Strikeout);
         }
 
         public CharacterCareer(Character objCharacter) : base(objCharacter)
         {
-            InitializeComponent();
-            tabSkillsUc.MyToken = GenericToken;
-            tabSkillsUc.CachedCharacter = objCharacter;
-            tabPowerUc.MyToken = GenericToken;
-            tabPowerUc.CachedCharacter = objCharacter;
+            ConstructorCommon();
             _fntNormal = new Font(treQualities.Font, FontStyle.Regular);
             _fntStrikeout = new Font(treQualities.Font, FontStyle.Strikeout);
-            Disposed += (sender, args) =>
-            {
-                _fntNormal.Dispose();
-                _fntStrikeout.Dispose();
-            };
+            tabSkillsUc.CachedCharacter = objCharacter;
+            tabPowerUc.CachedCharacter = objCharacter;
 
             tabCharacterTabs.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             tabInfo.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
@@ -102,9 +129,13 @@ namespace Chummer
             tabWeaponCM.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
 
             // Add EventHandlers for the MAG and RES enabled events and tab enabled events.
-            CharacterObject.PropertyChanged += OnCharacterPropertyChanged;
-            CharacterObject.SettingsPropertyChanged += OnCharacterSettingsPropertyChanged;
-            CharacterObject.AttributeSection.PropertyChanged += MakeDirtyWithCharacterUpdate;
+            using (objCharacter.LockObject.EnterWriteLock())
+            {
+                objCharacter.PropertyChanged += OnCharacterPropertyChanged;
+                objCharacter.SettingsPropertyChanged += OnCharacterSettingsPropertyChanged;
+                using (objCharacter.AttributeSection.LockObject.EnterWriteLock())
+                    objCharacter.AttributeSection.PropertyChanged += MakeDirtyWithCharacterUpdate;
+            }
 
             tabSkillsUc.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
             lmtControl.MakeDirtyWithCharacterUpdate += MakeDirtyWithCharacterUpdate;
@@ -1677,9 +1708,13 @@ namespace Chummer
                     CharacterObject.Drugs.CollectionChanged -= DrugCollectionChanged;
                     CharacterObject.SustainedCollection.CollectionChanged -= SustainedSpellCollectionChanged;
                     CharacterObject.ExpenseEntries.CollectionChanged -= ExpenseEntriesCollectionChanged;
-                    CharacterObject.AttributeSection.PropertyChanged -= MakeDirtyWithCharacterUpdate;
-                    CharacterObject.PropertyChanged -= OnCharacterPropertyChanged;
-                    CharacterObject.SettingsPropertyChanged -= OnCharacterSettingsPropertyChanged;
+                    using (CharacterObject.LockObject.EnterWriteLock())
+                    {
+                        using (CharacterObject.AttributeSection.LockObject.EnterWriteLock())
+                            CharacterObject.AttributeSection.PropertyChanged -= MakeDirtyWithCharacterUpdate;
+                        CharacterObject.PropertyChanged -= OnCharacterPropertyChanged;
+                        CharacterObject.SettingsPropertyChanged -= OnCharacterSettingsPropertyChanged;
+                    }
 
                     SetupCommonCollectionDatabindings(false);
 

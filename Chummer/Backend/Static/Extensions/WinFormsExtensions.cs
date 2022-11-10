@@ -1398,13 +1398,12 @@ namespace Chummer
                     }
 
                     blnDoReturnList = false;
-                    lsbThis.DataSource = lstItemsToSet;
                     s_dicListItemListAssignments.AddOrUpdate(lsbThis, lstItemsToSet, (x, y) =>
                     {
-                        if (y != null)
-                            Utils.ListItemListPool.Return(y);
+                        Utils.ListItemListPool.Return(y);
                         return lstItemsToSet;
                     });
+                    lsbThis.DataSource = lstItemsToSet;
                 }
                 finally
                 {
@@ -1468,13 +1467,12 @@ namespace Chummer
                     }
 
                     blnDoReturnList = false;
-                    cboThis.DataSource = lstItemsToSet;
                     s_dicListItemListAssignments.AddOrUpdate(cboThis, lstItemsToSet, (x, y) =>
                     {
-                        if (y != null)
-                            Utils.ListItemListPool.Return(y);
+                        Utils.ListItemListPool.Return(y);
                         return lstItemsToSet;
                     });
+                    cboThis.DataSource = lstItemsToSet;
                 }
                 finally
                 {
@@ -1538,13 +1536,12 @@ namespace Chummer
                     }
 
                     blnDoReturnList = false;
-                    cboThis.DataSource = lstItemsToSet;
                     s_dicListItemListAssignments.AddOrUpdate(cboThis, lstItemsToSet, (x, y) =>
                     {
-                        if (y != null)
-                            Utils.ListItemListPool.Return(y);
+                        Utils.ListItemListPool.Return(y);
                         return lstItemsToSet;
                     });
+                    cboThis.DataSource = lstItemsToSet;
                 }
                 finally
                 {

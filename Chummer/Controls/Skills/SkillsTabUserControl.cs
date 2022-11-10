@@ -397,10 +397,19 @@ namespace Chummer.UI.Skills
                     await UpdateKnoSkillRemainingAsync(objMyToken).ConfigureAwait(false);
                 }
 
-                _objCharacter.SkillsSection.Skills.ListChanged += SkillsOnListChanged;
-                _objCharacter.SkillsSection.SkillGroups.ListChanged += SkillGroupsOnListChanged;
-                _objCharacter.SkillsSection.KnowledgeSkills.ListChanged += KnowledgeSkillsOnListChanged;
-                _objCharacter.SkillsSection.PropertyChanged += SkillsSectionOnPropertyChanged;
+                IAsyncDisposable objLocker = await _objCharacter.SkillsSection.LockObject
+                                                                .EnterWriteLockAsync(objMyToken).ConfigureAwait(false);
+                try
+                {
+                    _objCharacter.SkillsSection.Skills.ListChanged += SkillsOnListChanged;
+                    _objCharacter.SkillsSection.SkillGroups.ListChanged += SkillGroupsOnListChanged;
+                    _objCharacter.SkillsSection.KnowledgeSkills.ListChanged += KnowledgeSkillsOnListChanged;
+                    _objCharacter.SkillsSection.PropertyChanged += SkillsSectionOnPropertyChanged;
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync();
+                }
             }
             finally
             {
@@ -528,10 +537,20 @@ namespace Chummer.UI.Skills
         {
             if (_objCharacter?.IsDisposed == false)
             {
-                _objCharacter.SkillsSection.Skills.ListChanged -= SkillsOnListChanged;
-                _objCharacter.SkillsSection.SkillGroups.ListChanged -= SkillGroupsOnListChanged;
-                _objCharacter.SkillsSection.KnowledgeSkills.ListChanged -= KnowledgeSkillsOnListChanged;
-                _objCharacter.SkillsSection.PropertyChanged -= SkillsSectionOnPropertyChanged;
+                try
+                {
+                    using (_objCharacter.SkillsSection.LockObject.EnterWriteLock())
+                    {
+                        _objCharacter.SkillsSection.Skills.ListChanged -= SkillsOnListChanged;
+                        _objCharacter.SkillsSection.SkillGroups.ListChanged -= SkillGroupsOnListChanged;
+                        _objCharacter.SkillsSection.KnowledgeSkills.ListChanged -= KnowledgeSkillsOnListChanged;
+                        _objCharacter.SkillsSection.PropertyChanged -= SkillsSectionOnPropertyChanged;
+                    }
+                }
+                catch (ObjectDisposedException)
+                {
+                    //swallow this
+                }
             }
         }
 
