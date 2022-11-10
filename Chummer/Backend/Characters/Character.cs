@@ -23080,7 +23080,7 @@ namespace Chummer
                     if (intNakedStackingValue < intAverageStrength
                         && (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorValue.StartsWith('-')))
                         intNakedStackingValue
-                            = Math.Min(intNakedStackingValue + objArmor.TotalArmor, intNakedStackingValue);
+                            = Math.Min(intNakedStackingValue + objArmor.TotalArmor, intAverageStrength);
                 }
 
                 // Run through list of Armor again to cap off any whose stacking bonuses are greater than STR
@@ -23210,7 +23210,7 @@ namespace Chummer
                     if (intNakedStackingValue < intAverageStrength
                         && (objArmor.ArmorValue.StartsWith('+') || objArmor.ArmorValue.StartsWith('-')))
                         intNakedStackingValue
-                            = Math.Min(intNakedStackingValue + objArmor.TotalArmor, intNakedStackingValue);
+                            = Math.Min(intNakedStackingValue + objArmor.TotalArmor, intAverageStrength);
                 }
 
                 // Run through list of Armor again to cap off any whose stacking bonuses are greater than STR
