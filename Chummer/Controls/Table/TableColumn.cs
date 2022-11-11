@@ -49,10 +49,9 @@ namespace Chummer.UI.Table
 
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && _setDependencies != null)
             {
-                if (_setDependencies != null)
-                    Utils.StringHashSetPool.Return(ref _setDependencies);
+                Utils.StringHashSetPool.Return(ref _setDependencies);
             }
         }
 

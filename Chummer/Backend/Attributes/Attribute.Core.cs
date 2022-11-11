@@ -48,7 +48,7 @@ namespace Chummer.Backend.Attributes
         private int _intKarma;
         private string _strAbbrev;
         private readonly Character _objCharacter;
-        private AttributeCategory _enumMetatypeCategory;
+        private AttributeCategory _eMetatypeCategory;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -65,7 +65,7 @@ namespace Chummer.Backend.Attributes
         public CharacterAttrib(Character character, string abbrev, AttributeCategory enumCategory)
         {
             _strAbbrev = abbrev;
-            _enumMetatypeCategory = enumCategory;
+            _eMetatypeCategory = enumCategory;
             _objCharacter = character;
             if (character != null)
             {
@@ -96,7 +96,7 @@ namespace Chummer.Backend.Attributes
                     _intMetatypeAugMax.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("base", _intBase.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("karma", _intKarma.ToString(GlobalSettings.InvariantCultureInfo));
-                objWriter.WriteElementString("metatypecategory", _enumMetatypeCategory.ToString());
+                objWriter.WriteElementString("metatypecategory", _eMetatypeCategory.ToString());
                 // External reader friendly stuff.
                 objWriter.WriteElementString("totalvalue", TotalValue.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteEndElement();
@@ -152,11 +152,11 @@ namespace Chummer.Backend.Attributes
                     _intKarma = 0;
                 if (Abbrev == "MAG" || Abbrev == "MAGAdept" || Abbrev == "RES" || Abbrev == "DEP" || Abbrev == "EDG")
                 {
-                    _enumMetatypeCategory = AttributeCategory.Special;
+                    _eMetatypeCategory = AttributeCategory.Special;
                 }
                 else
                 {
-                    _enumMetatypeCategory =
+                    _eMetatypeCategory =
                         ConvertToMetatypeAttributeCategory(objNode["metatypecategory"]?.InnerText ?? "Standard");
                 }
             }
@@ -263,7 +263,7 @@ namespace Chummer.Backend.Attributes
             get
             {
                 using (EnterReadLock.Enter(LockObject))
-                    return _enumMetatypeCategory;
+                    return _eMetatypeCategory;
             }
         }
 
@@ -1252,7 +1252,7 @@ namespace Chummer.Backend.Attributes
         /// </summary>
         public int CalculatedTotalValue(bool blnIncludeCyberlimbs = true, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => CalculatedTotalValueCore(true, blnIncludeCyberlimbs, token));
+            return Utils.SafelyRunSynchronously(() => CalculatedTotalValueCore(true, blnIncludeCyberlimbs, token), token);
         }
 
         /// <summary>

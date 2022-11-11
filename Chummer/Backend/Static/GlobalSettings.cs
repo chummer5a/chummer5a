@@ -242,10 +242,10 @@ namespace Chummer
         private static string _strPdfAppPath = string.Empty;
 
         private static string _strPdfParameters = string.Empty;
-        private static LockingDictionary<string, SourcebookInfo> s_DicSourcebookInfos;
-        private static int s_intSourcebookInfosLoadingStatus = -1;
+        private static readonly LockingDictionary<string, SourcebookInfo> s_DicSourcebookInfos = new LockingDictionary<string, SourcebookInfo>();
+        private static int s_intSourcebookInfosLoadingStatus;
         private static bool _blnUseLogging;
-        private static UseAILogging _enumUseLoggingApplicationInsights;
+        private static UseAILogging _eUseLoggingApplicationInsights;
         private static int _intResetLogging;
         private static string _strCharacterRosterPath;
         private static string _strImageFolder = string.Empty;
@@ -427,23 +427,23 @@ namespace Chummer
                 switch (useAI)
                 {
                     case "False":
-                        _enumUseLoggingApplicationInsights = UseAILogging.NotSet;
+                        _eUseLoggingApplicationInsights = UseAILogging.NotSet;
                         break;
 
                     case "True":
                     case "Yes":
-                        _enumUseLoggingApplicationInsights = UseAILogging.Info;
+                        _eUseLoggingApplicationInsights = UseAILogging.Info;
                         break;
 
                     default:
-                        _enumUseLoggingApplicationInsights = (UseAILogging)Enum.Parse(typeof(UseAILogging), useAI);
+                        _eUseLoggingApplicationInsights = (UseAILogging)Enum.Parse(typeof(UseAILogging), useAI);
                         break;
                 }
             }
             catch (Exception e)
             {
                 Log.Warn(e);
-                _enumUseLoggingApplicationInsights = UseAILogging.NotSet;
+                _eUseLoggingApplicationInsights = UseAILogging.NotSet;
             }
 
             if (LoadInt32FromRegistry(ref _intResetLogging, "useloggingApplicationInsightsResetCounter") && _intResetLogging != 0)
@@ -1132,13 +1132,13 @@ namespace Chummer
         /// </summary>
         public static UseAILogging UseLoggingApplicationInsightsPreference
         {
-            get => _enumUseLoggingApplicationInsights;
+            get => _eUseLoggingApplicationInsights;
             set
             {
-                if (InterlockedExtensions.Exchange(ref _enumUseLoggingApplicationInsights, value) != value)
+                if (InterlockedExtensions.Exchange(ref _eUseLoggingApplicationInsights, value) != value)
                     // Sets up logging if the option is changed during runtime
                     TelemetryConfiguration.Active.DisableTelemetry
-                        = _enumUseLoggingApplicationInsights == UseAILogging.OnlyLocal;
+                        = value == UseAILogging.OnlyLocal;
             }
         }
 
@@ -1463,23 +1463,8 @@ namespace Chummer
         {
             get
             {
-                do
-                {
-                    try
-                    {
-                        // We need to generate s_DicSourcebookInfos outside of the constructor to avoid initialization cycles
-                        if (Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 0, -1) < 0)
-                            LoadSourcebookInfos();
-                    }
-                    catch
-                    {
-                        s_intSourcebookInfosLoadingStatus = -1;
-                        throw;
-                    }
-
-                    while (s_intSourcebookInfosLoadingStatus <= 0)
-                        Utils.SafeSleep();
-                } while (s_intSourcebookInfosLoadingStatus < 0);
+                // We need to generate s_DicSourcebookInfos outside of the constructor to avoid initialization cycles
+                LoadSourcebookInfos();
                 return s_DicSourcebookInfos;
             }
         }
@@ -1489,41 +1474,97 @@ namespace Chummer
         /// </summary>
         public static async Task<LockingDictionary<string, SourcebookInfo>> GetSourcebookInfosAsync(CancellationToken token = default)
         {
-            do
-            {
-                try
-                {
-                    // We need to generate s_DicSourcebookInfos outside of the constructor to avoid initialization cycles
-                    if (Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 0, -1) < 0)
-                        await LoadSourcebookInfosAsync(token).ConfigureAwait(false);
-                }
-                catch
-                {
-                    s_intSourcebookInfosLoadingStatus = -1;
-                    throw;
-                }
-
-                while (s_intSourcebookInfosLoadingStatus <= 0)
-                    await Utils.SafeSleepAsync(token).ConfigureAwait(false);
-            } while (s_intSourcebookInfosLoadingStatus < 0);
+            // We need to generate s_DicSourcebookInfos outside of the constructor to avoid initialization cycles
+            await LoadSourcebookInfosAsync(token).ConfigureAwait(false);
             return s_DicSourcebookInfos;
         }
 
-        private static void LoadSourcebookInfos()
+        private static void LoadSourcebookInfos(CancellationToken token = default)
         {
-            s_intSourcebookInfosLoadingStatus = 0;
+            if (Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 1, 0) != 0)
+                return;
             try
             {
-                if (s_DicSourcebookInfos == null)
-                    s_DicSourcebookInfos = new LockingDictionary<string, SourcebookInfo>();
-                else
-                    s_DicSourcebookInfos.Clear();
-                Utils.SafelyRunSynchronously(async () => // Retrieve the SourcebookInfo objects.
+                using (s_DicSourcebookInfos.LockObject.EnterWriteLock(token))
                 {
-                    foreach (XPathNavigator xmlBook in await (await XmlManager.LoadXPathAsync("books.xml").ConfigureAwait(false))
-                                                             .SelectAndCacheExpressionAsync("/chummer/books/book").ConfigureAwait(false))
+                    s_DicSourcebookInfos.Clear();
+                    Utils.SafelyRunSynchronously(async () => // Retrieve the SourcebookInfo objects.
                     {
-                        string strCode = (await xmlBook.SelectSingleNodeAndCacheExpressionAsync("code").ConfigureAwait(false))?.Value;
+                        foreach (XPathNavigator xmlBook in await (await XmlManager.LoadXPathAsync("books.xml", token: token)
+                                                                     .ConfigureAwait(false))
+                                                                 .SelectAndCacheExpressionAsync("/chummer/books/book", token: token)
+                                                                 .ConfigureAwait(false))
+                        {
+                            string strCode = (await xmlBook.SelectSingleNodeAndCacheExpressionAsync("code", token: token)
+                                                           .ConfigureAwait(false))?.Value;
+                            if (string.IsNullOrEmpty(strCode))
+                                continue;
+                            SourcebookInfo objSource = new SourcebookInfo
+                            {
+                                Code = strCode
+                            };
+
+                            try
+                            {
+                                string strTemp = string.Empty;
+                                if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook")
+                                    && !string.IsNullOrEmpty(strTemp))
+                                {
+                                    string[] strParts = strTemp.Split('|');
+                                    objSource.Path = strParts[0];
+                                    if (string.IsNullOrEmpty(objSource.Path))
+                                    {
+                                        objSource.Path = string.Empty;
+                                        objSource.Offset = 0;
+                                    }
+                                    else
+                                    {
+                                        if (!File.Exists(objSource.Path))
+                                            objSource.Path = string.Empty;
+                                        if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
+                                            objSource.Offset = intTmp;
+                                    }
+                                }
+                            }
+                            catch (System.Security.SecurityException)
+                            {
+                                //swallow this
+                            }
+                            catch (UnauthorizedAccessException)
+                            {
+                                //swallow this
+                            }
+
+                            await s_DicSourcebookInfos.AddAsync(strCode, objSource, token).ConfigureAwait(false);
+                        }
+                    }, token);
+                }
+            }
+            catch
+            {
+                Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 0, 1);
+                throw;
+            }
+        }
+
+        private static async ValueTask LoadSourcebookInfosAsync(CancellationToken token = default)
+        {
+            if (Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 1, 0) != 0)
+                return;
+            try
+            {
+                IAsyncDisposable objLocker = await s_DicSourcebookInfos.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    await s_DicSourcebookInfos.ClearAsync(token);
+                    foreach (XPathNavigator xmlBook in await (await XmlManager.LoadXPathAsync("books.xml", token: token)
+                                                                              .ConfigureAwait(false))
+                                                             .SelectAndCacheExpressionAsync(
+                                                                 "/chummer/books/book", token: token)
+                                                             .ConfigureAwait(false))
+                    {
+                        string strCode = (await xmlBook.SelectSingleNodeAndCacheExpressionAsync("code", token: token)
+                                                       .ConfigureAwait(false))?.Value;
                         if (string.IsNullOrEmpty(strCode))
                             continue;
                         SourcebookInfo objSource = new SourcebookInfo
@@ -1562,73 +1603,18 @@ namespace Chummer
                             //swallow this
                         }
 
-                        await s_DicSourcebookInfos.AddAsync(strCode, objSource).ConfigureAwait(false);
+                        await s_DicSourcebookInfos.AddAsync(strCode, objSource, token).ConfigureAwait(false);
                     }
-                });
-            }
-            finally
-            {
-                Interlocked.Increment(ref s_intSourcebookInfosLoadingStatus);
-            }
-        }
-
-        private static async ValueTask LoadSourcebookInfosAsync(CancellationToken token = default)
-        {
-            s_intSourcebookInfosLoadingStatus = 0;
-            try
-            {
-                if (s_DicSourcebookInfos == null)
-                    s_DicSourcebookInfos = new LockingDictionary<string, SourcebookInfo>();
-                else
-                    await s_DicSourcebookInfos.ClearAsync(token).ConfigureAwait(false);
-                foreach (XPathNavigator xmlBook in await (await XmlManager.LoadXPathAsync("books.xml", token: token).ConfigureAwait(false))
-                                                         .SelectAndCacheExpressionAsync("/chummer/books/book", token: token).ConfigureAwait(false))
+                }
+                finally
                 {
-                    string strCode = (await xmlBook.SelectSingleNodeAndCacheExpressionAsync("code", token: token).ConfigureAwait(false))?.Value;
-                    if (string.IsNullOrEmpty(strCode))
-                        continue;
-                    SourcebookInfo objSource = new SourcebookInfo
-                    {
-                        Code = strCode
-                    };
-
-                    try
-                    {
-                        string strTemp = string.Empty;
-                        if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook")
-                            && !string.IsNullOrEmpty(strTemp))
-                        {
-                            string[] strParts = strTemp.Split('|');
-                            objSource.Path = strParts[0];
-                            if (string.IsNullOrEmpty(objSource.Path))
-                            {
-                                objSource.Path = string.Empty;
-                                objSource.Offset = 0;
-                            }
-                            else
-                            {
-                                if (!File.Exists(objSource.Path))
-                                    objSource.Path = string.Empty;
-                                if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
-                                    objSource.Offset = intTmp;
-                            }
-                        }
-                    }
-                    catch (System.Security.SecurityException)
-                    {
-                        //swallow this
-                    }
-                    catch (UnauthorizedAccessException)
-                    {
-                        //swallow this
-                    }
-
-                    await s_DicSourcebookInfos.AddAsync(strCode, objSource, token).ConfigureAwait(false);
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
-            finally
+            catch
             {
-                Interlocked.Increment(ref s_intSourcebookInfosLoadingStatus);
+                Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 0, 1);
+                throw;
             }
         }
 

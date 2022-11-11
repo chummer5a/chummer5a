@@ -1256,7 +1256,7 @@ namespace Chummer.Backend.Attributes
         public BindingSource GetAttributeBindingByName(string abbrev, CancellationToken token = default)
         {
             using (EnterReadLock.Enter(LockObject, token))
-                return _dicBindings.TryGetValue(abbrev, out BindingSource objAttributeBinding) ? objAttributeBinding : null;
+                return _dicBindings.TryGetValue(abbrev, out BindingSource objAttributeBinding, token) ? objAttributeBinding : null;
         }
 
         public async ValueTask<BindingSource> GetAttributeBindingByNameAsync(string abbrev, CancellationToken token = default)
@@ -1928,17 +1928,24 @@ namespace Chummer.Backend.Attributes
         /// <param name="objAttribute">Attribute to raise to its metatype maximum.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public async ValueTask<bool> CanRaiseAttributeToMetatypeMax(CharacterAttrib objAttribute, CancellationToken token = default)
+        public async ValueTask<bool> CanRaiseAttributeToMetatypeMax(CharacterAttrib objAttribute,
+                                                                    CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (_objCharacter.Created || _objCharacter.IgnoreRules
-                                          || objAttribute.MetatypeCategory == CharacterAttrib.AttributeCategory.Special
-                                          || _objCharacter.Settings.MaxNumberMaxAttributesCreate >= await AttributeList.GetCountAsync(token).ConfigureAwait(false))
+                if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)
+                    || await _objCharacter.GetIgnoreRulesAsync(token).ConfigureAwait(false))
                     return true;
-                return await AttributeList.CountAsync(async x => x.MetatypeCategory == objAttribute.MetatypeCategory
+                CharacterAttrib.AttributeCategory eCategory = objAttribute.MetatypeCategory;
+                if (eCategory == CharacterAttrib.AttributeCategory.Special
+                    || _objCharacter.Settings.MaxNumberMaxAttributesCreate
+                    >= await AttributeList.GetCountAsync(token).ConfigureAwait(false))
+                    return true;
+                return await AttributeList.CountAsync(async x => x.MetatypeCategory == eCategory
                                                                  && x != objAttribute
-                                                                 && await x.GetAtMetatypeMaximumAsync(token).ConfigureAwait(false), token).ConfigureAwait(false)
+                                                                 && await x.GetAtMetatypeMaximumAsync(token)
+                                                                           .ConfigureAwait(false), token)
+                                          .ConfigureAwait(false)
                        < _objCharacter.Settings.MaxNumberMaxAttributesCreate;
             }
         }

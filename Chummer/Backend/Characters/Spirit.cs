@@ -134,7 +134,7 @@ namespace Chummer
             {
                 // ReSharper disable MethodHasAsyncOverload
                 // ReSharper disable MethodHasAsyncOverloadWithCancellation
-                using (EnterReadLock.Enter(LockObject))
+                using (EnterReadLock.Enter(LockObject, token))
                 using (objWriter.StartElement("spirit"))
                 {
                     objWriter.WriteElementString(
@@ -1638,7 +1638,7 @@ namespace Chummer
             {
                 // ReSharper disable MethodHasAsyncOverload
                 // ReSharper disable MethodHasAsyncOverloadWithCancellation
-                using (EnterReadLock.Enter(LockObject))
+                using (EnterReadLock.Enter(LockObject, token))
                 {
                     objWriter.WriteElementString("mainmugshotindex",
                                                  MainMugshotIndex.ToString(GlobalSettings.InvariantCultureInfo));
