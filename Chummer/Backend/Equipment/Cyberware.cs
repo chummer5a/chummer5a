@@ -3364,8 +3364,8 @@ namespace Chummer.Backend.Equipment
             get => Math.Max(Math.Min(_intRating, MaxRating), MinRating);
             set
             {
-                int intNewValue = Math.Max(Math.Min(value, MaxRating), MinRating);
-                if (Interlocked.Exchange(ref _intRating, intNewValue) == intNewValue)
+                value = Math.Max(Math.Min(value, MaxRating), MinRating);
+                if (Interlocked.Exchange(ref _intRating, value) == value)
                     return;
                 if (GearChildren.Count > 0)
                 {

@@ -1347,13 +1347,13 @@ namespace Chummer.Backend.Skills
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    bool blnNewValue = (value || ForcedBuyWithKarma) && !ForcedNotBuyWithKarma &&
-                                       Specializations.Any(x => !x.Free);
-                    if (_blnBuyWithKarma == blnNewValue)
+                    value = (value || ForcedBuyWithKarma) && !ForcedNotBuyWithKarma &&
+                            Specializations.Any(x => !x.Free);
+                    if (_blnBuyWithKarma == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
-                        _blnBuyWithKarma = blnNewValue;
+                        _blnBuyWithKarma = value;
                     }
                     OnPropertyChanged();
                 }
@@ -1372,15 +1372,15 @@ namespace Chummer.Backend.Skills
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                bool blnNewValue = (value || await GetForcedBuyWithKarmaAsync(token).ConfigureAwait(false))
-                                   && !await GetForcedNotBuyWithKarmaAsync(token).ConfigureAwait(false)
-                                   && await Specializations.AnyAsync(x => !x.Free, token: token).ConfigureAwait(false);
-                if (_blnBuyWithKarma == blnNewValue)
+                value = (value || await GetForcedBuyWithKarmaAsync(token).ConfigureAwait(false))
+                        && !await GetForcedNotBuyWithKarmaAsync(token).ConfigureAwait(false)
+                        && await Specializations.AnyAsync(x => !x.Free, token: token).ConfigureAwait(false);
+                if (_blnBuyWithKarma == value)
                     return;
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
-                    _blnBuyWithKarma = blnNewValue;
+                    _blnBuyWithKarma = value;
                 }
                 finally
                 {

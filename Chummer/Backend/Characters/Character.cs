@@ -14986,23 +14986,22 @@ namespace Chummer
             }
             set
             {
-                string strNewValue = value;
-                if (!string.IsNullOrWhiteSpace(strNewValue)
-                    && !strNewValue.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
-                    && !strNewValue.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                if (!string.IsNullOrWhiteSpace(value)
+                    && !value.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
+                    && !value.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
                 {
-                    strNewValue = Path.GetFileNameWithoutExtension(strNewValue) + ".chum5";
+                    value = Path.GetFileNameWithoutExtension(value) + ".chum5";
                     using (EnterReadLock.Enter(LockObject))
                     {
                         if (!string.IsNullOrWhiteSpace(_strFileName)
                             && _strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
-                            strNewValue += "lz";
+                            value += "lz";
                     }
                 }
 
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (Interlocked.Exchange(ref _strFileName, strNewValue) == strNewValue)
+                    if (Interlocked.Exchange(ref _strFileName, value) == value)
                         return;
                     OnPropertyChanged();
                 }
@@ -18458,14 +18457,10 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    int intNewValue = Math.Min(value, MAG.TotalValue);
-                    if (_intMAGAdept == intNewValue)
+                    value = Math.Min(value, MAG.TotalValue);
+                    if (Interlocked.Exchange(ref _intMAGAdept, value) == value)
                         return;
-                    using (LockObject.EnterWriteLock())
-                    {
-                        _intMAGAdept = intNewValue;
-                        OnPropertyChanged();
-                    }
+                    OnPropertyChanged();
                 }
             }
         }
@@ -26208,14 +26203,14 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    decimal decNewValue = Math.Max(Math.Min(value, TotalNuyenMaximumBP), 0);
-                    if (_decNuyenBP == decNewValue)
+                    value = Math.Max(Math.Min(value, TotalNuyenMaximumBP), 0);
+                    if (_decNuyenBP == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
-                        _decNuyenBP = decNewValue;
-                        OnPropertyChanged();
+                        _decNuyenBP = value;
                     }
+                    OnPropertyChanged();
                 }
             }
         }

@@ -597,10 +597,9 @@ namespace Chummer
             get => _strExtra;
             set
             {
-                string strNewExtra = _objCharacter.ReverseTranslateExtra(value);
-                if (_strExtra == strNewExtra)
+                value = _objCharacter.ReverseTranslateExtra(value);
+                if (Interlocked.Exchange(ref _strExtra, value) == value)
                     return;
-                _strExtra = strNewExtra;
                 OnPropertyChanged();
             }
         }
@@ -1066,7 +1065,7 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(_strCachedNotes))
                     return _strCachedNotes;
-                _strCachedNotes = string.Empty;
+                string strCachedNotes = string.Empty;
                 if (Suppressed)
                 {
                     Improvement objDisablingImprovement
@@ -1077,14 +1076,14 @@ namespace Chummer
                              .GetCachedImprovementListForValueOf(_objCharacter,
                                                                  Improvement.ImprovementType.DisableQuality, Name)
                              .FirstOrDefault();
-                    _strCachedNotes += string.Format(GlobalSettings.CultureInfo,
+                    strCachedNotes += string.Format(GlobalSettings.CultureInfo,
                                                      LanguageManager.GetString("String_SuppressedBy"),
                                                      _objCharacter.GetObjectName(objDisablingImprovement)
                                                      ?? LanguageManager.GetString("String_Unknown"))
                                        + Environment.NewLine;
                 }
-                _strCachedNotes += _strNotes;
-                return _strCachedNotes;
+                strCachedNotes += _strNotes;
+                return _strCachedNotes = strCachedNotes;
             }
             set
             {

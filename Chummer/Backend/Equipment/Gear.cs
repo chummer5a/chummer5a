@@ -1777,8 +1777,8 @@ namespace Chummer.Backend.Equipment
             get => _intRating;
             set
             {
-                int intNewValue = Math.Max(Math.Min(value, MaxRatingValue), MinRatingValue);
-                if (Interlocked.Exchange(ref _intRating, intNewValue) != intNewValue && Children.Count > 0)
+                value = Math.Max(Math.Min(value, MaxRatingValue), MinRatingValue);
+                if (Interlocked.Exchange(ref _intRating, value) != value && Children.Count > 0)
                 {
                     foreach (Gear objChild in Children)
                     {
@@ -1858,8 +1858,8 @@ namespace Chummer.Backend.Equipment
             get => _strExtra;
             set
             {
-                string strNewValue = _objCharacter.ReverseTranslateExtra(value);
-                if (Interlocked.Exchange(ref _strExtra, strNewValue) != strNewValue)
+                value = _objCharacter.ReverseTranslateExtra(value);
+                if (Interlocked.Exchange(ref _strExtra, value) != value)
                     OnPropertyChanged();
             }
         }

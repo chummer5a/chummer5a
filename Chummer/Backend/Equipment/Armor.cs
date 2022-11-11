@@ -1164,8 +1164,8 @@ namespace Chummer.Backend.Equipment
             get => Math.Min(_intRating, MaxRating);
             set
             {
-                int intNewValue = Math.Min(value, MaxRating);
-                if (Interlocked.Exchange(ref _intRating, intNewValue) == intNewValue)
+                value = Math.Min(value, MaxRating);
+                if (Interlocked.Exchange(ref _intRating, value) == value)
                     return;
                 if (Equipped && _objCharacter != null && (ArmorValue.Contains("Rating") || ArmorOverrideValue.Contains("Rating")))
                 {
