@@ -202,7 +202,8 @@ namespace Chummer
                                                  .ConfigureAwait(false);
                         await cboCharacterSetting.DoThreadSafeAsync(x =>
                         {
-                            x.SelectedValue = objOldSelected;
+                            if (objOldSelected != null)
+                                x.SelectedValue = objOldSelected;
                             if (x.SelectedIndex == -1)
                             {
                                 if (blnSuccess)
