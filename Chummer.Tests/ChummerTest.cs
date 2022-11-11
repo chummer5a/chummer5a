@@ -576,19 +576,20 @@ namespace Chummer.Tests
                 {
                     objExportCultureInfo = CultureInfo.InvariantCulture;
                 }
-                Utils.RunOnMainThread(async () =>
-                {
-                    XmlDocument xmlDocument
-                        = await objCharacter.GenerateExportXml(objExportCultureInfo, strExportLanguage);
-                    using (FileStream objFileStream
-                           = new FileStream(strPath, FileMode.Create, FileAccess.Write, FileShare.None))
-                        xmlDocument.Save(objFileStream);
-                }); // Need this wrapper to make unit test work
+
+                XmlDocument xmlDocument
+                    = Utils.SafelyRunSynchronously(
+                        () => objCharacter.GenerateExportXml(objExportCultureInfo,
+                                                             strExportLanguage)); // Need this wrapper to make unit test work
+                using (FileStream objFileStream
+                       = new FileStream(strPath, FileMode.Create, FileAccess.Write, FileShare.None))
+                    xmlDocument.Save(objFileStream);
                 Debug.WriteLine("Character exported: " + objCharacter.Name + " to " + Path.GetFileName(strPath));
             }
             catch (AssertFailedException e)
             {
-                string strErrorMessage = "Could not export " + Path.GetFileName(objCharacter.FileName) + " in " + strExportLanguage + '!';
+                string strErrorMessage = "Could not export " + Path.GetFileName(objCharacter.FileName) + " in "
+                                         + strExportLanguage + '!';
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
@@ -604,7 +605,8 @@ namespace Chummer.Tests
             }
             catch (Exception e)
             {
-                string strErrorMessage = "Exception while exporting " + Path.GetFileName(objCharacter.FileName) + " in " + strExportLanguage + ':';
+                string strErrorMessage = "Exception while exporting " + Path.GetFileName(objCharacter.FileName) + " in "
+                                         + strExportLanguage + ':';
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
