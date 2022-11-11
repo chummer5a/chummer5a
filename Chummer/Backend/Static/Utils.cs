@@ -329,6 +329,8 @@ namespace Chummer
         /// </summary>
         public static int MaxParallelBatchSize { get; } = Environment.ProcessorCount * 2;
 
+        public static int DefaultPoolSize { get; } = Math.Max(MaxParallelBatchSize, 32);
+
         private static readonly Lazy<string> s_strGetStartupPath = new Lazy<string>(
             () => IsUnitTest ? AppDomain.CurrentDomain.SetupInformation.ApplicationBase : Application.StartupPath);
 
@@ -2314,9 +2316,9 @@ namespace Chummer
             return s_strTempPath;
         }
 
-        private static readonly DefaultObjectPoolProvider s_ObjObjectPoolProvider = new DefaultObjectPoolProvider()
+        private static readonly DefaultObjectPoolProvider s_ObjObjectPoolProvider = new DefaultObjectPoolProvider
         {
-            MaximumRetained = Math.Max(MaxParallelBatchSize, 16)
+            MaximumRetained = DefaultPoolSize
         };
 
         /// <summary>
@@ -2331,7 +2333,7 @@ namespace Chummer
         /// </summary>
         [CLSCompliant(false)]
         public static SafeObjectPool<List<ListItem>> ListItemListPool { get; }
-            = new SafeObjectPool<List<ListItem>>(() => new List<ListItem>(), x => x.Clear());
+            = new SafeObjectPool<List<ListItem>>(Math.Max(MaxParallelBatchSize, 64), () => new List<ListItem>(), x => x.Clear());
 
         /// <summary>
         /// Memory Pool for empty hash sets of strings. A bit slower up-front than a simple allocation, but reduces memory allocations when used a lot, which saves on CPU used for Garbage Collection.

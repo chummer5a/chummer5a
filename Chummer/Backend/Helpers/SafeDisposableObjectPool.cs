@@ -41,7 +41,7 @@ namespace Chummer
         /// </summary>
         /// <param name="funcConstructor">Delegate to the constructor to be used for all objects in the pool.</param>
         /// <param name="actionRunOnReturn">Optional delegate to function to run when an object is returned to the pool, including if it's forcibly returned should the pool be disposed without it.</param>
-        public SafeDisposableObjectPool(Func<T> funcConstructor, Action<T> actionRunOnReturn = null) : this(Math.Max(Utils.MaxParallelBatchSize, 16), funcConstructor, actionRunOnReturn)
+        public SafeDisposableObjectPool(Func<T> funcConstructor, Action<T> actionRunOnReturn = null) : this(Utils.DefaultPoolSize, funcConstructor, actionRunOnReturn)
         {
         }
 

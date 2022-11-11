@@ -42,7 +42,7 @@ namespace Chummer
         /// </summary>
         /// <param name="funcConstructor">Delegate to the constructor to be used for all objects in the pool.</param>
         /// <param name="actionRunOnReturn">Optional delegate to function to run when an object is returned to the pool, including if it's forcibly returned should the pool be disposed without it.</param>
-        public SafeObjectPool(Func<T> funcConstructor, Action<T> actionRunOnReturn = null) : this(Math.Max(Utils.MaxParallelBatchSize, 16), funcConstructor, actionRunOnReturn)
+        public SafeObjectPool(Func<T> funcConstructor, Action<T> actionRunOnReturn = null) : this(Utils.DefaultPoolSize, funcConstructor, actionRunOnReturn)
         {
         }
 
@@ -104,7 +104,7 @@ namespace Chummer
                     throw;
                 }
             }
-            // Check that we're return an item that was originally in the pool
+            // Check that we're returning an item that was originally in the pool
             for (int i = 0; i < _aobjStoragePool.Length; ++i)
             {
                 if (ReferenceEquals(objLocal, _aobjStoragePool[i]))
