@@ -110,7 +110,7 @@ namespace Chummer
             this.cboCharacterSetting.Size = new System.Drawing.Size(443, 21);
             this.cboCharacterSetting.TabIndex = 8;
             this.cboCharacterSetting.TooltipText = "";
-            this.cboCharacterSetting.SelectedIndexChanged += new System.EventHandler(this.cboGamePlay_SelectedIndexChanged);
+            this.cboCharacterSetting.SelectedIndexChanged += new System.EventHandler(this.cboCharacterSetting_SelectedIndexChanged);
             // 
             // lblKarmaLabel
             // 

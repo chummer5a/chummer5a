@@ -67,7 +67,7 @@ namespace Chummer
                           + await _objCharacter.TranslateExtraAsync(strPowerExtra).ConfigureAwait(false) + ')';
                     lstPowerItems.Add(new ListItem(new Tuple<string, string>(strPowerName, strPowerExtra), strName));
                 }
-                
+
                 await cboPower.PopulateWithListItemsAsync(lstPowerItems).ConfigureAwait(false);
                 if (lstPowerItems.Count > 1)
                     await cboPower.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);

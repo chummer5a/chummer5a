@@ -945,7 +945,8 @@ namespace Chummer.UI.Skills
             await cboSelectAttribute.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
             await SetAttributeActiveAsync(
                 await _objSkill.CharacterObject.GetAttributeAsync(
-                    (string)await cboSelectAttribute.DoThreadSafeFuncAsync(x => x.SelectedValue, token: token).ConfigureAwait(false),
+                    await cboSelectAttribute.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token)
+                                             .ConfigureAwait(false),
                     token: token).ConfigureAwait(false), token).ConfigureAwait(false);
             string strText = await cboSelectAttribute.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
             await btnAttribute.DoThreadSafeAsync(x => x.Text = strText, token: token).ConfigureAwait(false);
@@ -1013,7 +1014,7 @@ namespace Chummer.UI.Skills
             }, token: token).ConfigureAwait(false);
             await SetAttributeActiveAsync(
                 await _objSkill.CharacterObject.GetAttributeAsync(
-                    (string)await cboSelectAttribute.DoThreadSafeFuncAsync(x => x.SelectedValue, token: token).ConfigureAwait(false), token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    await cboSelectAttribute.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token).ConfigureAwait(false), token: token).ConfigureAwait(false), token).ConfigureAwait(false);
             string strText = await cboSelectAttribute.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
             await btnAttribute.DoThreadSafeAsync(x =>
             {

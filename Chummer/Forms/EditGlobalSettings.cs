@@ -355,7 +355,7 @@ namespace Chummer
             try
             {
                 await CommonFunctions.OpenPdf(
-                    await lstGlobalSourcebookInfos.DoThreadSafeFuncAsync(x => x.SelectedValue).ConfigureAwait(false)
+                    await lstGlobalSourcebookInfos.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false)
                     + " 3", null,
                     await cboPDFParameters.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false)
                     ?? string.Empty,
@@ -1621,7 +1621,7 @@ namespace Chummer
                 = await chkAllowEasterEggs.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false);
             GlobalSettings.PluginsEnabled
                 = await chkEnablePlugins.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false);
-            switch (await cboMugshotCompression.DoThreadSafeFuncAsync(x => x.SelectedValue, token)
+            switch (await cboMugshotCompression.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token)
                                                .ConfigureAwait(false))
             {
                 case "jpeg_automatic":
@@ -1848,7 +1848,7 @@ namespace Chummer
 
             bool blnShowQualitySelector
                 = Equals(
-                    await cboMugshotCompression.DoThreadSafeFuncAsync(x => x.SelectedValue, token)
+                    await cboMugshotCompression.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token)
                                                .ConfigureAwait(false), "jpeg_manual");
             await lblMugshotCompressionQuality.DoThreadSafeAsync(x => x.Visible = blnShowQualitySelector, token)
                                               .ConfigureAwait(false);

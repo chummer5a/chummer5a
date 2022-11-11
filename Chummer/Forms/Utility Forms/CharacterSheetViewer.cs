@@ -532,8 +532,10 @@ namespace Chummer
                     await PopulateXsltList(_objGenericToken).ConfigureAwait(false);
 
                     string strNewLanguage
-                        = (await cboLanguage.DoThreadSafeFuncAsync(x => x.SelectedValue, token: _objGenericToken).ConfigureAwait(false))
-                        ?.ToString() ?? strOldSelected;
+                        = await cboLanguage
+                                .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: _objGenericToken)
+                                .ConfigureAwait(false)
+                          ?? strOldSelected;
                     if (strNewLanguage == strOldSelected)
                     {
                         _strSelectedSheet

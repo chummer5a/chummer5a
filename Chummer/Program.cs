@@ -776,43 +776,24 @@ namespace Chummer
 
             if (frmOwnerForm != null)
             {
-                if (frmOwnerForm.InvokeRequired)
-                {
 #if DEBUG
-                    if (_blnShowDevWarningAboutDebuggingOnlyOnce && Debugger.IsAttached)
-                    {
-                        _blnShowDevWarningAboutDebuggingOnlyOnce = false;
-                        //it works on my installation even in the debugger, so maybe we can ignore that...
-                        //WARNING from the link above (you can edit that out if it's not causing problem):
-                        //
-                        //BUT ALSO KEEP IN MIND: when debugging a multi-threaded GUI app, and you're debugging in a thread
-                        //other than the main/application thread, YOU NEED TO TURN OFF
-                        //the "Enable property evaluation and other implicit function calls" option, or else VS will
-                        //automatically fetch the values of local/global GUI objects FROM THE CURRENT THREAD, which will
-                        //cause your application to crash/fail in strange ways. Go to Tools->Options->Debugging to turn
-                        //that setting off.
-                        Debugger.Break();
-                    }
+                if (frmOwnerForm.InvokeRequired && _blnShowDevWarningAboutDebuggingOnlyOnce && Debugger.IsAttached)
+                {
+                    _blnShowDevWarningAboutDebuggingOnlyOnce = false;
+                    //it works on my installation even in the debugger, so maybe we can ignore that...
+                    //WARNING from the link above (you can edit that out if it's not causing problem):
+                    //
+                    //BUT ALSO KEEP IN MIND: when debugging a multi-threaded GUI app, and you're debugging in a thread
+                    //other than the main/application thread, YOU NEED TO TURN OFF
+                    //the "Enable property evaluation and other implicit function calls" option, or else VS will
+                    //automatically fetch the values of local/global GUI objects FROM THE CURRENT THREAD, which will
+                    //cause your application to crash/fail in strange ways. Go to Tools->Options->Debugging to turn
+                    //that setting off.
+                    Debugger.Break();
+                }
 #endif
 
-                    try
-                    {
-                        return (DialogResult)frmOwnerForm.Invoke(new PassControlStringStringReturnDialogResultDelegate(ShowScrollableMessageBox),
-                                                                 owner, message, caption, buttons, icon, defaultButton);
-                    }
-                    catch (ObjectDisposedException)
-                    {
-                        //if the main form is disposed, we really don't need to bother anymore...
-                    }
-                    catch (Exception e)
-                    {
-                        string msg = "Could not show a MessageBox " + caption + ':' + Environment.NewLine + message
-                                     + Environment.NewLine + Environment.NewLine + "Exception: " + e;
-                        Log.Fatal(e, msg);
-                    }
-                }
-
-                return ScrollableMessageBox.Show(frmOwnerForm, message, caption, buttons, icon, defaultButton);
+                return frmOwnerForm.DoThreadSafeFunc(x => ScrollableMessageBox.Show(x, message, caption, buttons, icon, defaultButton));
             }
             MainFormOnAssignActions.Add(x => ShowScrollableMessageBox(owner, message, caption, buttons, icon, defaultButton));
             return DialogResult.Cancel;
@@ -854,51 +835,28 @@ namespace Chummer
 
             if (frmOwnerForm != null)
             {
-                if (frmOwnerForm.InvokeRequired)
-                {
 #if DEBUG
-                    if (_blnShowDevWarningAboutDebuggingOnlyOnce && Debugger.IsAttached)
-                    {
-                        _blnShowDevWarningAboutDebuggingOnlyOnce = false;
-                        //it works on my installation even in the debugger, so maybe we can ignore that...
-                        //WARNING from the link above (you can edit that out if it's not causing problem):
-                        //
-                        //BUT ALSO KEEP IN MIND: when debugging a multi-threaded GUI app, and you're debugging in a thread
-                        //other than the main/application thread, YOU NEED TO TURN OFF
-                        //the "Enable property evaluation and other implicit function calls" option, or else VS will
-                        //automatically fetch the values of local/global GUI objects FROM THE CURRENT THREAD, which will
-                        //cause your application to crash/fail in strange ways. Go to Tools->Options->Debugging to turn
-                        //that setting off.
-                        Debugger.Break();
-                    }
+                if (frmOwnerForm.InvokeRequired && _blnShowDevWarningAboutDebuggingOnlyOnce && Debugger.IsAttached)
+                {
+                    _blnShowDevWarningAboutDebuggingOnlyOnce = false;
+                    //it works on my installation even in the debugger, so maybe we can ignore that...
+                    //WARNING from the link above (you can edit that out if it's not causing problem):
+                    //
+                    //BUT ALSO KEEP IN MIND: when debugging a multi-threaded GUI app, and you're debugging in a thread
+                    //other than the main/application thread, YOU NEED TO TURN OFF
+                    //the "Enable property evaluation and other implicit function calls" option, or else VS will
+                    //automatically fetch the values of local/global GUI objects FROM THE CURRENT THREAD, which will
+                    //cause your application to crash/fail in strange ways. Go to Tools->Options->Debugging to turn
+                    //that setting off.
+                    Debugger.Break();
+                }
 #endif
 
-                    try
-                    {
-                        return (DialogResult)frmOwnerForm.Invoke(new PassControlStringStringReturnDialogResultDelegate(ShowMessageBox),
-                                                                 owner, message, caption, buttons, icon, defaultButton);
-                    }
-                    catch (ObjectDisposedException)
-                    {
-                        //if the main form is disposed, we really don't need to bother anymore...
-                    }
-                    catch (Exception e)
-                    {
-                        string msg = "Could not show a MessageBox " + caption + ':' + Environment.NewLine + message
-                                     + Environment.NewLine + Environment.NewLine + "Exception: " + e;
-                        Log.Fatal(e, msg);
-                    }
-                }
-
-                return CenterableMessageBox.Show(frmOwnerForm, message, caption, buttons, icon, defaultButton);
+                return frmOwnerForm.DoThreadSafeFunc(x => CenterableMessageBox.Show(x, message, caption, buttons, icon, defaultButton));
             }
             MainFormOnAssignActions.Add(x => ShowMessageBox(owner, message, caption, buttons, icon, defaultButton));
             return DialogResult.Cancel;
         }
-
-        private delegate DialogResult PassControlStringStringReturnDialogResultDelegate(
-            Control owner, string s1, string s2, MessageBoxButtons buttons,
-            MessageBoxIcon icon, MessageBoxDefaultButton defaultButton);
 
         /// <summary>
         /// Queue of Actions to run after MainForm is assigned

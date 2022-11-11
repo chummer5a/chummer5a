@@ -713,7 +713,7 @@ namespace Chummer
                 using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                 {
                     // Build the XML for the Improvement.
-                    XmlNode objFetchNode = _objDocument.SelectSingleNode("/chummer/improvements/improvement[id = " + (await cboImprovemetType.DoThreadSafeFuncAsync(x => x.SelectedValue, token: token).ConfigureAwait(false)).ToString().CleanXPath() + ']');
+                    XmlNode objFetchNode = _objDocument.SelectSingleNode("/chummer/improvements/improvement[id = " + await cboImprovemetType.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString().CleanXPath(), token: token).ConfigureAwait(false) + ']');
                     string strInternal = objFetchNode?["internal"]?.InnerText;
                     if (string.IsNullOrEmpty(strInternal))
                         return;

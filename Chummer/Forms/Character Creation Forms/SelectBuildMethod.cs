@@ -32,6 +32,7 @@ namespace Chummer
         private readonly Character _objCharacter;
         private readonly CharacterBuildMethod _eStartingBuildMethod;
         private readonly bool _blnForExistingCharacter;
+        private int _intLoading = 1;
 
         #region Control Events
 
@@ -93,50 +94,67 @@ namespace Chummer
             CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
             {
-                object objOldSelected = await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedValue).ConfigureAwait(false);
-                using (ThreadSafeForm<EditCharacterSettings> frmOptions
-                       = await ThreadSafeForm<EditCharacterSettings>.GetAsync(
-                           () => new EditCharacterSettings(objOldSelected as CharacterSettings)).ConfigureAwait(false))
-                    await frmOptions.ShowDialogSafeAsync(this).ConfigureAwait(false);
-
-                await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
+                Interlocked.Increment(ref _intLoading);
                 try
                 {
-                    // Populate the Gameplay Settings list.
-                    using (new FetchSafelyFromPool<List<ListItem>>(
-                               Utils.ListItemListPool, out List<ListItem> lstGameplayOptions))
+                    object objOldSelected = await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedValue)
+                                                                     .ConfigureAwait(false);
+                    using (ThreadSafeForm<EditCharacterSettings> frmOptions
+                           = await ThreadSafeForm<EditCharacterSettings>.GetAsync(
+                                                                            () => new EditCharacterSettings(
+                                                                                objOldSelected as CharacterSettings))
+                                                                        .ConfigureAwait(false))
+                        await frmOptions.ShowDialogSafeAsync(this).ConfigureAwait(false);
+
+                    await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
+                    try
                     {
-                        IAsyncReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings = await SettingsManager.GetLoadedCharacterSettingsAsync().ConfigureAwait(false);
-                        lstGameplayOptions.AddRange(dicCharacterSettings.Values
-                                                                   .Select(objLoopOptions =>
-                                                                               new ListItem(
-                                                                                   objLoopOptions,
-                                                                                   objLoopOptions.DisplayName)));
-                        lstGameplayOptions.Sort(CompareListItems.CompareNames);
-                        await cboCharacterSetting.PopulateWithListItemsAsync(lstGameplayOptions).ConfigureAwait(false);
-                        await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objOldSelected).ConfigureAwait(false);
-                        if (await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex).ConfigureAwait(false) == -1
-                            && lstGameplayOptions.Count > 0)
+                        // Populate the Gameplay Settings list.
+                        using (new FetchSafelyFromPool<List<ListItem>>(
+                                   Utils.ListItemListPool, out List<ListItem> lstCharacterSettings))
                         {
-                            (bool blnSuccess, CharacterSettings objSetting)
-                                = await dicCharacterSettings.TryGetValueAsync(
-                                    GlobalSettings.DefaultCharacterSetting).ConfigureAwait(false);
-                            await cboCharacterSetting.DoThreadSafeAsync(x =>
+                            IAsyncReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings
+                                = await SettingsManager.GetLoadedCharacterSettingsAsync().ConfigureAwait(false);
+                            lstCharacterSettings.AddRange(dicCharacterSettings.Values
+                                                                              .Select(objLoopOptions =>
+                                                                                  new ListItem(
+                                                                                      objLoopOptions,
+                                                                                      objLoopOptions.DisplayName)));
+                            lstCharacterSettings.Sort(CompareListItems.CompareNames);
+                            await cboCharacterSetting.PopulateWithListItemsAsync(lstCharacterSettings)
+                                                     .ConfigureAwait(false);
+                            await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objOldSelected)
+                                                     .ConfigureAwait(false);
+                            if (await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex)
+                                                         .ConfigureAwait(false) == -1
+                                && lstCharacterSettings.Count > 0)
                             {
-                                if (blnSuccess)
-                                    x.SelectedValue = objSetting;
-                                if (x.SelectedIndex == -1 && lstGameplayOptions.Count > 0)
+                                (bool blnSuccess, CharacterSettings objSetting)
+                                    = await dicCharacterSettings.TryGetValueAsync(
+                                        GlobalSettings.DefaultCharacterSetting).ConfigureAwait(false);
+                                await cboCharacterSetting.DoThreadSafeAsync(x =>
                                 {
-                                    x.SelectedIndex = 0;
-                                }
-                            }).ConfigureAwait(false);
+                                    if (blnSuccess)
+                                        x.SelectedValue = objSetting;
+                                    if (x.SelectedIndex == -1 && lstCharacterSettings.Count > 0)
+                                    {
+                                        x.SelectedIndex = 0;
+                                    }
+                                }).ConfigureAwait(false);
+                            }
                         }
+                    }
+                    finally
+                    {
+                        await this.DoThreadSafeAsync(x => x.ResumeLayout()).ConfigureAwait(false);
                     }
                 }
                 finally
                 {
-                    await this.DoThreadSafeAsync(x => x.ResumeLayout()).ConfigureAwait(false);
+                    Interlocked.Decrement(ref _intLoading);
                 }
+
+                await ProcessCharacterSettingIndexChanged().ConfigureAwait(false);
             }
             finally
             {
@@ -177,8 +195,15 @@ namespace Chummer
                                 (blnSuccess, objSetting2)
                                     = await dicCharacterSettings.TryGetValueAsync(
                                         GlobalSettings.DefaultCharacterSetting).ConfigureAwait(false);
-                                if (blnSuccess)
-                                    await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSetting2).ConfigureAwait(false);
+                                await cboCharacterSetting.DoThreadSafeAsync(x =>
+                                {
+                                    if (blnSuccess)
+                                        x.SelectedValue = objSetting2;
+                                    if (x.SelectedIndex == -1 && lstCharacterSettings.Count > 0)
+                                    {
+                                        x.SelectedIndex = 0;
+                                    }
+                                }).ConfigureAwait(false);
                             }
 
                             await chkIgnoreRules.DoThreadSafeAsync(x => x.Checked = _objCharacter.IgnoreRules).ConfigureAwait(false);
@@ -188,20 +213,24 @@ namespace Chummer
                             (bool blnSuccess, CharacterSettings objSetting)
                                 = await dicCharacterSettings.TryGetValueAsync(
                                     GlobalSettings.DefaultCharacterSetting).ConfigureAwait(false);
-                            if (blnSuccess)
-                                await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedValue = objSetting).ConfigureAwait(false);
-                        }
-
-                        if (await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex).ConfigureAwait(false) == -1
-                            && lstCharacterSettings.Count > 0)
-                        {
-                            await cboCharacterSetting.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);
+                            await cboCharacterSetting.DoThreadSafeAsync(x =>
+                            {
+                                if (blnSuccess)
+                                    x.SelectedValue = objSetting;
+                                if (x.SelectedIndex == -1 && lstCharacterSettings.Count > 0)
+                                {
+                                    x.SelectedIndex = 0;
+                                }
+                            }).ConfigureAwait(false);
                         }
                     }
 
                     await chkIgnoreRules.SetToolTipAsync(
                         await LanguageManager.GetStringAsync("Tip_SelectKarma_IgnoreRules").ConfigureAwait(false)).ConfigureAwait(false);
-                    await ProcessGameplayIndexChanged().ConfigureAwait(false);
+
+                    Interlocked.Decrement(ref _intLoading);
+
+                    await ProcessCharacterSettingIndexChanged().ConfigureAwait(false);
                 }
                 finally
                 {
@@ -214,15 +243,17 @@ namespace Chummer
             }
         }
 
-        private async void cboGamePlay_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboCharacterSetting_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (_intLoading > 0)
+                return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
             try
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
                 try
                 {
-                    await ProcessGameplayIndexChanged().ConfigureAwait(false);
+                    await ProcessCharacterSettingIndexChanged().ConfigureAwait(false);
                 }
                 finally
                 {
@@ -235,7 +266,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask ProcessGameplayIndexChanged(CancellationToken token = default)
+        private async ValueTask ProcessCharacterSettingIndexChanged(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             // Load the Priority information.
