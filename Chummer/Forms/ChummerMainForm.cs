@@ -827,7 +827,7 @@ namespace Chummer
                                         }
                                     }, token: _objGenericToken).ConfigureAwait(false);
                                     await _mascotChummy.DoThreadSafeAsync(
-                                        x => x.Show(this), token: _objGenericToken).ConfigureAwait(false);
+                                        x => x.Show(), token: _objGenericToken).ConfigureAwait(false);
                                 }
 
                                 // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
@@ -1366,17 +1366,32 @@ namespace Chummer
                 if (frmUpdater == null)
                 {
                     frmUpdater = await this.DoThreadSafeFuncAsync(() => new ChummerUpdater(), _objGenericToken).ConfigureAwait(false);
-                    if (Interlocked.CompareExchange(ref _frmUpdate, frmUpdater, null) == null)
+                    ChummerUpdater objOldUpdater = Interlocked.CompareExchange(ref _frmUpdate, frmUpdater, null);
+                    if (objOldUpdater == null)
                     {
                         Disposed += (o, args) => frmUpdater.Dispose();
                         await frmUpdater.DoThreadSafeAsync(x =>
                         {
                             x.FormClosed += ResetChummerUpdater;
-                            x.SilentMode = true;
+                            x.Show();
                         }, _objGenericToken).ConfigureAwait(false);
                     }
                     else
+                    {
                         await frmUpdater.DoThreadSafeAsync(x => x.Close(), _objGenericToken).ConfigureAwait(false);
+                        await objOldUpdater.DoThreadSafeAsync(x =>
+                        {
+                            if (x.SilentMode)
+                            {
+                                x.SilentMode = false;
+                                x.Show();
+                            }
+                            else
+                            {
+                                x.Activate();
+                            }
+                        }, token: _objGenericToken).ConfigureAwait(false);
+                    }
                 }
                 // Silent updater is running, so make it visible
                 else
@@ -1390,7 +1405,7 @@ namespace Chummer
                         }
                         else
                         {
-                            x.Focus();
+                            x.Activate();
                         }
                     }, token: _objGenericToken).ConfigureAwait(false);
                 }
@@ -1538,7 +1553,7 @@ namespace Chummer
                 if (PrintMultipleCharactersForm.IsNullOrDisposed())
                 {
                     PrintMultipleCharactersForm = await this.DoThreadSafeFuncAsync(() => new PrintMultipleCharacters(), token: _objGenericToken).ConfigureAwait(false);
-                    await PrintMultipleCharactersForm.DoThreadSafeAsync(x => x.Show(this), token: _objGenericToken).ConfigureAwait(false);
+                    await PrintMultipleCharactersForm.DoThreadSafeAsync(x => x.Show(), token: _objGenericToken).ConfigureAwait(false);
                 }
                 else
                     await PrintMultipleCharactersForm.DoThreadSafeAsync(x => x.Activate(), token: _objGenericToken).ConfigureAwait(false);
