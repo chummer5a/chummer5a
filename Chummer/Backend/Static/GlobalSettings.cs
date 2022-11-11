@@ -114,9 +114,10 @@ namespace Chummer
                     {
                         try
                         {
-                            PdfDocument objReturn = new PdfDocument(_objPdfReader);
+                            PdfReader objReader = new PdfReader(strPath);
+                            PdfDocument objReturn = new PdfDocument(objReader);
                             Interlocked.Exchange(ref _objPdfDocument, objReturn)?.Close();
-                            Interlocked.Exchange(ref _objPdfReader, new PdfReader(strPath))?.Close();
+                            Interlocked.Exchange(ref _objPdfReader, objReader)?.Close();
                             return objReturn;
                         }
                         catch (Exception e)
