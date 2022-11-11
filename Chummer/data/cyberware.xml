@@ -3399,6 +3399,9 @@
       <category>Cyberlimb Enhancement</category>
       <allowgear>
         <gearname>Medkit</gearname>
+        <gearname>Medkit (Bullets &amp; Bandages)</gearname>
+        <gearname>Medkit (2050)</gearname>
+        <gearname>Savior Medkit</gearname>
       </allowgear>
       <ess>0.45</ess>
       <capacity>[10]</capacity>

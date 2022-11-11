@@ -9527,13 +9527,21 @@
     </gear>
     <gear>
       <id>2efb1c56-4100-4dd5-83e0-d0cbbf5e7854</id>
-      <name>Advanced Medkit</name>
+      <name>Medkit (Bullets &amp; Bandages)</name>
       <category>Biotech</category>
       <rating>6</rating>
       <source>BB</source>
       <page>17</page>
-      <avail>6</avail>
-      <cost>FixedValues(100,400,900,1600,2500,3600)</cost>
+      <avail>Rating</avail>
+      <armorcapacity>[5]</armorcapacity>
+      <bonus>
+        <limitmodifier>
+          <limit>Mental</limit>
+          <value>Rating</value>
+          <condition>LimitCondition_SkillsActiveFirstAidMedicine</condition>
+        </limitmodifier>
+      </bonus>
+      <cost>100 * Rating * Rating</cost>
     </gear>
     <gear>
       <id>47e12d78-cb99-4e20-aff5-11cbed1e715e</id>

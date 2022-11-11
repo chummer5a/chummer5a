@@ -49,6 +49,7 @@ Data Changes:
 - The Cry Wolf Hacking Cyberprogram from Kill Code is now available for purchase for the standard price and availability of Hacking Cyberprograms.
 - Fixed incorrect bonusnode for First Impression quality.
 - Fixed Black Magic [Alt] not being valid for Puppet Master quality.
+- "Advanced Medkit" has been renamed to "Medkit (Bullets & Bandages)" and now has the same availability and abilities as the medkit entry from the core rulebook.
 
 Changed/New Strings:
 - LimitCondition_SoldierParagon
