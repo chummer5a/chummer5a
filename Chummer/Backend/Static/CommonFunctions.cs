@@ -153,7 +153,7 @@ namespace Chummer
         public static Tuple<bool, object> EvaluateInvariantXPath(string strXPath, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (s_DicCompiledEvaluations.TryGetValue(strXPath, out Tuple<bool, object> objCachedEvaluation))
+            if (s_DicCompiledEvaluations.TryGetValue(strXPath, out Tuple<bool, object> objCachedEvaluation, token))
             {
                 return objCachedEvaluation;
             }
@@ -299,7 +299,7 @@ namespace Chummer
         public static Tuple<bool, object> EvaluateInvariantXPath(XPathExpression objXPath, CancellationToken token = default)
         {
             string strExpression = objXPath.Expression;
-            if (s_DicCompiledEvaluations.TryGetValue(strExpression, out Tuple<bool, object> objCachedEvaluation))
+            if (s_DicCompiledEvaluations.TryGetValue(strExpression, out Tuple<bool, object> objCachedEvaluation, token))
             {
                 return objCachedEvaluation;
             }
@@ -1554,6 +1554,7 @@ namespace Chummer
             // Write the Character information to a RecyclableMemoryStream so we don't need to create any files.
             using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
             {
+                bool blnWriterError = false;
                 using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                 {
                     // Begin the document.
@@ -1586,13 +1587,17 @@ namespace Chummer
                         if (objWriter.WriteState == WriteState.Error)
                         {
                             objWriter.Close();
-                            throw new InvalidOperationException(nameof(objWriter));
+                            blnWriterError = true;
                         }
-
-                        await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
-                        await objWriter.FlushAsync().ConfigureAwait(false);
+                        else
+                        {
+                            await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
+                            await objWriter.FlushAsync().ConfigureAwait(false);
+                        }
                     }
                 }
+                if (blnWriterError)
+                    throw new InvalidOperationException();
 
                 objToken.ThrowIfCancellationRequested();
 
@@ -1848,7 +1853,7 @@ namespace Chummer
             bool blnSuccess;
             SourcebookInfo objBookInfo;
             if (blnSync)
-                blnSuccess = GlobalSettings.SourcebookInfos.TryGetValue(strBook, out objBookInfo);
+                blnSuccess = GlobalSettings.SourcebookInfos.TryGetValue(strBook, out objBookInfo, token);
             else
                 (blnSuccess, objBookInfo) = await (await GlobalSettings.GetSourcebookInfosAsync(token).ConfigureAwait(false)).TryGetValueAsync(strBook, token).ConfigureAwait(false);
             // If the sourcebook was not found, we can't open anything.
@@ -1918,7 +1923,7 @@ namespace Chummer
                     {
                         return blnSync
                             // ReSharper disable once MethodHasAsyncOverload
-                            ? LanguageManager.GetString("Error_Message_PDF_IndexOutOfBounds", false)
+                            ? LanguageManager.GetString("Error_Message_PDF_IndexOutOfBounds", false, token)
                             : await LanguageManager.GetStringAsync("Error_Message_PDF_IndexOutOfBounds", false, token).ConfigureAwait(false);
                     }
 
