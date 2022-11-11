@@ -40,14 +40,14 @@ namespace Chummer
         private WeaponMount _objMount;
         private readonly XmlDocument _xmlDoc;
         private readonly XPathNavigator _xmlDocXPath;
-        private readonly HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
         private readonly decimal _decOldBaseCost;
 
         public WeaponMount WeaponMount => _objMount;
 
         public CreateWeaponMount(Vehicle objVehicle, Character objCharacter, WeaponMount objWeaponMount = null)
         {
-            Disposed += (sender, args) => Utils.StringHashSetPool.Return(_setBlackMarketMaps);
+            Disposed += (sender, args) => Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
             _objVehicle = objVehicle;
             _objMount = objWeaponMount;
             _objCharacter = objCharacter;
@@ -104,7 +104,7 @@ namespace Chummer
                                         ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false)));
                     }
                 }
-                
+
                 await cboSize.PopulateWithListItemsAsync(lstSize).ConfigureAwait(false);
                 await cboSize.DoThreadSafeAsync(x => x.Enabled = _blnAllowEditOptions && lstSize.Count > 1).ConfigureAwait(false);
             }
@@ -562,7 +562,7 @@ namespace Chummer
                 await cboFlexibility.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false),
                 await cboControl.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false)
             };
-            
+
             await cmdDeleteMod.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
             string strSelectedModId = await treMods.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag.ToString(), token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strSelectedModId) && strSelectedModId.IsGuid())
@@ -800,7 +800,7 @@ namespace Chummer
                     continue;
                 intSlots += objMod.CalculatedSlots;
             }
-            
+
             TreeNode objModsParentNode = await treMods.DoThreadSafeFuncAsync(x => x.FindNode("Node_AdditionalMods")).ConfigureAwait(false);
             do
             {

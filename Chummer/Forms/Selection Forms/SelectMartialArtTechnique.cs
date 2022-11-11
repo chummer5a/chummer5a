@@ -37,13 +37,13 @@ namespace Chummer
         private readonly MartialArt _objMartialArt;
         private readonly XPathNavigator _xmlBaseChummerNode;
         private readonly Character _objCharacter;
-        private readonly HashSet<string> _setAllowedTechniques = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setAllowedTechniques = Utils.StringHashSetPool.Get();
 
         #region Control Events
 
         public SelectMartialArtTechnique(Character objCharacter, MartialArt objMartialArt)
         {
-            Disposed += (sender, args) => Utils.StringHashSetPool.Return(_setAllowedTechniques);
+            Disposed += (sender, args) => Utils.StringHashSetPool.Return(ref _setAllowedTechniques);
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();

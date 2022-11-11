@@ -770,7 +770,7 @@ namespace Chummer
                                     }
                                     finally
                                     {
-                                        Utils.StringHashSetPool.Return(setFilesToLoad);
+                                        Utils.StringHashSetPool.Return(ref setFilesToLoad);
                                     }
                                 }
 
@@ -3527,7 +3527,7 @@ namespace Chummer
                             }
                             finally
                             {
-                                Utils.StringHashSetPool.Return(setFilesToLoad);
+                                Utils.StringHashSetPool.Return(ref setFilesToLoad);
                             }
 
                             if (blnShowTest)

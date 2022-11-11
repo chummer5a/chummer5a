@@ -730,7 +730,9 @@ namespace Chummer
                             = await (await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false))
                                     .TryGetValueAsync(strSettings, token).ConfigureAwait(false);
                         if (blnSuccess)
-                            _strSettingsFile = objSettings.DisplayName;
+                            _strSettingsFile = blnSync
+                                ? objSettings.CurrentDisplayName
+                                : await objSettings.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                         else
                         {
                             string strTemp = blnSync

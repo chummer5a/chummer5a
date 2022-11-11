@@ -54,10 +54,10 @@ namespace Chummer
         private readonly XPathNavigator _xmlBaseGearDataNode;
         private readonly Character _objCharacter;
 
-        private readonly List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
-        private readonly HashSet<string> _setAllowedCategories = Utils.StringHashSetPool.Get();
-        private readonly HashSet<string> _setAllowedNames = Utils.StringHashSetPool.Get();
-        private readonly HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
+        private List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
+        private HashSet<string> _setAllowedCategories = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setAllowedNames = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
 
         #region Control Events
 
@@ -67,10 +67,10 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(objCharacter));
             Disposed += (sender, args) =>
             {
-                Utils.ListItemListPool.Return(_lstCategory);
-                Utils.StringHashSetPool.Return(_setAllowedCategories);
-                Utils.StringHashSetPool.Return(_setAllowedNames);
-                Utils.StringHashSetPool.Return(_setBlackMarketMaps);
+                Utils.ListItemListPool.Return(ref _lstCategory);
+                Utils.StringHashSetPool.Return(ref _setAllowedCategories);
+                Utils.StringHashSetPool.Return(ref _setAllowedNames);
+                Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
             };
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -168,7 +168,7 @@ namespace Chummer
             {
                 _lstCategory.Insert(0, new ListItem("Show All", await LanguageManager.GetStringAsync("String_ShowAll").ConfigureAwait(false)));
             }
-            
+
             await cboCategory.PopulateWithListItemsAsync(_lstCategory).ConfigureAwait(false);
 
             await chkBlackMarketDiscount.DoThreadSafeAsync(x => x.Visible = _objCharacter.BlackMarketDiscount).ConfigureAwait(false);
@@ -702,7 +702,7 @@ namespace Chummer
                     if (objCostNode != null)
                     {
                         string strCost = objCostNode.Value;
-                        
+
                         if (strCost.StartsWith("FixedValues(", StringComparison.Ordinal))
                         {
                             if (intRatingValue > 0)
@@ -1315,7 +1315,7 @@ namespace Chummer
                                                                     "String_RestrictedItemsHidden", token: token).ConfigureAwait(false),
                                                                 intOverLimit)));
                     }
-                    
+
                     string strOldSelected = await lstGear.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
                     Interlocked.Increment(ref _intLoading);
                     try
@@ -1326,7 +1326,7 @@ namespace Chummer
                     {
                         Interlocked.Decrement(ref _intLoading);
                     }
-                    
+
                     await lstGear.DoThreadSafeAsync(x =>
                     {
                         if (string.IsNullOrEmpty(strOldSelected))
@@ -1339,7 +1339,7 @@ namespace Chummer
             finally
             {
                 if (lstGears != null)
-                    Utils.ListItemListPool.Return(lstGears);
+                    Utils.ListItemListPool.Return(ref lstGears);
             }
 
             return blnAnyItem;

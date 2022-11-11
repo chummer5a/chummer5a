@@ -62,7 +62,7 @@ namespace Chummer.Backend.Equipment
         private int _intSecurityMaximum;
         private int _intComfortsMaximum;
         private int _intComforts;
-        private readonly HashSet<string> _setAllowedFreeLifestyles = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setAllowedFreeLifestyles = Utils.StringHashSetPool.Get();
         private readonly Character _objCharacter;
         private bool _blnFree;
         private bool _blnIsFreeGrid;
@@ -1112,7 +1112,7 @@ namespace Chummer.Backend.Equipment
         /// <inheritdoc />
         public void Dispose()
         {
-            Utils.StringHashSetPool.Return(_setAllowedFreeLifestyles);
+            Utils.StringHashSetPool.Return(ref _setAllowedFreeLifestyles);
         }
 
         public bool Remove(bool blnConfirmDelete = true)
@@ -1303,7 +1303,7 @@ namespace Chummer.Backend.Equipment
             finally
             {
                 if (setNamesOfChangedProperties != null)
-                    Utils.StringHashSetPool.Return(setNamesOfChangedProperties);
+                    Utils.StringHashSetPool.Return(ref setNamesOfChangedProperties);
             }
         }
     }

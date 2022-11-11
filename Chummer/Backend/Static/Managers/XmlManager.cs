@@ -2045,7 +2045,7 @@ namespace Chummer
             finally
             {
                 if (setAddedSheetFileNames != null)
-                    Utils.StringHashSetPool.Return(setAddedSheetFileNames);
+                    Utils.StringHashSetPool.Return(ref setAddedSheetFileNames);
             }
         }
 
@@ -2135,7 +2135,7 @@ namespace Chummer
             finally
             {
                 if (setAddedSheetFileNames != null)
-                    Utils.StringHashSetPool.Return(setAddedSheetFileNames);
+                    Utils.StringHashSetPool.Return(ref setAddedSheetFileNames);
             }
             return new Tuple<bool, List<ListItem>>(lstSheets != null && lstSheets.Count > 0, lstSheets);
         }

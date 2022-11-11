@@ -31,7 +31,7 @@ namespace Chummer
     {
         private readonly List<Gear> _lstGear = new List<Gear>();
         private readonly List<Vehicle> _lstVehicles = new List<Vehicle>();
-        private readonly List<ListItem> _lstGeneralItems = Utils.ListItemListPool.Get();
+        private List<ListItem> _lstGeneralItems = Utils.ListItemListPool.Get();
         private string _strMode = "General";
         private Character _objCharacter;
         private bool _blnAllowAutoSelect = true;
@@ -45,6 +45,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstGeneralItems);
         }
 
         private async void SelectItem_Load(object sender, EventArgs e)

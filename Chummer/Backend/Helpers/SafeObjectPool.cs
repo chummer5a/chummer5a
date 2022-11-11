@@ -87,6 +87,8 @@ namespace Chummer
         /// </summary>
         public void Return(ref T objToReturn)
         {
+            if (objToReturn == null)
+                throw new ArgumentNullException(nameof(objToReturn));
             // Immediately interlocked exchange the object we're returning to make sure we don't somehow hold onto it
             T objLocal = Interlocked.Exchange(ref objToReturn, null);
             if (_actionRunOnReturn != null)

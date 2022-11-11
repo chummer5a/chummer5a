@@ -35,8 +35,8 @@ namespace Chummer
         private int _intSkipRefresh = 1;
         private CharacterSettings _objSelectedSetting;
         private readonly LockingDictionary<MasterIndexEntry, Task<string>> _dicCachedNotes = new LockingDictionary<MasterIndexEntry, Task<string>>();
-        private readonly List<ListItem> _lstFileNamesWithItems = Utils.ListItemListPool.Get();
-        private readonly List<ListItem> _lstItems = Utils.ListItemListPool.Get();
+        private List<ListItem> _lstFileNamesWithItems = Utils.ListItemListPool.Get();
+        private List<ListItem> _lstItems = Utils.ListItemListPool.Get();
         private readonly CancellationTokenSource _objGenericFormClosingCancellationTokenSource = new CancellationTokenSource();
         private readonly CancellationToken _objGenericToken;
 
@@ -94,8 +94,8 @@ namespace Chummer
                 _dicCachedNotes.Dispose();
                 foreach (ListItem objExistingItem in _lstItems)
                     ((MasterIndexEntry) objExistingItem.Value).Dispose();
-                Utils.ListItemListPool.Return(_lstFileNamesWithItems);
-                Utils.ListItemListPool.Return(_lstItems);
+                Utils.ListItemListPool.Return(ref _lstFileNamesWithItems);
+                Utils.ListItemListPool.Return(ref _lstItems);
                 _objGenericFormClosingCancellationTokenSource.Dispose();
             };
             InitializeComponent();
@@ -114,7 +114,7 @@ namespace Chummer
                     = await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false);
                 foreach (CharacterSettings objLoopSettings in dicCharacterSettings.Select(x => x.Value))
                 {
-                    lstCharacterSettings.Add(new ListItem(objLoopSettings, objLoopSettings.DisplayName));
+                    lstCharacterSettings.Add(new ListItem(objLoopSettings, await objLoopSettings.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)));
                 }
 
                 lstCharacterSettings.Sort(CompareListItems.CompareNames);
@@ -549,8 +549,12 @@ namespace Chummer
                                 }
                                 finally
                                 {
-                                    foreach (List<ListItem> lstHelperItems in dicHelper.Values)
-                                        Utils.ListItemListPool.Return(lstHelperItems);
+                                    List<List<ListItem>> lstToReturn = dicHelper.Values.ToList();
+                                    for (int i = lstToReturn.Count - 1; i >= 0; --i)
+                                    {
+                                        List<ListItem> lstLoop = lstToReturn[i];
+                                        Utils.ListItemListPool.Return(ref lstLoop);
+                                    }
                                 }
                             }
                         }
@@ -678,7 +682,7 @@ namespace Chummer
                     finally
                     {
                         if (blnCustomList)
-                            Utils.ListItemListPool.Return(lstFilteredItems);
+                            Utils.ListItemListPool.Return(ref lstFilteredItems);
                     }
                 }
                 finally
@@ -768,11 +772,13 @@ namespace Chummer
 
         private sealed class MasterIndexEntry : IDisposable
         {
+            private HashSet<string> _setFileNames;
+
             public MasterIndexEntry(string strDisplayName, string strFileName, SourceString objSource, SourceString objDisplaySource, string strEnglishNameOnPage, string strTranslatedNameOnPage)
             {
                 DisplayName = strDisplayName;
-                FileNames = Utils.StringHashSetPool.Get();
-                FileNames.Add(strFileName);
+                _setFileNames = Utils.StringHashSetPool.Get();
+                _setFileNames.Add(strFileName);
                 Source = objSource;
                 DisplaySource = objDisplaySource;
                 EnglishNameOnPage = strEnglishNameOnPage;
@@ -780,7 +786,9 @@ namespace Chummer
             }
 
             internal string DisplayName { get; }
-            internal HashSet<string> FileNames { get; }
+
+            internal HashSet<string> FileNames => _setFileNames;
+
             internal SourceString Source { get; }
             internal SourceString DisplaySource { get; }
             internal string EnglishNameOnPage { get; }
@@ -789,7 +797,7 @@ namespace Chummer
             /// <inheritdoc />
             public void Dispose()
             {
-                Utils.StringHashSetPool.Return(FileNames);
+                Utils.StringHashSetPool.Return(ref _setFileNames);
             }
         }
 

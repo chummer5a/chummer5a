@@ -54,7 +54,7 @@ namespace ChummerHub.Client.UI
             _inConstructor = true;
             InitializeComponent();
 
-            TagValueArchetype.DataSource = Contact.ContactArchetypes(parent.CharacterObject);
+            TagValueArchetype.DataSource = parent.CharacterObject.ContactArchetypes();
             Name = "SINnersBasic";
             bGroupSearch.Enabled = false;
             AutoSize = true;
@@ -110,9 +110,9 @@ namespace ChummerHub.Client.UI
                 {
                     SinnersClient client = StaticUtils.GetClient();
                     ResultSinnerGetSINnerGroupFromSINerById response = await client.GetSINnerGroupFromSINerByIdAsync(myUC.MyCE.MySINnerFile.Id.Value);
-                    
+
                     SINnerGroup objMySiNnerGroup = response.MySINnerGroup;
-                    
+
                     await PluginHandler.MainForm.DoThreadSafeAsync(() =>
                     {
                         if (objMySiNnerGroup != null)
@@ -356,7 +356,7 @@ namespace ChummerHub.Client.UI
                                 myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility.UserRights = res.UserRights;
                             }
 
-                            
+
                         }
                     }
                 }

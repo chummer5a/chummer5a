@@ -148,8 +148,12 @@ namespace Chummer
                     }
                     finally
                     {
-                        foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
-                            Utils.StringHashSetPool.Return(setToReturn);
+                        List<HashSet<string>> lstToReturn = dicChangedProperties.Values.ToList();
+                        for (int i = lstToReturn.Count - 1; i >= 0; --i)
+                        {
+                            HashSet<string> setLoop = lstToReturn[i];
+                            Utils.StringHashSetPool.Return(ref setLoop);
+                        }
                     }
                 }
             }

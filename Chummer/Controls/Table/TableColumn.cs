@@ -40,7 +40,7 @@ namespace Chummer.UI.Table
         private int _intPrefWidth;
         private Func<T, Task<object>> _funcExtractor;
         private Func<T, T, Task<int>> _itemSorter;
-        private readonly HashSet<string> _setDependencies = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setDependencies = Utils.StringHashSetPool.Get();
 
         public TableColumn(Func<TableCell> cellFactory)
         {
@@ -51,7 +51,8 @@ namespace Chummer.UI.Table
         {
             if (disposing)
             {
-                Utils.StringHashSetPool.Return(_setDependencies);
+                if (_setDependencies != null)
+                    Utils.StringHashSetPool.Return(ref _setDependencies);
             }
         }
 

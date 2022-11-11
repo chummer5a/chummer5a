@@ -46,8 +46,8 @@ namespace Chummer
         private readonly XmlDocument _objXmlDocument;
         private readonly Character _objCharacter;
 
-        private readonly List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
-        private readonly HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
+        private List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
+        private HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
         private int _intRating;
         private bool _blnBlackMarketDiscount;
 
@@ -57,8 +57,8 @@ namespace Chummer
         {
             Disposed += (sender, args) =>
             {
-                Utils.ListItemListPool.Return(_lstCategory);
-                Utils.StringHashSetPool.Return(_setBlackMarketMaps);
+                Utils.ListItemListPool.Return(ref _lstCategory);
+                Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
             };
             InitializeComponent();
             tabControl.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;

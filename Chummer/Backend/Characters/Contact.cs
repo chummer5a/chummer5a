@@ -160,7 +160,7 @@ namespace Chummer
             finally
             {
                 if (setNamesOfChangedProperties != null)
-                    Utils.StringHashSetPool.Return(setNamesOfChangedProperties);
+                    Utils.StringHashSetPool.Return(ref setNamesOfChangedProperties);
             }
         }
 
@@ -262,35 +262,6 @@ namespace Chummer
                 default:
                     return ContactType.Enemy;
             }
-        }
-
-        private static Character _objCharacterForCachedContactArchetypes;
-        private static List<ListItem> _lstCachedContactArchetypes;
-
-        public static List<ListItem> ContactArchetypes(Character objCharacter)
-        {
-            if (_lstCachedContactArchetypes != null && _objCharacterForCachedContactArchetypes == objCharacter
-                                                    && !GlobalSettings.LiveCustomData)
-                return _lstCachedContactArchetypes;
-            _objCharacterForCachedContactArchetypes = objCharacter;
-            if (_lstCachedContactArchetypes == null)
-                _lstCachedContactArchetypes = Utils.ListItemListPool.Get();
-            else
-                _lstCachedContactArchetypes.Clear();
-            _lstCachedContactArchetypes.Add(ListItem.Blank);
-            XPathNavigator xmlContactsBaseNode = objCharacter.LoadDataXPath("contacts.xml")
-                                                             .SelectSingleNodeAndCacheExpression("/chummer");
-            if (xmlContactsBaseNode == null)
-                return _lstCachedContactArchetypes;
-            foreach (XPathNavigator xmlNode in xmlContactsBaseNode.SelectAndCacheExpression("contacts/contact"))
-            {
-                string strName = xmlNode.Value;
-                _lstCachedContactArchetypes.Add(
-                    new ListItem(strName, xmlNode.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strName));
-            }
-
-            _lstCachedContactArchetypes.Sort(CompareListItems.CompareNames);
-            return _lstCachedContactArchetypes;
         }
 
         #endregion Helper Methods
@@ -1948,8 +1919,6 @@ namespace Chummer
         /// <inheritdoc />
         public void Dispose()
         {
-            if (_lstCachedContactArchetypes != null)
-                Utils.ListItemListPool.Return(_lstCachedContactArchetypes);
             if (_objLinkedCharacter != null && !Utils.IsUnitTest
                                             && Program.OpenCharacters.All(
                                                 x => x == _objLinkedCharacter
@@ -1965,8 +1934,6 @@ namespace Chummer
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {
-            if (_lstCachedContactArchetypes != null)
-                Utils.ListItemListPool.Return(_lstCachedContactArchetypes);
             if (_objLinkedCharacter != null && !Utils.IsUnitTest
                                             && await Program.OpenCharacters.AllAsync(
                                                                 x => x == _objLinkedCharacter

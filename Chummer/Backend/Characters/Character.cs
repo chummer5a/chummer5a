@@ -1600,8 +1600,12 @@ namespace Chummer
                 }
                 finally
                 {
-                    foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
-                        Utils.StringHashSetPool.Return(setToReturn);
+                    List<HashSet<string>> lstToReturn = dicChangedProperties.Values.ToList();
+                    for (int i = lstToReturn.Count - 1; i >= 0; --i)
+                    {
+                        HashSet<string> setLoop = lstToReturn[i];
+                        Utils.StringHashSetPool.Return(ref setLoop);
+                    }
                 }
             }
         }
@@ -1677,8 +1681,12 @@ namespace Chummer
                 }
                 finally
                 {
-                    foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
-                        Utils.StringHashSetPool.Return(setToReturn);
+                    List<HashSet<string>> lstToReturn = dicChangedProperties.Values.ToList();
+                    for (int i = lstToReturn.Count - 1; i >= 0; --i)
+                    {
+                        HashSet<string> setLoop = lstToReturn[i];
+                        Utils.StringHashSetPool.Return(ref setLoop);
+                    }
                 }
             }
         }
@@ -1759,8 +1767,12 @@ namespace Chummer
                 }
                 finally
                 {
-                    foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
-                        Utils.StringHashSetPool.Return(setToReturn);
+                    List<HashSet<string>> lstToReturn = dicChangedProperties.Values.ToList();
+                    for (int i = lstToReturn.Count - 1; i >= 0; --i)
+                    {
+                        HashSet<string> setLoop = lstToReturn[i];
+                        Utils.StringHashSetPool.Return(ref setLoop);
+                    }
                 }
             }
         }
@@ -1836,8 +1848,12 @@ namespace Chummer
                 }
                 finally
                 {
-                    foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
-                        Utils.StringHashSetPool.Return(setToReturn);
+                    List<HashSet<string>> lstToReturn = dicChangedProperties.Values.ToList();
+                    for (int i = lstToReturn.Count - 1; i >= 0; --i)
+                    {
+                        HashSet<string> setLoop = lstToReturn[i];
+                        Utils.StringHashSetPool.Return(ref setLoop);
+                    }
                 }
             }
         }
@@ -1913,8 +1929,12 @@ namespace Chummer
                 }
                 finally
                 {
-                    foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
-                        Utils.StringHashSetPool.Return(setToReturn);
+                    List<HashSet<string>> lstToReturn = dicChangedProperties.Values.ToList();
+                    for (int i = lstToReturn.Count - 1; i >= 0; --i)
+                    {
+                        HashSet<string> setLoop = lstToReturn[i];
+                        Utils.StringHashSetPool.Return(ref setLoop);
+                    }
                 }
             }
         }
@@ -2128,8 +2148,12 @@ namespace Chummer
                 }
                 finally
                 {
-                    foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
-                        Utils.StringHashSetPool.Return(setToReturn);
+                    List<HashSet<string>> lstToReturn = dicChangedProperties.Values.ToList();
+                    for (int i = lstToReturn.Count - 1; i >= 0; --i)
+                    {
+                        HashSet<string> setLoop = lstToReturn[i];
+                        Utils.StringHashSetPool.Return(ref setLoop);
+                    }
                 }
             }
         }
@@ -2274,8 +2298,12 @@ namespace Chummer
                 }
                 finally
                 {
-                    foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
-                        Utils.StringHashSetPool.Return(setToReturn);
+                    List<HashSet<string>> lstToReturn = dicChangedProperties.Values.ToList();
+                    for (int i = lstToReturn.Count - 1; i >= 0; --i)
+                    {
+                        HashSet<string> setLoop = lstToReturn[i];
+                        Utils.StringHashSetPool.Return(ref setLoop);
+                    }
                 }
             }
         }
@@ -2445,8 +2473,12 @@ namespace Chummer
                 }
                 finally
                 {
-                    foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
-                        Utils.StringHashSetPool.Return(setToReturn);
+                    List<HashSet<string>> lstToReturn = dicChangedProperties.Values.ToList();
+                    for (int i = lstToReturn.Count - 1; i >= 0; --i)
+                    {
+                        HashSet<string> setLoop = lstToReturn[i];
+                        Utils.StringHashSetPool.Return(ref setLoop);
+                    }
                 }
             }
         }
@@ -2642,8 +2674,12 @@ namespace Chummer
                 }
                 finally
                 {
-                    foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
-                        Utils.StringHashSetPool.Return(setToReturn);
+                    List<HashSet<string>> lstToReturn = dicChangedProperties.Values.ToList();
+                    for (int i = lstToReturn.Count - 1; i >= 0; --i)
+                    {
+                        HashSet<string> setLoop = lstToReturn[i];
+                        Utils.StringHashSetPool.Return(ref setLoop);
+                    }
                 }
             }
         }
@@ -9586,8 +9622,12 @@ namespace Chummer
                                 }
                                 finally
                                 {
-                                    foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
-                                        Utils.StringHashSetPool.Return(setToReturn);
+                                    List<HashSet<string>> lstToReturn = dicChangedProperties.Values.ToList();
+                                    for (int i = lstToReturn.Count - 1; i >= 0; --i)
+                                    {
+                                        HashSet<string> setLoop = lstToReturn[i];
+                                        Utils.StringHashSetPool.Return(ref setLoop);
+                                    }
                                 }
                             }
 
@@ -11471,6 +11511,8 @@ namespace Chummer
                     _objSettings.Dispose();
                 _objCachedEssenceLock.Dispose();
                 _objTradition.Dispose();
+                if (_lstCachedContactArchetypes != null)
+                    Utils.ListItemListPool.Return(ref _lstCachedContactArchetypes);
             }
 
             LockObject.Dispose();
@@ -11559,6 +11601,8 @@ namespace Chummer
                     await _objSettings.DisposeAsync().ConfigureAwait(false);
                 await _objCachedEssenceLock.DisposeAsync().ConfigureAwait(false);
                 await _objTradition.DisposeAsync().ConfigureAwait(false);
+                if (_lstCachedContactArchetypes != null)
+                    Utils.ListItemListPool.Return(ref _lstCachedContactArchetypes);
             }
             finally
             {
@@ -33656,7 +33700,7 @@ namespace Chummer
                 finally
                 {
                     if (setNamesOfChangedProperties != null)
-                        Utils.StringHashSetPool.Return(setNamesOfChangedProperties);
+                        Utils.StringHashSetPool.Return(ref setNamesOfChangedProperties);
                 }
             }
 
@@ -37172,6 +37216,75 @@ namespace Chummer
         #endregion Source
 
         #region Special Methods
+
+        private List<ListItem> _lstCachedContactArchetypes;
+        private string _strCachedXmlNodeLanguage = string.Empty;
+
+        public List<ListItem> ContactArchetypes(string strLanguage = "")
+        {
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalSettings.Language;
+            using (EnterReadLock.Enter(this))
+            {
+                if (_lstCachedContactArchetypes != null && strLanguage == _strCachedXmlNodeLanguage
+                                                        && !GlobalSettings.LiveCustomData)
+                    return _lstCachedContactArchetypes;
+                List<ListItem> lstNew = Utils.ListItemListPool.Get();
+                lstNew.Add(ListItem.Blank);
+                XPathNavigator xmlContactsBaseNode = LoadDataXPath("contacts.xml", strLanguage)
+                    .SelectSingleNodeAndCacheExpression("/chummer");
+                if (xmlContactsBaseNode != null)
+                {
+                    foreach (XPathNavigator xmlNode in xmlContactsBaseNode.SelectAndCacheExpression("contacts/contact"))
+                    {
+                        string strName = xmlNode.Value;
+                        lstNew.Add(
+                            new ListItem(
+                                strName, xmlNode.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strName));
+                    }
+
+                    lstNew.Sort(CompareListItems.CompareNames);
+                }
+                _strCachedXmlNodeLanguage = strLanguage;
+                List<ListItem> lstOld = Interlocked.Exchange(ref _lstCachedContactArchetypes, lstNew);
+                if (lstOld != null)
+                    Utils.ListItemListPool.Return(ref lstOld);
+                return _lstCachedContactArchetypes;
+            }
+        }
+
+        public async ValueTask<List<ListItem>> ContactArchetypesAsync(string strLanguage = "", CancellationToken token = default)
+        {
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalSettings.Language;
+            using (await EnterReadLock.EnterAsync(this, token).ConfigureAwait(false))
+            {
+                if (_lstCachedContactArchetypes != null && strLanguage == _strCachedXmlNodeLanguage
+                                                        && !GlobalSettings.LiveCustomData)
+                    return _lstCachedContactArchetypes;
+                List<ListItem> lstNew = Utils.ListItemListPool.Get();
+                lstNew.Add(ListItem.Blank);
+                XPathNavigator xmlContactsBaseNode = (await LoadDataXPathAsync("contacts.xml", strLanguage, token: token).ConfigureAwait(false))
+                    .SelectSingleNodeAndCacheExpression("/chummer");
+                if (xmlContactsBaseNode != null)
+                {
+                    foreach (XPathNavigator xmlNode in xmlContactsBaseNode.SelectAndCacheExpression("contacts/contact"))
+                    {
+                        string strName = xmlNode.Value;
+                        lstNew.Add(
+                            new ListItem(
+                                strName, xmlNode.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strName));
+                    }
+
+                    lstNew.Sort(CompareListItems.CompareNames);
+                }
+                _strCachedXmlNodeLanguage = strLanguage;
+                List<ListItem> lstOld = Interlocked.Exchange(ref _lstCachedContactArchetypes, lstNew);
+                if (lstOld != null)
+                    Utils.ListItemListPool.Return(ref lstOld);
+                return _lstCachedContactArchetypes;
+            }
+        }
 
         public async Task<bool> ConvertCyberzombie(CancellationToken token = default)
         {

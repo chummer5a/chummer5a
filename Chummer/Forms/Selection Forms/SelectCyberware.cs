@@ -57,11 +57,11 @@ namespace Chummer
         private string _strSelectedCategory = string.Empty;
         private string _strOldSelectedGrade = string.Empty;
         private bool _blnOldGradeEnabled = true;
-        private readonly HashSet<string> _setDisallowedGrades = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setDisallowedGrades = Utils.StringHashSetPool.Get();
         private string _strForceGrade = string.Empty;
         private readonly object _objParentObject;
         private readonly XPathNavigator _objParentNode;
-        private readonly HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
         private readonly XPathNavigator _xmlBaseCyberwareDataNode;
         private readonly CancellationTokenSource _objGenericCancellationTokenSource = new CancellationTokenSource();
         private readonly CancellationToken _objGenericToken;
@@ -80,8 +80,8 @@ namespace Chummer
             Disposed += (sender, args) =>
             {
                 _objGenericCancellationTokenSource.Dispose();
-                Utils.StringHashSetPool.Return(_setBlackMarketMaps);
-                Utils.StringHashSetPool.Return(_setDisallowedGrades);
+                Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
+                Utils.StringHashSetPool.Return(ref _setDisallowedGrades);
             };
             InitializeComponent();
 
@@ -1725,7 +1725,7 @@ namespace Chummer
             finally
             {
                 if (lstCyberwares != null)
-                    Utils.ListItemListPool.Return(lstCyberwares);
+                    Utils.ListItemListPool.Return(ref lstCyberwares);
             }
         }
 

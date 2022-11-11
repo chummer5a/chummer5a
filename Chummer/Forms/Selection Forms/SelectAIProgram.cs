@@ -38,7 +38,7 @@ namespace Chummer
         private readonly bool _blnAdvancedProgramAllowed;
         private readonly bool _blnInherentProgram;
         private readonly Character _objCharacter;
-        private readonly List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
+        private List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
 
         private readonly XPathNavigator _xmlBaseChummerNode;
         private readonly XPathNavigator _xmlOptionalAIProgramsNode;
@@ -47,7 +47,7 @@ namespace Chummer
 
         public SelectAIProgram(Character objCharacter, bool blnAdvancedProgramAllowed = true, bool blnInherentProgram = false)
         {
-            Disposed += (sender, args) => Utils.ListItemListPool.Return(_lstCategory);
+            Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstCategory);
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
@@ -82,7 +82,7 @@ namespace Chummer
             {
                 _lstCategory.Insert(0, new ListItem("Show All", await LanguageManager.GetStringAsync("String_ShowAll").ConfigureAwait(false)));
             }
-            
+
             await cboCategory.PopulateWithListItemsAsync(_lstCategory).ConfigureAwait(false);
             await cboCategory.DoThreadSafeAsync(x =>
             {
@@ -281,7 +281,7 @@ namespace Chummer
         {
             if (_blnLoading)
                 return;
-            
+
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
                 sbdFilter.Append('(').Append(await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false)).Append(')');

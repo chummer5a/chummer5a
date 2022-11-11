@@ -45,7 +45,7 @@ namespace Chummer
 
         private readonly XmlDocument _objXmlDocument;
 
-        private readonly List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
+        private List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
         private static readonly ReadOnlyCollection<string> s_LifestylesSorted = Array.AsReadOnly(new[] { "Street", "Squatter", "Low", "Medium", "High", "Luxury" });
         private static readonly IReadOnlyCollection<string> s_LifestyleSpecific = new HashSet<string> { "Bolt Hole", "Traveler", "Commercial", "Hospitalized" };
 
@@ -58,7 +58,7 @@ namespace Chummer
 
         public SelectLifestyleQuality(Character objCharacter, string strSelectedLifestyle, IReadOnlyCollection<LifestyleQuality> lstExistingQualities)
         {
-            Disposed += (sender, args) => Utils.ListItemListPool.Return(_lstCategory);
+            Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstCategory);
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
@@ -462,7 +462,7 @@ namespace Chummer
             finally
             {
                 if (lstLifestyleQuality != null)
-                    Utils.ListItemListPool.Return(lstLifestyleQuality);
+                    Utils.ListItemListPool.Return(ref lstLifestyleQuality);
             }
         }
 

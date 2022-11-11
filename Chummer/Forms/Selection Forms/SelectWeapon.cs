@@ -41,14 +41,15 @@ namespace Chummer
         private bool _blnSkipUpdate;
         private bool _blnAddAgain;
         private bool _blnBlackMarketDiscount;
-        private readonly HashSet<string> _setLimitToCategories = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setLimitToCategories = Utils.StringHashSetPool.Get();
         private static string _strSelectCategory = string.Empty;
         private readonly Character _objCharacter;
         private readonly XmlDocument _objXmlDocument;
         private Weapon _objSelectedWeapon;
 
-        private readonly List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
-        private readonly HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
+        private List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
+        private HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setMounts = Utils.StringHashSetPool.Get();
 
         #region Control Events
 
@@ -58,10 +59,10 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(objCharacter));
             Disposed += (sender, args) =>
             {
-                Utils.ListItemListPool.Return(_lstCategory);
-                Utils.StringHashSetPool.Return(_setBlackMarketMaps);
-                Utils.StringHashSetPool.Return(_setLimitToCategories);
-                Utils.StringHashSetPool.Return(Mounts);
+                Utils.ListItemListPool.Return(ref _lstCategory);
+                Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
+                Utils.StringHashSetPool.Return(ref _setLimitToCategories);
+                Utils.StringHashSetPool.Return(ref _setMounts);
             };
             InitializeComponent();
             tabControl.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
@@ -714,7 +715,8 @@ namespace Chummer
         }
 
         public Weapon ParentWeapon { get; set; }
-        public HashSet<string> Mounts { get; } = Utils.StringHashSetPool.Get();
+
+        public HashSet<string> Mounts => _setMounts;
 
         #endregion Properties
 

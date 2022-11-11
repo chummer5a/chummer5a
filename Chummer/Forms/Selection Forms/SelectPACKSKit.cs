@@ -53,13 +53,13 @@ namespace Chummer
         private readonly XPathNavigator _xmlPowersBasePowersNode;
         private readonly XPathNavigator _xmlMartialArtsBaseChummerNode;
 
-        private readonly List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
+        private List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
 
         #region Control Events
 
         public SelectPACKSKit(Character objCharacter)
         {
-            Disposed += (sender, args) => Utils.ListItemListPool.Return(_lstCategory);
+            Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstCategory);
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
@@ -94,7 +94,7 @@ namespace Chummer
             {
                 _lstCategory.Insert(0, new ListItem("Show All", await LanguageManager.GetStringAsync("String_ShowAll").ConfigureAwait(false)));
             }
-            
+
             await cboCategory.PopulateWithListItemsAsync(_lstCategory).ConfigureAwait(false);
             // Select the first Category in the list.
             await cboCategory.DoThreadSafeAsync(x =>

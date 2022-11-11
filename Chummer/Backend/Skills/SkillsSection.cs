@@ -388,7 +388,7 @@ namespace Chummer.Backend.Skills
                 finally
                 {
                     if (setNamesOfChangedProperties != null)
-                        Utils.StringHashSetPool.Return(setNamesOfChangedProperties);
+                        Utils.StringHashSetPool.Return(ref setNamesOfChangedProperties);
                 }
             }
         }
@@ -2886,9 +2886,9 @@ namespace Chummer.Backend.Skills
                 _objSkillsInitializerLock.Dispose();
                 _objCachedKnowledgePointsLock.Dispose();
                 if (_lstDefaultKnowledgeSkills != null)
-                    Utils.ListItemListPool.Return(_lstDefaultKnowledgeSkills);
+                    Utils.ListItemListPool.Return(ref _lstDefaultKnowledgeSkills);
                 if (_lstKnowledgeTypes != null)
-                    Utils.ListItemListPool.Return(_lstKnowledgeTypes);
+                    Utils.ListItemListPool.Return(ref _lstKnowledgeTypes);
             }
             LockObject.Dispose();
         }
@@ -2936,9 +2936,9 @@ namespace Chummer.Backend.Skills
                 await _objSkillsInitializerLock.DisposeAsync().ConfigureAwait(false);
                 await _objCachedKnowledgePointsLock.DisposeAsync().ConfigureAwait(false);
                 if (_lstDefaultKnowledgeSkills != null)
-                    Utils.ListItemListPool.Return(_lstDefaultKnowledgeSkills);
+                    Utils.ListItemListPool.Return(ref _lstDefaultKnowledgeSkills);
                 if (_lstKnowledgeTypes != null)
-                    Utils.ListItemListPool.Return(_lstKnowledgeTypes);
+                    Utils.ListItemListPool.Return(ref _lstKnowledgeTypes);
             }
             finally
             {

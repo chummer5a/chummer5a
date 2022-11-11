@@ -28,7 +28,7 @@ namespace Chummer
     {
         private string _strSelectedCategory = string.Empty;
         private string _strForceCategory    = string.Empty;
-        private readonly HashSet<string> _setExcludeCategories = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setExcludeCategories = Utils.StringHashSetPool.Get();
 
         private readonly XPathNavigator _objXmlDocument;
 
@@ -36,7 +36,7 @@ namespace Chummer
 
         public SelectSpellCategory(Character objCharacter)
         {
-            Disposed += (sender, args) => Utils.StringHashSetPool.Return(_setExcludeCategories);
+            Disposed += (sender, args) => Utils.StringHashSetPool.Return(ref _setExcludeCategories);
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
@@ -60,7 +60,7 @@ namespace Chummer
                                                  (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate").ConfigureAwait(false))?.Value
                                                  ?? strInnerText));
                 }
-                
+
                 await cboCategory.PopulateWithListItemsAsync(lstCategory).ConfigureAwait(false);
                 // Select the first Skill in the list.
                 await cboCategory.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);

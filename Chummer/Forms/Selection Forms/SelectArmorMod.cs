@@ -38,13 +38,13 @@ namespace Chummer
         private readonly XPathNavigator _xmlBaseDataNode;
         private readonly Character _objCharacter;
         private readonly Armor _objArmor;
-        private readonly HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
 
         #region Control Events
 
         public SelectArmorMod(Character objCharacter, Armor objParentNode = null)
         {
-            Disposed += (sender, args) => Utils.StringHashSetPool.Return(_setBlackMarketMaps);
+            Disposed += (sender, args) => Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
@@ -457,7 +457,7 @@ namespace Chummer
         {
             await RefreshList().ConfigureAwait(false);
         }
-        
+
         private async ValueTask RefreshList(CancellationToken token = default)
         {
             string strFilter = string.Empty;

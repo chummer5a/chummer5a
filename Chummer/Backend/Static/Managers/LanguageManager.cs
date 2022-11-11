@@ -2223,7 +2223,7 @@ namespace Chummer
             }
             finally
             {
-                Utils.ListItemListPool.Return(lstSheetLanguageList);
+                Utils.ListItemListPool.Return(ref lstSheetLanguageList);
             }
         }
 
@@ -2263,7 +2263,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    Utils.ListItemListPool.Return(lstSheetLanguageList);
+                    Utils.ListItemListPool.Return(ref lstSheetLanguageList);
                 }
             }
         }

@@ -45,7 +45,7 @@ namespace Chummer
         private readonly XPathNavigator _xmlBaseChummerNode;
         private readonly Character _objCharacter;
         private bool _blnBlackMarketDiscount;
-        private readonly HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
 
         #region Control Events
 
@@ -53,7 +53,7 @@ namespace Chummer
         {
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
-            Disposed += (sender, args) => Utils.StringHashSetPool.Return(_setBlackMarketMaps);
+            Disposed += (sender, args) => Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();

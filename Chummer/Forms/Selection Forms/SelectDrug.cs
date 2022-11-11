@@ -46,9 +46,9 @@ namespace Chummer
         private static string _sStrSelectGrade = string.Empty;
         private string _strOldSelectedGrade = string.Empty;
         private bool _blnOldGradeEnabled = true;
-        private readonly HashSet<string> _setDisallowedGrades = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setDisallowedGrades = Utils.StringHashSetPool.Get();
         private string _strForceGrade = string.Empty;
-        private readonly HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
         private readonly XPathNavigator _xmlBaseDrugDataNode;
 
         #region Control Events
@@ -57,8 +57,8 @@ namespace Chummer
         {
             Disposed += (sender, args) =>
             {
-                Utils.StringHashSetPool.Return(_setBlackMarketMaps);
-                Utils.StringHashSetPool.Return(_setDisallowedGrades);
+                Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
+                Utils.StringHashSetPool.Return(ref _setDisallowedGrades);
             };
             InitializeComponent();
 
@@ -957,7 +957,7 @@ namespace Chummer
             finally
             {
                 if (lstDrugs != null)
-                    Utils.ListItemListPool.Return(lstDrugs);
+                    Utils.ListItemListPool.Return(ref lstDrugs);
             }
         }
 

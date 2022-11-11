@@ -45,8 +45,8 @@ namespace Chummer
         private readonly Character _objCharacter;
         private bool _blnBlackMarketDiscount;
         private readonly string _strLimitToCategories = string.Empty;
-        private readonly List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
-        private readonly HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
+        private List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
+        private HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
         private readonly List<VehicleMod> _lstMods = new List<VehicleMod>();
 
         #region Control Events
@@ -55,8 +55,8 @@ namespace Chummer
         {
             Disposed += (sender, args) =>
             {
-                Utils.ListItemListPool.Return(_lstCategory);
-                Utils.StringHashSetPool.Return(_setBlackMarketMaps);
+                Utils.ListItemListPool.Return(ref _lstCategory);
+                Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
             };
             InitializeComponent();
             this.UpdateLightDarkMode();

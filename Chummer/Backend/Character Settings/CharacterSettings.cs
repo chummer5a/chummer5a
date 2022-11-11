@@ -54,7 +54,7 @@ namespace Chummer
         }
     }
 
-    public sealed class CharacterSettings : INotifyMultiplePropertyChanged, IHasLockObject
+    public sealed class CharacterSettings : INotifyMultiplePropertyChanged, IHasName, IHasLockObject
     {
         private Guid _guiSourceId = Guid.Empty;
         private string _strFileName = string.Empty;
@@ -160,8 +160,8 @@ namespace Chummer
         private int _intMaxKnowledgeSkillRatingCreate = 6;
         private int _intMaxSkillRating = 12;
         private int _intMaxKnowledgeSkillRating = 12;
-        private readonly HashSet<string> _setBannedWareGrades = Utils.StringHashSetPool.Get();
-        private readonly HashSet<string> _setRedlinerExcludes = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setBannedWareGrades = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setRedlinerExcludes = Utils.StringHashSetPool.Get();
 
         // Initiative variables
         private int _intMinInitiativeDice = 1;
@@ -271,7 +271,7 @@ namespace Chummer
         private readonly List<string> _lstEnabledCustomDataDirectoryPaths = new List<string>();
 
         // Sourcebook list.
-        private readonly HashSet<string> _setBooks = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setBooks = Utils.StringHashSetPool.Get();
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -332,7 +332,7 @@ namespace Chummer
                 finally
                 {
                     if (setNamesOfChangedProperties != null)
-                        Utils.StringHashSetPool.Return(setNamesOfChangedProperties);
+                        Utils.StringHashSetPool.Return(ref setNamesOfChangedProperties);
                 }
             }
         }
@@ -381,7 +381,7 @@ namespace Chummer
                 new DependencyGraphNode<string, CharacterSettings>(nameof(BuildMethodIsLifeModule),
                     new DependencyGraphNode<string, CharacterSettings>(nameof(BuildMethod))
                 ),
-                new DependencyGraphNode<string, CharacterSettings>(nameof(DisplayName),
+                new DependencyGraphNode<string, CharacterSettings>(nameof(CurrentDisplayName),
                     new DependencyGraphNode<string, CharacterSettings>(nameof(Name)),
                     new DependencyGraphNode<string, CharacterSettings>(nameof(SourceId))
                 ),
@@ -4842,9 +4842,18 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Setting name.
+        /// </summary>
+        public async ValueTask<string> GetNameAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _strName;
+        }
+
+        /// <summary>
         /// Setting name to display in the UI.
         /// </summary>
-        public string DisplayName
+        public string CurrentDisplayName
         {
             get
             {
@@ -4865,6 +4874,34 @@ namespace Chummer
 
                     return strReturn;
                 }
+            }
+        }
+
+        /// <summary>
+        /// Setting name to display in the UI.
+        /// </summary>
+        public async ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                string strReturn = await GetNameAsync(token).ConfigureAwait(false);
+                if (await GetBuiltInOptionAsync(token).ConfigureAwait(false))
+                {
+                    strReturn = (await XmlManager.LoadXPathAsync("settings.xml", token: token).ConfigureAwait(false))
+                                .SelectSingleNode(
+                                    "/chummer/settings/setting[id = '"
+                                    + await GetSourceIdAsync(token).ConfigureAwait(false) + "']/translate")?.Value
+                                ?? strReturn;
+                }
+                else
+                {
+                    strReturn += await LanguageManager.GetStringAsync("String_Space", token: token)
+                                                      .ConfigureAwait(false) + '['
+                                                                             + await GetFileNameAsync(token)
+                                                                                 .ConfigureAwait(false) + ']';
+                }
+
+                return strReturn;
             }
         }
 
@@ -8465,9 +8502,9 @@ namespace Chummer
         {
             using (LockObject.EnterWriteLock())
             {
-                Utils.StringHashSetPool.Return(_setBooks);
-                Utils.StringHashSetPool.Return(_setBannedWareGrades);
-                Utils.StringHashSetPool.Return(_setRedlinerExcludes);
+                Utils.StringHashSetPool.Return(ref _setBooks);
+                Utils.StringHashSetPool.Return(ref _setBannedWareGrades);
+                Utils.StringHashSetPool.Return(ref _setRedlinerExcludes);
                 _dicCustomDataDirectoryKeys.Dispose();
             }
 
@@ -8480,9 +8517,9 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
-                Utils.StringHashSetPool.Return(_setBooks);
-                Utils.StringHashSetPool.Return(_setBannedWareGrades);
-                Utils.StringHashSetPool.Return(_setRedlinerExcludes);
+                Utils.StringHashSetPool.Return(ref _setBooks);
+                Utils.StringHashSetPool.Return(ref _setBannedWareGrades);
+                Utils.StringHashSetPool.Return(ref _setRedlinerExcludes);
                 await _dicCustomDataDirectoryKeys.DisposeAsync().ConfigureAwait(false);
             }
             finally

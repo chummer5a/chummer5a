@@ -1088,7 +1088,7 @@ namespace Chummer
             }
             finally
             {
-                Utils.ListItemListPool.Return(lstFiles);
+                Utils.ListItemListPool.Return(ref lstFiles);
             }
         }
 

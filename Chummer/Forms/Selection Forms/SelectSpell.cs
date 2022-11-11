@@ -43,14 +43,14 @@ namespace Chummer
 
         private readonly XPathNavigator _xmlBaseSpellDataNode;
         private readonly Character _objCharacter;
-        private readonly List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
+        private List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
         private bool _blnRefresh;
 
         #region Control Events
 
         public SelectSpell(Character objCharacter)
         {
-            Disposed += (sender, args) => Utils.ListItemListPool.Return(_lstCategory);
+            Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstCategory);
             _objCharacter = objCharacter;
             InitializeComponent();
             this.UpdateLightDarkMode();
@@ -98,7 +98,7 @@ namespace Chummer
                 _lstCategory.Insert(0,
                     new ListItem("Show All", await LanguageManager.GetStringAsync("String_ShowAll").ConfigureAwait(false)));
             }
-            
+
             await cboCategory.PopulateWithListItemsAsync(_lstCategory).ConfigureAwait(false);
             // Select the first Category in the list.
             await cboCategory.DoThreadSafeAsync(x =>
@@ -351,7 +351,7 @@ namespace Chummer
                         {
                             if (!objXmlSpell.RequirementsMet(_objCharacter))
                                 continue;
-                            
+
                             if ((await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                     _objCharacter, Improvement.ImprovementType.AllowSpellCategory,
                                     strSpellCategory, token: token).ConfigureAwait(false)).Count != 0)
@@ -391,7 +391,7 @@ namespace Chummer
                                 continue;
                             }
                         }
-                        
+
                         if (!blnDoUIUpdate)
                             return true;
                         await AddSpell(objXmlSpell, strSpellCategory).ConfigureAwait(false);

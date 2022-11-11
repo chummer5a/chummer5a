@@ -86,8 +86,8 @@ namespace Chummer.Backend.Equipment
         private XmlNode _nodPairBonus;
         private XmlNode _nodWirelessBonus;
         private XmlNode _nodWirelessPairBonus;
-        private readonly HashSet<string> _lstIncludeInPairBonus = Utils.StringHashSetPool.Get();
-        private readonly HashSet<string> _lstIncludeInWirelessPairBonus = Utils.StringHashSetPool.Get();
+        private HashSet<string> _lstIncludeInPairBonus = Utils.StringHashSetPool.Get();
+        private HashSet<string> _lstIncludeInWirelessPairBonus = Utils.StringHashSetPool.Get();
         private bool _blnWirelessOn = true;
         private XmlNode _nodAllowGear;
         private Improvement.ImprovementSource _eImprovementSource = Improvement.ImprovementSource.Cyberware;
@@ -560,8 +560,12 @@ namespace Chummer.Backend.Equipment
                     }
                     finally
                     {
-                        foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
-                            Utils.StringHashSetPool.Return(setToReturn);
+                        List<HashSet<string>> lstToReturn = dicChangedProperties.Values.ToList();
+                        for (int i = lstToReturn.Count - 1; i >= 0; --i)
+                        {
+                            HashSet<string> setLoop = lstToReturn[i];
+                            Utils.StringHashSetPool.Return(ref setLoop);
+                        }
                     }
                 }
             }
@@ -3507,8 +3511,12 @@ namespace Chummer.Backend.Equipment
                 }
                 finally
                 {
-                    foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
-                        Utils.StringHashSetPool.Return(setToReturn);
+                    List<HashSet<string>> lstToReturn = dicChangedProperties.Values.ToList();
+                    for (int i = lstToReturn.Count - 1; i >= 0; --i)
+                    {
+                        HashSet<string> setLoop = lstToReturn[i];
+                        Utils.StringHashSetPool.Return(ref setLoop);
+                    }
                 }
             }
         }
@@ -7214,8 +7222,8 @@ namespace Chummer.Backend.Equipment
         {
             _lstChildren.Dispose();
             _lstGear.Dispose();
-            Utils.StringHashSetPool.Return(_lstIncludeInPairBonus);
-            Utils.StringHashSetPool.Return(_lstIncludeInWirelessPairBonus);
+            Utils.StringHashSetPool.Return(ref _lstIncludeInPairBonus);
+            Utils.StringHashSetPool.Return(ref _lstIncludeInWirelessPairBonus);
         }
 
         /// <inheritdoc />
@@ -7232,8 +7240,8 @@ namespace Chummer.Backend.Equipment
         {
             await _lstChildren.DisposeAsync().ConfigureAwait(false);
             await _lstGear.DisposeAsync().ConfigureAwait(false);
-            Utils.StringHashSetPool.Return(_lstIncludeInPairBonus);
-            Utils.StringHashSetPool.Return(_lstIncludeInWirelessPairBonus);
+            Utils.StringHashSetPool.Return(ref _lstIncludeInPairBonus);
+            Utils.StringHashSetPool.Return(ref _lstIncludeInWirelessPairBonus);
         }
 
         /// <inheritdoc />

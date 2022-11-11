@@ -425,7 +425,7 @@ namespace Chummer
                 HashDescriptors.Add(strDescriptor);
         }
 
-        public HashSet<string> HashDescriptors { get; } = Utils.StringHashSetPool.Get();
+        public HashSet<string> HashDescriptors => _setDescriptors;
 
         /// <summary>
         /// Translated Descriptors.
@@ -1401,6 +1401,7 @@ namespace Chummer
 
         private XPathNavigator _objCachedMyXPathNode;
         private string _strCachedXPathNodeLanguage = string.Empty;
+        private HashSet<string> _setDescriptors = Utils.StringHashSetPool.Get();
 
         public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
@@ -1658,7 +1659,7 @@ namespace Chummer
         /// <inheritdoc />
         public void Dispose()
         {
-            Utils.StringHashSetPool.Return(HashDescriptors);
+            Utils.StringHashSetPool.Return(ref _setDescriptors);
         }
     }
 }

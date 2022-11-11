@@ -35,7 +35,7 @@ namespace Chummer
         private static Logger Log => s_ObjLogger.Value;
         private readonly Dictionary<string, DrugComponent> _dicDrugComponents = new Dictionary<string, DrugComponent>();
         private readonly List<DrugNodeData> _lstSelectedDrugComponents;
-        private readonly List<ListItem> _lstGrade = Utils.ListItemListPool.Get();
+        private List<ListItem> _lstGrade = Utils.ListItemListPool.Get();
         private readonly Character _objCharacter;
         private Drug _objDrug;
         private readonly XmlDocument _objXmlDocument;
@@ -44,7 +44,7 @@ namespace Chummer
 
         public CreateCustomDrug(Character objCharacter)
         {
-            Disposed += (sender, args) => Utils.ListItemListPool.Return(_lstGrade);
+            Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstGrade);
             _objDrug = new Drug(objCharacter);
             _objCharacter = objCharacter;
             InitializeComponent();

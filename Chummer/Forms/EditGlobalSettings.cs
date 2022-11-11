@@ -81,8 +81,12 @@ namespace Chummer
             Disposed += (sender, args) =>
             {
                 _dicSourcebookInfos.Dispose();
-                foreach (HashSet<string> setLoop in _dicCachedPdfAppNames.Values)
-                    Utils.StringHashSetPool.Return(setLoop);
+                List<HashSet<string>> lstToReturn = _dicCachedPdfAppNames.Values.ToList();
+                for (int i = lstToReturn.Count - 1; i >= 0; --i)
+                {
+                    HashSet<string> setLoop = lstToReturn[i];
+                    Utils.StringHashSetPool.Return(ref setLoop);
+                }
                 _dicCachedPdfAppNames.Dispose();
             };
             if (!string.IsNullOrEmpty(strActiveTab))
@@ -1894,7 +1898,7 @@ namespace Chummer
                         setAppNames = Utils.StringHashSetPool.Get();
                         await _dicCachedPdfAppNames.AddOrUpdateAsync(strValue, setAppNames, (x, y) =>
                         {
-                            Utils.StringHashSetPool.Return(setAppNames);
+                            Utils.StringHashSetPool.Return(ref setAppNames);
                             setAppNames = y;
                             return y;
                         }, token).ConfigureAwait(false);

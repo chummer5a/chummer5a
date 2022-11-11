@@ -5199,7 +5199,7 @@ namespace Chummer.Backend.Skills
                 finally
                 {
                     if (setNamesOfChangedProperties != null)
-                        Utils.StringHashSetPool.Return(setNamesOfChangedProperties);
+                        Utils.StringHashSetPool.Return(ref setNamesOfChangedProperties);
                 }
             }
         }
@@ -6648,7 +6648,7 @@ namespace Chummer.Backend.Skills
                     objSpec.Dispose();
                 _lstSpecializations.Dispose();
                 if (_lstCachedSuggestedSpecializations != null)
-                    Utils.ListItemListPool.Return(_lstCachedSuggestedSpecializations);
+                    Utils.ListItemListPool.Return(ref _lstCachedSuggestedSpecializations);
             }
         }
 
@@ -6740,7 +6740,7 @@ namespace Chummer.Backend.Skills
                 await _lstSpecializations.ForEachAsync(x => x.Dispose()).ConfigureAwait(false);
                 await _lstSpecializations.DisposeAsync().ConfigureAwait(false);
                 if (_lstCachedSuggestedSpecializations != null)
-                    Utils.ListItemListPool.Return(_lstCachedSuggestedSpecializations);
+                    Utils.ListItemListPool.Return(ref _lstCachedSuggestedSpecializations);
             }
         }
 

@@ -46,9 +46,9 @@ namespace Chummer
 
         private readonly XPathNavigator _xmlBaseVehicleDataNode;
         private readonly Character _objCharacter;
-        private readonly List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
-        private readonly HashSet<string> _setDealerConnectionMaps = Utils.StringHashSetPool.Get();
-        private readonly HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
+        private List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
+        private HashSet<string> _setDealerConnectionMaps = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
         private bool _blnBlackMarketDiscount;
 
         #region Control Events
@@ -59,9 +59,9 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(objCharacter));
             Disposed += (sender, args) =>
             {
-                Utils.ListItemListPool.Return(_lstCategory);
-                Utils.StringHashSetPool.Return(_setDealerConnectionMaps);
-                Utils.StringHashSetPool.Return(_setBlackMarketMaps);
+                Utils.ListItemListPool.Return(ref _lstCategory);
+                Utils.StringHashSetPool.Return(ref _setDealerConnectionMaps);
+                Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
             };
             InitializeComponent();
             tabViews.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;

@@ -4890,7 +4890,7 @@ namespace Chummer.Backend.Equipment
             finally
             {
                 if (setNamesOfChangedProperties != null)
-                    Utils.StringHashSetPool.Return(setNamesOfChangedProperties);
+                    Utils.StringHashSetPool.Return(ref setNamesOfChangedProperties);
             }
         }
 

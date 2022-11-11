@@ -126,7 +126,7 @@ namespace ChummerHub.Client.UI
             }
             finally
             {
-                Chummer.Utils.ListItemListPool.Return(lstLanguages);
+                Chummer.Utils.ListItemListPool.Return(ref lstLanguages);
             }
 
             return res;
@@ -149,7 +149,7 @@ namespace ChummerHub.Client.UI
             }
             finally
             {
-                Chummer.Utils.ListItemListPool.Return(lstLanguages);
+                Chummer.Utils.ListItemListPool.Return(ref lstLanguages);
             }
             Image empty = FlagImageGetter.GetFlagFromCountryCode("noimagedots");
             myCountryImageList.Images.Add(empty);

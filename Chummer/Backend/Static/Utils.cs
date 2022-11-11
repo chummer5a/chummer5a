@@ -2330,26 +2330,24 @@ namespace Chummer
         /// Memory Pool for empty lists of ListItems. A bit slower up-front than a simple allocation, but reduces memory allocations when used a lot, which saves on CPU used for Garbage Collection.
         /// </summary>
         [CLSCompliant(false)]
-        public static ObjectPool<List<ListItem>> ListItemListPool { get; }
-            = s_ObjObjectPoolProvider.Create(new CollectionPooledObjectPolicy<List<ListItem>, ListItem>());
+        public static SafeObjectPool<List<ListItem>> ListItemListPool { get; }
+            = new SafeObjectPool<List<ListItem>>(() => new List<ListItem>(), x => x.Clear());
 
         /// <summary>
         /// Memory Pool for empty hash sets of strings. A bit slower up-front than a simple allocation, but reduces memory allocations when used a lot, which saves on CPU used for Garbage Collection.
         /// </summary>
         [CLSCompliant(false)]
-        public static ObjectPool<HashSet<string>> StringHashSetPool { get; }
-            = s_ObjObjectPoolProvider.Create(new CollectionPooledObjectPolicy<HashSet<string>, string>());
+        public static SafeObjectPool<HashSet<string>> StringHashSetPool { get; }
+            = new SafeObjectPool<HashSet<string>>(() => new HashSet<string>(), x => x.Clear());
 
         /// <summary>
         /// Memory Pool for empty dictionaries used for processing multiple property changed. A bit slower up-front than a simple allocation, but reduces memory allocations when used a lot, which saves on CPU used for Garbage Collection.
         /// </summary>
         [CLSCompliant(false)]
-        public static ObjectPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>
-            DictionaryForMultiplePropertyChangedPool
-        { get; }
-            = s_ObjObjectPoolProvider.Create(
-                new CollectionPooledObjectPolicy<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>,
-                    KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>>>());
+        public static SafeObjectPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>
+            DictionaryForMultiplePropertyChangedPool { get; }
+            = new SafeObjectPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
+                () => new Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>(), x => x.Clear());
 
         /// <summary>
         /// Memory Pool for SemaphoreSlim with one allowed semaphore that is used for async-friendly thread safety stuff. A bit slower up-front than a simple allocation, but reduces memory allocations when used a lot, which saves on CPU used for Garbage Collection.

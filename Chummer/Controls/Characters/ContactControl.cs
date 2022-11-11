@@ -684,7 +684,8 @@ namespace Chummer
             {
                 string strContactRole = _objContact.DisplayRole;
                 if (!string.IsNullOrEmpty(strContactRole))
-                    await cboContactRole.DoThreadSafeAsync(x => x.Text = strContactRole, token: token).ConfigureAwait(false);
+                    await cboContactRole.DoThreadSafeAsync(x => x.Text = strContactRole, token: token)
+                                        .ConfigureAwait(false);
                 return;
             }
 
@@ -698,7 +699,10 @@ namespace Chummer
             //            ContactProfession.Add(new ListItem(strName, xmlNode.Attributes?["translate"]?.InnerText ?? strName));
             //        }
 
-            await cboContactRole.PopulateWithListItemsAsync(Contact.ContactArchetypes(_objContact.CharacterObject), token: token).ConfigureAwait(false);
+            await cboContactRole
+                  .PopulateWithListItemsAsync(
+                      await _objContact.CharacterObject.ContactArchetypesAsync(token: token).ConfigureAwait(false),
+                      token: token).ConfigureAwait(false);
             await cboContactRole.DoThreadSafeAsync(x =>
             {
                 x.SelectedValue = _objContact.Role;

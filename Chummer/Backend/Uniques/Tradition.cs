@@ -1722,7 +1722,7 @@ namespace Chummer.Backend.Uniques
                 finally
                 {
                     if (setNamesOfChangedProperties != null)
-                        Utils.StringHashSetPool.Return(setNamesOfChangedProperties);
+                        Utils.StringHashSetPool.Return(ref setNamesOfChangedProperties);
                 }
 
                 _objCharacter?.OnPropertyChanged(nameof(Character.MagicTradition));

@@ -39,7 +39,7 @@ namespace Chummer
         private static Logger Log => s_ObjLogger.Value;
         private readonly CharacterSettings _objCharacterSettings;
         private CharacterSettings _objReferenceCharacterSettings;
-        private readonly List<ListItem> _lstSettings = Utils.ListItemListPool.Get();
+        private List<ListItem> _lstSettings = Utils.ListItemListPool.Get();
 
         // List of custom data directory infos on the character, in load order. If the character has a directory name for which we have no info, key will be a string instead of an info
         private readonly TypedOrderedDictionary<object, bool> _dicCharacterCustomDataDirectoryInfos
@@ -56,7 +56,7 @@ namespace Chummer
         // Used to revert to old selected setting if user cancels out of selecting a different one
         private int _intOldSelectedSettingIndex = -1;
 
-        private readonly HashSet<string> _setPermanentSourcebooks = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setPermanentSourcebooks = Utils.StringHashSetPool.Get();
 
         #region Form Events
 
@@ -86,8 +86,8 @@ namespace Chummer
             {
                 _objCharacterSettings.PropertyChanged -= SettingsChanged;
                 _objCharacterSettings.Dispose();
-                Utils.ListItemListPool.Return(_lstSettings);
-                Utils.StringHashSetPool.Return(_setPermanentSourcebooks);
+                Utils.ListItemListPool.Return(ref _lstSettings);
+                Utils.StringHashSetPool.Return(ref _setPermanentSourcebooks);
             };
         }
 
@@ -173,7 +173,7 @@ namespace Chummer
                     if (intCurrentSelectedSettingIndex >= 0)
                     {
                         ListItem objNewListItem = new ListItem(_lstSettings[intCurrentSelectedSettingIndex].Value,
-                                                               _objCharacterSettings.DisplayName);
+                                                               await _objCharacterSettings.GetCurrentDisplayNameAsync().ConfigureAwait(false));
                         Interlocked.Increment(ref _intLoading);
                         try
                         {
@@ -520,7 +520,7 @@ namespace Chummer
                                 = await cboSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex).ConfigureAwait(false);
                             ListItem objNewListItem =
                                 new ListItem(_lstSettings[_intOldSelectedSettingIndex].Value,
-                                             _objReferenceCharacterSettings.DisplayName);
+                                             await _objReferenceCharacterSettings.GetCurrentDisplayNameAsync().ConfigureAwait(false));
                             _lstSettings[_intOldSelectedSettingIndex] = objNewListItem;
                             await cboSetting.PopulateWithListItemsAsync(_lstSettings).ConfigureAwait(false);
                             await cboSetting.DoThreadSafeAsync(x => x.SelectedIndex = intCurrentSelectedSettingIndex)
@@ -577,7 +577,7 @@ namespace Chummer
                         {
                             ListItem objNewListItem =
                                 new ListItem(_lstSettings[intCurrentSelectedSettingIndex].Value,
-                                             _objReferenceCharacterSettings.DisplayName);
+                                             await _objReferenceCharacterSettings.GetCurrentDisplayNameAsync().ConfigureAwait(false));
                             _lstSettings[intCurrentSelectedSettingIndex] = objNewListItem;
                             await cboSetting.PopulateWithListItemsAsync(_lstSettings).ConfigureAwait(false);
                             await cboSetting.DoThreadSafeAsync(x => x.SelectedIndex = intCurrentSelectedSettingIndex)
@@ -2266,7 +2266,7 @@ namespace Chummer
                              .GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false))
                 {
                     _lstSettings.Add(new ListItem(kvpCharacterSettingsEntry.Key,
-                                                  kvpCharacterSettingsEntry.Value.DisplayName));
+                                                  await kvpCharacterSettingsEntry.Value.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)));
                     if (ReferenceEquals(_objReferenceCharacterSettings, kvpCharacterSettingsEntry.Value))
                         strSelect = kvpCharacterSettingsEntry.Key;
                 }

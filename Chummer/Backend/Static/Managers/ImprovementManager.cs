@@ -1154,8 +1154,12 @@ namespace Chummer
                     }
                     finally
                     {
-                        foreach (HashSet<string> setToReturn in dicUniqueNames.Values)
-                            Utils.StringHashSetPool.Return(setToReturn);
+                        List<HashSet<string>> lstToReturn = dicUniqueNames.Values.ToList();
+                        for (int i = lstToReturn.Count - 1; i >= 0; --i)
+                        {
+                            HashSet<string> setLoop = lstToReturn[i];
+                            Utils.StringHashSetPool.Return(ref setLoop);
+                        }
                     }
 
                     // Factor in Custom Improvements.
@@ -1272,8 +1276,12 @@ namespace Chummer
                     }
                     finally
                     {
-                        foreach (HashSet<string> setToReturn in dicUniqueNames.Values)
-                            Utils.StringHashSetPool.Return(setToReturn);
+                        List<HashSet<string>> lstToReturn = dicUniqueNames.Values.ToList();
+                        for (int i = lstToReturn.Count - 1; i >= 0; --i)
+                        {
+                            HashSet<string> setLoop = lstToReturn[i];
+                            Utils.StringHashSetPool.Return(ref setLoop);
+                        }
                     }
 
                     foreach (KeyValuePair<string, decimal> objLoopValuePair in dicCustomValues)
@@ -4924,8 +4932,12 @@ namespace Chummer
                 }
                 finally
                 {
-                    foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
-                        Utils.StringHashSetPool.Return(setToReturn);
+                    List<HashSet<string>> lstToReturn = dicChangedProperties.Values.ToList();
+                    for (int i = lstToReturn.Count - 1; i >= 0; --i)
+                    {
+                        HashSet<string> setLoop = lstToReturn[i];
+                        Utils.StringHashSetPool.Return(ref setLoop);
+                    }
                 }
             }
         }
@@ -4967,8 +4979,12 @@ namespace Chummer
                 }
                 finally
                 {
-                    foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
-                        Utils.StringHashSetPool.Return(setToReturn);
+                    List<HashSet<string>> lstToReturn = dicChangedProperties.Values.ToList();
+                    for (int i = lstToReturn.Count - 1; i >= 0; --i)
+                    {
+                        HashSet<string> setLoop = lstToReturn[i];
+                        Utils.StringHashSetPool.Return(ref setLoop);
+                    }
                 }
             }
         }
