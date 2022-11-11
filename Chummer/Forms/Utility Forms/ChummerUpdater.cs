@@ -1066,6 +1066,35 @@ namespace Chummer
                             lstBlocked.Add(kvpTaskPair.Key);
                     }
 
+                    foreach (string strBlockedFile in lstBlocked.ToList())
+                    {
+                        try
+                        {
+                            if (File.Exists(strBlockedFile + ".old")
+                                && !await Utils.SafeDeleteFileAsync(strBlockedFile + ".old", !SilentMode, token: token)
+                                               .ConfigureAwait(false))
+                            {
+                                continue;
+                            }
+
+                            File.Move(strBlockedFile, strBlockedFile + ".old");
+                        }
+                        catch (IOException)
+                        {
+                            continue;
+                        }
+                        catch (NotSupportedException)
+                        {
+                            continue;
+                        }
+                        catch (UnauthorizedAccessException)
+                        {
+                            continue;
+                        }
+
+                        lstBlocked.Remove(strBlockedFile);
+                    }
+
                     if (lstBlocked.Count > 0)
                     {
                         Utils.BreakIfDebug();
