@@ -73,12 +73,16 @@ namespace Chummer
                     await cboPower.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);
                 else if (lstPowerItems.Count == 1)
                 {
-                    if (await cboPower.DoThreadSafeFuncAsync(x => x.SelectedValue).ConfigureAwait(false) is Tuple<string, string> objSelectedItem)
+                    if (await cboPower.DoThreadSafeFuncAsync(x => x.SelectedValue).ConfigureAwait(false) is
+                        Tuple<string, string> objSelectedItem)
                     {
                         _strReturnPower = objSelectedItem.Item1;
                         _strReturnExtra = objSelectedItem.Item2;
-                        DialogResult = DialogResult.OK;
-                        Close();
+                        await this.DoThreadSafeAsync(x =>
+                        {
+                            x.DialogResult = DialogResult.OK;
+                            x.Close();
+                        }).ConfigureAwait(false);
                     }
                 }
                 else
