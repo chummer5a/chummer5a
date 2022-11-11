@@ -930,8 +930,10 @@ namespace Chummer
                             // Skip directories because they already get handled with Directory.CreateDirectory
                             if (strFullName.Length > 0 && strFullName[strFullName.Length - 1] == '/')
                                 continue;
+                            if (objEntry.Name.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
+                                continue;
                             string strLoopPath = Path.Combine(_strAppPath, strFullName);
-                            if (strLoopPath.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0)
+                            if (strLoopPath.IndexOfAny(Path.GetInvalidPathChars()) >= 0)
                                 continue;
                             try
                             {
