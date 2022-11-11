@@ -42,7 +42,7 @@ namespace Chummer
             this.cmdOK = new System.Windows.Forms.Button();
             this.lblGroupNameLabel = new System.Windows.Forms.Label();
             this.txtGroupName = new System.Windows.Forms.TextBox();
-            this.cmdChangeColour = new System.Windows.Forms.Button();
+            this.cmdChangeColor = new System.Windows.Forms.Button();
             this.chkFreeContact = new Chummer.ColorableCheckBox();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
@@ -221,20 +221,20 @@ namespace Chummer
             this.txtGroupName.TabIndex = 1;
             this.txtGroupName.TextChanged += new System.EventHandler(this.txtGroupName_TextChanged);
             // 
-            // cmdChangeColour
+            // cmdChangeColor
             // 
-            this.cmdChangeColour.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.cmdChangeColour.AutoSize = true;
-            this.cmdChangeColour.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdChangeColour.Location = new System.Drawing.Point(140, 162);
-            this.cmdChangeColour.MinimumSize = new System.Drawing.Size(80, 0);
-            this.cmdChangeColour.Name = "cmdChangeColour";
-            this.cmdChangeColour.Size = new System.Drawing.Size(87, 23);
-            this.cmdChangeColour.TabIndex = 13;
-            this.cmdChangeColour.Tag = "Button_SelectContactConnection_ChangeColor";
-            this.cmdChangeColour.Text = "Change Colour";
-            this.cmdChangeColour.UseVisualStyleBackColor = true;
-            this.cmdChangeColour.Click += new System.EventHandler(this.cmdChangeColour_Click);
+            this.cmdChangeColor.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cmdChangeColor.AutoSize = true;
+            this.cmdChangeColor.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdChangeColor.Location = new System.Drawing.Point(140, 162);
+            this.cmdChangeColor.MinimumSize = new System.Drawing.Size(80, 0);
+            this.cmdChangeColor.Name = "cmdChangeColor";
+            this.cmdChangeColor.Size = new System.Drawing.Size(87, 23);
+            this.cmdChangeColor.TabIndex = 13;
+            this.cmdChangeColor.Tag = "Button_SelectContactConnection_ChangeColor";
+            this.cmdChangeColor.Text = "Change Color";
+            this.cmdChangeColor.UseVisualStyleBackColor = true;
+            this.cmdChangeColor.Click += new System.EventHandler(this.cmdChangeColor_Click);
             // 
             // chkFreeContact
             // 
@@ -271,7 +271,7 @@ namespace Chummer
             this.tlpMain.Controls.Add(this.cboMembership, 1, 1);
             this.tlpMain.Controls.Add(this.cboMagicalResources, 1, 3);
             this.tlpMain.Controls.Add(this.cboAreaOfInfluence, 1, 2);
-            this.tlpMain.Controls.Add(this.cmdChangeColour, 1, 6);
+            this.tlpMain.Controls.Add(this.cmdChangeColor, 1, 6);
             this.tlpMain.Controls.Add(this.tlpButtons, 0, 8);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
@@ -353,7 +353,7 @@ namespace Chummer
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.Label lblGroupNameLabel;
         private System.Windows.Forms.TextBox txtGroupName;
-        private System.Windows.Forms.Button cmdChangeColour;
+        private System.Windows.Forms.Button cmdChangeColor;
         private Chummer.ColorableCheckBox chkFreeContact;
         private System.Windows.Forms.TableLayoutPanel tlpMain;
         private System.Windows.Forms.TableLayoutPanel tlpButtons;

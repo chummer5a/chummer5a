@@ -76,6 +76,7 @@ namespace Chummer.Backend.Attributes
                         {
                             if (PropertyChanged != null)
                             {
+                                // ReSharper disable once AccessToModifiedClosure
                                 foreach (string strPropertyToChange in setNamesOfChangedProperties)
                                 {
                                     PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));

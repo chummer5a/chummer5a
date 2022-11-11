@@ -306,28 +306,36 @@ namespace Chummer
                     if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                         return;
 
-                    if (setNamesOfChangedProperties.Contains(nameof(MaxNuyenDecimals)))
-                        _intCachedMaxNuyenDecimals = int.MinValue;
-                    if (setNamesOfChangedProperties.Contains(nameof(MinNuyenDecimals)))
-                        _intCachedMinNuyenDecimals = int.MinValue;
-                    if (setNamesOfChangedProperties.Contains(nameof(EssenceDecimals)))
-                        _intCachedEssenceDecimals = int.MinValue;
-                    if (setNamesOfChangedProperties.Contains(nameof(WeightDecimals)))
-                        _intCachedWeightDecimals = int.MinValue;
-                    if (setNamesOfChangedProperties.Contains(nameof(CustomDataDirectoryKeys)))
-                        RecalculateEnabledCustomDataDirectories();
-                    if (setNamesOfChangedProperties.Contains(nameof(Books)))
-                        RecalculateBookXPath();
-                    Utils.RunOnMainThread(() =>
+                    using (LockObject.EnterWriteLock())
                     {
-                        if (PropertyChanged != null)
+                        if (setNamesOfChangedProperties.Contains(nameof(MaxNuyenDecimals)))
+                            _intCachedMaxNuyenDecimals = int.MinValue;
+                        if (setNamesOfChangedProperties.Contains(nameof(MinNuyenDecimals)))
+                            _intCachedMinNuyenDecimals = int.MinValue;
+                        if (setNamesOfChangedProperties.Contains(nameof(EssenceDecimals)))
+                            _intCachedEssenceDecimals = int.MinValue;
+                        if (setNamesOfChangedProperties.Contains(nameof(WeightDecimals)))
+                            _intCachedWeightDecimals = int.MinValue;
+                        if (setNamesOfChangedProperties.Contains(nameof(CustomDataDirectoryKeys)))
+                            RecalculateEnabledCustomDataDirectories();
+                        if (setNamesOfChangedProperties.Contains(nameof(Books)))
+                            RecalculateBookXPath();
+                    }
+
+                    if (PropertyChanged != null)
+                    {
+                        Utils.RunOnMainThread(() =>
                         {
-                            foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                            if (PropertyChanged != null)
                             {
-                                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                                // ReSharper disable once AccessToModifiedClosure
+                                foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                                {
+                                    PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                                }
                             }
-                        }
-                    });
+                        });
+                    }
                 }
                 finally
                 {

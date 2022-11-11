@@ -30,7 +30,7 @@ namespace Chummer
         private int _intMagicalResources;
         private int _intMatrixResources;
         private string _strGroupName = string.Empty;
-        private Color _objColour;
+        private Color _objColor;
         private bool _blnFree;
         private bool _blnSkipUpdate;
 
@@ -145,16 +145,16 @@ namespace Chummer
             await cboMagicalResources.DoThreadSafeAsync(x => x.SelectedIndex = x.FindString('+' + _intMagicalResources.ToString(GlobalSettings.InvariantCultureInfo))).ConfigureAwait(false);
             await cboMatrixResources.DoThreadSafeAsync(x => x.SelectedIndex = x.FindString('+' + _intMatrixResources.ToString(GlobalSettings.InvariantCultureInfo))).ConfigureAwait(false);
             await txtGroupName.DoThreadSafeAsync(x => x.Text = _strGroupName).ConfigureAwait(false);
-            await cmdChangeColour.DoThreadSafeAsync(x => x.BackColor = _objColour).ConfigureAwait(false);
+            await cmdChangeColor.DoThreadSafeAsync(x => x.BackColor = _objColor).ConfigureAwait(false);
             await chkFreeContact.DoThreadSafeAsync(x => x.Checked = _blnFree).ConfigureAwait(false);
             _blnSkipUpdate = false;
 
             await lblTotalConnectionModifier.DoThreadSafeAsync(x => x.Text = (_intMembership + _intAreaOfInfluence + _intMagicalResources + _intMatrixResources).ToString(GlobalSettings.CultureInfo)).ConfigureAwait(false);
         }
 
-        private async void cmdChangeColour_Click(object sender, EventArgs e)
+        private async void cmdChangeColor_Click(object sender, EventArgs e)
         {
-            Color objSelectedColor = _objColour;
+            Color objSelectedColor = _objColor;
             DialogResult eResult = await this.DoThreadSafeFuncAsync(x =>
             {
                 using (ColorDialog dlgColor = new ColorDialog())
@@ -169,13 +169,13 @@ namespace Chummer
             if (objSelectedColor.Name == "White" || objSelectedColor.Name == "Black")
             {
                 Color objColor = await ColorManager.GetControlAsync().ConfigureAwait(false);
-                await cmdChangeColour.DoThreadSafeAsync(x => x.BackColor = objColor).ConfigureAwait(false);
-                _objColour = objColor;
+                await cmdChangeColor.DoThreadSafeAsync(x => x.BackColor = objColor).ConfigureAwait(false);
+                _objColor = objColor;
             }
             else
             {
-                await cmdChangeColour.DoThreadSafeAsync(x => x.BackColor = objSelectedColor).ConfigureAwait(false);
-                _objColour = objSelectedColor;
+                await cmdChangeColor.DoThreadSafeAsync(x => x.BackColor = objSelectedColor).ConfigureAwait(false);
+                _objColor = objSelectedColor;
             }
         }
 
@@ -229,12 +229,12 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Contact Colour.
+        /// Contact Color.
         /// </summary>
-        public Color Colour
+        public Color Color
         {
-            get => _objColour;
-            set => _objColour = value;
+            get => _objColor;
+            set => _objColor = value;
         }
 
         /// <summary>

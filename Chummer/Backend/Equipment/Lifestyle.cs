@@ -2071,16 +2071,21 @@ namespace Chummer.Backend.Equipment
                         objQuality.OnPropertyChanged(nameof(LifestyleQuality.CanBeFreeByLifestyle));
                     }
                 }
-                Utils.RunOnMainThread(() =>
+
+                if (PropertyChanged != null)
                 {
-                    if (PropertyChanged != null)
+                    Utils.RunOnMainThread(() =>
                     {
-                        foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                        if (PropertyChanged != null)
                         {
-                            PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                            // ReSharper disable once AccessToModifiedClosure
+                            foreach (string strPropertyToChange in setNamesOfChangedProperties)
+                            {
+                                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                            }
                         }
-                    }
-                });
+                    });
+                }
             }
             finally
             {
