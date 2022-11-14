@@ -2238,7 +2238,19 @@ namespace Chummer
 
                     // Create the root nodes.
                     foreach (Quality objQuality in CharacterObject.Qualities)
-                        objQuality.PropertyChanged -= AddedQualityOnPropertyChanged;
+                    {
+                        IAsyncDisposable objLocker
+                            = await objQuality.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            objQuality.PropertyChanged -= AddedQualityOnPropertyChanged;
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+
                     await treQualities.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
 
                     // Multiple instances of the same quality are combined into just one entry with a number next to it (e.g. 6 discrete entries of "Focused Concentration" become "Focused Concentration 6")
@@ -2306,11 +2318,20 @@ namespace Chummer
                                         {
                                             TreeNode objParent = objNode.Parent;
                                             objNode.Remove();
-                                            objQuality.PropertyChanged -= AddedQualityOnPropertyChanged;
                                             if (objParent.Level == 0 && objParent.Nodes.Count == 0)
                                                 objParent.Remove();
                                         }
                                     }, token).ConfigureAwait(false);
+                                    IAsyncDisposable objLocker
+                                        = await objQuality.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                                    try
+                                    {
+                                        objQuality.PropertyChanged -= AddedQualityOnPropertyChanged;
+                                    }
+                                    finally
+                                    {
+                                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                                    }
                                 }
                             }
 
@@ -2336,8 +2357,17 @@ namespace Chummer
                                             if (objNode.Parent != null)
                                                 lstOldParents.Add(objNode.Parent);
                                             objNode.Remove();
-                                            objQuality.PropertyChanged -= AddedQualityOnPropertyChanged;
                                         }, token).ConfigureAwait(false);
+                                        IAsyncDisposable objLocker
+                                            = await objQuality.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                                        try
+                                        {
+                                            objQuality.PropertyChanged -= AddedQualityOnPropertyChanged;
+                                        }
+                                        finally
+                                        {
+                                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                                        }
                                     }
                                     else
                                     {
@@ -2466,7 +2496,16 @@ namespace Chummer
                         else
                             objParentNode.Nodes.Add(objNode);
                     }, token).ConfigureAwait(false);
-                    objQuality.PropertyChanged += AddedQualityOnPropertyChanged;
+                    IAsyncDisposable objLocker
+                        = await objQuality.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        objQuality.PropertyChanged += AddedQualityOnPropertyChanged;
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
                 }
             }
 
@@ -2559,10 +2598,11 @@ namespace Chummer
                     Quality objQuality = await CharacterObject.Qualities.FirstOrDefaultAsync(x => x.Name == objNode.Value, token).ConfigureAwait(false);
                     if (objQuality != null)
                     {
+                        string strInternalId = objQuality.InternalId;
                         await objQuality.DeleteQualityAsync(token: token).ConfigureAwait(false);
                         await ImprovementManager.RemoveImprovementsAsync(
                             CharacterObject, Improvement.ImprovementSource.CritterPower,
-                            objQuality.InternalId, token).ConfigureAwait(false);
+                            strInternalId, token).ConfigureAwait(false);
                     }
                 }
             }

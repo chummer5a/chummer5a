@@ -2822,15 +2822,23 @@ namespace Chummer
                                 if (objXmlQuality != null)
                                 {
                                     Quality objQuality = new Quality(this);
-                                    string strForceValue =
-                                        objXmlQualityItem.Attributes["select"]?.InnerText ?? string.Empty;
-                                    QualitySource objSource =
-                                        objXmlQualityItem.Attributes["removable"]?.InnerText == bool.TrueString
-                                            ? QualitySource.MetatypeRemovable
-                                            : QualitySource.Metatype;
-                                    objQuality.Create(objXmlQuality, objSource, lstWeapons, strForceValue);
-                                    objQuality.ContributeToLimit = false;
-                                    Qualities.Add(objQuality);
+                                    try
+                                    {
+                                        string strForceValue =
+                                            objXmlQualityItem.Attributes["select"]?.InnerText ?? string.Empty;
+                                        QualitySource objSource =
+                                            objXmlQualityItem.Attributes["removable"]?.InnerText == bool.TrueString
+                                                ? QualitySource.MetatypeRemovable
+                                                : QualitySource.Metatype;
+                                        objQuality.Create(objXmlQuality, objSource, lstWeapons, strForceValue);
+                                        objQuality.ContributeToLimit = false;
+                                        Qualities.Add(objQuality);
+                                    }
+                                    catch
+                                    {
+                                        objQuality.Dispose();
+                                        throw;
+                                    }
                                 }
                             }
                         }
@@ -7044,78 +7052,165 @@ namespace Chummer
                                             if (!CorrectedUnleveledQuality(objXmlQuality, xmlRootQualitiesNode))
                                             {
                                                 Quality objQuality = new Quality(this);
-                                                objQuality.Load(objXmlQuality);
-                                                // Corrects an issue arising from older versions of CorrectedUnleveledQuality()
-                                                if (_lstQualities.Any(x => x.InternalId == objQuality.InternalId))
-                                                    objQuality.SetGUID(Guid.NewGuid());
-                                                if (blnSync)
+                                                try
                                                 {
-                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                    _lstQualities.Add(objQuality);
-                                                    // ReSharper disable once MethodHasAsyncOverload
-                                                    if (objQuality.GetNodeXPath(token: token)
-                                                                  // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                                  ?.SelectSingleNodeAndCacheExpression(
-                                                                      "bonus/addgear/name")
-                                                                  ?.Value == "Living Persona")
-                                                        objLivingPersonaQuality = objQuality;
-                                                }
-                                                else
-                                                {
-                                                    await _lstQualities.AddAsync(objQuality, token)
-                                                                       .ConfigureAwait(false);
-                                                    XPathNavigator objQualityNode = await objQuality
-                                                        .GetNodeXPathAsync(token: token).ConfigureAwait(false);
-                                                    if (objQualityNode != null
-                                                        && (await objQualityNode
-                                                                  .SelectSingleNodeAndCacheExpressionAsync(
-                                                                      "bonus/addgear/name", token)
-                                                                  .ConfigureAwait(false))?.Value == "Living Persona")
-                                                        objLivingPersonaQuality = objQuality;
-                                                }
-
-                                                // Legacy shim
-                                                if (LastSavedVersion <= new Version(5, 195, 1)
-                                                    && (objQuality.Name == "The Artisan's Way"
-                                                        || objQuality.Name == "The Artist's Way"
-                                                        || objQuality.Name == "The Athlete's Way"
-                                                        || objQuality.Name == "The Burnout's Way"
-                                                        || objQuality.Name == "The Invisible Way"
-                                                        || objQuality.Name == "The Magician's Way"
-                                                        || objQuality.Name == "The Speaker's Way"
-                                                        || objQuality.Name == "The Warrior's Way")
-                                                    && objQuality.Bonus?.HasChildNodes == false)
-                                                {
+                                                    objQuality.Load(objXmlQuality);
+                                                    // Corrects an issue arising from older versions of CorrectedUnleveledQuality()
+                                                    if (_lstQualities.Any(x => x.InternalId == objQuality.InternalId))
+                                                        objQuality.SetGUID(Guid.NewGuid());
                                                     if (blnSync)
-                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                        ImprovementManager.RemoveImprovements(this,
-                                                            Improvement.ImprovementSource.Quality,
-                                                            objQuality.InternalId);
-                                                    else
-                                                        await ImprovementManager.RemoveImprovementsAsync(this,
-                                                            Improvement.ImprovementSource.Quality,
-                                                            objQuality.InternalId, token).ConfigureAwait(false);
-                                                    XmlNode objNode = blnSync
-                                                        // ReSharper disable once MethodHasAsyncOverload
-                                                        ? objQuality.GetNode(token: token)
-                                                        : await objQuality.GetNodeAsync(token: token)
-                                                                          .ConfigureAwait(false);
-                                                    if (objNode != null)
                                                     {
-                                                        objQuality.Bonus = objNode["bonus"];
-                                                        if (objQuality.Bonus != null)
+                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                        _lstQualities.Add(objQuality);
+                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                        if (objQuality.GetNodeXPath(token: token)
+                                                                      // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                                      ?.SelectSingleNodeAndCacheExpression(
+                                                                          "bonus/addgear/name")
+                                                                      ?.Value == "Living Persona")
+                                                            objLivingPersonaQuality = objQuality;
+                                                    }
+                                                    else
+                                                    {
+                                                        await _lstQualities.AddAsync(objQuality, token)
+                                                                           .ConfigureAwait(false);
+                                                        XPathNavigator objQualityNode = await objQuality
+                                                            .GetNodeXPathAsync(token: token).ConfigureAwait(false);
+                                                        if (objQualityNode != null
+                                                            && (await objQualityNode
+                                                                      .SelectSingleNodeAndCacheExpressionAsync(
+                                                                          "bonus/addgear/name", token)
+                                                                      .ConfigureAwait(false))?.Value
+                                                            == "Living Persona")
+                                                            objLivingPersonaQuality = objQuality;
+                                                    }
+
+                                                    // Legacy shim
+                                                    if (LastSavedVersion <= new Version(5, 195, 1)
+                                                        && (objQuality.Name == "The Artisan's Way"
+                                                            || objQuality.Name == "The Artist's Way"
+                                                            || objQuality.Name == "The Athlete's Way"
+                                                            || objQuality.Name == "The Burnout's Way"
+                                                            || objQuality.Name == "The Invisible Way"
+                                                            || objQuality.Name == "The Magician's Way"
+                                                            || objQuality.Name == "The Speaker's Way"
+                                                            || objQuality.Name == "The Warrior's Way")
+                                                        && objQuality.Bonus?.HasChildNodes == false)
+                                                    {
+                                                        if (blnSync)
+                                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                            ImprovementManager.RemoveImprovements(this,
+                                                                Improvement.ImprovementSource.Quality,
+                                                                objQuality.InternalId);
+                                                        else
+                                                            await ImprovementManager.RemoveImprovementsAsync(this,
+                                                                Improvement.ImprovementSource.Quality,
+                                                                objQuality.InternalId, token).ConfigureAwait(false);
+                                                        XmlNode objNode = blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                            ? objQuality.GetNode(token: token)
+                                                            : await objQuality.GetNodeAsync(token: token)
+                                                                              .ConfigureAwait(false);
+                                                        if (objNode != null)
+                                                        {
+                                                            objQuality.Bonus = objNode["bonus"];
+                                                            if (objQuality.Bonus != null)
+                                                            {
+                                                                ImprovementManager.ForcedValue = objQuality.Extra;
+                                                                if (blnSync)
+                                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                                    ImprovementManager.CreateImprovements(this,
+                                                                        Improvement.ImprovementSource.Quality,
+                                                                        objQuality.InternalId, objQuality.Bonus, 1,
+                                                                        objQuality.CurrentDisplayNameShort);
+                                                                else
+                                                                    await ImprovementManager.CreateImprovementsAsync(
+                                                                            this,
+                                                                            Improvement.ImprovementSource.Quality,
+                                                                            objQuality.InternalId, objQuality.Bonus, 1,
+                                                                            await objQuality
+                                                                                .GetCurrentDisplayNameShortAsync(token)
+                                                                                .ConfigureAwait(false), token: token)
+                                                                        .ConfigureAwait(false);
+                                                                if (!string.IsNullOrEmpty(
+                                                                        ImprovementManager.SelectedValue))
+                                                                {
+                                                                    objQuality.Extra = ImprovementManager.SelectedValue;
+                                                                }
+                                                            }
+
+                                                            objQuality.FirstLevelBonus = objNode["firstlevelbonus"];
+                                                            if (objQuality.FirstLevelBonus?.HasChildNodes == true)
+                                                            {
+                                                                bool blnDoFirstLevel = true;
+                                                                foreach (Quality objCheckQuality in Qualities)
+                                                                {
+                                                                    if (objCheckQuality != objQuality &&
+                                                                        objCheckQuality.SourceIDString ==
+                                                                        objQuality.SourceIDString &&
+                                                                        objCheckQuality.Extra == objQuality.Extra &&
+                                                                        objCheckQuality.SourceName
+                                                                        == objQuality.SourceName)
+                                                                    {
+                                                                        blnDoFirstLevel = false;
+                                                                        break;
+                                                                    }
+                                                                }
+
+                                                                if (blnDoFirstLevel)
+                                                                {
+                                                                    ImprovementManager.ForcedValue = objQuality.Extra;
+                                                                    if (blnSync)
+                                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                                        ImprovementManager.CreateImprovements(this,
+                                                                            Improvement.ImprovementSource.Quality,
+                                                                            objQuality.InternalId,
+                                                                            objQuality.FirstLevelBonus, 1,
+                                                                            objQuality.CurrentDisplayNameShort);
+                                                                    else
+                                                                        await ImprovementManager
+                                                                              .CreateImprovementsAsync(
+                                                                                  this,
+                                                                                  Improvement.ImprovementSource.Quality,
+                                                                                  objQuality.InternalId,
+                                                                                  objQuality.FirstLevelBonus, 1,
+                                                                                  await objQuality
+                                                                                      .GetCurrentDisplayNameShortAsync(
+                                                                                          token)
+                                                                                      .ConfigureAwait(false),
+                                                                                  token: token)
+                                                                              .ConfigureAwait(false);
+                                                                    if (!string.IsNullOrEmpty(ImprovementManager
+                                                                            .SelectedValue))
+                                                                    {
+                                                                        objQuality.Extra
+                                                                            = ImprovementManager.SelectedValue;
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                        else
+                                                        {
+                                                            lstInternalIdsNeedingReapplyImprovements.Add(
+                                                                objQuality.InternalId);
+                                                        }
+
+                                                        objQuality.NaturalWeaponsNode = objNode["naturalweapons"];
+                                                        if (objQuality.NaturalWeaponsNode != null)
                                                         {
                                                             ImprovementManager.ForcedValue = objQuality.Extra;
                                                             if (blnSync)
                                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                 ImprovementManager.CreateImprovements(this,
                                                                     Improvement.ImprovementSource.Quality,
-                                                                    objQuality.InternalId, objQuality.Bonus, 1,
+                                                                    objQuality.InternalId,
+                                                                    objQuality.NaturalWeaponsNode, 1,
                                                                     objQuality.CurrentDisplayNameShort);
                                                             else
                                                                 await ImprovementManager.CreateImprovementsAsync(this,
                                                                         Improvement.ImprovementSource.Quality,
-                                                                        objQuality.InternalId, objQuality.Bonus, 1,
+                                                                        objQuality.InternalId,
+                                                                        objQuality.NaturalWeaponsNode, 1,
                                                                         await objQuality
                                                                               .GetCurrentDisplayNameShortAsync(token)
                                                                               .ConfigureAwait(false), token: token)
@@ -7125,307 +7220,256 @@ namespace Chummer
                                                                 objQuality.Extra = ImprovementManager.SelectedValue;
                                                             }
                                                         }
+                                                    }
 
-                                                        objQuality.FirstLevelBonus = objNode["firstlevelbonus"];
-                                                        if (objQuality.FirstLevelBonus?.HasChildNodes == true)
+                                                    if (LastSavedVersion <= new Version(5, 200, 0)
+                                                        && objQuality.Name == "Made Man"
+                                                        && objQuality.Bonus["selectcontact"] != null)
+                                                    {
+                                                        string selectedContactUniqueId = (Improvements.FirstOrDefault(
+                                                                x =>
+                                                                    x.SourceName == objQuality.InternalId &&
+                                                                    x.ImproveType == Improvement.ImprovementType
+                                                                        .ContactForcedLoyalty))
+                                                            ?.ImprovedName;
+                                                        if (string.IsNullOrWhiteSpace(selectedContactUniqueId))
                                                         {
-                                                            bool blnDoFirstLevel = true;
-                                                            foreach (Quality objCheckQuality in Qualities)
-                                                            {
-                                                                if (objCheckQuality != objQuality &&
-                                                                    objCheckQuality.SourceIDString ==
-                                                                    objQuality.SourceIDString &&
-                                                                    objCheckQuality.Extra == objQuality.Extra &&
-                                                                    objCheckQuality.SourceName == objQuality.SourceName)
-                                                                {
-                                                                    blnDoFirstLevel = false;
-                                                                    break;
-                                                                }
-                                                            }
+                                                            selectedContactUniqueId =
+                                                                Contacts.FirstOrDefault(x => x.Name == objQuality.Extra)
+                                                                        ?.UniqueId;
+                                                        }
 
-                                                            if (blnDoFirstLevel)
+                                                        if (string.IsNullOrWhiteSpace(selectedContactUniqueId))
+                                                        {
+                                                            // Populate the Magician Traditions list.
+                                                            using (new FetchSafelyFromPool<List<ListItem>>(
+                                                                       Utils.ListItemListPool,
+                                                                       out List<ListItem> lstContacts))
                                                             {
-                                                                ImprovementManager.ForcedValue = objQuality.Extra;
+                                                                foreach (Contact objContact in Contacts)
+                                                                {
+                                                                    if (objContact.IsGroup)
+                                                                        lstContacts.Add(new ListItem(objContact.Name,
+                                                                            objContact.UniqueId));
+                                                                }
+
+                                                                if (lstContacts.Count > 1)
+                                                                {
+                                                                    lstContacts.Sort(CompareListItems.CompareNames);
+                                                                }
+
                                                                 if (blnSync)
-                                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                                    ImprovementManager.CreateImprovements(this,
-                                                                        Improvement.ImprovementSource.Quality,
-                                                                        objQuality.InternalId,
-                                                                        objQuality.FirstLevelBonus, 1,
-                                                                        objQuality.CurrentDisplayNameShort);
-                                                                else
-                                                                    await ImprovementManager.CreateImprovementsAsync(
-                                                                            this,
-                                                                            Improvement.ImprovementSource.Quality,
-                                                                            objQuality.InternalId,
-                                                                            objQuality.FirstLevelBonus, 1,
-                                                                            await objQuality
-                                                                                .GetCurrentDisplayNameShortAsync(token)
-                                                                                .ConfigureAwait(false), token: token)
-                                                                        .ConfigureAwait(false);
-                                                                if (!string.IsNullOrEmpty(ImprovementManager
-                                                                        .SelectedValue))
                                                                 {
-                                                                    objQuality.Extra = ImprovementManager.SelectedValue;
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-                                                    else
-                                                    {
-                                                        lstInternalIdsNeedingReapplyImprovements.Add(
-                                                            objQuality.InternalId);
-                                                    }
-
-                                                    objQuality.NaturalWeaponsNode = objNode["naturalweapons"];
-                                                    if (objQuality.NaturalWeaponsNode != null)
-                                                    {
-                                                        ImprovementManager.ForcedValue = objQuality.Extra;
-                                                        if (blnSync)
-                                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                            ImprovementManager.CreateImprovements(this,
-                                                                Improvement.ImprovementSource.Quality,
-                                                                objQuality.InternalId, objQuality.NaturalWeaponsNode, 1,
-                                                                objQuality.CurrentDisplayNameShort);
-                                                        else
-                                                            await ImprovementManager.CreateImprovementsAsync(this,
-                                                                    Improvement.ImprovementSource.Quality,
-                                                                    objQuality.InternalId,
-                                                                    objQuality.NaturalWeaponsNode, 1,
-                                                                    await objQuality
-                                                                          .GetCurrentDisplayNameShortAsync(token)
-                                                                          .ConfigureAwait(false), token: token)
-                                                                .ConfigureAwait(false);
-                                                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                                                        {
-                                                            objQuality.Extra = ImprovementManager.SelectedValue;
-                                                        }
-                                                    }
-                                                }
-
-                                                if (LastSavedVersion <= new Version(5, 200, 0)
-                                                    && objQuality.Name == "Made Man"
-                                                    && objQuality.Bonus["selectcontact"] != null)
-                                                {
-                                                    string selectedContactUniqueId = (Improvements.FirstOrDefault(x =>
-                                                            x.SourceName == objQuality.InternalId &&
-                                                            x.ImproveType == Improvement.ImprovementType
-                                                                .ContactForcedLoyalty))
-                                                        ?.ImprovedName;
-                                                    if (string.IsNullOrWhiteSpace(selectedContactUniqueId))
-                                                    {
-                                                        selectedContactUniqueId =
-                                                            Contacts.FirstOrDefault(x => x.Name == objQuality.Extra)
-                                                                    ?.UniqueId;
-                                                    }
-
-                                                    if (string.IsNullOrWhiteSpace(selectedContactUniqueId))
-                                                    {
-                                                        // Populate the Magician Traditions list.
-                                                        using (new FetchSafelyFromPool<List<ListItem>>(
-                                                                   Utils.ListItemListPool,
-                                                                   out List<ListItem> lstContacts))
-                                                        {
-                                                            foreach (Contact objContact in Contacts)
-                                                            {
-                                                                if (objContact.IsGroup)
-                                                                    lstContacts.Add(new ListItem(objContact.Name,
-                                                                        objContact.UniqueId));
-                                                            }
-
-                                                            if (lstContacts.Count > 1)
-                                                            {
-                                                                lstContacts.Sort(CompareListItems.CompareNames);
-                                                            }
-
-                                                            if (blnSync)
-                                                            {
-                                                                // ReSharper disable once MethodHasAsyncOverload
-                                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                                using (ThreadSafeForm<SelectItem> frmPickItem
-                                                                       = ThreadSafeForm<SelectItem>.Get(
-                                                                           () => new SelectItem()))
-                                                                {
-                                                                    frmPickItem.MyForm
-                                                                               .SetDropdownItemsMode(lstContacts);
                                                                     // ReSharper disable once MethodHasAsyncOverload
-                                                                    if (frmPickItem.ShowDialogSafe(this, token)
-                                                                        != DialogResult.OK)
+                                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                                    using (ThreadSafeForm<SelectItem> frmPickItem
+                                                                           = ThreadSafeForm<SelectItem>.Get(
+                                                                               () => new SelectItem()))
                                                                     {
-                                                                        return false;
-                                                                    }
+                                                                        frmPickItem.MyForm
+                                                                            .SetDropdownItemsMode(lstContacts);
+                                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                                        if (frmPickItem.ShowDialogSafe(this, token)
+                                                                            != DialogResult.OK)
+                                                                        {
+                                                                            return false;
+                                                                        }
 
-                                                                    selectedContactUniqueId
-                                                                        = frmPickItem.MyForm.SelectedItem;
+                                                                        selectedContactUniqueId
+                                                                            = frmPickItem.MyForm.SelectedItem;
+                                                                    }
                                                                 }
-                                                            }
-                                                            else
-                                                            {
-                                                                using (ThreadSafeForm<SelectItem> frmPickItem
-                                                                       = await ThreadSafeForm<SelectItem>
+                                                                else
+                                                                {
+                                                                    using (ThreadSafeForm<SelectItem> frmPickItem
+                                                                           = await ThreadSafeForm<SelectItem>
                                                                                .GetAsync(() => new SelectItem(), token)
                                                                                .ConfigureAwait(false))
-                                                                {
-                                                                    frmPickItem.MyForm
-                                                                               .SetDropdownItemsMode(lstContacts);
-                                                                    if (await frmPickItem
-                                                                              .ShowDialogSafeAsync(this, token)
-                                                                              .ConfigureAwait(false) != DialogResult.OK)
                                                                     {
-                                                                        return false;
-                                                                    }
+                                                                        frmPickItem.MyForm
+                                                                            .SetDropdownItemsMode(lstContacts);
+                                                                        if (await frmPickItem
+                                                                                .ShowDialogSafeAsync(this, token)
+                                                                                .ConfigureAwait(false)
+                                                                            != DialogResult.OK)
+                                                                        {
+                                                                            return false;
+                                                                        }
 
-                                                                    selectedContactUniqueId
-                                                                        = frmPickItem.MyForm.SelectedItem;
+                                                                        selectedContactUniqueId
+                                                                            = frmPickItem.MyForm.SelectedItem;
+                                                                    }
                                                                 }
                                                             }
                                                         }
-                                                    }
 
-                                                    objQuality.Bonus =
-                                                        xmlRootQualitiesNode.SelectSingleNode(
-                                                            "quality[name=\"Made Man\"]/bonus");
-                                                    objQuality.Extra = string.Empty;
-                                                    if (blnSync)
-                                                    {
-                                                        // ReSharper disable MethodHasAsyncOverloadWithCancellation
-                                                        ImprovementManager.RemoveImprovements(this,
-                                                            Improvement.ImprovementSource.Quality,
-                                                            objQuality.InternalId);
-                                                        ImprovementManager.CreateImprovement(this, string.Empty,
-                                                            Improvement.ImprovementSource.Quality,
-                                                            objQuality.InternalId,
-                                                            Improvement.ImprovementType.MadeMan,
-                                                            objQuality.CurrentDisplayNameShort);
-                                                        ImprovementManager.CreateImprovement(
-                                                            this, selectedContactUniqueId,
-                                                            Improvement.ImprovementSource.Quality,
-                                                            objQuality.InternalId,
-                                                            Improvement.ImprovementType.AddContact,
-                                                            objQuality.CurrentDisplayNameShort);
-                                                        ImprovementManager.CreateImprovement(
-                                                            this, selectedContactUniqueId,
-                                                            Improvement.ImprovementSource.Quality,
-                                                            objQuality.InternalId,
-                                                            Improvement.ImprovementType.ContactForcedLoyalty,
-                                                            objQuality.CurrentDisplayNameShort);
-                                                        ImprovementManager.CreateImprovement(
-                                                            this, selectedContactUniqueId,
-                                                            Improvement.ImprovementSource.Quality,
-                                                            objQuality.InternalId,
-                                                            Improvement.ImprovementType.ContactForceGroup,
-                                                            objQuality.CurrentDisplayNameShort);
-                                                        ImprovementManager.CreateImprovement(
-                                                            this, selectedContactUniqueId,
-                                                            Improvement.ImprovementSource.Quality,
-                                                            objQuality.InternalId,
-                                                            Improvement.ImprovementType.ContactMakeFree,
-                                                            objQuality.CurrentDisplayNameShort);
-                                                        ImprovementManager.Commit(this);
-                                                        // ReSharper restore MethodHasAsyncOverloadWithCancellation
-                                                    }
-                                                    else
-                                                    {
-                                                        await ImprovementManager.RemoveImprovementsAsync(this,
-                                                            Improvement.ImprovementSource.Quality,
-                                                            objQuality.InternalId, token).ConfigureAwait(false);
-                                                        await ImprovementManager.CreateImprovementAsync(
-                                                                this, string.Empty,
+                                                        objQuality.Bonus =
+                                                            xmlRootQualitiesNode.SelectSingleNode(
+                                                                "quality[name=\"Made Man\"]/bonus");
+                                                        objQuality.Extra = string.Empty;
+                                                        if (blnSync)
+                                                        {
+                                                            // ReSharper disable MethodHasAsyncOverloadWithCancellation
+                                                            ImprovementManager.RemoveImprovements(this,
+                                                                Improvement.ImprovementSource.Quality,
+                                                                objQuality.InternalId);
+                                                            ImprovementManager.CreateImprovement(this, string.Empty,
                                                                 Improvement.ImprovementSource.Quality,
                                                                 objQuality.InternalId,
                                                                 Improvement.ImprovementType.MadeMan,
-                                                                await objQuality.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token)
-                                                            .ConfigureAwait(false);
-                                                        await ImprovementManager.CreateImprovementAsync(
+                                                                objQuality.CurrentDisplayNameShort);
+                                                            ImprovementManager.CreateImprovement(
                                                                 this, selectedContactUniqueId,
                                                                 Improvement.ImprovementSource.Quality,
                                                                 objQuality.InternalId,
                                                                 Improvement.ImprovementType.AddContact,
-                                                                await objQuality.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token)
-                                                            .ConfigureAwait(false);
-                                                        await ImprovementManager.CreateImprovementAsync(
+                                                                objQuality.CurrentDisplayNameShort);
+                                                            ImprovementManager.CreateImprovement(
                                                                 this, selectedContactUniqueId,
                                                                 Improvement.ImprovementSource.Quality,
                                                                 objQuality.InternalId,
                                                                 Improvement.ImprovementType.ContactForcedLoyalty,
-                                                                await objQuality.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token)
-                                                            .ConfigureAwait(false);
-                                                        await ImprovementManager.CreateImprovementAsync(
+                                                                objQuality.CurrentDisplayNameShort);
+                                                            ImprovementManager.CreateImprovement(
                                                                 this, selectedContactUniqueId,
                                                                 Improvement.ImprovementSource.Quality,
                                                                 objQuality.InternalId,
                                                                 Improvement.ImprovementType.ContactForceGroup,
-                                                                await objQuality.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token)
-                                                            .ConfigureAwait(false);
-                                                        await ImprovementManager.CreateImprovementAsync(
+                                                                objQuality.CurrentDisplayNameShort);
+                                                            ImprovementManager.CreateImprovement(
                                                                 this, selectedContactUniqueId,
                                                                 Improvement.ImprovementSource.Quality,
                                                                 objQuality.InternalId,
                                                                 Improvement.ImprovementType.ContactMakeFree,
-                                                                await objQuality.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token)
-                                                            .ConfigureAwait(false);
-                                                        await ImprovementManager.CommitAsync(this, token)
-                                                            .ConfigureAwait(false);
+                                                                objQuality.CurrentDisplayNameShort);
+                                                            ImprovementManager.Commit(this);
+                                                            // ReSharper restore MethodHasAsyncOverloadWithCancellation
+                                                        }
+                                                        else
+                                                        {
+                                                            await ImprovementManager.RemoveImprovementsAsync(this,
+                                                                Improvement.ImprovementSource.Quality,
+                                                                objQuality.InternalId, token).ConfigureAwait(false);
+                                                            await ImprovementManager.CreateImprovementAsync(
+                                                                    this, string.Empty,
+                                                                    Improvement.ImprovementSource.Quality,
+                                                                    objQuality.InternalId,
+                                                                    Improvement.ImprovementType.MadeMan,
+                                                                    await objQuality
+                                                                          .GetCurrentDisplayNameShortAsync(token)
+                                                                          .ConfigureAwait(false), token: token)
+                                                                .ConfigureAwait(false);
+                                                            await ImprovementManager.CreateImprovementAsync(
+                                                                    this, selectedContactUniqueId,
+                                                                    Improvement.ImprovementSource.Quality,
+                                                                    objQuality.InternalId,
+                                                                    Improvement.ImprovementType.AddContact,
+                                                                    await objQuality
+                                                                          .GetCurrentDisplayNameShortAsync(token)
+                                                                          .ConfigureAwait(false), token: token)
+                                                                .ConfigureAwait(false);
+                                                            await ImprovementManager.CreateImprovementAsync(
+                                                                    this, selectedContactUniqueId,
+                                                                    Improvement.ImprovementSource.Quality,
+                                                                    objQuality.InternalId,
+                                                                    Improvement.ImprovementType.ContactForcedLoyalty,
+                                                                    await objQuality
+                                                                          .GetCurrentDisplayNameShortAsync(token)
+                                                                          .ConfigureAwait(false), token: token)
+                                                                .ConfigureAwait(false);
+                                                            await ImprovementManager.CreateImprovementAsync(
+                                                                    this, selectedContactUniqueId,
+                                                                    Improvement.ImprovementSource.Quality,
+                                                                    objQuality.InternalId,
+                                                                    Improvement.ImprovementType.ContactForceGroup,
+                                                                    await objQuality
+                                                                          .GetCurrentDisplayNameShortAsync(token)
+                                                                          .ConfigureAwait(false), token: token)
+                                                                .ConfigureAwait(false);
+                                                            await ImprovementManager.CreateImprovementAsync(
+                                                                    this, selectedContactUniqueId,
+                                                                    Improvement.ImprovementSource.Quality,
+                                                                    objQuality.InternalId,
+                                                                    Improvement.ImprovementType.ContactMakeFree,
+                                                                    await objQuality
+                                                                          .GetCurrentDisplayNameShortAsync(token)
+                                                                          .ConfigureAwait(false), token: token)
+                                                                .ConfigureAwait(false);
+                                                            await ImprovementManager.CommitAsync(this, token)
+                                                                .ConfigureAwait(false);
+                                                        }
                                                     }
-                                                }
 
-                                                if (LastSavedVersion <= new Version(5, 212, 43)
-                                                    && objQuality.Name == "Inspired"
-                                                    && objQuality.Source == "SASS"
-                                                    && objQuality.Bonus["selectexpertise"] == null)
-                                                {
-                                                    // Old handling of SASS' Inspired quality was both hardcoded and wrong
-                                                    // Since SASS' Inspired requires the player to choose a specialization, we always need a prompt,
-                                                    // so add the quality to the list for processing when the character is opened.
-                                                    lstInternalIdsNeedingReapplyImprovements.Add(
-                                                        objQuality.InternalId);
-                                                }
-
-                                                if (LastSavedVersion <= new Version(5, 212, 56)
-                                                    && objQuality.Name == "Chain Breaker"
-                                                    && objQuality.Bonus == null)
-                                                {
-                                                    // Chain Breaker bonus requires manual selection of two spirit types, so we need a prompt.
-                                                    lstInternalIdsNeedingReapplyImprovements.Add(
-                                                        objQuality.InternalId);
-                                                }
-
-                                                if (LastSavedVersion <= new Version(5, 212, 78)
-                                                    && objQuality.Name == "Resonant Stream: Cyberadept"
-                                                    && objQuality.Bonus == null)
-                                                {
-                                                    objQuality.Bonus =
-                                                        xmlRootQualitiesNode.SelectSingleNode(
-                                                            "quality[name=\"Resonant Stream: Cyberadept\"]/bonus");
-                                                    if (blnSync)
+                                                    if (LastSavedVersion <= new Version(5, 212, 43)
+                                                        && objQuality.Name == "Inspired"
+                                                        && objQuality.Source == "SASS"
+                                                        && objQuality.Bonus["selectexpertise"] == null)
                                                     {
-                                                        // ReSharper disable MethodHasAsyncOverloadWithCancellation
-                                                        ImprovementManager.RemoveImprovements(this,
-                                                            Improvement.ImprovementSource.Quality,
+                                                        // Old handling of SASS' Inspired quality was both hardcoded and wrong
+                                                        // Since SASS' Inspired requires the player to choose a specialization, we always need a prompt,
+                                                        // so add the quality to the list for processing when the character is opened.
+                                                        lstInternalIdsNeedingReapplyImprovements.Add(
                                                             objQuality.InternalId);
-                                                        ImprovementManager.CreateImprovement(this, string.Empty,
-                                                            Improvement.ImprovementSource.Quality,
-                                                            objQuality.InternalId,
-                                                            Improvement.ImprovementType.CyberadeptDaemon,
-                                                            objQuality.CurrentDisplayNameShort);
-                                                        ImprovementManager.Commit(this);
-                                                        // ReSharper restore MethodHasAsyncOverloadWithCancellation
                                                     }
-                                                    else
+
+                                                    if (LastSavedVersion <= new Version(5, 212, 56)
+                                                        && objQuality.Name == "Chain Breaker"
+                                                        && objQuality.Bonus == null)
                                                     {
-                                                        await ImprovementManager.RemoveImprovementsAsync(this,
-                                                            Improvement.ImprovementSource.Quality,
-                                                            objQuality.InternalId, token: token).ConfigureAwait(false);
-                                                        await ImprovementManager.CreateImprovementAsync(
-                                                                this, string.Empty,
+                                                        // Chain Breaker bonus requires manual selection of two spirit types, so we need a prompt.
+                                                        lstInternalIdsNeedingReapplyImprovements.Add(
+                                                            objQuality.InternalId);
+                                                    }
+
+                                                    if (LastSavedVersion <= new Version(5, 212, 78)
+                                                        && objQuality.Name == "Resonant Stream: Cyberadept"
+                                                        && objQuality.Bonus == null)
+                                                    {
+                                                        objQuality.Bonus =
+                                                            xmlRootQualitiesNode.SelectSingleNode(
+                                                                "quality[name=\"Resonant Stream: Cyberadept\"]/bonus");
+                                                        if (blnSync)
+                                                        {
+                                                            // ReSharper disable MethodHasAsyncOverloadWithCancellation
+                                                            ImprovementManager.RemoveImprovements(this,
+                                                                Improvement.ImprovementSource.Quality,
+                                                                objQuality.InternalId);
+                                                            ImprovementManager.CreateImprovement(this, string.Empty,
                                                                 Improvement.ImprovementSource.Quality,
                                                                 objQuality.InternalId,
                                                                 Improvement.ImprovementType.CyberadeptDaemon,
-                                                                await objQuality.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token)
-                                                            .ConfigureAwait(false);
-                                                        await ImprovementManager.CommitAsync(this, token)
-                                                            .ConfigureAwait(false);
+                                                                objQuality.CurrentDisplayNameShort);
+                                                            ImprovementManager.Commit(this);
+                                                            // ReSharper restore MethodHasAsyncOverloadWithCancellation
+                                                        }
+                                                        else
+                                                        {
+                                                            await ImprovementManager.RemoveImprovementsAsync(this,
+                                                                    Improvement.ImprovementSource.Quality,
+                                                                    objQuality.InternalId, token: token)
+                                                                .ConfigureAwait(false);
+                                                            await ImprovementManager.CreateImprovementAsync(
+                                                                    this, string.Empty,
+                                                                    Improvement.ImprovementSource.Quality,
+                                                                    objQuality.InternalId,
+                                                                    Improvement.ImprovementType.CyberadeptDaemon,
+                                                                    await objQuality
+                                                                          .GetCurrentDisplayNameShortAsync(token)
+                                                                          .ConfigureAwait(false), token: token)
+                                                                .ConfigureAwait(false);
+                                                            await ImprovementManager.CommitAsync(this, token)
+                                                                .ConfigureAwait(false);
+                                                        }
                                                     }
+                                                }
+                                                catch
+                                                {
+                                                    if (blnSync)
+                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                        objQuality.Dispose();
+                                                    else
+                                                        await objQuality.DisposeAsync().ConfigureAwait(false);
+                                                    throw;
                                                 }
                                             }
                                         }
@@ -9423,22 +9467,34 @@ namespace Chummer
                                             List<Weapon> lstWeapons = new List<Weapon>(1);
                                             Quality objQuality = new Quality(this);
 
-                                            objQuality.Create(objXmlDwarfQuality, QualitySource.Metatype,
-                                                              lstWeapons);
+                                            try
+                                            {
+                                                objQuality.Create(objXmlDwarfQuality, QualitySource.Metatype,
+                                                                  lstWeapons);
 
-                                            if (blnSync)
-                                            {
-                                                foreach (Weapon objWeapon in lstWeapons)
+                                                if (blnSync)
+                                                {
+                                                    foreach (Weapon objWeapon in lstWeapons)
+                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                        Weapons.Add(objWeapon);
                                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                    Weapons.Add(objWeapon);
-                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                Qualities.Add(objQuality);
+                                                    Qualities.Add(objQuality);
+                                                }
+                                                else
+                                                {
+                                                    foreach (Weapon objWeapon in lstWeapons)
+                                                        await Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+                                                    await Qualities.AddAsync(objQuality, token).ConfigureAwait(false);
+                                                }
                                             }
-                                            else
+                                            catch
                                             {
-                                                foreach (Weapon objWeapon in lstWeapons)
-                                                    await Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
-                                                await Qualities.AddAsync(objQuality, token).ConfigureAwait(false);
+                                                if (blnSync)
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    objQuality.Dispose();
+                                                else
+                                                    await objQuality.DisposeAsync().ConfigureAwait(false);
+                                                throw;
                                             }
                                         }
                                     }
@@ -29168,9 +29224,17 @@ namespace Chummer
                                 {
                                     // Convert the item to the new Quality class.
                                     Quality objQuality = new Quality(this);
-                                    objQuality.Create(objXmlQualityNode, QualitySource.Selected, _lstWeapons,
-                                                      strForceValue);
-                                    Qualities.Add(objQuality);
+                                    try
+                                    {
+                                        objQuality.Create(objXmlQualityNode, QualitySource.Selected, _lstWeapons,
+                                                          strForceValue);
+                                        Qualities.Add(objQuality);
+                                    }
+                                    catch
+                                    {
+                                        objQuality.Dispose();
+                                        throw;
+                                    }
                                 }
                             }
                         }
@@ -29213,9 +29277,17 @@ namespace Chummer
                                         using (LockObject.EnterWriteLock())
                                         {
                                             Quality objQuality = new Quality(this);
-                                            objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons,
-                                                              strForceValue);
-                                            Qualities.Add(objQuality);
+                                            try
+                                            {
+                                                objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons,
+                                                                  strForceValue);
+                                                Qualities.Add(objQuality);
+                                            }
+                                            catch
+                                            {
+                                                objQuality.Dispose();
+                                                throw;
+                                            }
                                         }
                                     }
                                 }
@@ -29252,9 +29324,17 @@ namespace Chummer
                                         using (LockObject.EnterWriteLock())
                                         {
                                             Quality objQuality = new Quality(this);
-                                            objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons,
-                                                              strForceValue);
-                                            Qualities.Add(objQuality);
+                                            try
+                                            {
+                                                objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons,
+                                                                  strForceValue);
+                                                Qualities.Add(objQuality);
+                                            }
+                                            catch
+                                            {
+                                                objQuality.Dispose();
+                                                throw;
+                                            }
                                         }
                                     }
                                 }
@@ -29302,10 +29382,18 @@ namespace Chummer
                                                 using (LockObject.EnterWriteLock())
                                                 {
                                                     Quality objQuality = new Quality(this);
-                                                    objQuality.Create(objXmlQuality, QualitySource.Metatype,
-                                                                      _lstWeapons,
-                                                                      strForceValue);
-                                                    Qualities.Add(objQuality);
+                                                    try
+                                                    {
+                                                        objQuality.Create(objXmlQuality, QualitySource.Metatype,
+                                                                          _lstWeapons,
+                                                                          strForceValue);
+                                                        Qualities.Add(objQuality);
+                                                    }
+                                                    catch
+                                                    {
+                                                        objQuality.Dispose();
+                                                        throw;
+                                                    }
                                                 }
                                             }
                                         }
@@ -29344,10 +29432,18 @@ namespace Chummer
                                                 using (LockObject.EnterWriteLock())
                                                 {
                                                     Quality objQuality = new Quality(this);
-                                                    objQuality.Create(objXmlQuality, QualitySource.Metatype,
-                                                                      _lstWeapons,
-                                                                      strForceValue);
-                                                    Qualities.Add(objQuality);
+                                                    try
+                                                    {
+                                                        objQuality.Create(objXmlQuality, QualitySource.Metatype,
+                                                                          _lstWeapons,
+                                                                          strForceValue);
+                                                        Qualities.Add(objQuality);
+                                                    }
+                                                    catch
+                                                    {
+                                                        objQuality.Dispose();
+                                                        throw;
+                                                    }
                                                 }
                                             }
                                         }
@@ -29817,22 +29913,30 @@ namespace Chummer
                     for (int i = 0; i < intRanks; ++i)
                     {
                         Quality objQuality = new Quality(this);
-                        if (i == 0 && xmlOldQuality.TryGetField("guid", Guid.TryParse, out Guid guidOld))
+                        try
                         {
-                            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Quality,
-                                                                  guidOld.ToString());
-                            objQuality.SetGUID(guidOld);
+                            if (i == 0 && xmlOldQuality.TryGetField("guid", Guid.TryParse, out Guid guidOld))
+                            {
+                                ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Quality,
+                                                                      guidOld.ToString());
+                                objQuality.SetGUID(guidOld);
+                            }
+
+                            QualitySource objQualitySource =
+                                Quality.ConvertToQualitySource(xmlOldQuality["qualitysource"]?.InnerText);
+                            objQuality.Create(xmlNewQuality, objQualitySource, _lstWeapons,
+                                              xmlOldQuality["extra"]?.InnerText);
+                            if (xmlOldQuality["bp"] != null
+                                && int.TryParse(xmlOldQuality["bp"].InnerText, out int intOldBP))
+                                objQuality.BP = intOldBP / intRanks;
+
+                            Qualities.Add(objQuality);
                         }
-
-                        QualitySource objQualitySource =
-                            Quality.ConvertToQualitySource(xmlOldQuality["qualitysource"]?.InnerText);
-                        objQuality.Create(xmlNewQuality, objQualitySource, _lstWeapons,
-                                          xmlOldQuality["extra"]?.InnerText);
-                        if (xmlOldQuality["bp"] != null
-                            && int.TryParse(xmlOldQuality["bp"].InnerText, out int intOldBP))
-                            objQuality.BP = intOldBP / intRanks;
-
-                        Qualities.Add(objQuality);
+                        catch
+                        {
+                            objQuality.Dispose();
+                            throw;
+                        }
                     }
                 }
 
@@ -34791,17 +34895,31 @@ namespace Chummer
                                             for (int i = 0; i < intQuantity; ++i)
                                             {
                                                 Quality objQuality = new Quality(this);
-                                                objQuality.Create(xmlQualityDataNode, QualitySource.Selected,
-                                                                  lstWeapons,
-                                                                  strForcedValue);
-                                                objQuality.Notes =
-                                                    xmlQualityToImport.SelectSingleNodeAndCacheExpression("description")?.Value ??
-                                                    string.Empty;
-                                                if (blnSync)
-                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                    _lstQualities.Add(objQuality);
-                                                else
-                                                    await _lstQualities.AddAsync(objQuality, token).ConfigureAwait(false);
+                                                try
+                                                {
+                                                    objQuality.Create(xmlQualityDataNode, QualitySource.Selected,
+                                                                      lstWeapons,
+                                                                      strForcedValue);
+                                                    objQuality.Notes =
+                                                        xmlQualityToImport
+                                                            .SelectSingleNodeAndCacheExpression("description")?.Value ??
+                                                        string.Empty;
+                                                    if (blnSync)
+                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                        _lstQualities.Add(objQuality);
+                                                    else
+                                                        await _lstQualities.AddAsync(objQuality, token)
+                                                                           .ConfigureAwait(false);
+                                                }
+                                                catch
+                                                {
+                                                    if (blnSync)
+                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                        objQuality.Dispose();
+                                                    else
+                                                        await objQuality.DisposeAsync().ConfigureAwait(false);
+                                                    throw;
+                                                }
                                             }
                                         }
                                     }
@@ -34902,17 +35020,31 @@ namespace Chummer
                                             for (int i = 0; i < intQuantity; ++i)
                                             {
                                                 Quality objQuality = new Quality(this);
-                                                objQuality.Create(xmlQualityDataNode, QualitySource.Selected,
-                                                                  lstWeapons,
-                                                                  strForcedValue);
-                                                objQuality.Notes =
-                                                    xmlQualityToImport.SelectSingleNodeAndCacheExpression("description")?.Value ??
-                                                    string.Empty;
-                                                if (blnSync)
-                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                    _lstQualities.Add(objQuality);
-                                                else
-                                                    await _lstQualities.AddAsync(objQuality, token: token).ConfigureAwait(false);
+                                                try
+                                                {
+                                                    objQuality.Create(xmlQualityDataNode, QualitySource.Selected,
+                                                                      lstWeapons,
+                                                                      strForcedValue);
+                                                    objQuality.Notes =
+                                                        xmlQualityToImport
+                                                            .SelectSingleNodeAndCacheExpression("description")?.Value ??
+                                                        string.Empty;
+                                                    if (blnSync)
+                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                        _lstQualities.Add(objQuality);
+                                                    else
+                                                        await _lstQualities.AddAsync(objQuality, token: token)
+                                                                           .ConfigureAwait(false);
+                                                }
+                                                catch
+                                                {
+                                                    if (blnSync)
+                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                        objQuality.Dispose();
+                                                    else
+                                                        await objQuality.DisposeAsync().ConfigureAwait(false);
+                                                    throw;
+                                                }
                                             }
                                         }
                                     }

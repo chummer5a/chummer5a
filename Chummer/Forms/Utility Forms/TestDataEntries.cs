@@ -546,23 +546,34 @@ namespace Chummer
                         {
                             List<Weapon> lstWeapons = new List<Weapon>(1);
                             Quality objTemp = new Quality(_objCharacter);
-                            objTemp.Create(objXmlGear, QualitySource.Selected, lstWeapons);
-
-                            Type objType = objTemp.GetType();
-
-                            foreach (PropertyInfo objProperty in objType.GetProperties())
+                            try
                             {
-                                try
+                                objTemp.Create(objXmlGear, QualitySource.Selected, lstWeapons);
+
+                                Type objType = objTemp.GetType();
+
+                                foreach (PropertyInfo objProperty in objType.GetProperties())
                                 {
-                                    objProperty.GetValue(objTemp, null);
+                                    try
+                                    {
+                                        objProperty.GetValue(objTemp, null);
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        if (_blnAddExceptionInfoToErrors)
+                                            _sbdOutputBuilder.Append(strName).Append(" failed ")
+                                                             .Append(objProperty.Name).Append(". Exception: ")
+                                                             .AppendLine(e.ToString());
+                                        else
+                                            _sbdOutputBuilder.Append(strName).Append(" failed ")
+                                                             .AppendLine(objProperty.Name);
+                                    }
                                 }
-                                catch (Exception e)
-                                {
-                                    if (_blnAddExceptionInfoToErrors)
-                                        _sbdOutputBuilder.Append(strName).Append(" failed ").Append(objProperty.Name).Append(". Exception: ").AppendLine(e.ToString());
-                                    else
-                                        _sbdOutputBuilder.Append(strName).Append(" failed ").AppendLine(objProperty.Name);
-                                }
+                            }
+                            catch
+                            {
+                                objTemp.Dispose();
+                                throw;
                             }
                         }
                         catch (Exception e)

@@ -5989,8 +5989,9 @@ namespace Chummer.Backend.Equipment
                     if (objQuality == null)
                         continue;
                     // We need to add in the return cost of deleting the quality, so call this manually
+                    string strInternalId = objQuality.InternalId;
                     decReturn += objQuality.DeleteQuality();
-                    decReturn += ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.CritterPower, objQuality.InternalId);
+                    decReturn += ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.CritterPower, strInternalId);
                 }
             }
 
@@ -6260,12 +6261,13 @@ namespace Chummer.Backend.Equipment
                                                             .ConfigureAwait(false);
                     if (objQuality == null)
                         continue;
+                    string strQualityId = objQuality.InternalId;
                     // We need to add in the return cost of deleting the quality, so call this manually
                     decReturn += await objQuality.DeleteQualityAsync(token: token).ConfigureAwait(false);
                     decReturn += await ImprovementManager
                                        .RemoveImprovementsAsync(_objCharacter,
                                                                 Improvement.ImprovementSource.CritterPower,
-                                                                objQuality.InternalId, token).ConfigureAwait(false);
+                                                                strQualityId, token).ConfigureAwait(false);
                 }
             }
 

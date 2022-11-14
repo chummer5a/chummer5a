@@ -6111,18 +6111,28 @@ namespace Chummer
                             {
                                 List<Weapon> lstWeapons = new List<Weapon>(1);
                                 Quality objAddQuality = new Quality(_objCharacter);
-                                objAddQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, strForceValue, _strFriendlyName);
-
-                                if (blnDoesNotContributeToBP)
+                                try
                                 {
-                                    objAddQuality.BP = 0;
-                                    objAddQuality.ContributeToLimit = false;
-                                }
+                                    objAddQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons,
+                                                         strForceValue, _strFriendlyName);
 
-                                _objCharacter.Qualities.Add(objAddQuality);
-                                foreach (Weapon objWeapon in lstWeapons)
-                                    _objCharacter.Weapons.Add(objWeapon);
-                                CreateImprovement(objAddQuality.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.SpecificQuality, _strUnique);
+                                    if (blnDoesNotContributeToBP)
+                                    {
+                                        objAddQuality.BP = 0;
+                                        objAddQuality.ContributeToLimit = false;
+                                    }
+
+                                    _objCharacter.Qualities.Add(objAddQuality);
+                                    foreach (Weapon objWeapon in lstWeapons)
+                                        _objCharacter.Weapons.Add(objWeapon);
+                                    CreateImprovement(objAddQuality.InternalId, _objImprovementSource, SourceName,
+                                                      Improvement.ImprovementType.SpecificQuality, _strUnique);
+                                }
+                                catch
+                                {
+                                    objAddQuality.Dispose();
+                                    throw;
+                                }
                             }
                             else
                             {
@@ -6187,91 +6197,111 @@ namespace Chummer
                         = bonusNode.SelectSingleNode("quality[" + frmPickItem.MyForm.SelectedItem.CleanXPath() + ']');
                 }
 
-                Quality objAddQuality = new Quality(_objCharacter);
                 List<Weapon> lstWeapons = new List<Weapon>(1);
-
-                string strForceValue = objXmlBonusQuality?.SelectSingleNode("@select")?.Value;
-                objAddQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, strForceValue,
-                                     _strFriendlyName);
-                if (objXmlBonusQuality?.SelectSingleNode("@contributetobp")?.Value != bool.TrueString)
+                Quality objAddQuality = new Quality(_objCharacter);
+                try
                 {
-                    objAddQuality.BP = 0;
-                    objAddQuality.ContributeToLimit = false;
-                }
-
-                if (bonusNode["discountqualities"] != null)
-                {
-                    lstQualities.Clear();
-                    lstQualities.Add(new ListItem("None", LanguageManager.GetString("String_None")));
-                    using (XmlNodeList xmlQualityNodeList = bonusNode.SelectNodes("discountqualities/quality"))
+                    string strForceValue = objXmlBonusQuality?.SelectSingleNode("@select")?.Value;
+                    objAddQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, strForceValue,
+                                         _strFriendlyName);
+                    if (objXmlBonusQuality?.SelectSingleNode("@contributetobp")?.Value != bool.TrueString)
                     {
-                        if (xmlQualityNodeList?.Count > 0)
-                        {
-                            foreach (XmlNode objXmlAddQuality in xmlQualityNodeList)
-                            {
-                                strForceValue = objXmlAddQuality.Attributes?["select"]?.InnerText ?? string.Empty;
-                                string strName = objXmlAddQuality.InnerText;
+                        objAddQuality.BP = 0;
+                        objAddQuality.ContributeToLimit = false;
+                    }
 
-                                XmlNode objXmlQuality
-                                    = objXmlDocument.SelectSingleNode(
-                                        "/chummer/qualities/quality[name = " + strName.CleanXPath() + ']');
-                                if (objXmlQuality != null)
+                    if (bonusNode["discountqualities"] != null)
+                    {
+                        lstQualities.Clear();
+                        lstQualities.Add(new ListItem("None", LanguageManager.GetString("String_None")));
+                        using (XmlNodeList xmlQualityNodeList = bonusNode.SelectNodes("discountqualities/quality"))
+                        {
+                            if (xmlQualityNodeList?.Count > 0)
+                            {
+                                foreach (XmlNode objXmlAddQuality in xmlQualityNodeList)
                                 {
-                                    string strDisplayName = objXmlQuality["translate"]?.InnerText ?? strName;
-                                    if (!string.IsNullOrWhiteSpace(strForceValue))
-                                        strDisplayName += " (" + strForceValue + ')';
-                                    lstQualities.Add(new ListItem(strName, strDisplayName));
+                                    strForceValue = objXmlAddQuality.Attributes?["select"]?.InnerText ?? string.Empty;
+                                    string strName = objXmlAddQuality.InnerText;
+
+                                    XmlNode objXmlQuality
+                                        = objXmlDocument.SelectSingleNode(
+                                            "/chummer/qualities/quality[name = " + strName.CleanXPath() + ']');
+                                    if (objXmlQuality != null)
+                                    {
+                                        string strDisplayName = objXmlQuality["translate"]?.InnerText ?? strName;
+                                        if (!string.IsNullOrWhiteSpace(strForceValue))
+                                            strDisplayName += " (" + strForceValue + ')';
+                                        lstQualities.Add(new ListItem(strName, strDisplayName));
+                                    }
                                 }
+                            }
+                        }
+
+                        if (lstQualities.Count == 0)
+                        {
+                            Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
+                                                                 LanguageManager.GetString(
+                                                                     "Message_Improvement_EmptySelectionListNamed"),
+                                                                 SourceName));
+                            throw new AbortedException();
+                        }
+
+                        using (ThreadSafeForm<SelectItem> frmPickItem
+                               = ThreadSafeForm<SelectItem>.Get(() => new SelectItem()))
+                        {
+                            frmPickItem.MyForm.SetGeneralItemsMode(lstQualities);
+
+                            // Don't do anything else if the form was canceled.
+                            if (frmPickItem.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
+                                throw new AbortedException();
+                            if (frmPickItem.MyForm.SelectedItem != "None")
+                            {
+                                objXmlSelectedQuality = objXmlDocument.SelectSingleNode(
+                                    "/chummer/qualities/quality[name = " + frmPickItem.MyForm.SelectedItem.CleanXPath()
+                                                                         + ']');
+                                objXmlBonusQuality
+                                    = bonusNode.SelectSingleNode(
+                                        "discountqualities/quality[" + frmPickItem.MyForm.SelectedItem.CleanXPath()
+                                                                     + ']');
+                                int qualityDiscount
+                                    = Convert.ToInt32(objXmlBonusQuality?.SelectSingleNode("@discount")?.Value,
+                                                      GlobalSettings.InvariantCultureInfo);
+                                Quality discountQuality = new Quality(_objCharacter)
+                                {
+                                    BP = 0
+                                };
+                                try
+                                {
+                                    strForceValue = objXmlBonusQuality?.SelectSingleNode("@select")?.Value;
+                                    discountQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons,
+                                                           strForceValue, _strFriendlyName);
+                                    objAddQuality.BP = Math.Max(objAddQuality.BP + qualityDiscount, 1);
+                                    CreateImprovement(discountQuality.InternalId, _objImprovementSource, SourceName,
+                                                      Improvement.ImprovementType.SpecificQuality, _strUnique);
+                                }
+                                catch
+                                {
+                                    discountQuality.Dispose();
+                                    throw;
+                                }
+
+                                _objCharacter.Qualities.Add(discountQuality);
                             }
                         }
                     }
 
-                    if (lstQualities.Count == 0)
-                    {
-                        Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
-                                                                      LanguageManager.GetString(
-                                                                          "Message_Improvement_EmptySelectionListNamed"),
-                                                                      SourceName));
-                        throw new AbortedException();
-                    }
-
-                    using (ThreadSafeForm<SelectItem> frmPickItem = ThreadSafeForm<SelectItem>.Get(() => new SelectItem()))
-                    {
-                        frmPickItem.MyForm.SetGeneralItemsMode(lstQualities);
-
-                        // Don't do anything else if the form was canceled.
-                        if (frmPickItem.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
-                            throw new AbortedException();
-                        if (frmPickItem.MyForm.SelectedItem != "None")
-                        {
-                            objXmlSelectedQuality = objXmlDocument.SelectSingleNode(
-                                "/chummer/qualities/quality[name = " + frmPickItem.MyForm.SelectedItem.CleanXPath() + ']');
-                            objXmlBonusQuality
-                                = bonusNode.SelectSingleNode(
-                                    "discountqualities/quality[" + frmPickItem.MyForm.SelectedItem.CleanXPath() + ']');
-                            int qualityDiscount
-                                = Convert.ToInt32(objXmlBonusQuality?.SelectSingleNode("@discount")?.Value,
-                                                  GlobalSettings.InvariantCultureInfo);
-                            Quality discountQuality = new Quality(_objCharacter)
-                            {
-                                BP = 0
-                            };
-                            strForceValue = objXmlBonusQuality?.SelectSingleNode("@select")?.Value;
-                            discountQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons,
-                                                   strForceValue, _strFriendlyName);
-                            _objCharacter.Qualities.Add(discountQuality);
-                            objAddQuality.BP = Math.Max(objAddQuality.BP + qualityDiscount, 1);
-                            CreateImprovement(discountQuality.InternalId, _objImprovementSource, SourceName,
-                                              Improvement.ImprovementType.SpecificQuality, _strUnique);
-                        }
-                    }
+                    CreateImprovement(objAddQuality.InternalId, _objImprovementSource, SourceName,
+                                      Improvement.ImprovementType.SpecificQuality, _strUnique);
+                }
+                catch
+                {
+                    objAddQuality.Dispose();
+                    throw;
                 }
 
                 _objCharacter.Qualities.Add(objAddQuality);
                 foreach (Weapon objWeapon in lstWeapons)
                     _objCharacter.Weapons.Add(objWeapon);
-                CreateImprovement(objAddQuality.InternalId, _objImprovementSource, SourceName,
-                                  Improvement.ImprovementType.SpecificQuality, _strUnique);
             }
         }
 

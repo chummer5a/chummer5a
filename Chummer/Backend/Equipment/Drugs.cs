@@ -1352,27 +1352,36 @@ namespace Chummer.Backend.Equipment
                         {
                             List<Weapon> lstWeapons = new List<Weapon>(1);
                             Quality objAddQuality = new Quality(_objCharacter);
-                            objAddQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, strForceValue, Name);
-
-                            if (blnDoesNotContributeToBP)
+                            try
                             {
-                                objAddQuality.BP = 0;
-                                objAddQuality.ContributeToLimit = false;
+                                objAddQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons,
+                                                     strForceValue, Name);
+
+                                if (blnDoesNotContributeToBP)
+                                {
+                                    objAddQuality.BP = 0;
+                                    objAddQuality.ContributeToLimit = false;
+                                }
+
+                                _objCharacter.Qualities.Add(objAddQuality);
+                                foreach (Weapon objWeapon in lstWeapons)
+                                    _objCharacter.Weapons.Add(objWeapon);
+                                Improvement objImprovement = new Improvement(_objCharacter)
+                                {
+                                    ImprovedName = objAddQuality.InternalId,
+                                    ImproveSource = Improvement.ImprovementSource.Drug,
+                                    SourceName = InternalId,
+                                    ImproveType = Improvement.ImprovementType.SpecificQuality,
+                                    CustomName = strNamePrefix + LanguageManager.GetString("String_InitiativeDice")
+                                                               + strSpace + objAddQuality.Name
+                                };
+                                lstImprovements.Add(objImprovement);
                             }
-
-                            _objCharacter.Qualities.Add(objAddQuality);
-                            foreach (Weapon objWeapon in lstWeapons)
-                                _objCharacter.Weapons.Add(objWeapon);
-                            Improvement objImprovement = new Improvement(_objCharacter)
+                            catch
                             {
-                                ImprovedName = objAddQuality.InternalId,
-                                ImproveSource = Improvement.ImprovementSource.Drug,
-                                SourceName = InternalId,
-                                ImproveType = Improvement.ImprovementType.SpecificQuality,
-                                CustomName = strNamePrefix + LanguageManager.GetString("String_InitiativeDice")
-                                                           + strSpace + objAddQuality.Name
-                            };
-                            lstImprovements.Add(objImprovement);
+                                objAddQuality.Dispose();
+                                throw;
+                            }
                         }
                         else
                         {

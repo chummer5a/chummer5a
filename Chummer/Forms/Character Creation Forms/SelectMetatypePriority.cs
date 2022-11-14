@@ -1373,22 +1373,39 @@ namespace Chummer
                                                 = _xmlQualityDocumentQualitiesNode.SelectSingleNode(
                                                     "quality[name = " + objXmlQualityItem.Value.CleanXPath() + ']');
                                             Quality objQuality = new Quality(_objCharacter);
-                                            string strForceValue
-                                                = (await objXmlQualityItem.SelectSingleNodeAndCacheExpressionAsync(
-                                                    "@select", token).ConfigureAwait(false))
-                                                ?.Value ?? string.Empty;
-                                            objQuality.Create(objXmlQuality, QualitySource.Heritage, lstWeapons,
-                                                              strForceValue);
-                                            Quality objExistingQuality = lstOldPriorityQualities.Find(
-                                                x => x.SourceIDString == objQuality.SourceIDString
-                                                     && x.Extra == objQuality.Extra && x.Type == objQuality.Type);
-                                            if (objExistingQuality != null)
+                                            bool blnDoRemove = false;
+                                            Quality objExistingQuality;
+                                            try
+                                            {
+                                                string strForceValue
+                                                    = (await objXmlQualityItem.SelectSingleNodeAndCacheExpressionAsync(
+                                                        "@select", token).ConfigureAwait(false))
+                                                    ?.Value ?? string.Empty;
+                                                objQuality.Create(objXmlQuality, QualitySource.Heritage, lstWeapons,
+                                                                  strForceValue);
+                                                objExistingQuality = lstOldPriorityQualities.Find(
+                                                    x => x.SourceIDString == objQuality.SourceIDString
+                                                         && x.Extra == objQuality.Extra && x.Type == objQuality.Type);
+                                                if (objExistingQuality == null)
+                                                    await _objCharacter.Qualities.AddAsync(objQuality, token: token)
+                                                                       .ConfigureAwait(false);
+                                                else
+                                                {
+                                                    blnDoRemove = true;
+                                                }
+                                            }
+                                            catch
+                                            {
+                                                await objQuality.DisposeAsync().ConfigureAwait(false);
+                                                throw;
+                                            }
+
+                                            if (blnDoRemove)
                                             {
                                                 lstOldPriorityQualities.Remove(objExistingQuality);
-                                                await objQuality.DeleteQualityAsync(token: token).ConfigureAwait(false);
+                                                await objQuality.DeleteQualityAsync(token: token)
+                                                                .ConfigureAwait(false);
                                             }
-                                            else
-                                                await _objCharacter.Qualities.AddAsync(objQuality, token: token).ConfigureAwait(false);
                                         }
 
                                         foreach (Quality objQuality in lstOldPriorityQualities)
