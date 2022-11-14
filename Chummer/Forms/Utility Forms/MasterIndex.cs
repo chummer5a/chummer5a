@@ -673,6 +673,7 @@ namespace Chummer
                         if (objOldSelectedValue is MasterIndexEntry objOldSelectedEntry)
                             await lstItems.DoThreadSafeFuncAsync(
                                 x => x.SelectedIndex
+                                    // ReSharper disable once AccessToModifiedClosure
                                     = lstFilteredItems.FindIndex(
                                         y => objOldSelectedEntry.Equals(y.Value as MasterIndexEntry)),
                                 _objGenericToken).ConfigureAwait(false);

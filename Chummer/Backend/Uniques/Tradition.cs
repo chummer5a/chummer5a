@@ -111,7 +111,7 @@ namespace Chummer.Backend.Uniques
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
-            await LockObject.DisposeAsync();
+            await LockObject.DisposeAsync().ConfigureAwait(false);
         }
 
         /// <inheritdoc />
@@ -837,7 +837,7 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public async ValueTask<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
                 string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
 
@@ -1500,7 +1500,7 @@ namespace Chummer.Backend.Uniques
 
         public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
                 if (Type == TraditionType.None)
                     return null;
@@ -1548,7 +1548,7 @@ namespace Chummer.Backend.Uniques
 
         public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
                 if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
                                                   && !GlobalSettings.LiveCustomData)
@@ -1672,7 +1672,7 @@ namespace Chummer.Backend.Uniques
             {
                 if (_objCachedSourceDetail.Language != GlobalSettings.Language)
                     _objCachedSourceDetail = default;
-                await SourceDetail.SetControlAsync(sourceControl, token);
+                await SourceDetail.SetControlAsync(sourceControl, token).ConfigureAwait(false);
             }
         }
 
