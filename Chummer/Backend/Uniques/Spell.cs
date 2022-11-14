@@ -740,7 +740,7 @@ namespace Chummer
                     foreach (Improvement objLoopImprovement in RelevantImprovements(o =>
                                  o.ImproveType == Improvement.ImprovementType.DrainValue
                                  || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
-                                 || o.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain, true))
+                                 || o.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain))
                     {
                         sbdTip.Append(strSpace).Append('+').Append(strSpace)
                               .Append(_objCharacter.GetObjectName(objLoopImprovement)).Append(strSpace)

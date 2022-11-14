@@ -17612,12 +17612,12 @@
       <category>Positive</category>
       <contributetolimit>False</contributetolimit>
       <bonus>
-        <allowspellcategory>Rituals</allowspellcategory>
         <limitspellcategory exclude="Rituals" />
         <spellcategorydrain>
           <val>-2</val>
         </spellcategorydrain>
         <skillgroupdisable>Conjuring</skillgroupdisable>
+        <allowspellcategory>Rituals</allowspellcategory>
       </bonus>
       <required>
         <oneof>
