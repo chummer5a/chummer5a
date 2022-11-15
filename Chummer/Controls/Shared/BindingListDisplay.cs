@@ -520,7 +520,20 @@ namespace Chummer.Controls.Shared
                 CreateControl(blnAddControlAfterCreation);
                 if (item is INotifyPropertyChanged prop)
                 {
-                    prop.PropertyChanged += item_ChangedEvent;
+                    if (prop is IHasLockObject objHasLock)
+                    {
+                        try
+                        {
+                            using (objHasLock.LockObject.EnterWriteLock())
+                                prop.PropertyChanged += item_ChangedEvent;
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            // swallow this
+                        }
+                    }
+                    else
+                        prop.PropertyChanged += item_ChangedEvent;
                 }
             }
 
@@ -650,7 +663,20 @@ namespace Chummer.Controls.Shared
                 {
                     if (Item is INotifyPropertyChanged prop)
                     {
-                        prop.PropertyChanged -= item_ChangedEvent;
+                        if (prop is IHasLockObject objHasLock)
+                        {
+                            try
+                            {
+                                using (objHasLock.LockObject.EnterWriteLock())
+                                    prop.PropertyChanged -= item_ChangedEvent;
+                            }
+                            catch (ObjectDisposedException)
+                            {
+                                // swallow this
+                            }
+                        }
+                        else
+                            prop.PropertyChanged -= item_ChangedEvent;
                     }
                     _parent.DisplayPanel.DoThreadSafe(x => x.Controls.Remove(Control));
                     _control.DoThreadSafe(x => x.Dispose());

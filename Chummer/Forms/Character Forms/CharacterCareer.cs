@@ -7747,32 +7747,45 @@ namespace Chummer
             try
             {
                 CalendarWeek objWeek = new CalendarWeek();
-                CalendarWeek objLastWeek = CharacterObject.Calendar?.FirstOrDefault();
-                if (objLastWeek != null)
+                try
                 {
-                    objWeek.Year = objLastWeek.Year;
-                    objWeek.Week = objLastWeek.Week + 1;
-                    if (objWeek.Week > 52)
+                    CalendarWeek objLastWeek = await CharacterObject.Calendar.FirstOrDefaultAsync().ConfigureAwait(false);
+                    if (objLastWeek != null)
                     {
-                        objWeek.Week = 1;
-                        ++objWeek.Year;
+                        objWeek.Year = objLastWeek.Year;
+                        objWeek.Week = objLastWeek.Week + 1;
+                        if (objWeek.Week > 52)
+                        {
+                            objWeek.Week = 1;
+                            ++objWeek.Year;
+                        }
                     }
+                    else
+                    {
+                        using (ThreadSafeForm<SelectCalendarStart> frmPickStart
+                               = await ThreadSafeForm<SelectCalendarStart>.GetAsync(
+                                   () => new SelectCalendarStart(), GenericToken).ConfigureAwait(false))
+                        {
+                            if (await frmPickStart.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
+                                == DialogResult.Cancel)
+                            {
+                                await objWeek.DisposeAsync().ConfigureAwait(false);
+                                return;
+                            }
+
+                            objWeek.Year = frmPickStart.MyForm.SelectedYear;
+                            objWeek.Week = frmPickStart.MyForm.SelectedWeek;
+                        }
+                    }
+
+                    await CharacterObject.Calendar.AddWithSortAsync(objWeek, (x, y) => y.CompareTo(x))
+                                         .ConfigureAwait(false);
                 }
-                else
+                catch
                 {
-                    using (ThreadSafeForm<SelectCalendarStart> frmPickStart
-                           = await ThreadSafeForm<SelectCalendarStart>.GetAsync(
-                               () => new SelectCalendarStart(), GenericToken).ConfigureAwait(false))
-                    {
-                        if (await frmPickStart.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false) == DialogResult.Cancel)
-                            return;
-
-                        objWeek.Year = frmPickStart.MyForm.SelectedYear;
-                        objWeek.Week = frmPickStart.MyForm.SelectedWeek;
-                    }
+                    await objWeek.DisposeAsync().ConfigureAwait(false);
+                    throw;
                 }
-
-                await CharacterObject.Calendar.AddWithSortAsync(objWeek, (x, y) => y.CompareTo(x)).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {

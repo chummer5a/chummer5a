@@ -339,6 +339,7 @@ namespace Chummer
             _lstPowers.ListChanged += PowersOnListChanged;
             _lstPowers.BeforeRemove += PowersOnBeforeRemove;
             _lstQualities.CollectionChanged += QualitiesCollectionChanged;
+            _lstCalendar.BeforeRemove += CalendarOnBeforeRemove;
             _lstMartialArts.CollectionChanged += MartialArtsOnCollectionChanged;
             _lstMetamagics.CollectionChanged += MetamagicsOnCollectionChanged;
             _lstSpells.CollectionChanged += SustainableOnCollectionChanged;
@@ -347,6 +348,15 @@ namespace Chummer
             _lstSustainedObjects.CollectionChanged += SustainedObjectsOnCollectionChanged;
             _lstInitiationGrades.CollectionChanged += InitiationGradesOnCollectionChanged;
             _objTradition = new Tradition(this);
+        }
+
+        private async void CalendarOnBeforeRemove(object sender, RemovingOldEventArgs e)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject).ConfigureAwait(false))
+            {
+                await (await Calendar.GetValueAtAsync(e.OldIndex).ConfigureAwait(false)).DisposeAsync()
+                    .ConfigureAwait(false);
+            }
         }
 
         private bool _blnClearingInitiations;
@@ -1467,9 +1477,11 @@ namespace Chummer
         {
             using (await EnterReadLock.EnterAsync(LockObject).ConfigureAwait(false))
             {
-                if (Powers[e.OldIndex].AdeptWayDiscountEnabled)
+                Power objPower = await Powers.GetValueAtAsync(e.OldIndex).ConfigureAwait(false);
+                if (objPower.AdeptWayDiscountEnabled)
                     this.OnMultiplePropertyChanged(nameof(AnyPowerAdeptWayDiscountEnabled),
                                                    nameof(AllowAdeptWayPowerDiscount));
+                // Do not need to dispose because deleting the power already disposes the power after removing it from the character
             }
         }
 
@@ -9361,9 +9373,22 @@ namespace Chummer
                                 foreach (XmlNode objXmlWeek in objXmlWeekList)
                                 {
                                     CalendarWeek objWeek = new CalendarWeek();
-                                    objWeek.Load(objXmlWeek);
-                                    await _lstCalendar.AddWithSortAsync(objWeek, (x, y) => y.CompareTo(x), token: token)
-                                                      .ConfigureAwait(false);
+                                    try
+                                    {
+                                        objWeek.Load(objXmlWeek);
+                                        await _lstCalendar
+                                              .AddWithSortAsync(objWeek, (x, y) => y.CompareTo(x), token: token)
+                                              .ConfigureAwait(false);
+                                    }
+                                    catch
+                                    {
+                                        if (blnSync)
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            objWeek.Dispose();
+                                        else
+                                            await objWeek.DisposeAsync().ConfigureAwait(false);
+                                        throw;
+                                    }
                                 }
 
                                 //Timekeeper.Finish("load_char_calendar");
@@ -11538,6 +11563,11 @@ namespace Chummer
                 _lstEnhancements.Dispose();
                 _lstImprovements.Dispose();
                 _lstInitiationGrades.Dispose();
+                foreach (Quality objItem in _lstQualities)
+                    objItem.Dispose();
+                _lstQualities.Dispose();
+                foreach (CalendarWeek objItem in _lstCalendar)
+                    objItem.Dispose();
                 _lstCalendar.Dispose();
                 foreach (Drug objItem in _lstDrugs)
                     objItem.Dispose();
@@ -11617,11 +11647,11 @@ namespace Chummer
                 await _lstVehicles.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
                 await _lstLifestyles.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
                 await _lstSpells.ForEachAsync(x => x.Dispose()).ConfigureAwait(false);
-                await _lstPowers.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
                 await _lstMartialArts.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
                 await _lstMartialArts.DisposeAsync().ConfigureAwait(false);
                 await _lstComplexForms.DisposeAsync().ConfigureAwait(false);
                 await _lstAIPrograms.DisposeAsync().ConfigureAwait(false);
+                await _lstPowers.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
                 await _lstPowers.DisposeAsync().ConfigureAwait(false);
                 await _lstCritterPowers.DisposeAsync().ConfigureAwait(false);
                 await _lstFoci.DisposeAsync().ConfigureAwait(false);
@@ -11632,6 +11662,9 @@ namespace Chummer
                 await _lstEnhancements.DisposeAsync().ConfigureAwait(false);
                 await _lstImprovements.DisposeAsync().ConfigureAwait(false);
                 await _lstInitiationGrades.DisposeAsync().ConfigureAwait(false);
+                await _lstQualities.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
+                await _lstQualities.DisposeAsync().ConfigureAwait(false);
+                await _lstCalendar.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
                 await _lstCalendar.DisposeAsync().ConfigureAwait(false);
                 await _lstDrugs.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
                 await _lstDrugs.DisposeAsync().ConfigureAwait(false);

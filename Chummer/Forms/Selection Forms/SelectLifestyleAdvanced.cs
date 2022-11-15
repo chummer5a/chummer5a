@@ -617,34 +617,48 @@ namespace Chummer
                     XmlNode objXmlQuality = _xmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + frmSelectLifestyleQuality.MyForm.SelectedQuality.CleanXPath() + ']');
 
                     LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-
-                    objQuality.Create(objXmlQuality, _objLifestyle, _objCharacter, QualitySource.Selected);
-                    //objNode.ContextMenuStrip = cmsQuality;
-                    if (objQuality.InternalId.IsEmptyGuid())
+                    try
                     {
-                        objQuality.Remove(false);
-                        objQuality.Dispose();
-                        continue;
-                    }
-                    objQuality.Free = frmSelectLifestyleQuality.MyForm.FreeCost;
+                        objQuality.Create(objXmlQuality, _objLifestyle, _objCharacter, QualitySource.Selected);
+                        //objNode.ContextMenuStrip = cmsQuality;
+                        if (objQuality.InternalId.IsEmptyGuid())
+                        {
+                            await objQuality.RemoveAsync(false).ConfigureAwait(false);
+                            continue;
+                        }
 
-                    await _objLifestyle.LifestyleQualities.AddAsync(objQuality).ConfigureAwait(false);
+                        objQuality.Free = frmSelectLifestyleQuality.MyForm.FreeCost;
+
+                        await _objLifestyle.LifestyleQualities.AddAsync(objQuality).ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        try
+                        {
+                            await objQuality.RemoveAsync(false).ConfigureAwait(false);
+                        }
+                        catch
+                        {
+                            await objQuality.DisposeAsync().ConfigureAwait(false);
+                            // Swallow removal exceptions here because we already want to throw an exception
+                        }
+
+                        throw;
+                    }
                 }
             }
             while (blnAddAgain);
         }
 
-        private void cmdDeleteQuality_Click(object sender, EventArgs e)
+        private async void cmdDeleteQuality_Click(object sender, EventArgs e)
         {
             // Locate the selected Quality.
-            if (treLifestyleQualities.SelectedNode == null || treLifestyleQualities.SelectedNode.Level == 0 || treLifestyleQualities.SelectedNode.Parent.Name == "nodFreeMatrixGrids")
+            TreeNode objNode = await treLifestyleQualities.DoThreadSafeFuncAsync(x => x.SelectedNode).ConfigureAwait(false);
+            if (objNode == null || objNode.Level == 0 || objNode.Parent.Name == "nodFreeMatrixGrids")
                 return;
-
-            if (!(treLifestyleQualities.SelectedNode.Tag is LifestyleQuality objQuality))
+            if (!(objNode.Tag is LifestyleQuality objQuality) || objQuality.OriginSource == QualitySource.BuiltIn)
                 return;
-            if (objQuality.OriginSource == QualitySource.BuiltIn)
-                return;
-            objQuality.Remove();
+            await objQuality.RemoveAsync().ConfigureAwait(false);
         }
 
         private void treLifestyleQualities_AfterSelect(object sender, TreeViewEventArgs e)
@@ -653,7 +667,7 @@ namespace Chummer
             {
                 tlpLifestyleQuality.Visible = true;
                 chkQualityUseLPCost.Enabled = !objQuality.Free && objQuality.CanBeFreeByLifestyle;
-                
+
                 _blnSkipRefresh = true;
                 try
                 {
@@ -779,7 +793,7 @@ namespace Chummer
         {
             if (_blnSkipRefresh)
                 return;
-            
+
             _objLifestyle.BaseLifestyle = await cboBaseLifestyle.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false) ?? string.Empty;
             XPathNavigator xmlAspect = await _objLifestyle.GetNodeXPathAsync(token: token).ConfigureAwait(false);
             if (xmlAspect != null)

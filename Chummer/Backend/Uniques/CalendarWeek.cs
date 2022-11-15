@@ -32,7 +32,7 @@ using Chummer.Annotations;
 namespace Chummer
 {
     [DebuggerDisplay("{DisplayName(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage)}")]
-    public sealed class CalendarWeek : IHasInternalId, IComparable, INotifyMultiplePropertyChanged, IEquatable<CalendarWeek>, IComparable<CalendarWeek>, IHasNotes
+    public sealed class CalendarWeek : IHasInternalId, IComparable, INotifyMultiplePropertyChanged, IEquatable<CalendarWeek>, IComparable<CalendarWeek>, IHasNotes, IHasLockObject
     {
         private Guid _guiID;
         private int _intYear = 2072;
@@ -50,16 +50,22 @@ namespace Chummer
 
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
-            Utils.RunOnMainThread(() =>
+            using (EnterReadLock.Enter(LockObject))
             {
                 if (PropertyChanged != null)
                 {
-                    foreach (string strPropertyToChange in lstPropertyNames)
+                    Utils.RunOnMainThread(() =>
                     {
-                        PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
-                    }
+                        if (PropertyChanged != null)
+                        {
+                            foreach (string strPropertyToChange in lstPropertyNames)
+                            {
+                                PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
+                            }
+                        }
+                    });
                 }
-            });
+            }
         }
 
         #region Constructor, Save, Load, and Print Methods
@@ -86,13 +92,16 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            objWriter.WriteStartElement("week");
-            objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("year", _intYear.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("week", _intWeek.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
-            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
-            objWriter.WriteEndElement();
+            using (EnterReadLock.Enter(LockObject))
+            {
+                objWriter.WriteStartElement("week");
+                objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalSettings.InvariantCultureInfo));
+                objWriter.WriteElementString("year", _intYear.ToString(GlobalSettings.InvariantCultureInfo));
+                objWriter.WriteElementString("week", _intWeek.ToString(GlobalSettings.InvariantCultureInfo));
+                objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+                objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
+                objWriter.WriteEndElement();
+            }
         }
 
         /// <summary>
@@ -101,13 +110,16 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            objNode.TryGetField("guid", Guid.TryParse, out _guiID);
-            objNode.TryGetInt32FieldQuickly("year", ref _intYear);
-            objNode.TryGetInt32FieldQuickly("week", ref _intWeek);
-            objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
-            string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
-            objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
-            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+            using (LockObject.EnterWriteLock())
+            {
+                objNode.TryGetField("guid", Guid.TryParse, out _guiID);
+                objNode.TryGetInt32FieldQuickly("year", ref _intYear);
+                objNode.TryGetInt32FieldQuickly("week", ref _intWeek);
+                objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+                string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+                objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+                _colNotes = ColorTranslator.FromHtml(sNotesColor);
+            }
         }
 
         /// <summary>
@@ -121,21 +133,28 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            // <week>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("week", token: token).ConfigureAwait(false);
-            try
+            using (await EnterReadLock.EnterAsync(LockObject, token))
             {
-                await objWriter.WriteElementStringAsync("guid", InternalId, token: token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("year", Year.ToString(objCulture), token: token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("month", Month.ToString(objCulture), token: token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("week", MonthWeek.ToString(objCulture), token: token).ConfigureAwait(false);
-                if (blnPrintNotes)
-                    await objWriter.WriteElementStringAsync("notes", Notes, token: token).ConfigureAwait(false);
-            }
-            finally
-            {
-                // </week>
-                await objBaseElement.DisposeAsync().ConfigureAwait(false);
+                // <week>
+                XmlElementWriteHelper objBaseElement
+                    = await objWriter.StartElementAsync("week", token: token).ConfigureAwait(false);
+                try
+                {
+                    await objWriter.WriteElementStringAsync("guid", InternalId, token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("year", Year.ToString(objCulture), token: token)
+                                   .ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("month", Month.ToString(objCulture), token: token)
+                                   .ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("week", MonthWeek.ToString(objCulture), token: token)
+                                   .ConfigureAwait(false);
+                    if (blnPrintNotes)
+                        await objWriter.WriteElementStringAsync("notes", Notes, token: token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    // </week>
+                    await objBaseElement.DisposeAsync().ConfigureAwait(false);
+                }
             }
         }
 
@@ -146,18 +165,32 @@ namespace Chummer
         /// <summary>
         /// Internal identifier which will be used to identify this Calendar Week in the Improvement system.
         /// </summary>
-        public string InternalId => _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
+        public string InternalId
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
+            }
+        }
 
         /// <summary>
         /// Year.
         /// </summary>
         public int Year
         {
-            get => _intYear;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intYear;
+            }
             set
             {
-                if (Interlocked.Exchange(ref _intYear, value) != value)
-                    OnPropertyChanged();
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (Interlocked.Exchange(ref _intYear, value) != value)
+                        OnPropertyChanged();
+                }
             }
         }
 
@@ -323,11 +356,15 @@ namespace Chummer
         /// </summary>
         public string DisplayName(CultureInfo objCulture, string strLanguage)
         {
-            string strReturn = string.Format(objCulture, LanguageManager.GetString("String_WeekDisplay", strLanguage)
-                , Year
-                , Month
-                , MonthWeek);
-            return strReturn;
+            using (EnterReadLock.Enter(LockObject))
+            {
+                string strReturn = string.Format(
+                    objCulture, LanguageManager.GetString("String_WeekDisplay", strLanguage)
+                    , Year
+                    , Month
+                    , MonthWeek);
+                return strReturn;
+            }
         }
 
         public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
@@ -337,11 +374,16 @@ namespace Chummer
         /// </summary>
         public async ValueTask<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            string strReturn = string.Format(objCulture, await LanguageManager.GetStringAsync("String_WeekDisplay", strLanguage, token: token).ConfigureAwait(false)
-                                             , Year
-                                             , Month
-                                             , MonthWeek);
-            return strReturn;
+            using (await EnterReadLock.EnterAsync(LockObject, token))
+            {
+                string strReturn = string.Format(
+                    objCulture, await LanguageManager.GetStringAsync("String_WeekDisplay", strLanguage, token: token)
+                                                     .ConfigureAwait(false)
+                    , Year
+                    , Month
+                    , MonthWeek);
+                return strReturn;
+            }
         }
 
         /// <summary>
@@ -349,11 +391,18 @@ namespace Chummer
         /// </summary>
         public int Week
         {
-            get => _intWeek;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intWeek;
+            }
             set
             {
-                if (Interlocked.Exchange(ref _intWeek, value) != value)
-                    OnPropertyChanged();
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (Interlocked.Exchange(ref _intWeek, value) != value)
+                        OnPropertyChanged();
+                }
             }
         }
 
@@ -362,11 +411,18 @@ namespace Chummer
         /// </summary>
         public string Notes
         {
-            get => _strNotes;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strNotes;
+            }
             set
             {
-                if (Interlocked.Exchange(ref _strNotes, value) != value)
-                    OnPropertyChanged();
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (Interlocked.Exchange(ref _strNotes, value) != value)
+                        OnPropertyChanged();
+                }
             }
         }
 
@@ -375,21 +431,36 @@ namespace Chummer
         /// </summary>
         public Color NotesColor
         {
-            get => _colNotes;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _colNotes;
+            }
             set
             {
-                if (_colNotes != value)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _colNotes = value;
+                    if (_colNotes == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                        _colNotes = value;
                     OnPropertyChanged();
                 }
             }
         }
 
-        public Color PreferredColor =>
-            !string.IsNullOrEmpty(Notes)
-                ? ColorManager.GenerateCurrentModeColor(NotesColor)
-                : ColorManager.WindowText;
+        public Color PreferredColor
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    return !string.IsNullOrEmpty(Notes)
+                        ? ColorManager.GenerateCurrentModeColor(NotesColor)
+                        : ColorManager.WindowText;
+                }
+            }
+        }
 
         public int CompareTo(object obj)
         {
@@ -400,10 +471,14 @@ namespace Chummer
 
         public int CompareTo(CalendarWeek other)
         {
-            int intReturn = Year.CompareTo(other.Year);
-            if (intReturn == 0)
-                intReturn = Week.CompareTo(other.Week);
-            return -intReturn;
+            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(other.LockObject))
+            {
+                int intReturn = Year.CompareTo(other.Year);
+                if (intReturn == 0)
+                    intReturn = Week.CompareTo(other.Week);
+                return -intReturn;
+            }
         }
 
         public override bool Equals(object obj)
@@ -419,12 +494,27 @@ namespace Chummer
                 return false;
             if (ReferenceEquals(this, other))
                 return true;
-            return Year == other.Year && Week == other.Week;
+            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(other.LockObject))
+                return Year == other.Year && Week == other.Week;
         }
 
         public override int GetHashCode()
         {
-            return (InternalId, Year, Week).GetHashCode();
+            using (EnterReadLock.Enter(LockObject))
+                return (InternalId, Year, Week).GetHashCode();
+        }
+
+        /// <inheritdoc />
+        public ValueTask DisposeAsync()
+        {
+            return LockObject.DisposeAsync();
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            LockObject.Dispose();
         }
 
         public static bool operator ==(CalendarWeek left, CalendarWeek right)
@@ -463,5 +553,8 @@ namespace Chummer
         }
 
         #endregion Properties
+
+        /// <inheritdoc />
+        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
     }
 }

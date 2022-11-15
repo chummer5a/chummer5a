@@ -1086,8 +1086,37 @@ namespace Chummer
             }, token);
             T3 objData = Utils.SafelyRunSynchronously(() => funcAsyncDataGetter.Invoke(objDataSource), token);
             objControl.DoThreadSafe((x, y) => funcControlSetter.Invoke(x, objData), objGetterToken);
-            objDataSource.PropertyChanged += OnPropertyChangedAsync;
-            Utils.RunOnMainThread(() => objControl.Disposed += (o, args) => objDataSource.PropertyChanged -= OnPropertyChangedAsync, token);
+            if (objDataSource is IHasLockObject objHasLock)
+            {
+                try
+                {
+                    using (objHasLock.LockObject.EnterWriteLock(token))
+                        objDataSource.PropertyChanged += OnPropertyChangedAsync;
+                }
+                catch (ObjectDisposedException)
+                {
+                    // swallow this
+                }
+            }
+            else
+                objDataSource.PropertyChanged += OnPropertyChangedAsync;
+            Utils.RunOnMainThread(() => objControl.Disposed += (o, args) =>
+            {
+                if (objDataSource is IHasLockObject objHasLock2)
+                {
+                    try
+                    {
+                        using (objHasLock2.LockObject.EnterWriteLock(token))
+                            objDataSource.PropertyChanged -= OnPropertyChangedAsync;
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        // swallow this
+                    }
+                }
+                else
+                    objDataSource.PropertyChanged -= OnPropertyChangedAsync;
+            }, token);
             async void OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e)
             {
                 if (e.PropertyName == strDataMember && !objGetterToken.IsCancellationRequested)
@@ -1129,8 +1158,44 @@ namespace Chummer
             }, token).ConfigureAwait(false);
             T3 objData = await funcAsyncDataGetter.Invoke(objDataSource).ConfigureAwait(false);
             await objControl.DoThreadSafeAsync(x => funcControlSetter.Invoke(x, objData), objGetterToken).ConfigureAwait(false);
-            objDataSource.PropertyChanged += OnPropertyChangedAsync;
-            await Utils.RunOnMainThreadAsync(() => objControl.Disposed += (o, args) => objDataSource.PropertyChanged -= OnPropertyChangedAsync, token).ConfigureAwait(false);
+            if (objDataSource is IHasLockObject objHasLock)
+            {
+                try
+                {
+                    IAsyncDisposable objLocker = await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        objDataSource.PropertyChanged += OnPropertyChangedAsync;
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+                catch (ObjectDisposedException)
+                {
+                    // swallow this
+                }
+            }
+            else
+                objDataSource.PropertyChanged += OnPropertyChangedAsync;
+            await Utils.RunOnMainThreadAsync(() => objControl.Disposed += (o, args) =>
+            {
+                if (objDataSource is IHasLockObject objHasLock2)
+                {
+                    try
+                    {
+                        using (objHasLock2.LockObject.EnterWriteLock(token))
+                            objDataSource.PropertyChanged -= OnPropertyChangedAsync;
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        // swallow this
+                    }
+                }
+                else
+                    objDataSource.PropertyChanged -= OnPropertyChangedAsync;
+            }, token).ConfigureAwait(false);
             async void OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e)
             {
                 if (e.PropertyName == strDataMember && !objGetterToken.IsCancellationRequested)

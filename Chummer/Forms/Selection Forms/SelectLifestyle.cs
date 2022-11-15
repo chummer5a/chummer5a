@@ -83,7 +83,7 @@ namespace Chummer
                         }
                     }
                 }
-                
+
                 await cboLifestyle.PopulateWithListItemsAsync(lstLifestyle).ConfigureAwait(false);
                 await cboLifestyle.DoThreadSafeAsync(x =>
                 {
@@ -381,16 +381,35 @@ namespace Chummer
                     continue;
                 XmlNode objXmlLifestyleQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + strLoopId.CleanXPath() + ']');
                 LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-                objQuality.Create(objXmlLifestyleQuality, _objLifestyle, _objCharacter, QualitySource.Selected);
-                await _objLifestyle.LifestyleQualities.AddAsync(objQuality, token: token).ConfigureAwait(false);
+                try
+                {
+                    objQuality.Create(objXmlLifestyleQuality, _objLifestyle, _objCharacter, QualitySource.Selected);
+                    await _objLifestyle.LifestyleQualities.AddAsync(objQuality, token: token).ConfigureAwait(false);
+                }
+                catch
+                {
+                    try
+                    {
+                        await objQuality.RemoveAsync(false, token).ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        await objQuality.DisposeAsync().ConfigureAwait(false);
+                        // Swallow removal exceptions here because we already want to throw an exception
+                    }
+
+                    throw;
+                }
             }
 
             foreach (LifestyleQuality objLifestyleQuality in await _objLifestyle.LifestyleQualities.ToListAsync(
                          x => !setLifestyleQualityIds.Contains(x.SourceIDString), token: token).ConfigureAwait(false))
-                objLifestyleQuality.Remove(false);
-
-            DialogResult = DialogResult.OK;
-            Close();
+                await objLifestyleQuality.RemoveAsync(false, token).ConfigureAwait(false);
+            await this.DoThreadSafeAsync(x =>
+            {
+                x.DialogResult = DialogResult.OK;
+                x.Close();
+            }, token).ConfigureAwait(false);
         }
 
         /// <summary>

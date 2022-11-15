@@ -2779,11 +2779,39 @@ namespace Chummer.Backend.Equipment
 
         public bool Remove(bool blnConfirmDelete = true)
         {
-            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteLifestyle")))
-                return false;
-            if (_objCharacter.Lifestyles.Contains(this) && !_objCharacter.Lifestyles.Remove(this))
-                return false;
+            using (EnterReadLock.Enter(LockObject))
+            {
+                if (blnConfirmDelete
+                    && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteLifestyle")))
+                    return false;
+                using (EnterReadLock.Enter(_objCharacter.Lifestyles.LockObject))
+                {
+                    if (_objCharacter.Lifestyles.Contains(this) && !_objCharacter.Lifestyles.Remove(this))
+                        return false;
+                }
+            }
+
             Dispose();
+            return true;
+        }
+
+        public async ValueTask<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (blnConfirmDelete && !await CommonFunctions.ConfirmDeleteAsync(
+                        await LanguageManager.GetStringAsync("Message_DeleteLifestyle", token: token)
+                                             .ConfigureAwait(false), token).ConfigureAwait(false))
+                    return false;
+                using (await EnterReadLock.EnterAsync(_objCharacter.Lifestyles.LockObject, token).ConfigureAwait(false))
+                {
+                    if (await _objCharacter.Lifestyles.ContainsAsync(this, token).ConfigureAwait(false)
+                        && !await _objCharacter.Lifestyles.RemoveAsync(this, token).ConfigureAwait(false))
+                        return false;
+                }
+            }
+
+            await DisposeAsync().ConfigureAwait(false);
             return true;
         }
 
@@ -2829,7 +2857,7 @@ namespace Chummer.Backend.Equipment
             try
             {
                 foreach (LifestyleQuality objQuality in LifestyleQualities)
-                    objQuality.Dispose();
+                    await objQuality.DisposeAsync().ConfigureAwait(false);
                 LifestyleQualities.CollectionChanged -= LifestyleQualitiesCollectionChanged;
                 LifestyleQualities.BeforeClearCollectionChanged -= LifestyleQualitiesOnBeforeClearCollectionChanged;
                 await LifestyleQualities.DisposeAsync().ConfigureAwait(false);
