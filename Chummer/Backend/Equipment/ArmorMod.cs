@@ -729,8 +729,8 @@ namespace Chummer.Backend.Equipment
             get => Math.Min(_intRating, MaximumRating);
             set
             {
-                int intNewRating = Math.Min(value, MaximumRating);
-                if (Interlocked.Exchange(ref _intRating, intNewRating) != intNewRating && GearChildren.Count > 0)
+                value = Math.Min(value, MaximumRating);
+                if (Interlocked.Exchange(ref _intRating, value) != value && GearChildren.Count > 0)
                 {
                     foreach (Gear objChild in GearChildren)
                     {

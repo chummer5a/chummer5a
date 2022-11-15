@@ -1131,7 +1131,8 @@ namespace Chummer.Backend.Equipment
             get => _intDamage;
             set
             {
-                int intOldValue = Interlocked.Exchange(ref _intDamage, value);
+                if (value < 0)
+                    value = 0;
 
                 int.TryParse(ArmorValue, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                     out int intTotalArmor);
@@ -1142,13 +1143,11 @@ namespace Chummer.Backend.Equipment
                     if (objMod.Equipped)
                         intTotalArmor += objMod.Armor;
                 }
+                
+                if (value > intTotalArmor)
+                    value = intTotalArmor;
 
-                if (_intDamage < 0)
-                    _intDamage = 0;
-                if (_intDamage > intTotalArmor)
-                    _intDamage = intTotalArmor;
-
-                if (_intDamage != intOldValue && Equipped && _objCharacter != null)
+                if (Interlocked.Exchange(ref _intDamage, value) != value && Equipped && _objCharacter != null)
                 {
                     _objCharacter.OnPropertyChanged(nameof(Character.GetArmorRating));
                     _objCharacter.RefreshArmorEncumbrance();

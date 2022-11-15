@@ -861,7 +861,7 @@ namespace Chummer
                             await treSpells.DoThreadSafeAsync(x =>
                             {
                                 // ReSharper disable once AssignNullToNotNullAttribute
-                                x.Nodes.Insert(objCombatNode == null ? 0 : 1, objDetectionNode);
+                                x.Nodes.Insert((objCombatNode != null).ToInt32(), objDetectionNode);
                                 objDetectionNode.Expand();
                             }, token).ConfigureAwait(false);
                         }
@@ -878,9 +878,9 @@ namespace Chummer
                             };
                             await treSpells.DoThreadSafeAsync(x =>
                             {
-                                x.Nodes.Insert((objCombatNode == null ? 0 : 1) +
+                                x.Nodes.Insert((objCombatNode != null).ToInt32() +
                                                // ReSharper disable once AssignNullToNotNullAttribute
-                                               (objDetectionNode == null ? 0 : 1), objHealthNode);
+                                               (objDetectionNode != null).ToInt32(), objHealthNode);
                                 objHealthNode.Expand();
                             }, token).ConfigureAwait(false);
                         }
@@ -897,10 +897,10 @@ namespace Chummer
                             };
                             await treSpells.DoThreadSafeAsync(x =>
                             {
-                                x.Nodes.Insert((objCombatNode == null ? 0 : 1) +
-                                               (objDetectionNode == null ? 0 : 1) +
+                                x.Nodes.Insert((objCombatNode != null).ToInt32() +
+                                               (objDetectionNode != null).ToInt32() +
                                                // ReSharper disable once AssignNullToNotNullAttribute
-                                               (objHealthNode == null ? 0 : 1), objIllusionNode);
+                                               (objHealthNode != null).ToInt32(), objIllusionNode);
                                 objIllusionNode.Expand();
                             }, token).ConfigureAwait(false);
                         }
@@ -917,11 +917,11 @@ namespace Chummer
                             };
                             await treSpells.DoThreadSafeAsync(x =>
                             {
-                                x.Nodes.Insert((objCombatNode == null ? 0 : 1) +
-                                               (objDetectionNode == null ? 0 : 1) +
-                                               (objHealthNode == null ? 0 : 1) +
+                                x.Nodes.Insert((objCombatNode != null).ToInt32() +
+                                               (objDetectionNode != null).ToInt32() +
+                                               (objHealthNode != null).ToInt32() +
                                                // ReSharper disable once AssignNullToNotNullAttribute
-                                               (objIllusionNode == null ? 0 : 1), objManipulationNode);
+                                               (objIllusionNode != null).ToInt32(), objManipulationNode);
                                 objManipulationNode.Expand();
                             }, token).ConfigureAwait(false);
                         }
@@ -938,12 +938,12 @@ namespace Chummer
                             };
                             await treSpells.DoThreadSafeAsync(x =>
                             {
-                                x.Nodes.Insert((objCombatNode == null ? 0 : 1) +
-                                               (objDetectionNode == null ? 0 : 1) +
-                                               (objHealthNode == null ? 0 : 1) +
-                                               (objIllusionNode == null ? 0 : 1) +
+                                x.Nodes.Insert((objCombatNode != null).ToInt32() +
+                                               (objDetectionNode != null).ToInt32() +
+                                               (objHealthNode != null).ToInt32() +
+                                               (objIllusionNode != null).ToInt32() +
                                                // ReSharper disable once AssignNullToNotNullAttribute
-                                               (objManipulationNode == null ? 0 : 1), objRitualsNode);
+                                               (objManipulationNode != null).ToInt32(), objRitualsNode);
                                 objRitualsNode.Expand();
                             }, token).ConfigureAwait(false);
                         }
@@ -2442,12 +2442,9 @@ namespace Chummer
                             };
                             await treQualities.DoThreadSafeAsync(x =>
                             {
-                                x.Nodes.Insert(
-                                    objLifeModuleRoot != null
-                                    && objPositiveQualityRoot == null
-                                        ? 0
-                                        // ReSharper disable once AssignNullToNotNullAttribute
-                                        : 1, objNegativeQualityRoot);
+                                x.Nodes.Insert((objLifeModuleRoot == null || objPositiveQualityRoot != null).ToInt32(),
+                                    // ReSharper disable once AssignNullToNotNullAttribute
+                                    objNegativeQualityRoot);
                                 objNegativeQualityRoot.Expand();
                             }, token).ConfigureAwait(false);
                         }
@@ -4220,7 +4217,7 @@ namespace Chummer
                             {
                                 objHoleNode = objCyberware.CreateTreeNode(null, null);
                                 // ReSharper disable once AssignNullToNotNullAttribute
-                                x.Nodes.Insert(3, objHoleNode);
+                                x.Nodes.Add(objHoleNode);
                             }
 
                             if (blnSingleAdd)
@@ -4237,7 +4234,7 @@ namespace Chummer
                             {
                                 objAntiHoleNode = objCyberware.CreateTreeNode(null, null);
                                 // ReSharper disable once AssignNullToNotNullAttribute
-                                x.Nodes.Insert(3, objAntiHoleNode);
+                                x.Nodes.Add(objAntiHoleNode);
                             }
 
                             if (blnSingleAdd)
@@ -4253,47 +4250,52 @@ namespace Chummer
                     TreeNode nodParent = null;
                     switch (objCyberware.SourceType)
                     {
-                        case Improvement.ImprovementSource.Cyberware when objCyberware.IsModularCurrentlyEquipped:
-                        {
-                            if (objCyberwareRoot == null)
-                            {
-                                objCyberwareRoot = new TreeNode
-                                {
-                                    Tag = "Node_SelectedCyberware",
-                                    Text = await LanguageManager.GetStringAsync("Node_SelectedCyberware", token: token).ConfigureAwait(false)
-                                };
-                                await treCyberware.DoThreadSafeAsync(x =>
-                                {
-                                    // ReSharper disable once AssignNullToNotNullAttribute
-                                    x.Nodes.Insert(0, objCyberwareRoot);
-                                    objCyberwareRoot.Expand();
-                                }, token).ConfigureAwait(false);
-                            }
-
-                            nodParent = objCyberwareRoot;
-                            break;
-                        }
                         case Improvement.ImprovementSource.Cyberware:
                         {
-                            if (objModularRoot == null)
+                            if (objCyberware.IsModularCurrentlyEquipped)
                             {
-                                objModularRoot = new TreeNode
+                                if (objCyberwareRoot == null)
                                 {
-                                    Tag = "Node_UnequippedModularCyberware",
-                                    Text = await LanguageManager.GetStringAsync("Node_UnequippedModularCyberware", token: token).ConfigureAwait(false)
-                                };
-                                int intIndex = 0;
-                                if (objBiowareRoot != null || objCyberwareRoot != null)
-                                    intIndex = objBiowareRoot != null && objCyberwareRoot != null ? 2 : 1;
-                                await treCyberware.DoThreadSafeAsync(x =>
+                                    objCyberwareRoot = new TreeNode
+                                    {
+                                        Tag = "Node_SelectedCyberware",
+                                        Text = await LanguageManager
+                                            .GetStringAsync("Node_SelectedCyberware", token: token)
+                                            .ConfigureAwait(false)
+                                    };
+                                    await treCyberware.DoThreadSafeAsync(x =>
+                                    {
+                                        // ReSharper disable once AssignNullToNotNullAttribute
+                                        x.Nodes.Insert(0, objCyberwareRoot);
+                                        objCyberwareRoot.Expand();
+                                    }, token).ConfigureAwait(false);
+                                }
+
+                                nodParent = objCyberwareRoot;
+                            }
+                            else
+                            {
+                                if (objModularRoot == null)
                                 {
-                                    // ReSharper disable once AssignNullToNotNullAttribute
-                                    x.Nodes.Insert(intIndex, objModularRoot);
-                                    objModularRoot.Expand();
-                                }, token).ConfigureAwait(false);
+                                    objModularRoot = new TreeNode
+                                    {
+                                        Tag = "Node_UnequippedModularCyberware",
+                                        Text = await LanguageManager
+                                            .GetStringAsync("Node_UnequippedModularCyberware", token: token)
+                                            .ConfigureAwait(false)
+                                    };
+                                    await treCyberware.DoThreadSafeAsync(x =>
+                                    {
+                                        int intIndex = (objCyberwareRoot != null).ToInt32() + (objBiowareRoot != null).ToInt32();
+                                        // ReSharper disable once AssignNullToNotNullAttribute
+                                        x.Nodes.Insert(intIndex, objModularRoot);
+                                        objModularRoot.Expand();
+                                    }, token).ConfigureAwait(false);
+                                }
+
+                                nodParent = objModularRoot;
                             }
 
-                            nodParent = objModularRoot;
                             break;
                         }
                         case Improvement.ImprovementSource.Bioware:
@@ -4308,7 +4310,7 @@ namespace Chummer
                                 await treCyberware.DoThreadSafeAsync(x =>
                                 {
                                     // ReSharper disable once AssignNullToNotNullAttribute
-                                    x.Nodes.Insert(objCyberwareRoot == null ? 0 : 1, objBiowareRoot);
+                                    x.Nodes.Insert((objCyberwareRoot != null).ToInt32(), objBiowareRoot);
                                     objBiowareRoot.Expand();
                                 }, token).ConfigureAwait(false);
                             }
@@ -6078,7 +6080,7 @@ namespace Chummer
                                             Text = await LanguageManager.GetStringAsync("Node_Mental", token: token).ConfigureAwait(false)
                                         };
                                         await treLimit.DoThreadSafeAsync(
-                                            x => x.Nodes.Insert(aobjLimitNodes[0] == null ? 0 : 1, objParentNode),
+                                            x => x.Nodes.Insert((aobjLimitNodes[0] != null).ToInt32(), objParentNode),
                                             token).ConfigureAwait(false);
                                         break;
 
@@ -6089,9 +6091,9 @@ namespace Chummer
                                             Text = await LanguageManager.GetStringAsync("Node_Social", token: token).ConfigureAwait(false)
                                         };
                                         await treLimit.DoThreadSafeAsync(x => x.Nodes.Insert(
-                                                                             (aobjLimitNodes[0] == null ? 0 : 1)
-                                                                             + (aobjLimitNodes[1] == null ? 0 : 1),
-                                                                             objParentNode), token).ConfigureAwait(false);
+                                            (aobjLimitNodes[0] != null).ToInt32()
+                                            + (aobjLimitNodes[1] != null).ToInt32(),
+                                            objParentNode), token).ConfigureAwait(false);
                                         break;
 
                                     case 3:
