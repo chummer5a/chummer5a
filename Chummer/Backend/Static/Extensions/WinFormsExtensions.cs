@@ -1106,7 +1106,7 @@ namespace Chummer
                 {
                     try
                     {
-                        using (objHasLock2.LockObject.EnterWriteLock(token))
+                        using (objHasLock2.LockObject.EnterWriteLock(CancellationToken.None))
                             objDataSource.PropertyChanged -= OnPropertyChangedAsync;
                     }
                     catch (ObjectDisposedException)
@@ -1185,7 +1185,7 @@ namespace Chummer
                 {
                     try
                     {
-                        using (objHasLock2.LockObject.EnterWriteLock(token))
+                        using (objHasLock2.LockObject.EnterWriteLock(CancellationToken.None))
                             objDataSource.PropertyChanged -= OnPropertyChangedAsync;
                     }
                     catch (ObjectDisposedException)

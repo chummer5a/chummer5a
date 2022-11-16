@@ -334,8 +334,16 @@ namespace Chummer
 
             foreach (Character objCharacter in _lstCharacters)
             {
-                objCharacter.PropertyChanged -= ObjCharacterOnPropertyChanged;
-                objCharacter.SettingsPropertyChanged -= ObjCharacterOnSettingsPropertyChanged;
+                IAsyncDisposable objLocker = await objCharacter.LockObject.EnterWriteLockAsync(CancellationToken.None);
+                try
+                {
+                    objCharacter.PropertyChanged -= ObjCharacterOnPropertyChanged;
+                    objCharacter.SettingsPropertyChanged -= ObjCharacterOnSettingsPropertyChanged;
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync();
+                }
             }
 
             // Remove the mugshots directory when the form closes.

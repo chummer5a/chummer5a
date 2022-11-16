@@ -185,7 +185,16 @@ namespace Chummer.UI.Powers
             Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
 
             _objCharacter.Powers.ListChanged += OnPowersListChanged;
-            _objCharacter.PropertyChanged += OnCharacterPropertyChanged;
+            IAsyncDisposable objLocker
+                = await _objCharacter.LockObject.EnterWriteLockAsync(MyToken).ConfigureAwait(false);
+            try
+            {
+                _objCharacter.PropertyChanged += OnCharacterPropertyChanged;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         private void UnbindPowersTabUserControl()
@@ -193,7 +202,8 @@ namespace Chummer.UI.Powers
             if (_objCharacter?.IsDisposed == false)
             {
                 _objCharacter.Powers.ListChanged -= OnPowersListChanged;
-                _objCharacter.PropertyChanged -= OnCharacterPropertyChanged;
+                using (_objCharacter.LockObject.EnterWriteLock())
+                    _objCharacter.PropertyChanged -= OnCharacterPropertyChanged;
             }
         }
 

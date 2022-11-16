@@ -71,7 +71,8 @@ namespace Chummer
             CancellationTokenRegistration objCancellationRegistration
                 = GenericToken.Register(() => _objUpdateCharacterInfoCancellationTokenSource?.Cancel(false));
             Disposed += (sender, args) => objCancellationRegistration.Dispose();
-            _objCharacter.PropertyChanged += CharacterPropertyChanged;
+            using (_objCharacter.LockObject.EnterWriteLock())
+                _objCharacter.PropertyChanged += CharacterPropertyChanged;
             dlgSaveFile = new SaveFileDialog();
             Load += OnLoad;
             Program.MainForm.OpenCharacterEditorForms.Add(this);
@@ -9046,7 +9047,11 @@ namespace Chummer
             if (disposing)
             {
                 if (_objCharacter != null)
-                    _objCharacter.PropertyChanged -= CharacterPropertyChanged;
+                {
+                    using (_objCharacter.LockObject.EnterWriteLock())
+                        _objCharacter.PropertyChanged -= CharacterPropertyChanged;
+                }
+
                 Interlocked.Exchange(ref _objCharacterFileWatcher, null)?.Dispose();
                 CancellationTokenSource objTemp = Interlocked.Exchange(ref _objUpdateCharacterInfoCancellationTokenSource, null);
                 if (objTemp != null)

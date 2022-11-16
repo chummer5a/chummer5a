@@ -214,8 +214,10 @@ namespace Chummer.UI.Skills
                 tlpMain.ResumeLayout();
                 ResumeLayout(true);
             }
-            objSkill.PropertyChanged += Skill_PropertyChanged;
-            objSkill.CharacterObject.SkillsSection.PropertyChanged += OnSkillsSectionPropertyChanged;
+            using (objSkill.LockObject.EnterWriteLock())
+                objSkill.PropertyChanged += Skill_PropertyChanged;
+            using (objSkill.CharacterObject.SkillsSection.LockObject.EnterWriteLock())
+                objSkill.CharacterObject.SkillsSection.PropertyChanged += OnSkillsSectionPropertyChanged;
             Interlocked.Decrement(ref _intUpdatingName);
             Interlocked.Decrement(ref _intUpdatingSpec);
         }
@@ -774,9 +776,18 @@ namespace Chummer.UI.Skills
         {
             _tmrNameChangeTimer?.Dispose();
             _tmrSpecChangeTimer?.Dispose();
-            _objSkill.PropertyChanged -= Skill_PropertyChanged;
-            if (!_objSkill.CharacterObject.IsDisposed)
-                _objSkill.CharacterObject.SkillsSection.PropertyChanged -= OnSkillsSectionPropertyChanged;
+            try
+            {
+                using (_objSkill.LockObject.EnterWriteLock())
+                    _objSkill.PropertyChanged -= Skill_PropertyChanged;
+                using (_objSkill.CharacterObject.SkillsSection.LockObject.EnterWriteLock())
+                    _objSkill.CharacterObject.SkillsSection.PropertyChanged -= OnSkillsSectionPropertyChanged;
+            }
+            catch (ObjectDisposedException)
+            {
+                // swallow this
+            }
+
             foreach (Control objControl in Controls)
             {
                 objControl.DataBindings.Clear();

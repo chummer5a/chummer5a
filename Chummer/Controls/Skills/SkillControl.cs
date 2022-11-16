@@ -276,8 +276,13 @@ namespace Chummer.UI.Skills
                 pnlAttributes.ResumeLayout();
                 ResumeLayout(true);
             }
+
             if (_objAttributeActive != null)
-                _objAttributeActive.PropertyChanged += Attribute_PropertyChanged;
+            {
+                using (_objAttributeActive.LockObject.EnterWriteLock())
+                    _objAttributeActive.PropertyChanged += Attribute_PropertyChanged;
+            }
+
             _objSkill.PropertyChanged += Skill_PropertyChanged;
             Interlocked.Decrement(ref _intUpdatingSpec);
         }
@@ -961,9 +966,17 @@ namespace Chummer.UI.Skills
                 if (objOldAttrib == value)
                     return;
                 if (objOldAttrib != null)
-                    objOldAttrib.PropertyChanged -= Attribute_PropertyChanged;
+                {
+                    using (objOldAttrib.LockObject.EnterWriteLock())
+                        objOldAttrib.PropertyChanged -= Attribute_PropertyChanged;
+                }
+
                 if (value != null)
-                    value.PropertyChanged += Attribute_PropertyChanged;
+                {
+                    using (value.LockObject.EnterWriteLock())
+                        value.PropertyChanged += Attribute_PropertyChanged;
+                }
+
                 btnAttribute.Font = value == _objSkill.AttributeObject
                     ? _fntNormal
                     : _fntItalic;
@@ -978,9 +991,31 @@ namespace Chummer.UI.Skills
             if (objOldAttrib == value)
                 return;
             if (objOldAttrib != null)
-                objOldAttrib.PropertyChanged -= Attribute_PropertyChanged;
+            {
+                IAsyncDisposable objLocker = await objOldAttrib.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    objOldAttrib.PropertyChanged -= Attribute_PropertyChanged;
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+
             if (value != null)
-                value.PropertyChanged += Attribute_PropertyChanged;
+            {
+                IAsyncDisposable objLocker = await value.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    value.PropertyChanged += Attribute_PropertyChanged;
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+
             Font objFont = value == _objSkill.AttributeObject ? _fntNormal : _fntItalic;
             await btnAttribute.DoThreadSafeAsync(x => x.Font = objFont, token).ConfigureAwait(false);
             await RefreshPoolTooltipAndDisplayAsync(token).ConfigureAwait(false);
@@ -1102,7 +1137,10 @@ namespace Chummer.UI.Skills
             _tmrSpecChangeTimer?.Dispose();
             _objSkill.PropertyChanged -= Skill_PropertyChanged;
             if (AttributeActive != null)
-                AttributeActive.PropertyChanged -= Attribute_PropertyChanged;
+            {
+                using (AttributeActive.LockObject.EnterWriteLock())
+                    AttributeActive.PropertyChanged -= Attribute_PropertyChanged;
+            }
 
             foreach (Control objControl in Controls)
             {

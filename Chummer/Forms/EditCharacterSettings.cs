@@ -81,10 +81,12 @@ namespace Chummer
             }
 
             _objCharacterSettings = new CharacterSettings(_objReferenceCharacterSettings);
-            _objCharacterSettings.PropertyChanged += SettingsChanged;
+            using (_objCharacterSettings.LockObject.EnterWriteLock())
+                _objCharacterSettings.PropertyChanged += SettingsChanged;
             Disposed += (sender, args) =>
             {
-                _objCharacterSettings.PropertyChanged -= SettingsChanged;
+                using (_objCharacterSettings.LockObject.EnterWriteLock())
+                    _objCharacterSettings.PropertyChanged -= SettingsChanged;
                 _objCharacterSettings.Dispose();
                 Utils.ListItemListPool.Return(ref _lstSettings);
                 Utils.StringHashSetPool.Return(ref _setPermanentSourcebooks);

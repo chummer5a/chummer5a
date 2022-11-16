@@ -225,17 +225,18 @@ namespace Chummer.Backend.Skills
                     {
                         using (await EnterReadLock.EnterAsync(KnowledgeSkills.LockObject).ConfigureAwait(false))
                         {
-                            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
-                            try
+                            await KnowledgeSkills.ForEachAsync(async objKnoSkill =>
                             {
-                                await KnowledgeSkills.ForEachAsync(objKnoSkill =>
-                                                                       objKnoSkill.PropertyChanged
-                                                                           += OnKnowledgeSkillPropertyChanged).ConfigureAwait(false);
-                            }
-                            finally
-                            {
-                                await objLocker.DisposeAsync().ConfigureAwait(false);
-                            }
+                                IAsyncDisposable objLocker = await objKnoSkill.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                                try
+                                {
+                                    objKnoSkill.PropertyChanged += OnKnowledgeSkillPropertyChanged;
+                                }
+                                finally
+                                {
+                                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                                }
+                            }).ConfigureAwait(false);
                         }
 
                         goto case ListChangedType.ItemDeleted;
@@ -244,15 +245,19 @@ namespace Chummer.Backend.Skills
                     {
                         using (await EnterReadLock.EnterAsync(KnowledgeSkills.LockObject).ConfigureAwait(false))
                         {
-                            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
-                            try
+                            KnowledgeSkill objKnoSkill = await KnowledgeSkills.GetValueAtAsync(e.NewIndex).ConfigureAwait(false);
+                            if (objKnoSkill != null)
                             {
-                                (await KnowledgeSkills.GetValueAtAsync(e.NewIndex).ConfigureAwait(false)).PropertyChanged
-                                    += OnKnowledgeSkillPropertyChanged;
-                            }
-                            finally
-                            {
-                                await objLocker.DisposeAsync().ConfigureAwait(false);
+                                IAsyncDisposable objLocker = await objKnoSkill.LockObject.EnterWriteLockAsync()
+                                                                              .ConfigureAwait(false);
+                                try
+                                {
+                                    objKnoSkill.PropertyChanged += OnKnowledgeSkillPropertyChanged;
+                                }
+                                finally
+                                {
+                                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                                }
                             }
                         }
 

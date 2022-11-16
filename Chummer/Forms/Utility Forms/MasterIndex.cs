@@ -205,7 +205,17 @@ namespace Chummer
                     }
 
                     if (objSettings != null)
-                        objSettings.PropertyChanged += OnSelectedSettingChanged;
+                    {
+                        IAsyncDisposable objLocker = await objSettings.LockObject.EnterWriteLockAsync(_objGenericToken).ConfigureAwait(false);
+                        try
+                        {
+                            objSettings.PropertyChanged += OnSelectedSettingChanged;
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
                 }
                 finally
                 {
@@ -225,7 +235,17 @@ namespace Chummer
         private async void MasterIndex_FormClosing(object sender, FormClosingEventArgs e)
         {
             if (_objSelectedSetting != null)
-                _objSelectedSetting.PropertyChanged -= OnSelectedSettingChanged;
+            {
+                IAsyncDisposable objLocker = await _objSelectedSetting.LockObject.EnterWriteLockAsync(_objGenericToken).ConfigureAwait(false);
+                try
+                {
+                    _objSelectedSetting.PropertyChanged -= OnSelectedSettingChanged;
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+            }
             _objGenericFormClosingCancellationTokenSource?.Cancel(false);
             // ReSharper disable once MethodSupportsCancellation
             foreach (Task<string> tskLoop in await _dicCachedNotes.GetValuesAsync().ConfigureAwait(false))
@@ -313,9 +333,30 @@ namespace Chummer
                     if (objPreviousSettings != objSettings)
                     {
                         if (objPreviousSettings != null)
-                            objPreviousSettings.PropertyChanged -= OnSelectedSettingChanged;
+                        {
+                            IAsyncDisposable objLocker = await objPreviousSettings.LockObject.EnterWriteLockAsync(_objGenericToken).ConfigureAwait(false);
+                            try
+                            {
+                                objPreviousSettings.PropertyChanged -= OnSelectedSettingChanged;
+                            }
+                            finally
+                            {
+                                await objLocker.DisposeAsync().ConfigureAwait(false);
+                            }
+                        }
+
                         if (objSettings != null)
-                            objSettings.PropertyChanged += OnSelectedSettingChanged;
+                        {
+                            IAsyncDisposable objLocker = await objSettings.LockObject.EnterWriteLockAsync(_objGenericToken).ConfigureAwait(false);
+                            try
+                            {
+                                objSettings.PropertyChanged += OnSelectedSettingChanged;
+                            }
+                            finally
+                            {
+                                await objLocker.DisposeAsync().ConfigureAwait(false);
+                            }
+                        }
 
                         await LoadContent(_objGenericToken).ConfigureAwait(false);
                     }

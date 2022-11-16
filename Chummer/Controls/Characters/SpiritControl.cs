@@ -102,14 +102,23 @@ namespace Chummer
                 await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap()).ConfigureAwait(false);
             }
 
-            _objSpirit.CharacterObject.PropertyChanged += RebuildSpiritListOnTraditionChange;
+            IAsyncDisposable objLocker = await _objSpirit.CharacterObject.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            try
+            {
+                _objSpirit.CharacterObject.PropertyChanged += RebuildSpiritListOnTraditionChange;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
 
             _blnLoading = false;
         }
 
         public void UnbindSpiritControl()
         {
-            _objSpirit.CharacterObject.PropertyChanged -= RebuildSpiritListOnTraditionChange;
+            using (_objSpirit.CharacterObject.LockObject.EnterWriteLock())
+                _objSpirit.CharacterObject.PropertyChanged -= RebuildSpiritListOnTraditionChange;
 
             foreach (Control objControl in Controls)
             {

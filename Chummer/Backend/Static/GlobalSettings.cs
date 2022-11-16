@@ -134,19 +134,14 @@ namespace Chummer
 
         #region IDisposable Support
 
-        private bool _disposedValue; // To detect redundant calls
+        private int _intIsDisposed; // To detect redundant calls
 
         private void Dispose(bool disposing)
         {
-            if (!_disposedValue)
+            if (disposing && Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) == 0)
             {
-                if (disposing)
-                {
-                    _objPdfDocument?.Close();
-                    _objPdfReader?.Close();
-                }
-
-                _disposedValue = true;
+                _objPdfDocument?.Close();
+                _objPdfReader?.Close();
             }
         }
 

@@ -34,7 +34,7 @@ namespace Chummer
     /// A Location.
     /// </summary>
     [DebuggerDisplay("{nameof(Name)}")]
-    public sealed class Location : IHasInternalId, IHasName, IHasNotes, ICanRemove, ICanSort, IDisposable, IAsyncDisposable
+    public sealed class Location : IHasInternalId, IHasName, IHasNotes, ICanRemove, ICanSort, IHasLockObject
     {
         private Guid _guiID;
         private string _strName;
@@ -65,13 +65,16 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            objWriter.WriteStartElement("location");
-            objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("name", _strName);
-            objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
-            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
-            objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteEndElement();
+            using (EnterReadLock.Enter(LockObject))
+            {
+                objWriter.WriteStartElement("location");
+                objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalSettings.InvariantCultureInfo));
+                objWriter.WriteElementString("name", _strName);
+                objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+                objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
+                objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalSettings.InvariantCultureInfo));
+                objWriter.WriteEndElement();
+            }
         }
 
         /// <summary>
@@ -80,25 +83,28 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+            using (LockObject.EnterWriteLock())
             {
-                _guiID = Guid.NewGuid();
-                _strName = objNode.InnerText;
+                if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+                {
+                    _guiID = Guid.NewGuid();
+                    _strName = objNode.InnerText;
+                }
+                else
+                {
+                    objNode.TryGetStringFieldQuickly("name", ref _strName);
+                    objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+                    string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+                    objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+                    _colNotes = ColorTranslator.FromHtml(sNotesColor);
+                }
+
+                objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
+
+                if (Parent?.Contains(this) == false)
+                    Parent.Add(this);
             }
-            else
-            {
-                objNode.TryGetStringFieldQuickly("name", ref _strName);
-                objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
-
-                string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
-                objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
-                _colNotes = ColorTranslator.FromHtml(sNotesColor);
-            }
-
-            objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
-
-            if (Parent?.Contains(this) == false)
-                Parent.Add(this);
         }
 
         /// <summary>
@@ -110,14 +116,17 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            objWriter.WriteStartElement("location");
-            objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
-            objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
-            objWriter.WriteElementString("name_english", Name);
-            if (GlobalSettings.PrintNotes)
-                objWriter.WriteElementString("notes", Notes);
-            objWriter.WriteEndElement();
+            using (EnterReadLock.Enter(LockObject))
+            {
+                objWriter.WriteStartElement("location");
+                objWriter.WriteElementString("guid", InternalId);
+                objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
+                objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
+                objWriter.WriteElementString("name_english", Name);
+                if (GlobalSettings.PrintNotes)
+                    objWriter.WriteElementString("notes", Notes);
+                objWriter.WriteEndElement();
+            }
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods
@@ -127,15 +136,30 @@ namespace Chummer
         /// <summary>
         /// Internal identifier which will be used to identify this Metamagic in the Improvement system.
         /// </summary>
-        public string InternalId => _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
+        public string InternalId
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
+            }
+        }
 
         /// <summary>
         /// Metamagic name.
         /// </summary>
         public string Name
         {
-            get => _strName;
-            set => _strName = value;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strName;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    _strName = value;
+            }
         }
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
@@ -149,10 +173,13 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strLanguage) || strLanguage == GlobalSettings.Language)
                 return Name;
-            return _objCharacter.TranslateExtra(
-                !GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
-                    ? LanguageManager.ReverseTranslateExtra(Name, GlobalSettings.Language, _objCharacter)
-                    : Name, strLanguage);
+            using (EnterReadLock.Enter(LockObject))
+            {
+                return _objCharacter.TranslateExtra(
+                    !GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                        ? LanguageManager.ReverseTranslateExtra(Name, GlobalSettings.Language, _objCharacter)
+                        : Name, strLanguage);
+            }
         }
 
         /// <summary>
@@ -165,9 +192,15 @@ namespace Chummer
             return DisplayNameShort(strLanguage);
         }
 
-        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.Language, token);
+        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default)
+        {
+            return DisplayNameAsync(GlobalSettings.Language, token);
+        }
 
-        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) => DisplayNameShortAsync(GlobalSettings.Language, token);
+        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default)
+        {
+            return DisplayNameShortAsync(GlobalSettings.Language, token);
+        }
 
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
@@ -176,20 +209,25 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strLanguage) || strLanguage == GlobalSettings.Language)
                 return Name;
-            return await _objCharacter.TranslateExtraAsync(
-                !GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
-                    ? await LanguageManager.ReverseTranslateExtraAsync(Name, GlobalSettings.Language, _objCharacter, token: token).ConfigureAwait(false)
-                    : Name, strLanguage, token: token).ConfigureAwait(false);
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                return await _objCharacter.TranslateExtraAsync(
+                    !GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                        ? await LanguageManager
+                                .ReverseTranslateExtraAsync(Name, GlobalSettings.Language, _objCharacter, token: token)
+                                .ConfigureAwait(false)
+                        : Name, strLanguage, token: token).ConfigureAwait(false);
+            }
         }
 
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
-        public async ValueTask<string> DisplayNameAsync(string strLanguage = "", CancellationToken token = default)
+        public ValueTask<string> DisplayNameAsync(string strLanguage = "", CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
-            return await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
+            return DisplayNameShortAsync(strLanguage, token);
         }
 
         /// <summary>
@@ -197,8 +235,16 @@ namespace Chummer
         /// </summary>
         public string Notes
         {
-            get => _strNotes;
-            set => _strNotes = value;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strNotes;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    _strNotes = value;
+            }
         }
 
         /// <summary>
@@ -206,8 +252,16 @@ namespace Chummer
         /// </summary>
         public Color NotesColor
         {
-            get => _colNotes;
-            set => _colNotes = value;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _colNotes;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    _colNotes = value;
+            }
         }
 
         /// <summary>
@@ -215,15 +269,23 @@ namespace Chummer
         /// </summary>
         public int SortOrder
         {
-            get => _intSortOrder;
-            set => _intSortOrder = value;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intSortOrder;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    _intSortOrder = value;
+            }
         }
 
         public ThreadSafeObservableCollection<IHasLocation> Children
         {
             get
             {
-                using (EnterReadLock.Enter(_objCharacter.LockObject))
+                using (EnterReadLock.Enter(LockObject))
                     return _lstChildren;
             }
         }
@@ -236,24 +298,35 @@ namespace Chummer
 
         public TreeNode CreateTreeNode(ContextMenuStrip cmsLocation)
         {
-            string strText = CurrentDisplayName;
-            TreeNode objNode = new TreeNode
+            using (EnterReadLock.Enter(LockObject))
             {
-                Name = InternalId,
-                Text = strText,
-                Tag = this,
-                ContextMenuStrip = cmsLocation,
-                ForeColor = PreferredColor,
-                ToolTipText = Notes.WordWrap()
-            };
+                string strText = CurrentDisplayName;
+                TreeNode objNode = new TreeNode
+                {
+                    Name = InternalId,
+                    Text = strText,
+                    Tag = this,
+                    ContextMenuStrip = cmsLocation,
+                    ForeColor = PreferredColor,
+                    ToolTipText = Notes.WordWrap()
+                };
 
-            return objNode;
+                return objNode;
+            }
         }
 
-        public Color PreferredColor =>
-            !string.IsNullOrEmpty(Notes)
-                ? ColorManager.GenerateCurrentModeColor(NotesColor)
-                : ColorManager.WindowText;
+        public Color PreferredColor
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    return !string.IsNullOrEmpty(Notes)
+                        ? ColorManager.GenerateCurrentModeColor(NotesColor)
+                        : ColorManager.WindowText;
+                }
+            }
+        }
 
         #endregion UI Methods
 
@@ -313,13 +386,27 @@ namespace Chummer
         /// <inheritdoc />
         public void Dispose()
         {
-            _lstChildren.Dispose();
+            using (LockObject.EnterWriteLock())
+                _lstChildren.Dispose();
         }
 
         /// <inheritdoc />
-        public ValueTask DisposeAsync()
+        public async ValueTask DisposeAsync()
         {
-            return _lstChildren.DisposeAsync();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            try
+            {
+                await _lstChildren.DisposeAsync().ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            await LockObject.DisposeAsync().ConfigureAwait(false);
         }
+
+        /// <inheritdoc />
+        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
     }
 }

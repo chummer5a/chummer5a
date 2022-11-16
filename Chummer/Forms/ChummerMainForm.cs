@@ -984,23 +984,34 @@ namespace Chummer
                 case NotifyCollectionChangedAction.Add:
                     {
                         foreach (Character objCharacter in notifyCollectionChangedEventArgs.NewItems)
-                            objCharacter.PropertyChanged += UpdateCharacterTabTitle;
+                        {
+                            using (objCharacter.LockObject.EnterWriteLock())
+                                objCharacter.PropertyChanged += UpdateCharacterTabTitle;
+                        }
+
                         break;
                     }
                 case NotifyCollectionChangedAction.Remove:
                     {
                         foreach (Character objCharacter in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            objCharacter.PropertyChanged -= UpdateCharacterTabTitle;
+                            using (objCharacter.LockObject.EnterWriteLock())
+                                objCharacter.PropertyChanged -= UpdateCharacterTabTitle;
                         }
                         break;
                     }
                 case NotifyCollectionChangedAction.Replace:
                     {
                         foreach (Character objCharacter in notifyCollectionChangedEventArgs.OldItems)
-                            objCharacter.PropertyChanged -= UpdateCharacterTabTitle;
+                        {
+                            using (objCharacter.LockObject.EnterWriteLock())
+                                objCharacter.PropertyChanged -= UpdateCharacterTabTitle;
+                        }
                         foreach (Character objCharacter in notifyCollectionChangedEventArgs.NewItems)
-                            objCharacter.PropertyChanged += UpdateCharacterTabTitle;
+                        {
+                            using (objCharacter.LockObject.EnterWriteLock())
+                                objCharacter.PropertyChanged += UpdateCharacterTabTitle;
+                        }
                         break;
                     }
             }
@@ -2369,7 +2380,11 @@ namespace Chummer
         {
             Program.OpenCharacters.CollectionChanged -= OpenCharactersOnCollectionChanged;
             foreach (Character objCharacter in Program.OpenCharacters)
-                objCharacter.PropertyChanged -= UpdateCharacterTabTitle;
+            {
+                using (objCharacter.LockObject.EnterWriteLock())
+                    objCharacter.PropertyChanged -= UpdateCharacterTabTitle;
+            }
+
             _objGenericCancellationTokenSource.Cancel(false);
 #if !DEBUG
             CancellationTokenSource objTemp = Interlocked.Exchange(ref _objVersionUpdaterCancellationTokenSource, null);

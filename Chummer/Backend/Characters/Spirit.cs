@@ -1474,7 +1474,8 @@ namespace Chummer
                     {
                         if (objOldLinkedCharacter != null)
                         {
-                            objOldLinkedCharacter.PropertyChanged -= LinkedCharacterOnPropertyChanged;
+                            using (objOldLinkedCharacter.LockObject.EnterWriteLock())
+                                objOldLinkedCharacter.PropertyChanged -= LinkedCharacterOnPropertyChanged;
                             if (Program.OpenCharacters.Contains(objOldLinkedCharacter))
                             {
                                 if (Program.OpenCharacters.All(x => !x.LinkedCharacters.Contains(objOldLinkedCharacter))
@@ -1488,11 +1489,15 @@ namespace Chummer
 
                         if (_objLinkedCharacter != null)
                         {
-                            if (string.IsNullOrEmpty(_strCritterName)
-                                && CritterName != LanguageManager.GetString("String_UnnamedCharacter"))
-                                _strCritterName = CritterName;
+                            using (EnterReadLock.Enter(_objLinkedCharacter.LockObject))
+                            {
+                                if (string.IsNullOrEmpty(_strCritterName)
+                                    && CritterName != LanguageManager.GetString("String_UnnamedCharacter"))
+                                    _strCritterName = CritterName;
 
-                            _objLinkedCharacter.PropertyChanged += LinkedCharacterOnPropertyChanged;
+                                using (_objLinkedCharacter.LockObject.EnterWriteLock())
+                                    _objLinkedCharacter.PropertyChanged += LinkedCharacterOnPropertyChanged;
+                            }
                         }
 
                         OnPropertyChanged(nameof(LinkedCharacter));

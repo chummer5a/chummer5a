@@ -1949,7 +1949,8 @@ namespace Chummer
                     {
                         if (objOldLinkedCharacter != null)
                         {
-                            objOldLinkedCharacter.PropertyChanged -= LinkedCharacterOnPropertyChanged;
+                            using (objOldLinkedCharacter.LockObject.EnterWriteLock())
+                                objOldLinkedCharacter.PropertyChanged -= LinkedCharacterOnPropertyChanged;
                             if (Program.OpenCharacters.Contains(objOldLinkedCharacter))
                             {
                                 if (Program.OpenCharacters.All(x => x == _objLinkedCharacter
@@ -1965,17 +1966,21 @@ namespace Chummer
 
                         if (_objLinkedCharacter != null)
                         {
-                            if (string.IsNullOrEmpty(_strName)
-                                && Name != LanguageManager.GetString("String_UnnamedCharacter"))
-                                _strName = Name;
-                            if (string.IsNullOrEmpty(_strAge) && !string.IsNullOrEmpty(Age))
-                                _strAge = Age;
-                            if (string.IsNullOrEmpty(_strGender) && !string.IsNullOrEmpty(Gender))
-                                _strGender = Gender;
-                            if (string.IsNullOrEmpty(_strMetatype) && !string.IsNullOrEmpty(Metatype))
-                                _strMetatype = Metatype;
+                            using (EnterReadLock.Enter(_objLinkedCharacter.LockObject))
+                            {
+                                if (string.IsNullOrEmpty(_strName)
+                                    && Name != LanguageManager.GetString("String_UnnamedCharacter"))
+                                    _strName = Name;
+                                if (string.IsNullOrEmpty(_strAge) && !string.IsNullOrEmpty(Age))
+                                    _strAge = Age;
+                                if (string.IsNullOrEmpty(_strGender) && !string.IsNullOrEmpty(Gender))
+                                    _strGender = Gender;
+                                if (string.IsNullOrEmpty(_strMetatype) && !string.IsNullOrEmpty(Metatype))
+                                    _strMetatype = Metatype;
 
-                            _objLinkedCharacter.PropertyChanged += LinkedCharacterOnPropertyChanged;
+                                using (_objLinkedCharacter.LockObject.EnterWriteLock())
+                                    _objLinkedCharacter.PropertyChanged += LinkedCharacterOnPropertyChanged;
+                            }
                         }
 
                         OnPropertyChanged(nameof(LinkedCharacter));
