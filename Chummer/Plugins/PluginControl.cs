@@ -71,7 +71,7 @@ namespace Chummer.Plugins
         Task<bool> DoCharacterList_DragDrop(object sender, DragEventArgs dragEventArgs, TreeView treCharacterList, CancellationToken token = default);
     }
 
-    public class PluginControl : IDisposable, IAsyncDisposable
+    public class PluginControl : IHasLockObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -80,7 +80,7 @@ namespace Chummer.Plugins
         public string PathToPlugins { get; set; }
         private static AggregateCatalog _objCatalog;
         private static DirectoryCatalog _objMyDirectoryCatalog;
-        private static FileSystemWatcher _objWatcher;
+        private FileSystemWatcher _objWatcher;
 
         //the level-argument is only to absolutely make sure to not spawn processes uncontrolled
         public static bool RegisterChummerProtocol()
@@ -215,166 +215,186 @@ namespace Chummer.Plugins
 
         public void Initialize()
         {
-            try
+            using (LockObject.EnterWriteLock())
             {
-                RegisterChummerProtocol();
-                if (!GlobalSettings.PluginsEnabled)
-                {
-                    Log.Info("Plugins are globally disabled - exiting PluginControl.Initialize()");
-                    return;
-                }
-                Log.Info("Plugins are globally enabled - entering PluginControl.Initialize()");
-
-                string path = Path.Combine(Utils.GetStartupPath, "plugins");
-                path = Path.GetFullPath(path);
-                if (!Directory.Exists(path))
-                {
-                    string msg = "Directory " + path + " not found. No Plugins will be available.";
-                    throw new ArgumentException(msg);
-                }
-                _objCatalog = new AggregateCatalog();
-                //delete old NeonJungleLC-Plugin
-                Utils.SafeDeleteDirectory(Path.Combine(path, "NeonJungleLC"));
-
-                bool blnAnyPlugins = false;
-                foreach (string plugindir in Directory.EnumerateDirectories(path))
-                {
-                    blnAnyPlugins = true;
-                    if (plugindir.Contains("SamplePlugin", StringComparison.OrdinalIgnoreCase))
-                    {
-                        Log.Warn("Found an old SamplePlugin (not maintaned anymore) and deleteing it to not mess with the plugin catalog composition.");
-                        Utils.SafeDeleteDirectory(plugindir);
-                        continue;
-                    }
-                    Log.Trace("Searching in " + plugindir + " for plugin.txt or dlls containing the interface.");
-                    //search for a text file that tells me what dll to parse
-                    string infofile = Path.Combine(plugindir, "plugin.txt");
-                    if (File.Exists(infofile))
-                    {
-                        Log.Trace(infofile + " found: parsing it!");
-
-                        using (StreamReader file = new StreamReader(infofile))
-                        {
-                            string line;
-                            while ((line = file.ReadLine()) != null)
-                            {
-                                string plugindll = Path.Combine(plugindir, line);
-                                Log.Trace(infofile + " containes line: " + plugindll + " - trying to find it...");
-                                if (File.Exists(plugindll))
-                                {
-                                    FileInfo fi = new FileInfo(plugindll);
-                                    _objMyDirectoryCatalog = new DirectoryCatalog(plugindir, fi.Name);
-                                    Log.Info("Searching for plugin-interface in dll: " + plugindll);
-                                    _objCatalog.Catalogs.Add(_objMyDirectoryCatalog);
-                                }
-                                else
-                                {
-                                    Log.Warn("Could not find dll from " + infofile + ": " + plugindll);
-                                    _objMyDirectoryCatalog = new DirectoryCatalog(plugindir, "*.dll");
-                                    Log.Info("Searching for dlls in path " + _objMyDirectoryCatalog?.FullPath);
-                                    _objCatalog.Catalogs.Add(_objMyDirectoryCatalog);
-                                }
-                            }
-                        }
-                    }
-                    else
-                    {
-                        _objMyDirectoryCatalog = new DirectoryCatalog(plugindir, "*.dll");
-                        Log.Info("Searching for dlls in path " + _objMyDirectoryCatalog?.FullPath);
-                        _objCatalog.Catalogs.Add(_objMyDirectoryCatalog);
-                    }
-                }
-                if (!blnAnyPlugins)
-                {
-                    throw new ArgumentException("No Plugin-Subdirectories in " + path + " !");
-                }
-
-                _container = new CompositionContainer(_objCatalog);
-
-                //Fill the imports of this object
-                StartWatch();
                 try
                 {
-                    _container.ComposeParts(this);
-                }
-                catch(ReflectionTypeLoadException e)
-                {
-                    if (Program.ChummerTelemetryClient != null)
+                    RegisterChummerProtocol();
+                    if (!GlobalSettings.PluginsEnabled)
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                      out StringBuilder sbdLoaderExceptions))
+                        Log.Info("Plugins are globally disabled - exiting PluginControl.Initialize()");
+                        return;
+                    }
+
+                    Log.Info("Plugins are globally enabled - entering PluginControl.Initialize()");
+
+                    string path = Path.Combine(Utils.GetStartupPath, "plugins");
+                    path = Path.GetFullPath(path);
+                    if (!Directory.Exists(path))
+                    {
+                        string msg = "Directory " + path + " not found. No Plugins will be available.";
+                        throw new ArgumentException(msg);
+                    }
+
+                    _objCatalog = new AggregateCatalog();
+                    //delete old NeonJungleLC-Plugin
+                    Utils.SafeDeleteDirectory(Path.Combine(path, "NeonJungleLC"));
+
+                    bool blnAnyPlugins = false;
+                    foreach (string plugindir in Directory.EnumerateDirectories(path))
+                    {
+                        blnAnyPlugins = true;
+                        if (plugindir.Contains("SamplePlugin", StringComparison.OrdinalIgnoreCase))
                         {
-                            int counter = 0;
-                            foreach (Exception except in e.LoaderExceptions)
+                            Log.Warn(
+                                "Found an old SamplePlugin (not maintaned anymore) and deleteing it to not mess with the plugin catalog composition.");
+                            Utils.SafeDeleteDirectory(plugindir);
+                            continue;
+                        }
+
+                        Log.Trace("Searching in " + plugindir + " for plugin.txt or dlls containing the interface.");
+                        //search for a text file that tells me what dll to parse
+                        string infofile = Path.Combine(plugindir, "plugin.txt");
+                        if (File.Exists(infofile))
+                        {
+                            Log.Trace(infofile + " found: parsing it!");
+
+                            using (StreamReader file = new StreamReader(infofile))
                             {
-                                counter++;
-                                sbdLoaderExceptions.AppendLine().Append("LoaderException ").Append(counter).Append(": ")
-                                                   .Append(except.Message);
-                                Program.ChummerTelemetryClient.TrackException(except);
+                                string line;
+                                while ((line = file.ReadLine()) != null)
+                                {
+                                    string plugindll = Path.Combine(plugindir, line);
+                                    Log.Trace(infofile + " containes line: " + plugindll + " - trying to find it...");
+                                    if (File.Exists(plugindll))
+                                    {
+                                        FileInfo fi = new FileInfo(plugindll);
+                                        _objMyDirectoryCatalog = new DirectoryCatalog(plugindir, fi.Name);
+                                        Log.Info("Searching for plugin-interface in dll: " + plugindll);
+                                        _objCatalog.Catalogs.Add(_objMyDirectoryCatalog);
+                                    }
+                                    else
+                                    {
+                                        Log.Warn("Could not find dll from " + infofile + ": " + plugindll);
+                                        _objMyDirectoryCatalog = new DirectoryCatalog(plugindir, "*.dll");
+                                        Log.Info("Searching for dlls in path " + _objMyDirectoryCatalog?.FullPath);
+                                        _objCatalog.Catalogs.Add(_objMyDirectoryCatalog);
+                                    }
+                                }
                             }
-
-                            Program.ChummerTelemetryClient.Flush();
-                            string msg
-                                = "Plugins (at least not all of them) could not be loaded. Logs are uploaded to the ChummerDevs. Maybe ping one of the Devs on Discord and provide your Installation-id: "
-                                  + Properties.Settings.Default.UploadClientId + Environment.NewLine + "Exception: "
-                                  + Environment.NewLine + Environment.NewLine + e + Environment.NewLine
-                                  + Environment.NewLine + "The LoaderExceptions are: " + Environment.NewLine
-                                  + sbdLoaderExceptions + Environment.NewLine + Environment.NewLine;
-
-                            Log.Info(e, msg);
+                        }
+                        else
+                        {
+                            _objMyDirectoryCatalog = new DirectoryCatalog(plugindir, "*.dll");
+                            Log.Info("Searching for dlls in path " + _objMyDirectoryCatalog?.FullPath);
+                            _objCatalog.Catalogs.Add(_objMyDirectoryCatalog);
                         }
                     }
-                    else
+
+                    if (!blnAnyPlugins)
                     {
-                        Log.Error(e, "Plugins (at least not all of them) could not be loaded. Please allow logging to upload logs.");
+                        throw new ArgumentException("No Plugin-Subdirectories in " + path + " !");
                     }
-                }
 
-                if (MyPlugins.Count == 0)
-                {
-                    throw new ArgumentException("No plugins found in " + path + '.');
-                }
+                    _container = new CompositionContainer(_objCatalog);
 
-                IReadOnlyList<IPlugin> lstActivePlugins = MyActivePlugins;
-                Log.Info("Plugins found: " + MyPlugins.Count + Environment.NewLine + "Plugins active: " + lstActivePlugins.Count);
-                foreach (IPlugin plugin in lstActivePlugins)
-                {
+                    //Fill the imports of this object
+                    StartWatch();
                     try
                     {
-                        Log.Info("Initializing Plugin " + plugin);
-                        plugin.SetIsUnitTest(Utils.IsUnitTest);
-                        plugin.CustomInitialize(Program.MainForm);
+                        _container.ComposeParts(this);
                     }
-                    catch (ApplicationException)
+                    catch (ReflectionTypeLoadException e)
                     {
-                        throw;
+                        if (Program.ChummerTelemetryClient != null)
+                        {
+                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                          out StringBuilder sbdLoaderExceptions))
+                            {
+                                int counter = 0;
+                                foreach (Exception except in e.LoaderExceptions)
+                                {
+                                    counter++;
+                                    sbdLoaderExceptions
+                                        .AppendLine().Append("LoaderException ").Append(counter).Append(": ")
+                                        .Append(except.Message);
+                                    Program.ChummerTelemetryClient.TrackException(except);
+                                }
+
+                                Program.ChummerTelemetryClient.Flush();
+                                string msg
+                                    = "Plugins (at least not all of them) could not be loaded. Logs are uploaded to the ChummerDevs. Maybe ping one of the Devs on Discord and provide your Installation-id: "
+                                      + Properties.Settings.Default.UploadClientId + Environment.NewLine + "Exception: "
+                                      + Environment.NewLine + Environment.NewLine + e + Environment.NewLine
+                                      + Environment.NewLine + "The LoaderExceptions are: " + Environment.NewLine
+                                      + sbdLoaderExceptions + Environment.NewLine + Environment.NewLine;
+
+                                Log.Info(e, msg);
+                            }
+                        }
+                        else
+                        {
+                            Log.Error(
+                                e,
+                                "Plugins (at least not all of them) could not be loaded. Please allow logging to upload logs.");
+                        }
                     }
-                    catch (Exception e)
+
+                    if (MyPlugins.Count == 0)
                     {
-                        Log.Error(e);
+                        throw new ArgumentException("No plugins found in " + path + '.');
+                    }
+
+                    IReadOnlyList<IPlugin> lstActivePlugins = MyActivePlugins;
+                    Log.Info("Plugins found: " + MyPlugins.Count + Environment.NewLine + "Plugins active: "
+                             + lstActivePlugins.Count);
+                    foreach (IPlugin plugin in lstActivePlugins)
+                    {
+                        try
+                        {
+                            Log.Info("Initializing Plugin " + plugin);
+                            plugin.SetIsUnitTest(Utils.IsUnitTest);
+                            plugin.CustomInitialize(Program.MainForm);
+                        }
+                        catch (ApplicationException)
+                        {
+                            throw;
+                        }
+                        catch (Exception e)
+                        {
+                            Log.Error(e);
 #if DEBUG
-                        throw;
+                            throw;
 #endif
+                        }
                     }
+
+                    Log.Info("Initializing Plugins finished.");
                 }
-                Log.Info("Initializing Plugins finished.");
-            }
-            catch (System.Security.SecurityException e)
-            {
-                string msg
-                    = "Well, the Plugin wanted to do something that requires Admin rights. Let's just ignore this: "
-                      + Environment.NewLine + Environment.NewLine + e;
-                Log.Warn(e, msg);
-            }
-            catch (Exception e) when (!(e is ApplicationException))
-            {
-                Log.Fatal(e);
-                throw;
+                catch (System.Security.SecurityException e)
+                {
+                    string msg
+                        = "Well, the Plugin wanted to do something that requires Admin rights. Let's just ignore this: "
+                          + Environment.NewLine + Environment.NewLine + e;
+                    Log.Warn(e, msg);
+                }
+                catch (Exception e) when (!(e is ApplicationException))
+                {
+                    Log.Fatal(e);
+                    throw;
+                }
             }
         }
 
         [ImportMany(typeof(IPlugin))]
-        public ThreadSafeList<IPlugin> MyPlugins { get; } = new ThreadSafeList<IPlugin>(1);
+        public ThreadSafeList<IPlugin> MyPlugins
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _lstMyPlugins;
+            }
+        }
 
         public IReadOnlyList<IPlugin> MyActivePlugins
         {
@@ -382,13 +402,18 @@ namespace Chummer.Plugins
             {
                 if (!GlobalSettings.PluginsEnabled)
                     return Array.Empty<IPlugin>();
-                List<IPlugin> result = new List<IPlugin>(MyPlugins.Count);
-                foreach (IPlugin plugin in MyPlugins)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    if (!GlobalSettings.PluginsEnabledDic.TryGetValue(plugin.ToString(), out bool enabled) || enabled)
-                        result.Add(plugin);
+                    List<IPlugin> result = new List<IPlugin>(MyPlugins.Count);
+                    foreach (IPlugin plugin in MyPlugins)
+                    {
+                        if (!GlobalSettings.PluginsEnabledDic.TryGetValue(plugin.ToString(), out bool enabled)
+                            || enabled)
+                            result.Add(plugin);
+                    }
+
+                    return result;
                 }
-                return result;
             }
         }
 
@@ -396,19 +421,23 @@ namespace Chummer.Plugins
         {
             if (!GlobalSettings.PluginsEnabled)
                 return Array.Empty<IPlugin>();
-            List<IPlugin> result = new List<IPlugin>(await MyPlugins.GetCountAsync(token).ConfigureAwait(false));
-            await MyPlugins.ForEachAsync(async plugin =>
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                (bool blnSuccess, bool blnEnabled)
-                    = await GlobalSettings.PluginsEnabledDic.TryGetValueAsync(plugin.ToString(), token).ConfigureAwait(false);
-                if (!blnSuccess || blnEnabled)
-                    result.Add(plugin);
-            }, token).ConfigureAwait(false);
+                List<IPlugin> result = new List<IPlugin>(await MyPlugins.GetCountAsync(token).ConfigureAwait(false));
+                await MyPlugins.ForEachAsync(async plugin =>
+                {
+                    (bool blnSuccess, bool blnEnabled)
+                        = await GlobalSettings.PluginsEnabledDic.TryGetValueAsync(plugin.ToString(), token)
+                                              .ConfigureAwait(false);
+                    if (!blnSuccess || blnEnabled)
+                        result.Add(plugin);
+                }, token).ConfigureAwait(false);
 
-            return result;
+                return result;
+            }
         }
 
-        private static void StartWatch()
+        private void StartWatch()
         {
             FileSystemWatcher objNewWatcher = new FileSystemWatcher
             {
@@ -436,78 +465,89 @@ namespace Chummer.Plugins
 
         internal void LoadPlugins(CustomActivity parentActivity = null)
         {
-            try
+            using (LockObject.EnterWriteLock())
             {
-                using (_ = Timekeeper.StartSyncron("LoadPlugins", parentActivity,
-                                                   CustomActivity.OperationType.DependencyOperation,
-                                                   _objMyDirectoryCatalog?.FullPath))
-                    Initialize();
-            }
-            catch (System.Security.SecurityException e)
-            {
-                string msg =
-                    "Well, something went wrong probably because we are not Admins. Let's just ignore it and move on." +
-                    Environment.NewLine + Environment.NewLine;
-                Log.Warn(e, msg);
-            }
-            catch (ReflectionTypeLoadException e)
-            {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                              out StringBuilder sbdMessage))
+                try
                 {
-                    sbdMessage.AppendLine("Exception loading plugins: ");
-                    foreach (Exception exp in e.LoaderExceptions)
-                    {
-                        sbdMessage.AppendLine(exp.Message);
-                    }
-                    sbdMessage.AppendLine().Append(e);
-                    Log.Warn(e, sbdMessage.ToString());
+                    using (_ = Timekeeper.StartSyncron("LoadPlugins", parentActivity,
+                                                       CustomActivity.OperationType.DependencyOperation,
+                                                       _objMyDirectoryCatalog?.FullPath))
+                        Initialize();
                 }
-            }
-            catch (CompositionException e)
-            {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                              out StringBuilder sbdMessage))
+                catch (System.Security.SecurityException e)
                 {
-                    sbdMessage.AppendLine("Exception loading plugins: ");
-                    foreach (CompositionError exp in e.Errors)
-                    {
-                        sbdMessage.AppendLine(exp.Exception.ToString());
-                    }
-                    sbdMessage.AppendLine().Append(e);
-                    Log.Error(e, sbdMessage.ToString());
+                    string msg =
+                        "Well, something went wrong probably because we are not Admins. Let's just ignore it and move on."
+                        +
+                        Environment.NewLine + Environment.NewLine;
+                    Log.Warn(e, msg);
                 }
-            }
-            catch (ApplicationException)
-            {
-                throw;
-            }
-            catch (Exception e)
-            {
-                string msg = "Exception loading plugins: " + Environment.NewLine + Environment.NewLine + e;
-                Log.Error(e, msg);
+                catch (ReflectionTypeLoadException e)
+                {
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdMessage))
+                    {
+                        sbdMessage.AppendLine("Exception loading plugins: ");
+                        foreach (Exception exp in e.LoaderExceptions)
+                        {
+                            sbdMessage.AppendLine(exp.Message);
+                        }
+
+                        sbdMessage.AppendLine().Append(e);
+                        Log.Warn(e, sbdMessage.ToString());
+                    }
+                }
+                catch (CompositionException e)
+                {
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdMessage))
+                    {
+                        sbdMessage.AppendLine("Exception loading plugins: ");
+                        foreach (CompositionError exp in e.Errors)
+                        {
+                            sbdMessage.AppendLine(exp.Exception.ToString());
+                        }
+
+                        sbdMessage.AppendLine().Append(e);
+                        Log.Error(e, sbdMessage.ToString());
+                    }
+                }
+                catch (ApplicationException)
+                {
+                    throw;
+                }
+                catch (Exception e)
+                {
+                    string msg = "Exception loading plugins: " + Environment.NewLine + Environment.NewLine + e;
+                    Log.Error(e, msg);
+                }
             }
         }
 
         internal async Task CallPlugins(CharacterCareer frmCareer, CustomActivity parentActivity, CancellationToken token = default)
         {
-            foreach (IPlugin plugin in await GetMyActivePluginsAsync(token).ConfigureAwait(false))
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                using (_ = await Timekeeper.StartSyncronAsync("load_plugin_GetTabPage_Career_" + plugin,
-                                                              parentActivity, CustomActivity.OperationType.DependencyOperation, plugin.ToString(), token).ConfigureAwait(false))
+                foreach (IPlugin plugin in await GetMyActivePluginsAsync(token).ConfigureAwait(false))
                 {
-                    ICollection<TabPage> pages = await plugin.GetTabPages(frmCareer, token).ConfigureAwait(false);
-                    if (pages == null)
-                        continue;
-                    foreach (TabPage page in pages)
+                    using (_ = await Timekeeper.StartSyncronAsync("load_plugin_GetTabPage_Career_" + plugin,
+                                                                  parentActivity,
+                                                                  CustomActivity.OperationType.DependencyOperation,
+                                                                  plugin.ToString(), token).ConfigureAwait(false))
                     {
-                        if (page != null)
+                        ICollection<TabPage> pages = await plugin.GetTabPages(frmCareer, token).ConfigureAwait(false);
+                        if (pages == null)
+                            continue;
+                        foreach (TabPage page in pages)
                         {
-                            await frmCareer.DoThreadSafeAsync(x =>
+                            if (page != null)
                             {
-                                if (!x.TabCharacterTabs.TabPages.Contains(page))
-                                    x.TabCharacterTabs.TabPages.Add(page);
-                            }, token).ConfigureAwait(false);
+                                await frmCareer.DoThreadSafeAsync(x =>
+                                {
+                                    if (!x.TabCharacterTabs.TabPages.Contains(page))
+                                        x.TabCharacterTabs.TabPages.Add(page);
+                                }, token).ConfigureAwait(false);
+                            }
                         }
                     }
                 }
@@ -517,25 +557,29 @@ namespace Chummer.Plugins
         internal async Task CallPlugins(CharacterCreate frmCreate, CustomActivity parentActivity,
                                         CancellationToken token = default)
         {
-            foreach (IPlugin plugin in await GetMyActivePluginsAsync(token).ConfigureAwait(false))
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                using (_ = await Timekeeper
-                                 .StartSyncronAsync("load_plugin_GetTabPage_Create_" + plugin, parentActivity,
-                                                    CustomActivity.OperationType.DependencyOperation, plugin.ToString(),
-                                                    token).ConfigureAwait(false))
+                foreach (IPlugin plugin in await GetMyActivePluginsAsync(token).ConfigureAwait(false))
                 {
-                    ICollection<TabPage> pages = await plugin.GetTabPages(frmCreate, token).ConfigureAwait(false);
-                    if (pages == null)
-                        continue;
-                    foreach (TabPage page in pages)
+                    using (_ = await Timekeeper
+                                     .StartSyncronAsync("load_plugin_GetTabPage_Create_" + plugin, parentActivity,
+                                                        CustomActivity.OperationType.DependencyOperation,
+                                                        plugin.ToString(),
+                                                        token).ConfigureAwait(false))
                     {
-                        if (page != null)
+                        ICollection<TabPage> pages = await plugin.GetTabPages(frmCreate, token).ConfigureAwait(false);
+                        if (pages == null)
+                            continue;
+                        foreach (TabPage page in pages)
                         {
-                            await frmCreate.DoThreadSafeAsync(x =>
+                            if (page != null)
                             {
-                                if (!x.TabCharacterTabs.TabPages.Contains(page))
-                                    x.TabCharacterTabs.TabPages.Add(page);
-                            }, token).ConfigureAwait(false);
+                                await frmCreate.DoThreadSafeAsync(x =>
+                                {
+                                    if (!x.TabCharacterTabs.TabPages.Contains(page))
+                                        x.TabCharacterTabs.TabPages.Add(page);
+                                }, token).ConfigureAwait(false);
+                            }
                         }
                     }
                 }
@@ -545,27 +589,30 @@ namespace Chummer.Plugins
         internal async Task CallPlugins(ToolStripMenuItem menu, CustomActivity parentActivity,
                                         CancellationToken token = default)
         {
-            foreach (IPlugin plugin in await GetMyActivePluginsAsync(token).ConfigureAwait(false))
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                using (_ = await Timekeeper.StartSyncronAsync("load_plugin_GetMenuItems_" + plugin,
-                                                              parentActivity,
-                                                              CustomActivity.OperationType.DependencyOperation,
-                                                              plugin.ToString(), token).ConfigureAwait(false))
+                foreach (IPlugin plugin in await GetMyActivePluginsAsync(token).ConfigureAwait(false))
                 {
-                    ICollection<ToolStripMenuItem> menuitems
-                        = await plugin.GetMenuItems(menu, token).ConfigureAwait(false);
-                    if (menuitems == null)
-                        continue;
-                    foreach (ToolStripMenuItem plugInMenu in menuitems)
+                    using (_ = await Timekeeper.StartSyncronAsync("load_plugin_GetMenuItems_" + plugin,
+                                                                  parentActivity,
+                                                                  CustomActivity.OperationType.DependencyOperation,
+                                                                  plugin.ToString(), token).ConfigureAwait(false))
                     {
-
-                        if (plugInMenu != null)
+                        ICollection<ToolStripMenuItem> menuitems
+                            = await plugin.GetMenuItems(menu, token).ConfigureAwait(false);
+                        if (menuitems == null)
+                            continue;
+                        foreach (ToolStripMenuItem plugInMenu in menuitems)
                         {
-                            await Utils.RunOnMainThreadAsync(() =>
+
+                            if (plugInMenu != null)
                             {
-                                if (!menu.DropDownItems.Contains(plugInMenu))
-                                    menu.DropDownItems.Add(plugInMenu);
-                            }, token).ConfigureAwait(false);
+                                await Utils.RunOnMainThreadAsync(() =>
+                                {
+                                    if (!menu.DropDownItems.Contains(plugInMenu))
+                                        menu.DropDownItems.Add(plugInMenu);
+                                }, token).ConfigureAwait(false);
+                            }
                         }
                     }
                 }
@@ -573,14 +620,12 @@ namespace Chummer.Plugins
         }
 
         private int _intIsDisposed;
+        private readonly ThreadSafeList<IPlugin> _lstMyPlugins = new ThreadSafeList<IPlugin>(1);
 
         protected virtual void Dispose(bool disposing)
         {
             if (disposing)
             {
-                if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
-                    return;
-
                 foreach (IPlugin plugin in MyPlugins)
                     plugin.Dispose();
                 MyPlugins.Dispose();
@@ -595,7 +640,11 @@ namespace Chummer.Plugins
         /// <inheritdoc />
         public void Dispose()
         {
-            Dispose(true);
+            if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
+                return;
+            using (LockObject.EnterWriteLock())
+                Dispose(true);
+            LockObject.Dispose();
             GC.SuppressFinalize(this);
         }
 
@@ -603,9 +652,6 @@ namespace Chummer.Plugins
         {
             if (disposing)
             {
-                if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
-                    return;
-
                 await MyPlugins.ForEachAsync(async plugin =>
                 {
                     // ReSharper disable once SuspiciousTypeConversion.Global
@@ -627,8 +673,24 @@ namespace Chummer.Plugins
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {
-            await DisposeAsync(true).ConfigureAwait(false);
+            if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
+                return;
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            try
+            {
+                await DisposeAsync(true).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            await LockObject.DisposeAsync().ConfigureAwait(false);
+
             GC.SuppressFinalize(this);
         }
+
+        /// <inheritdoc />
+        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
     }
 }

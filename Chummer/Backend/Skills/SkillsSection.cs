@@ -453,14 +453,26 @@ namespace Chummer.Backend.Skills
                     {
                         foreach (XmlNode xmlSkill in xmlSkillList)
                         {
-                            if (_dicSkillBackups.Count > 0
-                                && xmlSkill.TryGetField("id", Guid.TryParse, out Guid guiSkillId)
-                                && _dicSkillBackups.TryGetValue(guiSkillId, out Skill objSkill)
-                                && objSkill != null)
+                            if (await _dicSkillBackups.GetCountAsync(token).ConfigureAwait(false) > 0
+                                && xmlSkill.TryGetField("id", Guid.TryParse, out Guid guiSkillId))
                             {
-                                if (blnDeleteSkillsFromBackupIfFound)
-                                    await _dicSkillBackups.RemoveAsync(guiSkillId, token).ConfigureAwait(false);
-                                lstReturn.Add(objSkill);
+                                (bool blnSuccess, Skill objSkill) = await _dicSkillBackups.TryGetValueAsync(guiSkillId, token).ConfigureAwait(false);
+                                if (blnSuccess && objSkill != null)
+                                {
+                                    if (blnDeleteSkillsFromBackupIfFound)
+                                        await _dicSkillBackups.RemoveAsync(guiSkillId, token).ConfigureAwait(false);
+                                    lstReturn.Add(objSkill);
+                                }
+                                else
+                                {
+                                    bool blnIsKnowledgeSkill
+                                        = xmlSkillsDocument
+                                          .SelectSingleNode("/chummer/categories/category[. = "
+                                                            + xmlSkill["category"]?.InnerText.CleanXPath() + "]/@type")
+                                          ?.Value
+                                          != "active";
+                                    lstReturn.Add(Skill.FromData(xmlSkill, _objCharacter, blnIsKnowledgeSkill));
+                                }
                             }
                             else
                             {
@@ -1196,20 +1208,21 @@ namespace Chummer.Backend.Skills
 
                             foreach (KnowledgeSkill objKnoSkill in KnowledgeSkills)
                             {
-                                using (objKnoSkill.LockObject.EnterWriteLock())
+                                using (objKnoSkill.LockObject.EnterWriteLock(token))
                                     objKnoSkill.PropertyChanged += OnKnowledgeSkillPropertyChanged;
                             }
                         }
                         else
                         {
                             await _dicSkills.ClearAsync(token).ConfigureAwait(false);
-                            foreach (Skill objSkill in Skills)
-                            {
-                                if (!await _dicSkills.ContainsKeyAsync(objSkill.DictionaryKey, token)
-                                                     .ConfigureAwait(false))
-                                    await _dicSkills.AddAsync(objSkill.DictionaryKey, objSkill, token)
-                                                    .ConfigureAwait(false);
-                            }
+                            await Skills.ForEachAsync(
+                                async objSkill =>
+                                {
+                                    if (!await _dicSkills.ContainsKeyAsync(objSkill.DictionaryKey, token)
+                                                         .ConfigureAwait(false))
+                                        await _dicSkills.AddAsync(objSkill.DictionaryKey, objSkill, token)
+                                                        .ConfigureAwait(false);
+                                }, token).ConfigureAwait(false);
 
                             await KnowledgeSkills.ForEachAsync(
                                 async objKnoSkill =>

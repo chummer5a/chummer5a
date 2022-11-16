@@ -222,8 +222,14 @@ namespace Chummer
                 lstMentors.Sort(CompareListItems.CompareNames);
                 string strOldSelected = await lstMentor.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false);
                 _blnSkipRefresh = true;
-                await lstMentor.PopulateWithListItemsAsync(lstMentors).ConfigureAwait(false);
-                _blnSkipRefresh = false;
+                try
+                {
+                    await lstMentor.PopulateWithListItemsAsync(lstMentors).ConfigureAwait(false);
+                }
+                finally
+                {
+                    _blnSkipRefresh = false;
+                }
                 await lstMentor.DoThreadSafeAsync(x =>
                 {
                     if (!string.IsNullOrEmpty(strOldSelected))

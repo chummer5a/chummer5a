@@ -328,7 +328,7 @@ namespace Chummer
             if (blnSync)
             {
                 // ReSharper disable MethodHasAsyncOverload
-                using (EnterReadLock.Enter(LockObject))
+                using (EnterReadLock.Enter(LockObject, token))
                 {
                     objWriter.WriteStartElement("contact");
                     objWriter.WriteElementString("name", _strName);

@@ -31,7 +31,7 @@ namespace Chummer
     {
         private readonly XPathNavigator _objXmlDocument;
         private bool _blnLoading = true;
-        private bool _blnSkipRefresh;
+        private int _intSkipRefresh;
         private readonly Spell _objSpell;
 
         #region Control Events
@@ -61,7 +61,7 @@ namespace Chummer
                                                  (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate").ConfigureAwait(false))?.Value
                                                  ?? strInnerText));
                 }
-                
+
                 await cboCategory.PopulateWithListItemsAsync(lstCategory).ConfigureAwait(false);
             }
 
@@ -138,7 +138,7 @@ namespace Chummer
         private async void chkModifier_CheckedChanged(object sender, EventArgs e)
         {
             await cboType.DoThreadSafeAsync(x => x.Enabled = true).ConfigureAwait(false);
-            if (_blnSkipRefresh)
+            if (_intSkipRefresh > 0)
                 return;
 
             switch (await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString()).ConfigureAwait(false))
@@ -148,20 +148,27 @@ namespace Chummer
                         // Direct and Indirect cannot be selected at the same time.
                         if (await chkModifier1.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
                         {
-                            _blnSkipRefresh = true;
-                            await chkModifier2.DoThreadSafeAsync(x =>
+                            Interlocked.Increment(ref _intSkipRefresh);
+                            try
                             {
-                                x.Checked = false;
-                                x.Enabled = false;
-                                x.Enabled = false;
-                            }).ConfigureAwait(false);
-                            await chkModifier3.DoThreadSafeAsync(x =>
+                                await chkModifier2.DoThreadSafeAsync(x =>
+                                {
+                                    x.Checked = false;
+                                    x.Enabled = false;
+                                    x.Enabled = false;
+                                }).ConfigureAwait(false);
+                                await chkModifier3.DoThreadSafeAsync(x =>
+                                {
+                                    x.Checked = false;
+                                    x.Enabled = false;
+                                }).ConfigureAwait(false);
+                                await nudNumberOfEffects.DoThreadSafeAsync(x => x.Enabled = false)
+                                                        .ConfigureAwait(false);
+                            }
+                            finally
                             {
-                                x.Checked = false;
-                                x.Enabled = false;
-                            }).ConfigureAwait(false);
-                            await nudNumberOfEffects.DoThreadSafeAsync(x => x.Enabled = false).ConfigureAwait(false);
-                            _blnSkipRefresh = false;
+                                Interlocked.Decrement(ref _intSkipRefresh);
+                            }
                         }
                         else
                         {
@@ -173,18 +180,24 @@ namespace Chummer
                         // Indirect Combat Spells must always be physical. Direct and Indirect cannot be selected at the same time.
                         if (await chkModifier2.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
                         {
-                            _blnSkipRefresh = true;
-                            await chkModifier1.DoThreadSafeAsync(x =>
+                            Interlocked.Increment(ref _intSkipRefresh);
+                            try
                             {
-                                x.Checked = false;
-                                x.Enabled = false;
-                            }).ConfigureAwait(false);
-                            await cboType.DoThreadSafeAsync(x =>
+                                await chkModifier1.DoThreadSafeAsync(x =>
+                                {
+                                    x.Checked = false;
+                                    x.Enabled = false;
+                                }).ConfigureAwait(false);
+                                await cboType.DoThreadSafeAsync(x =>
+                                {
+                                    x.SelectedValue = "P";
+                                    x.Enabled = false;
+                                }).ConfigureAwait(false);
+                            }
+                            finally
                             {
-                                x.SelectedValue = "P";
-                                x.Enabled = false;
-                            }).ConfigureAwait(false);
-                            _blnSkipRefresh = false;
+                                Interlocked.Decrement(ref _intSkipRefresh);
+                            }
                         }
                         else
                         {
@@ -200,13 +213,19 @@ namespace Chummer
                         // Physical damage and Stun damage cannot be selected at the same time.
                         if (await chkModifier4.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
                         {
-                            _blnSkipRefresh = true;
-                            await chkModifier5.DoThreadSafeAsync(x =>
+                            Interlocked.Increment(ref _intSkipRefresh);
+                            try
                             {
-                                x.Checked = false;
-                                x.Enabled = false;
-                            }).ConfigureAwait(false);
-                            _blnSkipRefresh = false;
+                                await chkModifier5.DoThreadSafeAsync(x =>
+                                {
+                                    x.Checked = false;
+                                    x.Enabled = false;
+                                }).ConfigureAwait(false);
+                            }
+                            finally
+                            {
+                                Interlocked.Decrement(ref _intSkipRefresh);
+                            }
                         }
                         else
                         {
@@ -214,13 +233,19 @@ namespace Chummer
                         }
                         if (await chkModifier5.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
                         {
-                            _blnSkipRefresh = true;
-                            await chkModifier4.DoThreadSafeAsync(x =>
+                            Interlocked.Increment(ref _intSkipRefresh);
+                            try
                             {
-                                x.Checked = false;
-                                x.Enabled = false;
-                            }).ConfigureAwait(false);
-                            _blnSkipRefresh = false;
+                                await chkModifier4.DoThreadSafeAsync(x =>
+                                {
+                                    x.Checked = false;
+                                    x.Enabled = false;
+                                }).ConfigureAwait(false);
+                            }
+                            finally
+                            {
+                                Interlocked.Decrement(ref _intSkipRefresh);
+                            }
                         }
                         else
                         {
@@ -234,35 +259,53 @@ namespace Chummer
                         // Directional, and Area cannot be selected at the same time.
                         if (await chkModifier1.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
                         {
-                            _blnSkipRefresh = true;
-                            await chkModifier2.DoThreadSafeAsync(x =>
+                            Interlocked.Increment(ref _intSkipRefresh);
+                            try
                             {
-                                x.Checked = false;
-                                x.Enabled = false;
-                            }).ConfigureAwait(false);
-                            _blnSkipRefresh = false;
+                                await chkModifier2.DoThreadSafeAsync(x =>
+                                {
+                                    x.Checked = false;
+                                    x.Enabled = false;
+                                }).ConfigureAwait(false);
+                            }
+                            finally
+                            {
+                                Interlocked.Decrement(ref _intSkipRefresh);
+                            }
                         }
                         if (await chkModifier2.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
                         {
-                            _blnSkipRefresh = true;
-                            await chkModifier1.DoThreadSafeAsync(x =>
+                            Interlocked.Increment(ref _intSkipRefresh);
+                            try
                             {
-                                x.Checked = false;
-                                x.Enabled = false;
-                            }).ConfigureAwait(false);
-                            _blnSkipRefresh = false;
+                                await chkModifier1.DoThreadSafeAsync(x =>
+                                {
+                                    x.Checked = false;
+                                    x.Enabled = false;
+                                }).ConfigureAwait(false);
+                            }
+                            finally
+                            {
+                                Interlocked.Decrement(ref _intSkipRefresh);
+                            }
                         }
 
                         // Active and Passive cannot be selected at the same time.
                         if (await chkModifier4.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
                         {
-                            _blnSkipRefresh = true;
-                            await chkModifier5.DoThreadSafeAsync(x =>
+                            Interlocked.Increment(ref _intSkipRefresh);
+                            try
                             {
-                                x.Checked = false;
-                                x.Enabled = false;
-                            }).ConfigureAwait(false);
-                            _blnSkipRefresh = false;
+                                await chkModifier5.DoThreadSafeAsync(x =>
+                                {
+                                    x.Checked = false;
+                                    x.Enabled = false;
+                                }).ConfigureAwait(false);
+                            }
+                            finally
+                            {
+                                Interlocked.Decrement(ref _intSkipRefresh);
+                            }
                         }
                         else
                         {
@@ -271,13 +314,19 @@ namespace Chummer
 
                         if (await chkModifier5.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
                         {
-                            _blnSkipRefresh = true;
-                            await chkModifier4.DoThreadSafeAsync(x =>
+                            Interlocked.Increment(ref _intSkipRefresh);
+                            try
                             {
-                                x.Checked = false;
-                                x.Enabled = false;
-                            }).ConfigureAwait(false);
-                            _blnSkipRefresh = false;
+                                await chkModifier4.DoThreadSafeAsync(x =>
+                                {
+                                    x.Checked = false;
+                                    x.Enabled = false;
+                                }).ConfigureAwait(false);
+                            }
+                            finally
+                            {
+                                Interlocked.Decrement(ref _intSkipRefresh);
+                            }
                         }
                         else
                         {
@@ -303,13 +352,19 @@ namespace Chummer
                         // Obvious and Realistic cannot be selected at the same time.
                         if (await chkModifier1.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
                         {
-                            _blnSkipRefresh = true;
-                            await chkModifier2.DoThreadSafeAsync(x =>
+                            Interlocked.Increment(ref _intSkipRefresh);
+                            try
                             {
-                                x.Checked = false;
-                                x.Enabled = false;
-                            }).ConfigureAwait(false);
-                            _blnSkipRefresh = false;
+                                await chkModifier2.DoThreadSafeAsync(x =>
+                                {
+                                    x.Checked = false;
+                                    x.Enabled = false;
+                                }).ConfigureAwait(false);
+                            }
+                            finally
+                            {
+                                Interlocked.Decrement(ref _intSkipRefresh);
+                            }
                         }
                         else
                         {
@@ -318,13 +373,19 @@ namespace Chummer
 
                         if (await chkModifier2.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
                         {
-                            _blnSkipRefresh = true;
-                            await chkModifier1.DoThreadSafeAsync(x =>
+                            Interlocked.Increment(ref _intSkipRefresh);
+                            try
                             {
-                                x.Checked = false;
-                                x.Enabled = false;
-                            }).ConfigureAwait(false);
-                            _blnSkipRefresh = false;
+                                await chkModifier1.DoThreadSafeAsync(x =>
+                                {
+                                    x.Checked = false;
+                                    x.Enabled = false;
+                                }).ConfigureAwait(false);
+                            }
+                            finally
+                            {
+                                Interlocked.Decrement(ref _intSkipRefresh);
+                            }
                         }
                         else
                         {
@@ -334,13 +395,19 @@ namespace Chummer
                         // Single-Sense and Multi-Sense cannot be selected at the same time.
                         if (await chkModifier3.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
                         {
-                            _blnSkipRefresh = true;
-                            await chkModifier4.DoThreadSafeAsync(x =>
+                            Interlocked.Increment(ref _intSkipRefresh);
+                            try
                             {
-                                x.Checked = false;
-                                x.Enabled = false;
-                            }).ConfigureAwait(false);
-                            _blnSkipRefresh = false;
+                                await chkModifier4.DoThreadSafeAsync(x =>
+                                {
+                                    x.Checked = false;
+                                    x.Enabled = false;
+                                }).ConfigureAwait(false);
+                            }
+                            finally
+                            {
+                                Interlocked.Decrement(ref _intSkipRefresh);
+                            }
                         }
                         else
                         {
@@ -348,13 +415,19 @@ namespace Chummer
                         }
                         if (await chkModifier4.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
                         {
-                            _blnSkipRefresh = true;
-                            await chkModifier3.DoThreadSafeAsync(x =>
+                            Interlocked.Increment(ref _intSkipRefresh);
+                            try
                             {
-                                x.Checked = false;
-                                x.Enabled = false;
-                            }).ConfigureAwait(false);
-                            _blnSkipRefresh = false;
+                                await chkModifier3.DoThreadSafeAsync(x =>
+                                {
+                                    x.Checked = false;
+                                    x.Enabled = false;
+                                }).ConfigureAwait(false);
+                            }
+                            finally
+                            {
+                                Interlocked.Decrement(ref _intSkipRefresh);
+                            }
                         }
                         else
                         {
@@ -368,48 +441,66 @@ namespace Chummer
                         // Environmental, Mental, and Physical cannot be selected at the same time.
                         if (await chkModifier1.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
                         {
-                            _blnSkipRefresh = true;
-                            await chkModifier2.DoThreadSafeAsync(x =>
+                            Interlocked.Increment(ref _intSkipRefresh);
+                            try
                             {
-                                x.Checked = false;
-                                x.Enabled = false;
-                            }).ConfigureAwait(false);
-                            await chkModifier3.DoThreadSafeAsync(x =>
+                                await chkModifier2.DoThreadSafeAsync(x =>
+                                {
+                                    x.Checked = false;
+                                    x.Enabled = false;
+                                }).ConfigureAwait(false);
+                                await chkModifier3.DoThreadSafeAsync(x =>
+                                {
+                                    x.Checked = false;
+                                    x.Enabled = false;
+                                }).ConfigureAwait(false);
+                            }
+                            finally
                             {
-                                x.Checked = false;
-                                x.Enabled = false;
-                            }).ConfigureAwait(false);
-                            _blnSkipRefresh = false;
+                                Interlocked.Decrement(ref _intSkipRefresh);
+                            }
                         }
                         if (await chkModifier2.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
                         {
-                            _blnSkipRefresh = true;
-                            await chkModifier1.DoThreadSafeAsync(x =>
+                            Interlocked.Increment(ref _intSkipRefresh);
+                            try
                             {
-                                x.Checked = false;
-                                x.Enabled = false;
-                            }).ConfigureAwait(false);
-                            await chkModifier3.DoThreadSafeAsync(x =>
+                                await chkModifier1.DoThreadSafeAsync(x =>
+                                {
+                                    x.Checked = false;
+                                    x.Enabled = false;
+                                }).ConfigureAwait(false);
+                                await chkModifier3.DoThreadSafeAsync(x =>
+                                {
+                                    x.Checked = false;
+                                    x.Enabled = false;
+                                }).ConfigureAwait(false);
+                            }
+                            finally
                             {
-                                x.Checked = false;
-                                x.Enabled = false;
-                            }).ConfigureAwait(false);
-                            _blnSkipRefresh = false;
+                                Interlocked.Decrement(ref _intSkipRefresh);
+                            }
                         }
                         if (await chkModifier3.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
                         {
-                            _blnSkipRefresh = true;
-                            await chkModifier1.DoThreadSafeAsync(x =>
+                            Interlocked.Increment(ref _intSkipRefresh);
+                            try
                             {
-                                x.Checked = false;
-                                x.Enabled = false;
-                            }).ConfigureAwait(false);
-                            await chkModifier2.DoThreadSafeAsync(x =>
+                                await chkModifier1.DoThreadSafeAsync(x =>
+                                {
+                                    x.Checked = false;
+                                    x.Enabled = false;
+                                }).ConfigureAwait(false);
+                                await chkModifier2.DoThreadSafeAsync(x =>
+                                {
+                                    x.Checked = false;
+                                    x.Enabled = false;
+                                }).ConfigureAwait(false);
+                            }
+                            finally
                             {
-                                x.Checked = false;
-                                x.Enabled = false;
-                            }).ConfigureAwait(false);
-                            _blnSkipRefresh = false;
+                                Interlocked.Decrement(ref _intSkipRefresh);
+                            }
                         }
                         await chkModifier1.DoThreadSafeAsync(x => x.Enabled = !chkModifier2.DoThreadSafeFunc(y => y.Checked) && !chkModifier3.DoThreadSafeFunc(y => y.Checked)).ConfigureAwait(false);
                         await chkModifier2.DoThreadSafeAsync(x => x.Enabled = !chkModifier1.DoThreadSafeFunc(y => y.Checked) && !chkModifier3.DoThreadSafeFunc(y => y.Checked)).ConfigureAwait(false);
@@ -418,13 +509,19 @@ namespace Chummer
                         // Minor Change and Major Change cannot be selected at the same time.
                         if (await chkModifier4.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
                         {
-                            _blnSkipRefresh = true;
-                            await chkModifier5.DoThreadSafeAsync(x =>
+                            Interlocked.Increment(ref _intSkipRefresh);
+                            try
                             {
-                                x.Checked = false;
-                                x.Enabled = false;
-                            }).ConfigureAwait(false);
-                            _blnSkipRefresh = false;
+                                await chkModifier5.DoThreadSafeAsync(x =>
+                                {
+                                    x.Checked = false;
+                                    x.Enabled = false;
+                                }).ConfigureAwait(false);
+                            }
+                            finally
+                            {
+                                Interlocked.Decrement(ref _intSkipRefresh);
+                            }
                         }
                         else
                         {
@@ -432,13 +529,19 @@ namespace Chummer
                         }
                         if (await chkModifier5.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
                         {
-                            _blnSkipRefresh = true;
-                            await chkModifier4.DoThreadSafeAsync(x =>
+                            Interlocked.Increment(ref _intSkipRefresh);
+                            try
                             {
-                                x.Checked = false;
-                                x.Enabled = false;
-                            }).ConfigureAwait(false);
-                            _blnSkipRefresh = false;
+                                await chkModifier4.DoThreadSafeAsync(x =>
+                                {
+                                    x.Checked = false;
+                                    x.Enabled = false;
+                                }).ConfigureAwait(false);
+                            }
+                            finally
+                            {
+                                Interlocked.Decrement(ref _intSkipRefresh);
+                            }
                         }
                         else
                         {
@@ -545,7 +648,7 @@ namespace Chummer
                 x.Visible = false;
                 x.Enabled = true;
             }, token: token).ConfigureAwait(false);
-            
+
             switch (await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token).ConfigureAwait(false))
             {
                 case "Detection":

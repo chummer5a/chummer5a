@@ -35,7 +35,7 @@ namespace Chummer
         private readonly Character _objCharacter;
         private readonly Lifestyle _objLifestyle;
         private readonly XmlDocument _xmlDocument;
-        private bool _blnSkipRefresh = true;
+        private int _intSkipRefresh = 1;
 
         #region Control Events
 
@@ -524,7 +524,7 @@ namespace Chummer
             await RefreshDistrictList().ConfigureAwait(false);
             await RefreshBoroughList().ConfigureAwait(false);
 
-            _blnSkipRefresh = false;
+            Interlocked.Decrement(ref _intSkipRefresh);
             await RefreshSelectedLifestyle().ConfigureAwait(false);
         }
 
@@ -542,7 +542,7 @@ namespace Chummer
 
         private void chkTrustFund_Changed(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (_intSkipRefresh > 0)
                 return;
 
             if (chkTrustFund.Checked)
@@ -561,21 +561,21 @@ namespace Chummer
 
         private async void cboBaseLifestyle_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (_intSkipRefresh > 0)
                 return;
             await RefreshSelectedLifestyle().ConfigureAwait(false);
         }
 
         private async void cboCity_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (_intSkipRefresh > 0)
                 return;
             await RefreshDistrictList().ConfigureAwait(false);
         }
 
         private async void cboDistrict_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (_intSkipRefresh > 0)
                 return;
             await RefreshBoroughList().ConfigureAwait(false);
             _objLifestyle.District = await cboDistrict.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false) ?? string.Empty;
@@ -583,14 +583,14 @@ namespace Chummer
 
         private void cboBorough_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (_intSkipRefresh > 0)
                 return;
             _objLifestyle.Borough = cboBorough.SelectedValue?.ToString() ?? string.Empty;
         }
 
         private void nudRoommates_ValueChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (_intSkipRefresh > 0)
                 return;
 
             if (nudRoommates.Value == 0 && !chkPrimaryTenant.Checked)
@@ -668,7 +668,7 @@ namespace Chummer
                 tlpLifestyleQuality.Visible = true;
                 chkQualityUseLPCost.Enabled = !objQuality.Free && objQuality.CanBeFreeByLifestyle;
 
-                _blnSkipRefresh = true;
+                Interlocked.Increment(ref _intSkipRefresh);
                 try
                 {
                     chkQualityUseLPCost.Checked = chkQualityUseLPCost.Enabled
@@ -677,7 +677,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    _blnSkipRefresh = false;
+                    Interlocked.Decrement(ref _intSkipRefresh);
                 }
 
                 lblQualityLp.Text = objQuality.LP.ToString(GlobalSettings.CultureInfo);
@@ -694,7 +694,7 @@ namespace Chummer
 
         private void chkQualityContributesLP_CheckedChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (_intSkipRefresh > 0)
                 return;
             if (!(treLifestyleQualities.SelectedNode?.Tag is LifestyleQuality objQuality))
                 return;
@@ -791,7 +791,7 @@ namespace Chummer
 
         private async ValueTask RefreshSelectedLifestyle(CancellationToken token = default)
         {
-            if (_blnSkipRefresh)
+            if (_intSkipRefresh > 0)
                 return;
 
             _objLifestyle.BaseLifestyle = await cboBaseLifestyle.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false) ?? string.Empty;
@@ -849,9 +849,15 @@ namespace Chummer
                     await nudBonusLP.DoThreadSafeAsync(x =>
                     {
                         x.Enabled = false;
-                        _blnSkipRefresh = true;
-                        x.Value = intValue;
-                        _blnSkipRefresh = false;
+                        Interlocked.Increment(ref _intSkipRefresh);
+                        try
+                        {
+                            x.Value = intValue;
+                        }
+                        finally
+                        {
+                            Interlocked.Decrement(ref _intSkipRefresh);
+                        }
                     }, token).ConfigureAwait(false);
                 }
                 else

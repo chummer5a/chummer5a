@@ -394,16 +394,16 @@ namespace Chummer
             }
         }
 
-        private bool _blnSkipReopenUntilAllClear;
+        private int _intSkipReopenUntilAllClear;
         private ConcurrentBag<Character> _lstCharactersToReopen = new ConcurrentBag<Character>();
 
         private async void OpenCharacterEditorFormsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (Utils.IsUnitTest)
                 return;
+            Interlocked.Increment(ref _intSkipReopenUntilAllClear);
             try
             {
-                _blnSkipReopenUntilAllClear = true;
                 foreach (CharacterShared objOldForm in e.OldItems)
                 {
                     if (objOldForm is CharacterCreate objOldCreateForm && objOldCreateForm.IsReopenQueued)
@@ -411,14 +411,20 @@ namespace Chummer
                         _lstCharactersToReopen.Add(objOldCreateForm.CharacterObject);
                         continue;
                     }
+
                     Character objCharacter = objOldForm.CharacterObject;
                     if (objCharacter == null)
                         continue;
-                    if (await Program.OpenCharacters.ContainsAsync(objCharacter, _objGenericToken).ConfigureAwait(false))
+                    if (await Program.OpenCharacters.ContainsAsync(objCharacter, _objGenericToken)
+                                     .ConfigureAwait(false))
                     {
-                        if (await Program.OpenCharacters.AllAsync(x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter), token: _objGenericToken).ConfigureAwait(false)
-                            && Program.MainForm.OpenFormsWithCharacters.All(x => x == objOldForm || !x.CharacterObjects.Contains(objCharacter)))
-                            await Program.OpenCharacters.RemoveAsync(objCharacter, _objGenericToken).ConfigureAwait(false);
+                        if (await Program.OpenCharacters
+                                         .AllAsync(x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter),
+                                                   token: _objGenericToken).ConfigureAwait(false)
+                            && Program.MainForm.OpenFormsWithCharacters.All(
+                                x => x == objOldForm || !x.CharacterObjects.Contains(objCharacter)))
+                            await Program.OpenCharacters.RemoveAsync(objCharacter, _objGenericToken)
+                                         .ConfigureAwait(false);
                     }
                     else
                         await objCharacter.DisposeAsync().ConfigureAwait(false);
@@ -426,7 +432,13 @@ namespace Chummer
             }
             catch (OperationCanceledException)
             {
+                Interlocked.Decrement(ref _intSkipReopenUntilAllClear);
                 //swallow this
+            }
+            catch
+            {
+                Interlocked.Decrement(ref _intSkipReopenUntilAllClear);
+                throw;
             }
         }
 
@@ -1894,12 +1906,16 @@ namespace Chummer
 
             try
             {
-                if (_blnSkipReopenUntilAllClear)
+                if (Interlocked.Decrement(ref _intSkipReopenUntilAllClear) >= 0)
                 {
                     if (await OpenCharacterEditorForms.GetCountAsync(token).ConfigureAwait(false) != 0)
+                    {
+                        Interlocked.Increment(ref _intSkipReopenUntilAllClear);
                         return;
-                    _blnSkipReopenUntilAllClear = false;
+                    }
                 }
+                else
+                    Interlocked.Increment(ref _intSkipReopenUntilAllClear);
 
                 ConcurrentBag<Character> lstLocal = Interlocked.Exchange(ref _lstCharactersToReopen, new ConcurrentBag<Character>());
 

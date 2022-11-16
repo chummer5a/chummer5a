@@ -214,9 +214,9 @@ namespace Chummer.UI.Skills
                 tlpMain.ResumeLayout();
                 ResumeLayout(true);
             }
-            using (objSkill.LockObject.EnterWriteLock())
+            using (objSkill.LockObject.EnterWriteLock(objMyToken))
                 objSkill.PropertyChanged += Skill_PropertyChanged;
-            using (objSkill.CharacterObject.SkillsSection.LockObject.EnterWriteLock())
+            using (objSkill.CharacterObject.SkillsSection.LockObject.EnterWriteLock(objMyToken))
                 objSkill.CharacterObject.SkillsSection.PropertyChanged += OnSkillsSectionPropertyChanged;
             Interlocked.Decrement(ref _intUpdatingName);
             Interlocked.Decrement(ref _intUpdatingSpec);

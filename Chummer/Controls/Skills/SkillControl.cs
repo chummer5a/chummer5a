@@ -279,7 +279,7 @@ namespace Chummer.UI.Skills
 
             if (_objAttributeActive != null)
             {
-                using (_objAttributeActive.LockObject.EnterWriteLock())
+                using (_objAttributeActive.LockObject.EnterWriteLock(objMyToken))
                     _objAttributeActive.PropertyChanged += Attribute_PropertyChanged;
             }
 

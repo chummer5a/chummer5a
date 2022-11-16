@@ -409,7 +409,7 @@ namespace Chummer
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdCategoryFilter))
                     {
-                        foreach (string strItem in _lstCategory.Select(x => x.Value))
+                        foreach (string strItem in _lstCategory.Select(x => x.Value?.ToString()))
                         {
                             if (!string.IsNullOrEmpty(strItem))
                                 sbdCategoryFilter.Append("category = ").Append(strItem.CleanXPath()).Append(" or ");
@@ -619,69 +619,76 @@ namespace Chummer
                 return;
 
             _blnSkipUpdate = true;
-            if (_objSelectedArmor != null)
+            try
             {
-                bool blnCanBlackMarketDiscount = _setBlackMarketMaps.Contains(_objSelectedArmor.Category);
-                chkBlackMarketDiscount.Enabled = blnCanBlackMarketDiscount;
-                if (!chkBlackMarketDiscount.Checked)
+                if (_objSelectedArmor != null)
                 {
-                    chkBlackMarketDiscount.Checked = GlobalSettings.AssumeBlackMarket && blnCanBlackMarketDiscount;
-                }
-                else if (!blnCanBlackMarketDiscount)
-                {
-                    //Prevent chkBlackMarketDiscount from being checked if the category doesn't match.
-                    chkBlackMarketDiscount.Checked = false;
-                }
+                    bool blnCanBlackMarketDiscount = _setBlackMarketMaps.Contains(_objSelectedArmor.Category);
+                    chkBlackMarketDiscount.Enabled = blnCanBlackMarketDiscount;
+                    if (!chkBlackMarketDiscount.Checked)
+                    {
+                        chkBlackMarketDiscount.Checked = GlobalSettings.AssumeBlackMarket && blnCanBlackMarketDiscount;
+                    }
+                    else if (!blnCanBlackMarketDiscount)
+                    {
+                        //Prevent chkBlackMarketDiscount from being checked if the category doesn't match.
+                        chkBlackMarketDiscount.Checked = false;
+                    }
 
-                _objSelectedArmor.DiscountCost = chkBlackMarketDiscount.Checked;
-                _objSelectedArmor.Rating = nudRating.ValueAsInt;
+                    _objSelectedArmor.DiscountCost = chkBlackMarketDiscount.Checked;
+                    _objSelectedArmor.Rating = nudRating.ValueAsInt;
 
-                lblSource.Text = _objSelectedArmor.SourceDetail.ToString();
-                lblSource.SetToolTip(_objSelectedArmor.SourceDetail.LanguageBookTooltip);
-                lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
+                    lblSource.Text = _objSelectedArmor.SourceDetail.ToString();
+                    lblSource.SetToolTip(_objSelectedArmor.SourceDetail.LanguageBookTooltip);
+                    lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
 
-                lblArmorValueLabel.Visible = true;
-                lblArmorValue.Text = _objSelectedArmor.DisplayArmorValue;
-                lblCapacityLabel.Visible = true;
-                lblCapacity.Text = _objSelectedArmor.DisplayCapacity;
+                    lblArmorValueLabel.Visible = true;
+                    lblArmorValue.Text = _objSelectedArmor.DisplayArmorValue;
+                    lblCapacityLabel.Visible = true;
+                    lblCapacity.Text = _objSelectedArmor.DisplayCapacity;
 
-                lblCostLabel.Visible = true;
-                decimal decItemCost = 0;
-                if (chkFreeItem.Checked)
-                {
-                    lblCost.Text = (0.0m).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol");
+                    lblCostLabel.Visible = true;
+                    decimal decItemCost = 0;
+                    if (chkFreeItem.Checked)
+                    {
+                        lblCost.Text = (0.0m).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
+                                       + LanguageManager.GetString("String_NuyenSymbol");
+                    }
+                    else
+                    {
+                        lblCost.Text = _objSelectedArmor.DisplayCost(out decItemCost, true, nudMarkup.Value / 100.0m);
+                    }
+
+                    AvailabilityValue objTotalAvail = _objSelectedArmor.TotalAvailTuple();
+                    lblAvailLabel.Visible = true;
+                    lblTestLabel.Visible = true;
+                    lblAvail.Text = objTotalAvail.ToString();
+                    lblTest.Text = _objCharacter.AvailTest(decItemCost, objTotalAvail);
                 }
                 else
                 {
-                    lblCost.Text = _objSelectedArmor.DisplayCost(out decItemCost, true, nudMarkup.Value / 100.0m);
+                    chkBlackMarketDiscount.Enabled = false;
+                    chkBlackMarketDiscount.Checked = false;
+                    lblSourceLabel.Visible = false;
+                    lblSource.Text = string.Empty;
+                    lblSource.SetToolTip(string.Empty);
+
+                    lblArmorValueLabel.Visible = false;
+                    lblArmorValue.Text = string.Empty;
+                    lblCapacityLabel.Visible = false;
+                    lblCapacity.Text = string.Empty;
+                    lblCostLabel.Visible = false;
+                    lblCost.Text = string.Empty;
+                    lblAvailLabel.Visible = false;
+                    lblTestLabel.Visible = false;
+                    lblAvail.Text = string.Empty;
+                    lblTest.Text = string.Empty;
                 }
-
-                AvailabilityValue objTotalAvail = _objSelectedArmor.TotalAvailTuple();
-                lblAvailLabel.Visible = true;
-                lblTestLabel.Visible = true;
-                lblAvail.Text = objTotalAvail.ToString();
-                lblTest.Text = _objCharacter.AvailTest(decItemCost, objTotalAvail);
             }
-            else
+            finally
             {
-                chkBlackMarketDiscount.Enabled = false;
-                chkBlackMarketDiscount.Checked = false;
-                lblSourceLabel.Visible = false;
-                lblSource.Text = string.Empty;
-                lblSource.SetToolTip(string.Empty);
-
-                lblArmorValueLabel.Visible = false;
-                lblArmorValue.Text = string.Empty;
-                lblCapacityLabel.Visible = false;
-                lblCapacity.Text = string.Empty;
-                lblCostLabel.Visible = false;
-                lblCost.Text = string.Empty;
-                lblAvailLabel.Visible = false;
-                lblTestLabel.Visible = false;
-                lblAvail.Text = string.Empty;
-                lblTest.Text = string.Empty;
+                _blnSkipUpdate = false;
             }
-            _blnSkipUpdate = false;
         }
 
         private async void OpenSourceFromLabel(object sender, EventArgs e)

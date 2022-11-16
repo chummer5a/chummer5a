@@ -55,8 +55,7 @@ namespace Chummer
 
         public SelectWeapon(Character objCharacter)
         {
-            if (objCharacter == null)
-                throw new ArgumentNullException(nameof(objCharacter));
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             Disposed += (sender, args) =>
             {
                 Utils.ListItemListPool.Return(ref _lstCategory);
@@ -68,7 +67,6 @@ namespace Chummer
             tabControl.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objCharacter = objCharacter;
             // Load the Weapon information.
             _objXmlDocument = _objCharacter.LoadData("weapons.xml");
             _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(_objCharacter.LoadDataXPath("weapons.xml").SelectSingleNodeAndCacheExpression("/chummer")));
@@ -182,113 +180,167 @@ namespace Chummer
             if (_blnLoading || _blnSkipUpdate)
                 return;
             _blnSkipUpdate = true;
-            await this.DoThreadSafeAsync(x => x.SuspendLayout(), token: token).ConfigureAwait(false);
             try
             {
-                if (_objSelectedWeapon != null)
+                await this.DoThreadSafeAsync(x => x.SuspendLayout(), token: token).ConfigureAwait(false);
+                try
                 {
-                    bool blnCanBlackMarketDiscount = _setBlackMarketMaps.Contains(_objSelectedWeapon.Category);
-                    await chkBlackMarketDiscount.DoThreadSafeAsync(x =>
+                    if (_objSelectedWeapon != null)
                     {
-                        x.Enabled = blnCanBlackMarketDiscount;
-                        if (!x.Checked)
+                        bool blnCanBlackMarketDiscount = _setBlackMarketMaps.Contains(_objSelectedWeapon.Category);
+                        await chkBlackMarketDiscount.DoThreadSafeAsync(x =>
                         {
-                            x.Checked = GlobalSettings.AssumeBlackMarket && blnCanBlackMarketDiscount;
-                        }
-                        else if (!blnCanBlackMarketDiscount)
+                            x.Enabled = blnCanBlackMarketDiscount;
+                            if (!x.Checked)
+                            {
+                                x.Checked = GlobalSettings.AssumeBlackMarket && blnCanBlackMarketDiscount;
+                            }
+                            else if (!blnCanBlackMarketDiscount)
+                            {
+                                //Prevent chkBlackMarketDiscount from being checked if the category doesn't match.
+                                x.Checked = false;
+                            }
+
+                            _objSelectedWeapon.DiscountCost = x.Checked;
+                        }, token: token).ConfigureAwait(false);
+
+                        string strReach = _objSelectedWeapon.TotalReach.ToString(GlobalSettings.CultureInfo);
+                        await lblWeaponReach.DoThreadSafeAsync(x => x.Text = strReach, token: token)
+                                            .ConfigureAwait(false);
+                        await lblWeaponReachLabel
+                              .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strReach), token: token)
+                              .ConfigureAwait(false);
+                        string strDamage = _objSelectedWeapon.DisplayDamage;
+                        await lblWeaponDamage.DoThreadSafeAsync(x => x.Text = strDamage, token: token)
+                                             .ConfigureAwait(false);
+                        await lblWeaponDamageLabel
+                              .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strDamage), token: token)
+                              .ConfigureAwait(false);
+                        string strAP = _objSelectedWeapon.DisplayTotalAP;
+                        await lblWeaponAP.DoThreadSafeAsync(x => x.Text = strAP, token: token).ConfigureAwait(false);
+                        await lblWeaponAPLabel
+                              .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAP), token: token)
+                              .ConfigureAwait(false);
+                        string strMode = _objSelectedWeapon.DisplayMode;
+                        await lblWeaponMode.DoThreadSafeAsync(x => x.Text = strMode, token: token)
+                                           .ConfigureAwait(false);
+                        await lblWeaponModeLabel
+                              .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strMode), token: token)
+                              .ConfigureAwait(false);
+                        string strRC = _objSelectedWeapon.DisplayTotalRC;
+                        await lblWeaponRC.DoThreadSafeAsync(x => x.Text = strRC, token: token).ConfigureAwait(false);
+                        await lblWeaponRC.SetToolTipAsync(_objSelectedWeapon.RCToolTip, token: token)
+                                         .ConfigureAwait(false);
+                        await lblWeaponRCLabel
+                              .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strRC), token: token)
+                              .ConfigureAwait(false);
+                        string strAmmo = _objSelectedWeapon.DisplayAmmo;
+                        await lblWeaponAmmo.DoThreadSafeAsync(x => x.Text = strAmmo, token: token)
+                                           .ConfigureAwait(false);
+                        await lblWeaponAmmoLabel
+                              .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAmmo), token: token)
+                              .ConfigureAwait(false);
+                        string strAccuracy = _objSelectedWeapon.DisplayAccuracy;
+                        await lblWeaponAccuracy.DoThreadSafeAsync(x => x.Text = strAccuracy, token: token)
+                                               .ConfigureAwait(false);
+                        await lblWeaponAccuracyLabel
+                              .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAccuracy), token: token)
+                              .ConfigureAwait(false);
+                        string strConceal = _objSelectedWeapon.DisplayConcealability;
+                        await lblWeaponConceal.DoThreadSafeAsync(x => x.Text = strConceal, token: token)
+                                              .ConfigureAwait(false);
+                        await lblWeaponConcealLabel
+                              .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strConceal), token: token)
+                              .ConfigureAwait(false);
+
+                        decimal decItemCost = 0;
+                        string strWeaponCost;
+                        if (await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
                         {
-                            //Prevent chkBlackMarketDiscount from being checked if the category doesn't match.
-                            x.Checked = false;
+                            strWeaponCost
+                                = (0.0m).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
+                                  + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token)
+                                                         .ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            strWeaponCost = _objSelectedWeapon.DisplayCost(
+                                out decItemCost,
+                                await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false)
+                                / 100.0m);
                         }
 
-                        _objSelectedWeapon.DiscountCost = x.Checked;
-                    }, token: token).ConfigureAwait(false);
+                        await lblWeaponCost.DoThreadSafeAsync(x => x.Text = strWeaponCost, token: token)
+                                           .ConfigureAwait(false);
+                        await lblWeaponCostLabel
+                              .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strWeaponCost), token: token)
+                              .ConfigureAwait(false);
 
-                    string strReach = _objSelectedWeapon.TotalReach.ToString(GlobalSettings.CultureInfo);
-                    await lblWeaponReach.DoThreadSafeAsync(x => x.Text = strReach, token: token).ConfigureAwait(false);
-                    await lblWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strReach), token: token).ConfigureAwait(false);
-                    string strDamage = _objSelectedWeapon.DisplayDamage;
-                    await lblWeaponDamage.DoThreadSafeAsync(x => x.Text = strDamage, token: token).ConfigureAwait(false);
-                    await lblWeaponDamageLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strDamage), token: token).ConfigureAwait(false);
-                    string strAP = _objSelectedWeapon.DisplayTotalAP;
-                    await lblWeaponAP.DoThreadSafeAsync(x => x.Text = strAP, token: token).ConfigureAwait(false);
-                    await lblWeaponAPLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAP), token: token).ConfigureAwait(false);
-                    string strMode = _objSelectedWeapon.DisplayMode;
-                    await lblWeaponMode.DoThreadSafeAsync(x => x.Text = strMode, token: token).ConfigureAwait(false);
-                    await lblWeaponModeLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strMode), token: token).ConfigureAwait(false);
-                    string strRC = _objSelectedWeapon.DisplayTotalRC;
-                    await lblWeaponRC.DoThreadSafeAsync(x => x.Text = strRC, token: token).ConfigureAwait(false);
-                    await lblWeaponRC.SetToolTipAsync(_objSelectedWeapon.RCToolTip, token: token).ConfigureAwait(false);
-                    await lblWeaponRCLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strRC), token: token).ConfigureAwait(false);
-                    string strAmmo = _objSelectedWeapon.DisplayAmmo;
-                    await lblWeaponAmmo.DoThreadSafeAsync(x => x.Text = strAmmo, token: token).ConfigureAwait(false);
-                    await lblWeaponAmmoLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAmmo), token: token).ConfigureAwait(false);
-                    string strAccuracy = _objSelectedWeapon.DisplayAccuracy;
-                    await lblWeaponAccuracy.DoThreadSafeAsync(x => x.Text = strAccuracy, token: token).ConfigureAwait(false);
-                    await lblWeaponAccuracyLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAccuracy), token: token).ConfigureAwait(false);
-                    string strConceal = _objSelectedWeapon.DisplayConcealability;
-                    await lblWeaponConceal.DoThreadSafeAsync(x => x.Text = strConceal, token: token).ConfigureAwait(false);
-                    await lblWeaponConcealLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strConceal), token: token).ConfigureAwait(false);
+                        AvailabilityValue objTotalAvail = _objSelectedWeapon.TotalAvailTuple();
+                        string strAvail = objTotalAvail.ToString();
+                        await lblWeaponAvail.DoThreadSafeAsync(x => x.Text = strAvail, token: token)
+                                            .ConfigureAwait(false);
+                        await lblWeaponAvailLabel
+                              .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAvail), token: token)
+                              .ConfigureAwait(false);
+                        string strTest = await _objCharacter.AvailTestAsync(decItemCost, objTotalAvail, token)
+                                                            .ConfigureAwait(false);
+                        await lblTest.DoThreadSafeAsync(x => x.Text = strTest, token: token).ConfigureAwait(false);
+                        await lblTestLabel
+                              .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strTest), token: token)
+                              .ConfigureAwait(false);
+                        await _objSelectedWeapon.SetSourceDetailAsync(lblSource, token: token).ConfigureAwait(false);
+                        bool blnShowSource = !string.IsNullOrEmpty(
+                            await lblSource.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false));
+                        await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = blnShowSource, token: token)
+                                            .ConfigureAwait(false);
 
-                    decimal decItemCost = 0;
-                    string strWeaponCost;
-                    if (await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
-                    {
-                        strWeaponCost = (0.0m).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
+                        string strIncludedAccessories;
+                        // Build a list of included Accessories and Modifications that come with the weapon.
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdAccessories))
+                        {
+                            foreach (WeaponAccessory objAccessory in _objSelectedWeapon.WeaponAccessories)
+                            {
+                                sbdAccessories.AppendLine(
+                                    await objAccessory.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
+                            }
+
+                            if (sbdAccessories.Length > 0)
+                                sbdAccessories.Length -= Environment.NewLine.Length;
+
+                            strIncludedAccessories = sbdAccessories.Length == 0
+                                ? await LanguageManager.GetStringAsync("String_None", token: token)
+                                                       .ConfigureAwait(false)
+                                : sbdAccessories.ToString();
+                        }
+
+                        await lblIncludedAccessories
+                              .DoThreadSafeAsync(x => x.Text = strIncludedAccessories, token: token)
+                              .ConfigureAwait(false);
+                        await tlpRight.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
+                        await gpbIncludedAccessories
+                              .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strIncludedAccessories),
+                                                 token: token).ConfigureAwait(false);
                     }
                     else
                     {
-                        strWeaponCost = _objSelectedWeapon.DisplayCost(out decItemCost, await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m);
+                        await chkBlackMarketDiscount.DoThreadSafeAsync(x => x.Checked = false, token: token)
+                                                    .ConfigureAwait(false);
+                        await tlpRight.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
+                        await gpbIncludedAccessories.DoThreadSafeAsync(x => x.Visible = false, token: token)
+                                                    .ConfigureAwait(false);
                     }
-
-                    await lblWeaponCost.DoThreadSafeAsync(x => x.Text = strWeaponCost, token: token).ConfigureAwait(false);
-                    await lblWeaponCostLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strWeaponCost), token: token).ConfigureAwait(false);
-
-                    AvailabilityValue objTotalAvail = _objSelectedWeapon.TotalAvailTuple();
-                    string strAvail = objTotalAvail.ToString();
-                    await lblWeaponAvail.DoThreadSafeAsync(x => x.Text = strAvail, token: token).ConfigureAwait(false);
-                    await lblWeaponAvailLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAvail), token: token).ConfigureAwait(false);
-                    string strTest = await _objCharacter.AvailTestAsync(decItemCost, objTotalAvail, token).ConfigureAwait(false);
-                    await lblTest.DoThreadSafeAsync(x => x.Text = strTest, token: token).ConfigureAwait(false);
-                    await lblTestLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strTest), token: token).ConfigureAwait(false);
-                    await _objSelectedWeapon.SetSourceDetailAsync(lblSource, token: token).ConfigureAwait(false);
-                    bool blnShowSource = !string.IsNullOrEmpty(await lblSource.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false));
-                    await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = blnShowSource, token: token).ConfigureAwait(false);
-
-                    string strIncludedAccessories;
-                    // Build a list of included Accessories and Modifications that come with the weapon.
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                  out StringBuilder sbdAccessories))
-                    {
-                        foreach (WeaponAccessory objAccessory in _objSelectedWeapon.WeaponAccessories)
-                        {
-                            sbdAccessories.AppendLine(await objAccessory.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
-                        }
-
-                        if (sbdAccessories.Length > 0)
-                            sbdAccessories.Length -= Environment.NewLine.Length;
-
-                        strIncludedAccessories = sbdAccessories.Length == 0
-                            ? await LanguageManager.GetStringAsync("String_None", token: token).ConfigureAwait(false)
-                            : sbdAccessories.ToString();
-                    }
-
-                    await lblIncludedAccessories.DoThreadSafeAsync(x => x.Text = strIncludedAccessories, token: token).ConfigureAwait(false);
-                    await tlpRight.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
-                    await gpbIncludedAccessories.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strIncludedAccessories), token: token).ConfigureAwait(false);
                 }
-                else
+                finally
                 {
-                    await chkBlackMarketDiscount.DoThreadSafeAsync(x => x.Checked = false, token: token).ConfigureAwait(false);
-                    await tlpRight.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
-                    await gpbIncludedAccessories.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
+                    await this.DoThreadSafeAsync(x => x.ResumeLayout(), token: token).ConfigureAwait(false);
                 }
             }
             finally
             {
-                await this.DoThreadSafeAsync(x => x.ResumeLayout(), token: token).ConfigureAwait(false);
+                _blnSkipUpdate = false;
             }
-            _blnSkipUpdate = false;
         }
 
         private async ValueTask<bool> BuildWeaponList(XmlNodeList objNodeList, bool blnForCategories = false, CancellationToken token = default)

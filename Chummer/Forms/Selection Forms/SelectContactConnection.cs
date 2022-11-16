@@ -140,14 +140,36 @@ namespace Chummer
 
             // Select the appropriate field values.
             _blnSkipUpdate = true;
-            await cboMembership.DoThreadSafeAsync(x => x.SelectedIndex = x.FindString('+' + _intMembership.ToString(GlobalSettings.InvariantCultureInfo))).ConfigureAwait(false);
-            await cboAreaOfInfluence.DoThreadSafeAsync(x => x.SelectedIndex = x.FindString('+' + _intAreaOfInfluence.ToString(GlobalSettings.InvariantCultureInfo))).ConfigureAwait(false);
-            await cboMagicalResources.DoThreadSafeAsync(x => x.SelectedIndex = x.FindString('+' + _intMagicalResources.ToString(GlobalSettings.InvariantCultureInfo))).ConfigureAwait(false);
-            await cboMatrixResources.DoThreadSafeAsync(x => x.SelectedIndex = x.FindString('+' + _intMatrixResources.ToString(GlobalSettings.InvariantCultureInfo))).ConfigureAwait(false);
-            await txtGroupName.DoThreadSafeAsync(x => x.Text = _strGroupName).ConfigureAwait(false);
-            await cmdChangeColor.DoThreadSafeAsync(x => x.BackColor = _objColor).ConfigureAwait(false);
-            await chkFreeContact.DoThreadSafeAsync(x => x.Checked = _blnFree).ConfigureAwait(false);
-            _blnSkipUpdate = false;
+            try
+            {
+                await cboMembership
+                      .DoThreadSafeAsync(x => x.SelectedIndex
+                                             = x.FindString(
+                                                 '+' + _intMembership.ToString(GlobalSettings.InvariantCultureInfo)))
+                      .ConfigureAwait(false);
+                await cboAreaOfInfluence
+                      .DoThreadSafeAsync(x => x.SelectedIndex
+                                             = x.FindString(
+                                                 '+' + _intAreaOfInfluence.ToString(
+                                                     GlobalSettings.InvariantCultureInfo))).ConfigureAwait(false);
+                await cboMagicalResources
+                      .DoThreadSafeAsync(x => x.SelectedIndex
+                                             = x.FindString(
+                                                 '+' + _intMagicalResources.ToString(
+                                                     GlobalSettings.InvariantCultureInfo))).ConfigureAwait(false);
+                await cboMatrixResources
+                      .DoThreadSafeAsync(x => x.SelectedIndex
+                                             = x.FindString(
+                                                 '+' + _intMatrixResources.ToString(
+                                                     GlobalSettings.InvariantCultureInfo))).ConfigureAwait(false);
+                await txtGroupName.DoThreadSafeAsync(x => x.Text = _strGroupName).ConfigureAwait(false);
+                await cmdChangeColor.DoThreadSafeAsync(x => x.BackColor = _objColor).ConfigureAwait(false);
+                await chkFreeContact.DoThreadSafeAsync(x => x.Checked = _blnFree).ConfigureAwait(false);
+            }
+            finally
+            {
+                _blnSkipUpdate = false;
+            }
 
             await lblTotalConnectionModifier.DoThreadSafeAsync(x => x.Text = (_intMembership + _intAreaOfInfluence + _intMagicalResources + _intMatrixResources).ToString(GlobalSettings.CultureInfo)).ConfigureAwait(false);
         }

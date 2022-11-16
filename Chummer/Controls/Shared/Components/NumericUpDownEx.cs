@@ -30,6 +30,7 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -79,7 +80,7 @@ namespace Chummer
             DpiChangedAfterParent += OnMarginChanged;
         }
 
-        private bool _blnSkipOnMarginChanged;
+        private int _intSkipOnMarginChanged;
         private float _fltMyDpiX = 96.0f;
         private float _fltMyDpiY = 96.0f;
         private Padding _objSavedMargins;
@@ -87,7 +88,7 @@ namespace Chummer
 
         private void OnMarginChanged(object sender, EventArgs e)
         {
-            if (_blnSkipOnMarginChanged)
+            if (_intSkipOnMarginChanged > 0)
                 return;
             try
             {
@@ -99,7 +100,7 @@ namespace Chummer
                     {
                         if (_blnMarginsSaved)
                         {
-                            _blnSkipOnMarginChanged = true;
+                            Interlocked.Increment(ref _intSkipOnMarginChanged);
                             Margin = _objSavedMargins;
                         }
                         return;
@@ -118,14 +119,14 @@ namespace Chummer
                         (Margin.Bottom * _fltMyDpiY / fltOldDpiY).StandardRound());
                     if (objNewMargins.Equals(Margin))
                         return;
-                    _blnSkipOnMarginChanged = true;
+                    Interlocked.Increment(ref _intSkipOnMarginChanged);
                     Margin = objNewMargins;
                 }
             }
             finally
             {
                 _objSavedMargins = Margin;
-                _blnSkipOnMarginChanged = false;
+                Interlocked.Decrement(ref _intSkipOnMarginChanged);
                 _blnMarginsSaved = true;
             }
         }
