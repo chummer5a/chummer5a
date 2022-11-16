@@ -19195,19 +19195,28 @@ namespace Chummer
                         await flpArmorValue.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
                         await lblArmorValue.DoThreadSafeAsync(x => x.Text = objArmor.DisplayArmorValue, token)
                                            .ConfigureAwait(false);
-                        await cmdArmorIncrease.DoThreadSafeAsync(x =>
+                        if (CharacterObjectSettings.ArmorDegradation)
                         {
-                            x.Visible = true;
-                            x.Enabled = objArmor.ArmorDamage < objArmor.TotalArmor &&
-                                        objArmor.ArmorDamage < (string.IsNullOrEmpty(objArmor.ArmorOverrideValue)
-                                            ? int.MaxValue
-                                            : objArmor.TotalOverrideArmor);
-                        }, token).ConfigureAwait(false);
-                        await cmdArmorDecrease.DoThreadSafeAsync(x =>
-                        {
-                            x.Visible = true;
-                            x.Enabled = objArmor.ArmorDamage > 0;
-                        }, token).ConfigureAwait(false);
+                            bool blnArmorIncreaseEnabled = objArmor.ArmorDamage > 0;
+                            bool blnArmorDecreaseEnabled = objArmor.ArmorDamage < objArmor.TotalArmor &&
+                                                           objArmor.ArmorDamage
+                                                           < (string.IsNullOrEmpty(objArmor.ArmorOverrideValue)
+                                                               ? int.MaxValue
+                                                               : objArmor.TotalOverrideArmor);
+                            await cmdArmorIncrease.DoThreadSafeAsync(x =>
+                                                  {
+                                                      x.Visible = true;
+                                                      x.Enabled = blnArmorIncreaseEnabled;
+                                                  }, token)
+                                                  .ConfigureAwait(false);
+                            await cmdArmorDecrease.DoThreadSafeAsync(x =>
+                                                  {
+                                                      x.Visible = true;
+                                                      x.Enabled = blnArmorDecreaseEnabled;
+                                                  }, token)
+                                                  .ConfigureAwait(false);
+                        }
+
                         await lblArmorAvail.DoThreadSafeAsync(x => x.Text = objArmor.DisplayTotalAvail, token)
                                            .ConfigureAwait(false);
                         await lblArmorCapacity.DoThreadSafeAsync(x => x.Text = objArmor.DisplayCapacity, token)
