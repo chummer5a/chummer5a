@@ -1047,11 +1047,17 @@ namespace Chummer
                 {
                     // Add a "1" to qualities that have levels, but for which we are only at level 1
                     XPathNavigator xmlDataNode = this.GetNodeXPath(strLanguage);
-                    XPathNavigator xmlMyLimitNode = xmlDataNode?.SelectSingleNodeAndCacheExpression("limit");
-                    if (xmlMyLimitNode != null && int.TryParse(xmlMyLimitNode.Value, out int _)
-                                               && xmlDataNode.SelectSingleNodeAndCacheExpression("nolevels") != null)
+                    if (xmlDataNode != null && xmlDataNode.SelectSingleNodeAndCacheExpression("nolevels") == null)
                     {
-                        strReturn += strSpace + intLevels.ToString(objCulture);
+                        XPathNavigator xmlMyLimitNode = null;
+                        if (!_objCharacter.Created)
+                            xmlMyLimitNode = xmlDataNode.SelectSingleNodeAndCacheExpression("chargenlimit");
+                        if (xmlMyLimitNode == null)
+                            xmlMyLimitNode = xmlDataNode.SelectSingleNodeAndCacheExpression("limit");
+                        if (xmlMyLimitNode != null && int.TryParse(xmlMyLimitNode.Value, out int _))
+                        {
+                            strReturn += strSpace + intLevels.ToString(objCulture);
+                        }
                     }
                 }
 
@@ -1089,15 +1095,16 @@ namespace Chummer
                     // Add a "1" to qualities that have levels, but for which we are only at level 1
                     XPathNavigator xmlDataNode
                         = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
-                    if (xmlDataNode != null)
+                    if (xmlDataNode != null && await xmlDataNode
+                                                     .SelectSingleNodeAndCacheExpressionAsync("nolevels", token)
+                                                     .ConfigureAwait(false) == null)
                     {
-                        XPathNavigator xmlMyLimitNode = await xmlDataNode
-                                                              .SelectSingleNodeAndCacheExpressionAsync("limit", token)
-                                                              .ConfigureAwait(false);
-                        if (xmlMyLimitNode != null && int.TryParse(xmlMyLimitNode.Value, out int _)
-                                                   && await xmlDataNode
-                                                            .SelectSingleNodeAndCacheExpressionAsync("nolevels", token)
-                                                            .ConfigureAwait(false) != null)
+                        XPathNavigator xmlMyLimitNode = null;
+                        if (!_objCharacter.Created)
+                            xmlMyLimitNode = await xmlDataNode.SelectSingleNodeAndCacheExpressionAsync("chargenlimit", token).ConfigureAwait(false);
+                        if (xmlMyLimitNode == null)
+                            xmlMyLimitNode = await xmlDataNode.SelectSingleNodeAndCacheExpressionAsync("limit", token).ConfigureAwait(false);
+                        if (xmlMyLimitNode != null && int.TryParse(xmlMyLimitNode.Value, out int _))
                         {
                             strReturn += strSpace + intLevels.ToString(objCulture);
                         }
