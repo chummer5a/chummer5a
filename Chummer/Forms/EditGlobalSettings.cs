@@ -2477,7 +2477,7 @@ namespace Chummer
                             y.Offset = objInfo.Offset;
                             objInfo.Dispose();
                             return y;
-                        }, token);
+                        }, token).ConfigureAwait(false);
                     }
 
                     intCounter = 0;
@@ -2497,7 +2497,7 @@ namespace Chummer
                         y.Offset = objInfo.Offset;
                         objInfo.Dispose();
                         return y;
-                    }, token);
+                    }, token).ConfigureAwait(false);
                 }
 
                 async Task<SourcebookInfo> GetSourcebookInfo(string strBookFile)

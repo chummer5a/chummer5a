@@ -251,8 +251,8 @@ namespace Chummer
 
             foreach (DiceRollerListViewItem objItem in _lstResults)
             {
-                await objItem.SetTargetAsync(intTarget);
-                await objItem.SetGlitchMinAsync(intGlitchMin);
+                await objItem.SetTargetAsync(intTarget).ConfigureAwait(false);
+                await objItem.SetGlitchMinAsync(intGlitchMin).ConfigureAwait(false);
             }
 
             // Remove everything that is not a hit

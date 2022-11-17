@@ -5145,11 +5145,13 @@ namespace Chummer.Backend.Equipment
 
         public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            // ReSharper disable once MethodHasAsyncOverload
+            using (blnSync ? EnterReadLock.Enter(LockObject, token) : await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage &&
-                    !GlobalSettings.LiveCustomData)
-                    return _objCachedMyXmlNode;
+                XmlNode objReturn = _objCachedMyXmlNode;
+                if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
+                                      && !GlobalSettings.LiveCustomData)
+                    return objReturn;
                 string strDoc = "cyberware.xml";
                 string strPath = "/chummer/cyberwares/cyberware";
                 if (SourceType == Improvement.ImprovementSource.Bioware)
@@ -5162,20 +5164,21 @@ namespace Chummer.Backend.Equipment
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadData(strDoc, strLanguage, token: token)
                     : await _objCharacter.LoadDataAsync(strDoc, strLanguage, token: token).ConfigureAwait(false);
-                _objCachedMyXmlNode = objDoc.SelectSingleNode(strPath + (SourceID == Guid.Empty
+                objReturn = objDoc.SelectSingleNode(strPath + (SourceID == Guid.Empty
                                                                   ? "[name = " + Name.CleanXPath() + ']'
                                                                   : "[id = " + SourceIDString.CleanXPath()
                                                                              + " or id = " + SourceIDString
                                                                                  .ToUpperInvariant().CleanXPath()
                                                                              + ']'));
-                if (_objCachedMyXmlNode == null && SourceID != Guid.Empty)
+                if (objReturn == null && SourceID != Guid.Empty)
                 {
-                    _objCachedMyXmlNode = objDoc.SelectSingleNode(strPath + "[name = " + Name.CleanXPath() + ']');
-                    _objCachedMyXmlNode?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                    objReturn = objDoc.SelectSingleNode(strPath + "[name = " + Name.CleanXPath() + ']');
+                    objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
 
+                _objCachedMyXmlNode = objReturn;
                 _strCachedXmlNodeLanguage = strLanguage;
-                return _objCachedMyXmlNode;
+                return objReturn;
             }
         }
 
@@ -5184,11 +5187,13 @@ namespace Chummer.Backend.Equipment
 
         public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            // ReSharper disable once MethodHasAsyncOverload
+            using (blnSync ? EnterReadLock.Enter(LockObject, token) : await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
-                                                  && !GlobalSettings.LiveCustomData)
-                    return _objCachedMyXPathNode;
+                XPathNavigator objReturn = _objCachedMyXPathNode;
+                if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
+                                      && !GlobalSettings.LiveCustomData)
+                    return objReturn;
                 string strDoc = "cyberware.xml";
                 string strPath = "/chummer/cyberwares/cyberware";
                 if (SourceType == Improvement.ImprovementSource.Bioware)
@@ -5201,16 +5206,16 @@ namespace Chummer.Backend.Equipment
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadDataXPath(strDoc, strLanguage, token: token)
                     : await _objCharacter.LoadDataXPathAsync(strDoc, strLanguage, token: token).ConfigureAwait(false);
-                _objCachedMyXPathNode = objDoc.SelectSingleNode(strPath + (SourceID == Guid.Empty
-                                                                    ? "[name = " + Name.CleanXPath() + ']'
-                                                                    : "[id = " + SourceIDString.CleanXPath()
-                                                                               + " or id = " + SourceIDString
-                                                                                   .ToUpperInvariant().CleanXPath()
-                                                                               + ']'));
-                if (_objCachedMyXPathNode == null && SourceID != Guid.Empty)
+                objReturn = objDoc.SelectSingleNode(strPath + (SourceID == Guid.Empty
+                                                                       ? "[name = " + Name.CleanXPath() + ']'
+                                                                       : "[id = " + SourceIDString.CleanXPath()
+                                                                       + " or id = " + SourceIDString
+                                                                           .ToUpperInvariant().CleanXPath()
+                                                                       + ']'));
+                if (objReturn == null && SourceID != Guid.Empty)
                 {
-                    _objCachedMyXPathNode = objDoc.SelectSingleNode(strPath + "[name = " + Name.CleanXPath() + ']');
-                    _objCachedMyXPathNode?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                    objReturn = objDoc.SelectSingleNode(strPath + "[name = " + Name.CleanXPath() + ']');
+                    objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
 
                 _strCachedXPathNodeLanguage = strLanguage;

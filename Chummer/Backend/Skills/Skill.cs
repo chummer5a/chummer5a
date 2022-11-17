@@ -1051,18 +1051,16 @@ namespace Chummer.Backend.Skills
                             || !CharacterObject.Settings.UsePointsOnBrokenGroups))
                         return;
 
+                    //Calculate how far above maximum we are.
+                    int intOverMax = value + Karma - RatingMaximum + RatingModifiers(Attribute);
                     using (LockObject.EnterWriteLock())
                     {
-                        //Calculate how far above maximum we are.
-                        int intOverMax = value + Karma - RatingMaximum + RatingModifiers(Attribute);
-
                         if (intOverMax > 0) //Too much
                         {
                             //Get the smaller value, how far above, how much we can reduce
                             int intMax = Math.Min(intOverMax, KarmaPoints);
-
-                            KarmaPoints -= intMax; //reduce both by that amount
                             intOverMax -= intMax;
+                            KarmaPoints -= intMax; //reduce both by that amount
                         }
 
                         value -= Math.Max(0, intOverMax); //reduce by 0 or points over.
@@ -1118,13 +1116,12 @@ namespace Chummer.Backend.Skills
                         || !CharacterObject.Settings.UsePointsOnBrokenGroups))
                     return;
 
+                //Calculate how far above maximum we are.
+                int intOverMax = value + await GetKarmaAsync(token).ConfigureAwait(false) - await GetRatingMaximumAsync(token).ConfigureAwait(false)
+                                 + await RatingModifiersAsync(Attribute, token: token).ConfigureAwait(false);
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
-                    //Calculate how far above maximum we are.
-                    int intOverMax = value + await GetKarmaAsync(token).ConfigureAwait(false) - await GetRatingMaximumAsync(token).ConfigureAwait(false)
-                                     + await RatingModifiersAsync(Attribute, token: token).ConfigureAwait(false);
-
                     if (intOverMax > 0) //Too much
                     {
                         int intKarmaPoints = await GetKarmaPointsAsync(token).ConfigureAwait(false);
@@ -1170,24 +1167,25 @@ namespace Chummer.Backend.Skills
             }
             set
             {
-                using (LockObject.EnterWriteLock())
+                using (EnterReadLock.Enter(LockObject))
                 {
                     //Calculate how far above maximum we are.
                     int intOverMax = value + Base - RatingMaximum + RatingModifiers(Attribute);
-
-                    if (intOverMax > 0) //Too much
+                    using (LockObject.EnterWriteLock())
                     {
-                        //Get the smaller value, how far above, how much we can reduce
-                        int intMax = Math.Min(intOverMax, BasePoints);
+                        if (intOverMax > 0) //Too much
+                        {
+                            //Get the smaller value, how far above, how much we can reduce
+                            int intMax = Math.Min(intOverMax, BasePoints);
+                            intOverMax -= intMax;
+                            BasePoints -= intMax; //reduce both by that amount
+                        }
 
-                        BasePoints -= intMax; //reduce both by that amount
-                        intOverMax -= intMax;
+                        value -= Math.Max(0, intOverMax); //reduce by 0 or points over.
+
+                        //Handle free levels, don,t go below 0
+                        KarmaPoints = Math.Max(0, value - (FreeKarma + (SkillGroupObject?.Karma ?? 0)));
                     }
-
-                    value -= Math.Max(0, intOverMax); //reduce by 0 or points over.
-
-                    //Handle free levels, don,t go below 0
-                    KarmaPoints = Math.Max(0, value - (FreeKarma + (SkillGroupObject?.Karma ?? 0)));
                 }
             }
         }
@@ -1230,36 +1228,40 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async ValueTask SetKarmaAsync(int value, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
                 //Calculate how far above maximum we are.
-                int intOverMax = value + await GetBaseAsync(token).ConfigureAwait(false) - await GetRatingMaximumAsync(token).ConfigureAwait(false) + await RatingModifiersAsync(Attribute, token: token).ConfigureAwait(false);
-
-                if (intOverMax > 0) //Too much
+                int intOverMax = value + await GetBaseAsync(token).ConfigureAwait(false)
+                                 - await GetRatingMaximumAsync(token).ConfigureAwait(false)
+                                 + await RatingModifiersAsync(Attribute, token: token).ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
                 {
-                    int intBasePoints = await GetBasePointsAsync(token).ConfigureAwait(false);
-                    //Get the smaller value, how far above, how much we can reduce
-                    int intMax = Math.Min(intOverMax, intBasePoints);
+                    if (intOverMax > 0) //Too much
+                    {
+                        int intBasePoints = await GetBasePointsAsync(token).ConfigureAwait(false);
+                        //Get the smaller value, how far above, how much we can reduce
+                        int intMax = Math.Min(intOverMax, intBasePoints);
 
-                    //reduce both by that amount
-                    await ModifyBasePointsAsync(-intMax, token).ConfigureAwait(false);
-                    intOverMax -= intMax;
+                        //reduce both by that amount
+                        await ModifyBasePointsAsync(-intMax, token).ConfigureAwait(false);
+                        intOverMax -= intMax;
+                    }
+
+                    value -= Math.Max(0, intOverMax); //reduce by 0 or points over.
+
+                    //Handle free levels, don,t go below 0
+                    await SetKarmaPointsAsync(
+                        Math.Max(
+                            0,
+                            value - (await GetFreeKarmaAsync(token).ConfigureAwait(false) + (SkillGroupObject != null
+                                ? await SkillGroupObject.GetKarmaAsync(token).ConfigureAwait(false)
+                                : 0))), token).ConfigureAwait(false);
                 }
-
-                value -= Math.Max(0, intOverMax); //reduce by 0 or points over.
-
-                //Handle free levels, don,t go below 0
-                await SetKarmaPointsAsync(
-                    Math.Max(
-                        0,
-                        value - (await GetFreeKarmaAsync(token).ConfigureAwait(false) + (SkillGroupObject != null
-                            ? await SkillGroupObject.GetKarmaAsync(token).ConfigureAwait(false)
-                            : 0))), token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
             }
         }
 
@@ -1352,9 +1354,7 @@ namespace Chummer.Backend.Skills
                     if (_blnBuyWithKarma == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnBuyWithKarma = value;
-                    }
                     OnPropertyChanged();
                 }
             }
@@ -2267,37 +2267,35 @@ namespace Chummer.Backend.Skills
                 {
                     if ((this as KnowledgeSkill)?.AllowUpgrade == false)
                         return false;
-                    if (_intCachedCanHaveSpecs >= 0)
-                        return _intCachedCanHaveSpecs > 0;
-                    using (LockObject.EnterWriteLock())
+                    // intReturn for thread safety
+                    int intReturn = _intCachedCanHaveSpecs;
+                    if (intReturn >= 0)
+                        return intReturn > 0;
+                    if (!Enabled)
                     {
-                        if (_intCachedCanHaveSpecs >= 0) // Just in case
-                            return _intCachedCanHaveSpecs > 0;
-                        if (!Enabled)
-                        {
-                            _intCachedCanHaveSpecs = 0;
-                            return _intCachedCanHaveSpecs > 0;
-                        }
-
-                        _intCachedCanHaveSpecs = (!IsExoticSkill && TotalBaseRating > 0 && KarmaUnlocked &&
-                                                  !(ImprovementManager
-                                                    .GetCachedImprovementListForValueOf(
-                                                        CharacterObject,
-                                                        Improvement.ImprovementType.BlockSkillSpecializations,
-                                                        DictionaryKey, true).Count > 0
-                                                    || ImprovementManager
-                                                       .GetCachedImprovementListForValueOf(
-                                                           CharacterObject,
-                                                           Improvement.ImprovementType
-                                                                      .BlockSkillCategorySpecializations,
-                                                           SkillCategory).Count > 0)).ToInt32();
-                        if (_intCachedCanHaveSpecs <= 0 && Specializations.Count > 0)
-                        {
-                            Specializations.Clear();
-                        }
-
-                        return _intCachedCanHaveSpecs > 0;
+                        _intCachedCanHaveSpecs = 0;
+                        return false;
                     }
+
+                    intReturn = (!IsExoticSkill && TotalBaseRating > 0 && KarmaUnlocked &&
+                                 !(ImprovementManager
+                                   .GetCachedImprovementListForValueOf(
+                                       CharacterObject,
+                                       Improvement.ImprovementType.BlockSkillSpecializations,
+                                       DictionaryKey, true).Count > 0
+                                   || ImprovementManager
+                                      .GetCachedImprovementListForValueOf(
+                                          CharacterObject,
+                                          Improvement.ImprovementType
+                                                     .BlockSkillCategorySpecializations,
+                                          SkillCategory).Count > 0)).ToInt32();
+                    if (intReturn <= 0 && Specializations.Count > 0)
+                    {
+                        Specializations.Clear();
+                    }
+
+                    _intCachedCanHaveSpecs = intReturn;
+                    return intReturn > 0;
                 }
             }
         }
@@ -2308,45 +2306,38 @@ namespace Chummer.Backend.Skills
             {
                 if ((this as KnowledgeSkill)?.AllowUpgrade == false)
                     return false;
-                if (_intCachedCanHaveSpecs >= 0)
-                    return _intCachedCanHaveSpecs > 0;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
+                // intReturn for thread safety
+                int intReturn = _intCachedCanHaveSpecs;
+                if (intReturn >= 0)
+                    return intReturn > 0;
+                if (!Enabled)
                 {
-                    if (_intCachedCanHaveSpecs >= 0) // Just in case
-                        return _intCachedCanHaveSpecs > 0;
-                    if (!Enabled)
-                    {
-                        _intCachedCanHaveSpecs = 0;
-                        return _intCachedCanHaveSpecs > 0;
-                    }
-
-                    _intCachedCanHaveSpecs = (!IsExoticSkill
-                                              && await GetTotalBaseRatingAsync(token).ConfigureAwait(false) > 0
-                                              && await GetKarmaUnlockedAsync(token).ConfigureAwait(false) &&
-                                              !((await ImprovementManager
-                                                       .GetCachedImprovementListForValueOfAsync(
-                                                           CharacterObject,
-                                                           Improvement.ImprovementType.BlockSkillSpecializations,
-                                                           DictionaryKey, true, token).ConfigureAwait(false)).Count > 0
-                                                || (await ImprovementManager
-                                                          .GetCachedImprovementListForValueOfAsync(
-                                                              CharacterObject,
-                                                              Improvement.ImprovementType
-                                                                         .BlockSkillCategorySpecializations,
-                                                              SkillCategory, token: token).ConfigureAwait(false)).Count
-                                                > 0)).ToInt32();
-                    if (_intCachedCanHaveSpecs <= 0 && Specializations.Count > 0)
-                    {
-                        await Specializations.ClearAsync(token).ConfigureAwait(false);
-                    }
-
-                    return _intCachedCanHaveSpecs > 0;
+                    _intCachedCanHaveSpecs = 0;
+                    return false;
                 }
-                finally
+
+                intReturn = (!IsExoticSkill
+                             && await GetTotalBaseRatingAsync(token).ConfigureAwait(false) > 0
+                             && await GetKarmaUnlockedAsync(token).ConfigureAwait(false) &&
+                             !((await ImprovementManager
+                                      .GetCachedImprovementListForValueOfAsync(
+                                          CharacterObject,
+                                          Improvement.ImprovementType.BlockSkillSpecializations,
+                                          DictionaryKey, true, token).ConfigureAwait(false)).Count > 0
+                               || (await ImprovementManager
+                                         .GetCachedImprovementListForValueOfAsync(
+                                             CharacterObject,
+                                             Improvement.ImprovementType
+                                                        .BlockSkillCategorySpecializations,
+                                             SkillCategory, token: token).ConfigureAwait(false)).Count
+                               > 0)).ToInt32();
+                if (intReturn <= 0 && Specializations.Count > 0)
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    await Specializations.ClearAsync(token).ConfigureAwait(false);
                 }
+
+                _intCachedCanHaveSpecs = intReturn;
+                return intReturn > 0;
             }
         }
 
@@ -2442,121 +2433,21 @@ namespace Chummer.Backend.Skills
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intCachedEnabled >= 0)
-                        return _intCachedEnabled > 0;
+                    // intReturn for thread safety
+                    int intReturn = _intCachedEnabled;
+                    if (intReturn >= 0)
+                        return intReturn > 0;
 
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (_intCachedEnabled >= 0) // Just in case
-                            return _intCachedEnabled > 0;
-                        if (_blnForceDisabled)
-                        {
-                            _intCachedEnabled = 0;
-                            return false;
-                        }
-
-                        if (ImprovementManager
-                                .GetCachedImprovementListForValueOf(CharacterObject,
-                                    Improvement.ImprovementType.SkillDisable,
-                                    DictionaryKey).Count > 0)
-                        {
-                            _intCachedEnabled = 0;
-                            return false;
-                        }
-
-                        if (RequiresFlyMovement)
-                        {
-                            string strMovementString = CharacterObject.GetFly(GlobalSettings.InvariantCultureInfo,
-                                GlobalSettings.DefaultLanguage);
-                            if (string.IsNullOrEmpty(strMovementString)
-                                || strMovementString == "0"
-                                || strMovementString.Contains(LanguageManager.GetString("String_ModeSpecial",
-                                    GlobalSettings.DefaultLanguage)))
-                            {
-                                _intCachedEnabled = 0;
-                                return false;
-                            }
-                        }
-
-                        if (RequiresSwimMovement)
-                        {
-                            string strMovementString = CharacterObject.GetSwim(GlobalSettings.InvariantCultureInfo,
-                                GlobalSettings.DefaultLanguage);
-                            if (string.IsNullOrEmpty(strMovementString)
-                                || strMovementString == "0"
-                                || strMovementString.Contains(LanguageManager.GetString("String_ModeSpecial",
-                                    GlobalSettings.DefaultLanguage)))
-                            {
-                                _intCachedEnabled = 0;
-                                return false;
-                            }
-                        }
-
-                        if (RequiresGroundMovement)
-                        {
-                            string strMovementString = CharacterObject.GetMovement(GlobalSettings.InvariantCultureInfo,
-                                GlobalSettings.DefaultLanguage);
-                            if (string.IsNullOrEmpty(strMovementString)
-                                || strMovementString == "0"
-                                || strMovementString.Contains(LanguageManager.GetString("String_ModeSpecial",
-                                    GlobalSettings.DefaultLanguage)))
-                            {
-                                _intCachedEnabled = 0;
-                                return false;
-                            }
-                        }
-
-                        //TODO: This is a temporary workaround until proper support for selectively enabling or disabling skills works, as above.
-                        switch (Attribute)
-                        {
-                            case "MAG":
-                            case "MAGAdept":
-                                _intCachedEnabled = CharacterObject.MAGEnabled.ToInt32();
-                                break;
-
-                            case "RES":
-                                _intCachedEnabled = CharacterObject.RESEnabled.ToInt32();
-                                break;
-
-                            case "DEP":
-                                _intCachedEnabled = CharacterObject.DEPEnabled.ToInt32();
-                                break;
-
-                            default:
-                                _intCachedEnabled = 1;
-                                break;
-                        }
-
-                        return _intCachedEnabled > 0;
-                    }
-                }
-            }
-        }
-
-        //TODO handle aspected/adepts who cannot (always) get magic skills
-        public async ValueTask<bool> GetEnabledAsync(CancellationToken token = default)
-        {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
-            {
-                if (_intCachedEnabled >= 0)
-                    return _intCachedEnabled > 0;
-
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
-                {
-                    if (_intCachedEnabled >= 0) // Just in case
-                        return _intCachedEnabled > 0;
                     if (_blnForceDisabled)
                     {
                         _intCachedEnabled = 0;
                         return false;
                     }
 
-                    if ((await ImprovementManager
-                            .GetCachedImprovementListForValueOfAsync(CharacterObject,
-                                Improvement.ImprovementType.SkillDisable,
-                                await GetDictionaryKeyAsync(token).ConfigureAwait(false), token: token)
-                            .ConfigureAwait(false)).Count > 0)
+                    if (ImprovementManager
+                        .GetCachedImprovementListForValueOf(CharacterObject,
+                                                            Improvement.ImprovementType.SkillDisable,
+                                                            DictionaryKey).Count > 0)
                     {
                         _intCachedEnabled = 0;
                         return false;
@@ -2564,16 +2455,12 @@ namespace Chummer.Backend.Skills
 
                     if (RequiresFlyMovement)
                     {
-                        string strMovementString
-                            = await CharacterObject
-                                .GetFlyAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage, token)
-                                .ConfigureAwait(false);
+                        string strMovementString = CharacterObject.GetFly(GlobalSettings.InvariantCultureInfo,
+                                                                          GlobalSettings.DefaultLanguage);
                         if (string.IsNullOrEmpty(strMovementString)
                             || strMovementString == "0"
-                            || strMovementString.Contains(
-                                await LanguageManager
-                                    .GetStringAsync("String_ModeSpecial", GlobalSettings.DefaultLanguage, token: token)
-                                    .ConfigureAwait(false)))
+                            || strMovementString.Contains(LanguageManager.GetString("String_ModeSpecial",
+                                                              GlobalSettings.DefaultLanguage)))
                         {
                             _intCachedEnabled = 0;
                             return false;
@@ -2582,17 +2469,12 @@ namespace Chummer.Backend.Skills
 
                     if (RequiresSwimMovement)
                     {
-                        string strMovementString
-                            = await CharacterObject
-                                .GetSwimAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage,
-                                    token)
-                                .ConfigureAwait(false);
+                        string strMovementString = CharacterObject.GetSwim(GlobalSettings.InvariantCultureInfo,
+                                                                           GlobalSettings.DefaultLanguage);
                         if (string.IsNullOrEmpty(strMovementString)
                             || strMovementString == "0"
-                            || strMovementString.Contains(
-                                await LanguageManager
-                                    .GetStringAsync("String_ModeSpecial", GlobalSettings.DefaultLanguage, token: token)
-                                    .ConfigureAwait(false)))
+                            || strMovementString.Contains(LanguageManager.GetString("String_ModeSpecial",
+                                                              GlobalSettings.DefaultLanguage)))
                         {
                             _intCachedEnabled = 0;
                             return false;
@@ -2601,16 +2483,12 @@ namespace Chummer.Backend.Skills
 
                     if (RequiresGroundMovement)
                     {
-                        string strMovementString
-                            = await CharacterObject
-                                .GetMovementAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage,
-                                    token).ConfigureAwait(false);
+                        string strMovementString = CharacterObject.GetMovement(GlobalSettings.InvariantCultureInfo,
+                                                                               GlobalSettings.DefaultLanguage);
                         if (string.IsNullOrEmpty(strMovementString)
                             || strMovementString == "0"
-                            || strMovementString.Contains(
-                                await LanguageManager
-                                    .GetStringAsync("String_ModeSpecial", GlobalSettings.DefaultLanguage, token: token)
-                                    .ConfigureAwait(false)))
+                            || strMovementString.Contains(LanguageManager.GetString("String_ModeSpecial",
+                                                              GlobalSettings.DefaultLanguage)))
                         {
                             _intCachedEnabled = 0;
                             return false;
@@ -2622,30 +2500,135 @@ namespace Chummer.Backend.Skills
                     {
                         case "MAG":
                         case "MAGAdept":
-                            _intCachedEnabled = (await CharacterObject.GetMAGEnabledAsync(token).ConfigureAwait(false))
-                                .ToInt32();
-                            break;
+                            intReturn = CharacterObject.MAGEnabled.ToInt32();
+                            _intCachedEnabled = intReturn;
+                            return intReturn > 0;
 
                         case "RES":
-                            _intCachedEnabled = (await CharacterObject.GetRESEnabledAsync(token).ConfigureAwait(false))
-                                .ToInt32();
-                            break;
+                            intReturn = CharacterObject.RESEnabled.ToInt32();
+                            _intCachedEnabled = intReturn;
+                            return intReturn > 0;
 
                         case "DEP":
-                            _intCachedEnabled = (await CharacterObject.GetDEPEnabledAsync(token).ConfigureAwait(false))
-                                .ToInt32();
-                            break;
+                            intReturn = CharacterObject.DEPEnabled.ToInt32();
+                            _intCachedEnabled = intReturn;
+                            return intReturn > 0;
 
                         default:
                             _intCachedEnabled = 1;
-                            break;
+                            return true;
                     }
-
-                    return _intCachedEnabled > 0;
                 }
-                finally
+            }
+        }
+
+        //TODO handle aspected/adepts who cannot (always) get magic skills
+        public async ValueTask<bool> GetEnabledAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                // intReturn for thread safety
+                int intReturn = _intCachedEnabled;
+                if (intReturn >= 0)
+                    return intReturn > 0;
+
+                if (_blnForceDisabled)
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    _intCachedEnabled = 0;
+                    return false;
+                }
+
+                if ((await ImprovementManager
+                           .GetCachedImprovementListForValueOfAsync(CharacterObject,
+                                                                    Improvement.ImprovementType.SkillDisable,
+                                                                    await GetDictionaryKeyAsync(token)
+                                                                        .ConfigureAwait(false), token: token)
+                           .ConfigureAwait(false)).Count > 0)
+                {
+                    _intCachedEnabled = 0;
+                    return false;
+                }
+
+                if (RequiresFlyMovement)
+                {
+                    string strMovementString
+                        = await CharacterObject
+                                .GetFlyAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage, token)
+                                .ConfigureAwait(false);
+                    if (string.IsNullOrEmpty(strMovementString)
+                        || strMovementString == "0"
+                        || strMovementString.Contains(
+                            await LanguageManager
+                                  .GetStringAsync("String_ModeSpecial", GlobalSettings.DefaultLanguage, token: token)
+                                  .ConfigureAwait(false)))
+                    {
+                        _intCachedEnabled = 0;
+                        return false;
+                    }
+                }
+
+                if (RequiresSwimMovement)
+                {
+                    string strMovementString
+                        = await CharacterObject
+                                .GetSwimAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage,
+                                              token)
+                                .ConfigureAwait(false);
+                    if (string.IsNullOrEmpty(strMovementString)
+                        || strMovementString == "0"
+                        || strMovementString.Contains(
+                            await LanguageManager
+                                  .GetStringAsync("String_ModeSpecial", GlobalSettings.DefaultLanguage, token: token)
+                                  .ConfigureAwait(false)))
+                    {
+                        _intCachedEnabled = 0;
+                        return false;
+                    }
+                }
+
+                if (RequiresGroundMovement)
+                {
+                    string strMovementString
+                        = await CharacterObject
+                                .GetMovementAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage,
+                                                  token).ConfigureAwait(false);
+                    if (string.IsNullOrEmpty(strMovementString)
+                        || strMovementString == "0"
+                        || strMovementString.Contains(
+                            await LanguageManager
+                                  .GetStringAsync("String_ModeSpecial", GlobalSettings.DefaultLanguage, token: token)
+                                  .ConfigureAwait(false)))
+                    {
+                        _intCachedEnabled = 0;
+                        return false;
+                    }
+                }
+
+                //TODO: This is a temporary workaround until proper support for selectively enabling or disabling skills works, as above.
+                switch (Attribute)
+                {
+                    case "MAG":
+                    case "MAGAdept":
+                        intReturn = (await CharacterObject.GetMAGEnabledAsync(token).ConfigureAwait(false))
+                            .ToInt32();
+                        _intCachedEnabled = intReturn;
+                        return intReturn > 0;
+
+                    case "RES":
+                        intReturn = (await CharacterObject.GetRESEnabledAsync(token).ConfigureAwait(false))
+                            .ToInt32();
+                        _intCachedEnabled = intReturn;
+                        return intReturn > 0;
+
+                    case "DEP":
+                        intReturn = (await CharacterObject.GetDEPEnabledAsync(token).ConfigureAwait(false))
+                            .ToInt32();
+                        _intCachedEnabled = intReturn;
+                        return intReturn > 0;
+
+                    default:
+                        _intCachedEnabled = 1;
+                        return true;
                 }
             }
         }
@@ -2664,9 +2647,7 @@ namespace Chummer.Backend.Skills
                     if (_blnForceDisabled == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnForceDisabled = value;
-                    }
                     OnPropertyChanged();
                 }
             }
@@ -2686,9 +2667,7 @@ namespace Chummer.Backend.Skills
                     if (_blnRequiresGroundMovement == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnRequiresGroundMovement = value;
-                    }
                     OnPropertyChanged();
                 }
             }
@@ -2708,9 +2687,7 @@ namespace Chummer.Backend.Skills
                     if (_blnRequiresSwimMovement == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnRequiresSwimMovement = value;
-                    }
                     OnPropertyChanged();
                 }
             }
@@ -2730,9 +2707,7 @@ namespace Chummer.Backend.Skills
                     if (_blnRequiresFlyMovement == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnRequiresFlyMovement = value;
-                    }
                     OnPropertyChanged();
                 }
             }
@@ -2746,17 +2721,16 @@ namespace Chummer.Backend.Skills
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intCachedCanUpgradeCareer < 0)
+                    // intReturn for thread safety
+                    int intReturn = _intCachedCanUpgradeCareer;
+                    if (intReturn < 0)
                     {
-                        using (LockObject.EnterWriteLock())
-                        {
-                            if (_intCachedCanUpgradeCareer < 0)
-                                _intCachedCanUpgradeCareer = (CharacterObject.Karma >= UpgradeKarmaCost &&
-                                                              RatingMaximum > TotalBaseRating).ToInt32();
-                        }
+                        intReturn = (CharacterObject.Karma >= UpgradeKarmaCost &&
+                                     RatingMaximum > TotalBaseRating).ToInt32();
+                        _intCachedCanUpgradeCareer = intReturn;
                     }
 
-                    return _intCachedCanUpgradeCareer > 0;
+                    return intReturn > 0;
                 }
             }
         }
@@ -2765,27 +2739,21 @@ namespace Chummer.Backend.Skills
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (_intCachedCanUpgradeCareer < 0)
+                // intReturn for thread safety
+                int intReturn = _intCachedCanUpgradeCareer;
+                if (intReturn < 0)
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
-                    {
-                        if (_intCachedCanUpgradeCareer < 0)
-                            _intCachedCanUpgradeCareer = (await CharacterObject.GetKarmaAsync(token)
-                                                                               .ConfigureAwait(false)
-                                                          >= await GetUpgradeKarmaCostAsync(token).ConfigureAwait(false)
-                                                          &&
-                                                          await GetRatingMaximumAsync(token).ConfigureAwait(false)
-                                                          > await GetTotalBaseRatingAsync(token).ConfigureAwait(false))
-                                .ToInt32();
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
+                    intReturn = (await CharacterObject.GetKarmaAsync(token)
+                                                      .ConfigureAwait(false)
+                                 >= await GetUpgradeKarmaCostAsync(token).ConfigureAwait(false)
+                                 &&
+                                 await GetRatingMaximumAsync(token).ConfigureAwait(false)
+                                 > await GetTotalBaseRatingAsync(token).ConfigureAwait(false))
+                        .ToInt32();
+                    _intCachedCanUpgradeCareer = intReturn;
                 }
 
-                return _intCachedCanUpgradeCareer == 1;
+                return intReturn > 0;
             }
         }
 
@@ -2833,9 +2801,7 @@ namespace Chummer.Backend.Skills
                     if (_blnDefault == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _blnDefault = value;
-                    }
                     OnPropertyChanged();
                 }
             }
@@ -3032,9 +2998,7 @@ namespace Chummer.Backend.Skills
                     if (_guidInternalId == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _guidInternalId = value;
-                    }
                     OnPropertyChanged();
                 }
             }
@@ -3319,14 +3283,14 @@ namespace Chummer.Backend.Skills
             }
             set
             {
-                using (LockObject.EnterWriteLock())
+                if (string.IsNullOrWhiteSpace(value))
                 {
-                    if (string.IsNullOrWhiteSpace(value))
-                    {
-                        Specializations.RemoveAll(x => !x.Free);
-                        return;
-                    }
-
+                    Specializations.RemoveAll(x => !x.Free);
+                    return;
+                }
+                using (LockObject.EnterWriteLock())
+                using (Specializations.LockObject.EnterWriteLock())
+                {
                     int intIndexToReplace = Specializations.FindIndex(x => !x.Free);
                     if (intIndexToReplace < 0)
                     {
@@ -3371,15 +3335,14 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask SetTopMostDisplaySpecializationAsync(string value, CancellationToken token = default)
         {
+            if (string.IsNullOrWhiteSpace(value))
+            {
+                await Specializations.RemoveAllAsync(x => !x.Free, token: token).ConfigureAwait(false);
+                return;
+            }
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
-                if (string.IsNullOrWhiteSpace(value))
-                {
-                    await Specializations.RemoveAllAsync(x => !x.Free, token: token).ConfigureAwait(false);
-                    return;
-                }
-
                 IAsyncDisposable objLocker2 = await Specializations.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
@@ -3534,10 +3497,11 @@ namespace Chummer.Backend.Skills
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                            out StringBuilder sbdReturn))
                 {
-                    if (CyberwareRating > TotalBaseRating)
+                    int intCyberwareRating = CyberwareRating;
+                    if (intCyberwareRating > TotalBaseRating)
                     {
                         sbdReturn.Append(strExtraStart).Append(LanguageManager.GetString("Tip_Skill_SkillsoftRating"))
-                            .Append(strSpace).Append('(').Append(CyberwareRating.ToString(GlobalSettings.CultureInfo))
+                            .Append(strSpace).Append('(').Append(intCyberwareRating.ToString(GlobalSettings.CultureInfo))
                             .Append(')');
                     }
                     else
@@ -4335,9 +4299,7 @@ namespace Chummer.Backend.Skills
                     if (_colNotes == value)
                         return;
                     using (LockObject.EnterWriteLock())
-                    {
                         _colNotes = value;
-                    }
                     OnPropertyChanged();
                 }
             }
@@ -4647,37 +4609,25 @@ namespace Chummer.Backend.Skills
             // ReSharper disable once MethodHasAsyncOverload
             using (blnSync ? EnterReadLock.Enter(LockObject, token) : await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
-                                                && !GlobalSettings.LiveCustomData)
-                    return _objCachedMyXmlNode;
-                IDisposable objLockerSync = blnSync ? LockObject.EnterWriteLock(token) : null;
-                IAsyncDisposable objLocker = blnSync ? null : await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
-                {
-                    if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
-                                                    && !GlobalSettings.LiveCustomData)
-                        return _objCachedMyXmlNode;
-                    _objCachedMyXmlNode = (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? CharacterObject.LoadData("skills.xml", strLanguage, token: token)
-                            : await CharacterObject.LoadDataAsync("skills.xml", strLanguage, token: token)
-                                .ConfigureAwait(false))
-                        .SelectSingleNode(string.Format(GlobalSettings.InvariantCultureInfo,
-                            IsKnowledgeSkill
-                                ? "/chummer/knowledgeskills/skill[id = {0} or id = {1}]"
-                                : "/chummer/skills/skill[id = {0} or id = {1}]",
-                            SkillId.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath(),
-                            SkillId.ToString("D", GlobalSettings.InvariantCultureInfo)
-                                .ToUpperInvariant().CleanXPath()));
-                    _strCachedXmlNodeLanguage = strLanguage;
-                    return _objCachedMyXmlNode;
-                }
-                finally
-                {
-                    if (objLocker != null)
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    objLockerSync?.Dispose();
-                }
+                XmlNode objReturn = _objCachedMyXmlNode;
+                if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
+                                      && !GlobalSettings.LiveCustomData)
+                    return objReturn;
+                objReturn = (blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? CharacterObject.LoadData("skills.xml", strLanguage, token: token)
+                        : await CharacterObject.LoadDataAsync("skills.xml", strLanguage, token: token)
+                                               .ConfigureAwait(false))
+                    .SelectSingleNode(string.Format(GlobalSettings.InvariantCultureInfo,
+                                                    IsKnowledgeSkill
+                                                        ? "/chummer/knowledgeskills/skill[id = {0} or id = {1}]"
+                                                        : "/chummer/skills/skill[id = {0} or id = {1}]",
+                                                    SkillId.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath(),
+                                                    SkillId.ToString("D", GlobalSettings.InvariantCultureInfo)
+                                                           .ToUpperInvariant().CleanXPath()));
+                _objCachedMyXmlNode = objReturn;
+                _strCachedXmlNodeLanguage = strLanguage;
+                return objReturn;
             }
         }
 
@@ -4689,49 +4639,30 @@ namespace Chummer.Backend.Skills
             // ReSharper disable once MethodHasAsyncOverload
             using (blnSync ? EnterReadLock.Enter(LockObject, token) : await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
-                                                  && !GlobalSettings.LiveCustomData)
-                    return _objCachedMyXPathNode;
-                IDisposable objLocker = null;
-                IAsyncDisposable objLockerAsync = null;
-                if (blnSync)
-                    // ReSharper disable once MethodHasAsyncOverload
-                    objLocker = LockObject.EnterWriteLock(token);
-                else
-                    objLockerAsync = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
-                {
-                    if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
-                                                      && !GlobalSettings.LiveCustomData)
-                        return _objCachedMyXPathNode;
-                    _objCachedMyXPathNode = (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? CharacterObject.LoadDataXPath("skills.xml", strLanguage, token: token)
-                            : await CharacterObject.LoadDataXPathAsync("skills.xml", strLanguage, token: token)
-                                .ConfigureAwait(false))
-                        .SelectSingleNode(string.Format(GlobalSettings.InvariantCultureInfo,
-                            IsKnowledgeSkill
-                                ? "/chummer/knowledgeskills/skill[id = {0} or id = {1}]"
-                                : "/chummer/skills/skill[id = {0} or id = {1}]",
-                            SkillId.ToString(
-                                    "D",
-                                    GlobalSettings.InvariantCultureInfo)
-                                .CleanXPath(),
-                            SkillId.ToString(
-                                    "D",
-                                    GlobalSettings.InvariantCultureInfo)
-                                .ToUpperInvariant().CleanXPath()));
-                    _strCachedXPathNodeLanguage = strLanguage;
-                    return _objCachedMyXPathNode;
-                }
-                finally
-                {
-                    if (blnSync)
+                XPathNavigator objReturn = _objCachedMyXPathNode;
+                if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
+                                      && !GlobalSettings.LiveCustomData)
+                    return objReturn;
+                objReturn = (blnSync
                         // ReSharper disable once MethodHasAsyncOverload
-                        objLocker.Dispose();
-                    else
-                        await objLockerAsync.DisposeAsync().ConfigureAwait(false);
-                }
+                        ? CharacterObject.LoadDataXPath("skills.xml", strLanguage, token: token)
+                        : await CharacterObject.LoadDataXPathAsync("skills.xml", strLanguage, token: token)
+                                               .ConfigureAwait(false))
+                    .SelectSingleNode(string.Format(GlobalSettings.InvariantCultureInfo,
+                                                    IsKnowledgeSkill
+                                                        ? "/chummer/knowledgeskills/skill[id = {0} or id = {1}]"
+                                                        : "/chummer/skills/skill[id = {0} or id = {1}]",
+                                                    SkillId.ToString(
+                                                               "D",
+                                                               GlobalSettings.InvariantCultureInfo)
+                                                           .CleanXPath(),
+                                                    SkillId.ToString(
+                                                               "D",
+                                                               GlobalSettings.InvariantCultureInfo)
+                                                           .ToUpperInvariant().CleanXPath()));
+                _objCachedMyXPathNode = objReturn;
+                _strCachedXPathNodeLanguage = strLanguage;
+                return objReturn;
             }
         }
 
@@ -4754,49 +4685,46 @@ namespace Chummer.Backend.Skills
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intCachedCyberwareRating != int.MinValue)
-                        return _intCachedCyberwareRating;
+                    // intReturn for thread safety
+                    int intReturn = _intCachedCyberwareRating;
+                    if (intReturn != int.MinValue)
+                        return intReturn;
 
-                    using (LockObject.EnterWriteLock())
+                    //TODO: method is here, but not used in any form, needs testing (worried about child items...)
+                    //this might do hardwires if i understand how they works correctly
+                    int intMaxHardwire = -1;
+                    foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
+                                 CharacterObject, Improvement.ImprovementType.Hardwire, DictionaryKey))
                     {
-                        if (_intCachedCyberwareRating != int.MinValue)
-                            return _intCachedCyberwareRating;
-                        //TODO: method is here, but not used in any form, needs testing (worried about child items...)
-                        //this might do hardwires if i understand how they works correctly
-                        int intMaxHardwire = -1;
-                        foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
-                                     CharacterObject, Improvement.ImprovementType.Hardwire, DictionaryKey))
-                        {
-                            intMaxHardwire = Math.Max(intMaxHardwire, objImprovement.Value.StandardRound());
-                        }
-
-                        if (intMaxHardwire >= 0)
-                        {
-                            return _intCachedCyberwareRating = intMaxHardwire;
-                        }
-
-                        int intMaxActivesoftRating =
-                            Math.Min(ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Skillwire),
-                                    ImprovementManager.ValueOf(CharacterObject,
-                                        Improvement.ImprovementType.SkillsoftAccess))
-                                .StandardRound();
-                        if (intMaxActivesoftRating > 0)
-                        {
-                            int intMax = 0;
-                            //TODO this works with translate?
-                            foreach (Improvement objSkillsoftImprovement in ImprovementManager
-                                         .GetCachedImprovementListForValueOf(CharacterObject,
-                                             Improvement.ImprovementType.Activesoft,
-                                             DictionaryKey))
-                            {
-                                intMax = Math.Max(intMax, objSkillsoftImprovement.Value.StandardRound());
-                            }
-
-                            return _intCachedCyberwareRating = Math.Min(intMax, intMaxActivesoftRating);
-                        }
-
-                        return _intCachedCyberwareRating = 0;
+                        intMaxHardwire = Math.Max(intMaxHardwire, objImprovement.Value.StandardRound());
                     }
+
+                    if (intMaxHardwire >= 0)
+                    {
+                        return _intCachedCyberwareRating = intMaxHardwire;
+                    }
+
+                    int intMaxActivesoftRating =
+                        Math.Min(ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.Skillwire),
+                                 ImprovementManager.ValueOf(CharacterObject,
+                                                            Improvement.ImprovementType.SkillsoftAccess))
+                            .StandardRound();
+                    if (intMaxActivesoftRating > 0)
+                    {
+                        int intMax = 0;
+                        //TODO this works with translate?
+                        foreach (Improvement objSkillsoftImprovement in ImprovementManager
+                                     .GetCachedImprovementListForValueOf(CharacterObject,
+                                                                         Improvement.ImprovementType.Activesoft,
+                                                                         DictionaryKey))
+                        {
+                            intMax = Math.Max(intMax, objSkillsoftImprovement.Value.StandardRound());
+                        }
+
+                        return _intCachedCyberwareRating = Math.Min(intMax, intMaxActivesoftRating);
+                    }
+
+                    return _intCachedCyberwareRating = 0;
                 }
             }
         }
@@ -4809,61 +4737,57 @@ namespace Chummer.Backend.Skills
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (_intCachedCyberwareRating != int.MinValue)
-                    return _intCachedCyberwareRating;
+                // intReturn for thread safety
+                int intReturn = _intCachedCyberwareRating;
+                if (intReturn != int.MinValue)
+                    return intReturn;
 
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
+                //TODO: method is here, but not used in any form, needs testing (worried about child items...)
+                //this might do hardwires if i understand how they works correctly
+                int intMaxHardwire = -1;
+                foreach (Improvement objImprovement in await ImprovementManager
+                                                             .GetCachedImprovementListForValueOfAsync(
+                                                                 CharacterObject, Improvement.ImprovementType.Hardwire,
+                                                                 await GetDictionaryKeyAsync(token)
+                                                                     .ConfigureAwait(false), token: token)
+                                                             .ConfigureAwait(false))
                 {
-                    if (_intCachedCyberwareRating != int.MinValue)
-                        return _intCachedCyberwareRating;
-                    //TODO: method is here, but not used in any form, needs testing (worried about child items...)
-                    //this might do hardwires if i understand how they works correctly
-                    int intMaxHardwire = -1;
-                    foreach (Improvement objImprovement in await ImprovementManager
-                                 .GetCachedImprovementListForValueOfAsync(
-                                     CharacterObject, Improvement.ImprovementType.Hardwire,
-                                     await GetDictionaryKeyAsync(token).ConfigureAwait(false), token: token)
-                                 .ConfigureAwait(false))
-                    {
-                        intMaxHardwire = Math.Max(intMaxHardwire, objImprovement.Value.StandardRound());
-                    }
-
-                    if (intMaxHardwire >= 0)
-                    {
-                        return _intCachedCyberwareRating = intMaxHardwire;
-                    }
-
-                    int intMaxActivesoftRating =
-                        Math.Min(
-                                await ImprovementManager
-                                    .ValueOfAsync(CharacterObject, Improvement.ImprovementType.Skillwire, token: token)
-                                    .ConfigureAwait(false),
-                                await ImprovementManager.ValueOfAsync(CharacterObject,
-                                    Improvement.ImprovementType.SkillsoftAccess, token: token).ConfigureAwait(false))
-                            .StandardRound();
-                    if (intMaxActivesoftRating > 0)
-                    {
-                        int intMax = 0;
-                        //TODO this works with translate?
-                        foreach (Improvement objSkillsoftImprovement in await ImprovementManager
-                                     .GetCachedImprovementListForValueOfAsync(CharacterObject,
-                                         Improvement.ImprovementType.Activesoft,
-                                         await GetDictionaryKeyAsync(token).ConfigureAwait(false), token: token)
-                                     .ConfigureAwait(false))
-                        {
-                            intMax = Math.Max(intMax, objSkillsoftImprovement.Value.StandardRound());
-                        }
-
-                        return _intCachedCyberwareRating = Math.Min(intMax, intMaxActivesoftRating);
-                    }
-
-                    return _intCachedCyberwareRating = 0;
+                    intMaxHardwire = Math.Max(intMaxHardwire, objImprovement.Value.StandardRound());
                 }
-                finally
+
+                if (intMaxHardwire >= 0)
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    return _intCachedCyberwareRating = intMaxHardwire;
                 }
+
+                int intMaxActivesoftRating =
+                    Math.Min(
+                            await ImprovementManager
+                                  .ValueOfAsync(CharacterObject, Improvement.ImprovementType.Skillwire, token: token)
+                                  .ConfigureAwait(false),
+                            await ImprovementManager.ValueOfAsync(CharacterObject,
+                                                                  Improvement.ImprovementType.SkillsoftAccess,
+                                                                  token: token).ConfigureAwait(false))
+                        .StandardRound();
+                if (intMaxActivesoftRating > 0)
+                {
+                    int intMax = 0;
+                    //TODO this works with translate?
+                    foreach (Improvement objSkillsoftImprovement in await ImprovementManager
+                                                                          .GetCachedImprovementListForValueOfAsync(
+                                                                              CharacterObject,
+                                                                              Improvement.ImprovementType.Activesoft,
+                                                                              await GetDictionaryKeyAsync(token)
+                                                                                  .ConfigureAwait(false), token: token)
+                                                                          .ConfigureAwait(false))
+                    {
+                        intMax = Math.Max(intMax, objSkillsoftImprovement.Value.StandardRound());
+                    }
+
+                    return _intCachedCyberwareRating = Math.Min(intMax, intMaxActivesoftRating);
+                }
+
+                return _intCachedCyberwareRating = 0;
             }
         }
 
@@ -5117,6 +5041,20 @@ namespace Chummer.Backend.Skills
             this.OnMultiplePropertyChanged(strPropertyName);
         }
 
+        private static readonly HashSet<string> s_SetPropertyNamesWithCachedValues = new HashSet<string>
+        {
+            nameof(FreeBase),
+            nameof(FreeKarma),
+            nameof(CanUpgradeCareer),
+            nameof(CanAffordSpecialization),
+            nameof(Enabled),
+            nameof(CanHaveSpecs),
+            nameof(ForcedBuyWithKarma),
+            nameof(ForcedNotBuyWithKarma),
+            nameof(CyberwareRating),
+            nameof(CGLSpecializations)
+        };
+
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
             using (EnterReadLock.Enter(LockObject))
@@ -5141,28 +5079,31 @@ namespace Chummer.Backend.Skills
                     if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                         return;
 
-                    using (LockObject.EnterWriteLock())
+                    if (setNamesOfChangedProperties.Overlaps(s_SetPropertyNamesWithCachedValues))
                     {
-                        if (setNamesOfChangedProperties.Contains(nameof(FreeBase)))
-                            _intCachedFreeBase = int.MinValue;
-                        if (setNamesOfChangedProperties.Contains(nameof(FreeKarma)))
-                            _intCachedFreeKarma = int.MinValue;
-                        if (setNamesOfChangedProperties.Contains(nameof(CanUpgradeCareer)))
-                            _intCachedCanUpgradeCareer = -1;
-                        if (setNamesOfChangedProperties.Contains(nameof(CanAffordSpecialization)))
-                            _intCachedCanAffordSpecialization = -1;
-                        if (setNamesOfChangedProperties.Contains(nameof(Enabled)))
-                            _intCachedEnabled = -1;
-                        if (setNamesOfChangedProperties.Contains(nameof(CanHaveSpecs)))
-                            _intCachedCanHaveSpecs = -1;
-                        if (setNamesOfChangedProperties.Contains(nameof(ForcedBuyWithKarma)))
-                            _intCachedForcedBuyWithKarma = -1;
-                        if (setNamesOfChangedProperties.Contains(nameof(ForcedNotBuyWithKarma)))
-                            _intCachedForcedNotBuyWithKarma = -1;
-                        if (setNamesOfChangedProperties.Contains(nameof(CyberwareRating)))
-                            ResetCachedCyberwareRating();
-                        if (setNamesOfChangedProperties.Contains(nameof(CGLSpecializations)))
-                            _blnRecalculateCachedSuggestedSpecializations = true;
+                        using (LockObject.EnterWriteLock())
+                        {
+                            if (setNamesOfChangedProperties.Contains(nameof(FreeBase)))
+                                _intCachedFreeBase = int.MinValue;
+                            if (setNamesOfChangedProperties.Contains(nameof(FreeKarma)))
+                                _intCachedFreeKarma = int.MinValue;
+                            if (setNamesOfChangedProperties.Contains(nameof(CanUpgradeCareer)))
+                                _intCachedCanUpgradeCareer = -1;
+                            if (setNamesOfChangedProperties.Contains(nameof(CanAffordSpecialization)))
+                                _intCachedCanAffordSpecialization = -1;
+                            if (setNamesOfChangedProperties.Contains(nameof(Enabled)))
+                                _intCachedEnabled = -1;
+                            if (setNamesOfChangedProperties.Contains(nameof(CanHaveSpecs)))
+                                _intCachedCanHaveSpecs = -1;
+                            if (setNamesOfChangedProperties.Contains(nameof(ForcedBuyWithKarma)))
+                                _intCachedForcedBuyWithKarma = -1;
+                            if (setNamesOfChangedProperties.Contains(nameof(ForcedNotBuyWithKarma)))
+                                _intCachedForcedNotBuyWithKarma = -1;
+                            if (setNamesOfChangedProperties.Contains(nameof(CyberwareRating)))
+                                ResetCachedCyberwareRating();
+                            if (setNamesOfChangedProperties.Contains(nameof(CGLSpecializations)))
+                                _blnRecalculateCachedSuggestedSpecializations = true;
+                        }
                     }
 
                     if (PropertyChanged != null)
@@ -5180,20 +5121,18 @@ namespace Chummer.Backend.Skills
                         });
                     }
 
-                    using (LockObject.EnterWriteLock())
+                    // Do this after firing all property changers. Not part of the dependency graph because dependency is very complicated
+                    if (setNamesOfChangedProperties.Contains(nameof(DefaultAttribute)))
+                        RecacheAttribute();
+
+                    if (setNamesOfChangedProperties.Contains(nameof(Enabled))
+                        && CharacterObject.Settings.CompensateSkillGroupKarmaDifference && SkillGroupObject != null)
                     {
-                        // Do this after firing all property changers. Not part of the dependency graph because dependency is very complicated
-                        if (setNamesOfChangedProperties.Contains(nameof(DefaultAttribute)))
-                            RecacheAttribute();
-                        if (setNamesOfChangedProperties.Contains(nameof(Enabled))
-                            && CharacterObject.Settings.CompensateSkillGroupKarmaDifference && SkillGroupObject != null)
+                        foreach (Skill objSkill in SkillGroupObject.SkillList)
                         {
-                            foreach (Skill objSkill in SkillGroupObject.SkillList)
-                            {
-                                if (objSkill == this)
-                                    continue;
-                                objSkill.OnMultiplePropertyChanged(nameof(UpgradeKarmaCost), nameof(RangeCost));
-                            }
+                            if (objSkill == this)
+                                continue;
+                            objSkill.OnMultiplePropertyChanged(nameof(UpgradeKarmaCost), nameof(RangeCost));
                         }
                     }
                 }
@@ -6026,8 +5965,7 @@ namespace Chummer.Backend.Skills
 
         public async ValueTask Upgrade(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
                 if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
                 {
@@ -6039,13 +5977,15 @@ namespace Chummer.Backend.Skills
                     //If data file contains {4} this crashes but...
                     string upgradetext =
                         string.Format(GlobalSettings.CultureInfo, "{0}{4}{1}{4}{2}{4}->{4}{3}",
-                            await LanguageManager.GetStringAsync(IsKnowledgeSkill
-                                ? "String_ExpenseKnowledgeSkill"
-                                : "String_ExpenseActiveSkill", token: token).ConfigureAwait(false),
-                            await GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
-                            intTotalBaseRating,
-                            intTotalBaseRating + 1,
-                            await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false));
+                                      await LanguageManager.GetStringAsync(IsKnowledgeSkill
+                                                                               ? "String_ExpenseKnowledgeSkill"
+                                                                               : "String_ExpenseActiveSkill",
+                                                                           token: token).ConfigureAwait(false),
+                                      await GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
+                                      intTotalBaseRating,
+                                      intTotalBaseRating + 1,
+                                      await LanguageManager.GetStringAsync("String_Space", token: token)
+                                                           .ConfigureAwait(false));
 
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(price * -1, upgradetext, ExpenseType.Karma, DateTime.Now);
@@ -6053,16 +5993,14 @@ namespace Chummer.Backend.Skills
                         intTotalBaseRating == 0 ? KarmaExpenseType.AddSkill : KarmaExpenseType.ImproveSkill,
                         InternalId);
 
-                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
+                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
+                                         .ConfigureAwait(false);
 
                     await CharacterObject.ModifyKarmaAsync(-price, token).ConfigureAwait(false);
                 }
 
-                await SetKarmaAsync(await GetKarmaAsync(token).ConfigureAwait(false) + 1, token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                await SetKarmaAsync(await GetKarmaAsync(token).ConfigureAwait(false) + 1, token)
+                    .ConfigureAwait(false);
             }
         }
 
@@ -6074,60 +6012,59 @@ namespace Chummer.Backend.Skills
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intCachedCanAffordSpecialization < 0)
+                    // intReturn for thread safety
+                    int intReturn = _intCachedCanAffordSpecialization;
+                    if (intReturn < 0)
                     {
-                        using (LockObject.EnterWriteLock())
+                        if (!CanHaveSpecs)
                         {
-                            if (_intCachedCanAffordSpecialization < 0) // Just in case
+                            intReturn = 0;
+                        }
+                        else
+                        {
+                            int intPrice = IsKnowledgeSkill
+                                ? CharacterObject.Settings.KarmaKnowledgeSpecialization
+                                : CharacterObject.Settings.KarmaSpecialization;
+
+                            decimal decExtraSpecCost = 0;
+                            int intTotalBaseRating = TotalBaseRating;
+                            decimal decSpecCostMultiplier = 1.0m;
+                            foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
                             {
-                                if (!CanHaveSpecs)
-                                    _intCachedCanAffordSpecialization = 0;
-                                else
+                                if (objLoopImprovement.Minimum <= intTotalBaseRating
+                                    && (string.IsNullOrEmpty(objLoopImprovement.Condition)
+                                        || (objLoopImprovement.Condition == "career") == CharacterObject.Created
+                                        || (objLoopImprovement.Condition == "create") !=
+                                        CharacterObject.Created)
+                                    && objLoopImprovement.Enabled
+                                    && objLoopImprovement.ImprovedName == SkillCategory)
                                 {
-                                    int intPrice = IsKnowledgeSkill
-                                        ? CharacterObject.Settings.KarmaKnowledgeSpecialization
-                                        : CharacterObject.Settings.KarmaSpecialization;
-
-                                    decimal decExtraSpecCost = 0;
-                                    int intTotalBaseRating = TotalBaseRating;
-                                    decimal decSpecCostMultiplier = 1.0m;
-                                    foreach (Improvement objLoopImprovement in CharacterObject.Improvements)
+                                    switch (objLoopImprovement.ImproveType)
                                     {
-                                        if (objLoopImprovement.Minimum <= intTotalBaseRating
-                                            && (string.IsNullOrEmpty(objLoopImprovement.Condition)
-                                                || (objLoopImprovement.Condition == "career") == CharacterObject.Created
-                                                || (objLoopImprovement.Condition == "create") !=
-                                                CharacterObject.Created)
-                                            && objLoopImprovement.Enabled
-                                            && objLoopImprovement.ImprovedName == SkillCategory)
-                                        {
-                                            switch (objLoopImprovement.ImproveType)
-                                            {
-                                                case Improvement.ImprovementType.SkillCategorySpecializationKarmaCost:
-                                                    decExtraSpecCost += objLoopImprovement.Value;
-                                                    break;
+                                        case Improvement.ImprovementType.SkillCategorySpecializationKarmaCost:
+                                            decExtraSpecCost += objLoopImprovement.Value;
+                                            break;
 
-                                                case Improvement.ImprovementType
-                                                    .SkillCategorySpecializationKarmaCostMultiplier:
-                                                    decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
-                                                    break;
-                                            }
-                                        }
+                                        case Improvement.ImprovementType
+                                                        .SkillCategorySpecializationKarmaCostMultiplier:
+                                            decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
+                                            break;
                                     }
-
-                                    if (decSpecCostMultiplier != 1.0m)
-                                        intPrice = (intPrice * decSpecCostMultiplier + decExtraSpecCost)
-                                            .StandardRound();
-                                    else
-                                        intPrice += decExtraSpecCost.StandardRound(); //Spec
-
-                                    _intCachedCanAffordSpecialization = (intPrice <= CharacterObject.Karma).ToInt32();
                                 }
                             }
+
+                            if (decSpecCostMultiplier != 1.0m)
+                                intPrice = (intPrice * decSpecCostMultiplier + decExtraSpecCost)
+                                    .StandardRound();
+                            else
+                                intPrice += decExtraSpecCost.StandardRound(); //Spec
+
+                            intReturn = (intPrice <= CharacterObject.Karma).ToInt32();
                         }
+                        _intCachedCanAffordSpecialization = intReturn;
                     }
 
-                    return _intCachedCanAffordSpecialization > 0;
+                    return intReturn > 0;
                 }
             }
         }
@@ -6136,74 +6073,66 @@ namespace Chummer.Backend.Skills
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (_intCachedCanAffordSpecialization < 0)
+                // intReturn for thread safety
+                int intReturn = _intCachedCanAffordSpecialization;
+                if (intReturn < 0)
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
+                    if (!CanHaveSpecs)
+                        intReturn = 0;
+                    else
                     {
-                        if (_intCachedCanAffordSpecialization < 0) // Just in case
-                        {
-                            if (!CanHaveSpecs)
-                                _intCachedCanAffordSpecialization = 0;
-                            else
+                        int intPrice = IsKnowledgeSkill
+                            ? CharacterObject.Settings.KarmaKnowledgeSpecialization
+                            : CharacterObject.Settings.KarmaSpecialization;
+
+                        int intTotalBaseRating = await GetTotalBaseRatingAsync(token).ConfigureAwait(false);
+                        decimal decSpecCostMultiplier = 1.0m;
+                        decimal decExtraSpecCost = await CharacterObject.Improvements.SumAsync(
+                            objLoopImprovement =>
                             {
-                                int intPrice = IsKnowledgeSkill
-                                    ? CharacterObject.Settings.KarmaKnowledgeSpecialization
-                                    : CharacterObject.Settings.KarmaSpecialization;
-
-                                int intTotalBaseRating = await GetTotalBaseRatingAsync(token).ConfigureAwait(false);
-                                decimal decSpecCostMultiplier = 1.0m;
-                                decimal decExtraSpecCost = await CharacterObject.Improvements.SumAsync(
-                                    objLoopImprovement =>
+                                if (objLoopImprovement.Minimum <= intTotalBaseRating
+                                    && (string.IsNullOrEmpty(objLoopImprovement.Condition)
+                                        || (objLoopImprovement.Condition == "career") == CharacterObject.Created
+                                        || (objLoopImprovement.Condition == "create") !=
+                                        CharacterObject.Created)
+                                    && objLoopImprovement.Enabled
+                                    && objLoopImprovement.ImprovedName == SkillCategory)
+                                {
+                                    switch (objLoopImprovement.ImproveType)
                                     {
-                                        if (objLoopImprovement.Minimum <= intTotalBaseRating
-                                            && (string.IsNullOrEmpty(objLoopImprovement.Condition)
-                                                || (objLoopImprovement.Condition == "career") == CharacterObject.Created
-                                                || (objLoopImprovement.Condition == "create") !=
-                                                CharacterObject.Created)
-                                            && objLoopImprovement.Enabled
-                                            && objLoopImprovement.ImprovedName == SkillCategory)
-                                        {
-                                            switch (objLoopImprovement.ImproveType)
-                                            {
-                                                case Improvement.ImprovementType.SkillCategorySpecializationKarmaCost:
-                                                    return objLoopImprovement.Value;
+                                        case Improvement.ImprovementType.SkillCategorySpecializationKarmaCost:
+                                            return objLoopImprovement.Value;
 
-                                                case Improvement.ImprovementType
-                                                                .SkillCategorySpecializationKarmaCostMultiplier:
-                                                    decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
-                                                    break;
-                                            }
-                                        }
+                                        case Improvement.ImprovementType
+                                                        .SkillCategorySpecializationKarmaCostMultiplier:
+                                            decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
+                                            break;
+                                    }
+                                }
 
-                                        return 0;
-                                    }, token: token).ConfigureAwait(false);
+                                return 0;
+                            }, token: token).ConfigureAwait(false);
 
-                                if (decSpecCostMultiplier != 1.0m)
-                                    intPrice = (intPrice * decSpecCostMultiplier + decExtraSpecCost)
-                                        .StandardRound();
-                                else
-                                    intPrice += decExtraSpecCost.StandardRound(); //Spec
+                        if (decSpecCostMultiplier != 1.0m)
+                            intPrice = (intPrice * decSpecCostMultiplier + decExtraSpecCost)
+                                .StandardRound();
+                        else
+                            intPrice += decExtraSpecCost.StandardRound(); //Spec
 
-                                _intCachedCanAffordSpecialization
-                                    = (intPrice <= await CharacterObject.GetKarmaAsync(token).ConfigureAwait(false)).ToInt32();
-                            }
-                        }
+                        intReturn
+                            = (intPrice <= await CharacterObject.GetKarmaAsync(token).ConfigureAwait(false))
+                            .ToInt32();
                     }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
+                    _intCachedCanAffordSpecialization = intReturn;
                 }
 
-                return _intCachedCanAffordSpecialization > 0;
+                return intReturn > 0;
             }
         }
 
         public async ValueTask AddSpecialization(string strName, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
                 SkillSpecialization nspec = new SkillSpecialization(CharacterObject, strName);
                 bool blnCreated = await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false);
@@ -6244,24 +6173,34 @@ namespace Chummer.Backend.Skills
                     if (intPrice > await CharacterObject.GetKarmaAsync(token).ConfigureAwait(false))
                         return;
 
-                    string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-                    string strUpgradeText = await LanguageManager.GetStringAsync("String_ExpenseLearnSpecialization", token: token).ConfigureAwait(false) + strSpace
-                        + await GetCurrentDisplayNameAsync(token).ConfigureAwait(false) + strSpace + '(' + strName + ')';
+                    string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
+                                                           .ConfigureAwait(false);
+                    string strUpgradeText
+                        = await LanguageManager.GetStringAsync("String_ExpenseLearnSpecialization", token: token)
+                                               .ConfigureAwait(false) + strSpace
+                                                                      + await GetCurrentDisplayNameAsync(token)
+                                                                          .ConfigureAwait(false) + strSpace + '('
+                                                                      + strName + ')';
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                     objExpense.Create(intPrice * -1, strUpgradeText, ExpenseType.Karma, DateTime.Now);
                     objExpense.Undo =
                         new ExpenseUndo().CreateKarma(KarmaExpenseType.AddSpecialization, nspec.InternalId);
 
-                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
+                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
+                                         .ConfigureAwait(false);
 
                     await CharacterObject.ModifyKarmaAsync(-intPrice, token).ConfigureAwait(false);
                 }
 
-                await Specializations.AddAsync(nspec, token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    await Specializations.AddAsync(nspec, token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
             }
         }
 
@@ -6276,18 +6215,15 @@ namespace Chummer.Backend.Skills
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intCachedFreeKarma != int.MinValue)
-                        return _intCachedFreeKarma;
+                    // intReturn for thread safety
+                    int intReturn = _intCachedFreeKarma;
+                    if (intReturn != int.MinValue)
+                        return intReturn;
 
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (_intCachedFreeKarma != int.MinValue) // Just in case
-                            return _intCachedFreeKarma;
-                        return _intCachedFreeKarma = string.IsNullOrEmpty(Name)
-                            ? 0
-                            : ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SkillLevel, false,
-                                DictionaryKey).StandardRound();
-                    }
+                    return _intCachedFreeKarma = string.IsNullOrEmpty(Name)
+                        ? 0
+                        : ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SkillLevel, false,
+                                                     DictionaryKey).StandardRound();
                 }
             }
         }
@@ -6299,24 +6235,19 @@ namespace Chummer.Backend.Skills
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (_intCachedFreeKarma != int.MinValue)
-                    return _intCachedFreeKarma;
+                // intReturn for thread safety
+                int intReturn = _intCachedFreeKarma;
+                if (intReturn != int.MinValue)
+                    return intReturn;
 
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
-                {
-                    if (_intCachedFreeKarma != int.MinValue) // Just in case
-                        return _intCachedFreeKarma;
-                    return _intCachedFreeKarma = string.IsNullOrEmpty(Name)
-                        ? 0
-                        : (await ImprovementManager.ValueOfAsync(CharacterObject,
-                            Improvement.ImprovementType.SkillLevel,
-                            false, DictionaryKey, token: token).ConfigureAwait(false)).StandardRound();
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
+                return _intCachedFreeKarma = string.IsNullOrEmpty(Name)
+                    ? 0
+                    : (await ImprovementManager.ValueOfAsync(CharacterObject,
+                                                             Improvement.ImprovementType.SkillLevel,
+                                                             false,
+                                                             await GetDictionaryKeyAsync(token).ConfigureAwait(false),
+                                                             token: token).ConfigureAwait(false))
+                    .StandardRound();
             }
         }
 
@@ -6331,18 +6262,15 @@ namespace Chummer.Backend.Skills
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intCachedFreeBase != int.MinValue)
-                        return _intCachedFreeBase;
+                    // intReturn for thread safety
+                    int intReturn = _intCachedFreeBase;
+                    if (intReturn != int.MinValue)
+                        return intReturn;
 
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (_intCachedFreeBase != int.MinValue) // Just in case
-                            return _intCachedFreeBase;
-                        return _intCachedFreeBase = string.IsNullOrEmpty(Name)
-                            ? 0
-                            : ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SkillBase, false,
-                                DictionaryKey).StandardRound();
-                    }
+                    return _intCachedFreeBase = string.IsNullOrEmpty(Name)
+                        ? 0
+                        : ImprovementManager.ValueOf(CharacterObject, Improvement.ImprovementType.SkillBase, false,
+                                                     DictionaryKey).StandardRound();
                 }
             }
         }
@@ -6354,24 +6282,18 @@ namespace Chummer.Backend.Skills
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (_intCachedFreeBase != int.MinValue)
-                    return _intCachedFreeBase;
+                // intReturn for thread safety
+                int intReturn = _intCachedFreeBase;
+                if (intReturn != int.MinValue)
+                    return intReturn;
 
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
-                {
-                    if (_intCachedFreeBase != int.MinValue) // Just in case
-                        return _intCachedFreeBase;
-                    return _intCachedFreeBase = string.IsNullOrEmpty(Name)
-                        ? 0
-                        : (await ImprovementManager.ValueOfAsync(CharacterObject,
-                            Improvement.ImprovementType.SkillBase,
-                            false, DictionaryKey, token: token).ConfigureAwait(false)).StandardRound();
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
+                return _intCachedFreeBase = string.IsNullOrEmpty(Name)
+                    ? 0
+                    : (await ImprovementManager.ValueOfAsync(CharacterObject,
+                                                             Improvement.ImprovementType.SkillBase,
+                                                             false,
+                                                             await GetDictionaryKeyAsync(token).ConfigureAwait(false),
+                                                             token: token).ConfigureAwait(false)).StandardRound();
             }
         }
 
@@ -6386,27 +6308,24 @@ namespace Chummer.Backend.Skills
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intCachedForcedBuyWithKarma < 0)
+                    // intReturn for thread safety
+                    int intReturn = _intCachedForcedBuyWithKarma;
+                    if (intReturn < 0)
                     {
-                        using (LockObject.EnterWriteLock())
-                        {
-                            if (_intCachedForcedBuyWithKarma < 0) // Just in case
-                            {
-                                _intCachedForcedBuyWithKarma = (!CharacterObject.IgnoreRules
-                                                                && Specializations.Any(x => !x.Free)
-                                                                && ((KarmaPoints > 0
-                                                                     && BasePoints + FreeBase == 0
-                                                                     && !CharacterObject.Settings
-                                                                         .AllowPointBuySpecializationsOnKarmaSkills)
-                                                                    || (CharacterObject.Settings
-                                                                            .SpecializationsBreakSkillGroups
-                                                                        && (SkillGroupObject?.Karma > 0
-                                                                            || SkillGroupObject?.Base > 0)))).ToInt32();
-                            }
-                        }
+                        intReturn = (!CharacterObject.IgnoreRules
+                                     && Specializations.Any(x => !x.Free)
+                                     && ((KarmaPoints > 0
+                                          && BasePoints + FreeBase == 0
+                                          && !CharacterObject.Settings
+                                                             .AllowPointBuySpecializationsOnKarmaSkills)
+                                         || (CharacterObject.Settings
+                                                            .SpecializationsBreakSkillGroups
+                                             && (SkillGroupObject?.Karma > 0
+                                                 || SkillGroupObject?.Base > 0)))).ToInt32();
+                        _intCachedForcedBuyWithKarma = intReturn;
                     }
 
-                    return _intCachedForcedBuyWithKarma > 0;
+                    return intReturn > 0;
                 }
             }
         }
@@ -6418,38 +6337,30 @@ namespace Chummer.Backend.Skills
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (_intCachedForcedNotBuyWithKarma < 0)
+                // intReturn for thread safety
+                int intReturn = _intCachedForcedBuyWithKarma;
+                if (intReturn < 0)
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
-                    {
-                        if (_intCachedForcedNotBuyWithKarma < 0) // Just in case
-                        {
-                            CharacterSettings objSettings =
-                                await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
-                            _intCachedForcedNotBuyWithKarma =
-                                (!await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false)
-                                 && await Specializations.AnyAsync(x => !x.Free, token: token).ConfigureAwait(false)
-                                 && ((await GetKarmaPointsAsync(token).ConfigureAwait(false) > 0
-                                      && await GetBasePointsAsync(token).ConfigureAwait(false)
-                                      + await GetFreeBaseAsync(token).ConfigureAwait(false) == 0
-                                      && !await objSettings.GetAllowPointBuySpecializationsOnKarmaSkillsAsync(token)
-                                                           .ConfigureAwait(false))
-                                     || (await objSettings.GetSpecializationsBreakSkillGroupsAsync(token)
-                                                          .ConfigureAwait(false)
-                                         && SkillGroupObject != null
-                                         && (await SkillGroupObject.GetKarmaAsync(token).ConfigureAwait(false) > 0
-                                             || await SkillGroupObject.GetBaseAsync(token).ConfigureAwait(false) > 0))))
-                                .ToInt32();
-                        }
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
+                    CharacterSettings objSettings =
+                        await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
+                    intReturn =
+                        (!await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false)
+                         && await Specializations.AnyAsync(x => !x.Free, token: token).ConfigureAwait(false)
+                         && ((await GetKarmaPointsAsync(token).ConfigureAwait(false) > 0
+                              && await GetBasePointsAsync(token).ConfigureAwait(false)
+                              + await GetFreeBaseAsync(token).ConfigureAwait(false) == 0
+                              && !await objSettings.GetAllowPointBuySpecializationsOnKarmaSkillsAsync(token)
+                                                   .ConfigureAwait(false))
+                             || (await objSettings.GetSpecializationsBreakSkillGroupsAsync(token)
+                                                  .ConfigureAwait(false)
+                                 && SkillGroupObject != null
+                                 && (await SkillGroupObject.GetKarmaAsync(token).ConfigureAwait(false) > 0
+                                     || await SkillGroupObject.GetBaseAsync(token).ConfigureAwait(false) > 0))))
+                        .ToInt32();
+                    _intCachedForcedBuyWithKarma = intReturn;
                 }
 
-                return _intCachedForcedNotBuyWithKarma > 0;
+                return intReturn > 0;
             }
         }
 
@@ -6464,23 +6375,20 @@ namespace Chummer.Backend.Skills
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intCachedForcedNotBuyWithKarma < 0)
+                    // intReturn for thread safety
+                    int intReturn = _intCachedForcedNotBuyWithKarma;
+                    if (intReturn < 0)
                     {
-                        using (LockObject.EnterWriteLock())
-                        {
-                            if (_intCachedForcedNotBuyWithKarma < 0) // Just in case
-                            {
-                                _intCachedForcedNotBuyWithKarma = (TotalBaseRating == 0
-                                                                   || (CharacterObject.Settings
-                                                                           .StrictSkillGroupsInCreateMode
-                                                                       && !CharacterObject.Created
-                                                                       && !CharacterObject.IgnoreRules
-                                                                       && SkillGroupObject?.Karma > 0)).ToInt32();
-                            }
-                        }
+                        intReturn = (TotalBaseRating == 0
+                                     || (CharacterObject.Settings
+                                                        .StrictSkillGroupsInCreateMode
+                                         && !CharacterObject.Created
+                                         && !CharacterObject.IgnoreRules
+                                         && SkillGroupObject?.Karma > 0)).ToInt32();
+                        _intCachedForcedNotBuyWithKarma = intReturn;
                     }
 
-                    return _intCachedForcedNotBuyWithKarma > 0;
+                    return intReturn > 0;
                 }
             }
         }
@@ -6492,35 +6400,27 @@ namespace Chummer.Backend.Skills
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (_intCachedForcedNotBuyWithKarma < 0)
+                // intReturn for thread safety
+                int intReturn = _intCachedForcedNotBuyWithKarma;
+                if (intReturn < 0)
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
-                    {
-                        if (_intCachedForcedNotBuyWithKarma < 0)
-                        {
-                            _intCachedForcedNotBuyWithKarma =
-                                (await GetTotalBaseRatingAsync(token).ConfigureAwait(false) == 0
-                                 || (await (await CharacterObject.GetSettingsAsync(token)
-                                                                 .ConfigureAwait(false))
-                                           .GetStrictSkillGroupsInCreateModeAsync(token)
-                                           .ConfigureAwait(false)
-                                     && !await CharacterObject.GetCreatedAsync(token)
-                                                              .ConfigureAwait(false)
-                                     && !await CharacterObject.GetIgnoreRulesAsync(token)
-                                                              .ConfigureAwait(false)
-                                     && SkillGroupObject != null
-                                     && await SkillGroupObject.GetKarmaAsync(token)
-                                                              .ConfigureAwait(false) > 0)).ToInt32();
-                        }
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
+                    intReturn =
+                        (await GetTotalBaseRatingAsync(token).ConfigureAwait(false) == 0
+                         || (await (await CharacterObject.GetSettingsAsync(token)
+                                                         .ConfigureAwait(false))
+                                   .GetStrictSkillGroupsInCreateModeAsync(token)
+                                   .ConfigureAwait(false)
+                             && !await CharacterObject.GetCreatedAsync(token)
+                                                      .ConfigureAwait(false)
+                             && !await CharacterObject.GetIgnoreRulesAsync(token)
+                                                      .ConfigureAwait(false)
+                             && SkillGroupObject != null
+                             && await SkillGroupObject.GetKarmaAsync(token)
+                                                      .ConfigureAwait(false) > 0)).ToInt32();
+                    _intCachedForcedNotBuyWithKarma = intReturn;
                 }
 
-                return _intCachedForcedNotBuyWithKarma > 0;
+                return intReturn > 0;
             }
         }
 

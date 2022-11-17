@@ -344,7 +344,7 @@ namespace Chummer
                         byte[] achrBuffer = strBase64String.ToBase64PooledByteArray(out int intArrayLength);
                         try
                         {
-                            await objStream.WriteAsync(achrBuffer, 0, intArrayLength, token);
+                            await objStream.WriteAsync(achrBuffer, 0, intArrayLength, token).ConfigureAwait(false);
                         }
                         finally
                         {

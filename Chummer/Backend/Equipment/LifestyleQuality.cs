@@ -1345,12 +1345,14 @@ namespace Chummer.Backend.Equipment
 
         public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            // ReSharper disable once MethodHasAsyncOverload
+            using (blnSync ? EnterReadLock.Enter(LockObject, token) : await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
-                                                && !GlobalSettings.LiveCustomData)
-                    return _objCachedMyXmlNode;
-                _objCachedMyXmlNode = (blnSync
+                XmlNode objReturn = _objCachedMyXmlNode;
+                if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
+                                      && !GlobalSettings.LiveCustomData)
+                    return objReturn;
+                objReturn = (blnSync
                         // ReSharper disable once MethodHasAsyncOverload
                         ? _objCharacter.LoadData("lifestyles.xml", strLanguage, token: token)
                         : await _objCharacter.LoadDataAsync("lifestyles.xml", strLanguage, token: token)
@@ -1363,8 +1365,9 @@ namespace Chummer.Backend.Equipment
                                             + SourceIDString.ToUpperInvariant()
                                                             .CleanXPath()
                                             + ']');
+                _objCachedMyXmlNode = objReturn;
                 _strCachedXmlNodeLanguage = strLanguage;
-                return _objCachedMyXmlNode;
+                return objReturn;
             }
         }
 
@@ -1377,12 +1380,14 @@ namespace Chummer.Backend.Equipment
 
         public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            // ReSharper disable once MethodHasAsyncOverload
+            using (blnSync ? EnterReadLock.Enter(LockObject, token) : await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
-                                                  && !GlobalSettings.LiveCustomData)
-                    return _objCachedMyXPathNode;
-                _objCachedMyXPathNode = (blnSync
+                XPathNavigator objReturn = _objCachedMyXPathNode;
+                if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
+                                      && !GlobalSettings.LiveCustomData)
+                    return objReturn;
+                objReturn = (blnSync
                         // ReSharper disable once MethodHasAsyncOverload
                         ? _objCharacter.LoadDataXPath("lifestyles.xml", strLanguage, token: token)
                         : await _objCharacter.LoadDataXPathAsync("lifestyles.xml", strLanguage, token: token)
@@ -1395,8 +1400,9 @@ namespace Chummer.Backend.Equipment
                                             + SourceIDString.ToUpperInvariant()
                                                             .CleanXPath()
                                             + ']');
+                _objCachedMyXPathNode = objReturn;
                 _strCachedXPathNodeLanguage = strLanguage;
-                return _objCachedMyXPathNode;
+                return objReturn;
             }
         }
 

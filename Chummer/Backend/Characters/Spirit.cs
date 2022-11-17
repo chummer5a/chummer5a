@@ -1357,21 +1357,24 @@ namespace Chummer
 
         public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            // ReSharper disable once MethodHasAsyncOverload
+            using (blnSync ? EnterReadLock.Enter(LockObject, token) : await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
-                                                && !GlobalSettings.LiveCustomData)
-                    return _objCachedMyXmlNode;
-                _objCachedMyXmlNode = (blnSync
+                XmlNode objReturn = _objCachedMyXmlNode;
+                if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
+                                      && !GlobalSettings.LiveCustomData)
+                    return objReturn;
+                objReturn = (blnSync
                         // ReSharper disable once MethodHasAsyncOverload
-                        ? CharacterObject.LoadData(_eEntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml",
+                        ? CharacterObject.LoadData(EntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml",
                                                    strLanguage, token: token)
                         : await CharacterObject.LoadDataAsync(
-                            _eEntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml", strLanguage,
+                            EntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml", strLanguage,
                             token: token).ConfigureAwait(false))
                     .SelectSingleNode("/chummer/spirits/spirit[name = " + Name.CleanXPath() + ']');
+                _objCachedMyXmlNode = objReturn;
                 _strCachedXmlNodeLanguage = strLanguage;
-                return _objCachedMyXmlNode;
+                return objReturn;
             }
         }
 
@@ -1380,22 +1383,25 @@ namespace Chummer
 
         public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            // ReSharper disable once MethodHasAsyncOverload
+            using (blnSync ? EnterReadLock.Enter(LockObject, token) : await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
-                                                  && !GlobalSettings.LiveCustomData)
-                    return _objCachedMyXPathNode;
-                _objCachedMyXPathNode = (blnSync
+                XPathNavigator objReturn = _objCachedMyXPathNode;
+                if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
+                                      && !GlobalSettings.LiveCustomData)
+                    return objReturn;
+                objReturn = (blnSync
                         // ReSharper disable once MethodHasAsyncOverload
                         ? CharacterObject.LoadDataXPath(
-                            _eEntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml",
+                            EntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml",
                             strLanguage, token: token)
                         : await CharacterObject.LoadDataXPathAsync(
-                            _eEntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml", strLanguage,
+                            EntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml", strLanguage,
                             token: token).ConfigureAwait(false))
                     .SelectSingleNode("/chummer/spirits/spirit[name = " + Name.CleanXPath() + ']');
+                _objCachedMyXPathNode = objReturn;
                 _strCachedXPathNodeLanguage = strLanguage;
-                return _objCachedMyXPathNode;
+                return objReturn;
             }
         }
 

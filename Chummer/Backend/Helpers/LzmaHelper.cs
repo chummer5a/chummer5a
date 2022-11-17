@@ -277,10 +277,10 @@ namespace Chummer
             encoder.SetCoderProperties(propIDs, properties);
             encoder.WriteCoderProperties(objOutStream);
             long fileSize = eos || stdInMode ? -1 : objInStream.Length;
-            await objOutStream.WriteAsync(BitConverter.GetBytes(fileSize), 0, 8, token);
+            await objOutStream.WriteAsync(BitConverter.GetBytes(fileSize), 0, 8, token).ConfigureAwait(false);
             token.ThrowIfCancellationRequested();
             IAsyncCodeProgress funcProgress = funcOnProgress != null ? new AsyncDelegateCodeProgress(funcOnProgress) : null;
-            await Task.Run(() => encoder.CodeAsync(objInStream, objOutStream, -1, -1, funcProgress, token), token);
+            await Task.Run(() => encoder.CodeAsync(objInStream, objOutStream, -1, -1, funcProgress, token), token).ConfigureAwait(false);
         }
 
         public static void DecompressLzmaFile(this FileStream objInStream, Stream objOutStream, Action<long, long> funcOnProgress = null)
@@ -310,7 +310,7 @@ namespace Chummer
                 throw new ArgumentException("input .lzma is too short");
             decoder.SetDecoderProperties(properties);
             byte[] achrBuffer = new byte[8];
-            _ = await objInStream.ReadAsync(achrBuffer, 0, 8, token);
+            _ = await objInStream.ReadAsync(achrBuffer, 0, 8, token).ConfigureAwait(false);
             long outSize = BitConverter.ToInt64(achrBuffer, 0);
             token.ThrowIfCancellationRequested();
             long compressedSize = objInStream.Length - objInStream.Position;

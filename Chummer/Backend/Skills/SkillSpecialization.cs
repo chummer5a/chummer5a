@@ -207,21 +207,24 @@ namespace Chummer.Backend.Skills
 
         public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            // ReSharper disable once MethodHasAsyncOverload
+            using (blnSync ? EnterReadLock.Enter(LockObject, token) : await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
-                                                && !GlobalSettings.LiveCustomData)
-                    return _objCachedMyXmlNode;
+                XmlNode objReturn = _objCachedMyXmlNode;
+                if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
+                                      && !GlobalSettings.LiveCustomData)
+                    return objReturn;
                 if (Parent == null)
-                    _objCachedMyXmlNode = null;
+                    objReturn = null;
                 else
-                    _objCachedMyXmlNode = (blnSync
+                    objReturn = (blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? Parent.GetNode(strLanguage, token: token)
                             : await Parent.GetNodeAsync(strLanguage, token: token).ConfigureAwait(false))
                         ?.SelectSingleNode("specs/spec[. = " + Name.CleanXPath() + ']');
+                _objCachedMyXmlNode = objReturn;
                 _strCachedXmlNodeLanguage = strLanguage;
-                return _objCachedMyXmlNode;
+                return objReturn;
             }
         }
 
@@ -231,21 +234,24 @@ namespace Chummer.Backend.Skills
 
         public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            // ReSharper disable once MethodHasAsyncOverload
+            using (blnSync ? EnterReadLock.Enter(LockObject, token) : await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
-                                                  && !GlobalSettings.LiveCustomData)
-                    return _objCachedMyXPathNode;
+                XPathNavigator objReturn = _objCachedMyXPathNode;
+                if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
+                                      && !GlobalSettings.LiveCustomData)
+                    return objReturn;
                 if (Parent == null)
-                    _objCachedMyXmlNode = null;
+                    objReturn = null;
                 else
-                    _objCachedMyXPathNode = (blnSync
+                    objReturn = (blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? Parent.GetNodeXPath(strLanguage, token: token)
                             : await Parent.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false))
                         ?.SelectSingleNode("specs/spec[. = " + Name.CleanXPath() + ']');
+                _objCachedMyXPathNode = objReturn;
                 _strCachedXPathNodeLanguage = strLanguage;
-                return _objCachedMyXPathNode;
+                return objReturn;
             }
         }
 

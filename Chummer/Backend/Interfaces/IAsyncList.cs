@@ -47,53 +47,68 @@ namespace Chummer
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
-            // Binary search for the place where item should be inserted
-            int intIntervalEnd = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1;
-            int intTargetIndex = intIntervalEnd / 2;
-            for (int intIntervalStart = 0;
-                 intIntervalStart <= intIntervalEnd;
-                 intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
+            if (lstCollection is IHasLockObject objLocker)
+                await objLocker.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            else
+                objLocker = null;
+            try
             {
-                T objLoopExistingItem = await lstCollection.GetValueAtAsync(intTargetIndex, token).ConfigureAwait(false);
-                int intCompareResult = objLoopExistingItem.CompareTo(objNewItem);
-                if (intCompareResult == 0)
+                // Binary search for the place where item should be inserted
+                int intIntervalEnd = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1;
+                int intTargetIndex = intIntervalEnd / 2;
+                for (int intIntervalStart = 0;
+                     intIntervalStart <= intIntervalEnd;
+                     intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
                 {
-                    // Make sure we insert new items at the end of any equalities (so that order is maintained when adding multiple items)
-                    for (int i = intTargetIndex + 1; i < await lstCollection.GetCountAsync(token).ConfigureAwait(false); ++i)
+                    T objLoopExistingItem
+                        = await lstCollection.GetValueAtAsync(intTargetIndex, token).ConfigureAwait(false);
+                    int intCompareResult = objLoopExistingItem.CompareTo(objNewItem);
+                    if (intCompareResult == 0)
                     {
-                        T objInnerLoopExistingItem = await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false);
-                        if (objInnerLoopExistingItem.CompareTo(objNewItem) == 0)
+                        // Make sure we insert new items at the end of any equalities (so that order is maintained when adding multiple items)
+                        for (int i = intTargetIndex + 1;
+                             i < await lstCollection.GetCountAsync(token).ConfigureAwait(false);
+                             ++i)
                         {
-                            ++intTargetIndex;
-                            objLoopExistingItem = objInnerLoopExistingItem;
+                            T objInnerLoopExistingItem
+                                = await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false);
+                            if (objInnerLoopExistingItem.CompareTo(objNewItem) == 0)
+                            {
+                                ++intTargetIndex;
+                                objLoopExistingItem = objInnerLoopExistingItem;
+                            }
+                            else
+                                break;
                         }
-                        else
-                            break;
+
+                        if (funcOverrideIfEquals != null)
+                        {
+                            funcOverrideIfEquals.Invoke(objLoopExistingItem, objNewItem);
+                            return;
+                        }
+
+                        break;
                     }
 
-                    if (funcOverrideIfEquals != null)
+                    if (intIntervalStart == intIntervalEnd)
                     {
-                        funcOverrideIfEquals.Invoke(objLoopExistingItem, objNewItem);
-                        return;
+                        if (intCompareResult > 0)
+                            ++intTargetIndex;
+                        break;
                     }
 
-                    break;
-                }
-
-                if (intIntervalStart == intIntervalEnd)
-                {
                     if (intCompareResult > 0)
-                        ++intTargetIndex;
-                    break;
+                        intIntervalStart = intTargetIndex + 1;
+                    else
+                        intIntervalEnd = intTargetIndex - 1;
                 }
 
-                if (intCompareResult > 0)
-                    intIntervalStart = intTargetIndex + 1;
-                else
-                    intIntervalEnd = intTargetIndex - 1;
+                await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
             }
-
-            await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
+            finally
+            {
+                objLocker?.LockObject.ExitReadLock();
+            }
         }
 
         public static async Task AddWithSortAsync<T>(this IAsyncList<T> lstCollection, T objNewItem, IComparer<T> comparer,
@@ -104,53 +119,68 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (comparer == null)
                 throw new ArgumentNullException(nameof(comparer));
-            // Binary search for the place where item should be inserted
-            int intIntervalEnd = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1;
-            int intTargetIndex = intIntervalEnd / 2;
-            for (int intIntervalStart = 0;
-                 intIntervalStart <= intIntervalEnd;
-                 intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
+            if (lstCollection is IHasLockObject objLocker)
+                await objLocker.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            else
+                objLocker = null;
+            try
             {
-                T objLoopExistingItem = await lstCollection.GetValueAtAsync(intTargetIndex, token).ConfigureAwait(false);
-                int intCompareResult = comparer.Compare(objLoopExistingItem, objNewItem);
-                if (intCompareResult == 0)
+                // Binary search for the place where item should be inserted
+                int intIntervalEnd = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1;
+                int intTargetIndex = intIntervalEnd / 2;
+                for (int intIntervalStart = 0;
+                     intIntervalStart <= intIntervalEnd;
+                     intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
                 {
-                    // Make sure we insert new items at the end of any equalities (so that order is maintained when adding multiple items)
-                    for (int i = intTargetIndex + 1; i < await lstCollection.GetCountAsync(token).ConfigureAwait(false); ++i)
+                    T objLoopExistingItem
+                        = await lstCollection.GetValueAtAsync(intTargetIndex, token).ConfigureAwait(false);
+                    int intCompareResult = comparer.Compare(objLoopExistingItem, objNewItem);
+                    if (intCompareResult == 0)
                     {
-                        T objInnerLoopExistingItem = await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false);
-                        if (comparer.Compare(objInnerLoopExistingItem, objNewItem) == 0)
+                        // Make sure we insert new items at the end of any equalities (so that order is maintained when adding multiple items)
+                        for (int i = intTargetIndex + 1;
+                             i < await lstCollection.GetCountAsync(token).ConfigureAwait(false);
+                             ++i)
                         {
-                            ++intTargetIndex;
-                            objLoopExistingItem = objInnerLoopExistingItem;
+                            T objInnerLoopExistingItem
+                                = await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false);
+                            if (comparer.Compare(objInnerLoopExistingItem, objNewItem) == 0)
+                            {
+                                ++intTargetIndex;
+                                objLoopExistingItem = objInnerLoopExistingItem;
+                            }
+                            else
+                                break;
                         }
-                        else
-                            break;
+
+                        if (funcOverrideIfEquals != null)
+                        {
+                            funcOverrideIfEquals.Invoke(objLoopExistingItem, objNewItem);
+                            return;
+                        }
+
+                        break;
                     }
 
-                    if (funcOverrideIfEquals != null)
+                    if (intIntervalStart == intIntervalEnd)
                     {
-                        funcOverrideIfEquals.Invoke(objLoopExistingItem, objNewItem);
-                        return;
+                        if (intCompareResult > 0)
+                            ++intTargetIndex;
+                        break;
                     }
 
-                    break;
-                }
-
-                if (intIntervalStart == intIntervalEnd)
-                {
                     if (intCompareResult > 0)
-                        ++intTargetIndex;
-                    break;
+                        intIntervalStart = intTargetIndex + 1;
+                    else
+                        intIntervalEnd = intTargetIndex - 1;
                 }
 
-                if (intCompareResult > 0)
-                    intIntervalStart = intTargetIndex + 1;
-                else
-                    intIntervalEnd = intTargetIndex - 1;
+                await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
             }
-
-            await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
+            finally
+            {
+                objLocker?.LockObject.ExitReadLock();
+            }
         }
 
         public static async Task AddWithSortAsync<T>(this IAsyncList<T> lstCollection, T objNewItem,
@@ -161,53 +191,68 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
-            // Binary search for the place where item should be inserted
-            int intIntervalEnd = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1;
-            int intTargetIndex = intIntervalEnd / 2;
-            for (int intIntervalStart = 0;
-                 intIntervalStart <= intIntervalEnd;
-                 intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
+            if (lstCollection is IHasLockObject objLocker)
+                await objLocker.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            else
+                objLocker = null;
+            try
             {
-                T objLoopExistingItem = await lstCollection.GetValueAtAsync(intTargetIndex, token).ConfigureAwait(false);
-                int intCompareResult = funcComparison.Invoke(objLoopExistingItem, objNewItem);
-                if (intCompareResult == 0)
+                // Binary search for the place where item should be inserted
+                int intIntervalEnd = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1;
+                int intTargetIndex = intIntervalEnd / 2;
+                for (int intIntervalStart = 0;
+                     intIntervalStart <= intIntervalEnd;
+                     intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
                 {
-                    // Make sure we insert new items at the end of any equalities (so that order is maintained when adding multiple items)
-                    for (int i = intTargetIndex + 1; i < await lstCollection.GetCountAsync(token).ConfigureAwait(false); ++i)
+                    T objLoopExistingItem
+                        = await lstCollection.GetValueAtAsync(intTargetIndex, token).ConfigureAwait(false);
+                    int intCompareResult = funcComparison.Invoke(objLoopExistingItem, objNewItem);
+                    if (intCompareResult == 0)
                     {
-                        T objInnerLoopExistingItem = await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false);
-                        if (funcComparison.Invoke(objInnerLoopExistingItem, objNewItem) == 0)
+                        // Make sure we insert new items at the end of any equalities (so that order is maintained when adding multiple items)
+                        for (int i = intTargetIndex + 1;
+                             i < await lstCollection.GetCountAsync(token).ConfigureAwait(false);
+                             ++i)
                         {
-                            ++intTargetIndex;
-                            objLoopExistingItem = objInnerLoopExistingItem;
+                            T objInnerLoopExistingItem
+                                = await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false);
+                            if (funcComparison.Invoke(objInnerLoopExistingItem, objNewItem) == 0)
+                            {
+                                ++intTargetIndex;
+                                objLoopExistingItem = objInnerLoopExistingItem;
+                            }
+                            else
+                                break;
                         }
-                        else
-                            break;
+
+                        if (funcOverrideIfEquals != null)
+                        {
+                            funcOverrideIfEquals.Invoke(objLoopExistingItem, objNewItem);
+                            return;
+                        }
+
+                        break;
                     }
 
-                    if (funcOverrideIfEquals != null)
+                    if (intIntervalStart == intIntervalEnd)
                     {
-                        funcOverrideIfEquals.Invoke(objLoopExistingItem, objNewItem);
-                        return;
+                        if (intCompareResult > 0)
+                            ++intTargetIndex;
+                        break;
                     }
 
-                    break;
-                }
-
-                if (intIntervalStart == intIntervalEnd)
-                {
                     if (intCompareResult > 0)
-                        ++intTargetIndex;
-                    break;
+                        intIntervalStart = intTargetIndex + 1;
+                    else
+                        intIntervalEnd = intTargetIndex - 1;
                 }
 
-                if (intCompareResult > 0)
-                    intIntervalStart = intTargetIndex + 1;
-                else
-                    intIntervalEnd = intTargetIndex - 1;
+                await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
             }
-
-            await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
+            finally
+            {
+                objLocker?.LockObject.ExitReadLock();
+            }
         }
 
         public static async Task AddRangeWithSortAsync<T>(this IAsyncList<T> lstCollection, IEnumerable<T> lstToAdd,
@@ -313,53 +358,68 @@ namespace Chummer
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
-            // Binary search for the place where item should be inserted
-            int intIntervalEnd = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1;
-            int intTargetIndex = intIntervalEnd / 2;
-            for (int intIntervalStart = 0;
-                 intIntervalStart <= intIntervalEnd;
-                 intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
+            if (lstCollection is IHasLockObject objLocker)
+                await objLocker.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            else
+                objLocker = null;
+            try
             {
-                T objLoopExistingItem = await lstCollection.GetValueAtAsync(intTargetIndex, token).ConfigureAwait(false);
-                int intCompareResult = objLoopExistingItem.CompareTo(objNewItem);
-                if (intCompareResult == 0)
+                // Binary search for the place where item should be inserted
+                int intIntervalEnd = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1;
+                int intTargetIndex = intIntervalEnd / 2;
+                for (int intIntervalStart = 0;
+                     intIntervalStart <= intIntervalEnd;
+                     intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
                 {
-                    // Make sure we insert new items at the end of any equalities (so that order is maintained when adding multiple items)
-                    for (int i = intTargetIndex + 1; i < await lstCollection.GetCountAsync(token).ConfigureAwait(false); ++i)
+                    T objLoopExistingItem
+                        = await lstCollection.GetValueAtAsync(intTargetIndex, token).ConfigureAwait(false);
+                    int intCompareResult = objLoopExistingItem.CompareTo(objNewItem);
+                    if (intCompareResult == 0)
                     {
-                        T objInnerLoopExistingItem = await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false);
-                        if (objInnerLoopExistingItem.CompareTo(objNewItem) == 0)
+                        // Make sure we insert new items at the end of any equalities (so that order is maintained when adding multiple items)
+                        for (int i = intTargetIndex + 1;
+                             i < await lstCollection.GetCountAsync(token).ConfigureAwait(false);
+                             ++i)
                         {
-                            ++intTargetIndex;
-                            objLoopExistingItem = objInnerLoopExistingItem;
+                            T objInnerLoopExistingItem
+                                = await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false);
+                            if (objInnerLoopExistingItem.CompareTo(objNewItem) == 0)
+                            {
+                                ++intTargetIndex;
+                                objLoopExistingItem = objInnerLoopExistingItem;
+                            }
+                            else
+                                break;
                         }
-                        else
-                            break;
+
+                        if (funcOverrideIfEquals != null)
+                        {
+                            await funcOverrideIfEquals.Invoke(objLoopExistingItem, objNewItem).ConfigureAwait(false);
+                            return;
+                        }
+
+                        break;
                     }
 
-                    if (funcOverrideIfEquals != null)
+                    if (intIntervalStart == intIntervalEnd)
                     {
-                        await funcOverrideIfEquals.Invoke(objLoopExistingItem, objNewItem).ConfigureAwait(false);
-                        return;
+                        if (intCompareResult > 0)
+                            ++intTargetIndex;
+                        break;
                     }
 
-                    break;
-                }
-
-                if (intIntervalStart == intIntervalEnd)
-                {
                     if (intCompareResult > 0)
-                        ++intTargetIndex;
-                    break;
+                        intIntervalStart = intTargetIndex + 1;
+                    else
+                        intIntervalEnd = intTargetIndex - 1;
                 }
 
-                if (intCompareResult > 0)
-                    intIntervalStart = intTargetIndex + 1;
-                else
-                    intIntervalEnd = intTargetIndex - 1;
+                await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
             }
-
-            await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
+            finally
+            {
+                objLocker?.LockObject.ExitReadLock();
+            }
         }
 
         public static async Task AddWithSortAsync<T>(this IAsyncList<T> lstCollection, T objNewItem, IComparer<T> comparer,
@@ -370,53 +430,68 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (comparer == null)
                 throw new ArgumentNullException(nameof(comparer));
-            // Binary search for the place where item should be inserted
-            int intIntervalEnd = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1;
-            int intTargetIndex = intIntervalEnd / 2;
-            for (int intIntervalStart = 0;
-                 intIntervalStart <= intIntervalEnd;
-                 intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
+            if (lstCollection is IHasLockObject objLocker)
+                await objLocker.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            else
+                objLocker = null;
+            try
             {
-                T objLoopExistingItem = await lstCollection.GetValueAtAsync(intTargetIndex, token).ConfigureAwait(false);
-                int intCompareResult = comparer.Compare(objLoopExistingItem, objNewItem);
-                if (intCompareResult == 0)
+                // Binary search for the place where item should be inserted
+                int intIntervalEnd = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1;
+                int intTargetIndex = intIntervalEnd / 2;
+                for (int intIntervalStart = 0;
+                     intIntervalStart <= intIntervalEnd;
+                     intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
                 {
-                    // Make sure we insert new items at the end of any equalities (so that order is maintained when adding multiple items)
-                    for (int i = intTargetIndex + 1; i < await lstCollection.GetCountAsync(token).ConfigureAwait(false); ++i)
+                    T objLoopExistingItem
+                        = await lstCollection.GetValueAtAsync(intTargetIndex, token).ConfigureAwait(false);
+                    int intCompareResult = comparer.Compare(objLoopExistingItem, objNewItem);
+                    if (intCompareResult == 0)
                     {
-                        T objInnerLoopExistingItem = await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false);
-                        if (comparer.Compare(objInnerLoopExistingItem, objNewItem) == 0)
+                        // Make sure we insert new items at the end of any equalities (so that order is maintained when adding multiple items)
+                        for (int i = intTargetIndex + 1;
+                             i < await lstCollection.GetCountAsync(token).ConfigureAwait(false);
+                             ++i)
                         {
-                            ++intTargetIndex;
-                            objLoopExistingItem = objInnerLoopExistingItem;
+                            T objInnerLoopExistingItem
+                                = await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false);
+                            if (comparer.Compare(objInnerLoopExistingItem, objNewItem) == 0)
+                            {
+                                ++intTargetIndex;
+                                objLoopExistingItem = objInnerLoopExistingItem;
+                            }
+                            else
+                                break;
                         }
-                        else
-                            break;
+
+                        if (funcOverrideIfEquals != null)
+                        {
+                            await funcOverrideIfEquals.Invoke(objLoopExistingItem, objNewItem).ConfigureAwait(false);
+                            return;
+                        }
+
+                        break;
                     }
 
-                    if (funcOverrideIfEquals != null)
+                    if (intIntervalStart == intIntervalEnd)
                     {
-                        await funcOverrideIfEquals.Invoke(objLoopExistingItem, objNewItem).ConfigureAwait(false);
-                        return;
+                        if (intCompareResult > 0)
+                            ++intTargetIndex;
+                        break;
                     }
 
-                    break;
-                }
-
-                if (intIntervalStart == intIntervalEnd)
-                {
                     if (intCompareResult > 0)
-                        ++intTargetIndex;
-                    break;
+                        intIntervalStart = intTargetIndex + 1;
+                    else
+                        intIntervalEnd = intTargetIndex - 1;
                 }
 
-                if (intCompareResult > 0)
-                    intIntervalStart = intTargetIndex + 1;
-                else
-                    intIntervalEnd = intTargetIndex - 1;
+                await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
             }
-
-            await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
+            finally
+            {
+                objLocker?.LockObject.ExitReadLock();
+            }
         }
 
         public static async Task AddWithSortAsync<T>(this IAsyncList<T> lstCollection, T objNewItem,
@@ -427,53 +502,68 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
-            // Binary search for the place where item should be inserted
-            int intIntervalEnd = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1;
-            int intTargetIndex = intIntervalEnd / 2;
-            for (int intIntervalStart = 0;
-                 intIntervalStart <= intIntervalEnd;
-                 intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
+            if (lstCollection is IHasLockObject objLocker)
+                await objLocker.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            else
+                objLocker = null;
+            try
             {
-                T objLoopExistingItem = await lstCollection.GetValueAtAsync(intTargetIndex, token).ConfigureAwait(false);
-                int intCompareResult = funcComparison.Invoke(objLoopExistingItem, objNewItem);
-                if (intCompareResult == 0)
+                // Binary search for the place where item should be inserted
+                int intIntervalEnd = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1;
+                int intTargetIndex = intIntervalEnd / 2;
+                for (int intIntervalStart = 0;
+                     intIntervalStart <= intIntervalEnd;
+                     intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
                 {
-                    // Make sure we insert new items at the end of any equalities (so that order is maintained when adding multiple items)
-                    for (int i = intTargetIndex + 1; i < await lstCollection.GetCountAsync(token).ConfigureAwait(false); ++i)
+                    T objLoopExistingItem
+                        = await lstCollection.GetValueAtAsync(intTargetIndex, token).ConfigureAwait(false);
+                    int intCompareResult = funcComparison.Invoke(objLoopExistingItem, objNewItem);
+                    if (intCompareResult == 0)
                     {
-                        T objInnerLoopExistingItem = await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false);
-                        if (funcComparison.Invoke(objInnerLoopExistingItem, objNewItem) == 0)
+                        // Make sure we insert new items at the end of any equalities (so that order is maintained when adding multiple items)
+                        for (int i = intTargetIndex + 1;
+                             i < await lstCollection.GetCountAsync(token).ConfigureAwait(false);
+                             ++i)
                         {
-                            ++intTargetIndex;
-                            objLoopExistingItem = objInnerLoopExistingItem;
+                            T objInnerLoopExistingItem
+                                = await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false);
+                            if (funcComparison.Invoke(objInnerLoopExistingItem, objNewItem) == 0)
+                            {
+                                ++intTargetIndex;
+                                objLoopExistingItem = objInnerLoopExistingItem;
+                            }
+                            else
+                                break;
                         }
-                        else
-                            break;
+
+                        if (funcOverrideIfEquals != null)
+                        {
+                            await funcOverrideIfEquals.Invoke(objLoopExistingItem, objNewItem).ConfigureAwait(false);
+                            return;
+                        }
+
+                        break;
                     }
 
-                    if (funcOverrideIfEquals != null)
+                    if (intIntervalStart == intIntervalEnd)
                     {
-                        await funcOverrideIfEquals.Invoke(objLoopExistingItem, objNewItem).ConfigureAwait(false);
-                        return;
+                        if (intCompareResult > 0)
+                            ++intTargetIndex;
+                        break;
                     }
 
-                    break;
-                }
-
-                if (intIntervalStart == intIntervalEnd)
-                {
                     if (intCompareResult > 0)
-                        ++intTargetIndex;
-                    break;
+                        intIntervalStart = intTargetIndex + 1;
+                    else
+                        intIntervalEnd = intTargetIndex - 1;
                 }
 
-                if (intCompareResult > 0)
-                    intIntervalStart = intTargetIndex + 1;
-                else
-                    intIntervalEnd = intTargetIndex - 1;
+                await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
             }
-
-            await lstCollection.InsertAsync(intTargetIndex, objNewItem, token).ConfigureAwait(false);
+            finally
+            {
+                objLocker?.LockObject.ExitReadLock();
+            }
         }
 
         public static async Task AddRangeWithSortAsync<T>(this IAsyncList<T> lstCollection, IEnumerable<T> lstToAdd,
@@ -586,8 +676,22 @@ namespace Chummer
                 throw new ArgumentOutOfRangeException(nameof(index));
             if (count < 0)
                 throw new ArgumentOutOfRangeException(nameof(count));
-            for (int i = Math.Min(index + count - 1, await lstCollection.GetCountAsync(token).ConfigureAwait(false)); i >= index; --i)
-                await lstCollection.RemoveAtAsync(i, token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = null;
+            if (lstCollection is IHasLockObject objHasLockObject)
+                objLocker = await objHasLockObject.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                for (int i = Math.Min(index + count - 1,
+                                      await lstCollection.GetCountAsync(token).ConfigureAwait(false));
+                     i >= index;
+                     --i)
+                    await lstCollection.RemoveAtAsync(i, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                if (objLocker != null)
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         public static async Task RemoveAllAsync<T>(this IAsyncList<T> lstCollection, Predicate<T> predicate,
@@ -597,12 +701,23 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (predicate == null)
                 throw new ArgumentNullException(nameof(predicate));
-            for (int i = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
+            IAsyncDisposable objLocker = null;
+            if (lstCollection is IHasLockObject objHasLockObject)
+                objLocker = await objHasLockObject.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
             {
-                if (predicate(await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false)))
+                for (int i = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
                 {
-                    await lstCollection.RemoveAtAsync(i, token).ConfigureAwait(false);
+                    if (predicate(await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false)))
+                    {
+                        await lstCollection.RemoveAtAsync(i, token).ConfigureAwait(false);
+                    }
                 }
+            }
+            finally
+            {
+                if (objLocker != null)
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -613,12 +728,24 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (predicate == null)
                 throw new ArgumentNullException(nameof(predicate));
-            for (int i = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
+            IAsyncDisposable objLocker = null;
+            if (lstCollection is IHasLockObject objHasLockObject)
+                objLocker = await objHasLockObject.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
             {
-                if (await predicate.Invoke(await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false)).ConfigureAwait(false))
+                for (int i = await lstCollection.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
                 {
-                    await lstCollection.RemoveAtAsync(i, token).ConfigureAwait(false);
+                    if (await predicate.Invoke(await lstCollection.GetValueAtAsync(i, token).ConfigureAwait(false))
+                                       .ConfigureAwait(false))
+                    {
+                        await lstCollection.RemoveAtAsync(i, token).ConfigureAwait(false);
+                    }
                 }
+            }
+            finally
+            {
+                if (objLocker != null)
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -627,9 +754,20 @@ namespace Chummer
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
-            foreach (T item in collection.Reverse())
+            IAsyncDisposable objLocker = null;
+            if (lstCollection is IHasLockObject objHasLockObject)
+                objLocker = await objHasLockObject.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
             {
-                await lstCollection.InsertAsync(index, item, token).ConfigureAwait(false);
+                foreach (T item in collection.Reverse())
+                {
+                    await lstCollection.InsertAsync(index, item, token).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                if (objLocker != null)
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -640,9 +778,20 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             List<T> lstToAdd = await collection.ToListAsync(token).ConfigureAwait(false);
             lstToAdd.Reverse();
-            foreach (T item in lstToAdd)
+            IAsyncDisposable objLocker = null;
+            if (lstCollection is IHasLockObject objHasLockObject)
+                objLocker = await objHasLockObject.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
             {
-                await lstCollection.InsertAsync(index, item, token).ConfigureAwait(false);
+                foreach (T item in lstToAdd)
+                {
+                    await lstCollection.InsertAsync(index, item, token).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                if (objLocker != null)
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
     }

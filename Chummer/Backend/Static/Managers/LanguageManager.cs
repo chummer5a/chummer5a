@@ -310,7 +310,7 @@ namespace Chummer
                 // If this is null, a different thread is currently loading the language, so spin until it's done
                 while (objNewLanguage == null)
                 {
-                    await Utils.SafeSleepAsync(token);
+                    await Utils.SafeSleepAsync(token).ConfigureAwait(false);
                     (blnSuccess, objNewLanguage)
                         = await s_DicLanguageData.TryGetValueAsync(strKey, token).ConfigureAwait(false);
                     while (!blnSuccess)

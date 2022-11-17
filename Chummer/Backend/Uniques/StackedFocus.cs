@@ -299,7 +299,7 @@ namespace Chummer
         public async ValueTask<int> GetBindingCostAsync(CancellationToken token = default)
         {
             decimal decCost = 0;
-            using (await EnterReadLock.EnterAsync(LockObject, token))
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
                 foreach (Gear objFocus in Gear)
                 {
@@ -471,13 +471,13 @@ namespace Chummer
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdReturn))
             {
-                using (await EnterReadLock.EnterAsync(LockObject, token))
+                using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
                 {
                     await Gear.ForEachAsync(async objGear =>
                     {
                         sbdReturn.Append(await objGear.DisplayNameAsync(objCulture, strLanguage, token: token)
                                                       .ConfigureAwait(false)).Append(", ");
-                    }, token);
+                    }, token).ConfigureAwait(false);
                 }
 
                 // Remove the trailing comma.
@@ -540,17 +540,17 @@ namespace Chummer
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync();
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
-                await _lstGear.DisposeAsync();
+                await _lstGear.DisposeAsync().ConfigureAwait(false);
             }
             finally
             {
-                await objLocker.DisposeAsync();
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
-            await LockObject.DisposeAsync();
+            await LockObject.DisposeAsync().ConfigureAwait(false);
         }
 
         /// <inheritdoc />

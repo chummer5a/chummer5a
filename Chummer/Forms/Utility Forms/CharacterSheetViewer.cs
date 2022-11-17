@@ -337,7 +337,7 @@ namespace Chummer
                 if (objCharacter?.IsDisposed == false)
                 {
                     IAsyncDisposable objLocker
-                        = await objCharacter.LockObject.EnterWriteLockAsync(CancellationToken.None);
+                        = await objCharacter.LockObject.EnterWriteLockAsync(CancellationToken.None).ConfigureAwait(false);
                     try
                     {
                         objCharacter.PropertyChanged -= ObjCharacterOnPropertyChanged;
@@ -345,7 +345,7 @@ namespace Chummer
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync();
+                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
                 }
             }

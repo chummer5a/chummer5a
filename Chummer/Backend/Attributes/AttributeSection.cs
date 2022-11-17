@@ -430,10 +430,8 @@ namespace Chummer.Backend.Attributes
         {
             using (LockObject.EnterWriteLock())
             {
-                foreach (CharacterAttrib objAttrib in _lstNormalAttributes)
-                    objAttrib.Dispose();
-                foreach (CharacterAttrib objAttrib in _lstSpecialAttributes)
-                    objAttrib.Dispose();
+                _lstNormalAttributes.ForEach(x => x.Dispose());
+                _lstSpecialAttributes.ForEach(x => x.Dispose());
                 foreach (BindingSource objSource in _dicBindings.Values)
                     objSource.Dispose();
                 _dicBindings.Dispose();

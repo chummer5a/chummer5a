@@ -468,9 +468,10 @@ namespace Chummer
 
         public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
-                                            && !GlobalSettings.LiveCustomData)
-                return _objCachedMyXmlNode;
+            XmlNode objReturn = _objCachedMyXmlNode;
+            if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
+                                  && !GlobalSettings.LiveCustomData)
+                return objReturn;
             string strDoc = "metamagic.xml";
             string strPath = "/chummer/metamagics/metamagic";
             if (_eImprovementSource == Improvement.ImprovementSource.Echo)
@@ -479,7 +480,7 @@ namespace Chummer
                 strPath = "/chummer/echoes/echo";
             }
 
-            _objCachedMyXmlNode = (blnSync
+            objReturn = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadData(strDoc, strLanguage, token: token)
                     : await _objCharacter.LoadDataAsync(strDoc, strLanguage, token: token).ConfigureAwait(false))
@@ -489,8 +490,9 @@ namespace Chummer
                                                  + " or id = " + SourceIDString
                                                                  .ToUpperInvariant().CleanXPath()
                                                  + ']'));
+            _objCachedMyXmlNode = objReturn;
             _strCachedXmlNodeLanguage = strLanguage;
-            return _objCachedMyXmlNode;
+            return objReturn;
         }
 
         private XPathNavigator _objCachedMyXPathNode;
@@ -498,9 +500,10 @@ namespace Chummer
 
         public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
-                                              && !GlobalSettings.LiveCustomData)
-                return _objCachedMyXPathNode;
+            XPathNavigator objReturn = _objCachedMyXPathNode;
+            if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
+                                  && !GlobalSettings.LiveCustomData)
+                return objReturn;
             string strDoc = "metamagic.xml";
             string strPath = "/chummer/metamagics/metamagic";
             if (_eImprovementSource == Improvement.ImprovementSource.Echo)
@@ -509,7 +512,7 @@ namespace Chummer
                 strPath = "/chummer/echoes/echo";
             }
 
-            _objCachedMyXPathNode = (blnSync
+            objReturn = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadDataXPath(strDoc, strLanguage, token: token)
                     : await _objCharacter.LoadDataXPathAsync(strDoc, strLanguage, token: token).ConfigureAwait(false))
@@ -519,8 +522,9 @@ namespace Chummer
                                                  + " or id = " + SourceIDString
                                                                  .ToUpperInvariant().CleanXPath()
                                                  + ']'));
+            _objCachedMyXPathNode = objReturn;
             _strCachedXPathNodeLanguage = strLanguage;
-            return _objCachedMyXPathNode;
+            return objReturn;
         }
 
         #endregion Properties

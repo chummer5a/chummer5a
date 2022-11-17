@@ -120,7 +120,7 @@ namespace Chummer
             _lstGrade.Clear();
             foreach (Grade objGrade in await _objCharacter.GetGradesListAsync(Improvement.ImprovementSource.Drug, token: token).ConfigureAwait(false))
             {
-                _lstGrade.Add(new ListItem(objGrade.Name, await objGrade.GetCurrentDisplayNameAsync(token)));
+                _lstGrade.Add(new ListItem(objGrade.Name, await objGrade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)));
             }
             await cboGrade.PopulateWithListItemsAsync(_lstGrade, token: token).ConfigureAwait(false);
         }
@@ -230,10 +230,10 @@ namespace Chummer
                         {
                             string strMessage = await LanguageManager.GetStringAsync("String_MaximumDrugBlockLevel", token: token).ConfigureAwait(false) +
                                                 Environment.NewLine + Environment.NewLine +
-                                                await objFoundationComponent.GetCurrentDisplayNameAsync(token) + strColonString +
+                                                await objFoundationComponent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) + strColonString +
                                                 strSpaceString + objItem.Key +
                                                 objItem.Value.ToString("+#;-#;", GlobalSettings.CultureInfo) +
-                                                await objNodeData.DrugComponent.GetCurrentDisplayNameAsync(token) + strColonString +
+                                                await objNodeData.DrugComponent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) + strColonString +
                                                 strSpaceString + objItem.Key +
                                                 decBlockAttrValue.ToString("+#.#;-#.#;", GlobalSettings.CultureInfo);
                             Program.ShowMessageBox(this, strMessage);
@@ -243,7 +243,7 @@ namespace Chummer
                 }
             }
 
-            string strNodeText = await objNodeData.DrugComponent.GetCurrentDisplayNameAsync(token);
+            string strNodeText = await objNodeData.DrugComponent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
             if (objNodeData.DrugComponent.Level <= 0 && objNodeData.DrugComponent.DrugEffects.Count > 1)
                 strNodeText += strSpaceString + '(' + await LanguageManager.GetStringAsync("String_Level", token: token).ConfigureAwait(false) + strSpaceString + (objNodeData.Level + 1).ToString(GlobalSettings.CultureInfo) + ')';
             await treChosenComponents.DoThreadSafeAsync(() =>

@@ -1716,26 +1716,28 @@ namespace Chummer.Backend.Equipment
 
         public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
-                                            && !GlobalSettings.LiveCustomData)
-                return _objCachedMyXmlNode;
+            XmlNode objReturn = _objCachedMyXmlNode;
+            if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
+                                  && !GlobalSettings.LiveCustomData)
+                return objReturn;
             XmlDocument objDoc = blnSync
                 // ReSharper disable once MethodHasAsyncOverload
                 ? _objCharacter.LoadData("vehicles.xml", strLanguage, token: token)
                 : await _objCharacter.LoadDataAsync("vehicles.xml", strLanguage, token: token).ConfigureAwait(false);
-            _objCachedMyXmlNode = objDoc.SelectSingleNode("/chummer/mods/mod[id = "
-                                                          + SourceIDString.CleanXPath() + " or id = "
-                                                          + SourceIDString.ToUpperInvariant().CleanXPath()
-                                                          + ']')
-                                  ?? objDoc.SelectSingleNode("/chummer/weaponmountmods/mod[id = "
-                                                             + SourceIDString.CleanXPath() + " or id = "
-                                                             + SourceIDString.ToUpperInvariant().CleanXPath()
-                                                             + ']')
-                                  ?? objDoc.SelectSingleNode("/chummer/mods/mod[name = " + Name.CleanXPath() + ']')
-                                  ?? objDoc.SelectSingleNode(
-                                      "/chummer/weaponmountmods/mod[name = " + Name.CleanXPath() + ']');
+            objReturn = objDoc.SelectSingleNode("/chummer/mods/mod[id = "
+                                                + SourceIDString.CleanXPath() + " or id = "
+                                                + SourceIDString.ToUpperInvariant().CleanXPath()
+                                                + ']')
+                        ?? objDoc.SelectSingleNode("/chummer/weaponmountmods/mod[id = "
+                                                   + SourceIDString.CleanXPath() + " or id = "
+                                                   + SourceIDString.ToUpperInvariant().CleanXPath()
+                                                   + ']')
+                        ?? objDoc.SelectSingleNode("/chummer/mods/mod[name = " + Name.CleanXPath() + ']')
+                        ?? objDoc.SelectSingleNode(
+                            "/chummer/weaponmountmods/mod[name = " + Name.CleanXPath() + ']');
+            _objCachedMyXmlNode = objReturn;
             _strCachedXmlNodeLanguage = strLanguage;
-            return _objCachedMyXmlNode;
+            return objReturn;
         }
 
         private XPathNavigator _objCachedMyXPathNode;
@@ -1743,14 +1745,15 @@ namespace Chummer.Backend.Equipment
 
         public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
-                                              && !GlobalSettings.LiveCustomData)
-                return _objCachedMyXPathNode;
+            XPathNavigator objReturn = _objCachedMyXPathNode;
+            if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
+                                  && !GlobalSettings.LiveCustomData)
+                return objReturn;
             XPathNavigator objDoc = blnSync
                 // ReSharper disable once MethodHasAsyncOverload
                 ? _objCharacter.LoadDataXPath("vehicles.xml", strLanguage, token: token)
                 : await _objCharacter.LoadDataXPathAsync("vehicles.xml", strLanguage, token: token).ConfigureAwait(false);
-            _objCachedMyXPathNode = objDoc.SelectSingleNode("/chummer/mods/mod[id = "
+            objReturn = objDoc.SelectSingleNode("/chummer/mods/mod[id = "
                                                             + SourceIDString.CleanXPath() + " or id = "
                                                             + SourceIDString.ToUpperInvariant().CleanXPath()
                                                             + ']')
@@ -1761,8 +1764,9 @@ namespace Chummer.Backend.Equipment
                                     ?? objDoc.SelectSingleNode("/chummer/mods/mod[name = " + Name.CleanXPath() + ']')
                                     ?? objDoc.SelectSingleNode(
                                         "/chummer/weaponmountmods/mod[name = " + Name.CleanXPath() + ']');
+            _objCachedMyXPathNode = objReturn;
             _strCachedXPathNodeLanguage = strLanguage;
-            return _objCachedMyXPathNode;
+            return objReturn;
         }
 
         #endregion Complex Properties

@@ -30,46 +30,64 @@ namespace Chummer
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
-            // Binary search for the place where item should be inserted
-            int intIntervalEnd = lstCollection.Count - 1;
-            int intTargetIndex = intIntervalEnd / 2;
-            for (int intIntervalStart = 0; intIntervalStart <= intIntervalEnd; intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
+            if (lstCollection is IHasLockObject objLocker)
+                objLocker.LockObject.EnterReadLock();
+            else
+                objLocker = null;
+            try
             {
-                T objLoopExistingItem = lstCollection[intTargetIndex];
-                int intCompareResult = objLoopExistingItem.CompareTo(objNewItem);
-                if (intCompareResult == 0)
+                // Binary search for the place where item should be inserted
+                int intIntervalEnd = lstCollection.Count - 1;
+                int intTargetIndex = intIntervalEnd / 2;
+                for (int intIntervalStart = 0;
+                     intIntervalStart <= intIntervalEnd;
+                     intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
                 {
-                    // Make sure we insert new items at the end of any equalities (so that order is maintained when adding multiple items)
-                    for (int i = intTargetIndex + 1; i < lstCollection.Count; ++i)
+                    T objLoopExistingItem = lstCollection[intTargetIndex];
+                    int intCompareResult = objLoopExistingItem.CompareTo(objNewItem);
+                    if (intCompareResult == 0)
                     {
-                        T objInnerLoopExistingItem = lstCollection[i];
-                        if (objInnerLoopExistingItem.CompareTo(objNewItem) == 0)
+                        // Make sure we insert new items at the end of any equalities (so that order is maintained when adding multiple items)
+                        for (int i = intTargetIndex + 1; i < lstCollection.Count; ++i)
                         {
-                            ++intTargetIndex;
-                            objLoopExistingItem = objInnerLoopExistingItem;
+                            T objInnerLoopExistingItem = lstCollection[i];
+                            if (objInnerLoopExistingItem.CompareTo(objNewItem) == 0)
+                            {
+                                ++intTargetIndex;
+                                objLoopExistingItem = objInnerLoopExistingItem;
+                            }
+                            else
+                                break;
                         }
-                        else
-                            break;
+
+                        if (funcOverrideIfEquals != null)
+                        {
+                            funcOverrideIfEquals.Invoke(objLoopExistingItem, objNewItem);
+                            return;
+                        }
+
+                        break;
                     }
-                    if (funcOverrideIfEquals != null)
+
+                    if (intIntervalStart == intIntervalEnd)
                     {
-                        funcOverrideIfEquals.Invoke(objLoopExistingItem, objNewItem);
-                        return;
+                        if (intCompareResult > 0)
+                            ++intTargetIndex;
+                        break;
                     }
-                    break;
-                }
-                if (intIntervalStart == intIntervalEnd)
-                {
+
                     if (intCompareResult > 0)
-                        ++intTargetIndex;
-                    break;
+                        intIntervalStart = intTargetIndex + 1;
+                    else
+                        intIntervalEnd = intTargetIndex - 1;
                 }
-                if (intCompareResult > 0)
-                    intIntervalStart = intTargetIndex + 1;
-                else
-                    intIntervalEnd = intTargetIndex - 1;
+
+                lstCollection.Insert(intTargetIndex, objNewItem);
             }
-            lstCollection.Insert(intTargetIndex, objNewItem);
+            finally
+            {
+                objLocker?.LockObject.ExitReadLock();
+            }
         }
 
         public static void AddWithSort<T>(this IList<T> lstCollection, T objNewItem, IComparer<T> comparer, Action<T, T> funcOverrideIfEquals = null)
@@ -78,46 +96,64 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (comparer == null)
                 throw new ArgumentNullException(nameof(comparer));
-            // Binary search for the place where item should be inserted
-            int intIntervalEnd = lstCollection.Count - 1;
-            int intTargetIndex = intIntervalEnd / 2;
-            for (int intIntervalStart = 0; intIntervalStart <= intIntervalEnd; intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
+            if (lstCollection is IHasLockObject objLocker)
+                objLocker.LockObject.EnterReadLock();
+            else
+                objLocker = null;
+            try
             {
-                T objLoopExistingItem = lstCollection[intTargetIndex];
-                int intCompareResult = comparer.Compare(objLoopExistingItem, objNewItem);
-                if (intCompareResult == 0)
+                // Binary search for the place where item should be inserted
+                int intIntervalEnd = lstCollection.Count - 1;
+                int intTargetIndex = intIntervalEnd / 2;
+                for (int intIntervalStart = 0;
+                     intIntervalStart <= intIntervalEnd;
+                     intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
                 {
-                    // Make sure we insert new items at the end of any equalities (so that order is maintained when adding multiple items)
-                    for (int i = intTargetIndex + 1; i < lstCollection.Count; ++i)
+                    T objLoopExistingItem = lstCollection[intTargetIndex];
+                    int intCompareResult = comparer.Compare(objLoopExistingItem, objNewItem);
+                    if (intCompareResult == 0)
                     {
-                        T objInnerLoopExistingItem = lstCollection[i];
-                        if (comparer.Compare(objInnerLoopExistingItem, objNewItem) == 0)
+                        // Make sure we insert new items at the end of any equalities (so that order is maintained when adding multiple items)
+                        for (int i = intTargetIndex + 1; i < lstCollection.Count; ++i)
                         {
-                            ++intTargetIndex;
-                            objLoopExistingItem = objInnerLoopExistingItem;
+                            T objInnerLoopExistingItem = lstCollection[i];
+                            if (comparer.Compare(objInnerLoopExistingItem, objNewItem) == 0)
+                            {
+                                ++intTargetIndex;
+                                objLoopExistingItem = objInnerLoopExistingItem;
+                            }
+                            else
+                                break;
                         }
-                        else
-                            break;
+
+                        if (funcOverrideIfEquals != null)
+                        {
+                            funcOverrideIfEquals.Invoke(objLoopExistingItem, objNewItem);
+                            return;
+                        }
+
+                        break;
                     }
-                    if (funcOverrideIfEquals != null)
+
+                    if (intIntervalStart == intIntervalEnd)
                     {
-                        funcOverrideIfEquals.Invoke(objLoopExistingItem, objNewItem);
-                        return;
+                        if (intCompareResult > 0)
+                            ++intTargetIndex;
+                        break;
                     }
-                    break;
-                }
-                if (intIntervalStart == intIntervalEnd)
-                {
+
                     if (intCompareResult > 0)
-                        ++intTargetIndex;
-                    break;
+                        intIntervalStart = intTargetIndex + 1;
+                    else
+                        intIntervalEnd = intTargetIndex - 1;
                 }
-                if (intCompareResult > 0)
-                    intIntervalStart = intTargetIndex + 1;
-                else
-                    intIntervalEnd = intTargetIndex - 1;
+
+                lstCollection.Insert(intTargetIndex, objNewItem);
             }
-            lstCollection.Insert(intTargetIndex, objNewItem);
+            finally
+            {
+                objLocker?.LockObject.ExitReadLock();
+            }
         }
 
         public static void AddWithSort<T>(this IList<T> lstCollection, T objNewItem, Comparison<T> funcComparison, Action<T, T> funcOverrideIfEquals = null)
@@ -126,46 +162,64 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
-            // Binary search for the place where item should be inserted
-            int intIntervalEnd = lstCollection.Count - 1;
-            int intTargetIndex = intIntervalEnd / 2;
-            for (int intIntervalStart = 0; intIntervalStart <= intIntervalEnd; intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
+            if (lstCollection is IHasLockObject objLocker)
+                objLocker.LockObject.EnterReadLock();
+            else
+                objLocker = null;
+            try
             {
-                T objLoopExistingItem = lstCollection[intTargetIndex];
-                int intCompareResult = funcComparison.Invoke(objLoopExistingItem, objNewItem);
-                if (intCompareResult == 0)
+                // Binary search for the place where item should be inserted
+                int intIntervalEnd = lstCollection.Count - 1;
+                int intTargetIndex = intIntervalEnd / 2;
+                for (int intIntervalStart = 0;
+                     intIntervalStart <= intIntervalEnd;
+                     intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
                 {
-                    // Make sure we insert new items at the end of any equalities (so that order is maintained when adding multiple items)
-                    for (int i = intTargetIndex + 1; i < lstCollection.Count; ++i)
+                    T objLoopExistingItem = lstCollection[intTargetIndex];
+                    int intCompareResult = funcComparison.Invoke(objLoopExistingItem, objNewItem);
+                    if (intCompareResult == 0)
                     {
-                        T objInnerLoopExistingItem = lstCollection[i];
-                        if (funcComparison.Invoke(objInnerLoopExistingItem, objNewItem) == 0)
+                        // Make sure we insert new items at the end of any equalities (so that order is maintained when adding multiple items)
+                        for (int i = intTargetIndex + 1; i < lstCollection.Count; ++i)
                         {
-                            ++intTargetIndex;
-                            objLoopExistingItem = objInnerLoopExistingItem;
+                            T objInnerLoopExistingItem = lstCollection[i];
+                            if (funcComparison.Invoke(objInnerLoopExistingItem, objNewItem) == 0)
+                            {
+                                ++intTargetIndex;
+                                objLoopExistingItem = objInnerLoopExistingItem;
+                            }
+                            else
+                                break;
                         }
-                        else
-                            break;
+
+                        if (funcOverrideIfEquals != null)
+                        {
+                            funcOverrideIfEquals.Invoke(objLoopExistingItem, objNewItem);
+                            return;
+                        }
+
+                        break;
                     }
-                    if (funcOverrideIfEquals != null)
+
+                    if (intIntervalStart == intIntervalEnd)
                     {
-                        funcOverrideIfEquals.Invoke(objLoopExistingItem, objNewItem);
-                        return;
+                        if (intCompareResult > 0)
+                            ++intTargetIndex;
+                        break;
                     }
-                    break;
-                }
-                if (intIntervalStart == intIntervalEnd)
-                {
+
                     if (intCompareResult > 0)
-                        ++intTargetIndex;
-                    break;
+                        intIntervalStart = intTargetIndex + 1;
+                    else
+                        intIntervalEnd = intTargetIndex - 1;
                 }
-                if (intCompareResult > 0)
-                    intIntervalStart = intTargetIndex + 1;
-                else
-                    intIntervalEnd = intTargetIndex - 1;
+
+                lstCollection.Insert(intTargetIndex, objNewItem);
             }
-            lstCollection.Insert(intTargetIndex, objNewItem);
+            finally
+            {
+                objLocker?.LockObject.ExitReadLock();
+            }
         }
 
         public static void AddRangeWithSort<T>(this IList<T> lstCollection, IEnumerable<T> lstToAdd, Action<T, T> funcOverrideIfEquals = null) where T : IComparable
@@ -214,8 +268,18 @@ namespace Chummer
                 throw new ArgumentOutOfRangeException(nameof(index));
             if (count < 0)
                 throw new ArgumentOutOfRangeException(nameof(count));
-            for (int i = Math.Min(index + count - 1, lstCollection.Count); i >= index; --i)
-                lstCollection.RemoveAt(i);
+            IDisposable objLocker = lstCollection is IHasLockObject objHasLockObject
+                ? objHasLockObject.LockObject.EnterWriteLock()
+                : null;
+            try
+            {
+                for (int i = Math.Min(index + count - 1, lstCollection.Count); i >= index; --i)
+                    lstCollection.RemoveAt(i);
+            }
+            finally
+            {
+                objLocker?.Dispose();
+            }
         }
 
         public static void RemoveAll<T>(this IList<T> lstCollection, Predicate<T> predicate)
@@ -224,12 +288,22 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(lstCollection));
             if (predicate == null)
                 throw new ArgumentNullException(nameof(predicate));
-            for (int i = lstCollection.Count - 1; i >= 0; --i)
+            IDisposable objLocker = lstCollection is IHasLockObject objHasLockObject
+                ? objHasLockObject.LockObject.EnterWriteLock()
+                : null;
+            try
             {
-                if (predicate(lstCollection[i]))
+                for (int i = lstCollection.Count - 1; i >= 0; --i)
                 {
-                    lstCollection.RemoveAt(i);
+                    if (predicate(lstCollection[i]))
+                    {
+                        lstCollection.RemoveAt(i);
+                    }
                 }
+            }
+            finally
+            {
+                objLocker?.Dispose();
             }
         }
 
@@ -237,9 +311,19 @@ namespace Chummer
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
-            foreach (T item in collection.Reverse())
+            IDisposable objLocker = lstCollection is IHasLockObject objHasLockObject
+                ? objHasLockObject.LockObject.EnterWriteLock()
+                : null;
+            try
             {
-                lstCollection.Insert(index, item);
+                foreach (T item in collection.Reverse())
+                {
+                    lstCollection.Insert(index, item);
+                }
+            }
+            finally
+            {
+                objLocker?.Dispose();
             }
         }
     }

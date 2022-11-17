@@ -1515,13 +1515,15 @@ namespace Chummer.Backend.Uniques
 
         public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            // ReSharper disable once MethodHasAsyncOverload
+            using (blnSync ? EnterReadLock.Enter(LockObject, token) : await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
                 if (Type == TraditionType.None)
                     return null;
-                if (_xmlCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
-                                                && !GlobalSettings.LiveCustomData)
-                    return _xmlCachedMyXmlNode;
+                XmlNode objReturn = _xmlCachedMyXmlNode;
+                if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
+                                      && !GlobalSettings.LiveCustomData)
+                    return objReturn;
                 XmlDocument objDoc = null;
                 switch (Type)
                 {
@@ -1543,9 +1545,9 @@ namespace Chummer.Backend.Uniques
                 }
 
                 if (objDoc == null)
-                    _xmlCachedMyXmlNode = null;
+                    objReturn = null;
                 else
-                    _xmlCachedMyXmlNode = objDoc
+                    objReturn = objDoc
                         .SelectSingleNode(SourceID == Guid.Empty
                                               ? "/chummer/traditions/tradition[name = " + Name.CleanXPath() + ']'
                                               : "/chummer/traditions/tradition[id = " + SourceIDString.CleanXPath()
@@ -1553,8 +1555,9 @@ namespace Chummer.Backend.Uniques
                                               + SourceIDString.ToUpperInvariant()
                                                               .CleanXPath()
                                               + ']');
+                _xmlCachedMyXmlNode = objReturn;
                 _strCachedXmlNodeLanguage = strLanguage;
-                return _xmlCachedMyXmlNode;
+                return objReturn;
             }
         }
 
@@ -1563,11 +1566,13 @@ namespace Chummer.Backend.Uniques
 
         public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            // ReSharper disable once MethodHasAsyncOverload
+            using (blnSync ? EnterReadLock.Enter(LockObject, token) : await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
-                                                  && !GlobalSettings.LiveCustomData)
-                    return _objCachedMyXPathNode;
+                XPathNavigator objReturn = _objCachedMyXPathNode;
+                if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
+                                      && !GlobalSettings.LiveCustomData)
+                    return objReturn;
                 XPathNavigator objDoc = null;
                 switch (Type)
                 {
@@ -1589,9 +1594,9 @@ namespace Chummer.Backend.Uniques
                 }
 
                 if (objDoc == null)
-                    _xmlCachedMyXmlNode = null;
+                    objReturn = null;
                 else
-                    _objCachedMyXPathNode = objDoc
+                    objReturn = objDoc
                         .SelectSingleNode(SourceID == Guid.Empty
                                               ? "/chummer/traditions/tradition[name = " + Name.CleanXPath() + ']'
                                               : "/chummer/traditions/tradition[id = " + SourceIDString.CleanXPath()
@@ -1599,8 +1604,9 @@ namespace Chummer.Backend.Uniques
                                               + SourceIDString.ToUpperInvariant()
                                                               .CleanXPath()
                                               + ']');
+                _objCachedMyXPathNode = objReturn;
                 _strCachedXPathNodeLanguage = strLanguage;
-                return _objCachedMyXPathNode;
+                return objReturn;
             }
         }
 

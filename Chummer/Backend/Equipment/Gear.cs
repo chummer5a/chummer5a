@@ -2412,33 +2412,36 @@ namespace Chummer.Backend.Equipment
             return GetNodeCoreAsync(blnSync, strLanguage, string.Empty, string.Empty, token);
         }
 
-        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, string strName, string strCategory, CancellationToken token = default)
+        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, string strName,
+                                                    string strCategory, CancellationToken token = default)
         {
-            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
-                                            && !GlobalSettings.LiveCustomData)
-                return _objCachedMyXmlNode;
+            XmlNode objReturn = _objCachedMyXmlNode;
+            if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
+                                  && !GlobalSettings.LiveCustomData)
+                return objReturn;
             XmlDocument objDoc = blnSync
                 // ReSharper disable once MethodHasAsyncOverload
                 ? _objCharacter.LoadData("gear.xml", strLanguage, token: token)
                 : await _objCharacter.LoadDataAsync("gear.xml", strLanguage, token: token).ConfigureAwait(false);
             string strNameWithQuotes = Name.CleanXPath();
-            _objCachedMyXmlNode = objDoc.SelectSingleNode(!string.IsNullOrWhiteSpace(strName)
-                                                              ? "/chummer/gears/gear[name = " + strName.CleanXPath()
-                                                              + " and category = " + strCategory.CleanXPath() + ']'
-                                                              : "/chummer/gears/gear[(id = " + SourceIDString.CleanXPath()
-                                                              + " or id = " + SourceIDString.ToUpperInvariant().CleanXPath()
-                                                              + ") or (name = " + strNameWithQuotes
-                                                              + " and category = " + Category.CleanXPath() + ")]");
-            if (_objCachedMyXmlNode == null)
+            objReturn = objDoc.SelectSingleNode(!string.IsNullOrWhiteSpace(strName)
+                                                    ? "/chummer/gears/gear[name = " + strName.CleanXPath()
+                                                    + " and category = " + strCategory.CleanXPath() + ']'
+                                                    : "/chummer/gears/gear[(id = " + SourceIDString.CleanXPath()
+                                                    + " or id = " + SourceIDString.ToUpperInvariant().CleanXPath()
+                                                    + ") or (name = " + strNameWithQuotes
+                                                    + " and category = " + Category.CleanXPath() + ")]");
+            if (objReturn == null)
             {
-                _objCachedMyXmlNode =
+                objReturn =
                     objDoc.SelectSingleNode("/chummer/gears/gear[name = " + strNameWithQuotes + ']') ??
                     objDoc.SelectSingleNode("/chummer/gears/gear[contains(name, " + strNameWithQuotes + ")]");
-                _objCachedMyXmlNode?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
 
+            _objCachedMyXmlNode = objReturn;
             _strCachedXmlNodeLanguage = strLanguage;
-            return _objCachedMyXmlNode;
+            return objReturn;
         }
 
         private XPathNavigator _objCachedMyXPathNode;
@@ -2461,30 +2464,32 @@ namespace Chummer.Backend.Equipment
 
         public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, string strName, string strCategory, CancellationToken token = default)
         {
-            if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
-                                              && !GlobalSettings.LiveCustomData)
-                return _objCachedMyXPathNode;
+            XPathNavigator objReturn = _objCachedMyXPathNode;
+            if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
+                                  && !GlobalSettings.LiveCustomData)
+                return objReturn;
             XPathNavigator objDoc = blnSync
                 // ReSharper disable once MethodHasAsyncOverload
                 ? _objCharacter.LoadDataXPath("gear.xml", strLanguage, token: token)
                 : await _objCharacter.LoadDataXPathAsync("gear.xml", strLanguage, token: token).ConfigureAwait(false);
             string strNameWithQuotes = Name.CleanXPath();
-            _objCachedMyXPathNode = objDoc.SelectSingleNode(!string.IsNullOrWhiteSpace(strName)
-                                                                ? "/chummer/gears/gear[name = " + strName.CleanXPath()
-                                                                + " and category = " + strCategory.CleanXPath() + ']'
-                                                                : "/chummer/gears/gear[(id = " + SourceIDString.CleanXPath()
-                                                                + " or id = " + SourceIDString.ToUpperInvariant().CleanXPath()
-                                                                + ") or (name = " + strNameWithQuotes
-                                                                + " and category = " + Category.CleanXPath() + ")]");
-            if (_objCachedMyXmlNode == null)
+            objReturn = objDoc.SelectSingleNode(!string.IsNullOrWhiteSpace(strName)
+                                                                   ? "/chummer/gears/gear[name = " + strName.CleanXPath()
+                                                                   + " and category = " + strCategory.CleanXPath() + ']'
+                                                                   : "/chummer/gears/gear[(id = " + SourceIDString.CleanXPath()
+                                                                   + " or id = " + SourceIDString.ToUpperInvariant().CleanXPath()
+                                                                   + ") or (name = " + strNameWithQuotes
+                                                                   + " and category = " + Category.CleanXPath() + ")]");
+            if (objReturn == null)
             {
-                _objCachedMyXPathNode =
+                objReturn =
                     objDoc.SelectSingleNode("/chummer/gears/gear[name = " + strNameWithQuotes + ']') ??
                     objDoc.SelectSingleNode("/chummer/gears/gear[contains(name, " + strNameWithQuotes + ")]");
-                _objCachedMyXPathNode?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
+            _objCachedMyXPathNode = objReturn;
             _strCachedXPathNodeLanguage = strLanguage;
-            return _objCachedMyXPathNode;
+            return objReturn;
         }
 
         #endregion Properties

@@ -681,18 +681,15 @@ namespace Chummer.Backend.Attributes
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intCachedValue == int.MinValue)
-                    {
-                        using (LockObject.EnterWriteLock())
-                        {
-                            _intCachedValue
-                                = Math.Min(
-                                    Math.Max(Base + FreeBase + RawMinimum + AttributeValueModifiers, TotalMinimum)
-                                    + Karma,
-                                    TotalMaximum);
-                        }
-                    }
-                    return _intCachedValue;
+                    // intReturn for thread safety
+                    int intReturn = _intCachedValue;
+                    if (intReturn != int.MinValue)
+                        return intReturn;
+                    return _intCachedValue
+                        = Math.Min(
+                            Math.Max(Base + FreeBase + RawMinimum + AttributeValueModifiers, TotalMinimum)
+                            + Karma,
+                            TotalMaximum);
                 }
             }
         }
@@ -704,26 +701,21 @@ namespace Chummer.Backend.Attributes
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (_intCachedValue == int.MinValue)
-                {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
-                    {
-                        _intCachedValue
-                            = await Task.Run(async () => Math.Min(
-                                                 Math.Max(
-                                                     Base + await GetFreeBaseAsync(token).ConfigureAwait(false) + await GetRawMinimumAsync(token).ConfigureAwait(false)
-                                                     + await GetAttributeValueModifiersAsync(token).ConfigureAwait(false), await GetTotalMinimumAsync(token).ConfigureAwait(false))
-                                                 + Karma,
-                                                 await GetTotalMaximumAsync(token).ConfigureAwait(false)), token).ConfigureAwait(false);
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
-                }
+                // intReturn for thread safety
+                int intReturn = _intCachedValue;
+                if (intReturn != int.MinValue)
+                    return intReturn;
+                return _intCachedValue = await Task.Run(async () => Math.Min(
+                                                            Math.Max(
+                                                                Base + await GetFreeBaseAsync(token).ConfigureAwait(false)
+                                                                     + await GetRawMinimumAsync(token).ConfigureAwait(false)
+                                                                     + await GetAttributeValueModifiersAsync(token)
+                                                                         .ConfigureAwait(false),
+                                                                await GetTotalMinimumAsync(token).ConfigureAwait(false))
+                                                            + Karma,
+                                                            await GetTotalMaximumAsync(token).ConfigureAwait(false)), token)
+                                                   .ConfigureAwait(false);
             }
-            return _intCachedValue;
         }
 
         /// <summary>
@@ -1450,12 +1442,11 @@ namespace Chummer.Backend.Attributes
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intCachedTotalValue == int.MinValue)
-                    {
-                        using (LockObject.EnterWriteLock())
-                            _intCachedTotalValue = CalculatedTotalValue();
-                    }
-                    return _intCachedTotalValue;
+                    // intReturn for thread safety
+                    int intReturn = _intCachedTotalValue;
+                    if (intReturn != int.MinValue)
+                        return intReturn;
+                    return _intCachedTotalValue = CalculatedTotalValue();
                 }
             }
         }
@@ -1467,19 +1458,12 @@ namespace Chummer.Backend.Attributes
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (_intCachedTotalValue == int.MinValue)
-                {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
-                    {
-                        _intCachedTotalValue = await Task.Run(() => CalculatedTotalValueAsync(token: token), token).ConfigureAwait(false);
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
-                }
-                return _intCachedTotalValue;
+                // intReturn for thread safety
+                int intReturn = _intCachedTotalValue;
+                if (intReturn != int.MinValue)
+                    return intReturn;
+                return _intCachedTotalValue = await Task.Run(() => CalculatedTotalValueAsync(token: token), token)
+                                                        .ConfigureAwait(false);
             }
         }
 
@@ -1941,177 +1925,127 @@ namespace Chummer.Backend.Attributes
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (!string.IsNullOrEmpty(_strCachedToolTip))
-                        return _strCachedToolTip;
+                    // strReturn for thread safety
+                    string strReturn = _strCachedToolTip;
+                    if (!string.IsNullOrEmpty(strReturn))
+                        return strReturn;
 
-                    using (LockObject.EnterWriteLock())
+                    string strSpace = LanguageManager.GetString("String_Space");
+
+                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                    out HashSet<string> setUniqueNames))
                     {
-                        if (!string.IsNullOrEmpty(_strCachedToolTip)) // Second check just in case
-                            return _strCachedToolTip;
-                        string strSpace = LanguageManager.GetString("String_Space");
+                        decimal decBaseValue = 0;
 
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
-                                   out HashSet<string> setUniqueNames))
+                        List<Improvement> lstUsedImprovements
+                            = ImprovementManager.GetCachedImprovementListForAugmentedValueOf(
+                                _objCharacter, Improvement.ImprovementType.Attribute, Abbrev);
+
+                        List<Tuple<string, decimal, string>> lstUniquePair =
+                            new List<Tuple<string, decimal, string>>(lstUsedImprovements.Count);
+
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdModifier))
                         {
-                            decimal decBaseValue = 0;
-
-                            List<Improvement> lstUsedImprovements
-                                = ImprovementManager.GetCachedImprovementListForAugmentedValueOf(
-                                    _objCharacter, Improvement.ImprovementType.Attribute, Abbrev);
-
-                            List<Tuple<string, decimal, string>> lstUniquePair =
-                                new List<Tuple<string, decimal, string>>(lstUsedImprovements.Count);
-
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                       out StringBuilder sbdModifier))
+                            foreach (Improvement objImprovement in lstUsedImprovements.Where(
+                                         objImprovement => !objImprovement.Custom))
                             {
-                                foreach (Improvement objImprovement in lstUsedImprovements.Where(
-                                             objImprovement => !objImprovement.Custom))
+                                string strUniqueName = objImprovement.UniqueName;
+                                if (!string.IsNullOrEmpty(strUniqueName) && strUniqueName != "enableattribute"
+                                                                         && objImprovement.ImproveType
+                                                                         == Improvement.ImprovementType.Attribute
+                                                                         && objImprovement.ImprovedName == Abbrev)
                                 {
-                                    string strUniqueName = objImprovement.UniqueName;
-                                    if (!string.IsNullOrEmpty(strUniqueName) && strUniqueName != "enableattribute"
-                                                                             && objImprovement.ImproveType
-                                                                             == Improvement.ImprovementType.Attribute
-                                                                             && objImprovement.ImprovedName == Abbrev)
-                                    {
-                                        // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-                                        if (!setUniqueNames.Contains(strUniqueName))
-                                            setUniqueNames.Add(strUniqueName);
+                                    // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
+                                    if (!setUniqueNames.Contains(strUniqueName))
+                                        setUniqueNames.Add(strUniqueName);
 
-                                        // Add the values to the UniquePair List so we can check them later.
-                                        lstUniquePair.Add(new Tuple<string, decimal, string>(
-                                            strUniqueName, objImprovement.Augmented * objImprovement.Rating,
-                                            _objCharacter.GetObjectName(
-                                                objImprovement, GlobalSettings.Language)));
-                                    }
-                                    else if (!(objImprovement.Value == 0 && objImprovement.Augmented == 0))
-                                    {
-                                        decimal decValue = objImprovement.Augmented * objImprovement.Rating;
-                                        sbdModifier.Append(strSpace).Append('+').Append(strSpace)
-                                            .Append(
-                                                _objCharacter.GetObjectName(objImprovement, GlobalSettings.Language))
-                                            .Append(strSpace).Append('(')
-                                            .Append(decValue.ToString(GlobalSettings.CultureInfo))
-                                            .Append(')');
-                                        decBaseValue += decValue;
-                                    }
+                                    // Add the values to the UniquePair List so we can check them later.
+                                    lstUniquePair.Add(new Tuple<string, decimal, string>(
+                                                          strUniqueName,
+                                                          objImprovement.Augmented * objImprovement.Rating,
+                                                          _objCharacter.GetObjectName(
+                                                              objImprovement, GlobalSettings.Language)));
                                 }
-
-                                if (setUniqueNames.Contains("precedence0"))
+                                else if (!(objImprovement.Value == 0 && objImprovement.Augmented == 0))
                                 {
-                                    // Retrieve only the highest precedence0 value.
-                                    // Run through the list of UniqueNames and pick out the highest value for each one.
-                                    decimal decHighest = decimal.MinValue;
+                                    decimal decValue = objImprovement.Augmented * objImprovement.Rating;
+                                    sbdModifier.Append(strSpace).Append('+').Append(strSpace)
+                                               .Append(
+                                                   _objCharacter.GetObjectName(objImprovement, GlobalSettings.Language))
+                                               .Append(strSpace).Append('(')
+                                               .Append(decValue.ToString(GlobalSettings.CultureInfo))
+                                               .Append(')');
+                                    decBaseValue += decValue;
+                                }
+                            }
 
-                                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                               out StringBuilder sbdNewModifier))
+                            if (setUniqueNames.Contains("precedence0"))
+                            {
+                                // Retrieve only the highest precedence0 value.
+                                // Run through the list of UniqueNames and pick out the highest value for each one.
+                                decimal decHighest = decimal.MinValue;
+
+                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                              out StringBuilder sbdNewModifier))
+                                {
+                                    foreach ((string strGroupName, decimal decValue, string strSourceName) in
+                                             lstUniquePair)
+                                    {
+                                        if (strGroupName != "precedence0" || decValue <= decHighest)
+                                            continue;
+                                        decHighest = decValue;
+                                        sbdNewModifier.Clear();
+                                        sbdNewModifier
+                                            .Append(strSpace).Append('+').Append(strSpace).Append(strSourceName)
+                                            .Append(strSpace).Append('(')
+                                            .Append(decValue.ToString(GlobalSettings.CultureInfo)).Append(')');
+                                    }
+
+                                    if (setUniqueNames.Contains("precedence-1"))
                                     {
                                         foreach ((string strGroupName, decimal decValue, string strSourceName) in
                                                  lstUniquePair)
                                         {
-                                            if (strGroupName != "precedence0" || decValue <= decHighest)
+                                            if (strGroupName != "precedence-1")
                                                 continue;
-                                            decHighest = decValue;
-                                            sbdNewModifier.Clear();
+                                            decHighest += decValue;
                                             sbdNewModifier
                                                 .Append(strSpace).Append('+').Append(strSpace).Append(strSourceName)
                                                 .Append(strSpace).Append('(')
                                                 .Append(decValue.ToString(GlobalSettings.CultureInfo)).Append(')');
                                         }
-
-                                        if (setUniqueNames.Contains("precedence-1"))
-                                        {
-                                            foreach ((string strGroupName, decimal decValue, string strSourceName) in
-                                                     lstUniquePair)
-                                            {
-                                                if (strGroupName != "precedence-1")
-                                                    continue;
-                                                decHighest += decValue;
-                                                sbdNewModifier
-                                                    .Append(strSpace).Append('+').Append(strSpace).Append(strSourceName)
-                                                    .Append(strSpace).Append('(')
-                                                    .Append(decValue.ToString(GlobalSettings.CultureInfo)).Append(')');
-                                            }
-                                        }
-
-                                        if (decHighest >= decBaseValue)
-                                        {
-                                            sbdModifier.Clear();
-                                            sbdModifier.Append(sbdNewModifier);
-                                        }
                                     }
-                                }
-                                else if (setUniqueNames.Contains("precedence1"))
-                                {
-                                    // Retrieve all of the items that are precedence1 and nothing else.
-                                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                               out StringBuilder sbdNewModifier))
-                                    {
-                                        foreach ((string _, decimal decValue, string strSourceName) in lstUniquePair
-                                                     .Where(
-                                                         s => s.Item1 == "precedence1" || s.Item1 == "precedence-1"))
-                                        {
-                                            sbdNewModifier.AppendFormat(GlobalSettings.CultureInfo,
-                                                "{0}+{0}{1}{0}({2})",
-                                                strSpace,
-                                                strSourceName, decValue);
-                                        }
 
+                                    if (decHighest >= decBaseValue)
+                                    {
                                         sbdModifier.Clear();
                                         sbdModifier.Append(sbdNewModifier);
                                     }
                                 }
-                                else
+                            }
+                            else if (setUniqueNames.Contains("precedence1"))
+                            {
+                                // Retrieve all of the items that are precedence1 and nothing else.
+                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                              out StringBuilder sbdNewModifier))
                                 {
-                                    // Run through the list of UniqueNames and pick out the highest value for each one.
-                                    foreach (string strName in setUniqueNames)
+                                    foreach ((string _, decimal decValue, string strSourceName) in lstUniquePair
+                                                 .Where(
+                                                     s => s.Item1 == "precedence1" || s.Item1 == "precedence-1"))
                                     {
-                                        decimal decHighest = decimal.MinValue;
-                                        foreach ((string strGroupName, decimal decValue, string strSourceName) in
-                                                 lstUniquePair)
-                                        {
-                                            if (strGroupName == strName && decValue > decHighest)
-                                            {
-                                                decHighest = decValue;
-                                                sbdModifier.Append(strSpace).Append('+').Append(strSpace)
-                                                    .Append(strSourceName)
-                                                    .Append(strSpace).Append('(')
-                                                    .Append(decValue.ToString(GlobalSettings.CultureInfo)).Append(')');
-                                            }
-                                        }
+                                        sbdNewModifier.AppendFormat(GlobalSettings.CultureInfo,
+                                                                    "{0}+{0}{1}{0}({2})",
+                                                                    strSpace,
+                                                                    strSourceName, decValue);
                                     }
+
+                                    sbdModifier.Clear();
+                                    sbdModifier.Append(sbdNewModifier);
                                 }
-
-                                // Factor in Custom Improvements.
-                                setUniqueNames.Clear();
-                                lstUniquePair.Clear();
-                                foreach (Improvement objImprovement in lstUsedImprovements.Where(
-                                             objImprovement => objImprovement.Custom))
-                                {
-                                    string strUniqueName = objImprovement.UniqueName;
-                                    if (!string.IsNullOrEmpty(strUniqueName))
-                                    {
-                                        // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-                                        if (!setUniqueNames.Contains(strUniqueName))
-                                            setUniqueNames.Add(strUniqueName);
-
-                                        // Add the values to the UniquePair List so we can check them later.
-                                        lstUniquePair.Add(new Tuple<string, decimal, string>(
-                                            strUniqueName, objImprovement.Augmented * objImprovement.Rating,
-                                            _objCharacter.GetObjectName(
-                                                objImprovement, GlobalSettings.Language)));
-                                    }
-                                    else
-                                    {
-                                        sbdModifier.Append(strSpace).Append('+').Append(strSpace)
-                                            .Append(
-                                                _objCharacter.GetObjectName(objImprovement, GlobalSettings.Language))
-                                            .Append(strSpace).Append('(')
-                                            .Append((objImprovement.Augmented * objImprovement.Rating).ToString(
-                                                GlobalSettings.CultureInfo)).Append(')');
-                                    }
-                                }
-
+                            }
+                            else
+                            {
                                 // Run through the list of UniqueNames and pick out the highest value for each one.
                                 foreach (string strName in setUniqueNames)
                                 {
@@ -2119,36 +2053,87 @@ namespace Chummer.Backend.Attributes
                                     foreach ((string strGroupName, decimal decValue, string strSourceName) in
                                              lstUniquePair)
                                     {
-                                        if (strGroupName != strName || decValue <= decHighest)
-                                            continue;
-                                        decHighest = decValue;
-                                        sbdModifier.Append(strSpace).Append('+').Append(strSpace).Append(strSourceName)
-                                            .Append(strSpace).Append('(')
-                                            .Append(decValue.ToString(GlobalSettings.CultureInfo)).Append(')');
-                                    }
-                                }
-
-                                //// If this is AGI or STR, factor in any Cyberlimbs.
-                                if (!_objCharacter.Settings.DontUseCyberlimbCalculation &&
-                                    Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
-                                {
-                                    foreach (Cyberware objCyberware in _objCharacter.Cyberware)
-                                    {
-                                        if (objCyberware.Category == "Cyberlimb")
+                                        if (strGroupName == strName && decValue > decHighest)
                                         {
-                                            sbdModifier.AppendLine().Append(objCyberware.CurrentDisplayName)
-                                                .Append(strSpace)
-                                                .Append('(')
-                                                .Append(objCyberware.GetAttributeTotalValue(Abbrev)
-                                                    .ToString(GlobalSettings.CultureInfo)).Append(')');
+                                            decHighest = decValue;
+                                            sbdModifier.Append(strSpace).Append('+').Append(strSpace)
+                                                       .Append(strSourceName)
+                                                       .Append(strSpace).Append('(')
+                                                       .Append(decValue.ToString(GlobalSettings.CultureInfo))
+                                                       .Append(')');
                                         }
                                     }
                                 }
-
-                                return _strCachedToolTip = DisplayAbbrev + strSpace + '('
-                                                           + Value.ToString(GlobalSettings.CultureInfo) + ')' +
-                                                           sbdModifier;
                             }
+
+                            // Factor in Custom Improvements.
+                            setUniqueNames.Clear();
+                            lstUniquePair.Clear();
+                            foreach (Improvement objImprovement in lstUsedImprovements.Where(
+                                         objImprovement => objImprovement.Custom))
+                            {
+                                string strUniqueName = objImprovement.UniqueName;
+                                if (!string.IsNullOrEmpty(strUniqueName))
+                                {
+                                    // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
+                                    if (!setUniqueNames.Contains(strUniqueName))
+                                        setUniqueNames.Add(strUniqueName);
+
+                                    // Add the values to the UniquePair List so we can check them later.
+                                    lstUniquePair.Add(new Tuple<string, decimal, string>(
+                                                          strUniqueName,
+                                                          objImprovement.Augmented * objImprovement.Rating,
+                                                          _objCharacter.GetObjectName(
+                                                              objImprovement, GlobalSettings.Language)));
+                                }
+                                else
+                                {
+                                    sbdModifier.Append(strSpace).Append('+').Append(strSpace)
+                                               .Append(
+                                                   _objCharacter.GetObjectName(objImprovement, GlobalSettings.Language))
+                                               .Append(strSpace).Append('(')
+                                               .Append((objImprovement.Augmented * objImprovement.Rating).ToString(
+                                                           GlobalSettings.CultureInfo)).Append(')');
+                                }
+                            }
+
+                            // Run through the list of UniqueNames and pick out the highest value for each one.
+                            foreach (string strName in setUniqueNames)
+                            {
+                                decimal decHighest = decimal.MinValue;
+                                foreach ((string strGroupName, decimal decValue, string strSourceName) in
+                                         lstUniquePair)
+                                {
+                                    if (strGroupName != strName || decValue <= decHighest)
+                                        continue;
+                                    decHighest = decValue;
+                                    sbdModifier.Append(strSpace).Append('+').Append(strSpace).Append(strSourceName)
+                                               .Append(strSpace).Append('(')
+                                               .Append(decValue.ToString(GlobalSettings.CultureInfo)).Append(')');
+                                }
+                            }
+
+                            //// If this is AGI or STR, factor in any Cyberlimbs.
+                            if (!_objCharacter.Settings.DontUseCyberlimbCalculation &&
+                                Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
+                            {
+                                foreach (Cyberware objCyberware in _objCharacter.Cyberware)
+                                {
+                                    if (objCyberware.Category == "Cyberlimb")
+                                    {
+                                        sbdModifier.AppendLine().Append(objCyberware.CurrentDisplayName)
+                                                   .Append(strSpace)
+                                                   .Append('(')
+                                                   .Append(objCyberware.GetAttributeTotalValue(Abbrev)
+                                                                       .ToString(GlobalSettings.CultureInfo))
+                                                   .Append(')');
+                                    }
+                                }
+                            }
+
+                            return _strCachedToolTip = DisplayAbbrev + strSpace + '('
+                                                       + Value.ToString(GlobalSettings.CultureInfo) + ')' +
+                                                       sbdModifier;
                         }
                     }
                 }
@@ -2330,89 +2315,13 @@ namespace Chummer.Backend.Attributes
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intCachedUpgradeKarmaCost != int.MinValue)
-                        return _intCachedUpgradeKarmaCost;
+                    // intReturn for thread safety
+                    int intReturn = _intCachedUpgradeKarmaCost;
+                    if (intReturn != int.MinValue)
+                        return intReturn;
 
-                    using (LockObject.EnterWriteLock())
-                    {
-                        if (_intCachedUpgradeKarmaCost != int.MinValue)
-                            return _intCachedUpgradeKarmaCost;
-                        int intValue = Value;
-                        if (intValue >= TotalMaximum)
-                        {
-                            return -1;
-                        }
-
-                        int intUpgradeCost;
-                        int intOptionsCost = _objCharacter.Settings.KarmaAttribute;
-                        if (intValue == 0)
-                        {
-                            intUpgradeCost = intOptionsCost;
-                        }
-                        else
-                        {
-                            intUpgradeCost = (intValue + 1) * intOptionsCost;
-                        }
-
-                        if (_objCharacter.Settings.AlternateMetatypeAttributeKarma &&
-                            !s_SetAlternateMetatypeAttributeKarmaExceptions.Contains(Abbrev))
-                            intUpgradeCost -= (MetatypeMinimum - 1) * intOptionsCost;
-
-                        decimal decExtra = 0;
-                        decimal decMultiplier = 1.0m;
-                        foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
-                        {
-                            if ((objLoopImprovement.ImprovedName == Abbrev ||
-                                 string.IsNullOrEmpty(objLoopImprovement.ImprovedName)) &&
-                                (string.IsNullOrEmpty(objLoopImprovement.Condition) ||
-                                 (objLoopImprovement.Condition == "career") == _objCharacter.Created ||
-                                 (objLoopImprovement.Condition == "create") != _objCharacter.Created) &&
-                                (objLoopImprovement.Maximum == 0 || intValue + 1 <= objLoopImprovement.Maximum) &&
-                                objLoopImprovement.Minimum <= intValue + 1 && objLoopImprovement.Enabled)
-                            {
-                                switch (objLoopImprovement.ImproveType)
-                                {
-                                    case Improvement.ImprovementType.AttributeKarmaCost:
-                                        decExtra += objLoopImprovement.Value;
-                                        break;
-
-                                    case Improvement.ImprovementType.AttributeKarmaCostMultiplier:
-                                        decMultiplier *= objLoopImprovement.Value / 100.0m;
-                                        break;
-                                }
-                            }
-                        }
-
-                        if (decMultiplier != 1.0m)
-                            intUpgradeCost = (intUpgradeCost * decMultiplier + decExtra).StandardRound();
-                        else
-                            intUpgradeCost += decExtra.StandardRound();
-
-                        return _intCachedUpgradeKarmaCost = Math.Max(intUpgradeCost, Math.Min(1, intOptionsCost));
-                    }
-                }
-            }
-        }
-
-        /// <summary>
-        /// Karma price to upgrade. Returns negative if impossible
-        /// </summary>
-        /// <returns>Price in karma</returns>
-        public async ValueTask<int> GetUpgradeKarmaCostAsync(CancellationToken token = default)
-        {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
-            {
-                if (_intCachedUpgradeKarmaCost != int.MinValue)
-                    return _intCachedUpgradeKarmaCost;
-
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
-                {
-                    if (_intCachedUpgradeKarmaCost != int.MinValue)
-                        return _intCachedUpgradeKarmaCost;
-
-                    int intValue = await GetValueAsync(token).ConfigureAwait(false);
-                    if (intValue >= await GetTotalMaximumAsync(token).ConfigureAwait(false))
+                    int intValue = Value;
+                    if (intValue >= TotalMaximum)
                     {
                         return -1;
                     }
@@ -2428,38 +2337,34 @@ namespace Chummer.Backend.Attributes
                         intUpgradeCost = (intValue + 1) * intOptionsCost;
                     }
 
-                    if (_objCharacter.Settings.AlternateMetatypeAttributeKarma
-                        && !s_SetAlternateMetatypeAttributeKarmaExceptions.Contains(Abbrev))
-                        intUpgradeCost -= (await GetMetatypeMinimumAsync(token).ConfigureAwait(false) - 1) *
-                                          intOptionsCost;
+                    if (_objCharacter.Settings.AlternateMetatypeAttributeKarma &&
+                        !s_SetAlternateMetatypeAttributeKarmaExceptions.Contains(Abbrev))
+                        intUpgradeCost -= (MetatypeMinimum - 1) * intOptionsCost;
 
                     decimal decExtra = 0;
                     decimal decMultiplier = 1.0m;
-                    bool blnCreated = await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false);
-                    await (await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(
-                        objLoopImprovement =>
+                    foreach (Improvement objLoopImprovement in _objCharacter.Improvements)
+                    {
+                        if ((objLoopImprovement.ImprovedName == Abbrev ||
+                             string.IsNullOrEmpty(objLoopImprovement.ImprovedName)) &&
+                            (string.IsNullOrEmpty(objLoopImprovement.Condition) ||
+                             (objLoopImprovement.Condition == "career") == _objCharacter.Created ||
+                             (objLoopImprovement.Condition == "create") != _objCharacter.Created) &&
+                            (objLoopImprovement.Maximum == 0 || intValue + 1 <= objLoopImprovement.Maximum) &&
+                            objLoopImprovement.Minimum <= intValue + 1 && objLoopImprovement.Enabled)
                         {
-                            if ((objLoopImprovement.ImprovedName == Abbrev ||
-                                 string.IsNullOrEmpty(objLoopImprovement.ImprovedName))
-                                &&
-                                (string.IsNullOrEmpty(objLoopImprovement.Condition)
-                                 || (objLoopImprovement.Condition == "career") == blnCreated
-                                 || (objLoopImprovement.Condition == "create") != blnCreated) &&
-                                (objLoopImprovement.Maximum == 0 || intValue + 1 <= objLoopImprovement.Maximum)
-                                && objLoopImprovement.Minimum <= intValue + 1 && objLoopImprovement.Enabled)
+                            switch (objLoopImprovement.ImproveType)
                             {
-                                switch (objLoopImprovement.ImproveType)
-                                {
-                                    case Improvement.ImprovementType.AttributeKarmaCost:
-                                        decExtra += objLoopImprovement.Value;
-                                        break;
+                                case Improvement.ImprovementType.AttributeKarmaCost:
+                                    decExtra += objLoopImprovement.Value;
+                                    break;
 
-                                    case Improvement.ImprovementType.AttributeKarmaCostMultiplier:
-                                        decMultiplier *= objLoopImprovement.Value / 100.0m;
-                                        break;
-                                }
+                                case Improvement.ImprovementType.AttributeKarmaCostMultiplier:
+                                    decMultiplier *= objLoopImprovement.Value / 100.0m;
+                                    break;
                             }
-                        }, token: token).ConfigureAwait(false);
+                        }
+                    }
 
                     if (decMultiplier != 1.0m)
                         intUpgradeCost = (intUpgradeCost * decMultiplier + decExtra).StandardRound();
@@ -2468,10 +2373,78 @@ namespace Chummer.Backend.Attributes
 
                     return _intCachedUpgradeKarmaCost = Math.Max(intUpgradeCost, Math.Min(1, intOptionsCost));
                 }
-                finally
+            }
+        }
+
+        /// <summary>
+        /// Karma price to upgrade. Returns negative if impossible
+        /// </summary>
+        /// <returns>Price in karma</returns>
+        public async ValueTask<int> GetUpgradeKarmaCostAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                // intReturn for thread safety
+                int intReturn = _intCachedUpgradeKarmaCost;
+                if (intReturn != int.MinValue)
+                    return intReturn;
+
+                int intValue = await GetValueAsync(token).ConfigureAwait(false);
+                if (intValue >= await GetTotalMaximumAsync(token).ConfigureAwait(false))
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    return -1;
                 }
+
+                int intUpgradeCost;
+                int intOptionsCost = _objCharacter.Settings.KarmaAttribute;
+                if (intValue == 0)
+                {
+                    intUpgradeCost = intOptionsCost;
+                }
+                else
+                {
+                    intUpgradeCost = (intValue + 1) * intOptionsCost;
+                }
+
+                if (_objCharacter.Settings.AlternateMetatypeAttributeKarma
+                    && !s_SetAlternateMetatypeAttributeKarmaExceptions.Contains(Abbrev))
+                    intUpgradeCost -= (await GetMetatypeMinimumAsync(token).ConfigureAwait(false) - 1) *
+                                      intOptionsCost;
+
+                decimal decExtra = 0;
+                decimal decMultiplier = 1.0m;
+                bool blnCreated = await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false);
+                await (await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(
+                    objLoopImprovement =>
+                    {
+                        if ((objLoopImprovement.ImprovedName == Abbrev ||
+                             string.IsNullOrEmpty(objLoopImprovement.ImprovedName))
+                            &&
+                            (string.IsNullOrEmpty(objLoopImprovement.Condition)
+                             || (objLoopImprovement.Condition == "career") == blnCreated
+                             || (objLoopImprovement.Condition == "create") != blnCreated) &&
+                            (objLoopImprovement.Maximum == 0 || intValue + 1 <= objLoopImprovement.Maximum)
+                            && objLoopImprovement.Minimum <= intValue + 1 && objLoopImprovement.Enabled)
+                        {
+                            switch (objLoopImprovement.ImproveType)
+                            {
+                                case Improvement.ImprovementType.AttributeKarmaCost:
+                                    decExtra += objLoopImprovement.Value;
+                                    break;
+
+                                case Improvement.ImprovementType.AttributeKarmaCostMultiplier:
+                                    decMultiplier *= objLoopImprovement.Value / 100.0m;
+                                    break;
+                            }
+                        }
+                    }, token: token).ConfigureAwait(false);
+
+                if (decMultiplier != 1.0m)
+                    intUpgradeCost = (intUpgradeCost * decMultiplier + decExtra).StandardRound();
+                else
+                    intUpgradeCost += decExtra.StandardRound();
+
+                return _intCachedUpgradeKarmaCost = Math.Max(intUpgradeCost, Math.Min(1, intOptionsCost));
             }
         }
 
@@ -2632,19 +2605,16 @@ namespace Chummer.Backend.Attributes
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intCachedCanUpgradeCareer < 0)
+                    // intReturn for thread safety
+                    int intReturn = _intCachedCanUpgradeCareer;
+                    if (intReturn < 0)
                     {
-                        using (LockObject.EnterWriteLock())
-                        {
-                            if (_intCachedCanUpgradeCareer < 0) // Second check in case another task already set this
-                            {
-                                _intCachedCanUpgradeCareer =
-                                    (_objCharacter.Karma >= UpgradeKarmaCost && TotalMaximum > Value).ToInt32();
-                            }
-                        }
+                        intReturn =
+                            (_objCharacter.Karma >= UpgradeKarmaCost && TotalMaximum > Value).ToInt32();
+                        _intCachedCanUpgradeCareer = intReturn;
                     }
 
-                    return _intCachedCanUpgradeCareer > 0;
+                    return intReturn > 0;
                 }
             }
         }
@@ -2653,27 +2623,19 @@ namespace Chummer.Backend.Attributes
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (_intCachedCanUpgradeCareer < 0)
+                // intReturn for thread safety
+                int intReturn = _intCachedCanUpgradeCareer;
+                if (intReturn < 0)
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
-                    {
-                        if (_intCachedCanUpgradeCareer < 0) // Second check in case another task already set this
-                        {
-                            _intCachedCanUpgradeCareer =
-                                (await _objCharacter.GetKarmaAsync(token).ConfigureAwait(false)
-                                 >= await GetUpgradeKarmaCostAsync(token).ConfigureAwait(false)
-                                 && await GetTotalMaximumAsync(token).ConfigureAwait(false) >
-                                 await GetValueAsync(token).ConfigureAwait(false)).ToInt32();
-                        }
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
+                    intReturn =
+                        (await _objCharacter.GetKarmaAsync(token).ConfigureAwait(false)
+                         >= await GetUpgradeKarmaCostAsync(token).ConfigureAwait(false)
+                         && await GetTotalMaximumAsync(token).ConfigureAwait(false) >
+                         await GetValueAsync(token).ConfigureAwait(false)).ToInt32();
+                    _intCachedCanUpgradeCareer = intReturn;
                 }
 
-                return _intCachedCanUpgradeCareer > 0;
+                return intReturn > 0;
             }
         }
 
@@ -2757,6 +2719,15 @@ namespace Chummer.Backend.Attributes
             this.OnMultiplePropertyChanged(strPropertyName);
         }
 
+        private static readonly HashSet<string> s_SetPropertyNamesWithCachedValues = new HashSet<string>
+        {
+            nameof(CanUpgradeCareer),
+            nameof(Value),
+            nameof(TotalValue),
+            nameof(UpgradeKarmaCost),
+            nameof(ToolTip)
+        };
+
         public void OnMultiplePropertyChanged(IReadOnlyCollection<string> lstPropertyNames)
         {
             using (EnterReadLock.Enter(LockObject))
@@ -2780,18 +2751,21 @@ namespace Chummer.Backend.Attributes
                     if (setNamesOfChangedProperties == null || setNamesOfChangedProperties.Count == 0)
                         return;
 
-                    using (LockObject.EnterWriteLock())
+                    if (setNamesOfChangedProperties.Overlaps(s_SetPropertyNamesWithCachedValues))
                     {
-                        if (setNamesOfChangedProperties.Contains(nameof(CanUpgradeCareer)))
-                            _intCachedCanUpgradeCareer = int.MinValue;
-                        if (setNamesOfChangedProperties.Contains(nameof(Value)))
-                            _intCachedValue = int.MinValue;
-                        if (setNamesOfChangedProperties.Contains(nameof(TotalValue)))
-                            _intCachedTotalValue = int.MinValue;
-                        if (setNamesOfChangedProperties.Contains(nameof(UpgradeKarmaCost)))
-                            _intCachedUpgradeKarmaCost = int.MinValue;
-                        if (setNamesOfChangedProperties.Contains(nameof(ToolTip)))
-                            _strCachedToolTip = string.Empty;
+                        using (LockObject.EnterWriteLock())
+                        {
+                            if (setNamesOfChangedProperties.Contains(nameof(CanUpgradeCareer)))
+                                _intCachedCanUpgradeCareer = int.MinValue;
+                            if (setNamesOfChangedProperties.Contains(nameof(Value)))
+                                _intCachedValue = int.MinValue;
+                            if (setNamesOfChangedProperties.Contains(nameof(TotalValue)))
+                                _intCachedTotalValue = int.MinValue;
+                            if (setNamesOfChangedProperties.Contains(nameof(UpgradeKarmaCost)))
+                                _intCachedUpgradeKarmaCost = int.MinValue;
+                            if (setNamesOfChangedProperties.Contains(nameof(ToolTip)))
+                                _strCachedToolTip = string.Empty;
+                        }
                     }
 
                     if (PropertyChanged != null)
@@ -3171,6 +3145,8 @@ namespace Chummer.Backend.Attributes
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
+
+            await LockObject.DisposeAsync().ConfigureAwait(false);
         }
     }
 }
