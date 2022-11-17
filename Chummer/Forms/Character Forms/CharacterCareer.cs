@@ -4932,55 +4932,78 @@ namespace Chummer
                             "/chummer/spells/spell[id = " + frmPickSpell.MyForm.SelectedSpell.CleanXPath() + ']');
 
                         Spell objSpell = new Spell(CharacterObject);
-                        objSpell.Create(objXmlSpell, string.Empty, frmPickSpell.MyForm.Limited,
-                                        frmPickSpell.MyForm.Extended, frmPickSpell.MyForm.Alchemical);
-                        if (objSpell.Alchemical)
+                        try
                         {
-                            intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Preparations", GenericToken).ConfigureAwait(false);
-                        }
-                        else if (objSpell.Category == "Rituals")
-                        {
-                            intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Rituals", GenericToken).ConfigureAwait(false);
-                        }
-
-                        if (objSpell.InternalId.IsEmptyGuid())
-                        {
-                            objSpell.Dispose();
-                            continue;
-                        }
-
-                        objSpell.FreeBonus = frmPickSpell.MyForm.FreeBonus;
-                        if (!objSpell.FreeBonus)
-                        {
-                            if (await CharacterObject.GetKarmaAsync(GenericToken).ConfigureAwait(false) < intSpellKarmaCost)
+                            objSpell.Create(objXmlSpell, string.Empty, frmPickSpell.MyForm.Limited,
+                                            frmPickSpell.MyForm.Extended, frmPickSpell.MyForm.Alchemical);
+                            if (objSpell.Alchemical)
                             {
-                                objSpell.Dispose();
-                                Program.ShowMessageBox(
-                                    this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma").ConfigureAwait(false),
-                                    await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma").ConfigureAwait(false),
-                                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                                break;
+                                intSpellKarmaCost = await CharacterObject
+                                                          .SpellKarmaCostAsync("Preparations", GenericToken)
+                                                          .ConfigureAwait(false);
+                            }
+                            else if (objSpell.Category == "Rituals")
+                            {
+                                intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Rituals", GenericToken)
+                                                                         .ConfigureAwait(false);
                             }
 
-                            if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
-                                    await LanguageManager.GetStringAsync(
-                                        "Message_ConfirmKarmaExpenseSpend").ConfigureAwait(false)
-                                    , await objSpell.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false)
-                                    , intSpellKarmaCost.ToString(GlobalSettings.CultureInfo))).ConfigureAwait(false))
+                            if (objSpell.InternalId.IsEmptyGuid())
                             {
-                                objSpell.Dispose();
+                                await objSpell.DisposeAsync().ConfigureAwait(false);
                                 continue;
                             }
+
+                            objSpell.FreeBonus = frmPickSpell.MyForm.FreeBonus;
+                            if (!objSpell.FreeBonus)
+                            {
+                                if (await CharacterObject.GetKarmaAsync(GenericToken).ConfigureAwait(false)
+                                    < intSpellKarmaCost)
+                                {
+                                    await objSpell.DisposeAsync().ConfigureAwait(false);
+                                    Program.ShowMessageBox(
+                                        this,
+                                        await LanguageManager.GetStringAsync("Message_NotEnoughKarma")
+                                                             .ConfigureAwait(false),
+                                        await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma")
+                                                             .ConfigureAwait(false),
+                                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                                    break;
+                                }
+
+                                if (!await CommonFunctions.ConfirmKarmaExpenseAsync(
+                                                              string.Format(GlobalSettings.CultureInfo,
+                                                                            await LanguageManager.GetStringAsync(
+                                                                                    "Message_ConfirmKarmaExpenseSpend")
+                                                                                .ConfigureAwait(false)
+                                                                            , await objSpell
+                                                                                .GetCurrentDisplayNameAsync(
+                                                                                    GenericToken)
+                                                                                .ConfigureAwait(false)
+                                                                            , intSpellKarmaCost.ToString(GlobalSettings.CultureInfo)))
+                                                          .ConfigureAwait(false))
+                                {
+                                    await objSpell.DisposeAsync().ConfigureAwait(false);
+                                    continue;
+                                }
+                            }
+                            // Barehanded Adept
+                            else if (await CharacterObject.GetAdeptEnabledAsync(GenericToken).ConfigureAwait(false)
+                                     && !await CharacterObject.GetMagicianEnabledAsync(GenericToken)
+                                                              .ConfigureAwait(false)
+                                     && (objSpell.Range == "T" || objSpell.Range == "T (A)"))
+                            {
+                                objSpell.BarehandedAdept = true;
+                            }
+
+                            await CharacterObject.Spells.AddAsync(objSpell).ConfigureAwait(false);
                         }
-                        // Barehanded Adept
-                        else if (await CharacterObject.GetAdeptEnabledAsync(GenericToken).ConfigureAwait(false)
-                                 && !await CharacterObject.GetMagicianEnabledAsync(GenericToken).ConfigureAwait(false)
-                                 && (objSpell.Range == "T" || objSpell.Range == "T (A)"))
+                        catch
                         {
-                            objSpell.BarehandedAdept = true;
+                            await objSpell.DisposeAsync().ConfigureAwait(false);
+                            throw;
                         }
 
-                        await CharacterObject.Spells.AddAsync(objSpell).ConfigureAwait(false);
                         if (!objSpell.FreeBonus)
                         {
                             // Create the Expense Log Entry.
@@ -12025,40 +12048,58 @@ namespace Chummer
                 {
                     if (await frmSpell.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false) == DialogResult.Cancel)
                     {
-                        frmSpell.MyForm.SelectedSpell.Dispose();
+                        await frmSpell.MyForm.SelectedSpell.DisposeAsync().ConfigureAwait(false);
                         return;
                     }
 
                     Spell objSpell = frmSpell.MyForm.SelectedSpell;
-                    if (objSpell.Alchemical)
+                    try
                     {
-                        intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Preparations", GenericToken).ConfigureAwait(false);
-                    }
-                    else if (objSpell.Category == "Rituals")
-                    {
-                        intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Rituals", GenericToken).ConfigureAwait(false);
-                    }
+                        if (objSpell.Alchemical)
+                        {
+                            intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Preparations", GenericToken)
+                                                                     .ConfigureAwait(false);
+                        }
+                        else if (objSpell.Category == "Rituals")
+                        {
+                            intSpellKarmaCost = await CharacterObject.SpellKarmaCostAsync("Rituals", GenericToken)
+                                                                     .ConfigureAwait(false);
+                        }
 
-                    if (await CharacterObject.GetKarmaAsync(GenericToken).ConfigureAwait(false) < intSpellKarmaCost)
-                    {
-                        objSpell.Dispose();
-                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughKarma").ConfigureAwait(false),
-                                               await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma").ConfigureAwait(false),
-                                               MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return;
-                    }
+                        if (await CharacterObject.GetKarmaAsync(GenericToken).ConfigureAwait(false) < intSpellKarmaCost)
+                        {
+                            await objSpell.DisposeAsync().ConfigureAwait(false);
+                            Program.ShowMessageBox(
+                                this,
+                                await LanguageManager.GetStringAsync("Message_NotEnoughKarma").ConfigureAwait(false),
+                                await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma")
+                                                     .ConfigureAwait(false),
+                                MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            return;
+                        }
 
-                    if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
-                                                                            await LanguageManager.GetStringAsync(
-                                                                                "Message_ConfirmKarmaExpenseSpend").ConfigureAwait(false)
-                                                                            , await objSpell.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false)
-                                                                            , intSpellKarmaCost.ToString(GlobalSettings.CultureInfo))).ConfigureAwait(false))
-                    {
-                        objSpell.Dispose();
-                        return;
-                    }
+                        if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
+                                                                                await LanguageManager.GetStringAsync(
+                                                                                        "Message_ConfirmKarmaExpenseSpend")
+                                                                                    .ConfigureAwait(false)
+                                                                                , await objSpell
+                                                                                    .GetCurrentDisplayNameAsync(
+                                                                                        GenericToken)
+                                                                                    .ConfigureAwait(false)
+                                                                                , intSpellKarmaCost.ToString(GlobalSettings.CultureInfo)))
+                                                  .ConfigureAwait(false))
+                        {
+                            await objSpell.DisposeAsync().ConfigureAwait(false);
+                            return;
+                        }
 
-                    await CharacterObject.Spells.AddAsync(objSpell).ConfigureAwait(false);
+                        await CharacterObject.Spells.AddAsync(objSpell).ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        await objSpell.DisposeAsync().ConfigureAwait(false);
+                        throw;
+                    }
 
                     // Create the Expense Log Entry.
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
@@ -23697,16 +23738,24 @@ namespace Chummer
                 }
 
                 Spell objNewSpell = new Spell(CharacterObject);
-                objNewSpell.Create(objXmlArt, string.Empty, false, false, false,
-                                   Improvement.ImprovementSource.Initiation);
-                objNewSpell.Grade = intGrade;
-                if (objNewSpell.InternalId.IsEmptyGuid())
+                try
                 {
-                    objNewSpell.Dispose();
-                    return;
-                }
+                    objNewSpell.Create(objXmlArt, string.Empty, false, false, false,
+                                       Improvement.ImprovementSource.Initiation);
+                    objNewSpell.Grade = intGrade;
+                    if (objNewSpell.InternalId.IsEmptyGuid())
+                    {
+                        await objNewSpell.DisposeAsync().ConfigureAwait(false);
+                        return;
+                    }
 
-                await CharacterObject.Spells.AddAsync(objNewSpell, GenericToken).ConfigureAwait(false);
+                    await CharacterObject.Spells.AddAsync(objNewSpell, GenericToken).ConfigureAwait(false);
+                }
+                catch
+                {
+                    await objNewSpell.DisposeAsync().ConfigureAwait(false);
+                    throw;
+                }
 
                 if (blnPayWithKarma)
                 {
@@ -23786,16 +23835,24 @@ namespace Chummer
                 }
 
                 Spell objNewSpell = new Spell(CharacterObject);
-                objNewSpell.Create(objXmlArt, string.Empty, false, false, false,
-                                   Improvement.ImprovementSource.Initiation);
-                objNewSpell.Grade = intGrade;
-                if (objNewSpell.InternalId.IsEmptyGuid())
+                try
                 {
-                    objNewSpell.Dispose();
-                    return;
-                }
+                    objNewSpell.Create(objXmlArt, string.Empty, false, false, false,
+                                       Improvement.ImprovementSource.Initiation);
+                    objNewSpell.Grade = intGrade;
+                    if (objNewSpell.InternalId.IsEmptyGuid())
+                    {
+                        await objNewSpell.DisposeAsync().ConfigureAwait(false);
+                        return;
+                    }
 
-                await CharacterObject.Spells.AddAsync(objNewSpell).ConfigureAwait(false);
+                    await CharacterObject.Spells.AddAsync(objNewSpell).ConfigureAwait(false);
+                }
+                catch
+                {
+                    await objNewSpell.DisposeAsync().ConfigureAwait(false);
+                    throw;
+                }
 
                 if (blnPayWithKarma)
                 {

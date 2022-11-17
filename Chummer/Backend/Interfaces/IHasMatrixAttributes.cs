@@ -785,7 +785,7 @@ namespace Chummer
             }
             finally
             {
-                objThisLocker?.LockObject.EnterWriteLock();
+                objThisLocker?.LockObject.ExitReadLock();
             }
         }
     }

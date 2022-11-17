@@ -4255,24 +4255,33 @@ namespace Chummer
                                                                   + ']');
 
                             Spell objSpell = new Spell(CharacterObject);
-                            objSpell.Create(objXmlSpell, string.Empty, frmPickSpell.MyForm.Limited,
-                                            frmPickSpell.MyForm.Extended,
-                                            frmPickSpell.MyForm.Alchemical);
-                            if (objSpell.InternalId.IsEmptyGuid())
+                            try
                             {
-                                objSpell.Dispose();
-                                continue;
-                            }
+                                objSpell.Create(objXmlSpell, string.Empty, frmPickSpell.MyForm.Limited,
+                                                frmPickSpell.MyForm.Extended,
+                                                frmPickSpell.MyForm.Alchemical);
+                                if (objSpell.InternalId.IsEmptyGuid())
+                                {
+                                    await objSpell.DisposeAsync().ConfigureAwait(false);
+                                    continue;
+                                }
 
-                            objSpell.FreeBonus = frmPickSpell.MyForm.FreeBonus;
-                            // Barehanded Adept
-                            if (objSpell.FreeBonus && CharacterObject.AdeptEnabled && !CharacterObject.MagicianEnabled
-                                && (objSpell.Range == "T" || objSpell.Range == "T (A)"))
+                                objSpell.FreeBonus = frmPickSpell.MyForm.FreeBonus;
+                                // Barehanded Adept
+                                if (objSpell.FreeBonus && CharacterObject.AdeptEnabled
+                                                       && !CharacterObject.MagicianEnabled
+                                                       && (objSpell.Range == "T" || objSpell.Range == "T (A)"))
+                                {
+                                    objSpell.BarehandedAdept = true;
+                                }
+
+                                await CharacterObject.Spells.AddAsync(objSpell).ConfigureAwait(false);
+                            }
+                            catch
                             {
-                                objSpell.BarehandedAdept = true;
+                                await objSpell.DisposeAsync().ConfigureAwait(false);
+                                throw;
                             }
-
-                            await CharacterObject.Spells.AddAsync(objSpell).ConfigureAwait(false);
                         }
                     } while (blnAddAgain);
                 }
@@ -20814,15 +20823,24 @@ namespace Chummer
 
                     Spell objNewSpell = new Spell(CharacterObject);
 
-                    objNewSpell.Create(objXmlArt, string.Empty, false, false, false, Improvement.ImprovementSource.Initiation);
-                    objNewSpell.Grade = objGrade.Grade;
-                    if (objNewSpell.InternalId.IsEmptyGuid())
+                    try
                     {
-                        objNewSpell.Dispose();
-                        return;
-                    }
+                        objNewSpell.Create(objXmlArt, string.Empty, false, false, false,
+                                           Improvement.ImprovementSource.Initiation);
+                        objNewSpell.Grade = objGrade.Grade;
+                        if (objNewSpell.InternalId.IsEmptyGuid())
+                        {
+                            await objNewSpell.DisposeAsync().ConfigureAwait(false);
+                            return;
+                        }
 
-                    await CharacterObject.Spells.AddAsync(objNewSpell).ConfigureAwait(false);
+                        await CharacterObject.Spells.AddAsync(objNewSpell).ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        await objNewSpell.DisposeAsync().ConfigureAwait(false);
+                        throw;
+                    }
                 }
             }
             catch (OperationCanceledException)
@@ -20849,16 +20867,24 @@ namespace Chummer
                     XmlNode objXmlArt = (await CharacterObject.LoadDataAsync("spells.xml", token: GenericToken).ConfigureAwait(false)).SelectSingleNode("/chummer/spells/spell[id = " + frmPickArt.MyForm.SelectedItem.CleanXPath() + ']');
 
                     Spell objNewSpell = new Spell(CharacterObject);
-
-                    objNewSpell.Create(objXmlArt, string.Empty, false, false, false, Improvement.ImprovementSource.Initiation);
-                    objNewSpell.Grade = objGrade.Grade;
-                    if (objNewSpell.InternalId.IsEmptyGuid())
+                    try
                     {
-                        objNewSpell.Dispose();
-                        return;
-                    }
+                        objNewSpell.Create(objXmlArt, string.Empty, false, false, false,
+                                           Improvement.ImprovementSource.Initiation);
+                        objNewSpell.Grade = objGrade.Grade;
+                        if (objNewSpell.InternalId.IsEmptyGuid())
+                        {
+                            await objNewSpell.DisposeAsync().ConfigureAwait(false);
+                            return;
+                        }
 
-                    await CharacterObject.Spells.AddAsync(objNewSpell).ConfigureAwait(false);
+                        await CharacterObject.Spells.AddAsync(objNewSpell).ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        await objNewSpell.DisposeAsync().ConfigureAwait(false);
+                        throw;
+                    }
                 }
             }
             catch (OperationCanceledException)
