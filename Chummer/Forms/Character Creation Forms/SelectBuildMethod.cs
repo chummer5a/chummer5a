@@ -204,7 +204,7 @@ namespace Chummer
                         {
                             if (objOldSelected != null)
                                 x.SelectedValue = objOldSelected;
-                            if (x.SelectedIndex == -1)
+                            if (objOldSelected == null || x.SelectedIndex == -1)
                             {
                                 if (blnSuccess)
                                     x.SelectedValue = objSetting;
