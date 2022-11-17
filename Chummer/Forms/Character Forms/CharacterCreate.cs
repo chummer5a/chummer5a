@@ -9287,7 +9287,7 @@ namespace Chummer
                 return;
             try
             {
-                TreeNode objSelectedNode = await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
+                TreeNode objSelectedNode = await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode, GenericToken)
                                                            .ConfigureAwait(false);
                 switch (objSelectedNode?.Tag)
                 {
