@@ -2882,10 +2882,25 @@ namespace Chummer.Backend.Skills
         {
             using (LockObject.EnterWriteLock())
             {
-                using (_objCharacter.LockObject.EnterWriteLock())
-                    _objCharacter.PropertyChanged -= OnCharacterPropertyChanged;
-                using (_objCharacter.Settings.LockObject.EnterWriteLock())
-                    _objCharacter.Settings.PropertyChanged -= OnCharacterSettingsPropertyChanged;
+                try
+                {
+                    using (_objCharacter.LockObject.EnterWriteLock())
+                        _objCharacter.PropertyChanged -= OnCharacterPropertyChanged;
+                }
+                catch (ObjectDisposedException)
+                {
+                    //swallow this
+                }
+
+                try
+                {
+                    using (_objCharacter.Settings.LockObject.EnterWriteLock())
+                        _objCharacter.Settings.PropertyChanged -= OnCharacterSettingsPropertyChanged;
+                }
+                catch (ObjectDisposedException)
+                {
+                    //swallow this
+                }
                 foreach (SkillGroup objSkillGroup in _lstSkillGroups)
                     objSkillGroup.Dispose();
                 foreach (Skill objSkill in _dicSkillBackups.Values)
@@ -2918,23 +2933,40 @@ namespace Chummer.Backend.Skills
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
-                IAsyncDisposable objLocker2 = await _objCharacter.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {
-                    _objCharacter.PropertyChanged -= OnCharacterPropertyChanged;
+                    IAsyncDisposable objLocker2
+                        = await _objCharacter.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                    try
+                    {
+                        _objCharacter.PropertyChanged -= OnCharacterPropertyChanged;
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
                 }
-                finally
+                catch (ObjectDisposedException)
                 {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    //swallow this
                 }
-                objLocker2 = await _objCharacter.Settings.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+
                 try
                 {
-                    _objCharacter.Settings.PropertyChanged -= OnCharacterSettingsPropertyChanged;
+                    IAsyncDisposable objLocker2 = await _objCharacter.Settings.LockObject.EnterWriteLockAsync()
+                                                                     .ConfigureAwait(false);
+                    try
+                    {
+                        _objCharacter.Settings.PropertyChanged -= OnCharacterSettingsPropertyChanged;
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
                 }
-                finally
+                catch (ObjectDisposedException)
                 {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    //swallow this
                 }
                 foreach (SkillGroup objSkillGroup in _lstSkillGroups)
                     await objSkillGroup.DisposeAsync().ConfigureAwait(false);

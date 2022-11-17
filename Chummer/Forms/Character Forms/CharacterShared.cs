@@ -9046,7 +9046,7 @@ namespace Chummer
         {
             if (disposing)
             {
-                if (_objCharacter != null)
+                if (_objCharacter?.IsDisposed == false)
                 {
                     using (_objCharacter.LockObject.EnterWriteLock())
                         _objCharacter.PropertyChanged -= CharacterPropertyChanged;

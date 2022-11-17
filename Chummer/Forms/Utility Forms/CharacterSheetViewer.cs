@@ -334,15 +334,19 @@ namespace Chummer
 
             foreach (Character objCharacter in _lstCharacters)
             {
-                IAsyncDisposable objLocker = await objCharacter.LockObject.EnterWriteLockAsync(CancellationToken.None);
-                try
+                if (objCharacter?.IsDisposed == false)
                 {
-                    objCharacter.PropertyChanged -= ObjCharacterOnPropertyChanged;
-                    objCharacter.SettingsPropertyChanged -= ObjCharacterOnSettingsPropertyChanged;
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync();
+                    IAsyncDisposable objLocker
+                        = await objCharacter.LockObject.EnterWriteLockAsync(CancellationToken.None);
+                    try
+                    {
+                        objCharacter.PropertyChanged -= ObjCharacterOnPropertyChanged;
+                        objCharacter.SettingsPropertyChanged -= ObjCharacterOnSettingsPropertyChanged;
+                    }
+                    finally
+                    {
+                        await objLocker.DisposeAsync();
+                    }
                 }
             }
 

@@ -95,14 +95,22 @@ namespace Chummer.Backend.Uniques
             {
                 if (_objCharacter != null)
                 {
-                    IAsyncDisposable objLocker2 = await _objCharacter.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                     try
                     {
-                        _objCharacter.PropertyChanged -= RefreshDrainExpression;
+                        IAsyncDisposable objLocker2
+                            = await _objCharacter.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                        try
+                        {
+                            _objCharacter.PropertyChanged -= RefreshDrainExpression;
+                        }
+                        finally
+                        {
+                            await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
-                    finally
+                    catch (ObjectDisposedException)
                     {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        //swallow this
                     }
                 }
             }
@@ -121,8 +129,15 @@ namespace Chummer.Backend.Uniques
             {
                 if (_objCharacter != null)
                 {
-                    using (_objCharacter.LockObject.EnterWriteLock())
-                        _objCharacter.PropertyChanged -= RefreshDrainExpression;
+                    try
+                    {
+                        using (_objCharacter.LockObject.EnterWriteLock())
+                            _objCharacter.PropertyChanged -= RefreshDrainExpression;
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        //swallow this
+                    }
                 }
             }
 

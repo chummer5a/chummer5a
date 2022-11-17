@@ -1007,8 +1007,18 @@ namespace Chummer
                     {
                         foreach (Character objCharacter in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            using (objCharacter.LockObject.EnterWriteLock())
-                                objCharacter.PropertyChanged -= UpdateCharacterTabTitle;
+                            if (objCharacter?.IsDisposed == false)
+                            {
+                                try
+                                {
+                                    using (objCharacter.LockObject.EnterWriteLock())
+                                        objCharacter.PropertyChanged -= UpdateCharacterTabTitle;
+                                }
+                                catch (ObjectDisposedException)
+                                {
+                                    //swallow this
+                                }
+                            }
                         }
                         break;
                     }
@@ -1016,8 +1026,18 @@ namespace Chummer
                     {
                         foreach (Character objCharacter in notifyCollectionChangedEventArgs.OldItems)
                         {
-                            using (objCharacter.LockObject.EnterWriteLock())
-                                objCharacter.PropertyChanged -= UpdateCharacterTabTitle;
+                            if (objCharacter?.IsDisposed == false)
+                            {
+                                try
+                                {
+                                    using (objCharacter.LockObject.EnterWriteLock())
+                                        objCharacter.PropertyChanged -= UpdateCharacterTabTitle;
+                                }
+                                catch (ObjectDisposedException)
+                                {
+                                    //swallow this
+                                }
+                            }
                         }
                         foreach (Character objCharacter in notifyCollectionChangedEventArgs.NewItems)
                         {
@@ -2397,8 +2417,18 @@ namespace Chummer
             Program.OpenCharacters.CollectionChanged -= OpenCharactersOnCollectionChanged;
             foreach (Character objCharacter in Program.OpenCharacters)
             {
-                using (objCharacter.LockObject.EnterWriteLock())
-                    objCharacter.PropertyChanged -= UpdateCharacterTabTitle;
+                if (objCharacter?.IsDisposed == false)
+                {
+                    try
+                    {
+                        using (objCharacter.LockObject.EnterWriteLock())
+                            objCharacter.PropertyChanged -= UpdateCharacterTabTitle;
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        //swallow this
+                    }
+                }
             }
 
             _objGenericCancellationTokenSource.Cancel(false);
