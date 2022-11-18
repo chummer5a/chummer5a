@@ -68,6 +68,7 @@ namespace Chummer
         /// </summary>
         [ThreadStatic]
         // ReSharper disable once ThreadStaticFieldHasInitializer
+        // ReSharper disable once ConvertToConstant.Global
         public static readonly bool IsMainThread = true;
 
         /// <summary>

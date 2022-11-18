@@ -2953,13 +2953,14 @@ namespace Chummer
                     string strSpec = xmlSkill.Attributes?["spec"]?.InnerText ?? string.Empty;
                     Skill objSkill = SkillsSection.GetActiveSkill(strSkill);
 
-                    if (objSkill == null && ExoticSkill.IsExoticSkillName(strSkill))
-                    {
-                        SkillsSection.AddExoticSkill(strSkill, strSpec);
-                        continue;
-                    }
                     if (objSkill == null)
                     {
+                        if (ExoticSkill.IsExoticSkillName(strSkill))
+                        {
+                            SkillsSection.AddExoticSkill(strSkill, strSpec);
+                            continue;
+                        }
+
                         if (!bImprovementAdded)
                             continue;
 
@@ -13830,9 +13831,8 @@ namespace Chummer
                                 if (xmlQualityNode == null)
                                     return 0;
                                 int intLoopKarma = 0;
-                                if (xmlQualityNode.TryGetInt32FieldQuickly("karma", ref intLoopKarma))
-                                    return intLoopKarma;
-                                return 0;
+                                xmlQualityNode.TryGetInt32FieldQuickly("karma", ref intLoopKarma)
+                                return intLoopKarma;
                             }, token).ConfigureAwait(false);
 
                         if (intTemp != 0)
@@ -34119,10 +34119,15 @@ namespace Chummer
                                 {
                                     using (EnterReadLock.Enter(objSpirit.LockObject))
                                     {
-                                        if (objSpirit.EntityType == SpiritType.Sprite)
-                                            objSpirit.Force = MaxSpriteLevel;
-                                        else if (objSpirit.EntityType == SpiritType.Spirit)
-                                            objSpirit.Force = MaxSpiritForce;
+                                        switch (objSpirit.EntityType)
+                                        {
+                                            case SpiritType.Sprite:
+                                                objSpirit.Force = MaxSpriteLevel;
+                                                break;
+                                            case SpiritType.Spirit:
+                                                objSpirit.Force = MaxSpiritForce;
+                                                break;
+                                        }
                                     }
                                 }
                             }

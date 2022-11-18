@@ -8843,11 +8843,11 @@ namespace Chummer
             if (Text.EndsWith('*') == _blnIsDirty && blnCanSkip)
                 return;
 
-            string strSpace = LanguageManager.GetString("String_Space");
+            string strSpace = LanguageManager.GetString("String_Space", token: GenericToken);
             string strTitle = CharacterObject.CharacterName + strSpace + '-' + strSpace + FormMode + strSpace + '(' + CharacterObjectSettings.Name + ')';
             if (_blnIsDirty)
                 strTitle += '*';
-            this.DoThreadSafe(x => x.Text = strTitle);
+            this.DoThreadSafe((x, y) => x.Text = strTitle, token: GenericToken);
         }
 
         /// <summary>

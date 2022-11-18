@@ -6800,10 +6800,7 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public bool IsProgram
-        {
-            get { return false; }
-        }
+        public bool IsProgram => false;
 
         /// <summary>
         /// Device rating string for Cyberware. If it's empty, then GetBaseMatrixAttribute for Device Rating will fetch the grade's DR.
@@ -8200,6 +8197,7 @@ namespace Chummer.Backend.Equipment
                     foreach (XPathNavigator xmlPluginToAdd in xmlGearImportNode.Select(
                                  strPluginNodeName + "/item[@useradded != \"no\"]"))
                     {
+                        bool blnSuccess = false;
                         Cyberware objPlugin = new Cyberware(_objCharacter);
                         try
                         {
@@ -8207,17 +8205,25 @@ namespace Chummer.Backend.Equipment
                                                                  lstVehicles,
                                                                  objParentGrade))
                             {
+                                blnSuccess = true;
                                 objPlugin.Parent = this;
                                 Children.Add(objPlugin);
                             }
                             else
                             {
-                                objPlugin.Dispose();
                                 Gear objPluginGear = new Gear(_objCharacter);
-                                if (objPluginGear.ImportHeroLabGear(xmlPluginToAdd, this.GetNode(), lstWeapons))
+                                try
                                 {
-                                    objPluginGear.Parent = this;
-                                    GearChildren.Add(objPluginGear);
+                                    if (objPluginGear.ImportHeroLabGear(xmlPluginToAdd, this.GetNode(), lstWeapons))
+                                    {
+                                        objPluginGear.Parent = this;
+                                        GearChildren.Add(objPluginGear);
+                                    }
+                                }
+                                catch
+                                {
+                                    objPluginGear.Dispose();
+                                    throw;
                                 }
                             }
                         }
@@ -8226,6 +8232,8 @@ namespace Chummer.Backend.Equipment
                             objPlugin.Dispose();
                             throw;
                         }
+                        if (!blnSuccess)
+                            objPlugin.Dispose();
                     }
 
                     foreach (XPathNavigator xmlPluginToAdd in xmlGearImportNode.Select(
