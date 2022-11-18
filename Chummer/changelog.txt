@@ -31,6 +31,7 @@ Application Changes:
 - Any degraded armor on the sheet of a character that is using settings that do not have armor degradation enabled is now ignored.
 
 Data Changes:
+- Added Quick-Start Rules content: 15 scrumptious menu items brought to you by McHughes™!
 - Added bonus nodes for Shooter (The Soldier) paragon's Compiling dice pool penalty and +1 limit for attack actions. Fixes #4935.
 - Corrected the Cybercombat dice bonus of Intrusion Countermeasure (The Guardian) to be conditional because it is not granted against IC.
 - Added bonus nodes for Architect (The Builder) and Archivist (The Secret Keeper) paragons' dice bonuses for the Edit File and Matrix Search Computer actions respectively.

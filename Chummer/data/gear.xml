@@ -15535,6 +15535,169 @@
       <costfor>4</costfor>
     </gear>
     <!-- End Region -->
+    <!-- Region Quick-Start Rules -->
+    <gear>
+      <id>1ac6fd9d-1711-46f8-aaa1-cb66e187c9dd</id>
+      <name>The Basic (Soyburger)</name>
+      <category>Food</category>
+      <rating>0</rating>
+      <source>QSR</source>
+      <page>23</page>
+      <avail>0</avail>
+      <cost>2</cost>
+    </gear>
+    <gear>
+      <id>e87391ff-ad28-43be-8551-b2ef83025ae0</id>
+      <name>The Hugh™</name>
+      <category>Food</category>
+      <rating>0</rating>
+      <source>QSR</source>
+      <page>23</page>
+      <avail>0</avail>
+      <cost>3</cost>
+    </gear>
+    <gear>
+      <id>68f35a9f-4eb8-4c98-84b4-cb8e8be61e5a</id>
+      <name>The Beast™</name>
+      <category>Food</category>
+      <rating>0</rating>
+      <source>QSR</source>
+      <page>23</page>
+      <avail>0</avail>
+      <cost>5</cost>
+    </gear>
+    <gear>
+      <id>ed0f947e-1533-49ca-98d6-3fd20f221889</id>
+      <name>The Beast Deluxe™</name>
+      <category>Food</category>
+      <rating>0</rating>
+      <source>QSR</source>
+      <page>23</page>
+      <avail>0</avail>
+      <cost>7</cost>
+    </gear>
+    <gear>
+      <id>74528bdf-7f46-4edf-af95-b50b9efce251</id>
+      <name>The Jolly Meal</name>
+      <category>Food</category>
+      <rating>0</rating>
+      <source>QSR</source>
+      <page>23</page>
+      <avail>0</avail>
+      <cost>5</cost>
+    </gear>
+    <gear>
+      <id>80c5b842-1241-493e-866b-dff39eaa38d1</id>
+      <name>Hugh Sliders</name>
+      <category>Food</category>
+      <rating>0</rating>
+      <source>QSR</source>
+      <page>23</page>
+      <avail>0</avail>
+      <cost>3</cost>
+      <costfor>3</costfor>
+    </gear>
+    <gear>
+      <id>b26001e9-251a-4ddc-8734-3e05abc26017</id>
+      <name>The Kriller™</name>
+      <category>Food</category>
+      <rating>0</rating>
+      <source>QSR</source>
+      <page>23</page>
+      <avail>0</avail>
+      <cost>3</cost>
+    </gear>
+    <gear>
+      <id>5bec55b1-f533-46ac-ac4c-76df50bc4eb9</id>
+      <name>Kriller Deluxe™</name>
+      <category>Food</category>
+      <rating>0</rating>
+      <source>QSR</source>
+      <page>23</page>
+      <avail>0</avail>
+      <cost>5</cost>
+    </gear>
+    <gear>
+      <id>efcf32e4-f3b3-4cb9-89a4-31e38b038d75</id>
+      <name>The Egg'r™</name>
+      <category>Food</category>
+      <rating>0</rating>
+      <source>QSR</source>
+      <page>23</page>
+      <avail>0</avail>
+      <cost>3</cost>
+    </gear>
+    <gear>
+      <id>96e0ba42-415a-41fc-a3a8-64139b343615</id>
+      <name>HughFries</name>
+      <category>Food</category>
+      <rating>3</rating>
+      <source>QSR</source>
+      <page>23</page>
+      <avail>0</avail>
+      <cost>2 * Rating</cost>
+    </gear>
+    <gear>
+      <id>def8c5b8-f4bf-453f-b434-73a16ac05ae6</id>
+      <name>Instant Ramen (Pack)</name>
+      <category>Food</category>
+      <rating>0</rating>
+      <source>QSR</source>
+      <page>23</page>
+      <avail>0</avail>
+      <cost>1</cost>
+    </gear>
+    <gear>
+      <id>6e0c0f79-5e43-40e6-b27c-32a03f7e0875</id>
+      <name>The Green Plate</name>
+      <category>Food</category>
+      <rating>0</rating>
+      <source>QSR</source>
+      <page>23</page>
+      <avail>0</avail>
+      <cost>4</cost>
+    </gear>
+    <gear>
+      <id>e7c0a0d4-5bb6-40e3-bf1a-d8aaf6162b85</id>
+      <name>The Squeeler™</name>
+      <category>Food</category>
+      <rating>0</rating>
+      <source>QSR</source>
+      <page>23</page>
+      <avail>0</avail>
+      <cost>4</cost>
+    </gear>
+    <gear>
+      <id>427230ee-796b-4045-930f-4a597ce00dbb</id>
+      <name>Soykaf</name>
+      <category>Food</category>
+      <rating>0</rating>
+      <source>QSR</source>
+      <page>23</page>
+      <avail>0</avail>
+      <cost>1</cost>
+    </gear>
+    <gear>
+      <id>8a805136-e4b6-4dd6-aa04-462a7fac0c5e</id>
+      <name>Soyshake</name>
+      <category>Food</category>
+      <rating>0</rating>
+      <source>QSR</source>
+      <page>23</page>
+      <avail>0</avail>
+      <cost>2</cost>
+    </gear>
+    <gear>
+      <id>ac54ad36-ea89-4689-84fc-56b3ab612bed</id>
+      <name>Soysundae</name>
+      <category>Food</category>
+      <rating>0</rating>
+      <source>QSR</source>
+      <page>23</page>
+      <avail>0</avail>
+      <cost>2</cost>
+    </gear>
+    <!-- End Region -->
     <!-- Region Entertainment -->
     <gear>
       <id>13b4e5f8-a04e-4ca1-877d-c02b9521c676</id>

@@ -612,6 +612,18 @@
       <code>SRM0804</code>
     </book>
     <book>
+      <id>dd13ad69-51d3-4938-b4e9-703da8ee8e41</id>
+      <name>Shadowrun Quick-Start Rules</name>
+      <code>QSR</code>
+      <matches>
+        <match>
+          <language>en-us</language>
+          <text>Roleplaying games require one or more players and a</text>
+          <page>2</page>
+        </match>
+      </matches>
+    </book>
+    <book>
       <id>d7ac8252-fc5d-42d2-afca-2cf98ec14287</id>
       <name>Grimmes Erwachen (German-exclusive)</name>
       <code>GE</code>

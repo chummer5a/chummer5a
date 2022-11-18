@@ -2431,6 +2431,7 @@
         <book>LCD</book>
         <book>NF</book>
         <book>NP</book>
+        <book>QSR</book>
         <book>R5</book>
         <book>RG</book>
         <book>RF</book>
@@ -2628,6 +2629,7 @@
         <book>LCD</book>
         <book>NF</book>
         <book>NP</book>
+        <book>QSR</book>
         <book>R5</book>
         <book>RG</book>
         <book>RF</book>
@@ -2825,6 +2827,7 @@
         <book>LCD</book>
         <book>NF</book>
         <book>NP</book>
+        <book>QSR</book>
         <book>R5</book>
         <book>RG</book>
         <book>RF</book>
@@ -3028,6 +3031,7 @@
         <book>LCD</book>
         <book>NF</book>
         <book>NP</book>
+        <book>QSR</book>
         <book>R5</book>
         <book>RG</book>
         <book>RF</book>
@@ -3230,6 +3234,7 @@
         <book>LCD</book>
         <book>NF</book>
         <book>NP</book>
+        <book>QSR</book>
         <book>R5</book>
         <book>RG</book>
         <book>SASS</book>
@@ -3440,6 +3445,7 @@
         <book>LCD</book>
         <book>NF</book>
         <book>NP</book>
+        <book>QSR</book>
         <book>R5</book>
         <book>RG</book>
         <book>SASS</book>
@@ -3650,6 +3656,7 @@
         <book>LCD</book>
         <book>NF</book>
         <book>NP</book>
+        <book>QSR</book>
         <book>R5</book>
         <book>RG</book>
         <book>SASS</book>
@@ -3865,6 +3872,7 @@
         <book>LCD</book>
         <book>NF</book>
         <book>NP</book>
+        <book>QSR</book>
         <book>R5</book>
         <book>RG</book>
         <book>SASS</book>
