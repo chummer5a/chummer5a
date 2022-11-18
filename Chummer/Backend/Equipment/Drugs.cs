@@ -1446,8 +1446,9 @@ namespace Chummer.Backend.Equipment
                                         + SourceIDString.ToUpperInvariant()
                                                         .CleanXPath()
                                         + ']');
+            _objCachedMyXPathNode = objReturn;
             _strCachedXPathNodeLanguage = strLanguage;
-            return _objCachedMyXPathNode;
+            return objReturn;
         }
 
         public bool Remove(bool blnConfirmDelete = true)
