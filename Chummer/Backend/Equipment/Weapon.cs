@@ -1623,22 +1623,11 @@ namespace Chummer.Backend.Equipment
                         {
                             await objClip.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
                         }
-
-                        foreach (Gear objAmmoGear in GetAmmoReloadable(lstGearToSearch))
-                        {
-                            Clip objClip = new Clip(_objCharacter, null, this, objAmmoGear, objAmmoGear.Quantity.ToInt32())
-                            {
-                                AmmoLocation = objAmmoGear.Location != null
-                                    ? objAmmoGear.Location.Name
-                                    : "available or loaded"
-                            };
-                            await objClip.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
-                            //reloadClipGear.Save(objWriter);
-                        }
                     }
                     else
                     {
-                        await GetClip(_intActiveAmmoSlot).Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
+                        await objLoadedClip.Print(objWriter, objCulture, strLanguageToPrint, token)
+                                           .ConfigureAwait(false);
                     }
                 }
                 finally

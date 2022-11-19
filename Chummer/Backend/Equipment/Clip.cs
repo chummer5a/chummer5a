@@ -76,14 +76,18 @@ namespace Chummer.Backend.Equipment
         public string DisplayAmmoName(string strLanguage = "")
         {
             return AmmoGear?.DisplayNameShort(strLanguage)
-                   ?? LanguageManager.GetString("String_MountInternal", strLanguage);
+                   ?? (Ammo > 0
+                       ? LanguageManager.GetString("String_MountInternal", strLanguage)
+                       : LanguageManager.GetString("String_None", strLanguage));
         }
 
         public Task<string> DisplayAmmoNameAsync(string strLanguage = "", CancellationToken token = default)
         {
-            return AmmoGear != null
-                ? AmmoGear.DisplayNameShortAsync(strLanguage, token).AsTask()
-                : LanguageManager.GetStringAsync("String_MountInternal", strLanguage, token: token);
+            if (AmmoGear != null)
+                return AmmoGear.DisplayNameShortAsync(strLanguage, token).AsTask();
+            return Ammo > 0
+                ? LanguageManager.GetStringAsync("String_MountInternal", strLanguage, token: token)
+                : LanguageManager.GetStringAsync("String_None", strLanguage, token: token);
         }
 
         public Gear AmmoGear
