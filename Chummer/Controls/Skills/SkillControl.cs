@@ -277,13 +277,13 @@ namespace Chummer.UI.Skills
                 ResumeLayout(true);
             }
 
+            using (_objSkill.LockObject.EnterWriteLock(objMyToken))
+                _objSkill.PropertyChanged += Skill_PropertyChanged;
             if (_objAttributeActive != null)
             {
                 using (_objAttributeActive.LockObject.EnterWriteLock(objMyToken))
                     _objAttributeActive.PropertyChanged += Attribute_PropertyChanged;
             }
-
-            _objSkill.PropertyChanged += Skill_PropertyChanged;
             Interlocked.Decrement(ref _intUpdatingSpec);
         }
 
@@ -1135,11 +1135,26 @@ namespace Chummer.UI.Skills
         private void UnbindSkillControl()
         {
             _tmrSpecChangeTimer?.Dispose();
-            _objSkill.PropertyChanged -= Skill_PropertyChanged;
+            try
+            {
+                using (_objSkill.LockObject.EnterWriteLock())
+                    _objSkill.PropertyChanged -= Skill_PropertyChanged;
+            }
+            catch (ObjectDisposedException)
+            {
+                //swallow this
+            }
             if (AttributeActive != null)
             {
-                using (AttributeActive.LockObject.EnterWriteLock())
-                    AttributeActive.PropertyChanged -= Attribute_PropertyChanged;
+                try
+                {
+                    using (AttributeActive.LockObject.EnterWriteLock())
+                        AttributeActive.PropertyChanged -= Attribute_PropertyChanged;
+                }
+                catch (ObjectDisposedException)
+                {
+                    //swallow this
+                }
             }
 
             foreach (Control objControl in Controls)
