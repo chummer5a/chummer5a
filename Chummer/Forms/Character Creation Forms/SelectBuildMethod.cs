@@ -307,20 +307,25 @@ namespace Chummer
                 await lblMaxNuyen.DoThreadSafeAsync(x => x.Text = objSelectedGameplayOption.NuyenMaximumBP.ToString(GlobalSettings.CultureInfo), token).ConfigureAwait(false);
                 await lblQualityKarma.DoThreadSafeAsync(x => x.Text = objSelectedGameplayOption.QualityKarmaLimit.ToString(GlobalSettings.CultureInfo), token).ConfigureAwait(false);
 
+                string strBookList = await _objCharacter.TranslatedBookListAsync(string.Join(";",
+                    objSelectedGameplayOption.Books), token: token).ConfigureAwait(false);
                 await lblBooks.DoThreadSafeAsync(x =>
                 {
-                    x.Text = _objCharacter.TranslatedBookList(string.Join(";",
-                                                                          objSelectedGameplayOption.Books));
+                    x.Text = strBookList;
                     if (string.IsNullOrEmpty(x.Text))
                         x.Text = strNone;
                 }, token).ConfigureAwait(false);
 
+                List<string> lstCustomData = new List<string>();
+                foreach (CustomDataDirectoryInfo objLoopInfo in objSelectedGameplayOption
+                             .EnabledCustomDataDirectoryInfos)
+                    lstCustomData.Add(objLoopInfo.DisplayName);
+                lstCustomData.Sort();
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdCustomDataDirectories))
                 {
-                    foreach (CustomDataDirectoryInfo objLoopInfo in objSelectedGameplayOption
-                                 .EnabledCustomDataDirectoryInfos)
-                        sbdCustomDataDirectories.AppendLine(objLoopInfo.Name);
+                    foreach (string strName in lstCustomData)
+                        sbdCustomDataDirectories.AppendLine(strName);
 
                     await lblCustomData.DoThreadSafeAsync(x =>
                     {

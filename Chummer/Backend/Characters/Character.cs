@@ -30048,42 +30048,111 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
-            {
-                // Load the Sourcebook information.
-                XPathNavigator objXmlDocument = LoadDataXPath("books.xml", strLanguage);
+            List<string> lstBooks = new List<string>();
+            // Load the Sourcebook information.
+            XPathNavigator objXmlDocument = LoadDataXPath("books.xml", strLanguage);
 
-                foreach (string strBook in strInput.TrimEndOnce(';')
-                                                   .SplitNoAlloc(';', StringSplitOptions.RemoveEmptyEntries))
+            foreach (string strBook in strInput.TrimEndOnce(';')
+                                               .SplitNoAlloc(';', StringSplitOptions.RemoveEmptyEntries))
+            {
+                XPathNavigator objXmlBook
+                    = objXmlDocument.SelectSingleNode("/chummer/books/book[code = " + strBook.CleanXPath() + ']');
+                if (objXmlBook != null)
                 {
-                    XPathNavigator objXmlBook
-                        = objXmlDocument.SelectSingleNode("/chummer/books/book[code = " + strBook.CleanXPath() + ']');
-                    if (objXmlBook != null)
-                    {
-                        string strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("translate")?.Value;
-                        if (!string.IsNullOrEmpty(strToAppend))
-                            sbdReturn.AppendLine(strToAppend);
-                        else
-                        {
-                            strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("name")?.Value;
-                            if (!string.IsNullOrEmpty(strToAppend))
-                                sbdReturn.AppendLine(strToAppend);
-                            else
-                            {
-                                strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("altcode")?.Value ?? strBook;
-                                sbdReturn.Append(LanguageManager.GetString("String_Unknown", strLanguage))
-                                         .Append(LanguageManager.GetString("String_Space", strLanguage)).Append('(')
-                                         .Append(strToAppend).AppendLine(')');
-                            }
-                        }
-                    }
+                    string strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("translate")?.Value;
+                    if (!string.IsNullOrEmpty(strToAppend))
+                        lstBooks.Add(strToAppend);
                     else
                     {
-                        sbdReturn.Append(LanguageManager.GetString("String_Unknown", strLanguage))
-                                 .Append(LanguageManager.GetString("String_Space", strLanguage)).AppendLine(strBook);
+                        strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("name")?.Value;
+                        if (!string.IsNullOrEmpty(strToAppend))
+                            lstBooks.Add(strToAppend);
+                        else
+                        {
+                            strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("altcode")?.Value ?? strBook;
+                            lstBooks.Add(LanguageManager.GetString("String_Unknown", strLanguage)
+                                         + LanguageManager.GetString("String_Space", strLanguage) + '('
+                                         + strToAppend + ')');
+                        }
                     }
                 }
+                else
+                {
+                    lstBooks.Add(LanguageManager.GetString("String_Unknown", strLanguage)
+                                 + LanguageManager.GetString("String_Space", strLanguage) + strBook);
+                }
+            }
 
+            lstBooks.Sort();
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            {
+                foreach (string strToAppend in lstBooks)
+                    sbdReturn.AppendLine(strToAppend);
+                return sbdReturn.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Takes a semicolon-separated list of book codes and returns a formatted string with displaynames.
+        /// </summary>
+        /// <param name="strInput"></param>
+        /// <param name="strLanguage">Language to fetch</param>
+        /// <param name="token">Cancellation token to use.</param>
+        public async ValueTask<string> TranslatedBookListAsync(string strInput, string strLanguage = "",
+                                                          CancellationToken token = default)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            List<string> lstBooks = new List<string>();
+            // Load the Sourcebook information.
+            XPathNavigator objXmlDocument
+                = await LoadDataXPathAsync("books.xml", strLanguage, token: token).ConfigureAwait(false);
+
+            foreach (string strBook in strInput.TrimEndOnce(';')
+                                               .SplitNoAlloc(';', StringSplitOptions.RemoveEmptyEntries))
+            {
+                XPathNavigator objXmlBook
+                    = objXmlDocument.SelectSingleNode("/chummer/books/book[code = " + strBook.CleanXPath() + ']');
+                if (objXmlBook != null)
+                {
+                    string strToAppend = (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("translate", token)
+                                                          .ConfigureAwait(false))?.Value;
+                    if (!string.IsNullOrEmpty(strToAppend))
+                        lstBooks.Add(strToAppend);
+                    else
+                    {
+                        strToAppend = (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("name", token)
+                                                       .ConfigureAwait(false))?.Value;
+                        if (!string.IsNullOrEmpty(strToAppend))
+                            lstBooks.Add(strToAppend);
+                        else
+                        {
+                            strToAppend = (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("altcode", token)
+                                                           .ConfigureAwait(false))?.Value ?? strBook;
+                            lstBooks.Add(await LanguageManager
+                                               .GetStringAsync("String_Unknown", strLanguage, token: token)
+                                               .ConfigureAwait(false)
+                                         + await LanguageManager
+                                                 .GetStringAsync("String_Space", strLanguage, token: token)
+                                                 .ConfigureAwait(false) + '('
+                                         + strToAppend + ')');
+                        }
+                    }
+                }
+                else
+                {
+                    lstBooks.Add(await LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token)
+                                                      .ConfigureAwait(false)
+                                 + await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
+                                                        .ConfigureAwait(false) + strBook);
+                }
+            }
+
+            lstBooks.Sort();
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            {
+                foreach (string strToAppend in lstBooks)
+                    sbdReturn.AppendLine(strToAppend);
                 return sbdReturn.ToString();
             }
         }
