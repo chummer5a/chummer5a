@@ -93,7 +93,8 @@ namespace Chummer.Backend.Equipment
                     foreach (Gear objNewItem in e.NewItems)
                     {
                         objNewItem.Parent = this;
-                        objNewItem.ChangeEquippedStatus(Equipped);
+                        if (Equipped)
+                            objNewItem.ChangeEquippedStatus(true);
                     }
                     break;
 
@@ -101,7 +102,8 @@ namespace Chummer.Backend.Equipment
                     foreach (Gear objOldItem in e.OldItems)
                     {
                         objOldItem.Parent = null;
-                        objOldItem.ChangeEquippedStatus(false);
+                        if (Equipped)
+                            objOldItem.ChangeEquippedStatus(false);
                     }
                     break;
 
@@ -109,12 +111,14 @@ namespace Chummer.Backend.Equipment
                     foreach (Gear objOldItem in e.OldItems)
                     {
                         objOldItem.Parent = null;
-                        objOldItem.ChangeEquippedStatus(false);
+                        if (Equipped)
+                            objOldItem.ChangeEquippedStatus(false);
                     }
                     foreach (Gear objNewItem in e.NewItems)
                     {
                         objNewItem.Parent = this;
-                        objNewItem.ChangeEquippedStatus(Equipped);
+                        if (Equipped)
+                            objNewItem.ChangeEquippedStatus(true);
                     }
                     break;
             }
@@ -141,6 +145,7 @@ namespace Chummer.Backend.Equipment
                 _objCachedMyXPathNode = null;
             }
 
+            _blnEquipped = !blnSkipSelectForms;
             objXmlArmorNode.TryGetStringFieldQuickly("name", ref _strName);
             objXmlArmorNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objXmlArmorNode.TryGetStringFieldQuickly("armorcapacity", ref _strArmorCapacity);

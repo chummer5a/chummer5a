@@ -112,37 +112,43 @@ namespace Chummer.Backend.Equipment
 
         private void GearChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (!Equipped || Parent?.ParentVehicle != null)
-                return;
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
                     foreach (Gear objNewItem in e.NewItems)
                     {
                         objNewItem.Parent = this;
-                        objNewItem.ChangeEquippedStatus(Equipped);
+                        if (Equipped && Parent?.ParentVehicle == null)
+                            objNewItem.ChangeEquippedStatus(Equipped);
                     }
+
                     break;
 
                 case NotifyCollectionChangedAction.Remove:
                     foreach (Gear objOldItem in e.OldItems)
                     {
                         objOldItem.Parent = null;
-                        objOldItem.ChangeEquippedStatus(false);
+                        if (Equipped && Parent?.ParentVehicle == null)
+                            objOldItem.ChangeEquippedStatus(false);
                     }
+
                     break;
 
                 case NotifyCollectionChangedAction.Replace:
                     foreach (Gear objOldItem in e.OldItems)
                     {
                         objOldItem.Parent = null;
-                        objOldItem.ChangeEquippedStatus(false);
+                        if (Equipped && Parent?.ParentVehicle == null)
+                            objOldItem.ChangeEquippedStatus(false);
                     }
+
                     foreach (Gear objNewItem in e.NewItems)
                     {
                         objNewItem.Parent = this;
-                        objNewItem.ChangeEquippedStatus(Equipped);
+                        if (Equipped && Parent?.ParentVehicle == null)
+                            objNewItem.ChangeEquippedStatus(Equipped);
                     }
+
                     break;
             }
         }
@@ -169,6 +175,7 @@ namespace Chummer.Backend.Equipment
                 _objCachedMyXPathNode = null;
             }
 
+            _blnEquipped = blnCreateImprovements;
             objXmlAccessory.TryGetStringFieldQuickly("name", ref _strName);
             _strMount = strMount?.Item1 ?? string.Empty;
             _strExtraMount = strMount?.Item2 ?? string.Empty;
@@ -1108,7 +1115,8 @@ namespace Chummer.Backend.Equipment
                 if (_blnEquipped == value)
                     return;
                 _blnEquipped = value;
-                if (Parent?.Equipped == true && Parent.ParentVehicle == null)
+                Weapon objParent = Parent;
+                if (objParent.Equipped && objParent.ParentVehicle == null)
                 {
                     foreach (Gear objGear in GearChildren)
                     {
@@ -1272,21 +1280,20 @@ namespace Chummer.Backend.Equipment
             get => _objParent;
             set
             {
-                if (Interlocked.Exchange(ref _objParent, value) != value && Parent != null)
+                if (Interlocked.Exchange(ref _objParent, value) == value || value == null)
+                    return;
+                if (value.ParentVehicle != null)
                 {
-                    if (Parent.ParentVehicle != null)
+                    foreach (Gear objGear in GearChildren)
                     {
-                        foreach (Gear objGear in GearChildren)
-                        {
-                            objGear.ChangeEquippedStatus(false);
-                        }
+                        objGear.ChangeEquippedStatus(false);
                     }
-                    else if (Equipped)
+                }
+                else if (Equipped)
+                {
+                    foreach (Gear objGear in GearChildren)
                     {
-                        foreach (Gear objGear in GearChildren)
-                        {
-                            objGear.ChangeEquippedStatus(true);
-                        }
+                        objGear.ChangeEquippedStatus(true);
                     }
                 }
             }

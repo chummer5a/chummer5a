@@ -166,6 +166,7 @@ namespace Chummer.Backend.Equipment
         {
             if (objXmlGear == null)
                 return;
+            _blnEquipped = !blnSkipSelectForms;
             _strForcedValue = strForceValue;
             if (!objXmlGear.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {

@@ -162,14 +162,15 @@ namespace Chummer
                 Weapon objWeapon = new Weapon(_objCharacter);
                 objWeapon.Create(xmlWeapon, null, true, false, true);
                 objWeapon.Parent = ParentWeapon;
-                if (_objSelectedWeapon != null)
-                    await _objSelectedWeapon.DisposeAsync().ConfigureAwait(false);
-                _objSelectedWeapon = objWeapon;
+                Weapon objOldWeapon = Interlocked.Exchange(ref _objSelectedWeapon, objWeapon);
+                if (objOldWeapon != null)
+                    await objOldWeapon.DisposeAsync().ConfigureAwait(false);
             }
-            else if (_objSelectedWeapon != null)
+            else
             {
-                await _objSelectedWeapon.DisposeAsync().ConfigureAwait(false);
-                _objSelectedWeapon = null;
+                Weapon objOldWeapon = Interlocked.Exchange(ref _objSelectedWeapon, null);
+                if (objOldWeapon != null)
+                    await objOldWeapon.DisposeAsync().ConfigureAwait(false);
             }
 
             await UpdateWeaponInfo().ConfigureAwait(false);
