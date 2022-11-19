@@ -11278,7 +11278,13 @@
       <name>Curiosity Killed the Cat</name>
       <karma>-7</karma>
       <category>Negative</category>
-      <bonus />
+      <bonus>
+        <specificskill>
+          <name>Hacking</name>
+          <bonus>2</bonus>
+          <condition>Crack File</condition>
+        </specificskill>
+      </bonus>
       <required>
         <oneof>
           <skill>
