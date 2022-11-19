@@ -1372,16 +1372,9 @@ namespace Chummer
                             using (_ = await Timekeeper.StartSyncronAsync("load_frm_create_finish", op_load_frm_create)
                                                        .ConfigureAwait(false))
                             {
-                                await RequestCharacterUpdate().ConfigureAwait(false);
+                                Task tskUpdate = await RequestCharacterUpdate().ConfigureAwait(false);
                                 // Directly awaiting here so that we can properly unset the dirty flag after the update
-                                try
-                                {
-                                    await UpdateCharacterInfoTask.ConfigureAwait(false);
-                                }
-                                catch (OperationCanceledException)
-                                {
-                                    return;
-                                }
+                                await tskUpdate.ConfigureAwait(false);
                                 // Clear the Dirty flag which gets set when creating a new Character.
                                 if (!CharacterObject.LoadAsDirty)
                                     IsDirty = false;
@@ -1584,9 +1577,7 @@ namespace Chummer
 
                         try
                         {
-                            Task tskUpdate = UpdateCharacterInfoTask;
-                            if (tskUpdate != null)
-                                await tskUpdate.ConfigureAwait(false);
+                            await UpdateCharacterInfoTask.ConfigureAwait(false);
                         }
                         catch (OperationCanceledException)
                         {
@@ -3833,11 +3824,11 @@ namespace Chummer
                             await DoOnCharacterPropertyChanged(
                                 new PropertyChangedEventArgs(nameof(Character.DEPEnabled))).ConfigureAwait(false);
 
-                        await RequestCharacterUpdate(token).ConfigureAwait(false);
+                        Task tskUpdate = await RequestCharacterUpdate(token).ConfigureAwait(false);
                         // Immediately await character update because it re-applies essence loss improvements
                         try
                         {
-                            await UpdateCharacterInfoTask.ConfigureAwait(false);
+                            await tskUpdate.ConfigureAwait(false);
                         }
                         catch (OperationCanceledException)
                         {
@@ -13099,10 +13090,10 @@ namespace Chummer
                     }
 
                     // Immediately call character update because we know it's necessary
-                    await RequestCharacterUpdate().ConfigureAwait(false);
+                    Task tskUpdate = await RequestCharacterUpdate().ConfigureAwait(false);
                     try
                     {
-                        await UpdateCharacterInfoTask.ConfigureAwait(false);
+                        await tskUpdate.ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {

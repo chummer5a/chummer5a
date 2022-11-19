@@ -8722,10 +8722,10 @@ namespace Chummer
             }
         }
 
-        public async ValueTask RequestCharacterUpdate(CancellationToken token = default)
+        public async ValueTask<Task> RequestCharacterUpdate(CancellationToken token = default)
         {
             if (IsLoading)
-                return;
+                return _tskUpdateCharacterInfo;
             CancellationTokenSource objSource = null;
             if (token != GenericToken)
             {
@@ -8736,12 +8736,13 @@ namespace Chummer
             try
             {
                 if (!await _objUpdateCharacterInfoSemaphoreSlim.WaitAsync(0, token).ConfigureAwait(false))
-                    return;
-                CancellationToken objToken;
+                    return _tskUpdateCharacterInfo;
                 try
                 {
+                    CancellationTokenSource objNewSource = new CancellationTokenSource();
+                    CancellationToken objToken = objNewSource.Token;
                     CancellationTokenSource objOldSource
-                        = Interlocked.Exchange(ref _objUpdateCharacterInfoCancellationTokenSource, null);
+                        = Interlocked.Exchange(ref _objUpdateCharacterInfoCancellationTokenSource, objNewSource);
                     if (objOldSource != null)
                     {
                         if (!objOldSource.IsCancellationRequested)
@@ -8758,9 +8759,9 @@ namespace Chummer
 
                         objOldSource.Dispose();
                     }
-
                     token.ThrowIfCancellationRequested();
-                    Task tskOldTask = Interlocked.Exchange(ref _tskUpdateCharacterInfo, null);
+                    Task tskNewTask = Task.Run(() => DoUpdateCharacterInfo(objToken), objToken);
+                    Task tskOldTask = Interlocked.Exchange(ref _tskUpdateCharacterInfo, tskNewTask);
                     if (tskOldTask != null)
                     {
                         try
@@ -8771,33 +8772,13 @@ namespace Chummer
                         {
                             //swallow this
                         }
-                        catch
-                        {
-                            _tskUpdateCharacterInfo = Task.CompletedTask;
-                            throw;
-                        }
                     }
 
-                    token.ThrowIfCancellationRequested();
-                    CancellationTokenSource objNewSource = new CancellationTokenSource();
-                    _objUpdateCharacterInfoCancellationTokenSource = objNewSource;
-                    objToken = objNewSource.Token;
+                    return tskNewTask;
                 }
                 finally
                 {
                     _objUpdateCharacterInfoSemaphoreSlim.Release();
-                }
-                Task tskOldTask2 = Interlocked.Exchange(ref _tskUpdateCharacterInfo, Task.Run(() => DoUpdateCharacterInfo(objToken), objToken));
-                if (tskOldTask2 != null)
-                {
-                    try
-                    {
-                        await tskOldTask2.ConfigureAwait(false);
-                    }
-                    catch (OperationCanceledException)
-                    {
-                        //swallow this
-                    }
                 }
             }
             finally
