@@ -1768,6 +1768,9 @@
       <category>Negative</category>
       <bonus>
         <notoriety>1</notoriety>
+        <blockskillcategorydefaulting>Professional</blockskillcategorydefaulting>
+        <blockskillcategorydefaulting>Academic</blockskillcategorydefaulting>
+        <blockskillcategorydefaulting>Technical Active</blockskillcategorydefaulting>
         <skillcategorykarmacostmultiplier>
           <name>Professional</name>
           <val>200</val>

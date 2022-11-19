@@ -577,6 +577,16 @@ namespace Chummer
             }
         }
 
+        public void blockskillcategorydefaulting(XmlNode bonusNode)
+        {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+            Log.Trace("blockskillcategorydefaulting");
+            // Expected values are either a Skill Name or an empty string.
+            CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName,
+                              Improvement.ImprovementType.BlockSkillCategoryDefault, _strUnique);
+        }
+
         public void blockskillgroupdefaulting(XmlNode bonusNode)
         {
             if (bonusNode == null)
@@ -587,37 +597,62 @@ namespace Chummer
                 + "_strLimitSelection = " + LimitSelection + Environment.NewLine
                 );
 
-            string strExclude = string.Empty;
-            if (bonusNode.Attributes?["excludecategory"] != null)
-                strExclude = bonusNode.Attributes["excludecategory"].InnerText;
-
-            using (ThreadSafeForm<SelectSkillGroup> frmPickSkillGroup = ThreadSafeForm<SelectSkillGroup>.Get(() => new SelectSkillGroup(_objCharacter)
+            string strExclude = bonusNode.Attributes?["excludecategory"]?.InnerText ?? string.Empty;
+            string strSelect = bonusNode.InnerText;
+            if (string.IsNullOrEmpty(strSelect))
             {
-                Description = !string.IsNullOrEmpty(_strFriendlyName)
-                    ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectSkillGroupName"), _strFriendlyName)
-                    : LanguageManager.GetString("String_Improvement_SelectSkillGroup")
-            }))
-            {
-                if (!string.IsNullOrEmpty(ForcedValue))
+                using (ThreadSafeForm<SelectSkillGroup> frmPickSkillGroup = ThreadSafeForm<SelectSkillGroup>.Get(
+                           () => new SelectSkillGroup(_objCharacter)
+                           {
+                               Description = !string.IsNullOrEmpty(_strFriendlyName)
+                                   ? string.Format(GlobalSettings.CultureInfo,
+                                                   LanguageManager.GetString("String_Improvement_SelectSkillGroupName"),
+                                                   _strFriendlyName)
+                                   : LanguageManager.GetString("String_Improvement_SelectSkillGroup")
+                           }))
                 {
-                    frmPickSkillGroup.MyForm.OnlyGroup = ForcedValue;
-                    frmPickSkillGroup.MyForm.Opacity = 0;
+                    if (!string.IsNullOrEmpty(ForcedValue))
+                    {
+                        frmPickSkillGroup.MyForm.OnlyGroup = ForcedValue;
+                        frmPickSkillGroup.MyForm.Opacity = 0;
+                    }
+
+                    if (!string.IsNullOrEmpty(strExclude))
+                        frmPickSkillGroup.MyForm.ExcludeCategory = strExclude;
+
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickSkillGroup.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
+                    {
+                        throw new AbortedException();
+                    }
+
+                    strSelect = frmPickSkillGroup.MyForm.SelectedSkillGroup;
                 }
-
-                if (!string.IsNullOrEmpty(strExclude))
-                    frmPickSkillGroup.MyForm.ExcludeCategory = strExclude;
-
-                // Make sure the dialogue window was not canceled.
-                if (frmPickSkillGroup.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
-                {
-                    throw new AbortedException();
-                }
-
-                SelectedValue = frmPickSkillGroup.MyForm.SelectedSkillGroup;
             }
 
-            CreateImprovement(SelectedValue, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.BlockSkillDefault, _strUnique, 0, 0, 0, 1, 0, 0, strExclude);
+            SelectedValue = strSelect;
+
+            CreateImprovement(strSelect, _objImprovementSource, SourceName,
+                              Improvement.ImprovementType.BlockSkillGroupDefault, _strUnique, 0, 0, 0, 1, 0, 0, strExclude);
+        }
+
+        public void blockskilldefaulting(XmlNode bonusNode)
+        {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+            Log.Trace("blockskilldefaulting");
+            string strSelectedSkill = bonusNode.InnerText;
+            if (string.IsNullOrEmpty(strSelectedSkill))
+            {
+                string strForcedValue = ForcedValue;
+                bool blnDummy = false;
+                strSelectedSkill = string.IsNullOrEmpty(strForcedValue)
+                    ? ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, _strFriendlyName, ref blnDummy)
+                    : strForcedValue;
+            }
+            // Expected values are either a Skill Name or an empty string.
+            CreateImprovement(strSelectedSkill, _objImprovementSource, SourceName,
+                              Improvement.ImprovementType.BlockSkillDefault, _strUnique);
         }
 
         public void allowskilldefaulting(XmlNode bonusNode)

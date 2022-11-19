@@ -267,7 +267,29 @@
       <xs:element name="basiclifestylecost" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="biowareessmultiplier" type="xs:integer" minOccurs="0" maxOccurs="1" />
       <xs:element name="biowaretotalessmultiplier" type="xs:integer" minOccurs="0" maxOccurs="1" />
+      <xs:element name="blockskilldefaulting" minOccurs="0" maxOccurs="unbounded">
+        <xs:complexType>
+          <xs:sequence>
+            <xs:element name="val" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="skillcategories" minOccurs="0" maxOccurs="1">
+              <xs:complexType>
+                <xs:sequence>
+                  <xs:element name="category" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+                </xs:sequence>
+              </xs:complexType>
+            </xs:element>
+          </xs:sequence>
+          <xs:attribute name="excludecategory" type="xs:string" use="optional" />
+          <xs:attribute name="excludeskill" type="xs:string" use="optional" />
+          <xs:attribute name="limittoattribute" type="xs:string" use="optional" />
+          <xs:attribute name="limittoskill" type="xs:string" use="optional" />
+          <xs:attribute name="minimumrating" type="xs:string" use="optional" />
+          <xs:attribute name="maximumrating" type="xs:string" use="optional" />
+          <xs:attribute name="skillcategory" type="xs:string" use="optional" />
+        </xs:complexType>
+      </xs:element>
       <xs:element name="blockskillgroupdefaulting" minOccurs="0" maxOccurs="1" />
+      <xs:element name="blockskillcategorydefaulting" minOccurs="0" maxOccurs="1" />
       <xs:element name="biowareessmultipliernonretroactive" type="xs:integer" minOccurs="0" maxOccurs="1" />
       <xs:element name="biowaretotalessmultipliernonretroactive" type="xs:integer" minOccurs="0" maxOccurs="1" />
       <xs:element name="blackmarketdiscount" type="xs:string" minOccurs="0" maxOccurs="1" />

@@ -1689,6 +1689,7 @@ namespace Chummer.Backend.Skills
 
                             break;
 
+                        case Improvement.ImprovementType.BlockSkillDefault:
                         case Improvement.ImprovementType.AllowSkillDefault:
                             if (string.IsNullOrEmpty(objImprovement.ImprovedName) ||
                                 objImprovement.ImprovedName == strNameToUse)
@@ -1746,7 +1747,17 @@ namespace Chummer.Backend.Skills
 
                             break;
 
-                        case Improvement.ImprovementType.BlockSkillDefault:
+                        case Improvement.ImprovementType.BlockSkillCategoryDefault:
+                            if (objImprovement.ImprovedName == SkillCategory)
+                            {
+                                yield return objImprovement;
+                                if (blnExitAfterFirst)
+                                    yield break;
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.BlockSkillGroupDefault:
                             if (objImprovement.ImprovedName == SkillGroup)
                             {
                                 yield return objImprovement;
@@ -1810,6 +1821,7 @@ namespace Chummer.Backend.Skills
 
                                 break;
 
+                            case Improvement.ImprovementType.BlockSkillDefault:
                             case Improvement.ImprovementType.AllowSkillDefault:
                                 if (string.IsNullOrEmpty(objImprovement.ImprovedName) ||
                                     objImprovement.ImprovedName == strNameToUse)
@@ -1867,7 +1879,17 @@ namespace Chummer.Backend.Skills
 
                                 break;
 
-                            case Improvement.ImprovementType.BlockSkillDefault:
+                            case Improvement.ImprovementType.BlockSkillCategoryDefault:
+                                if (objImprovement.ImprovedName == SkillCategory)
+                                {
+                                    lstReturn.Add(objImprovement);
+                                    if (blnExitAfterFirst)
+                                        return false;
+                                }
+
+                                break;
+
+                            case Improvement.ImprovementType.BlockSkillGroupDefault:
                                 if (objImprovement.ImprovedName == SkillGroup)
                                 {
                                     lstReturn.Add(objImprovement);
@@ -2773,25 +2795,22 @@ namespace Chummer.Backend.Skills
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    // SR5 400 : Critters that don't have the Sapience Power are unable to default in skills they don't possess.
-                    List<Improvement> lstAllowSkillDefaultImprovements = ImprovementManager
-                        .GetCachedImprovementListForValueOf(
-                            CharacterObject,
-                            Improvement.ImprovementType.AllowSkillDefault,
-                            DictionaryKey, true);
-                    if (CharacterObject.IsCritter && Rating == 0 && lstAllowSkillDefaultImprovements.Count == 0)
-                    {
+                    if (RelevantImprovements(
+                            x => x.ImproveType == Improvement.ImprovementType.BlockSkillDefault
+                                 || x.ImproveType == Improvement.ImprovementType.BlockSkillCategoryDefault
+                                 || x.ImproveType == Improvement.ImprovementType.BlockSkillGroupDefault,
+                            blnExitAfterFirst: true).Any())
                         return false;
+                    if (!RelevantImprovements(x => x.ImproveType == Improvement.ImprovementType.AllowSkillDefault, blnExitAfterFirst: true).Any())
+                    {
+                        if (!_blnDefault)
+                            return false;
+                        // SR5 400 : Critters that don't have the Sapience Power are unable to default in skills they don't possess.
+                        if (CharacterObject.IsCritter && Rating == 0)
+                            return false;
                     }
 
-                    if (!_blnDefault && lstAllowSkillDefaultImprovements.Count == 0)
-                        return false;
-
-                    return ImprovementManager
-                        .GetCachedImprovementListForValueOf(
-                            CharacterObject,
-                            Improvement.ImprovementType.BlockSkillDefault,
-                            DictionaryKey, true).All(x => SkillGroup != x.ImprovedName);
+                    return true;
                 }
             }
             set
@@ -2811,27 +2830,23 @@ namespace Chummer.Backend.Skills
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                string strKey = await GetDictionaryKeyAsync(token).ConfigureAwait(false);
-                // SR5 400 : Critters that don't have the Sapience Power are unable to default in skills they don't possess.
-                List<Improvement> lstAllowSkillDefaultImprovements = await ImprovementManager
-                    .GetCachedImprovementListForValueOfAsync(
-                        CharacterObject,
-                        Improvement.ImprovementType.AllowSkillDefault,
-                        strKey, true, token).ConfigureAwait(false);
-                if (CharacterObject.IsCritter && lstAllowSkillDefaultImprovements.Count == 0 &&
-                    await GetRatingAsync(token).ConfigureAwait(false) == 0)
-                {
+                if (RelevantImprovements(
+                        x => x.ImproveType == Improvement.ImprovementType.BlockSkillDefault
+                             || x.ImproveType == Improvement.ImprovementType.BlockSkillCategoryDefault
+                             || x.ImproveType == Improvement.ImprovementType.BlockSkillGroupDefault,
+                        blnExitAfterFirst: true).Any())
                     return false;
+                if (!RelevantImprovements(x => x.ImproveType == Improvement.ImprovementType.AllowSkillDefault, blnExitAfterFirst: true).Any())
+                {
+                    if (!_blnDefault)
+                        return false;
+                    // SR5 400 : Critters that don't have the Sapience Power are unable to default in skills they don't possess.
+                    if (await CharacterObject.GetIsCritterAsync(token).ConfigureAwait(false)
+                        && await GetRatingAsync(token).ConfigureAwait(false) == 0)
+                        return false;
                 }
 
-                if (!_blnDefault && lstAllowSkillDefaultImprovements.Count == 0)
-                    return false;
-
-                return (await ImprovementManager
-                    .GetCachedImprovementListForValueOfAsync(
-                        CharacterObject,
-                        Improvement.ImprovementType.BlockSkillDefault,
-                        strKey, true, token).ConfigureAwait(false)).All(x => SkillGroup != x.ImprovedName);
+                return true;
             }
         }
 

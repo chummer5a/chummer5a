@@ -31,6 +31,7 @@ Application Changes:
 - Any degraded armor on the sheet of a character that is using settings that do not have armor degradation enabled is now ignored.
 - Unequipped weapon accessories can no longer alter the reach of weapons.
 - The ammo-unloaded versions of the damage, ranges, dice pool, accuracy, AP, RC, and firing modes of weapons is now printed and exported alongside the ammo-loaded versions.
+- Added bonus nodes that allow defaulting to be disabled for a specific skill or skill category.
 
 Data Changes:
 - Added Quick-Start Rules content: 15 scrumptious menu items brought to you by McHughes™!
@@ -56,6 +57,7 @@ Data Changes:
 - Fixed Black Magic [Alt] not being valid for Puppet Master quality.
 - "Advanced Medkit" has been renamed to "Medkit (Bullets & Bandages)" and now has the same availability and abilities as the medkit entry from the core rulebook.
 - Hedge Witch/Wizard drain modifiers now work properly. Fixes #4957.
+- Uneducated now properly disables defaulting on Professional, Academic, and Technical Active skills.
 
 Changed/New Strings:
 - LimitCondition_SoldierParagon

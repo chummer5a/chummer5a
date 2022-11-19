@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Xml;
 // ReSharper disable StringLiteralTypo
@@ -93,8 +94,12 @@ namespace Chummer
                     return objImprovementAdder.selecttradition;
                 case "CYBERSEEKER":
                     return objImprovementAdder.cyberseeker;
+                case "BLOCKSKILLCATEGORYDEFAULTING":
+                    return objImprovementAdder.blockskillcategorydefaulting;
                 case "BLOCKSKILLGROUPDEFAULTING":
                     return objImprovementAdder.blockskillgroupdefaulting;
+                case "BLOCKSKILLDEFAULTING":
+                    return objImprovementAdder.blockskilldefaulting;
                 case "ALLOWSKILLDEFAULTING":
                     return objImprovementAdder.allowskilldefaulting;
                 case "SELECTSKILL":

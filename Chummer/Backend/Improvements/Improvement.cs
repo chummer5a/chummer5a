@@ -187,6 +187,8 @@ namespace Chummer
             ReplaceAttribute, //Alter the base metatype or metavariant of a character. Used for infected.
             SpecialSkills,
             ReflexRecorderOptimization,
+            BlockSkillCategoryDefault,
+            BlockSkillGroupDefault,
             BlockSkillDefault,
             AllowSkillDefault,
             Ambidextrous,
@@ -562,6 +564,10 @@ namespace Chummer
 
                 case ImprovementType.RestrictedGear when _decVal == 0:
                     _decVal = 24;
+                    break;
+
+                case ImprovementType.BlockSkillDefault when _objCharacter.LastSavedVersion <= new Version(5, 224, 39):
+                    _eImprovementType = ImprovementType.BlockSkillGroupDefault;
                     break;
             }
 
@@ -1736,6 +1742,7 @@ namespace Chummer
                 }
                     break;
 
+                case ImprovementType.BlockSkillDefault:
                 case ImprovementType.AllowSkillDefault:
                 {
                     if (string.IsNullOrEmpty(ImprovedName))
@@ -1860,7 +1867,7 @@ namespace Chummer
                 }
                     break;
 
-                case ImprovementType.BlockSkillDefault:
+                case ImprovementType.BlockSkillGroupDefault:
                 {
                     foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills)
                     {
@@ -1886,6 +1893,17 @@ namespace Chummer
                         if (objTargetSkill.SkillCategory == ImprovedName || lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
                             yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
                                 nameof(Skill.PoolModifiers));
+                    }
+                }
+                    break;
+
+                case ImprovementType.BlockSkillCategoryDefault:
+                {
+                    foreach (Skill objTargetSkill in _objCharacter.SkillsSection.Skills)
+                    {
+                        if (objTargetSkill.SkillCategory == ImprovedName || lstExtraImprovedName?.Contains(objTargetSkill.SkillCategory) == true)
+                            yield return new Tuple<INotifyMultiplePropertyChanged, string>(objTargetSkill,
+                                nameof(Skill.Default));
                     }
                 }
                     break;
