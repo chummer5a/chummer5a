@@ -4555,8 +4555,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                decimal decReach = Reach;
-                decReach += WeaponAccessories.Sum(i => i.Reach);
+                decimal decReach = Reach + WeaponAccessories.Sum(x => x.Equipped, i => i.Reach);
                 if (RangeType == "Melee")
                 {
                     // Run through the Character's Improvements and add any Reach Improvements.

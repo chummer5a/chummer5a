@@ -29,6 +29,7 @@ Application Changes:
 - Added a minor quality-of-life feature where changing the PDF application of Chummer can also cause the PDF parameters setting to automatically update itself to match the selected application.
 - Controls to modify armor degradation values are no longer visible unless playing with settings that have armor degradation turned on.
 - Any degraded armor on the sheet of a character that is using settings that do not have armor degradation enabled is now ignored.
+- Unequipped weapon accessories can no longer alter the reach of weapons.
 
 Data Changes:
 - Added Quick-Start Rules content: 15 scrumptious menu items brought to you by McHughes™!
