@@ -648,47 +648,42 @@ namespace Chummer.UI.Powers
             */
 
             TableColumn<Power> noteColumn = this.DoThreadSafeFunc(() => new TableColumn<Power>(
-                                                                      () => new ButtonTableCell<Power>(new DpiFriendlyImagedButton
-                                                                      {
-                                                                          ImageDpi96 = Resources.note_edit,
-                                                                          ImageDpi192 = Resources.note_edit1,
-                                                                          Dock = DockStyle.Fill,
-                                                                          AutoSize = true,
-                                                                          FlatStyle = FlatStyle.Flat
-                                                                      })
-                                                                      {
-                                                                          ClickHandler = async p =>
-                                                                          {
-                                                                              try
-                                                                              {
-                                                                                  using (ThreadSafeForm<EditNotes>
-                                                                                   frmPowerNotes
-                                                                                   = await ThreadSafeForm<EditNotes>
-                                                                                       .GetAsync(
-                                                                                           () => new EditNotes(
-                                                                                               p.Notes,
-                                                                                               p.NotesColor,
-                                                                                               MyToken),
-                                                                                           MyToken)
-                                                                                       .ConfigureAwait(false))
-                                                                                  {
-                                                                                      if (await frmPowerNotes
-                                                                                           .ShowDialogSafeAsync(
-                                                                                               _objCharacter,
-                                                                                               MyToken)
-                                                                                           .ConfigureAwait(false)
-                                                                                       == DialogResult.OK)
-                                                                                          p.Notes = frmPowerNotes.MyForm
-                                                                                              .Notes;
-                                                                                  }
-                                                                              }
-                                                                              catch (OperationCanceledException)
-                                                                              {
-                                                                                  //swallow this
-                                                                              }
-                                                                          },
-                                                                          Alignment = Alignment.Center
-                                                                      })
+                () =>
+                {
+                    DpiFriendlyImagedButton cmdReturn
+                        = new DpiFriendlyImagedButton
+                        {
+                            ImageDpi96 = Resources.note_edit,
+                            ImageDpi192 = Resources.note_edit1,
+                            Dock = DockStyle.Fill,
+                            AutoSize = true,
+                            FlatStyle = FlatStyle.Flat
+                        };
+                    cmdReturn.FlatAppearance.BorderSize = 0;
+                    return new ButtonTableCell<Power>(cmdReturn)
+                    {
+                        ClickHandler = async p =>
+                        {
+                            try
+                            {
+                                using (ThreadSafeForm<EditNotes> frmPowerNotes = await ThreadSafeForm<EditNotes>
+                                           .GetAsync(() => new EditNotes(p.Notes, p.NotesColor, MyToken), MyToken)
+                                           .ConfigureAwait(false))
+                                {
+                                    if (await frmPowerNotes.ShowDialogSafeAsync(_objCharacter, MyToken)
+                                                           .ConfigureAwait(false) == DialogResult.OK)
+                                        p.Notes = frmPowerNotes.MyForm.Notes;
+                                }
+                            }
+                            catch (OperationCanceledException)
+                            {
+                                //swallow this
+                            }
+                        },
+                        Alignment = Alignment.Center
+
+                    };
+                })
             {
                 Text = "Notes",
                 Tag = "ColumnHeader_Notes",
@@ -714,118 +709,111 @@ namespace Chummer.UI.Powers
             noteColumn.AddDependency(nameof(Power.Notes));
 
             TableColumn<Power> deleteColumn = this.DoThreadSafeFunc(() => new TableColumn<Power>(
-                                                                        () => new ButtonTableCell<Power>(
-                                                                            new Button
-                                                                            {
-                                                                                Text = LanguageManager.GetString(
-                                                                                    "String_Delete"),
-                                                                                Tag = "String_Delete",
-                                                                                Dock = DockStyle.Fill,
-                                                                                AutoSize = true
-                                                                            })
-                                                                        {
-                                                                            ClickHandler = async p =>
-                                                                            {
-                                                                                try
-                                                                                {
-                                                                                    //Cache the parentform prior to deletion, otherwise the relationship is broken.
-                                                                                    Form frmParent
-                                                                                        = await this
-                                                                                            .DoThreadSafeFuncAsync(
-                                                                                                x => x.ParentForm,
-                                                                                                token: MyToken)
-                                                                                            .ConfigureAwait(false);
-                                                                                    if (p.FreeLevels > 0)
-                                                                                    {
-                                                                                        string strExtra = p.Extra;
-                                                                                        string strImprovementSourceName
-                                                                                            = (await ImprovementManager
-                                                                                                .GetCachedImprovementListForValueOfAsync(
-                                                                                                    p.CharacterObject,
-                                                                                                    Improvement
-                                                                                                        .ImprovementType
-                                                                                                        .AdeptPowerFreePoints,
-                                                                                                    p.Name,
-                                                                                                    token: MyToken)
-                                                                                                .ConfigureAwait(false))
-                                                                                            .Find(x => x.UniqueName
-                                                                                                == strExtra)
-                                                                                            ?.SourceName;
-                                                                                        if (!string.IsNullOrWhiteSpace(
-                                                                                            strImprovementSourceName))
-                                                                                        {
-                                                                                            Gear objGear
-                                                                                                = p.CharacterObject.Gear
-                                                                                                    .FindById(
-                                                                                                        strImprovementSourceName);
-                                                                                            if (objGear?.Bonded == true)
-                                                                                            {
-                                                                                                objGear.Equipped
-                                                                                                    = false;
-                                                                                                objGear.Extra
-                                                                                                    = string.Empty;
-                                                                                            }
-                                                                                        }
-                                                                                    }
+                () =>
+                {
+                    DpiFriendlyImagedButton cmdReturn
+                        = new DpiFriendlyImagedButton
+                        {
+                            ImageDpi96 = Resources.delete,
+                            ImageDpi192 = Resources.delete1,
+                            Dock = DockStyle.Fill,
+                            AutoSize = true,
+                            FlatStyle = FlatStyle.Flat
+                        };
+                    cmdReturn.FlatAppearance.BorderSize = 0;
+                    return new ButtonTableCell<Power>(cmdReturn)
+                    {
+                        ClickHandler = async p =>
+                        {
+                            try
+                            {
+                                //Cache the parentform prior to deletion, otherwise the relationship is broken.
+                                Form frmParent = await this.DoThreadSafeFuncAsync(x => x.ParentForm, token: MyToken)
+                                                           .ConfigureAwait(false);
+                                if (p.FreeLevels > 0)
+                                {
+                                    string strExtra = p.Extra;
+                                    string strImprovementSourceName
+                                        = (await ImprovementManager
+                                                 .GetCachedImprovementListForValueOfAsync(
+                                                     p.CharacterObject,
+                                                     Improvement.ImprovementType.AdeptPowerFreePoints, p.Name,
+                                                     token: MyToken).ConfigureAwait(false))
+                                          .Find(x => x.UniqueName == strExtra)?.SourceName;
+                                    if (!string.IsNullOrWhiteSpace(strImprovementSourceName))
+                                    {
+                                        Gear objGear = p.CharacterObject.Gear.FindById(strImprovementSourceName);
+                                        if (objGear?.Bonded == true)
+                                        {
+                                            objGear.Equipped = false;
+                                            objGear.Extra = string.Empty;
+                                        }
+                                    }
+                                }
 
-                                                                                    await p.DeletePowerAsync(MyToken).ConfigureAwait(false);
+                                await p.DeletePowerAsync(MyToken).ConfigureAwait(false);
 
-                                                                                    if (frmParent is CharacterShared
-                                                                                     objParent)
-                                                                                        await objParent
-                                                                                            .RequestCharacterUpdate(
-                                                                                                MyToken)
-                                                                                            .ConfigureAwait(false);
-                                                                                }
-                                                                                catch (OperationCanceledException)
-                                                                                {
-                                                                                    //swallow this
-                                                                                }
-                                                                            },
-                                                                            EnabledExtractor = (p => p.FreeLevels == 0)
-                                                                        }));
+                                if (frmParent is CharacterShared objParent)
+                                    await objParent.RequestCharacterUpdate(MyToken).ConfigureAwait(false);
+                            }
+                            catch (OperationCanceledException)
+                            {
+                                //swallow this
+                            }
+                        },
+                        EnabledExtractor = (p => p.FreeLevels == 0)
+                    };
+                }));
             deleteColumn.AddDependency(nameof(Power.FreeLevels));
 
             TableColumn<Power> reapplyImprovementsColumn = this.DoThreadSafeFunc(() => new TableColumn<Power>(
-                () => new ButtonTableCell<Power>(new DpiFriendlyImagedButton
+                () =>
                 {
-                    ImageDpi96 = Resources.page_refresh,
-                    ImageDpi192 = Resources.page_refresh1,
-                    Dock = DockStyle.Fill,
-                    AutoSize = true,
-                    FlatStyle = FlatStyle.Flat
-                })
-                {
-                    ClickHandler = async p =>
+                    DpiFriendlyImagedButton cmdReturn
+                        = new DpiFriendlyImagedButton
+                        {
+                            ImageDpi96 = Resources.page_refresh,
+                            ImageDpi192 = Resources.page_refresh1,
+                            Dock = DockStyle.Fill,
+                            AutoSize = true,
+                            FlatStyle = FlatStyle.Flat
+                        };
+                    cmdReturn.FlatAppearance.BorderSize = 0;
+                    return new ButtonTableCell<Power>(cmdReturn)
                     {
-                        try
+                        ClickHandler = async p =>
                         {
-                            switch (ParentForm)
+                            try
                             {
-                                case CharacterCreate
-                                    frmCreate:
-                                    await frmCreate
-                                        .ReapplySpecificImprovements(
-                                            p.InternalId,
-                                            await p.GetCurrentDisplayNameAsync(MyToken).ConfigureAwait(false), MyToken)
-                                        .ConfigureAwait(false);
-                                    break;
-                                case CharacterCareer
-                                    frmCareer:
-                                    await frmCareer
-                                        .ReapplySpecificImprovements(
-                                            p.InternalId,
-                                            await p.GetCurrentDisplayNameAsync(MyToken).ConfigureAwait(false), MyToken)
-                                        .ConfigureAwait(false);
-                                    break;
+                                switch (ParentForm)
+                                {
+                                    case CharacterCreate
+                                        frmCreate:
+                                        await frmCreate
+                                              .ReapplySpecificImprovements(
+                                                  p.InternalId,
+                                                  await p.GetCurrentDisplayNameAsync(MyToken).ConfigureAwait(false),
+                                                  MyToken)
+                                              .ConfigureAwait(false);
+                                        break;
+                                    case CharacterCareer
+                                        frmCareer:
+                                        await frmCareer
+                                              .ReapplySpecificImprovements(
+                                                  p.InternalId,
+                                                  await p.GetCurrentDisplayNameAsync(MyToken).ConfigureAwait(false),
+                                                  MyToken)
+                                              .ConfigureAwait(false);
+                                        break;
+                                }
                             }
-                        }
-                        catch (OperationCanceledException)
-                        {
-                            //swallow this
-                        }
-                    },
-                    Alignment = Alignment.Center
+                            catch (OperationCanceledException)
+                            {
+                                //swallow this
+                            }
+                        },
+                        Alignment = Alignment.Center
+                    };
                 })
             {
                 Text = string.Empty,
