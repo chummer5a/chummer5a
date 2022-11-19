@@ -509,7 +509,6 @@ namespace Chummer
                     {
                         case NotifyCollectionChangedAction.Add:
                         {
-                            bool blnVaryingAddedWidths = false;
                             int intNewNameWidth = -1;
                             Control[] aobjControls = new Control[notifyCollectionChangedEventArgs.NewItems.Count];
                             await pnlAttributes.DoThreadSafeAsync(x =>
@@ -524,41 +523,41 @@ namespace Chummer
                                     objControl.MaximumSize = new Size(x.ClientSize.Width,
                                                                       objControl.MaximumSize.Height);
                                     objControl.ValueChanged += MakeDirtyWithCharacterUpdate;
-                                    if (intNewNameWidth < 0)
-                                        intNewNameWidth = objControl.NameWidth;
-                                    else if (intNewNameWidth < objControl.NameWidth)
-                                    {
-                                        intNewNameWidth = objControl.NameWidth;
-                                        blnVaryingAddedWidths = true;
-                                    }
-
+                                    intNewNameWidth = Math.Max(intNewNameWidth, objControl.NameWidth);
                                     aobjControls[i] = objControl;
                                 }
 
-                                int intOldNameWidth = lblName?.Width ??
-                                                      (x.Controls.Count > 0
-                                                          ? x.Controls[0].Width
-                                                          : 0);
+                                int intOldNameWidth = 0;
+                                if (lblName != null)
+                                    intOldNameWidth = lblName.Width;
+                                else
+                                {
+                                    foreach (Control objControl in x.Controls)
+                                    {
+                                        if (objControl is AttributeControl objAttributeControl)
+                                        {
+                                            intOldNameWidth = objAttributeControl.NameWidth;
+                                            break;
+                                        }
+                                    }
+                                }
+
                                 if (intNewNameWidth > intOldNameWidth)
                                 {
                                     if (lblName != null)
                                         lblName.MinimumSize = new Size(intNewNameWidth, lblName.MinimumSize.Height);
+                                    x.Controls.AddRange(aobjControls);
                                     foreach (AttributeControl objControl in x.Controls)
                                         objControl.UpdateWidths(intNewNameWidth, intKarmaWidth, intValueWidth,
                                                                 intLimitsWidth);
-                                    if (blnVaryingAddedWidths)
-                                        foreach (AttributeControl objControl in aobjControls.OfType<AttributeControl>())
-                                            objControl.UpdateWidths(intNewNameWidth, intKarmaWidth, intValueWidth,
-                                                                    intLimitsWidth);
                                 }
                                 else
                                 {
                                     foreach (AttributeControl objControl in aobjControls.OfType<AttributeControl>())
                                         objControl.UpdateWidths(intOldNameWidth, intKarmaWidth, intValueWidth,
                                                                 intLimitsWidth);
+                                    x.Controls.AddRange(aobjControls);
                                 }
-
-                                x.Controls.AddRange(aobjControls);
                             }, token).ConfigureAwait(false);
                             break;
                         }
@@ -613,7 +612,6 @@ namespace Chummer
                                 }
                             }, token).ConfigureAwait(false);
 
-                            bool blnVaryingAddedWidths = false;
                             int intNewNameWidth = -1;
                             Control[] aobjControls = new Control[notifyCollectionChangedEventArgs.NewItems.Count];
                             await pnlAttributes.DoThreadSafeAsync(x =>
@@ -628,41 +626,41 @@ namespace Chummer
                                     objControl.MaximumSize = new Size(x.ClientSize.Width,
                                                                       objControl.MaximumSize.Height);
                                     objControl.ValueChanged += MakeDirtyWithCharacterUpdate;
-                                    if (intNewNameWidth < 0)
-                                        intNewNameWidth = objControl.NameWidth;
-                                    else if (intNewNameWidth < objControl.NameWidth)
-                                    {
-                                        intNewNameWidth = objControl.NameWidth;
-                                        blnVaryingAddedWidths = true;
-                                    }
-
+                                    intNewNameWidth = Math.Max(intNewNameWidth, objControl.NameWidth);
                                     aobjControls[i] = objControl;
                                 }
 
-                                int intOldNameWidth = lblName?.Width ??
-                                                      (x.Controls.Count > 0
-                                                          ? x.Controls[0].Width
-                                                          : 0);
+                                int intOldNameWidth = 0;
+                                if (lblName != null)
+                                    intOldNameWidth = lblName.Width;
+                                else
+                                {
+                                    foreach (Control objControl in x.Controls)
+                                    {
+                                        if (objControl is AttributeControl objAttributeControl)
+                                        {
+                                            intOldNameWidth = objAttributeControl.NameWidth;
+                                            break;
+                                        }
+                                    }
+                                }
+
                                 if (intNewNameWidth > intOldNameWidth)
                                 {
                                     if (lblName != null)
                                         lblName.MinimumSize = new Size(intNewNameWidth, lblName.MinimumSize.Height);
+                                    x.Controls.AddRange(aobjControls);
                                     foreach (AttributeControl objControl in x.Controls)
                                         objControl.UpdateWidths(intNewNameWidth, intKarmaWidth, intValueWidth,
                                                                 intLimitsWidth);
-                                    if (blnVaryingAddedWidths)
-                                        foreach (AttributeControl objControl in aobjControls.OfType<AttributeControl>())
-                                            objControl.UpdateWidths(intNewNameWidth, intKarmaWidth, intValueWidth,
-                                                                    intLimitsWidth);
                                 }
                                 else
                                 {
                                     foreach (AttributeControl objControl in aobjControls.OfType<AttributeControl>())
                                         objControl.UpdateWidths(intOldNameWidth, intKarmaWidth, intValueWidth,
                                                                 intLimitsWidth);
+                                    x.Controls.AddRange(aobjControls);
                                 }
-
-                                x.Controls.AddRange(aobjControls);
                             }, token).ConfigureAwait(false);
                             break;
                         }
