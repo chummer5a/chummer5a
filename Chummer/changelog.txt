@@ -57,7 +57,7 @@ Data Changes:
 - Fixed Black Magic [Alt] not being valid for Puppet Master quality.
 - "Advanced Medkit" has been renamed to "Medkit (Bullets & Bandages)" and now has the same availability and abilities as the medkit entry from the core rulebook.
 - Hedge Witch/Wizard drain modifiers now work properly. Fixes #4957.
-- Uneducated now properly disables defaulting on Professional, Academic, and Technical Active skills.
+- Uneducated now properly disables defaulting on Professional, Academic, and Technical Active skills. Existing characters with this quality will need to re-add the quality or reapply improvements to see this effect.
 
 Changed/New Strings:
 - LimitCondition_SoldierParagon
