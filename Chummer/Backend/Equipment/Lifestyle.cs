@@ -680,6 +680,9 @@ namespace Chummer.Backend.Equipment
                     await objWriter.WriteElementStringAsync("guid", InternalId, token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("sourceid", SourceIDString, token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("name", CustomName, token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("city", City, token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("district", District, token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("borough", Borough, token).ConfigureAwait(false);
                     await objWriter
                           .WriteElementStringAsync(
                               "cost", Cost.ToString(_objCharacter.Settings.NuyenFormat, objCulture),

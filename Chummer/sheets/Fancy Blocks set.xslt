@@ -2091,6 +2091,53 @@
               <xsl:if test="baselifestyle != ''"> (<xsl:value-of select="baselifestyle" />)</xsl:if>
               <xsl:if test="lifestylename != ''"> (<xsl:value-of select="lifestylename" />)</xsl:if>
             </strong>
+            <xsl:if test="city != '' or district != '' or borough != ''">
+                <br /><xsl:text>(</xsl:text>
+                <xsl:choose>
+                  <xsl:when test="city != ''">
+                    <xsl:choose>
+                      <xsl:when test="district != ''">
+                        <xsl:choose>
+                          <xsl:when test="borough != ''">
+                            <xsl:value-of select="borough" /><xsl:text>, </xsl:text><xsl:value-of select="district" /><xsl:text>, </xsl:text><xsl:value-of select="city" />
+                          </xsl:when>
+                          <xsl:otherwise>
+                            <xsl:value-of select="district" /><xsl:text>, </xsl:text><xsl:value-of select="city" />
+                          </xsl:otherwise>
+                        </xsl:choose>
+                      </xsl:when>
+                      <xsl:otherwise>
+                        <xsl:choose>
+                          <xsl:when test="borough != ''">
+                            <xsl:value-of select="borough" /><xsl:text>, </xsl:text><xsl:value-of select="city" />
+                          </xsl:when>
+                          <xsl:otherwise>
+                            <xsl:value-of select="city" />
+                          </xsl:otherwise>
+                        </xsl:choose>
+                      </xsl:otherwise>
+                    </xsl:choose>
+                  </xsl:when>
+                  <xsl:otherwise>
+                    <xsl:choose>
+                      <xsl:when test="district != ''">
+                        <xsl:choose>
+                          <xsl:when test="borough != ''">
+                            <xsl:value-of select="borough" /><xsl:text>, </xsl:text><xsl:value-of select="district" />
+                          </xsl:when>
+                          <xsl:otherwise>
+                            <xsl:value-of select="district" />
+                          </xsl:otherwise>
+                        </xsl:choose>
+                      </xsl:when>
+                      <xsl:otherwise>
+                        <xsl:value-of select="borough" />
+                      </xsl:otherwise>
+                    </xsl:choose>
+                  </xsl:otherwise>
+                </xsl:choose>
+            <xsl:text>)</xsl:text>
+            </xsl:if>
             <xsl:call-template name="print_source_page" />
             <xsl:call-template name="print_notes" />
             <br />

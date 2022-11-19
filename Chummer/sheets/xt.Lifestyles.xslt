@@ -26,7 +26,58 @@
       <xsl:sort select="name" />
       <tr>
         <td>
-          <xsl:value-of select="name" />
+          <xsl:choose>
+            <xsl:when test="city != '' or district != '' or borough != ''">
+              <xsl:value-of select="name" /><br /><xsl:text>(</xsl:text>
+              <xsl:choose>
+                <xsl:when test="city != ''">
+                  <xsl:choose>
+                    <xsl:when test="district != ''">
+                      <xsl:choose>
+                        <xsl:when test="borough != ''">
+                          <xsl:value-of select="borough" /><xsl:text>, </xsl:text><xsl:value-of select="district" /><xsl:text>, </xsl:text><xsl:value-of select="city" />
+                        </xsl:when>
+                        <xsl:otherwise>
+                          <xsl:value-of select="district" /><xsl:text>, </xsl:text><xsl:value-of select="city" />
+                        </xsl:otherwise>
+                      </xsl:choose>
+                    </xsl:when>
+                    <xsl:otherwise>
+                      <xsl:choose>
+                        <xsl:when test="borough != ''">
+                          <xsl:value-of select="borough" /><xsl:text>, </xsl:text><xsl:value-of select="city" />
+                        </xsl:when>
+                        <xsl:otherwise>
+                          <xsl:value-of select="city" />
+                        </xsl:otherwise>
+                      </xsl:choose>
+                    </xsl:otherwise>
+                  </xsl:choose>
+                </xsl:when>
+                <xsl:otherwise>
+                  <xsl:choose>
+                    <xsl:when test="district != ''">
+                      <xsl:choose>
+                        <xsl:when test="borough != ''">
+                          <xsl:value-of select="borough" /><xsl:text>, </xsl:text><xsl:value-of select="district" />
+                        </xsl:when>
+                        <xsl:otherwise>
+                          <xsl:value-of select="district" />
+                        </xsl:otherwise>
+                      </xsl:choose>
+                    </xsl:when>
+                    <xsl:otherwise>
+                      <xsl:value-of select="borough" />
+                    </xsl:otherwise>
+                  </xsl:choose>
+                </xsl:otherwise>
+              </xsl:choose>
+            </xsl:when>
+            <xsl:otherwise>
+              <xsl:value-of select="name" />
+            </xsl:otherwise>
+          </xsl:choose>
+          <xsl:text>)</xsl:text>
         </td>
         <td style="text-align: center">
           <xsl:value-of select="baselifestyle" />
