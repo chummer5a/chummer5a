@@ -13693,13 +13693,21 @@ namespace Chummer
                 if (eOldBuildMethod == CharacterBuildMethod.LifeModule)
                 {
                     ThreadSafeObservableCollection<Quality> lstQualities = await GetQualitiesAsync(token).ConfigureAwait(false);
-                    for (int i = await lstQualities.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
+                    IAsyncDisposable objLocker2 = await lstQualities.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
                     {
-                        if (i >= await lstQualities.GetCountAsync(token).ConfigureAwait(false))
-                            continue;
-                        Quality objQuality = await lstQualities.GetValueAtAsync(i, token).ConfigureAwait(false);
-                        if (objQuality.OriginSource == QualitySource.LifeModule)
-                            await objQuality.DeleteQualityAsync(token: token).ConfigureAwait(false);
+                        for (int i = await lstQualities.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
+                        {
+                            if (i >= await lstQualities.GetCountAsync(token).ConfigureAwait(false))
+                                continue;
+                            Quality objQuality = await lstQualities.GetValueAtAsync(i, token).ConfigureAwait(false);
+                            if (objQuality.OriginSource == QualitySource.LifeModule)
+                                await objQuality.DeleteQualityAsync(token: token).ConfigureAwait(false);
+                        }
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
                 }
             }

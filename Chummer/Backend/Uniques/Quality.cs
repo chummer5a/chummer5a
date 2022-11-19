@@ -2105,7 +2105,7 @@ namespace Chummer
             {
                 using (LockObject.EnterWriteLock())
                 {
-                    _objCharacter.Qualities.Remove(this);
+                    decimal decReturn = 0;
                     if (blnFullRemoval)
                     {
                         for (int i = _objCharacter.Qualities.Count - 1; i >= 0; --i)
@@ -2118,14 +2118,15 @@ namespace Chummer
                                 && objLoopQuality.SourceName == SourceName
                                 && objLoopQuality.Type == Type
                                 && !ReferenceEquals(objLoopQuality, this))
-                                objLoopQuality.DeleteQuality();
+                                decReturn += objLoopQuality.DeleteQuality();
                         }
                     }
 
+                    _objCharacter.Qualities.Remove(this);
+
                     // Remove the Improvements that were created by the Quality.
-                    decimal decReturn
-                        = ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Quality,
-                                                                InternalId);
+                    decReturn += ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Quality,
+                                                                      InternalId);
 
                     // Remove any Weapons created by the Quality if applicable.
                     if (!WeaponID.IsEmptyGuid())
@@ -2190,7 +2191,7 @@ namespace Chummer
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
-                    await _objCharacter.Qualities.RemoveAsync(this, token).ConfigureAwait(false);
+                    decimal decReturn = 0;
                     if (blnFullRemoval)
                     {
                         for (int i = _objCharacter.Qualities.Count - 1; i >= 0; --i)
@@ -2203,12 +2204,14 @@ namespace Chummer
                                 && objLoopQuality.SourceName == SourceName
                                 && objLoopQuality.Type == Type
                                 && !ReferenceEquals(this, objLoopQuality))
-                                await objLoopQuality.DeleteQualityAsync(token: token).ConfigureAwait(false);
+                                decReturn += await objLoopQuality.DeleteQualityAsync(token: token).ConfigureAwait(false);
                         }
                     }
 
+                    await _objCharacter.Qualities.RemoveAsync(this, token).ConfigureAwait(false);
+
                     // Remove the Improvements that were created by the Quality.
-                    decimal decReturn = await ImprovementManager
+                    decReturn += await ImprovementManager
                                               .RemoveImprovementsAsync(_objCharacter,
                                                                        Improvement.ImprovementSource.Quality,
                                                                        InternalId, token).ConfigureAwait(false);
