@@ -18311,10 +18311,12 @@ namespace Chummer
                             }, token).ConfigureAwait(false);
                             await lblWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                         .ConfigureAwait(false);
+                            int intPool
+                                = await objWeapon.GetDicePoolAsync(token: token).ConfigureAwait(false);
                             await dpcWeaponDicePool.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
-                                x.DicePool = objWeapon.DicePool;
+                                x.DicePool = intPool;
                                 x.CanBeRolled = true;
                             }, token).ConfigureAwait(false);
                             await dpcWeaponDicePool.SetLabelToolTipAsync(objWeapon.DicePoolTooltip, token)
@@ -18400,10 +18402,11 @@ namespace Chummer
                             {
                                 await lblWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                          .ConfigureAwait(false);
+                                string strReach = (await objWeapon.GetTotalReachAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
                                 await lblWeaponReach.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
-                                    x.Text = objWeapon.TotalReach.ToString(GlobalSettings.CultureInfo);
+                                    x.Text = strReach;
                                 }, token).ConfigureAwait(false);
                                 await lblWeaponRCLabel.DoThreadSafeAsync(x => x.Visible = false, token)
                                                       .ConfigureAwait(false);
@@ -21722,10 +21725,12 @@ namespace Chummer
                             }, token).ConfigureAwait(false);
                             await lblVehicleWeaponDicePoolLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                                .ConfigureAwait(false);
+                            int intPool
+                                = await objWeapon.GetDicePoolAsync(token: token).ConfigureAwait(false);
                             await dpcVehicleWeaponDicePool.DoThreadSafeAsync(x =>
                             {
                                 x.Visible = true;
-                                x.DicePool = objWeapon.DicePool;
+                                x.DicePool = intPool;
                                 x.CanBeRolled = true;
                             }, token).ConfigureAwait(false);
                             await dpcVehicleWeaponDicePool.SetLabelToolTipAsync(objWeapon.DicePoolTooltip, token)
@@ -21834,10 +21839,11 @@ namespace Chummer
                                                              .ConfigureAwait(false);
                                 await lblVehicleWeaponReachLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                                 .ConfigureAwait(false);
+                                string strReach = (await objWeapon.GetTotalReachAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
                                 await lblVehicleWeaponReach.DoThreadSafeAsync(x =>
                                 {
                                     x.Visible = true;
-                                    x.Text = objWeapon.TotalReach.ToString(GlobalSettings.CultureInfo);
+                                    x.Text = strReach;
                                 }, token).ConfigureAwait(false);
                             }
 

@@ -934,6 +934,39 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        public async ValueTask<int> GetTotalConcealabilityAsync(CancellationToken token = default)
+        {
+            int intReturn = 0;
+
+            string strConceal = Concealability;
+            if (strConceal.Contains("Rating"))
+            {
+                // If the cost is determined by the Rating, evaluate the expression.
+                strConceal = strConceal.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                try
+                {
+                    (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strConceal, token).ConfigureAwait(false);
+                    if (blnIsSuccess)
+                        intReturn = ((double) objProcess).StandardRound();
+                }
+                catch (OverflowException)
+                {
+                    // swallow this
+                }
+                catch (InvalidCastException)
+                {
+                    // swallow this
+                }
+            }
+            else if (!string.IsNullOrEmpty(strConceal)
+                     && !int.TryParse(strConceal, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intReturn))
+            {
+                intReturn = 0;
+            }
+
+            return intReturn;
+        }
+
         /// <summary>
         /// Rating.
         /// </summary>

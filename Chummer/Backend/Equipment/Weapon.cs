@@ -1453,21 +1453,27 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("category", await DisplayCategoryAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("category_english", Category, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("type", RangeType, token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("reach", TotalReach.ToString(objCulture), token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("accuracy", await GetAccuracyAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("reach", (await GetTotalReachAsync(token).ConfigureAwait(false)).ToString(objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("accuracy", await GetAccuracyAsync(objCulture, strLanguageToPrint, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("accuracy_noammo", await GetAccuracyAsync(objCulture, strLanguageToPrint, false, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("rawaccuracy", Accuracy, token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("damage", await CalculatedDamageAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("damage_english", await CalculatedDamageAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("damage", await CalculatedDamageAsync(objCulture, strLanguageToPrint, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("damage_noammo", await CalculatedDamageAsync(objCulture, strLanguageToPrint, false, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("damage_english", await CalculatedDamageAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("damage_noammo_english", await CalculatedDamageAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage, false, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("rawdamage", Damage, token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("ap", await TotalAPAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("ap", await TotalAPAsync(objCulture, strLanguageToPrint, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("ap_noammo", await TotalAPAsync(objCulture, strLanguageToPrint, false, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("rawap", AP, token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("mode", await CalculatedModeAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("mode", await CalculatedModeAsync(strLanguageToPrint, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("mode_noammo", await CalculatedModeAsync(strLanguageToPrint, false, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("rc", await TotalRCAsync(objCulture, strLanguageToPrint, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("rc_noammo", await TotalRCAsync(objCulture, strLanguageToPrint, blnIncludeAmmo: false, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("rawrc", RC, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("ammo", await CalculatedAmmoAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("ammo_english", await CalculatedAmmoAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("maxammo", Ammo, token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("conceal", CalculatedConcealability(objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("conceal", await CalculatedConcealabilityAsync(objCulture, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 if (objGear != null)
                 {
                     await objWriter.WriteElementStringAsync("avail", await objGear.TotalAvailAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
@@ -1518,17 +1524,17 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                Dictionary<string, string> dictionaryRanges = GetRangeStrings(objCulture);
+                Dictionary<string, string> dicRanges = await GetRangeStringsAsync(objCulture, token: token).ConfigureAwait(false);
 
                 // <ranges>
                 XmlElementWriteHelper objRangesElement = await objWriter.StartElementAsync("ranges", token).ConfigureAwait(false);
                 try
                 {
                     await objWriter.WriteElementStringAsync("name", await DisplayRangeAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("short", dictionaryRanges["short"], token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("medium", dictionaryRanges["medium"], token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("long", dictionaryRanges["long"], token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("extreme", dictionaryRanges["extreme"], token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("short", dicRanges["short"], token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("medium", dicRanges["medium"], token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("long", dicRanges["long"], token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("extreme", dicRanges["extreme"], token).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -1541,15 +1547,49 @@ namespace Chummer.Backend.Equipment
                 try
                 {
                     await objWriter.WriteElementStringAsync("name", await DisplayAlternateRangeAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("short", dictionaryRanges["alternateshort"], token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("medium", dictionaryRanges["alternatemedium"], token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("long", dictionaryRanges["alternatelong"], token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("extreme", dictionaryRanges["alternateextreme"], token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("short", dicRanges["alternateshort"], token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("medium", dicRanges["alternatemedium"], token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("long", dicRanges["alternatelong"], token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("extreme", dicRanges["alternateextreme"], token).ConfigureAwait(false);
                 }
                 finally
                 {
                     // </alternateranges>
                     await objAlternateRangesElement.DisposeAsync().ConfigureAwait(false);
+                }
+
+                Dictionary<string, string> dicRangesNoAmmo = GetRangeStrings(objCulture, false);
+
+                // <ranges>
+                XmlElementWriteHelper objRangesNoAmmoElement = await objWriter.StartElementAsync("ranges", token).ConfigureAwait(false);
+                try
+                {
+                    await objWriter.WriteElementStringAsync("name", await DisplayRangeAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("short", dicRangesNoAmmo["short"], token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("medium", dicRangesNoAmmo["medium"], token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("long", dicRangesNoAmmo["long"], token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("extreme", dicRangesNoAmmo["extreme"], token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    // </ranges>
+                    await objRangesNoAmmoElement.DisposeAsync().ConfigureAwait(false);
+                }
+
+                // <alternateranges>
+                XmlElementWriteHelper objAlternateRangesNoAmmoElement = await objWriter.StartElementAsync("alternateranges", token).ConfigureAwait(false);
+                try
+                {
+                    await objWriter.WriteElementStringAsync("name", await DisplayAlternateRangeAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("short", dicRangesNoAmmo["alternateshort"], token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("medium", dicRangesNoAmmo["alternatemedium"], token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("long", dicRangesNoAmmo["alternatelong"], token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("extreme", dicRangesNoAmmo["alternateextreme"], token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    // </alternateranges>
+                    await objAlternateRangesNoAmmoElement.DisposeAsync().ConfigureAwait(false);
                 }
 
                 foreach (Weapon objUnderbarrel in Children)
@@ -1606,7 +1646,8 @@ namespace Chummer.Backend.Equipment
                     await objClipsElement.DisposeAsync().ConfigureAwait(false);
                 }
 
-                await objWriter.WriteElementStringAsync("dicepool", DicePool.ToString(objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("dicepool", (await GetDicePoolAsync(token: token).ConfigureAwait(false)).ToString(objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("dicepool_noammo", (await GetDicePoolAsync(false, token: token).ConfigureAwait(false)).ToString(objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("skill", Skill?.Name, token).ConfigureAwait(false);
 
                 await objWriter.WriteElementStringAsync("wirelesson", WirelessOn.ToString(GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
@@ -2541,29 +2582,28 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string CalculatedConcealability(CultureInfo objCulture)
         {
-            int intReturn = Concealability;
+            int intReturn = Concealability + WeaponAccessories.Sum(x => x.Equipped, x => x.TotalConcealability)
+                                           // Factor in the character's Concealability modifiers.
+                                           + ImprovementManager
+                                             .ValueOf(_objCharacter, Improvement.ImprovementType.Concealability)
+                                             .StandardRound();
 
-            foreach (WeaponAccessory objAccessory in WeaponAccessories)
-            {
-                if (objAccessory.Equipped)
-                    intReturn += objAccessory.TotalConcealability;
-            }
+            return intReturn >= 0 ? '+' + intReturn.ToString(objCulture) : intReturn.ToString(objCulture);
+        }
 
-            /* Commented out because there's no reference to this in RAW
-            // Add +4 for each Underbarrel Weapon installed.
-            if (_lstUnderbarrel.Count > 0)
-            {
-                foreach (Weapon objUnderbarrelWeapon in _lstUnderbarrel)
-                {
-                    if (objUnderbarrelWeapon.Installed)
-                        intReturn += 4;
-                }
-            }
-            */
-
-            // Factor in the character's Concealability modifiers.
-            intReturn += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Concealability).StandardRound();
-
+        /// <summary>
+        /// Weapon's total Concealability including all Accessories and Modifications.
+        /// </summary>
+        public async ValueTask<string> CalculatedConcealabilityAsync(CultureInfo objCulture, CancellationToken token = default)
+        {
+            int intReturn = Concealability
+                            + await WeaponAccessories
+                                    .SumAsync(x => x.Equipped, x => x.GetTotalConcealabilityAsync(token).AsTask(),
+                                              token: token).ConfigureAwait(false)
+                            // Factor in the character's Concealability modifiers.
+                            + (await ImprovementManager
+                                     .ValueOfAsync(_objCharacter, Improvement.ImprovementType.Concealability,
+                                                   token: token).ConfigureAwait(false)).StandardRound();
             return intReturn >= 0 ? '+' + intReturn.ToString(objCulture) : intReturn.ToString(objCulture);
         }
 
@@ -2575,23 +2615,23 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapon's Damage including all Accessories, Modifications, Attributes, and Ammunition.
         /// </summary>
-        public string CalculatedDamage(CultureInfo objCulture, string strLanguage)
+        public string CalculatedDamage(CultureInfo objCulture, string strLanguage, bool blnIncludeAmmo = true)
         {
-            return Utils.SafelyRunSynchronously(() => CalculatedDamageCoreAsync(true, objCulture, strLanguage));
+            return Utils.SafelyRunSynchronously(() => CalculatedDamageCoreAsync(true, objCulture, strLanguage, blnIncludeAmmo));
         }
 
         /// <summary>
         /// Weapon's Damage including all Accessories, Modifications, Attributes, and Ammunition.
         /// </summary>
-        public Task<string> CalculatedDamageAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        public Task<string> CalculatedDamageAsync(CultureInfo objCulture, string strLanguage, bool blnIncludeAmmo = true, CancellationToken token = default)
         {
-            return CalculatedDamageCoreAsync(false, objCulture, strLanguage, token);
+            return CalculatedDamageCoreAsync(false, objCulture, strLanguage, blnIncludeAmmo, token);
         }
 
         /// <summary>
         /// Weapon's Damage including all Accessories, Modifications, Attributes, and Ammunition.
         /// </summary>
-        private async Task<string> CalculatedDamageCoreAsync(bool blnSync, CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        private async Task<string> CalculatedDamageCoreAsync(bool blnSync, CultureInfo objCulture, string strLanguage, bool blnIncludeAmmo = true, CancellationToken token = default)
         {
             // If the cost is determined by the Rating, evaluate the expression.
             string strDamageType = string.Empty;
@@ -2787,61 +2827,19 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                // Check if the Weapon has Ammunition loaded and look for any Damage bonus/replacement.
-                // Look for Ammo on the character.
-                Gear objGear = AmmoLoaded;
-                if (objGear != null)
+                if (blnIncludeAmmo)
                 {
-                    if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objGear.FlechetteWeaponBonus != null)
+                    // Check if the Weapon has Ammunition loaded and look for any Damage bonus/replacement.
+                    // Look for Ammo on the character.
+                    Gear objGear = AmmoLoaded;
+                    if (objGear != null)
                     {
-                        if (objGear.FlechetteWeaponBonus["damagetype"] != null)
+                        if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objGear.FlechetteWeaponBonus != null)
                         {
-                            strDamageType = string.Empty;
-                            strDamageExtra = objGear.FlechetteWeaponBonus["damagetype"].InnerText;
-                        }
-
-                        // Adjust the Weapon's Damage.
-                        string strTemp = objGear.FlechetteWeaponBonus["damage"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strTemp))
-                            sbdBonusDamage.Append(" + ").Append(strTemp.TrimStartOnce('+'));
-                        strTemp = objGear.FlechetteWeaponBonus["damagereplace"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strTemp))
-                        {
-                            blnDamageReplaced = true;
-                            strDamage = strTemp;
-                        }
-                    }
-                    else if (objGear.WeaponBonus != null)
-                    {
-                        // Change the Weapon's Damage Type.
-                        if (objGear.WeaponBonus["damagetype"] != null)
-                        {
-                            strDamageType = string.Empty;
-                            strDamageExtra = objGear.WeaponBonus["damagetype"].InnerText;
-                        }
-
-                        // Adjust the Weapon's Damage.
-                        string strTemp = objGear.WeaponBonus["damage"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strTemp))
-                            sbdBonusDamage.Append(" + ").Append(strTemp.TrimStartOnce('+'));
-                        strTemp = objGear.WeaponBonus["damagereplace"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strTemp))
-                        {
-                            blnDamageReplaced = true;
-                            strDamage = strTemp;
-                        }
-                    }
-
-                    // Do the same for any plugins.
-                    foreach (Gear objChild in objGear.Children.GetAllDescendants(x => x.Children))
-                    {
-                        if (Damage.Contains("(f)") && AmmoCategory != "Gear"
-                                                   && objChild.FlechetteWeaponBonus != null)
-                        {
-                            if (objChild.FlechetteWeaponBonus["damagetype"] != null)
+                            if (objGear.FlechetteWeaponBonus["damagetype"] != null)
                             {
                                 strDamageType = string.Empty;
-                                strDamageExtra = objChild.FlechetteWeaponBonus["damagetype"].InnerText;
+                                strDamageExtra = objGear.FlechetteWeaponBonus["damagetype"].InnerText;
                             }
 
                             // Adjust the Weapon's Damage.
@@ -2855,13 +2853,13 @@ namespace Chummer.Backend.Equipment
                                 strDamage = strTemp;
                             }
                         }
-                        else if (objChild.WeaponBonus != null)
+                        else if (objGear.WeaponBonus != null)
                         {
                             // Change the Weapon's Damage Type.
-                            if (objChild.WeaponBonus["damagetype"] != null)
+                            if (objGear.WeaponBonus["damagetype"] != null)
                             {
                                 strDamageType = string.Empty;
-                                strDamageExtra = objChild.WeaponBonus["damagetype"].InnerText;
+                                strDamageExtra = objGear.WeaponBonus["damagetype"].InnerText;
                             }
 
                             // Adjust the Weapon's Damage.
@@ -2875,6 +2873,51 @@ namespace Chummer.Backend.Equipment
                                 strDamage = strTemp;
                             }
                         }
+
+                        // Do the same for any plugins.
+                        foreach (Gear objChild in objGear.Children.GetAllDescendants(x => x.Children))
+                        {
+                            if (Damage.Contains("(f)") && AmmoCategory != "Gear"
+                                                       && objChild.FlechetteWeaponBonus != null)
+                            {
+                                if (objChild.FlechetteWeaponBonus["damagetype"] != null)
+                                {
+                                    strDamageType = string.Empty;
+                                    strDamageExtra = objChild.FlechetteWeaponBonus["damagetype"].InnerText;
+                                }
+
+                                // Adjust the Weapon's Damage.
+                                string strTemp = objGear.FlechetteWeaponBonus["damage"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strTemp))
+                                    sbdBonusDamage.Append(" + ").Append(strTemp.TrimStartOnce('+'));
+                                strTemp = objGear.FlechetteWeaponBonus["damagereplace"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strTemp))
+                                {
+                                    blnDamageReplaced = true;
+                                    strDamage = strTemp;
+                                }
+                            }
+                            else if (objChild.WeaponBonus != null)
+                            {
+                                // Change the Weapon's Damage Type.
+                                if (objChild.WeaponBonus["damagetype"] != null)
+                                {
+                                    strDamageType = string.Empty;
+                                    strDamageExtra = objChild.WeaponBonus["damagetype"].InnerText;
+                                }
+
+                                // Adjust the Weapon's Damage.
+                                string strTemp = objGear.WeaponBonus["damage"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strTemp))
+                                    sbdBonusDamage.Append(" + ").Append(strTemp.TrimStartOnce('+'));
+                                strTemp = objGear.WeaponBonus["damagereplace"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strTemp))
+                                {
+                                    blnDamageReplaced = true;
+                                    strDamage = strTemp;
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -2882,7 +2925,7 @@ namespace Chummer.Backend.Equipment
                     strDamage += sbdBonusDamage.ToString();
             }
 
-            string strReturn;
+                string strReturn;
             if (!blnDamageReplaced)
             {
                 if (string.IsNullOrEmpty(strDamage))
@@ -3539,23 +3582,23 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Weapon's Firing Mode including Modifications.
         /// </summary>
-        public string CalculatedMode(string strLanguage)
+        public string CalculatedMode(string strLanguage, bool blnIncludeAmmo = true)
         {
-            return Utils.SafelyRunSynchronously(() => CalculatedModeCoreAsync(true, strLanguage));
+            return Utils.SafelyRunSynchronously(() => CalculatedModeCoreAsync(true, strLanguage, blnIncludeAmmo));
         }
 
         /// <summary>
         /// The Weapon's Firing Mode including Modifications.
         /// </summary>
-        public Task<string> CalculatedModeAsync(string strLanguage, CancellationToken token = default)
+        public Task<string> CalculatedModeAsync(string strLanguage, bool blnIncludeAmmo = true, CancellationToken token = default)
         {
-            return CalculatedModeCoreAsync(false, strLanguage, token);
+            return CalculatedModeCoreAsync(false, strLanguage, blnIncludeAmmo, token);
         }
 
         /// <summary>
         /// The Weapon's Firing Mode including Modifications.
         /// </summary>
-        private async Task<string> CalculatedModeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
+        private async Task<string> CalculatedModeCoreAsync(bool blnSync, string strLanguage, bool blnIncludeAmmo = true, CancellationToken token = default)
         {
             // Move the contents of the array to a list so it's easier to work with.
             using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
@@ -3565,89 +3608,16 @@ namespace Chummer.Backend.Equipment
             {
                 setModes.AddRange(_strMode.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries));
 
-                // Check if the Weapon has Ammunition loaded and look for any Damage bonus/replacement.
-                // Look for Ammo on the character.
-                Gear objGear = AmmoLoaded;
-                if (objGear != null)
+                if (blnIncludeAmmo)
                 {
-                    if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objGear.FlechetteWeaponBonus != null)
+                    // Check if the Weapon has Ammunition loaded and look for any Damage bonus/replacement.
+                    // Look for Ammo on the character.
+                    Gear objGear = AmmoLoaded;
+                    if (objGear != null)
                     {
-                        string strFireMode = objGear.FlechetteWeaponBonus["firemode"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strFireMode))
+                        if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objGear.FlechetteWeaponBonus != null)
                         {
-                            if (strFireMode.Contains('/'))
-                            {
-                                // Move the contents of the array to a list so it's easier to work with.
-                                foreach (string strMode in strFireMode.SplitNoAlloc(
-                                             '/', StringSplitOptions.RemoveEmptyEntries))
-                                    setNewModes.Add(strMode);
-                            }
-                            else
-                            {
-                                setNewModes.Add(strFireMode);
-                            }
-                        }
-
-                        strFireMode = objGear.FlechetteWeaponBonus["modereplace"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strFireMode))
-                        {
-                            setModes.Clear();
-                            if (strFireMode.Contains('/'))
-                            {
-                                // Move the contents of the array to a list so it's easier to work with.
-                                foreach (string strMode in strFireMode.SplitNoAlloc(
-                                             '/', StringSplitOptions.RemoveEmptyEntries))
-                                    setModes.Add(strMode);
-                            }
-                            else
-                            {
-                                setModes.Add(strFireMode);
-                            }
-                        }
-                    }
-                    else if (objGear.WeaponBonus != null)
-                    {
-                        string strFireMode = objGear.WeaponBonus["firemode"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strFireMode))
-                        {
-                            if (strFireMode.Contains('/'))
-                            {
-                                // Move the contents of the array to a list so it's easier to work with.
-                                foreach (string strMode in strFireMode.SplitNoAlloc(
-                                             '/', StringSplitOptions.RemoveEmptyEntries))
-                                    setNewModes.Add(strMode);
-                            }
-                            else
-                            {
-                                setNewModes.Add(strFireMode);
-                            }
-                        }
-
-                        strFireMode = objGear.WeaponBonus["modereplace"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strFireMode))
-                        {
-                            setModes.Clear();
-                            if (strFireMode.Contains('/'))
-                            {
-                                // Move the contents of the array to a list so it's easier to work with.
-                                foreach (string strMode in strFireMode.SplitNoAlloc(
-                                             '/', StringSplitOptions.RemoveEmptyEntries))
-                                    setModes.Add(strMode);
-                            }
-                            else
-                            {
-                                setModes.Add(strFireMode);
-                            }
-                        }
-                    }
-
-                    // Do the same for any plugins.
-                    foreach (Gear objChild in objGear.Children.GetAllDescendants(x => x.Children))
-                    {
-                        if (Damage.Contains("(f)") && AmmoCategory != "Gear"
-                                                   && objChild.FlechetteWeaponBonus != null)
-                        {
-                            string strFireMode = objChild.FlechetteWeaponBonus["firemode"]?.InnerText;
+                            string strFireMode = objGear.FlechetteWeaponBonus["firemode"]?.InnerText;
                             if (!string.IsNullOrEmpty(strFireMode))
                             {
                                 if (strFireMode.Contains('/'))
@@ -3663,7 +3633,7 @@ namespace Chummer.Backend.Equipment
                                 }
                             }
 
-                            strFireMode = objChild.FlechetteWeaponBonus["modereplace"]?.InnerText;
+                            strFireMode = objGear.FlechetteWeaponBonus["modereplace"]?.InnerText;
                             if (!string.IsNullOrEmpty(strFireMode))
                             {
                                 setModes.Clear();
@@ -3682,7 +3652,7 @@ namespace Chummer.Backend.Equipment
                         }
                         else if (objGear.WeaponBonus != null)
                         {
-                            string strFireMode = objChild.WeaponBonus["firemode"]?.InnerText;
+                            string strFireMode = objGear.WeaponBonus["firemode"]?.InnerText;
                             if (!string.IsNullOrEmpty(strFireMode))
                             {
                                 if (strFireMode.Contains('/'))
@@ -3698,7 +3668,7 @@ namespace Chummer.Backend.Equipment
                                 }
                             }
 
-                            strFireMode = objChild.WeaponBonus["modereplace"]?.InnerText;
+                            strFireMode = objGear.WeaponBonus["modereplace"]?.InnerText;
                             if (!string.IsNullOrEmpty(strFireMode))
                             {
                                 setModes.Clear();
@@ -3712,6 +3682,82 @@ namespace Chummer.Backend.Equipment
                                 else
                                 {
                                     setModes.Add(strFireMode);
+                                }
+                            }
+                        }
+
+                        // Do the same for any plugins.
+                        foreach (Gear objChild in objGear.Children.GetAllDescendants(x => x.Children))
+                        {
+                            if (Damage.Contains("(f)") && AmmoCategory != "Gear"
+                                                       && objChild.FlechetteWeaponBonus != null)
+                            {
+                                string strFireMode = objChild.FlechetteWeaponBonus["firemode"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strFireMode))
+                                {
+                                    if (strFireMode.Contains('/'))
+                                    {
+                                        // Move the contents of the array to a list so it's easier to work with.
+                                        foreach (string strMode in strFireMode.SplitNoAlloc(
+                                                     '/', StringSplitOptions.RemoveEmptyEntries))
+                                            setNewModes.Add(strMode);
+                                    }
+                                    else
+                                    {
+                                        setNewModes.Add(strFireMode);
+                                    }
+                                }
+
+                                strFireMode = objChild.FlechetteWeaponBonus["modereplace"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strFireMode))
+                                {
+                                    setModes.Clear();
+                                    if (strFireMode.Contains('/'))
+                                    {
+                                        // Move the contents of the array to a list so it's easier to work with.
+                                        foreach (string strMode in strFireMode.SplitNoAlloc(
+                                                     '/', StringSplitOptions.RemoveEmptyEntries))
+                                            setModes.Add(strMode);
+                                    }
+                                    else
+                                    {
+                                        setModes.Add(strFireMode);
+                                    }
+                                }
+                            }
+                            else if (objGear.WeaponBonus != null)
+                            {
+                                string strFireMode = objChild.WeaponBonus["firemode"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strFireMode))
+                                {
+                                    if (strFireMode.Contains('/'))
+                                    {
+                                        // Move the contents of the array to a list so it's easier to work with.
+                                        foreach (string strMode in strFireMode.SplitNoAlloc(
+                                                     '/', StringSplitOptions.RemoveEmptyEntries))
+                                            setNewModes.Add(strMode);
+                                    }
+                                    else
+                                    {
+                                        setNewModes.Add(strFireMode);
+                                    }
+                                }
+
+                                strFireMode = objChild.WeaponBonus["modereplace"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strFireMode))
+                                {
+                                    setModes.Clear();
+                                    if (strFireMode.Contains('/'))
+                                    {
+                                        // Move the contents of the array to a list so it's easier to work with.
+                                        foreach (string strMode in strFireMode.SplitNoAlloc(
+                                                     '/', StringSplitOptions.RemoveEmptyEntries))
+                                            setModes.Add(strMode);
+                                    }
+                                    else
+                                    {
+                                        setModes.Add(strFireMode);
+                                    }
                                 }
                             }
                         }
@@ -4019,53 +4065,56 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Weapon's total AP including Ammunition.
         /// </summary>
-        public string TotalAP(CultureInfo objCulture, string strLanguage)
+        public string TotalAP(CultureInfo objCulture, string strLanguage, bool blnIncludeAmmo = true)
         {
-            return Utils.SafelyRunSynchronously(() => TotalAPCoreAsync(true, objCulture, strLanguage));
+            return Utils.SafelyRunSynchronously(() => TotalAPCoreAsync(true, objCulture, strLanguage, blnIncludeAmmo));
         }
 
         /// <summary>
         /// The Weapon's total AP including Ammunition.
         /// </summary>
-        public Task<string> TotalAPAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        public Task<string> TotalAPAsync(CultureInfo objCulture, string strLanguage, bool blnIncludeAmmo = true, CancellationToken token = default)
         {
-            return TotalAPCoreAsync(false, objCulture, strLanguage, token);
+            return TotalAPCoreAsync(false, objCulture, strLanguage, blnIncludeAmmo, token);
         }
 
         /// <summary>
         /// The Weapon's total AP including Ammunition.
         /// </summary>
-        private async Task<string> TotalAPCoreAsync(bool blnSync, CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        private async Task<string> TotalAPCoreAsync(bool blnSync, CultureInfo objCulture, string strLanguage, bool blnIncludeAmmo = true, CancellationToken token = default)
         {
             string strAP = AP;
 
             int intImprove = 0;
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdBonusAP))
             {
-                // Check if the Weapon has Ammunition loaded and look for any Damage bonus/replacement.
-                // Look for Ammo on the character.
-                Gear objGear = AmmoLoaded;
-                if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objGear?.FlechetteWeaponBonus != null)
+                if (blnIncludeAmmo)
                 {
-                    // Change the Weapon's Damage Type.
-                    string strAPReplace = objGear.FlechetteWeaponBonus["apreplace"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strAPReplace))
-                        strAP = strAPReplace;
-                    // Adjust the Weapon's Damage.
-                    string strAPAdd = objGear.FlechetteWeaponBonus["ap"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strAPAdd))
-                        sbdBonusAP.Append(" + ").Append(strAPAdd.TrimStartOnce('+'));
-                }
-                else if (objGear?.WeaponBonus != null)
-                {
-                    // Change the Weapon's Damage Type.
-                    string strAPReplace = objGear.WeaponBonus["apreplace"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strAPReplace))
-                        strAP = strAPReplace;
-                    // Adjust the Weapon's Damage.
-                    string strAPAdd = objGear.WeaponBonus["ap"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strAPAdd))
-                        sbdBonusAP.Append(" + ").Append(strAPAdd.TrimStartOnce('+'));
+                    // Check if the Weapon has Ammunition loaded and look for any Damage bonus/replacement.
+                    // Look for Ammo on the character.
+                    Gear objGear = AmmoLoaded;
+                    if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objGear?.FlechetteWeaponBonus != null)
+                    {
+                        // Change the Weapon's Damage Type.
+                        string strAPReplace = objGear.FlechetteWeaponBonus["apreplace"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strAPReplace))
+                            strAP = strAPReplace;
+                        // Adjust the Weapon's Damage.
+                        string strAPAdd = objGear.FlechetteWeaponBonus["ap"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strAPAdd))
+                            sbdBonusAP.Append(" + ").Append(strAPAdd.TrimStartOnce('+'));
+                    }
+                    else if (objGear?.WeaponBonus != null)
+                    {
+                        // Change the Weapon's Damage Type.
+                        string strAPReplace = objGear.WeaponBonus["apreplace"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strAPReplace))
+                            strAP = strAPReplace;
+                        // Adjust the Weapon's Damage.
+                        string strAPAdd = objGear.WeaponBonus["ap"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strAPAdd))
+                            sbdBonusAP.Append(" + ").Append(strAPAdd.TrimStartOnce('+'));
+                    }
                 }
 
                 if (_objCharacter != null && (Name == "Unarmed Attack" || Skill?.DictionaryKey == "Unarmed Combat" &&
@@ -4229,23 +4278,23 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Weapon's total RC including Accessories and Modifications.
         /// </summary>
-        public string TotalRC(CultureInfo objCulture, string strLanguage, bool blnRefreshRCToolTip = false)
+        public string TotalRC(CultureInfo objCulture, string strLanguage, bool blnRefreshRCToolTip = false, bool blnIncludeAmmo = true)
         {
-            return Utils.SafelyRunSynchronously(() => TotalRCCoreAsync(true, objCulture, strLanguage, blnRefreshRCToolTip));
+            return Utils.SafelyRunSynchronously(() => TotalRCCoreAsync(true, objCulture, strLanguage, blnRefreshRCToolTip, blnIncludeAmmo));
         }
 
         /// <summary>
         /// The Weapon's total RC including Accessories and Modifications.
         /// </summary>
-        public Task<string> TotalRCAsync(CultureInfo objCulture, string strLanguage, bool blnRefreshRCToolTip = false, CancellationToken token = default)
+        public Task<string> TotalRCAsync(CultureInfo objCulture, string strLanguage, bool blnRefreshRCToolTip = false, bool blnIncludeAmmo = true, CancellationToken token = default)
         {
-            return TotalRCCoreAsync(false, objCulture, strLanguage, blnRefreshRCToolTip, token);
+            return TotalRCCoreAsync(false, objCulture, strLanguage, blnRefreshRCToolTip, blnIncludeAmmo, token);
         }
 
         /// <summary>
         /// The Weapon's total RC including Accessories and Modifications.
         /// </summary>
-        private async Task<string> TotalRCCoreAsync(bool blnSync, CultureInfo objCulture, string strLanguage, bool blnRefreshRCToolTip, CancellationToken token = default)
+        private async Task<string> TotalRCCoreAsync(bool blnSync, CultureInfo objCulture, string strLanguage, bool blnRefreshRCToolTip, bool blnIncludeAmmo = true, CancellationToken token = default)
         {
             string strSpace = blnSync
                 // ReSharper disable once MethodHasAsyncOverload
@@ -4300,45 +4349,52 @@ namespace Chummer.Backend.Equipment
                 int.TryParse(strRCFull.Trim('(', ')'), NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                              out int intRCFull);
 
-                // Check if the Weapon has Ammunition loaded and look for any Recoil bonus.
-                Gear objGear = AmmoLoaded;
-                if (objGear != null)
+                if (blnIncludeAmmo)
                 {
-                    // Change the Weapon's Damage Type.
-                    if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objGear.FlechetteWeaponBonus != null)
+                    // Check if the Weapon has Ammunition loaded and look for any Recoil bonus.
+                    Gear objGear = AmmoLoaded;
+                    if (objGear != null)
                     {
-                        string strRCBonus = objGear.FlechetteWeaponBonus["rc"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strRCBonus) && int.TryParse(strRCBonus, out int intLoopRCBonus))
+                        // Change the Weapon's Damage Type.
+                        if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objGear.FlechetteWeaponBonus != null)
                         {
-                            intRCBase += intLoopRCBonus;
-                            intRCFull += intLoopRCBonus;
+                            string strRCBonus = objGear.FlechetteWeaponBonus["rc"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strRCBonus) && int.TryParse(strRCBonus, out int intLoopRCBonus))
+                            {
+                                intRCBase += intLoopRCBonus;
+                                intRCFull += intLoopRCBonus;
 
-                            if (blnRefreshRCToolTip)
-                                sbdRCTip.Append(strSpace).Append('+').Append(strSpace)
-                                        .Append(blnSync
-                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                    ? objGear.DisplayName(objCulture, strLanguage)
-                                                    : await objGear.DisplayNameAsync(objCulture, strLanguage, token: token).ConfigureAwait(false))
-                                        .Append(strSpace)
-                                        .Append('(').Append(strRCBonus).Append(')');
+                                if (blnRefreshRCToolTip)
+                                    sbdRCTip.Append(strSpace).Append('+').Append(strSpace)
+                                            .Append(blnSync
+                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                        ? objGear.DisplayName(objCulture, strLanguage)
+                                                        : await objGear
+                                                                .DisplayNameAsync(objCulture, strLanguage, token: token)
+                                                                .ConfigureAwait(false))
+                                            .Append(strSpace)
+                                            .Append('(').Append(strRCBonus).Append(')');
+                            }
                         }
-                    }
-                    else if (objGear.WeaponBonus != null)
-                    {
-                        string strRCBonus = objGear.WeaponBonus["rc"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strRCBonus) && int.TryParse(strRCBonus, out int intLoopRCBonus))
+                        else if (objGear.WeaponBonus != null)
                         {
-                            intRCBase += intLoopRCBonus;
-                            intRCFull += intLoopRCBonus;
+                            string strRCBonus = objGear.WeaponBonus["rc"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strRCBonus) && int.TryParse(strRCBonus, out int intLoopRCBonus))
+                            {
+                                intRCBase += intLoopRCBonus;
+                                intRCFull += intLoopRCBonus;
 
-                            if (blnRefreshRCToolTip)
-                                sbdRCTip.Append(strSpace).Append('+').Append(strSpace)
-                                        .Append(blnSync
-                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                    ? objGear.DisplayName(objCulture, strLanguage)
-                                                    : await objGear.DisplayNameAsync(objCulture, strLanguage, token: token).ConfigureAwait(false))
-                                        .Append(strSpace)
-                                        .Append('(').Append(strRCBonus).Append(')');
+                                if (blnRefreshRCToolTip)
+                                    sbdRCTip.Append(strSpace).Append('+').Append(strSpace)
+                                            .Append(blnSync
+                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                        ? objGear.DisplayName(objCulture, strLanguage)
+                                                        : await objGear
+                                                                .DisplayNameAsync(objCulture, strLanguage, token: token)
+                                                                .ConfigureAwait(false))
+                                            .Append(strSpace)
+                                            .Append('(').Append(strRCBonus).Append(')');
+                            }
                         }
                     }
                 }
@@ -4573,15 +4629,37 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// The full Reach of the Weapons including the Character's Reach.
+        /// </summary>
+        public async ValueTask<int> GetTotalReachAsync(CancellationToken token = default)
+        {
+            decimal decReach = Reach + await WeaponAccessories.SumAsync(x => x.Equipped, i => i.Reach, token: token).ConfigureAwait(false);
+            if (RangeType == "Melee")
+            {
+                // Run through the Character's Improvements and add any Reach Improvements.
+                decReach += await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Reach,
+                                                                  strImprovedName: Name, blnIncludeNonImproved: true, token: token).ConfigureAwait(false);
+            }
+
+            if (_objCharacter.Settings.UnarmedImprovementsApplyToWeapons && (Name == "Unarmed Attack" || (Skill != null && await Skill.GetDictionaryKeyAsync(token).ConfigureAwait(false) == "Unarmed Combat")))
+            {
+                decReach += await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.UnarmedReach, token: token).ConfigureAwait(false);
+            }
+
+            return decReach.StandardRound();
+        }
+
+        /// <summary>
         /// The full Accuracy of the Weapon including modifiers from accessories.
         /// </summary>
-        public int TotalAccuracy
+        public int GetTotalAccuracy(bool blnIncludeAmmo = true)
         {
-            get
+            int intAccuracy = 0;
+            string strAccuracy = Accuracy;
+            if (blnIncludeAmmo)
             {
-                int intAccuracy = 0;
-                string strAccuracy = Accuracy;
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdBonusAccuracy))
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdBonusAccuracy))
                 {
                     // Check if the Weapon has Ammunition loaded and look for any Damage bonus/replacement.
                     // Look for Ammo on the character.
@@ -4612,133 +4690,143 @@ namespace Chummer.Backend.Equipment
                     if (sbdBonusAccuracy.Length != 0)
                         strAccuracy = '(' + strAccuracy + ')' + sbdBonusAccuracy;
                 }
+            }
 
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAccuracy))
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAccuracy))
+            {
+                sbdAccuracy.Append(strAccuracy);
+                sbdAccuracy.CheapReplace("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                ProcessAttributesInXPath(sbdAccuracy, strAccuracy);
+                Func<string> funcPhysicalLimitString = () =>
+                    _objCharacter.LimitPhysical.ToString(GlobalSettings.InvariantCultureInfo);
+                if (ParentVehicle != null)
                 {
-                    sbdAccuracy.Append(strAccuracy);
-                    sbdAccuracy.CheapReplace("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                    ProcessAttributesInXPath(sbdAccuracy, strAccuracy);
-                    Func<string> funcPhysicalLimitString = () =>
-                        _objCharacter.LimitPhysical.ToString(GlobalSettings.InvariantCultureInfo);
-                    if (ParentVehicle != null)
+                    funcPhysicalLimitString = () =>
                     {
-                        funcPhysicalLimitString = () =>
-                        {
-                            string strHandling = ParentVehicle.TotalHandling;
-                            int intSlashIndex = strHandling.IndexOf('/');
-                            if (intSlashIndex != -1)
-                                strHandling = strHandling.Substring(0, intSlashIndex);
-                            return strHandling;
-                        };
-                    }
-
-                    sbdAccuracy.CheapReplace(strAccuracy, "Physical", funcPhysicalLimitString)
-                               .CheapReplace(strAccuracy, "Missile", funcPhysicalLimitString);
-
-                    // Replace the division sign with "div" since we're using XPath.
-                    sbdAccuracy.Replace("/", " div ");
-                    (bool blnIsSuccess, object objProcess)
-                        = CommonFunctions.EvaluateInvariantXPath(sbdAccuracy.ToString());
-                    if (blnIsSuccess)
-                        intAccuracy = ((double)objProcess).StandardRound();
+                        string strHandling = ParentVehicle.TotalHandling;
+                        int intSlashIndex = strHandling.IndexOf('/');
+                        if (intSlashIndex != -1)
+                            strHandling = strHandling.Substring(0, intSlashIndex);
+                        return strHandling;
+                    };
                 }
 
-                int intBonusAccuracyFromAccessories = 0;
-                int intBonusAccuracyFromNonStackingAccessories = 0;
-                foreach (WeaponAccessory objWeaponAccessory in WeaponAccessories)
+                sbdAccuracy.CheapReplace(strAccuracy, "Physical", funcPhysicalLimitString)
+                           .CheapReplace(strAccuracy, "Missile", funcPhysicalLimitString);
+
+                // Replace the division sign with "div" since we're using XPath.
+                sbdAccuracy.Replace("/", " div ");
+                (bool blnIsSuccess, object objProcess)
+                    = CommonFunctions.EvaluateInvariantXPath(sbdAccuracy.ToString());
+                if (blnIsSuccess)
+                    intAccuracy = ((double) objProcess).StandardRound();
+            }
+
+            int intBonusAccuracyFromAccessories = 0;
+            int intBonusAccuracyFromNonStackingAccessories = 0;
+            foreach (WeaponAccessory objWeaponAccessory in WeaponAccessories)
+            {
+                if (objWeaponAccessory.Equipped)
                 {
-                    if (objWeaponAccessory.Equipped)
+                    int intLoopAccuracy = objWeaponAccessory.Accuracy;
+                    if (intLoopAccuracy != 0)
+                    {
+                        if (!objWeaponAccessory.Name.StartsWith("Smartgun", StringComparison.Ordinal)
+                            && !objWeaponAccessory.Name.Contains("Sight"))
+                            intBonusAccuracyFromAccessories += intLoopAccuracy;
+                        else if (intLoopAccuracy > intBonusAccuracyFromNonStackingAccessories)
+                            intBonusAccuracyFromNonStackingAccessories = intLoopAccuracy;
+                    }
+                }
+            }
+
+            // Underbarrel weapons that come with their parent weapon (and are of the same type) should inherit the parent weapon's built-in smartgun features
+            if (IncludedInWeapon && Parent != null && RangeType == Parent.RangeType)
+            {
+                foreach (WeaponAccessory objWeaponAccessory in Parent.WeaponAccessories)
+                {
+                    if (objWeaponAccessory.Name.StartsWith("Smartgun", StringComparison.Ordinal)
+                        && objWeaponAccessory.IncludedInWeapon && objWeaponAccessory.Equipped)
                     {
                         int intLoopAccuracy = objWeaponAccessory.Accuracy;
-                        if (intLoopAccuracy != 0)
-                        {
-                            if (!objWeaponAccessory.Name.StartsWith("Smartgun", StringComparison.Ordinal) && !objWeaponAccessory.Name.Contains("Sight"))
-                                intBonusAccuracyFromAccessories += intLoopAccuracy;
-                            else if (intLoopAccuracy > intBonusAccuracyFromNonStackingAccessories)
-                                intBonusAccuracyFromNonStackingAccessories = intLoopAccuracy;
-                        }
+                        if (intLoopAccuracy > intBonusAccuracyFromNonStackingAccessories)
+                            intBonusAccuracyFromNonStackingAccessories = intLoopAccuracy;
                     }
                 }
-
-                // Underbarrel weapons that come with their parent weapon (and are of the same type) should inherit the parent weapon's built-in smartgun features
-                if (IncludedInWeapon && Parent != null && RangeType == Parent.RangeType)
-                {
-                    foreach (WeaponAccessory objWeaponAccessory in Parent.WeaponAccessories)
-                    {
-                        if (objWeaponAccessory.Name.StartsWith("Smartgun", StringComparison.Ordinal) && objWeaponAccessory.IncludedInWeapon && objWeaponAccessory.Equipped)
-                        {
-                            int intLoopAccuracy = objWeaponAccessory.Accuracy;
-                            if (intLoopAccuracy > intBonusAccuracyFromNonStackingAccessories)
-                                intBonusAccuracyFromNonStackingAccessories = intLoopAccuracy;
-                        }
-                    }
-                }
-
-                intAccuracy += intBonusAccuracyFromAccessories + intBonusAccuracyFromNonStackingAccessories;
-
-                string strNameUpper = Name.ToUpperInvariant();
-
-                decimal decImproveAccuracy = ImprovementManager.ValueOf(
-                    _objCharacter, Improvement.ImprovementType.WeaponSkillAccuracy, strImprovedName: Name,
-                    blnIncludeNonImproved: true);
-                string strSkill = Skill?.DictionaryKey ?? string.Empty;
-                if (!string.IsNullOrEmpty(strSkill))
-                    decImproveAccuracy += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponSkillAccuracy, strImprovedName: strSkill);
-                foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.WeaponAccuracy))
-                {
-                    string strImprovedName = objImprovement.ImprovedName;
-                    if (strImprovedName.StartsWith("[contains]", StringComparison.Ordinal)
-                        && strNameUpper.Contains(strImprovedName.TrimStartOnce("[contains]", true),
-                                                 StringComparison.OrdinalIgnoreCase))
-                    {
-                        decImproveAccuracy += objImprovement.Value;
-                    }
-                }
-
-                intAccuracy += decImproveAccuracy.StandardRound();
-
-                return intAccuracy;
             }
+
+            intAccuracy += intBonusAccuracyFromAccessories + intBonusAccuracyFromNonStackingAccessories;
+
+            string strNameUpper = Name.ToUpperInvariant();
+
+            decimal decImproveAccuracy = ImprovementManager.ValueOf(
+                _objCharacter, Improvement.ImprovementType.WeaponSkillAccuracy, strImprovedName: Name,
+                blnIncludeNonImproved: true);
+            string strSkill = Skill?.DictionaryKey ?? string.Empty;
+            if (!string.IsNullOrEmpty(strSkill))
+                decImproveAccuracy += ImprovementManager.ValueOf(_objCharacter,
+                                                                 Improvement.ImprovementType.WeaponSkillAccuracy,
+                                                                 strImprovedName: strSkill);
+            foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
+                         _objCharacter, Improvement.ImprovementType.WeaponAccuracy))
+            {
+                string strImprovedName = objImprovement.ImprovedName;
+                if (strImprovedName.StartsWith("[contains]", StringComparison.Ordinal)
+                    && strNameUpper.Contains(strImprovedName.TrimStartOnce("[contains]", true),
+                                             StringComparison.OrdinalIgnoreCase))
+                {
+                    decImproveAccuracy += objImprovement.Value;
+                }
+            }
+
+            intAccuracy += decImproveAccuracy.StandardRound();
+
+            return intAccuracy;
         }
 
         /// <summary>
         /// The full Accuracy of the Weapon including modifiers from accessories.
         /// </summary>
-        public async ValueTask<int> GetTotalAccuracyAsync(CancellationToken token = default)
+        public async ValueTask<int> GetTotalAccuracyAsync(bool blnIncludeAmmo = true, CancellationToken token = default)
         {
             int intAccuracy = 0;
             string strAccuracy = Accuracy;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdBonusAccuracy))
+            if (blnIncludeAmmo)
             {
-                // Check if the Weapon has Ammunition loaded and look for any Damage bonus/replacement.
-                // Look for Ammo on the character.
-                Gear objGear = AmmoLoaded;
-                if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objGear?.FlechetteWeaponBonus != null)
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdBonusAccuracy))
                 {
-                    // Change the Weapon's Damage Type.
-                    string strAccuracyReplace = objGear.FlechetteWeaponBonus["accuracyreplace"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strAccuracyReplace))
-                        strAccuracy = strAccuracyReplace;
-                    // Adjust the Weapon's Damage.
-                    string strAccuracyAdd = objGear.FlechetteWeaponBonus["accuracy"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strAccuracyAdd))
-                        sbdBonusAccuracy.Append(" + ").Append(strAccuracyAdd.TrimStartOnce('+'));
-                }
-                else if (objGear?.WeaponBonus != null)
-                {
-                    // Change the Weapon's Damage Type.
-                    string strAccuracyReplace = objGear.WeaponBonus["accuracyreplace"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strAccuracyReplace))
-                        strAccuracy = strAccuracyReplace;
-                    // Adjust the Weapon's Damage.
-                    string strAccuracyAdd = objGear.WeaponBonus["accuracy"]?.InnerText;
-                    if (!string.IsNullOrEmpty(strAccuracyAdd))
-                        sbdBonusAccuracy.Append(" + ").Append(strAccuracyAdd.TrimStartOnce('+'));
-                }
+                    // Check if the Weapon has Ammunition loaded and look for any Damage bonus/replacement.
+                    // Look for Ammo on the character.
+                    Gear objGear = AmmoLoaded;
+                    if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objGear?.FlechetteWeaponBonus != null)
+                    {
+                        // Change the Weapon's Damage Type.
+                        string strAccuracyReplace = objGear.FlechetteWeaponBonus["accuracyreplace"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strAccuracyReplace))
+                            strAccuracy = strAccuracyReplace;
+                        // Adjust the Weapon's Damage.
+                        string strAccuracyAdd = objGear.FlechetteWeaponBonus["accuracy"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strAccuracyAdd))
+                            sbdBonusAccuracy.Append(" + ").Append(strAccuracyAdd.TrimStartOnce('+'));
+                    }
+                    else if (objGear?.WeaponBonus != null)
+                    {
+                        // Change the Weapon's Damage Type.
+                        string strAccuracyReplace = objGear.WeaponBonus["accuracyreplace"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strAccuracyReplace))
+                            strAccuracy = strAccuracyReplace;
+                        // Adjust the Weapon's Damage.
+                        string strAccuracyAdd = objGear.WeaponBonus["accuracy"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strAccuracyAdd))
+                            sbdBonusAccuracy.Append(" + ").Append(strAccuracyAdd.TrimStartOnce('+'));
+                    }
 
-                if (sbdBonusAccuracy.Length != 0)
-                    strAccuracy = '(' + strAccuracy + ')' + sbdBonusAccuracy;
+                    if (sbdBonusAccuracy.Length != 0)
+                        strAccuracy = '(' + strAccuracy + ')' + sbdBonusAccuracy;
+                }
             }
+
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAccuracy))
             {
                 sbdAccuracy.Append(strAccuracy);
@@ -4840,9 +4928,9 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Displays the base and Total Accuracy of the weapon in the same format as it appears in rulebooks.
         /// </summary>
-        public string GetAccuracy(CultureInfo objCulture, string strLanguage)
+        public string GetAccuracy(CultureInfo objCulture, string strLanguage, bool blnIncludeAmmo = true)
         {
-            int intTotalAccuracy = TotalAccuracy;
+            int intTotalAccuracy = GetTotalAccuracy(blnIncludeAmmo);
             if (int.TryParse(Accuracy, out int intAccuracy) && intAccuracy != intTotalAccuracy)
                 return string.Format(objCulture, "{0}{1}({2})",
                     intAccuracy, LanguageManager.GetString("String_Space", strLanguage), intTotalAccuracy);
@@ -4852,9 +4940,9 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Displays the base and Total Accuracy of the weapon in the same format as it appears in rulebooks.
         /// </summary>
-        public async ValueTask<string> GetAccuracyAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        public async ValueTask<string> GetAccuracyAsync(CultureInfo objCulture, string strLanguage, bool blnIncludeAmmo = true, CancellationToken token = default)
         {
-            int intTotalAccuracy = await GetTotalAccuracyAsync(token).ConfigureAwait(false);
+            int intTotalAccuracy = await GetTotalAccuracyAsync(blnIncludeAmmo, token).ConfigureAwait(false);
             if (int.TryParse(Accuracy, out int intAccuracy) && intAccuracy != intTotalAccuracy)
                 return string.Format(objCulture, "{0}{1}({2})",
                                      intAccuracy, await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false), intTotalAccuracy);
@@ -5022,7 +5110,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="strFindRange">Range node to use.</param>
         /// <param name="blnUseAlternateRange">Use alternate range instead of the weapon's main range.</param>
-        private int GetRange(string strFindRange, bool blnUseAlternateRange)
+        /// <param name="blnIncludeAmmo">Whether to include any range modifications from the currently loaded ammo.</param>
+        private int GetRange(string strFindRange, bool blnUseAlternateRange, bool blnIncludeAmmo = true)
         {
             string strRangeCategory = Category;
             if (blnUseAlternateRange)
@@ -5034,39 +5123,42 @@ namespace Chummer.Backend.Equipment
             else if (!string.IsNullOrEmpty(Range))
                 strRangeCategory = Range;
 
-            // Check if the Weapon has Ammunition loaded and look for any range replacement.
-            // Look for Ammo on the character.
-            Gear objGear = AmmoLoaded;
-            if (objGear != null)
+            if (blnIncludeAmmo)
             {
-                string strNewRange = string.Empty;
+                // Check if the Weapon has Ammunition loaded and look for any range replacement.
+                // Look for Ammo on the character.
+                Gear objGear = AmmoLoaded;
+                if (objGear != null)
+                {
+                    string strNewRange = string.Empty;
 
-                if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objGear.FlechetteWeaponBonus != null)
-                {
-                    if (objGear.FlechetteWeaponBonus.TryGetStringFieldQuickly("userange", ref strNewRange))
+                    if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objGear.FlechetteWeaponBonus != null)
                     {
-                        strRangeCategory = strNewRange;
-                    }
-                }
-                else if (objGear.WeaponBonus.TryGetStringFieldQuickly("userange", ref strNewRange))
-                {
-                    strRangeCategory = strNewRange;
-                }
-
-                // Do the same for any plugins.
-                foreach (Gear objChild in objGear.Children.GetAllDescendants(x => x.Children))
-                {
-                    if (Damage.Contains("(f)") && AmmoCategory != "Gear"
-                                               && objChild.FlechetteWeaponBonus != null)
-                    {
-                        if (objChild.FlechetteWeaponBonus.TryGetStringFieldQuickly("userange", ref strNewRange))
+                        if (objGear.FlechetteWeaponBonus.TryGetStringFieldQuickly("userange", ref strNewRange))
                         {
                             strRangeCategory = strNewRange;
                         }
                     }
-                    else if (objChild.WeaponBonus.TryGetStringFieldQuickly("userange", ref strNewRange))
+                    else if (objGear.WeaponBonus.TryGetStringFieldQuickly("userange", ref strNewRange))
                     {
                         strRangeCategory = strNewRange;
+                    }
+
+                    // Do the same for any plugins.
+                    foreach (Gear objChild in objGear.Children.GetAllDescendants(x => x.Children))
+                    {
+                        if (Damage.Contains("(f)") && AmmoCategory != "Gear"
+                                                   && objChild.FlechetteWeaponBonus != null)
+                        {
+                            if (objChild.FlechetteWeaponBonus.TryGetStringFieldQuickly("userange", ref strNewRange))
+                            {
+                                strRangeCategory = strNewRange;
+                            }
+                        }
+                        else if (objChild.WeaponBonus.TryGetStringFieldQuickly("userange", ref strNewRange))
+                        {
+                            strRangeCategory = strNewRange;
+                        }
                     }
                 }
             }
@@ -5101,19 +5193,114 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Evaluate and return the requested Range for the Weapon.
+        /// </summary>
+        /// <param name="strFindRange">Range node to use.</param>
+        /// <param name="blnUseAlternateRange">Use alternate range instead of the weapon's main range.</param>
+        /// <param name="blnIncludeAmmo">Whether to include any range modifications from the currently loaded ammo.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        private async ValueTask<int> GetRangeAsync(string strFindRange, bool blnUseAlternateRange,
+                                                   bool blnIncludeAmmo = true, CancellationToken token = default)
+        {
+            string strRangeCategory = Category;
+            if (blnUseAlternateRange)
+            {
+                strRangeCategory = AlternateRange;
+                if (string.IsNullOrWhiteSpace(strRangeCategory))
+                    return -1;
+            }
+            else if (!string.IsNullOrEmpty(Range))
+                strRangeCategory = Range;
+
+            if (blnIncludeAmmo)
+            {
+                // Check if the Weapon has Ammunition loaded and look for any range replacement.
+                // Look for Ammo on the character.
+                Gear objGear = AmmoLoaded;
+                if (objGear != null)
+                {
+                    string strNewRange = string.Empty;
+
+                    if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objGear.FlechetteWeaponBonus != null)
+                    {
+                        if (objGear.FlechetteWeaponBonus.TryGetStringFieldQuickly("userange", ref strNewRange))
+                        {
+                            strRangeCategory = strNewRange;
+                        }
+                    }
+                    else if (objGear.WeaponBonus.TryGetStringFieldQuickly("userange", ref strNewRange))
+                    {
+                        strRangeCategory = strNewRange;
+                    }
+
+                    // Do the same for any plugins.
+                    foreach (Gear objChild in objGear.Children.GetAllDescendants(x => x.Children))
+                    {
+                        if (Damage.Contains("(f)") && AmmoCategory != "Gear"
+                                                   && objChild.FlechetteWeaponBonus != null)
+                        {
+                            if (objChild.FlechetteWeaponBonus.TryGetStringFieldQuickly("userange", ref strNewRange))
+                            {
+                                strRangeCategory = strNewRange;
+                            }
+                        }
+                        else if (objChild.WeaponBonus.TryGetStringFieldQuickly("userange", ref strNewRange))
+                        {
+                            strRangeCategory = strNewRange;
+                        }
+                    }
+                }
+            }
+
+            XPathNavigator objXmlDocument
+                = await _objCharacter.LoadDataXPathAsync("ranges.xml", token: token).ConfigureAwait(false);
+            XPathNavigator objXmlCategoryNode
+                = objXmlDocument.SelectSingleNode("/chummer/ranges/range[name = " + strRangeCategory.CleanXPath()
+                                                  + ']');
+            if (objXmlCategoryNode?.SelectSingleNode(strFindRange) == null)
+            {
+                return -1;
+            }
+
+            string strRange = objXmlCategoryNode.SelectSingleNode(strFindRange)?.Value ?? string.Empty;
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdRange))
+            {
+                sbdRange.Append(strRange);
+                await ProcessAttributesInXPathAsync(sbdRange, strRange, true, token).ConfigureAwait(false);
+
+                if (Category == "Throwing Weapons" || (Skill != null
+                                                       && await Skill.GetDictionaryKeyAsync(token).ConfigureAwait(false)
+                                                       == "Throwing Weapons"))
+                    sbdRange.Append(" + ").Append((await ImprovementManager
+                                                         .ValueOfAsync(_objCharacter,
+                                                                       Improvement.ImprovementType.ThrowRange,
+                                                                       token: token).ConfigureAwait(false))
+                                                  .ToString(GlobalSettings.InvariantCultureInfo));
+
+                // Replace the division sign with "div" since we're using XPath.
+                sbdRange.Replace("/", " div ");
+
+                (bool blnIsSuccess, object objProcess) = await CommonFunctions
+                                                               .EvaluateInvariantXPathAsync(sbdRange.ToString(), token)
+                                                               .ConfigureAwait(false);
+
+                return blnIsSuccess
+                    ? (Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo) * _decRangeMultiplier)
+                    .StandardRound()
+                    : -1;
+            }
+        }
+
+        /// <summary>
         /// Weapon's total Range bonus from Accessories.
         /// </summary>
-        public int RangeBonus
+        public int GetRangeBonus(bool blnIncludeAmmo = true)
         {
-            get
+            // Weapon Mods.
+            int intRangeBonus = WeaponAccessories.Sum(x => x.Equipped, x => x.RangeBonus);
+
+            if (blnIncludeAmmo)
             {
-                int intRangeBonus = 0;
-
-                // Weapon Mods.
-                foreach (WeaponAccessory objAccessory in WeaponAccessories)
-                    if (objAccessory.Equipped)
-                        intRangeBonus += objAccessory.RangeBonus;
-
                 // Check if the Weapon has Ammunition loaded and look for any Range bonus.
                 Gear objGear = AmmoLoaded;
                 if (objGear != null)
@@ -5123,9 +5310,33 @@ namespace Chummer.Backend.Equipment
                     else if (objGear.WeaponBonus != null)
                         intRangeBonus += objGear.WeaponBonusRange;
                 }
-
-                return intRangeBonus;
             }
+
+            return intRangeBonus;
+        }
+
+        /// <summary>
+        /// Weapon's total Range bonus from Accessories.
+        /// </summary>
+        public async ValueTask<int> GetRangeBonusAsync(bool blnIncludeAmmo = true, CancellationToken token = default)
+        {
+            // Weapon Mods.
+            int intRangeBonus = await WeaponAccessories.SumAsync(x => x.Equipped, x => x.RangeBonus, token: token).ConfigureAwait(false);
+
+            if (blnIncludeAmmo)
+            {
+                // Check if the Weapon has Ammunition loaded and look for any Range bonus.
+                Gear objGear = AmmoLoaded;
+                if (objGear != null)
+                {
+                    if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objGear.FlechetteWeaponBonus != null)
+                        intRangeBonus += objGear.FlechetteWeaponBonusRange;
+                    else if (objGear.WeaponBonus != null)
+                        intRangeBonus += objGear.WeaponBonusRange;
+                }
+            }
+
+            return intRangeBonus;
         }
 
         public string RangeModifier(string strRange)
@@ -5157,19 +5368,19 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Dictionary where keys are range categories (short, medium, long, extreme, alternateshort, etc.), values are strings depicting range values for the category.
         /// </summary>
-        public Dictionary<string, string> GetRangeStrings(CultureInfo objCulture)
+        public Dictionary<string, string> GetRangeStrings(CultureInfo objCulture, bool blnIncludeAmmo = true)
         {
-            int intRangeModifier = RangeBonus + 100;
-            int intMin = GetRange("min", false);
-            int intShort = GetRange("short", false);
-            int intMedium = GetRange("medium", false);
-            int intLong = GetRange("long", false);
-            int intExtreme = GetRange("extreme", false);
-            int intAlternateMin = GetRange("min", true);
-            int intAlternateShort = GetRange("short", true);
-            int intAlternateMedium = GetRange("medium", true);
-            int intAlternateLong = GetRange("long", true);
-            int intAlternateExtreme = GetRange("extreme", true);
+            int intRangeModifier = GetRangeBonus(blnIncludeAmmo) + 100;
+            int intMin = GetRange("min", false, blnIncludeAmmo);
+            int intShort = GetRange("short", false, blnIncludeAmmo);
+            int intMedium = GetRange("medium", false, blnIncludeAmmo);
+            int intLong = GetRange("long", false, blnIncludeAmmo);
+            int intExtreme = GetRange("extreme", false, blnIncludeAmmo);
+            int intAlternateMin = GetRange("min", true, blnIncludeAmmo);
+            int intAlternateShort = GetRange("short", true, blnIncludeAmmo);
+            int intAlternateMedium = GetRange("medium", true, blnIncludeAmmo);
+            int intAlternateLong = GetRange("long", true, blnIncludeAmmo);
+            int intAlternateExtreme = GetRange("extreme", true, blnIncludeAmmo);
             if (intMin > 0)
                 intMin = (intMin * intRangeModifier + 99) / 100;
             if (intShort > 0)
@@ -5191,19 +5402,151 @@ namespace Chummer.Backend.Equipment
             if (intAlternateExtreme > 0)
                 intAlternateExtreme = (intAlternateExtreme * intRangeModifier + 99) / 100;
 
-            Dictionary<string, string> retDictionary = new Dictionary<string, string>(8)
+            Dictionary<string, string> dicReturn = new Dictionary<string, string>(8)
+            {
                 {
-                    { "short", intMin < 0 || intShort < 0 ? string.Empty : intMin.ToString(objCulture) + '-' + intShort.ToString(objCulture) },
-                    { "medium", intShort < 0 || intMedium < 0 ? string.Empty : (intShort + 1).ToString(objCulture) + '-' + intMedium.ToString(objCulture) },
-                    { "long", intMedium < 0 || intLong < 0 ? string.Empty : (intMedium + 1).ToString(objCulture) + '-' + intLong.ToString(objCulture) },
-                    { "extreme", intLong < 0 || intExtreme < 0 ? string.Empty : (intLong + 1).ToString(objCulture) + '-' + intExtreme.ToString(objCulture) },
-                    { "alternateshort", intAlternateMin < 0 || intAlternateShort < 0 ? string.Empty : intAlternateMin.ToString(objCulture) + '-' + intAlternateShort.ToString(objCulture) },
-                    { "alternatemedium", intAlternateShort < 0 || intAlternateMedium < 0 ? string.Empty : (intAlternateShort + 1).ToString(objCulture) + '-' + intAlternateMedium.ToString(objCulture) },
-                    { "alternatelong", intAlternateMedium < 0 || intAlternateLong < 0 ? string.Empty : (intAlternateMedium + 1).ToString(objCulture) + '-' + intAlternateLong.ToString(objCulture) },
-                    { "alternateextreme", intAlternateLong < 0 || intAlternateExtreme < 0 ? string.Empty : (intAlternateLong + 1).ToString(objCulture) + '-' + intAlternateExtreme.ToString(objCulture) }
-                };
+                    "short",
+                    intMin < 0 || intShort < 0
+                        ? string.Empty
+                        : intMin.ToString(objCulture) + '-' + intShort.ToString(objCulture)
+                },
+                {
+                    "medium",
+                    intShort < 0 || intMedium < 0
+                        ? string.Empty
+                        : (intShort + 1).ToString(objCulture) + '-' + intMedium.ToString(objCulture)
+                },
+                {
+                    "long",
+                    intMedium < 0 || intLong < 0
+                        ? string.Empty
+                        : (intMedium + 1).ToString(objCulture) + '-' + intLong.ToString(objCulture)
+                },
+                {
+                    "extreme",
+                    intLong < 0 || intExtreme < 0
+                        ? string.Empty
+                        : (intLong + 1).ToString(objCulture) + '-' + intExtreme.ToString(objCulture)
+                },
+                {
+                    "alternateshort",
+                    intAlternateMin < 0 || intAlternateShort < 0
+                        ? string.Empty
+                        : intAlternateMin.ToString(objCulture) + '-' + intAlternateShort.ToString(objCulture)
+                },
+                {
+                    "alternatemedium",
+                    intAlternateShort < 0 || intAlternateMedium < 0
+                        ? string.Empty
+                        : (intAlternateShort + 1).ToString(objCulture) + '-' + intAlternateMedium.ToString(objCulture)
+                },
+                {
+                    "alternatelong",
+                    intAlternateMedium < 0 || intAlternateLong < 0
+                        ? string.Empty
+                        : (intAlternateMedium + 1).ToString(objCulture) + '-' + intAlternateLong.ToString(objCulture)
+                },
+                {
+                    "alternateextreme",
+                    intAlternateLong < 0 || intAlternateExtreme < 0
+                        ? string.Empty
+                        : (intAlternateLong + 1).ToString(objCulture) + '-' + intAlternateExtreme.ToString(objCulture)
+                }
+            };
 
-            return retDictionary;
+            return dicReturn;
+        }
+
+        /// <summary>
+        /// Dictionary where keys are range categories (short, medium, long, extreme, alternateshort, etc.), values are strings depicting range values for the category.
+        /// </summary>
+        public async ValueTask<Dictionary<string, string>> GetRangeStringsAsync(CultureInfo objCulture, bool blnIncludeAmmo = true, CancellationToken token = default)
+        {
+            int intRangeModifier = await GetRangeBonusAsync(blnIncludeAmmo, token).ConfigureAwait(false) + 100;
+            int intMin = await GetRangeAsync("min", false, blnIncludeAmmo, token).ConfigureAwait(false);
+            int intShort = await GetRangeAsync("short", false, blnIncludeAmmo, token).ConfigureAwait(false);
+            int intMedium = await GetRangeAsync("medium", false, blnIncludeAmmo, token).ConfigureAwait(false);
+            int intLong = await GetRangeAsync("long", false, blnIncludeAmmo, token).ConfigureAwait(false);
+            int intExtreme = await GetRangeAsync("extreme", false, blnIncludeAmmo, token).ConfigureAwait(false);
+            int intAlternateMin = await GetRangeAsync("min", true, blnIncludeAmmo, token).ConfigureAwait(false);
+            int intAlternateShort = await GetRangeAsync("short", true, blnIncludeAmmo, token).ConfigureAwait(false);
+            int intAlternateMedium = await GetRangeAsync("medium", true, blnIncludeAmmo, token).ConfigureAwait(false);
+            int intAlternateLong = await GetRangeAsync("long", true, blnIncludeAmmo, token).ConfigureAwait(false);
+            int intAlternateExtreme = await GetRangeAsync("extreme", true, blnIncludeAmmo, token).ConfigureAwait(false);
+            if (intMin > 0)
+                intMin = (intMin * intRangeModifier + 99) / 100;
+            if (intShort > 0)
+                intShort = (intShort * intRangeModifier + 99) / 100;
+            if (intMedium > 0)
+                intMedium = (intMedium * intRangeModifier + 99) / 100;
+            if (intLong > 0)
+                intLong = (intLong * intRangeModifier + 99) / 100;
+            if (intExtreme > 0)
+                intExtreme = (intExtreme * intRangeModifier + 99) / 100;
+            if (intAlternateMin > 0)
+                intAlternateMin = (intAlternateMin * intRangeModifier + 99) / 100;
+            if (intAlternateShort > 0)
+                intAlternateShort = (intAlternateShort * intRangeModifier + 99) / 100;
+            if (intAlternateMedium > 0)
+                intAlternateMedium = (intAlternateMedium * intRangeModifier + 99) / 100;
+            if (intAlternateLong > 0)
+                intAlternateLong = (intAlternateLong * intRangeModifier + 99) / 100;
+            if (intAlternateExtreme > 0)
+                intAlternateExtreme = (intAlternateExtreme * intRangeModifier + 99) / 100;
+
+            Dictionary<string, string> dicReturn = new Dictionary<string, string>(8)
+            {
+                {
+                    "short",
+                    intMin < 0 || intShort < 0
+                        ? string.Empty
+                        : intMin.ToString(objCulture) + '-' + intShort.ToString(objCulture)
+                },
+                {
+                    "medium",
+                    intShort < 0 || intMedium < 0
+                        ? string.Empty
+                        : (intShort + 1).ToString(objCulture) + '-' + intMedium.ToString(objCulture)
+                },
+                {
+                    "long",
+                    intMedium < 0 || intLong < 0
+                        ? string.Empty
+                        : (intMedium + 1).ToString(objCulture) + '-' + intLong.ToString(objCulture)
+                },
+                {
+                    "extreme",
+                    intLong < 0 || intExtreme < 0
+                        ? string.Empty
+                        : (intLong + 1).ToString(objCulture) + '-' + intExtreme.ToString(objCulture)
+                },
+                {
+                    "alternateshort",
+                    intAlternateMin < 0 || intAlternateShort < 0
+                        ? string.Empty
+                        : intAlternateMin.ToString(objCulture) + '-' + intAlternateShort.ToString(objCulture)
+                },
+                {
+                    "alternatemedium",
+                    intAlternateShort < 0 || intAlternateMedium < 0
+                        ? string.Empty
+                        : (intAlternateShort + 1).ToString(objCulture) + '-' + intAlternateMedium.ToString(objCulture)
+                },
+                {
+                    "alternatelong",
+                    intAlternateMedium < 0 || intAlternateLong < 0
+                        ? string.Empty
+                        : (intAlternateMedium + 1).ToString(objCulture) + '-' + intAlternateLong.ToString(objCulture)
+                },
+                {
+                    "alternateextreme",
+                    intAlternateLong < 0 || intAlternateExtreme < 0
+                        ? string.Empty
+                        : (intAlternateLong + 1).ToString(objCulture) + '-' + intAlternateExtreme.ToString(objCulture)
+                }
+            };
+
+            return dicReturn;
         }
 
         /// <summary>
@@ -5349,150 +5692,173 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Dice Pool size for the Active Skill required to use the Weapon.
         /// </summary>
-        public int DicePool
+        public int DicePool => GetDicePool();
+
+        /// <summary>
+        /// The Dice Pool size for the Active Skill required to use the Weapon.
+        /// </summary>
+        public int GetDicePool(bool blnIncludeAmmo = true)
         {
-            get
+            int intDicePool = 0;
+            decimal decDicePoolModifier = WeaponAccessories.Sum(a => a.Equipped, a => a.DicePool);
+            switch (FireMode)
             {
-                int intDicePool = 0;
-                decimal decDicePoolModifier = WeaponAccessories.Sum(a => a.Equipped, a => a.DicePool);
-                switch (FireMode)
+                case FiringMode.DogBrain:
                 {
-                    case FiringMode.DogBrain:
-                        {
-                            intDicePool = ParentVehicle.Pilot;
-                            Gear objAutosoft = ParentVehicle.GearChildren.DeepFirstOrDefault(x => x.Children, x => x.Name == RelevantAutosoft && (x.Extra == Name || x.Extra == CurrentDisplayName));
+                    intDicePool = ParentVehicle.Pilot;
+                    Gear objAutosoft = ParentVehicle.GearChildren.DeepFirstOrDefault(
+                        x => x.Children,
+                        x => x.Name == RelevantAutosoft && (x.Extra == Name || x.Extra == CurrentDisplayName));
 
-                            intDicePool += objAutosoft?.Rating ?? -1;
+                    intDicePool += objAutosoft?.Rating ?? -1;
 
-                            if (WirelessOn && HasWirelessSmartgun && ParentVehicle.GearChildren.DeepAny(x => x.Children, x => x.Name == "Smartsoft" && x.Equipped))
-                            {
-                                ++decDicePoolModifier;
-                            }
-                            break;
-                        }
-                    case FiringMode.RemoteOperated:
-                        {
-                            intDicePool = _objCharacter.SkillsSection.GetActiveSkill("Gunnery").PoolOtherAttribute("LOG");
+                    if (WirelessOn && HasWirelessSmartgun
+                                   && ParentVehicle.GearChildren.DeepAny(
+                                       x => x.Children, x => x.Name == "Smartsoft" && x.Equipped))
+                    {
+                        ++decDicePoolModifier;
+                    }
 
-                            if (WirelessOn && HasWirelessSmartgun)
-                            {
-                                decimal decSmartlinkBonus = ImprovementManager.ValueOf(_objCharacter,
-                                    Improvement.ImprovementType.Smartlink);
-                                foreach (Gear objLoopGear in ParentVehicle.GearChildren.DeepWhere(x => x.Children,
-                                             x => x.Bonus?.InnerXml.Contains("<smartlink>") == true))
-                                {
-                                    string strLoopBonus = string.Empty;
-                                    if (objLoopGear.Bonus.TryGetStringFieldQuickly("smartlink", ref strLoopBonus))
-                                    {
-                                        decSmartlinkBonus = Math.Max(decSmartlinkBonus, ImprovementManager.ValueToDec(
-                                            _objCharacter, strLoopBonus,
-                                            objLoopGear.Rating));
-                                    }
-                                }
-                                decDicePoolModifier += decSmartlinkBonus;
-                            }
-
-                            decDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDice, false, Category);
-                            break;
-                        }
-                    case FiringMode.GunneryCommandDevice:
-                    case FiringMode.ManualOperation:
-                        {
-                            Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill("Gunnery");
-                            if (Cyberware && Equipment.Cyberware.CyberlimbAttributeAbbrevs.Contains(objSkill.Attribute) && _objMountedVehicle == null)
-                            {
-                                Cyberware objAttributeSource = _objCharacter.Cyberware.DeepFindById(ParentID);
-                                while (objAttributeSource != null && objAttributeSource.GetAttributeTotalValue(objSkill.Attribute) == 0)
-                                {
-                                    objAttributeSource = objAttributeSource.Parent;
-                                }
-
-                                if (objAttributeSource != null)
-                                    intDicePool = objSkill.PoolOtherAttribute(
-                                        objSkill.Attribute, false,
-                                        objAttributeSource.GetAttributeTotalValue(objSkill.Attribute));
-                                else
-                                    intDicePool = objSkill.Pool;
-                            }
-                            else
-                                intDicePool = objSkill.Pool;
-
-                            if (WirelessOn && HasWirelessSmartgun)
-                            {
-                                decDicePoolModifier +=
-                                    ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Smartlink);
-                            }
-
-                            decDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDice, false, Category);
-                            break;
-                        }
-                    case FiringMode.Skill:
-                        {
-                            Skill objSkill = Skill;
-                            if (objSkill != null)
-                            {
-                                if (Cyberware && Equipment.Cyberware.CyberlimbAttributeAbbrevs.Contains(objSkill.Attribute))
-                                {
-                                    Cyberware objAttributeSource = _objMountedVehicle != null
-                                        ? _objCharacter.Vehicles.FindVehicleCyberware(x => x.InternalId == ParentID)
-                                        : _objCharacter.Cyberware.DeepFindById(ParentID);
-                                    while (objAttributeSource != null && objAttributeSource.GetAttributeTotalValue(objSkill.Attribute) == 0)
-                                    {
-                                        objAttributeSource = objAttributeSource.Parent;
-                                    }
-
-                                    if (objAttributeSource != null)
-                                        intDicePool = objSkill.PoolOtherAttribute(
-                                            objSkill.Attribute, false,
-                                            objAttributeSource.GetAttributeTotalValue(objSkill.Attribute));
-                                    else
-                                        intDicePool = objSkill.Pool;
-                                }
-                                else
-                                    intDicePool = objSkill.Pool;
-
-                                if (WirelessOn && HasWirelessSmartgun)
-                                {
-                                    decDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Smartlink);
-                                }
-
-                                decDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDice, false, Category);
-                                decDicePoolModifier += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponSpecificDice, false, InternalId);
-
-                                // If the character has a Specialization, include it in the Dice Pool string.
-                                if (objSkill.Specializations.Count > 0 && !objSkill.IsExoticSkill)
-                                {
-                                    SkillSpecialization objSpec =
-                                        objSkill.GetSpecialization(CurrentDisplayNameShort) ??
-                                        objSkill.GetSpecialization(Name) ??
-                                        objSkill.GetSpecialization(DisplayCategory(GlobalSettings.Language)) ??
-                                        objSkill.GetSpecialization(Category);
-
-                                    if (objSpec == null && objSkill.Specializations.Count > 0)
-                                    {
-                                        objSpec = objSkill.GetSpecialization(Spec) ?? objSkill.GetSpecialization(Spec2);
-                                    }
-
-                                    if (objSpec != null)
-                                    {
-                                        decDicePoolModifier += objSpec.SpecializationBonus;
-                                    }
-                                }
-                            }
-                            break;
-                        }
+                    break;
                 }
+                case FiringMode.RemoteOperated:
+                {
+                    intDicePool = _objCharacter.SkillsSection.GetActiveSkill("Gunnery").PoolOtherAttribute("LOG");
 
-                if (FireMode == FiringMode.GunneryCommandDevice || FireMode == FiringMode.RemoteOperated ||
-                    FireMode == FiringMode.ManualOperation)
+                    if (WirelessOn && HasWirelessSmartgun)
+                    {
+                        decimal decSmartlinkBonus = ImprovementManager.ValueOf(_objCharacter,
+                                                                               Improvement.ImprovementType.Smartlink);
+                        foreach (Gear objLoopGear in ParentVehicle.GearChildren.DeepWhere(x => x.Children,
+                                     x => x.Bonus?.InnerXml.Contains("<smartlink>") == true))
+                        {
+                            string strLoopBonus = string.Empty;
+                            if (objLoopGear.Bonus.TryGetStringFieldQuickly("smartlink", ref strLoopBonus))
+                            {
+                                decSmartlinkBonus = Math.Max(decSmartlinkBonus, ImprovementManager.ValueToDec(
+                                                                 _objCharacter, strLoopBonus,
+                                                                 objLoopGear.Rating));
+                            }
+                        }
+
+                        decDicePoolModifier += decSmartlinkBonus;
+                    }
+
+                    decDicePoolModifier
+                        += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDice,
+                                                      false, Category);
+                    break;
+                }
+                case FiringMode.GunneryCommandDevice:
+                case FiringMode.ManualOperation:
                 {
                     Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill("Gunnery");
-                    if (objSkill?.Specializations.Count > 0 && RelevantSpecialization != "None")
+                    if (Cyberware && Equipment.Cyberware.CyberlimbAttributeAbbrevs.Contains(objSkill.Attribute)
+                                  && _objMountedVehicle == null)
                     {
-                        intDicePool += objSkill.GetSpecializationBonus(RelevantSpecialization);
-                    }
-                }
+                        Cyberware objAttributeSource = _objCharacter.Cyberware.DeepFindById(ParentID);
+                        while (objAttributeSource != null
+                               && objAttributeSource.GetAttributeTotalValue(objSkill.Attribute) == 0)
+                        {
+                            objAttributeSource = objAttributeSource.Parent;
+                        }
 
+                        if (objAttributeSource != null)
+                            intDicePool = objSkill.PoolOtherAttribute(
+                                objSkill.Attribute, false,
+                                objAttributeSource.GetAttributeTotalValue(objSkill.Attribute));
+                        else
+                            intDicePool = objSkill.Pool;
+                    }
+                    else
+                        intDicePool = objSkill.Pool;
+
+                    if (WirelessOn && HasWirelessSmartgun)
+                    {
+                        decDicePoolModifier +=
+                            ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Smartlink);
+                    }
+
+                    decDicePoolModifier
+                        += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDice,
+                                                      false, Category);
+                    break;
+                }
+                case FiringMode.Skill:
+                {
+                    Skill objSkill = Skill;
+                    if (objSkill != null)
+                    {
+                        if (Cyberware && Equipment.Cyberware.CyberlimbAttributeAbbrevs.Contains(objSkill.Attribute))
+                        {
+                            Cyberware objAttributeSource = _objMountedVehicle != null
+                                ? _objCharacter.Vehicles.FindVehicleCyberware(x => x.InternalId == ParentID)
+                                : _objCharacter.Cyberware.DeepFindById(ParentID);
+                            while (objAttributeSource != null
+                                   && objAttributeSource.GetAttributeTotalValue(objSkill.Attribute) == 0)
+                            {
+                                objAttributeSource = objAttributeSource.Parent;
+                            }
+
+                            if (objAttributeSource != null)
+                                intDicePool = objSkill.PoolOtherAttribute(
+                                    objSkill.Attribute, false,
+                                    objAttributeSource.GetAttributeTotalValue(objSkill.Attribute));
+                            else
+                                intDicePool = objSkill.Pool;
+                        }
+                        else
+                            intDicePool = objSkill.Pool;
+
+                        if (WirelessOn && HasWirelessSmartgun)
+                        {
+                            decDicePoolModifier
+                                += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Smartlink);
+                        }
+
+                        decDicePoolModifier
+                            += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDice,
+                                                          false, Category);
+                        decDicePoolModifier += ImprovementManager.ValueOf(
+                            _objCharacter, Improvement.ImprovementType.WeaponSpecificDice, false, InternalId);
+
+                        // If the character has a Specialization, include it in the Dice Pool string.
+                        if (objSkill.Specializations.Count > 0 && !objSkill.IsExoticSkill)
+                        {
+                            SkillSpecialization objSpec =
+                                objSkill.GetSpecialization(CurrentDisplayNameShort) ??
+                                objSkill.GetSpecialization(Name) ??
+                                objSkill.GetSpecialization(DisplayCategory(GlobalSettings.Language)) ??
+                                objSkill.GetSpecialization(Category);
+
+                            if (objSpec == null && objSkill.Specializations.Count > 0)
+                            {
+                                objSpec = objSkill.GetSpecialization(Spec) ?? objSkill.GetSpecialization(Spec2);
+                            }
+
+                            if (objSpec != null)
+                            {
+                                decDicePoolModifier += objSpec.SpecializationBonus;
+                            }
+                        }
+                    }
+
+                    break;
+                }
+            }
+
+            if (FireMode == FiringMode.GunneryCommandDevice || FireMode == FiringMode.RemoteOperated ||
+                FireMode == FiringMode.ManualOperation)
+            {
+                Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill("Gunnery");
+                if (objSkill?.Specializations.Count > 0 && RelevantSpecialization != "None")
+                {
+                    intDicePool += objSkill.GetSpecializationBonus(RelevantSpecialization);
+                }
+            }
+
+            if (blnIncludeAmmo)
+            {
                 Gear objAmmo = AmmoLoaded;
                 if (objAmmo != null)
                 {
@@ -5506,9 +5872,192 @@ namespace Chummer.Backend.Equipment
                         decDicePoolModifier
                             += Convert.ToDecimal(strWeaponBonusPool, GlobalSettings.InvariantCultureInfo);
                 }
-
-                return intDicePool + decDicePoolModifier.StandardRound();
             }
+
+            return intDicePool + decDicePoolModifier.StandardRound();
+        }
+
+        /// <summary>
+        /// The Dice Pool size for the Active Skill required to use the Weapon.
+        /// </summary>
+        public async ValueTask<int> GetDicePoolAsync(bool blnIncludeAmmo = true, CancellationToken token = default)
+        {
+            int intDicePool = 0;
+            decimal decDicePoolModifier = await WeaponAccessories.SumAsync(a => a.Equipped, a => a.DicePool, token: token).ConfigureAwait(false);
+            switch (FireMode)
+            {
+                case FiringMode.DogBrain:
+                    {
+                        intDicePool = ParentVehicle.Pilot;
+                        Gear objAutosoft = ParentVehicle.GearChildren.DeepFirstOrDefault(
+                            x => x.Children,
+                            x => x.Name == RelevantAutosoft && (x.Extra == Name || x.Extra == CurrentDisplayName));
+
+                        intDicePool += objAutosoft?.Rating ?? -1;
+
+                        if (WirelessOn && HasWirelessSmartgun
+                                       && ParentVehicle.GearChildren.DeepAny(
+                                           x => x.Children, x => x.Name == "Smartsoft" && x.Equipped))
+                        {
+                            ++decDicePoolModifier;
+                        }
+
+                        break;
+                    }
+                case FiringMode.RemoteOperated:
+                    {
+                        intDicePool = await (await _objCharacter.SkillsSection.GetActiveSkillAsync("Gunnery", token).ConfigureAwait(false)).PoolOtherAttributeAsync("LOG", token: token).ConfigureAwait(false);
+
+                        if (WirelessOn && HasWirelessSmartgun)
+                        {
+                            decimal decSmartlinkBonus = ImprovementManager.ValueOf(_objCharacter,
+                                                                                   Improvement.ImprovementType.Smartlink);
+                            foreach (Gear objLoopGear in ParentVehicle.GearChildren.DeepWhere(x => x.Children,
+                                         x => x.Bonus?.InnerXml.Contains("<smartlink>") == true))
+                            {
+                                string strLoopBonus = string.Empty;
+                                if (objLoopGear.Bonus.TryGetStringFieldQuickly("smartlink", ref strLoopBonus))
+                                {
+                                    decSmartlinkBonus = Math.Max(decSmartlinkBonus, ImprovementManager.ValueToDec(
+                                                                     _objCharacter, strLoopBonus,
+                                                                     objLoopGear.Rating));
+                                }
+                            }
+
+                            decDicePoolModifier += decSmartlinkBonus;
+                        }
+
+                        decDicePoolModifier
+                            += await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.WeaponCategoryDice,
+                                                                     false, Category, token: token).ConfigureAwait(false);
+                        break;
+                    }
+                case FiringMode.GunneryCommandDevice:
+                case FiringMode.ManualOperation:
+                    {
+                        Skill objSkill = await _objCharacter.SkillsSection.GetActiveSkillAsync("Gunnery", token).ConfigureAwait(false);
+                        if (Cyberware && Equipment.Cyberware.CyberlimbAttributeAbbrevs.Contains(objSkill.Attribute)
+                                      && _objMountedVehicle == null)
+                        {
+                            Cyberware objAttributeSource = _objCharacter.Cyberware.DeepFindById(ParentID);
+                            while (objAttributeSource != null
+                                   && await objAttributeSource.GetAttributeTotalValueAsync(objSkill.Attribute, token).ConfigureAwait(false) == 0)
+                            {
+                                objAttributeSource = objAttributeSource.Parent;
+                            }
+
+                            if (objAttributeSource != null)
+                                intDicePool = await objSkill.PoolOtherAttributeAsync(
+                                    objSkill.Attribute, false,
+                                    await objAttributeSource.GetAttributeTotalValueAsync(objSkill.Attribute, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                            else
+                                intDicePool = await objSkill.GetPoolAsync(token).ConfigureAwait(false);
+                        }
+                        else
+                            intDicePool = await objSkill.GetPoolAsync(token).ConfigureAwait(false);
+
+                        if (WirelessOn && HasWirelessSmartgun)
+                        {
+                            decDicePoolModifier +=
+                                await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Smartlink, token: token).ConfigureAwait(false);
+                        }
+
+                        decDicePoolModifier
+                            += await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.WeaponCategoryDice,
+                                                                     false, Category, token: token).ConfigureAwait(false);
+                        break;
+                    }
+                case FiringMode.Skill:
+                    {
+                        Skill objSkill = Skill;
+                        if (objSkill != null)
+                        {
+                            if (Cyberware && Equipment.Cyberware.CyberlimbAttributeAbbrevs.Contains(objSkill.Attribute))
+                            {
+                                Cyberware objAttributeSource = _objMountedVehicle != null
+                                    ? _objCharacter.Vehicles.FindVehicleCyberware(x => x.InternalId == ParentID)
+                                    : _objCharacter.Cyberware.DeepFindById(ParentID);
+                                while (objAttributeSource != null
+                                       && await objAttributeSource.GetAttributeTotalValueAsync(objSkill.Attribute, token).ConfigureAwait(false) == 0)
+                                {
+                                    objAttributeSource = objAttributeSource.Parent;
+                                }
+
+                                if (objAttributeSource != null)
+                                    intDicePool = await objSkill.PoolOtherAttributeAsync(
+                                        objSkill.Attribute, false,
+                                        await objAttributeSource.GetAttributeTotalValueAsync(objSkill.Attribute, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                                else
+                                    intDicePool = await objSkill.GetPoolAsync(token).ConfigureAwait(false);
+                            }
+                            else
+                                intDicePool = await objSkill.GetPoolAsync(token).ConfigureAwait(false);
+
+                            if (WirelessOn && HasWirelessSmartgun)
+                            {
+                                decDicePoolModifier
+                                    += await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Smartlink).ConfigureAwait(false);
+                            }
+
+                            decDicePoolModifier
+                                += await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.WeaponCategoryDice,
+                                                                         false, Category).ConfigureAwait(false);
+                            decDicePoolModifier += await ImprovementManager.ValueOfAsync(
+                                _objCharacter, Improvement.ImprovementType.WeaponSpecificDice, false, InternalId).ConfigureAwait(false);
+
+                            // If the character has a Specialization, include it in the Dice Pool string.
+                            if (objSkill.Specializations.Count > 0 && !objSkill.IsExoticSkill)
+                            {
+                                SkillSpecialization objSpec =
+                                    await objSkill.GetSpecializationAsync(await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token).ConfigureAwait(false) ??
+                                    await objSkill.GetSpecializationAsync(Name, token).ConfigureAwait(false) ??
+                                    await objSkill.GetSpecializationAsync(await DisplayCategoryAsync(GlobalSettings.Language, token).ConfigureAwait(false), token).ConfigureAwait(false) ??
+                                    await objSkill.GetSpecializationAsync(Category, token).ConfigureAwait(false);
+
+                                if (objSpec == null && objSkill.Specializations.Count > 0)
+                                {
+                                    objSpec = await objSkill.GetSpecializationAsync(Spec, token).ConfigureAwait(false) ?? await objSkill.GetSpecializationAsync(Spec2, token).ConfigureAwait(false);
+                                }
+
+                                if (objSpec != null)
+                                {
+                                    decDicePoolModifier += await objSpec.GetSpecializationBonusAsync(token).ConfigureAwait(false);
+                                }
+                            }
+                        }
+
+                        break;
+                    }
+            }
+
+            if (FireMode == FiringMode.GunneryCommandDevice || FireMode == FiringMode.RemoteOperated ||
+                FireMode == FiringMode.ManualOperation)
+            {
+                Skill objSkill = await _objCharacter.SkillsSection.GetActiveSkillAsync("Gunnery", token).ConfigureAwait(false);
+                if (objSkill?.Specializations.Count > 0 && RelevantSpecialization != "None")
+                {
+                    intDicePool += await objSkill.GetSpecializationBonusAsync(RelevantSpecialization, token).ConfigureAwait(false);
+                }
+            }
+
+            if (blnIncludeAmmo)
+            {
+                Gear objAmmo = AmmoLoaded;
+                if (objAmmo != null)
+                {
+                    string strWeaponBonusPool = string.Empty;
+                    if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objAmmo.FlechetteWeaponBonus != null)
+                        strWeaponBonusPool = objAmmo.FlechetteWeaponBonus?["pool"]?.InnerText;
+                    else if (objAmmo.WeaponBonus != null)
+                        strWeaponBonusPool = objAmmo.WeaponBonus?["pool"]?.InnerText;
+
+                    if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                        decDicePoolModifier
+                            += Convert.ToDecimal(strWeaponBonusPool, GlobalSettings.InvariantCultureInfo);
+                }
+            }
+
+            return intDicePool + decDicePoolModifier.StandardRound();
         }
 
         private string _strRelevantSpec = string.Empty;

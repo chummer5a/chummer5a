@@ -204,7 +204,7 @@ namespace Chummer
                             _objSelectedWeapon.DiscountCost = x.Checked;
                         }, token: token).ConfigureAwait(false);
 
-                        string strReach = _objSelectedWeapon.TotalReach.ToString(GlobalSettings.CultureInfo);
+                        string strReach = (await _objSelectedWeapon.GetTotalReachAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
                         await lblWeaponReach.DoThreadSafeAsync(x => x.Text = strReach, token: token)
                                             .ConfigureAwait(false);
                         await lblWeaponReachLabel
@@ -432,7 +432,7 @@ namespace Chummer
                                 blnAnyMelee = true;
                             string strID = objWeapon.SourceIDString;
                             string strWeaponName = await objWeapon.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
-                            string strDice = objWeapon.DicePool.ToString(GlobalSettings.CultureInfo);
+                            string strDice = (await objWeapon.GetDicePoolAsync(token: token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
                             string strAccuracy = objWeapon.DisplayAccuracy;
                             string strDamage = objWeapon.DisplayDamage;
                             string strAP = objWeapon.DisplayTotalAP;
@@ -441,7 +441,7 @@ namespace Chummer
                             string strRC = objWeapon.DisplayTotalRC;
                             string strAmmo = objWeapon.DisplayAmmo;
                             string strMode = objWeapon.DisplayMode;
-                            string strReach = objWeapon.TotalReach.ToString(GlobalSettings.CultureInfo);
+                            string strReach = (await objWeapon.GetTotalReachAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
                             string strConceal = objWeapon.DisplayConcealability;
                             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdAccessories))
