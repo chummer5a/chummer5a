@@ -13831,7 +13831,7 @@ namespace Chummer
                                 if (xmlQualityNode == null)
                                     return 0;
                                 int intLoopKarma = 0;
-                                xmlQualityNode.TryGetInt32FieldQuickly("karma", ref intLoopKarma)
+                                xmlQualityNode.TryGetInt32FieldQuickly("karma", ref intLoopKarma);
                                 return intLoopKarma;
                             }, token).ConfigureAwait(false);
 
