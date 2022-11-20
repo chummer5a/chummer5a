@@ -112,14 +112,15 @@ namespace Chummer.Backend.Equipment
 
         private void GearChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            bool blnDoEquipped = _objCharacter?.IsLoading == false && Equipped && Parent?.ParentVehicle == null;
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
                     foreach (Gear objNewItem in e.NewItems)
                     {
                         objNewItem.Parent = this;
-                        if (Equipped && Parent?.ParentVehicle == null)
-                            objNewItem.ChangeEquippedStatus(Equipped);
+                        if (blnDoEquipped)
+                            objNewItem.ChangeEquippedStatus(true);
                     }
 
                     break;
@@ -128,7 +129,7 @@ namespace Chummer.Backend.Equipment
                     foreach (Gear objOldItem in e.OldItems)
                     {
                         objOldItem.Parent = null;
-                        if (Equipped && Parent?.ParentVehicle == null)
+                        if (blnDoEquipped)
                             objOldItem.ChangeEquippedStatus(false);
                     }
 
@@ -138,17 +139,22 @@ namespace Chummer.Backend.Equipment
                     foreach (Gear objOldItem in e.OldItems)
                     {
                         objOldItem.Parent = null;
-                        if (Equipped && Parent?.ParentVehicle == null)
+                        if (blnDoEquipped)
                             objOldItem.ChangeEquippedStatus(false);
                     }
 
                     foreach (Gear objNewItem in e.NewItems)
                     {
                         objNewItem.Parent = this;
-                        if (Equipped && Parent?.ParentVehicle == null)
-                            objNewItem.ChangeEquippedStatus(Equipped);
+                        if (blnDoEquipped)
+                            objNewItem.ChangeEquippedStatus(true);
                     }
 
+                    break;
+
+                case NotifyCollectionChangedAction.Reset:
+                    if (blnDoEquipped)
+                        _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
                     break;
             }
         }
@@ -1126,7 +1132,11 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
-                    _objCharacter?.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
+                    if (_objCharacter?.IsLoading == false && (!string.IsNullOrEmpty(Weight)
+                                                              || GearChildren.DeepAny(
+                                                                  x => x.Children,
+                                                                  x => !string.IsNullOrEmpty(x.Weight))))
+                        _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
                 }
                 else
                 {

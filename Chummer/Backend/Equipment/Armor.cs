@@ -179,7 +179,7 @@ namespace Chummer.Backend.Equipment
             }
 
             // Short-circuits this in case we are adding mods to an armor that is not on the character (happens when browsing for new armor to add)
-            if (_objCharacter?.Armor.Contains(this) != true)
+            if (_objCharacter?.IsLoading != false || !_objCharacter.Armor.Contains(this))
                 return;
 
             using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
@@ -1485,7 +1485,10 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
-                _objCharacter?.OnMultiplePropertyChanged(nameof(Character.ArmorEncumbrance), nameof(Character.TotalCarriedWeight), nameof(Character.TotalArmorRating));
+                if (_objCharacter?.IsLoading == false)
+                    _objCharacter.OnMultiplePropertyChanged(nameof(Character.ArmorEncumbrance),
+                                                            nameof(Character.TotalCarriedWeight),
+                                                            nameof(Character.TotalArmorRating));
             }
         }
 

@@ -123,32 +123,44 @@ namespace Chummer.Backend.Equipment
 
         private void ChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            if (e.Action == NotifyCollectionChangedAction.Move)
+                return;
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
                     foreach (Gear objNewItem in e.NewItems)
+                    {
                         objNewItem.Parent = this;
-                    this.RefreshMatrixAttributeArray(_objCharacter);
+                        if (Equipped)
+                            objNewItem.ChangeEquippedStatus(true);
+                    }
                     break;
 
                 case NotifyCollectionChangedAction.Remove:
                     foreach (Gear objOldItem in e.OldItems)
+                    {
                         objOldItem.Parent = null;
-                    this.RefreshMatrixAttributeArray(_objCharacter);
+                        if (Equipped)
+                            objOldItem.ChangeEquippedStatus(false);
+                    }
                     break;
 
                 case NotifyCollectionChangedAction.Replace:
                     foreach (Gear objOldItem in e.OldItems)
+                    {
                         objOldItem.Parent = null;
+                        if (Equipped)
+                            objOldItem.ChangeEquippedStatus(false);
+                    }
                     foreach (Gear objNewItem in e.NewItems)
+                    {
                         objNewItem.Parent = this;
-                    this.RefreshMatrixAttributeArray(_objCharacter);
-                    break;
-
-                case NotifyCollectionChangedAction.Reset:
-                    this.RefreshMatrixAttributeArray(_objCharacter);
+                        if (Equipped)
+                            objNewItem.ChangeEquippedStatus(true);
+                    }
                     break;
             }
+            this.RefreshMatrixAttributeArray(_objCharacter);
         }
 
         /// <summary>
@@ -3667,8 +3679,11 @@ namespace Chummer.Backend.Equipment
             foreach (Gear objGear in Children)
                 objGear.ChangeEquippedStatus(blnEquipped, true);
 
-            if (!blnSkipEncumbranceOnPropertyChanged)
-                _objCharacter?.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
+            if (!blnSkipEncumbranceOnPropertyChanged && _objCharacter?.IsLoading == false
+                                                     && (!string.IsNullOrEmpty(Weight)
+                                                         || Children.DeepAny(
+                                                             x => x.Children, x => !string.IsNullOrEmpty(x.Weight))))
+                _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
         }
 
         /// <summary>
@@ -3756,8 +3771,11 @@ namespace Chummer.Backend.Equipment
             foreach (Gear objGear in Children)
                 await objGear.ChangeEquippedStatusAsync(blnEquipped, true, token).ConfigureAwait(false);
 
-            if (!blnSkipEncumbranceOnPropertyChanged)
-                _objCharacter?.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
+            if (!blnSkipEncumbranceOnPropertyChanged && _objCharacter?.IsLoading == false
+                                                     && (!string.IsNullOrEmpty(Weight)
+                                                         || Children.DeepAny(
+                                                             x => x.Children, x => !string.IsNullOrEmpty(x.Weight))))
+                _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
         }
 
         /// <summary>

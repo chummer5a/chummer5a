@@ -289,6 +289,7 @@ namespace Chummer.Backend.Equipment
                 {
                     bool blnDoEssenceImprovementsRefresh = false;
                     bool blnDoRedlinerRefresh = false;
+                    bool blnEverDoEncumbranceRefresh = IsModularCurrentlyEquipped && ParentVehicle == null;
                     bool blnDoEncumbranceRefresh = false;
                     List<Cyberware> lstImprovementSourcesToProcess = new List<Cyberware>(e.NewItems?.Count ?? 0);
                     switch (e.Action)
@@ -300,7 +301,20 @@ namespace Chummer.Backend.Equipment
                                 objNewItem.Parent = this;
                                 if (objNewItem.IsModularCurrentlyEquipped)
                                 {
-                                    blnDoEncumbranceRefresh = IsModularCurrentlyEquipped && ParentVehicle == null;
+                                    if (blnEverDoEncumbranceRefresh && !blnDoEncumbranceRefresh
+                                                                    && (!string.IsNullOrEmpty(Weight)
+                                                                        || !string.IsNullOrEmpty(objNewItem.Weight)
+                                                                        || objNewItem.GearChildren.DeepAny(
+                                                                            x => x.Children,
+                                                                            x => !string.IsNullOrEmpty(x.Weight))
+                                                                        || objNewItem.Children.DeepAny(
+                                                                            x => x.Children,
+                                                                            y => !string.IsNullOrEmpty(y.Weight)
+                                                                                || y.GearChildren.DeepAny(
+                                                                                    x => x.Children,
+                                                                                    x => !string
+                                                                                        .IsNullOrEmpty(x.Weight)))))
+                                        blnDoEncumbranceRefresh = true;
                                     lstImprovementSourcesToProcess.Add(objNewItem);
                                 }
 
@@ -340,8 +354,23 @@ namespace Chummer.Backend.Equipment
                         case NotifyCollectionChangedAction.Remove:
                             foreach (Cyberware objOldItem in e.OldItems)
                             {
-                                if (objOldItem.IsModularCurrentlyEquipped)
-                                    blnDoEncumbranceRefresh = IsModularCurrentlyEquipped && ParentVehicle == null;
+                                if (blnEverDoEncumbranceRefresh && !blnDoEncumbranceRefresh
+                                                                && objOldItem.IsModularCurrentlyEquipped
+                                                                && (!string.IsNullOrEmpty(Weight)
+                                                                    || !string.IsNullOrEmpty(objOldItem.Weight)
+                                                                    || objOldItem.GearChildren.DeepAny(
+                                                                        x => x.Children,
+                                                                        x => !string.IsNullOrEmpty(x.Weight))
+                                                                    || objOldItem.Children.DeepAny(
+                                                                        x => x.Children,
+                                                                        y => !string.IsNullOrEmpty(y.Weight)
+                                                                             || y.GearChildren.DeepAny(
+                                                                                 x => x.Children,
+                                                                                 x => !string
+                                                                                     .IsNullOrEmpty(x.Weight)))))
+
+                                    blnDoEncumbranceRefresh = true;
+
                                 if (objOldItem.Parent == this)
                                     objOldItem.Parent = null;
 
@@ -385,8 +414,22 @@ namespace Chummer.Backend.Equipment
                             {
                                 if (setNewItems.Contains(objOldItem))
                                     continue;
-                                if (objOldItem.IsModularCurrentlyEquipped)
-                                    blnDoEncumbranceRefresh = IsModularCurrentlyEquipped && ParentVehicle == null;
+                                if (blnEverDoEncumbranceRefresh && !blnDoEncumbranceRefresh
+                                                                && objOldItem.IsModularCurrentlyEquipped
+                                                                && (!string.IsNullOrEmpty(Weight)
+                                                                    || !string.IsNullOrEmpty(objOldItem.Weight)
+                                                                    || objOldItem.GearChildren.DeepAny(
+                                                                        x => x.Children,
+                                                                        x => !string.IsNullOrEmpty(x.Weight))
+                                                                    || objOldItem.Children.DeepAny(
+                                                                        x => x.Children,
+                                                                        y => !string.IsNullOrEmpty(y.Weight)
+                                                                             || y.GearChildren.DeepAny(
+                                                                                 x => x.Children,
+                                                                                 x => !string
+                                                                                     .IsNullOrEmpty(x.Weight)))))
+
+                                    blnDoEncumbranceRefresh = true;
                                 if (objOldItem.Parent == this)
                                     objOldItem.Parent = null;
 
@@ -424,7 +467,20 @@ namespace Chummer.Backend.Equipment
                                 objNewItem.Parent = this;
                                 if (objNewItem.IsModularCurrentlyEquipped)
                                 {
-                                    blnDoEncumbranceRefresh = IsModularCurrentlyEquipped && ParentVehicle == null;
+                                    if (blnEverDoEncumbranceRefresh && !blnDoEncumbranceRefresh
+                                                                    && (!string.IsNullOrEmpty(Weight)
+                                                                        || !string.IsNullOrEmpty(objNewItem.Weight)
+                                                                        || objNewItem.GearChildren.DeepAny(
+                                                                            x => x.Children,
+                                                                            x => !string.IsNullOrEmpty(x.Weight))
+                                                                        || objNewItem.Children.DeepAny(
+                                                                            x => x.Children,
+                                                                            y => !string.IsNullOrEmpty(y.Weight)
+                                                                                || y.GearChildren.DeepAny(
+                                                                                    x => x.Children,
+                                                                                    x => !string
+                                                                                        .IsNullOrEmpty(x.Weight)))))
+                                        blnDoEncumbranceRefresh = true;
                                     lstImprovementSourcesToProcess.Add(objNewItem);
                                 }
 
@@ -463,7 +519,7 @@ namespace Chummer.Backend.Equipment
 
                         case NotifyCollectionChangedAction.Reset:
                             blnDoEssenceImprovementsRefresh = true;
-                            blnDoEncumbranceRefresh = IsModularCurrentlyEquipped && ParentVehicle == null;
+                            blnDoEncumbranceRefresh = blnEverDoEncumbranceRefresh;
                             if (Category == "Cyberlimb" && Parent?.InheritAttributes != false
                                                         && ParentVehicle == null
                                                         &&
@@ -593,6 +649,9 @@ namespace Chummer.Backend.Equipment
 
         private void GearChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            if (e.Action == NotifyCollectionChangedAction.Move)
+                return;
+            bool blnDoEquipped = _objCharacter?.IsLoading == false && IsModularCurrentlyEquipped && ParentVehicle == null;
             using (EnterReadLock.Enter(LockObject))
             {
                 switch (e.Action)
@@ -601,42 +660,45 @@ namespace Chummer.Backend.Equipment
                         foreach (Gear objNewItem in e.NewItems)
                         {
                             objNewItem.Parent = this;
-                            objNewItem.ChangeEquippedStatus(IsModularCurrentlyEquipped);
+                            if (blnDoEquipped)
+                                objNewItem.ChangeEquippedStatus(true);
                         }
 
-                        this.RefreshMatrixAttributeArray(_objCharacter);
-                        break;
-
-                    case NotifyCollectionChangedAction.Replace:
-                        foreach (Gear objOldItem in e.OldItems)
-                        {
-                            objOldItem.ChangeEquippedStatus(false, !IsModularCurrentlyEquipped);
-                            objOldItem.Parent = null;
-                        }
-
-                        foreach (Gear objNewItem in e.NewItems)
-                        {
-                            objNewItem.Parent = this;
-                            objNewItem.ChangeEquippedStatus(IsModularCurrentlyEquipped);
-                        }
-
-                        this.RefreshMatrixAttributeArray(_objCharacter);
                         break;
 
                     case NotifyCollectionChangedAction.Remove:
                         foreach (Gear objOldItem in e.OldItems)
                         {
-                            objOldItem.ChangeEquippedStatus(false, !IsModularCurrentlyEquipped);
                             objOldItem.Parent = null;
+                            if (blnDoEquipped)
+                                objOldItem.ChangeEquippedStatus(false);
                         }
 
-                        this.RefreshMatrixAttributeArray(_objCharacter);
+                        break;
+
+                    case NotifyCollectionChangedAction.Replace:
+                        foreach (Gear objOldItem in e.OldItems)
+                        {
+                            objOldItem.Parent = null;
+                            if (blnDoEquipped)
+                                objOldItem.ChangeEquippedStatus(false);
+                        }
+
+                        foreach (Gear objNewItem in e.NewItems)
+                        {
+                            objNewItem.Parent = this;
+                            if (blnDoEquipped)
+                                objNewItem.ChangeEquippedStatus(true);
+                        }
+
                         break;
 
                     case NotifyCollectionChangedAction.Reset:
-                        this.RefreshMatrixAttributeArray(_objCharacter);
+                        if (blnDoEquipped)
+                            _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
                         break;
                 }
+                this.RefreshMatrixAttributeArray(_objCharacter);
             }
         }
 
@@ -3777,8 +3839,14 @@ namespace Chummer.Backend.Equipment
 
                 RefreshWirelessBonuses();
 
-                if (!blnSkipEncumbranceOnPropertyChanged && ParentVehicle == null)
-                    _objCharacter?.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
+                if (!blnSkipEncumbranceOnPropertyChanged && ParentVehicle == null && _objCharacter?.IsLoading == false
+                    && (!string.IsNullOrEmpty(Weight)
+                        || GearChildren.DeepAny(x => x.Children, x => !string.IsNullOrEmpty(x.Weight))
+                        || Children.DeepAny(x => x.Children,
+                                            y => !string.IsNullOrEmpty(y.Weight)
+                                                 || y.GearChildren.DeepAny(
+                                                     x => x.Children, x => !string.IsNullOrEmpty(x.Weight)))))
+                    _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
             }
         }
 
@@ -3934,8 +4002,14 @@ namespace Chummer.Backend.Equipment
 
                 await RefreshWirelessBonusesAsync(token).ConfigureAwait(false);
 
-                if (!blnSkipEncumbranceOnPropertyChanged && ParentVehicle == null)
-                    _objCharacter?.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
+                if (!blnSkipEncumbranceOnPropertyChanged && ParentVehicle == null && _objCharacter?.IsLoading == false
+                    && (!string.IsNullOrEmpty(Weight)
+                        || GearChildren.DeepAny(x => x.Children, x => !string.IsNullOrEmpty(x.Weight))
+                        || Children.DeepAny(x => x.Children,
+                                            y => !string.IsNullOrEmpty(y.Weight)
+                                                 || y.GearChildren.DeepAny(
+                                                     x => x.Children, x => !string.IsNullOrEmpty(x.Weight)))))
+                    _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
             }
             finally
             {
