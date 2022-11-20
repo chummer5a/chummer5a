@@ -1633,7 +1633,7 @@ namespace Chummer.Backend.Equipment
                     await objAlternateRangesElement.DisposeAsync().ConfigureAwait(false);
                 }
 
-                Dictionary<string, string> dicRangesNoAmmo = GetRangeStrings(objCulture, false);
+                Dictionary<string, string> dicRangesNoAmmo = await GetRangeStringsAsync(objCulture, false, token).ConfigureAwait(false);
 
                 // <ranges>
                 XmlElementWriteHelper objRangesNoAmmoElement = await objWriter.StartElementAsync("ranges", token).ConfigureAwait(false);
@@ -2998,7 +2998,7 @@ namespace Chummer.Backend.Equipment
                     strDamage += sbdBonusDamage.ToString();
             }
 
-                string strReturn;
+            string strReturn;
             if (!blnDamageReplaced)
             {
                 if (string.IsNullOrEmpty(strDamage))
@@ -5983,8 +5983,8 @@ namespace Chummer.Backend.Equipment
 
                         if (WirelessOn && HasWirelessSmartgun)
                         {
-                            decimal decSmartlinkBonus = ImprovementManager.ValueOf(_objCharacter,
-                                                                                   Improvement.ImprovementType.Smartlink);
+                            decimal decSmartlinkBonus = await ImprovementManager.ValueOfAsync(_objCharacter,
+                                Improvement.ImprovementType.Smartlink, token: token).ConfigureAwait(false);
                             foreach (Gear objLoopGear in ParentVehicle.GearChildren.DeepWhere(x => x.Children,
                                          x => x.Bonus?.InnerXml.Contains("<smartlink>") == true))
                             {
@@ -6069,14 +6069,14 @@ namespace Chummer.Backend.Equipment
                             if (WirelessOn && HasWirelessSmartgun)
                             {
                                 decDicePoolModifier
-                                    += await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Smartlink).ConfigureAwait(false);
+                                    += await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Smartlink, token: token).ConfigureAwait(false);
                             }
 
                             decDicePoolModifier
                                 += await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.WeaponCategoryDice,
-                                                                         false, Category).ConfigureAwait(false);
+                                                                         false, Category, token: token).ConfigureAwait(false);
                             decDicePoolModifier += await ImprovementManager.ValueOfAsync(
-                                _objCharacter, Improvement.ImprovementType.WeaponSpecificDice, false, InternalId).ConfigureAwait(false);
+                                _objCharacter, Improvement.ImprovementType.WeaponSpecificDice, false, InternalId, token: token).ConfigureAwait(false);
 
                             // If the character has a Specialization, include it in the Dice Pool string.
                             if (objSkill.Specializations.Count > 0 && !objSkill.IsExoticSkill)

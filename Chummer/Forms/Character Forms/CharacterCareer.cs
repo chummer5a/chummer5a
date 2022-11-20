@@ -1669,7 +1669,7 @@ namespace Chummer
                         if (e.Cancel)
                             throw new OperationCanceledException();
 
-                        await this.DoThreadSafeAsync(x => x.UseWaitCursor = true, GenericToken);
+                        await this.DoThreadSafeAsync(x => x.UseWaitCursor = true, GenericToken).ConfigureAwait(false);
                         GenericCancellationTokenSource?.Cancel(false);
 
                         // Reset the ToolStrip so the Save button is removed for the currently closing window.
@@ -7708,14 +7708,11 @@ namespace Chummer
                     }
                 }
 
-                if (blnDoRemoveQuality)
+                if (blnDoRemoveQuality && !await RemoveQuality(objSelectedQuality, false, false, GenericToken)
+                        .ConfigureAwait(false))
                 {
-                    if (!await RemoveQuality(objSelectedQuality, false, false, GenericToken)
-                            .ConfigureAwait(false))
-                    {
-                        await UpdateQualityLevelValue(objSelectedQuality, GenericToken)
-                            .ConfigureAwait(false);
-                    }
+                    await UpdateQualityLevelValue(objSelectedQuality, GenericToken)
+                        .ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -18366,8 +18363,8 @@ namespace Chummer
                                 await lblWeaponRangeAlternate
                                       .DoThreadSafeAsync(x => x.Text = strAlternateRange, token)
                                       .ConfigureAwait(false);
-                                Dictionary<string, string> dictionaryRanges
-                                    = objWeapon.GetRangeStrings(GlobalSettings.CultureInfo);
+                                Dictionary<string, string> dicRanges
+                                    = await objWeapon.GetRangeStringsAsync(GlobalSettings.CultureInfo, token: token).ConfigureAwait(false);
                                 await lblWeaponRangeShortLabel
                                       .DoThreadSafeAsync(x => x.Text = objWeapon.RangeModifier("Short"), token)
                                       .ConfigureAwait(false);
@@ -18381,28 +18378,28 @@ namespace Chummer
                                       .DoThreadSafeAsync(x => x.Text = objWeapon.RangeModifier("Extreme"), token)
                                       .ConfigureAwait(false);
                                 await lblWeaponRangeShort
-                                      .DoThreadSafeAsync(x => x.Text = dictionaryRanges["short"], token)
+                                      .DoThreadSafeAsync(x => x.Text = dicRanges["short"], token)
                                       .ConfigureAwait(false);
                                 await lblWeaponRangeMedium
-                                      .DoThreadSafeAsync(x => x.Text = dictionaryRanges["medium"], token)
+                                      .DoThreadSafeAsync(x => x.Text = dicRanges["medium"], token)
                                       .ConfigureAwait(false);
                                 await lblWeaponRangeLong
-                                      .DoThreadSafeAsync(x => x.Text = dictionaryRanges["long"], token)
+                                      .DoThreadSafeAsync(x => x.Text = dicRanges["long"], token)
                                       .ConfigureAwait(false);
                                 await lblWeaponRangeExtreme
-                                      .DoThreadSafeAsync(x => x.Text = dictionaryRanges["extreme"], token)
+                                      .DoThreadSafeAsync(x => x.Text = dicRanges["extreme"], token)
                                       .ConfigureAwait(false);
                                 await lblWeaponAlternateRangeShort
-                                      .DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternateshort"], token)
+                                      .DoThreadSafeAsync(x => x.Text = dicRanges["alternateshort"], token)
                                       .ConfigureAwait(false);
                                 await lblWeaponAlternateRangeMedium
-                                      .DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternatemedium"], token)
+                                      .DoThreadSafeAsync(x => x.Text = dicRanges["alternatemedium"], token)
                                       .ConfigureAwait(false);
                                 await lblWeaponAlternateRangeLong
-                                      .DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternatelong"], token)
+                                      .DoThreadSafeAsync(x => x.Text = dicRanges["alternatelong"], token)
                                       .ConfigureAwait(false);
                                 await lblWeaponAlternateRangeExtreme
-                                      .DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternateextreme"], token)
+                                      .DoThreadSafeAsync(x => x.Text = dicRanges["alternateextreme"], token)
                                       .ConfigureAwait(false);
                             }
                             else
@@ -21768,8 +21765,8 @@ namespace Chummer
                                 await lblVehicleWeaponRangeAlternate
                                       .DoThreadSafeAsync(x => x.Text = strAlternateRange, token)
                                       .ConfigureAwait(false);
-                                Dictionary<string, string> dictionaryRanges
-                                    = objWeapon.GetRangeStrings(GlobalSettings.CultureInfo);
+                                Dictionary<string, string> dicRanges
+                                    = await objWeapon.GetRangeStringsAsync(GlobalSettings.CultureInfo, token: token).ConfigureAwait(false);
                                 await lblVehicleWeaponRangeShortLabel
                                       .DoThreadSafeAsync(x => x.Text = objWeapon.RangeModifier("Short"), token)
                                       .ConfigureAwait(false);
@@ -21783,28 +21780,28 @@ namespace Chummer
                                       .DoThreadSafeAsync(x => x.Text = objWeapon.RangeModifier("Extreme"), token)
                                       .ConfigureAwait(false);
                                 await lblVehicleWeaponRangeShort
-                                      .DoThreadSafeAsync(x => x.Text = dictionaryRanges["short"], token)
+                                      .DoThreadSafeAsync(x => x.Text = dicRanges["short"], token)
                                       .ConfigureAwait(false);
                                 await lblVehicleWeaponRangeMedium
-                                      .DoThreadSafeAsync(x => x.Text = dictionaryRanges["medium"], token)
+                                      .DoThreadSafeAsync(x => x.Text = dicRanges["medium"], token)
                                       .ConfigureAwait(false);
                                 await lblVehicleWeaponRangeLong
-                                      .DoThreadSafeAsync(x => x.Text = dictionaryRanges["long"], token)
+                                      .DoThreadSafeAsync(x => x.Text = dicRanges["long"], token)
                                       .ConfigureAwait(false);
                                 await lblVehicleWeaponRangeExtreme
-                                      .DoThreadSafeAsync(x => x.Text = dictionaryRanges["extreme"], token)
+                                      .DoThreadSafeAsync(x => x.Text = dicRanges["extreme"], token)
                                       .ConfigureAwait(false);
                                 await lblVehicleWeaponAlternateRangeShort
-                                      .DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternateshort"], token)
+                                      .DoThreadSafeAsync(x => x.Text = dicRanges["alternateshort"], token)
                                       .ConfigureAwait(false);
                                 await lblVehicleWeaponAlternateRangeMedium
-                                      .DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternatemedium"], token)
+                                      .DoThreadSafeAsync(x => x.Text = dicRanges["alternatemedium"], token)
                                       .ConfigureAwait(false);
                                 await lblVehicleWeaponAlternateRangeLong
-                                      .DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternatelong"], token)
+                                      .DoThreadSafeAsync(x => x.Text = dicRanges["alternatelong"], token)
                                       .ConfigureAwait(false);
                                 await lblVehicleWeaponAlternateRangeExtreme
-                                      .DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternateextreme"], token)
+                                      .DoThreadSafeAsync(x => x.Text = dicRanges["alternateextreme"], token)
                                       .ConfigureAwait(false);
                                 await lblVehicleWeaponRCLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                              .ConfigureAwait(false);

@@ -1478,7 +1478,7 @@ namespace Chummer
                         if (e.Cancel)
                             throw new OperationCanceledException();
 
-                        await this.DoThreadSafeAsync(x => x.UseWaitCursor = true, GenericToken);
+                        await this.DoThreadSafeAsync(x => x.UseWaitCursor = true, GenericToken).ConfigureAwait(false);
                         GenericCancellationTokenSource?.Cancel(false);
 
                         // Reset the ToolStrip so the Save button is removed for the currently closing window.
@@ -5242,138 +5242,117 @@ namespace Chummer
                 XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("qualities.xml", token: GenericToken)
                                                                   .ConfigureAwait(false);
 
+                CursorWait objCursorWait
+                    = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
+                try
                 {
-                    CursorWait objCursorWait
-                        = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
-                    try
+                    bool blnAddAgain;
+                    do
                     {
-                        bool blnAddAgain;
-                        do
+                        using (ThreadSafeForm<SelectQuality> frmPickQuality = await ThreadSafeForm<SelectQuality>
+                                   .GetAsync(() => new SelectQuality(CharacterObject), GenericToken)
+                                   .ConfigureAwait(false))
                         {
-                            using (ThreadSafeForm<SelectQuality> frmPickQuality = await ThreadSafeForm<SelectQuality>
-                                       .GetAsync(() => new SelectQuality(CharacterObject), GenericToken)
-                                       .ConfigureAwait(false))
+                            // Don't do anything else if the form was canceled.
+                            if (await frmPickQuality.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
+                                == DialogResult.Cancel)
+                                break;
+
+                            blnAddAgain = frmPickQuality.MyForm.AddAgain;
+                            int intRatingToAdd = frmPickQuality.MyForm.SelectedRating;
+                            string strSelectedQuality = frmPickQuality.MyForm.SelectedQuality;
+                            XmlNode objXmlQuality = objXmlDocument.SelectSingleNode(
+                                "/chummer/qualities/quality[id = " + strSelectedQuality.CleanXPath() + ']');
+                            int intDummy = 0;
+                            if (objXmlQuality != null && objXmlQuality["nolevels"] == null
+                                                      && objXmlQuality.TryGetInt32FieldQuickly(
+                                                          "limit", ref intDummy))
                             {
-                                // Don't do anything else if the form was canceled.
-                                if (await frmPickQuality.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
-                                    == DialogResult.Cancel)
-                                    break;
+                                intRatingToAdd -= await CharacterObject.Qualities.CountAsync(x =>
+                                    x.SourceIDString.Equals(
+                                        strSelectedQuality,
+                                        StringComparison
+                                            .OrdinalIgnoreCase)
+                                    && string.IsNullOrEmpty(
+                                        x.SourceName), GenericToken).ConfigureAwait(false);
+                            }
 
-                                blnAddAgain = frmPickQuality.MyForm.AddAgain;
-                                int intRatingToAdd = frmPickQuality.MyForm.SelectedRating;
-                                string strSelectedQuality = frmPickQuality.MyForm.SelectedQuality;
-                                XmlNode objXmlQuality = objXmlDocument.SelectSingleNode(
-                                    "/chummer/qualities/quality[id = " + strSelectedQuality.CleanXPath() + ']');
-                                int intDummy = 0;
-                                if (objXmlQuality != null && objXmlQuality["nolevels"] == null
-                                                          && objXmlQuality.TryGetInt32FieldQuickly(
-                                                              "limit", ref intDummy))
+                            // Helps to capture a write lock here for performance purposes
+                            IAsyncDisposable objLocker = await CharacterObject
+                                                               .LockObject.EnterWriteLockAsync(GenericToken)
+                                                               .ConfigureAwait(false);
+                            try
+                            {
+                                for (int i = 1; i <= intRatingToAdd; ++i)
                                 {
-                                    intRatingToAdd -= await CharacterObject.Qualities.CountAsync(x =>
-                                        x.SourceIDString.Equals(
-                                            strSelectedQuality,
-                                            StringComparison
-                                                .OrdinalIgnoreCase)
-                                        && string.IsNullOrEmpty(
-                                            x.SourceName), GenericToken).ConfigureAwait(false);
-                                }
-
-                                // Helps to capture a write lock here for performance purposes
-                                IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterWriteLockAsync(GenericToken)
-                                    .ConfigureAwait(false);
-                                try
-                                {
-                                    for (int i = 1; i <= intRatingToAdd; ++i)
+                                    List<Weapon> lstWeapons = new List<Weapon>(1);
+                                    Quality objQuality = new Quality(CharacterObject);
+                                    try
                                     {
-                                        List<Weapon> lstWeapons = new List<Weapon>(1);
-                                        Quality objQuality = new Quality(CharacterObject);
-                                        try
+                                        objQuality.Create(objXmlQuality, QualitySource.Selected, lstWeapons);
+                                        if (objQuality.InternalId.IsEmptyGuid())
                                         {
-                                            objQuality.Create(objXmlQuality, QualitySource.Selected, lstWeapons);
-                                            if (objQuality.InternalId.IsEmptyGuid())
+                                            // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
+                                            await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
+                                                Improvement.ImprovementSource.Quality,
+                                                objQuality.InternalId).ConfigureAwait(false);
+                                            await objQuality.DisposeAsync().ConfigureAwait(false);
+                                            break;
+                                        }
+
+                                        if (frmPickQuality.MyForm.FreeCost)
+                                            objQuality.BP = 0;
+
+                                        // Make sure that adding the Quality would not cause the character to exceed their BP limits.
+                                        bool blnAddItem = true;
+                                        if (objQuality.ContributeToLimit && !CharacterObject.IgnoreRules)
+                                        {
+                                            // If the item being checked would cause the limit of 25 BP spent on Positive Qualities to be exceed, do not let it be checked and display a message.
+                                            int intMaxQualityAmount = CharacterObjectSettings.QualityKarmaLimit;
+                                            string strAmount =
+                                                CharacterObjectSettings.QualityKarmaLimit.ToString(
+                                                    GlobalSettings.CultureInfo) +
+                                                await LanguageManager.GetStringAsync("String_Space")
+                                                                     .ConfigureAwait(false) +
+                                                await LanguageManager.GetStringAsync("String_Karma")
+                                                                     .ConfigureAwait(false);
+
+                                            // Add the cost of the Quality that is being added.
+                                            int intBP = objQuality.BP;
+
+                                            if (objQuality.Type == QualityType.Negative)
                                             {
-                                                // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
-                                                await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
-                                                    Improvement.ImprovementSource.Quality,
-                                                    objQuality.InternalId).ConfigureAwait(false);
-                                                await objQuality.DisposeAsync().ConfigureAwait(false);
-                                                break;
-                                            }
-
-                                            if (frmPickQuality.MyForm.FreeCost)
-                                                objQuality.BP = 0;
-
-                                            // Make sure that adding the Quality would not cause the character to exceed their BP limits.
-                                            bool blnAddItem = true;
-                                            if (objQuality.ContributeToLimit && !CharacterObject.IgnoreRules)
-                                            {
-                                                // If the item being checked would cause the limit of 25 BP spent on Positive Qualities to be exceed, do not let it be checked and display a message.
-                                                int intMaxQualityAmount = CharacterObjectSettings.QualityKarmaLimit;
-                                                string strAmount =
-                                                    CharacterObjectSettings.QualityKarmaLimit.ToString(
-                                                        GlobalSettings.CultureInfo) +
-                                                    await LanguageManager.GetStringAsync("String_Space")
-                                                                         .ConfigureAwait(false) +
-                                                    await LanguageManager.GetStringAsync("String_Karma")
-                                                                         .ConfigureAwait(false);
-
-                                                // Add the cost of the Quality that is being added.
-                                                int intBP = objQuality.BP;
-
-                                                if (objQuality.Type == QualityType.Negative)
-                                                {
-                                                    // Check if adding this Quality would put the character over their limit.
-                                                    if (!CharacterObjectSettings.ExceedNegativeQualities)
-                                                    {
-                                                        intBP += CharacterObject.NegativeQualityLimitKarma;
-                                                        if (intBP < intMaxQualityAmount * -1)
-                                                        {
-                                                            Program.ShowMessageBox(this,
-                                                                string.Format(GlobalSettings.CultureInfo,
-                                                                              await LanguageManager.GetStringAsync(
-                                                                                      "Message_NegativeQualityLimit")
-                                                                                  .ConfigureAwait(false),
-                                                                              strAmount),
-                                                                await LanguageManager.GetStringAsync(
-                                                                        "MessageTitle_NegativeQualityLimit")
-                                                                    .ConfigureAwait(false),
-                                                                MessageBoxButtons.OK,
-                                                                MessageBoxIcon.Information);
-                                                            blnAddItem = false;
-                                                        }
-                                                        else if (CharacterObject.MetatypeBP < 0
-                                                                 && intBP + CharacterObject.MetatypeBP
-                                                                 < intMaxQualityAmount * -1)
-                                                        {
-                                                            Program.ShowMessageBox(this,
-                                                                string.Format(GlobalSettings.CultureInfo,
-                                                                              await LanguageManager.GetStringAsync(
-                                                                                      "Message_NegativeQualityAndMetatypeLimit")
-                                                                                  .ConfigureAwait(false),
-                                                                              strAmount),
-                                                                await LanguageManager.GetStringAsync(
-                                                                        "MessageTitle_NegativeQualityLimit")
-                                                                    .ConfigureAwait(false),
-                                                                MessageBoxButtons.OK,
-                                                                MessageBoxIcon.Information);
-                                                            blnAddItem = false;
-                                                        }
-                                                    }
-                                                }
                                                 // Check if adding this Quality would put the character over their limit.
-                                                else if (!CharacterObjectSettings.ExceedPositiveQualities)
+                                                if (!CharacterObjectSettings.ExceedNegativeQualities)
                                                 {
-                                                    intBP += CharacterObject.PositiveQualityLimitKarma;
-                                                    if (intBP > intMaxQualityAmount)
+                                                    intBP += CharacterObject.NegativeQualityLimitKarma;
+                                                    if (intBP < intMaxQualityAmount * -1)
                                                     {
                                                         Program.ShowMessageBox(this,
                                                                                string.Format(GlobalSettings.CultureInfo,
                                                                                    await LanguageManager.GetStringAsync(
-                                                                                           "Message_PositiveQualityLimit")
+                                                                                           "Message_NegativeQualityLimit")
                                                                                        .ConfigureAwait(false),
                                                                                    strAmount),
                                                                                await LanguageManager.GetStringAsync(
-                                                                                       "MessageTitle_PositiveQualityLimit")
+                                                                                       "MessageTitle_NegativeQualityLimit")
+                                                                                   .ConfigureAwait(false),
+                                                                               MessageBoxButtons.OK,
+                                                                               MessageBoxIcon.Information);
+                                                        blnAddItem = false;
+                                                    }
+                                                    else if (CharacterObject.MetatypeBP < 0
+                                                             && intBP + CharacterObject.MetatypeBP
+                                                             < intMaxQualityAmount * -1)
+                                                    {
+                                                        Program.ShowMessageBox(this,
+                                                                               string.Format(GlobalSettings.CultureInfo,
+                                                                                   await LanguageManager.GetStringAsync(
+                                                                                           "Message_NegativeQualityAndMetatypeLimit")
+                                                                                       .ConfigureAwait(false),
+                                                                                   strAmount),
+                                                                               await LanguageManager.GetStringAsync(
+                                                                                       "MessageTitle_NegativeQualityLimit")
                                                                                    .ConfigureAwait(false),
                                                                                MessageBoxButtons.OK,
                                                                                MessageBoxIcon.Information);
@@ -5381,46 +5360,66 @@ namespace Chummer
                                                     }
                                                 }
                                             }
-
-                                            if (blnAddItem)
+                                            // Check if adding this Quality would put the character over their limit.
+                                            else if (!CharacterObjectSettings.ExceedPositiveQualities)
                                             {
-                                                await CharacterObject.Qualities.AddAsync(objQuality)
-                                                                     .ConfigureAwait(false);
-
-                                                // Add any created Weapons to the character.
-                                                foreach (Weapon objWeapon in lstWeapons)
+                                                intBP += CharacterObject.PositiveQualityLimitKarma;
+                                                if (intBP > intMaxQualityAmount)
                                                 {
-                                                    await CharacterObject.Weapons.AddAsync(objWeapon)
-                                                                         .ConfigureAwait(false);
+                                                    Program.ShowMessageBox(this,
+                                                                           string.Format(GlobalSettings.CultureInfo,
+                                                                               await LanguageManager.GetStringAsync(
+                                                                                       "Message_PositiveQualityLimit")
+                                                                                   .ConfigureAwait(false),
+                                                                               strAmount),
+                                                                           await LanguageManager.GetStringAsync(
+                                                                                   "MessageTitle_PositiveQualityLimit")
+                                                                               .ConfigureAwait(false),
+                                                                           MessageBoxButtons.OK,
+                                                                           MessageBoxIcon.Information);
+                                                    blnAddItem = false;
                                                 }
                                             }
-                                            else
+                                        }
+
+                                        if (blnAddItem)
+                                        {
+                                            await CharacterObject.Qualities.AddAsync(objQuality)
+                                                                 .ConfigureAwait(false);
+
+                                            // Add any created Weapons to the character.
+                                            foreach (Weapon objWeapon in lstWeapons)
                                             {
-                                                // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
-                                                await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
-                                                    Improvement.ImprovementSource.Quality,
-                                                    objQuality.InternalId).ConfigureAwait(false);
-                                                await objQuality.DisposeAsync().ConfigureAwait(false);
-                                                break;
+                                                await CharacterObject.Weapons.AddAsync(objWeapon)
+                                                                     .ConfigureAwait(false);
                                             }
                                         }
-                                        catch
+                                        else
                                         {
+                                            // If the Quality could not be added, remove the Improvements that were added during the Quality Creation process.
+                                            await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
+                                                Improvement.ImprovementSource.Quality,
+                                                objQuality.InternalId).ConfigureAwait(false);
                                             await objQuality.DisposeAsync().ConfigureAwait(false);
+                                            break;
                                         }
                                     }
-                                }
-                                finally
-                                {
-                                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                                    catch
+                                    {
+                                        await objQuality.DisposeAsync().ConfigureAwait(false);
+                                    }
                                 }
                             }
-                        } while (blnAddAgain);
-                    }
-                    finally
-                    {
-                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                    }
+                            finally
+                            {
+                                await objLocker.DisposeAsync().ConfigureAwait(false);
+                            }
+                        }
+                    } while (blnAddAgain);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -9206,14 +9205,11 @@ namespace Chummer
                     }
                 }
 
-                if (blnDoRemoveQuality)
+                if (blnDoRemoveQuality && !await RemoveQuality(objSelectedQuality, false, false, GenericToken)
+                        .ConfigureAwait(false))
                 {
-                    if (!await RemoveQuality(objSelectedQuality, false, false, GenericToken)
-                            .ConfigureAwait(false))
-                    {
-                        await UpdateQualityLevelValue(objSelectedQuality, GenericToken)
-                            .ConfigureAwait(false);
-                    }
+                    await UpdateQualityLevelValue(objSelectedQuality, GenericToken)
+                        .ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -14057,8 +14053,8 @@ namespace Chummer
                                 await lblWeaponRangeAlternate
                                       .DoThreadSafeAsync(x => x.Text = objWeapon.CurrentDisplayAlternateRange, token)
                                       .ConfigureAwait(false);
-                                Dictionary<string, string> dictionaryRanges
-                                    = objWeapon.GetRangeStrings(GlobalSettings.CultureInfo);
+                                Dictionary<string, string> dicRanges
+                                    = await objWeapon.GetRangeStringsAsync(GlobalSettings.CultureInfo, token: token).ConfigureAwait(false);
                                 await lblWeaponRangeShortLabel
                                       .DoThreadSafeAsync(x => x.Text = objWeapon.RangeModifier("Short"), token)
                                       .ConfigureAwait(false);
@@ -14072,28 +14068,28 @@ namespace Chummer
                                       .DoThreadSafeAsync(x => x.Text = objWeapon.RangeModifier("Extreme"), token)
                                       .ConfigureAwait(false);
                                 await lblWeaponRangeShort
-                                      .DoThreadSafeAsync(x => x.Text = dictionaryRanges["short"], token)
+                                      .DoThreadSafeAsync(x => x.Text = dicRanges["short"], token)
                                       .ConfigureAwait(false);
                                 await lblWeaponRangeMedium
-                                      .DoThreadSafeAsync(x => x.Text = dictionaryRanges["medium"], token)
+                                      .DoThreadSafeAsync(x => x.Text = dicRanges["medium"], token)
                                       .ConfigureAwait(false);
                                 await lblWeaponRangeLong
-                                      .DoThreadSafeAsync(x => x.Text = dictionaryRanges["long"], token)
+                                      .DoThreadSafeAsync(x => x.Text = dicRanges["long"], token)
                                       .ConfigureAwait(false);
                                 await lblWeaponRangeExtreme
-                                      .DoThreadSafeAsync(x => x.Text = dictionaryRanges["extreme"], token)
+                                      .DoThreadSafeAsync(x => x.Text = dicRanges["extreme"], token)
                                       .ConfigureAwait(false);
                                 await lblWeaponAlternateRangeShort
-                                      .DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternateshort"], token)
+                                      .DoThreadSafeAsync(x => x.Text = dicRanges["alternateshort"], token)
                                       .ConfigureAwait(false);
                                 await lblWeaponAlternateRangeMedium
-                                      .DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternatemedium"], token)
+                                      .DoThreadSafeAsync(x => x.Text = dicRanges["alternatemedium"], token)
                                       .ConfigureAwait(false);
                                 await lblWeaponAlternateRangeLong
-                                      .DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternatelong"], token)
+                                      .DoThreadSafeAsync(x => x.Text = dicRanges["alternatelong"], token)
                                       .ConfigureAwait(false);
                                 await lblWeaponAlternateRangeExtreme
-                                      .DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternateextreme"], token)
+                                      .DoThreadSafeAsync(x => x.Text = dicRanges["alternateextreme"], token)
                                       .ConfigureAwait(false);
                             }
                             else
@@ -17389,8 +17385,8 @@ namespace Chummer
                                 await lblVehicleWeaponRangeAlternate
                                       .DoThreadSafeAsync(x => x.Text = objWeapon.CurrentDisplayAlternateRange, token)
                                       .ConfigureAwait(false);
-                                Dictionary<string, string> dictionaryRanges
-                                    = objWeapon.GetRangeStrings(GlobalSettings.CultureInfo);
+                                Dictionary<string, string> dicRanges
+                                    = await objWeapon.GetRangeStringsAsync(GlobalSettings.CultureInfo, token: token).ConfigureAwait(false);
                                 await lblVehicleWeaponRangeShortLabel
                                       .DoThreadSafeAsync(x => x.Text = objWeapon.RangeModifier("Short"), token)
                                       .ConfigureAwait(false);
@@ -17404,28 +17400,28 @@ namespace Chummer
                                       .DoThreadSafeAsync(x => x.Text = objWeapon.RangeModifier("Extreme"), token)
                                       .ConfigureAwait(false);
                                 await lblVehicleWeaponRangeShort
-                                      .DoThreadSafeAsync(x => x.Text = dictionaryRanges["short"], token)
+                                      .DoThreadSafeAsync(x => x.Text = dicRanges["short"], token)
                                       .ConfigureAwait(false);
                                 await lblVehicleWeaponRangeMedium
-                                      .DoThreadSafeAsync(x => x.Text = dictionaryRanges["medium"], token)
+                                      .DoThreadSafeAsync(x => x.Text = dicRanges["medium"], token)
                                       .ConfigureAwait(false);
                                 await lblVehicleWeaponRangeLong
-                                      .DoThreadSafeAsync(x => x.Text = dictionaryRanges["long"], token)
+                                      .DoThreadSafeAsync(x => x.Text = dicRanges["long"], token)
                                       .ConfigureAwait(false);
                                 await lblVehicleWeaponRangeExtreme
-                                      .DoThreadSafeAsync(x => x.Text = dictionaryRanges["extreme"], token)
+                                      .DoThreadSafeAsync(x => x.Text = dicRanges["extreme"], token)
                                       .ConfigureAwait(false);
                                 await lblVehicleWeaponAlternateRangeShort
-                                      .DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternateshort"], token)
+                                      .DoThreadSafeAsync(x => x.Text = dicRanges["alternateshort"], token)
                                       .ConfigureAwait(false);
                                 await lblVehicleWeaponAlternateRangeMedium
-                                      .DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternatemedium"], token)
+                                      .DoThreadSafeAsync(x => x.Text = dicRanges["alternatemedium"], token)
                                       .ConfigureAwait(false);
                                 await lblVehicleWeaponAlternateRangeLong
-                                      .DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternatelong"], token)
+                                      .DoThreadSafeAsync(x => x.Text = dicRanges["alternatelong"], token)
                                       .ConfigureAwait(false);
                                 await lblVehicleWeaponAlternateRangeExtreme
-                                      .DoThreadSafeAsync(x => x.Text = dictionaryRanges["alternateextreme"], token)
+                                      .DoThreadSafeAsync(x => x.Text = dicRanges["alternateextreme"], token)
                                       .ConfigureAwait(false);
                                 await lblVehicleWeaponReach.DoThreadSafeAsync(x => x.Visible = false, token)
                                                            .ConfigureAwait(false);
