@@ -33,7 +33,6 @@ namespace Chummer.UI.Powers
             this.cboDisplayFilter = new Chummer.ElasticComboBox();
             this.lblPowerPoints = new System.Windows.Forms.Label();
             this.lblPowerPointsLabel = new System.Windows.Forms.Label();
-            this._tipTooltip = new System.Windows.Forms.ToolTip(this.components);
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.pnlPowers = new System.Windows.Forms.Panel();
             this.tlpMain.SuspendLayout();
@@ -90,15 +89,6 @@ namespace Chummer.UI.Powers
             this.lblPowerPointsLabel.TabIndex = 8;
             this.lblPowerPointsLabel.Tag = "Label_PowerPoints";
             this.lblPowerPointsLabel.Text = "Power Points:";
-            // 
-            // _tipTooltip
-            // 
-            this._tipTooltip.AutoPopDelay = 10000;
-            this._tipTooltip.InitialDelay = 250;
-            this._tipTooltip.IsBalloon = true;
-            this._tipTooltip.ReshowDelay = 100;
-            this._tipTooltip.ToolTipIcon = System.Windows.Forms.ToolTipIcon.Info;
-            this._tipTooltip.ToolTipTitle = "Chummer Help";
             // 
             // tlpMain
             // 
@@ -160,7 +150,6 @@ namespace Chummer.UI.Powers
         private ElasticComboBox cboDisplayFilter;
         private System.Windows.Forms.Label lblPowerPoints;
         private System.Windows.Forms.Label lblPowerPointsLabel;
-        private System.Windows.Forms.ToolTip _tipTooltip;
         private System.Windows.Forms.TableLayoutPanel tlpMain;
         private System.Windows.Forms.Panel pnlPowers;
     }

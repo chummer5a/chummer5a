@@ -25,6 +25,7 @@ using System.Threading;
 using System.Windows.Forms;
 using System.Xml.XPath;
 using NLog;
+using TheArtOfDev.HtmlRenderer.WinForms;
 using Timer = System.Windows.Forms.Timer;
 
 namespace Chummer
@@ -44,9 +45,20 @@ namespace Chummer
         private Point _oldMousePos = new Point(-1, -1);
         private Character _characterObject;
 
-        private readonly ToolTip _myToolTip = new ToolTip
+        private readonly HtmlToolTip _myToolTip = new HtmlToolTip
         {
-            IsBalloon = true
+            AllowLinksHandling = true,
+            AutoPopDelay = 3600000,
+            BaseStylesheet = null,
+            InitialDelay = 250,
+            IsBalloon = true,
+            MaximumSize = new Size(0, 0),
+            OwnerDraw = true,
+            ReshowDelay = 100,
+            TooltipCssClass = "htmltooltip",
+            UseGdiPlusTextRendering = true,
+            //UseAnimation = true,
+            //UseFading = true
         };
 
         public Chummy(Character objCharacter)
@@ -80,7 +92,7 @@ namespace Chummer
                 tmrTip.Start();
             }
 
-            _myToolTip.Show(LanguageManager.GetString("Chummy_Intro").WordWrap(), this, _mouthCenter);
+            _myToolTip.Show(LanguageManager.GetString("Chummy_Intro").WordWrap().CleanForHtml(), this, _mouthCenter);
             _objXmlDocument = (objCharacter?.LoadDataXPath("tips.xml") ?? XmlManager.LoadXPath("tips.xml")).SelectSingleNodeAndCacheExpression("/chummer/tips");
         }
 
@@ -214,7 +226,7 @@ namespace Chummer
 
         private void ShowBalloonTip()
         {
-            _myToolTip.Show(HelpfulAdvice().WordWrap(), this, _mouthCenter);
+            _myToolTip.Show(HelpfulAdvice().WordWrap().CleanForHtml(), this, _mouthCenter);
         }
 
         private void HideBalloonTip()

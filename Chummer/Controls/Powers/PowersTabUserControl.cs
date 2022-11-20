@@ -407,8 +407,7 @@ namespace Chummer.UI.Powers
         {
             _table = this.DoThreadSafeFunc(() => new TableView<Power>
             {
-                Dock = DockStyle.Top,
-                ToolTip = _tipTooltip
+                Dock = DockStyle.Top
             });
             Disposed += (sender, args) => _table.Dispose();
             // create columns
@@ -763,7 +762,22 @@ namespace Chummer.UI.Powers
                         },
                         EnabledExtractor = (p => p.FreeLevels == 0)
                     };
-                }));
+                })
+            {
+                Text = string.Empty,
+                ToolTipExtractor = async p =>
+                {
+                    try
+                    {
+                        return (await LanguageManager.GetStringAsync("String_Delete", token: MyToken).ConfigureAwait(false))
+                            .WordWrap();
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        return string.Empty;
+                    }
+                }
+            });
             deleteColumn.AddDependency(nameof(Power.FreeLevels));
 
             TableColumn<Power> reapplyImprovementsColumn = this.DoThreadSafeFunc(() => new TableColumn<Power>(

@@ -327,15 +327,11 @@ namespace Chummer.UI.Table
             object objNewValue = funcExtractor == null ? item : await funcExtractor(item).ConfigureAwait(false);
             await cell.DoThreadSafeAsync(x => x.UpdateValue(objNewValue), token).ConfigureAwait(false);
             Func<T, Task<string>> funcTooltipExtractor = column.ToolTipExtractor;
-            ToolTip tooltip = ToolTip;
-            if (tooltip != null && funcTooltipExtractor != null)
+            if (funcTooltipExtractor != null)
             {
                 Control content = await cell.DoThreadSafeFuncAsync(x => x.Content, token: token).ConfigureAwait(false);
-                string strText = (await funcTooltipExtractor(item).ConfigureAwait(false)).CleanForHtml();
-                if (content != null)
-                    await content.DoThreadSafeAsync(x => tooltip.SetToolTip(x, strText), token).ConfigureAwait(false);
-                else
-                    await cell.DoThreadSafeAsync(x => tooltip.SetToolTip(x, strText), token).ConfigureAwait(false);
+                string strText = await funcTooltipExtractor(item).ConfigureAwait(false);
+                await (content ?? cell).SetToolTipAsync(strText, token).ConfigureAwait(false);
             }
         }
 
@@ -851,7 +847,5 @@ namespace Chummer.UI.Table
                     Sort();
             }
         }
-
-        public ToolTip ToolTip { get; set; }
     }
 }

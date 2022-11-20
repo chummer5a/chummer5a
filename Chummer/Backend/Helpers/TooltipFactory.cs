@@ -38,6 +38,7 @@ namespace Chummer
             OwnerDraw = true,
             ReshowDelay = 100,
             TooltipCssClass = "htmltooltip",
+            UseGdiPlusTextRendering = true,
             //UseAnimation = true,
             //UseFading = true
         };
