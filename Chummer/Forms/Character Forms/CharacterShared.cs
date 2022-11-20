@@ -2941,21 +2941,20 @@ namespace Chummer
                     {
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                         if (funcOffset != null)
-                            intNewIndex += funcOffset.Invoke();
+                            Interlocked.Add(ref intNewIndex, funcOffset.Invoke());
                         await treSelected.DoThreadSafeAsync(x =>
                         {
                             foreach (Location objLocation in notifyCollectionChangedEventArgs.NewItems)
                             {
+                                int index = Interlocked.Increment(ref intNewIndex) - 1;
                                 if (rootSibling)
                                 {
-                                    x.Nodes.Insert(intNewIndex, objLocation.CreateTreeNode(cmsLocation));
+                                    x.Nodes.Insert(index, objLocation.CreateTreeNode(cmsLocation));
                                 }
                                 else
                                 {
-                                    nodRoot.Nodes.Insert(intNewIndex, objLocation.CreateTreeNode(cmsLocation));
+                                    nodRoot.Nodes.Insert(index, objLocation.CreateTreeNode(cmsLocation));
                                 }
-
-                                ++intNewIndex;
                             }
                         }, token).ConfigureAwait(false);
                     }
@@ -3021,7 +3020,7 @@ namespace Chummer
                                     }, token).ConfigureAwait(false);
                                 }
 
-                                ++intNewItemsIndex;
+                                Interlocked.Increment(ref intNewItemsIndex);
                             }
                         }
                     }
@@ -3045,7 +3044,7 @@ namespace Chummer
 
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
                         if (funcOffset != null)
-                            intNewIndex += funcOffset.Invoke();
+                            Interlocked.Add(ref intNewIndex, funcOffset.Invoke());
                         foreach (Location objLocation in notifyCollectionChangedEventArgs.NewItems)
                         {
                             Tuple<Location, TreeNode> objLocationTuple =
@@ -7304,8 +7303,9 @@ namespace Chummer
         /// </summary>
         /// <param name="objNode">The item to move</param>
         /// <param name="intNewIndex">The new index in the parent array</param>
+        /// <param name="blnRetainTopLevelOrder">Whether we should retain the order of the top-level nodes when we sort the entire tree. Necessary if the top-level nodes are not based around ICanSort stuff</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async Task MoveTreeNode(TreeNode objNode, int intNewIndex, CancellationToken token = default)
+        public async Task MoveTreeNode(TreeNode objNode, int intNewIndex, bool blnRetainTopLevelOrder, CancellationToken token = default)
         {
             if (!(objNode?.Tag is ICanSort objSortable))
                 return;
@@ -7340,7 +7340,8 @@ namespace Chummer
 
                 // Sort the actual tree
                 if (treOwningTree != null)
-                    await treOwningTree.DoThreadSafeAsync(x => x.SortCustomOrder(), token).ConfigureAwait(false);
+                    await treOwningTree.DoThreadSafeAsync(x => x.SortCustomOrder(blnRetainTopLevelOrder), token)
+                                       .ConfigureAwait(false);
 
                 await SetDirty(true, token).ConfigureAwait(false);
             }
@@ -8511,12 +8512,14 @@ namespace Chummer
                 }
             }
 
+            bool requireParentSortable = false;
             // Put the weapon in the right location (or lack thereof)
             await treView.DoThreadSafeAsync(() =>
             {
                 switch (eType)
                 {
                     case ItemTreeViewTypes.Misc:
+                        requireParentSortable = true;
                         break;
                     case ItemTreeViewTypes.Weapons:
                     {
@@ -8580,7 +8583,7 @@ namespace Chummer
             }, token).ConfigureAwait(false);
 
             // Put the weapon in the right order in the tree
-            await MoveTreeNode(await treView.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objSelected.Tag), token).ConfigureAwait(false), intNewIndex, token).ConfigureAwait(false);
+            await MoveTreeNode(await treView.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objSelected.Tag), token).ConfigureAwait(false), intNewIndex, requireParentSortable, token).ConfigureAwait(false);
 
             await treView.DoThreadSafeAsync(x =>
             {

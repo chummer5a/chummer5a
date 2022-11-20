@@ -14190,9 +14190,7 @@ namespace Chummer
                 if (objCheckNode == objGearNode)
                     return;
             if (!(objGearNode.Tag is Gear objGear))
-            {
                 return;
-            }
 
             // Gear cannot be moved to one if its children.
             bool blnAllowMove = true;
@@ -14283,7 +14281,7 @@ namespace Chummer
         /// <param name="nodOldNode">Node of gear location to move.</param>
         public void MoveGearRoot(int intNewIndex, TreeNode objDestination, TreeNode nodOldNode)
         {
-            if (nodOldNode == null)
+            if (!(nodOldNode?.Tag is Location objLocation))
                 return;
             if (objDestination != null)
             {
@@ -14291,13 +14289,9 @@ namespace Chummer
                 while (objNewParent.Level > 0)
                     objNewParent = objNewParent.Parent;
                 intNewIndex = objNewParent.Index;
+                if (!(objNewParent.Tag is Location))
+                    intNewIndex = 0;
             }
-
-            if (intNewIndex == 0)
-                return;
-
-            if (!(nodOldNode.Tag is Location objLocation))
-                return;
             GearLocations.Move(GearLocations.IndexOf(objLocation), intNewIndex);
         }
 
@@ -14318,9 +14312,6 @@ namespace Chummer
                     objNewParent = objNewParent.Parent;
                 intNewIndex = objNewParent.Index;
             }
-
-            if (intNewIndex == 0)
-                return;
 
             if (!(nodLifestyleNode.Tag is Lifestyle objLifestyle))
                 return;
@@ -14371,7 +14362,7 @@ namespace Chummer
         /// <param name="nodOldNode">Node of armor location to move.</param>
         public void MoveArmorRoot(int intNewIndex, TreeNode objDestination, TreeNode nodOldNode)
         {
-            if (nodOldNode == null)
+            if (!(nodOldNode?.Tag is Location objLocation))
                 return;
             if (objDestination != null)
             {
@@ -14379,13 +14370,9 @@ namespace Chummer
                 while (objNewParent.Level > 0)
                     objNewParent = objNewParent.Parent;
                 intNewIndex = objNewParent.Index;
+                if (!(objNewParent.Tag is Location))
+                    intNewIndex = 0;
             }
-
-            if (intNewIndex == 0)
-                return;
-
-            if (!(nodOldNode.Tag is Location objLocation))
-                return;
             ArmorLocations.Move(ArmorLocations.IndexOf(objLocation), intNewIndex);
         }
 
@@ -14433,7 +14420,7 @@ namespace Chummer
         /// <param name="nodOldNode">Node of weapon location to move.</param>
         public void MoveWeaponRoot(int intNewIndex, TreeNode objDestination, TreeNode nodOldNode)
         {
-            if (nodOldNode == null)
+            if (!(nodOldNode?.Tag is Location objLocation))
                 return;
             if (objDestination != null)
             {
@@ -14441,13 +14428,9 @@ namespace Chummer
                 while (objNewParent.Level > 0)
                     objNewParent = objNewParent.Parent;
                 intNewIndex = objNewParent.Index;
+                if (!(objNewParent.Tag is Location))
+                    intNewIndex = 0;
             }
-
-            if (intNewIndex == 0)
-                return;
-
-            if (!(nodOldNode.Tag is Location objLocation))
-                return;
             WeaponLocations.Move(WeaponLocations.IndexOf(objLocation), intNewIndex);
         }
 
@@ -14613,10 +14596,9 @@ namespace Chummer
                 while (objNewParent.Level > 0)
                     objNewParent = objNewParent.Parent;
                 intNewIndex = objNewParent.Index;
+                if (!ImprovementGroups.Contains(objNewParent.Tag?.ToString()))
+                    intNewIndex = 0;
             }
-
-            if (intNewIndex == 0)
-                return;
 
             string strLocation = nodOldNode.Tag.ToString();
             ImprovementGroups.Move(ImprovementGroups.IndexOf(strLocation), intNewIndex);

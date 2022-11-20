@@ -1142,10 +1142,10 @@ namespace Chummer
                                     await treGear.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken).ConfigureAwait(false);
                                     await treLifestyles.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken).ConfigureAwait(false);
                                     await treCustomDrugs.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken).ConfigureAwait(false);
-                                    await treCyberware.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken).ConfigureAwait(false);
+                                    await treCyberware.DoThreadSafeAsync(x => x.SortCustomOrder(true), GenericToken).ConfigureAwait(false);
                                     await treVehicles.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken).ConfigureAwait(false);
                                     await treCritterPowers.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken).ConfigureAwait(false);
-                                    await treImprovements.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken).ConfigureAwait(false);
+                                    await treImprovements.DoThreadSafeAsync(x => x.SortCustomOrder(true), GenericToken).ConfigureAwait(false);
 
                                     // Set up events that would change various lists
                                     CharacterObject.Spells.CollectionChanged += SpellCollectionChanged;
@@ -2680,9 +2680,10 @@ namespace Chummer
                                         treGear.SortCustomOrder();
                                         treLifestyles.SortCustomOrder();
                                         treCustomDrugs.SortCustomOrder();
-                                        treCyberware.SortCustomOrder();
+                                        treCyberware.SortCustomOrder(true);
                                         treVehicles.SortCustomOrder();
                                         treCritterPowers.SortCustomOrder();
+                                        treImprovements.SortCustomOrder(true);
                                     }, GenericToken).ConfigureAwait(false);
 
                                     XPathNavigator xmlTraditionsBaseChummerNode =
@@ -16973,7 +16974,7 @@ namespace Chummer
 
                         try
                         {
-                            Utils.SafelyRunSynchronously(() => MoveTreeNode(objSelectedNode, intNewIndex), GenericToken);
+                            Utils.SafelyRunSynchronously(() => MoveTreeNode(objSelectedNode, intNewIndex, requireParentSortable), GenericToken);
                         }
                         catch (OperationCanceledException)
                         {

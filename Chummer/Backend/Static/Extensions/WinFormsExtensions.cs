@@ -1779,16 +1779,47 @@ namespace Chummer
         /// ICanSorts in the tree
         /// </summary>
         /// <param name="treView">The tree to sort</param>
-        public static void SortCustomOrder(this TreeView treView)
+        /// <param name="blnRetainTopLevelOrder">Whether or not to retain the order of the top level nodes.</param>
+        public static void SortCustomOrder(this TreeView treView, bool blnRetainTopLevelOrder = false)
         {
             if (treView == null)
                 return;
+
             string strSelectedNodeTag = (treView.SelectedNode?.Tag as IHasInternalId)?.InternalId;
 
-            IComparer currentSorter = treView.TreeViewNodeSorter;
-            treView.TreeViewNodeSorter = new CustomNodeSorter();
-            treView.Sort();
-            treView.TreeViewNodeSorter = currentSorter;
+            List<TreeNode> lstOriginalTopLevelOrder = null;
+            if (blnRetainTopLevelOrder)
+            {
+                lstOriginalTopLevelOrder = new List<TreeNode>(treView.Nodes.Count);
+                foreach (TreeNode objNode in treView.Nodes)
+                    lstOriginalTopLevelOrder.Add(objNode);
+            }
+
+            bool blnOldSorted = treView.Sorted;
+            try
+            {
+                IComparer currentSorter = treView.TreeViewNodeSorter;
+                try
+                {
+                    treView.TreeViewNodeSorter = new CustomNodeSorter();
+                    treView.Sort();
+                }
+                finally
+                {
+                    treView.TreeViewNodeSorter = currentSorter;
+                }
+            }
+            finally
+            {
+                treView.Sorted = blnOldSorted;
+            }
+
+            if (lstOriginalTopLevelOrder != null)
+            {
+                treView.Nodes.Clear();
+                foreach (TreeNode objNode in lstOriginalTopLevelOrder)
+                    treView.Nodes.Add(objNode);
+            }
 
             // Reselect whatever was selected before
             TreeNode objSelectedNode = treView.FindNode(strSelectedNodeTag);
@@ -1804,9 +1835,28 @@ namespace Chummer
             public int Compare(object x, object y)
             {
                 // Sort any non-sortables first
-                if (!((x as TreeNode)?.Tag is ICanSort lhs))
-                    return -1;
-                return !((y as TreeNode)?.Tag is ICanSort rhs) ? 1 : lhs.SortOrder.CompareTo(rhs.SortOrder);
+                object objLeft = (x as TreeNode)?.Tag;
+                if (objLeft == null)
+                    return (y as TreeNode)?.Tag == null ? 0 : -1;
+                object objRight = (y as TreeNode)?.Tag;
+                if (objRight == null)
+                    return 1;
+                // Sort by SortOrder, but always put Locations after all non-Locations
+                if (objLeft is ICanSort objLeftCanSort)
+                {
+                    if (!(objRight is ICanSort objRightCanSort))
+                        return 1;
+                    if (objLeft is Location)
+                    {
+                        return objRight is Location
+                            ? objLeftCanSort.SortOrder.CompareTo(objRightCanSort.SortOrder)
+                            : 1;
+                    }
+                    return objRight is Location
+                        ? -1
+                        : objLeftCanSort.SortOrder.CompareTo(objRightCanSort.SortOrder);
+                }
+                return objRight is ICanSort ? -1 : 0;
             }
         }
 

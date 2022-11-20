@@ -1324,7 +1324,7 @@ namespace Chummer
                                                        .ConfigureAwait(false);
                                     await treCustomDrugs.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken)
                                                         .ConfigureAwait(false);
-                                    await treCyberware.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken)
+                                    await treCyberware.DoThreadSafeAsync(x => x.SortCustomOrder(true), GenericToken)
                                                       .ConfigureAwait(false);
                                     await treVehicles.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken)
                                                      .ConfigureAwait(false);
@@ -2393,7 +2393,7 @@ namespace Chummer
                                     treGear.SortCustomOrder();
                                     treLifestyles.SortCustomOrder();
                                     treCustomDrugs.SortCustomOrder();
-                                    treCyberware.SortCustomOrder();
+                                    treCyberware.SortCustomOrder(true);
                                     treVehicles.SortCustomOrder();
                                     treCritterPowers.SortCustomOrder();
                                 }, GenericToken).ConfigureAwait(false);
@@ -11901,7 +11901,7 @@ namespace Chummer
 
             try
             {
-                Utils.SafelyRunSynchronously(() => MoveTreeNode(objSelectedNode, intNewIndex), GenericToken);
+                Utils.SafelyRunSynchronously(() => MoveTreeNode(objSelectedNode, intNewIndex, requireParentSortable), GenericToken);
             }
             catch (OperationCanceledException)
             {
