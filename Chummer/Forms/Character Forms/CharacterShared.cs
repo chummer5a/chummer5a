@@ -2624,7 +2624,7 @@ namespace Chummer
 
                 TreeNode nodRoot
                     = await treArmor.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedArmor", false), token).ConfigureAwait(false);
-                await RefreshLocation(treArmor, nodRoot, cmsArmorLocation, notifyCollectionChangedEventArgs,
+                await RefreshLocation(treArmor, nodRoot, cmsArmorLocation, _objCharacter.ArmorLocations, notifyCollectionChangedEventArgs,
                                       strSelectedId,
                                       "Node_SelectedArmor", token).ConfigureAwait(false);
             }
@@ -2648,7 +2648,7 @@ namespace Chummer
 
                 TreeNode nodRoot
                     = await treGear.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedGear", false), token).ConfigureAwait(false);
-                await RefreshLocation(treGear, nodRoot, cmsGearLocation, notifyCollectionChangedEventArgs,
+                await RefreshLocation(treGear, nodRoot, cmsGearLocation, _objCharacter.GearLocations, notifyCollectionChangedEventArgs,
                                       strSelectedId,
                                       "Node_SelectedGear", token).ConfigureAwait(false);
             }
@@ -2674,7 +2674,7 @@ namespace Chummer
                 TreeNode nodRoot
                     = await treVehicles.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedVehicles", false),
                                                               token).ConfigureAwait(false);
-                await RefreshLocation(treVehicles, nodRoot, cmsVehicleLocation, notifyCollectionChangedEventArgs,
+                await RefreshLocation(treVehicles, nodRoot, cmsVehicleLocation, _objCharacter.VehicleLocations, notifyCollectionChangedEventArgs,
                                       strSelectedId,
                                       "Node_SelectedVehicles", token).ConfigureAwait(false);
             }
@@ -2699,7 +2699,7 @@ namespace Chummer
 
                 TreeNode nodRoot
                     = await treVehicles.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objVehicle), token).ConfigureAwait(false);
-                await RefreshLocation(treVehicles, nodRoot, cmsVehicleLocation, funcOffset,
+                await RefreshLocation(treVehicles, nodRoot, cmsVehicleLocation, funcOffset, objVehicle.Locations,
                                       notifyCollectionChangedEventArgs,
                                       strSelectedId, "Node_SelectedVehicles", false, token).ConfigureAwait(false);
             }
@@ -2724,7 +2724,7 @@ namespace Chummer
                 TreeNode nodRoot
                     = await treWeapons.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedWeapons", false),
                                                              token).ConfigureAwait(false);
-                await RefreshLocation(treWeapons, nodRoot, cmsWeaponLocation, notifyCollectionChangedEventArgs,
+                await RefreshLocation(treWeapons, nodRoot, cmsWeaponLocation, _objCharacter.WeaponLocations, notifyCollectionChangedEventArgs,
                                       strSelectedId,
                                       "Node_SelectedWeapons", token).ConfigureAwait(false);
             }
@@ -2917,15 +2917,20 @@ namespace Chummer
         }
 
         private async ValueTask RefreshLocation(TreeView treSelected, TreeNode nodRoot, ContextMenuStrip cmsLocation,
-            NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, string strSelectedId, string strNodeName, CancellationToken token = default)
+                                                ICollection<Location> lstLocations,
+                                                NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs,
+                                                string strSelectedId, string strNodeName,
+                                                CancellationToken token = default)
         {
-            await RefreshLocation(treSelected, nodRoot, cmsLocation, null, notifyCollectionChangedEventArgs, strSelectedId, strNodeName, token: token).ConfigureAwait(false);
+            await RefreshLocation(treSelected, nodRoot, cmsLocation, () => (nodRoot != null).ToInt32(), lstLocations,
+                                  notifyCollectionChangedEventArgs, strSelectedId, strNodeName, token: token)
+                .ConfigureAwait(false);
         }
 
         private async ValueTask RefreshLocation(TreeView treSelected, TreeNode nodRoot, ContextMenuStrip cmsLocation,
-            Func<int> funcOffset,
-            NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, string strSelectedId, string strNodeName,
-            bool rootSibling = true, CancellationToken token = default)
+                                                Func<int> funcOffset, ICollection<Location> lstLocations,
+                                                NotifyCollectionChangedEventArgs notifyCollectionChangedEventArgs, string strSelectedId, string strNodeName,
+                                                bool rootSibling = true, CancellationToken token = default)
         {
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
@@ -3034,11 +3039,13 @@ namespace Chummer
                             if (objNode != null)
                             {
                                 lstMoveNodes.Add(new Tuple<Location, TreeNode>(objLocation, objNode));
-                                objLocation.Remove(false);
+                                await treSelected.DoThreadSafeAsync(() => objNode.Remove(), token).ConfigureAwait(false);
                             }
                         }
 
                         int intNewIndex = notifyCollectionChangedEventArgs.NewStartingIndex;
+                        if (funcOffset != null)
+                            intNewIndex += funcOffset.Invoke();
                         foreach (Location objLocation in notifyCollectionChangedEventArgs.NewItems)
                         {
                             Tuple<Location, TreeNode> objLocationTuple =
@@ -3056,49 +3063,42 @@ namespace Chummer
 
                     case NotifyCollectionChangedAction.Reset:
                     {
-                        List<Location> lstLocations = new List<Location>(
-                            CharacterObject.ArmorLocations.Count + CharacterObject.WeaponLocations.Count
-                                                                 + CharacterObject.GearLocations.Count
-                                                                 + CharacterObject.VehicleLocations.Count
-                                                                 + CharacterObject.Vehicles.Count);
-                        lstLocations.AddRange(CharacterObject.ArmorLocations);
-                        lstLocations.AddRange(CharacterObject.WeaponLocations);
-                        lstLocations.AddRange(CharacterObject.GearLocations);
-                        lstLocations.AddRange(CharacterObject.VehicleLocations);
-                        lstLocations.AddRange(CharacterObject.Vehicles.SelectMany(x => x.Locations));
-                        foreach (Location objLocation in lstLocations)
+                        List<TreeNode> lstNodesNeedingProcessing = new List<TreeNode>();
+                        await treSelected.DoThreadSafeAsync(x =>
                         {
-                            TreeNode nodLocation
-                                = await treSelected.DoThreadSafeFuncAsync(
-                                    x => x.FindNode(objLocation.InternalId, false), token).ConfigureAwait(false);
-                            if (nodLocation == null)
-                                continue;
-                            if (nodLocation.Nodes.Count > 0)
+                            for (int i = x.Nodes.Count - 1; i >= 0; --i)
                             {
-                                if (nodRoot == null)
+                                TreeNode objLoop = x.Nodes[i];
+                                if (objLoop?.Tag is Location objLocation && !lstLocations.Contains(objLocation))
                                 {
-                                    nodRoot = new TreeNode
+                                    foreach (TreeNode objInnerLoop in objLoop.Nodes)
                                     {
-                                        Tag = strNodeName,
-                                        Text = await LanguageManager.GetStringAsync(strNodeName, token: token).ConfigureAwait(false)
-                                    };
-                                    TreeNode root = nodRoot;
-                                    await treSelected.DoThreadSafeAsync(x => x.Nodes.Insert(0, root), token).ConfigureAwait(false);
-                                }
-
-                                TreeNode root2 = nodRoot;
-                                await treSelected.DoThreadSafeAsync(() =>
-                                {
-                                    for (int i = nodLocation.Nodes.Count - 1; i >= 0; --i)
-                                    {
-                                        TreeNode nodWeapon = nodLocation.Nodes[i];
-                                        nodWeapon.Remove();
-                                        root2.Nodes.Add(nodWeapon);
+                                        lstNodesNeedingProcessing.Add(objInnerLoop);
+                                        objInnerLoop.Remove();
                                     }
-                                }, token).ConfigureAwait(false);
+                                    objLoop.Remove();
+                                }
+                            }
+                        }, token);
+                        if (lstNodesNeedingProcessing.Count > 0)
+                        {
+                            if (nodRoot == null)
+                            {
+                                nodRoot = new TreeNode
+                                {
+                                    Tag = strNodeName,
+                                    Text = await LanguageManager.GetStringAsync(strNodeName, token: token).ConfigureAwait(false)
+                                };
+                                TreeNode root = nodRoot;
+                                await treSelected.DoThreadSafeAsync(x => x.Nodes.Insert(0, root), token).ConfigureAwait(false);
                             }
 
-                            objLocation.Remove(false);
+                            TreeNode root2 = nodRoot;
+                            await treSelected.DoThreadSafeAsync(() =>
+                            {
+                                foreach (TreeNode objNode in lstNodesNeedingProcessing)
+                                    root2.Nodes.Add(objNode);
+                            }, token).ConfigureAwait(false);
                         }
                     }
                         break;
