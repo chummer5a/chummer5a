@@ -20,7 +20,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using Chummer;
 using ChummerHub.Client.Sinners;
 using PropertyInfo = System.Reflection.PropertyInfo;

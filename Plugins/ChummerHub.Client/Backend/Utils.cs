@@ -39,8 +39,6 @@ using Chummer.Plugins;
 using ChummerHub.Client.Properties;
 using ChummerHub.Client.Sinners;
 using ChummerHub.Client.UI;
-using Microsoft.ApplicationInsights;
-using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.Rest;
 using Newtonsoft.Json;
 using NLog;
@@ -206,8 +204,6 @@ namespace ChummerHub.Client.Backend
         /// <summary>
         /// Gets the URI cookie container.
         /// </summary>
-        /// <param name="uri">The URI.</param>
-        /// <returns></returns>
         public static CookieContainer GetUriCookieContainer(Uri uri, string cookieData)
         {
             if (uri == null)
@@ -405,7 +401,7 @@ namespace ChummerHub.Client.Backend
                 //    ct.TrackException(et);
                 //    Log.Error(e);
                 //}
-                
+
                 HttpClientHandler delegatingHandler = new MyMessageHandler();
                 //HttpClientHandler httpClientHandler = new HttpClientHandler();
                 CookieContainer temp = AuthorizationCookieContainer;
@@ -413,7 +409,7 @@ namespace ChummerHub.Client.Backend
                     delegatingHandler.CookieContainer = temp;
                 HttpClient httpClient = new HttpClient(delegatingHandler);
                 client = new SinnersClient(baseUri.ToString(), httpClient);
-                
+
             }
             catch (Exception ex)
             {
@@ -436,7 +432,7 @@ namespace ChummerHub.Client.Backend
 
 
 
-        internal static async Task WebCall(string callback, int progress, string text)
+        internal static async Task WebCall(string callback, int progress, string text, CancellationToken token = default)
         {
             try
             {
@@ -452,7 +448,7 @@ namespace ChummerHub.Client.Backend
                         new KeyValuePair<string, string>("Text", text)
                     }))
                     {
-                        HttpResponseMessage result = await client.PostAsync(uri, content);
+                        HttpResponseMessage result = await client.PostAsync(uri, content, token);
                         string resultContent = await result.Content.ReadAsStringAsync();
                         Log.Trace("Result from WebCall " + callback + ": " + resultContent);
                     }
@@ -488,7 +484,7 @@ namespace ChummerHub.Client.Backend
         /// <summary>
         /// Generates a character cache, which prevents us from repeatedly loading XmlNodes or caching a full character.
         /// </summary>
-        internal static async Task<ICollection<TreeNode>> GetCharacterRosterTreeNode(bool forceUpdate, Func<Task<ResultAccountGetSinnersByAuthorization>> myGetSINnersFunction)
+        internal static async Task<ICollection<TreeNode>> GetCharacterRosterTreeNode(bool forceUpdate, Func<Task<ResultAccountGetSinnersByAuthorization>> myGetSINnersFunction, CancellationToken token = default)
         {
             if (MyTreeNodeList != null && !forceUpdate)
                 return MyTreeNodeList;
@@ -498,7 +494,7 @@ namespace ChummerHub.Client.Backend
                 await PluginHandler.MainForm.DoThreadSafeAsync(() =>
                 {
                     MyTreeNodeList.Clear();
-                });
+                }, token: token);
 
                 ResultAccountGetSinnersByAuthorization response = null;
                 try
@@ -516,7 +512,7 @@ namespace ChummerHub.Client.Backend
                 if (response == null || !response.CallSuccess)
                 {
                     string msg = "Could not load online Sinners: " + (response?.ErrorText ?? "Response is null.");
-                    
+
                     Log.Warn(msg);
                     TreeNode errornode = new TreeNode
                     {
@@ -539,7 +535,7 @@ namespace ChummerHub.Client.Backend
                     await PluginHandler.MainForm.DoThreadSafeAsync(() =>
                     {
                         MyTreeNodeList.Add(errornode);
-                    });
+                    }, token: token);
                     return MyTreeNodeList;
                 }
 
@@ -577,7 +573,7 @@ namespace ChummerHub.Client.Backend
                     await PluginHandler.MainForm.DoThreadSafeAsync(() =>
                     {
                         MyTreeNodeList.Add(node);
-                    });
+                    }, token: token);
                 }
                 else
                 {
@@ -594,7 +590,7 @@ namespace ChummerHub.Client.Backend
                         {
                             ToolTipText = msg
                         });
-                    });
+                    }, token: token);
                 }
                 return MyTreeNodeList;
             }
@@ -793,17 +789,17 @@ namespace ChummerHub.Client.Backend
             return strReturn;
         }
 
-        private static TreeNode GetCharacterRosterTreeNodeRecursive(SINnerSearchGroup ssg)
+        private static TreeNode GetCharacterRosterTreeNodeRecursive(SINnerSearchGroup ssg, CancellationToken token = default)
         {
-            return GetCharacterRosterTreeNodeRecursiveCoreAsync(true, ssg).GetAwaiter().GetResult();
+            return GetCharacterRosterTreeNodeRecursiveCoreAsync(true, ssg, token).GetAwaiter().GetResult();
         }
 
-        private static Task<TreeNode> GetCharacterRosterTreeNodeRecursiveAsync(SINnerSearchGroup ssg)
+        private static Task<TreeNode> GetCharacterRosterTreeNodeRecursiveAsync(SINnerSearchGroup ssg, CancellationToken token = default)
         {
-            return GetCharacterRosterTreeNodeRecursiveCoreAsync(false, ssg);
+            return GetCharacterRosterTreeNodeRecursiveCoreAsync(false, ssg, token);
         }
 
-        private static async Task<TreeNode> GetCharacterRosterTreeNodeRecursiveCoreAsync(bool blnSync, SINnerSearchGroup ssg)
+        private static async Task<TreeNode> GetCharacterRosterTreeNodeRecursiveCoreAsync(bool blnSync, SINnerSearchGroup ssg, CancellationToken token = default)
         {
             TreeNode objListNode = new TreeNode
             {
@@ -815,8 +811,8 @@ namespace ChummerHub.Client.Backend
             {
                 string emptystring = blnSync
                     // ReSharper disable once MethodHasAsyncOverload
-                    ? LanguageManager.GetString("String_Empty", GlobalSettings.Language)
-                    : await LanguageManager.GetStringAsync("String_Empty", GlobalSettings.Language);
+                    ? LanguageManager.GetString("String_Empty", token: token)
+                    : await LanguageManager.GetStringAsync("String_Empty", token: token);
                 TreeNode empty = new TreeNode()
                 {
                     Text = emptystring
@@ -829,8 +825,8 @@ namespace ChummerHub.Client.Backend
                 //sinner.DownloadedFromSINnersTime = DateTime.Now.ToUniversalTime();
                 CharacterCache objCache = (blnSync
                                               // ReSharper disable once MethodHasAsyncOverload
-                                              ? sinner.GetCharacterCache()
-                                              : await sinner.GetCharacterCacheAsync())
+                                              ? sinner.GetCharacterCache(token)
+                                              : await sinner.GetCharacterCacheAsync(token))
                                           ?? new CharacterCache
                                           {
                                               CharacterName = "pending",
@@ -839,17 +835,17 @@ namespace ChummerHub.Client.Backend
                                           };
                 if (blnSync)
                 {
-                    // ReSharper disable MethodHasAsyncOverload
+                    // ReSharper disable MethodHasAsyncOverloadWithCancellation
                     if (objCache.MyPluginDataDic.ContainsKey("IsSINnerFavorite"))
                         objCache.MyPluginDataDic.Remove("IsSINnerFavorite");
                     objCache.MyPluginDataDic.Add("IsSINnerFavorite", member.IsFavorite);
-                    // ReSharper restore MethodHasAsyncOverload
+                    // ReSharper restore MethodHasAsyncOverloadWithCancellation
                 }
                 else
                 {
-                    if (await objCache.MyPluginDataDic.ContainsKeyAsync("IsSINnerFavorite"))
-                        await objCache.MyPluginDataDic.RemoveAsync("IsSINnerFavorite");
-                    await objCache.MyPluginDataDic.AddAsync("IsSINnerFavorite", member.IsFavorite);
+                    if (await objCache.MyPluginDataDic.ContainsKeyAsync("IsSINnerFavorite", token))
+                        await objCache.MyPluginDataDic.RemoveAsync("IsSINnerFavorite", token);
+                    await objCache.MyPluginDataDic.AddAsync("IsSINnerFavorite", member.IsFavorite, token);
                 }
 
                 SetEventHandlers(sinner, objCache);
@@ -888,14 +884,14 @@ namespace ChummerHub.Client.Backend
                     memberNode.ToolTipText += Environment.NewLine + Environment.NewLine +
                                               (blnSync
                                                   // ReSharper disable once MethodHasAsyncOverload
-                                                  ? LanguageManager.GetString("String_Error", GlobalSettings.Language)
+                                                  ? LanguageManager.GetString("String_Error", token: token)
                                                   : await LanguageManager.GetStringAsync(
-                                                      "String_Error", GlobalSettings.Language))
+                                                      "String_Error", token: token))
                                               + (blnSync
                                                   // ReSharper disable once MethodHasAsyncOverload
-                                                  ? LanguageManager.GetString("String_Colon", GlobalSettings.Language)
+                                                  ? LanguageManager.GetString("String_Colon", token: token)
                                                   : await LanguageManager.GetStringAsync(
-                                                      "String_Colon", GlobalSettings.Language)) +
+                                                      "String_Colon", token: token)) +
                                               Environment.NewLine + objCache.ErrorText;
                 }
             }
@@ -906,8 +902,8 @@ namespace ChummerHub.Client.Backend
                 {
                     TreeNode childnode = blnSync
                         // ReSharper disable once MethodHasAsyncOverload
-                        ? GetCharacterRosterTreeNodeRecursive(childssg)
-                        : await GetCharacterRosterTreeNodeRecursiveAsync(childssg);
+                        ? GetCharacterRosterTreeNodeRecursive(childssg, token)
+                        : await GetCharacterRosterTreeNodeRecursiveAsync(childssg, token);
                     if (childnode != null)
                     {
                         if (!objListNode.Nodes.ContainsKey(childnode.Name))
@@ -938,12 +934,12 @@ namespace ChummerHub.Client.Backend
             return objListNode;
         }
 
-        private static async Task<SINnerGroup> CreateGroup(SINnerGroup mygroup)
+        private static async Task<SINnerGroup> CreateGroup(SINnerGroup mygroup, CancellationToken token = default)
         {
             try
             {
                 SinnersClient client = StaticUtils.GetClient();
-                await client.PostGroupAsync(null,mygroup);
+                await client.PostGroupAsync(null,mygroup, token);
             }
             catch (Exception ex)
             {
@@ -954,7 +950,7 @@ namespace ChummerHub.Client.Backend
             return null;
         }
 
-        internal static async Task<SINnerGroup> CreateGroupOnClickAsync(SINnerGroup group = null, string groupname = "")
+        internal static async Task<SINnerGroup> CreateGroupOnClickAsync(SINnerGroup group = null, string groupname = "", CancellationToken token = default)
         {
             try
             {
@@ -976,11 +972,11 @@ namespace ChummerHub.Client.Backend
                         group = ge.MySINnerGroupCreate.MyGroup;
                         try
                         {
-                            using (await CursorWait.NewAsync(Program.MainForm))
+                            using (await CursorWait.NewAsync(Program.MainForm, token: token))
                             {
-                                SINnerGroup a = await CreateGroup(ge.MySINnerGroupCreate.MyGroup);
+                                SINnerGroup a = await CreateGroup(ge.MySINnerGroupCreate.MyGroup, token);
                                 return a;
-                                
+
                             }
                         }
                         catch (Exception exception)
@@ -1014,7 +1010,7 @@ namespace ChummerHub.Client.Backend
             }
         }
 
-        public static async Task<CharacterExtended> UploadCharacterFromFile(string fileName)
+        public static async Task<CharacterExtended> UploadCharacterFromFile(string fileName, CancellationToken token = default)
         {
             CharacterExtended ce = null;
             Character objCharacter = null;
@@ -1022,16 +1018,16 @@ namespace ChummerHub.Client.Backend
             {
                 Log.Trace("Loading: " + fileName);
                 objCharacter = new Character {FileName = fileName};
-                using (ThreadSafeForm<LoadingBar> frmLoadingForm = await Program.CreateAndShowProgressBarAsync(Path.GetFileName(fileName), Character.NumLoadingSections))
+                using (ThreadSafeForm<LoadingBar> frmLoadingForm = await Program.CreateAndShowProgressBarAsync(Path.GetFileName(fileName), Character.NumLoadingSections, token))
                 {
-                    if (!await objCharacter.LoadAsync(frmLoadingForm: frmLoadingForm.MyForm, showWarnings: false))
+                    if (!await objCharacter.LoadAsync(frmLoadingForm: frmLoadingForm.MyForm, showWarnings: false, token: token))
                         return null;
                     Log.Trace("Character loaded: " + objCharacter.Name);
                 }
 
-                CharacterCache objCache = await CharacterCache.CreateFromFileAsync(fileName);
+                CharacterCache objCache = await CharacterCache.CreateFromFileAsync(fileName, token);
                 ce = new CharacterExtended(objCharacter, null, objCache);
-                await ce.Upload();
+                await ce.Upload(token: token);
             }
             catch (Exception ex)
             {
@@ -1133,13 +1129,13 @@ namespace ChummerHub.Client.Backend
             }
         }
 
-        private static async Task OnMyAfterSelect(SINner sinner, CharacterCache objCache, TreeViewEventArgs treeViewEventArgs)
+        private static async Task OnMyAfterSelect(SINner sinner, CharacterCache objCache, TreeViewEventArgs treeViewEventArgs, CancellationToken token = default)
         {
-            using (await CursorWait.NewAsync(PluginHandler.MainForm, true).ConfigureAwait(false))
+            using (await CursorWait.NewAsync(PluginHandler.MainForm, true, token).ConfigureAwait(false))
             {
                 if (string.IsNullOrEmpty(sinner.FilePath))
                 {
-                    objCache.FilePath = await DownloadFileTask(sinner, objCache).ConfigureAwait(false);
+                    objCache.FilePath = await DownloadFileTask(sinner, objCache, token).ConfigureAwait(false);
                 }
                 if (!string.IsNullOrEmpty(objCache.FilePath))
                 {
@@ -1147,9 +1143,9 @@ namespace ChummerHub.Client.Backend
                     CharacterCache tempCache = new CharacterCache();
                     try
                     {
-                        if (await tempCache.LoadFromFileAsync(objCache.FilePath).ConfigureAwait(false))
+                        if (await tempCache.LoadFromFileAsync(objCache.FilePath, token).ConfigureAwait(false))
                         {
-                            await objCache.CopyFromAsync(tempCache).ConfigureAwait(false);
+                            await objCache.CopyFromAsync(tempCache, token).ConfigureAwait(false);
                         }
                     }
                     finally
@@ -1157,27 +1153,27 @@ namespace ChummerHub.Client.Backend
                         await tempCache.DisposeAsync().ConfigureAwait(false);
                     }
                 }
-                await PluginHandler.MainForm.CharacterRoster.UpdateCharacter(objCache).ConfigureAwait(false);
-                treeViewEventArgs.Node.Text = await objCache.CalculatedNameAsync().ConfigureAwait(false);
+                await PluginHandler.MainForm.CharacterRoster.UpdateCharacter(objCache, token).ConfigureAwait(false);
+                treeViewEventArgs.Node.Text = await objCache.CalculatedNameAsync(token: token).ConfigureAwait(false);
             }
         }
 
-        private static async Task OnMyDoubleClick(SINner sinner, CharacterCache objCache)
+        private static async Task OnMyDoubleClick(SINner sinner, CharacterCache objCache, CancellationToken token = default)
         {
-            string filepath = await DownloadFileTask(sinner, objCache);
+            string filepath = await DownloadFileTask(sinner, objCache, token);
             PluginHandler.MySINnerLoading = sinner;
             try
             {
-                await PluginHandler.MainForm.CharacterRoster.SetMyEventHandlers(true);
+                await PluginHandler.MainForm.CharacterRoster.SetMyEventHandlers(true, token);
                 try
                 {
-                    Character c = await Program.LoadCharacterAsync(filepath);
+                    Character c = await Program.LoadCharacterAsync(filepath, token: token);
                     if (c != null)
-                        await SwitchToCharacter(c);
+                        await SwitchToCharacter(c, token);
                 }
                 finally
                 {
-                    await PluginHandler.MainForm.CharacterRoster.SetMyEventHandlers();
+                    await PluginHandler.MainForm.CharacterRoster.SetMyEventHandlers(token: token);
                 }
             }
             finally
@@ -1280,7 +1276,7 @@ namespace ChummerHub.Client.Backend
                     {
                         string msg = "Post of " + ce.MyCharacter.Alias + " completed with StatusCode: " + res.CallSuccess;
                         msg += Environment.NewLine + "Reason: " + res.ErrorText;
-                        
+
                         Log.Warn(msg);
                         try
                         {
@@ -1483,7 +1479,7 @@ namespace ChummerHub.Client.Backend
                                     throw new ArgumentNullException(nameof(sinner), "Could not download Sinner " +
                                         sinner.Id.Value + " via client.GetDownloadFileAsync()!");
                                 }
-                                
+
                                 byte[] array = ReadFully(filestream.Stream);
                                 File.WriteAllBytes(zippedFile, array);
                             }
@@ -1536,7 +1532,7 @@ namespace ChummerHub.Client.Backend
             PluginHandler.MainForm.DoThreadSafe(x =>
             {
                 string substring = "Downloading: " + e.ProgressPercentage;
-                x.Text = ((ChummerMainForm)x).MainTitle + ' ' + substring;
+                x.Text = x.MainTitle + ' ' + substring;
             });
         }
 

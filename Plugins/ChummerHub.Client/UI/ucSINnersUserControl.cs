@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer;
@@ -42,12 +43,12 @@ namespace ChummerHub.Client.UI
 
         public Character CharacterObject => MySINner.CharacterObject;
 
-        public async Task<CharacterExtended> SetCharacterFrom(CharacterShared mySINner)
+        public async Task<CharacterExtended> SetCharacterFrom(CharacterShared mySINner, CancellationToken token = default)
         {
             InitializeComponent();
             _mySINner = mySINner ?? throw new ArgumentNullException(nameof(mySINner));
             MyCE = new CharacterExtended(mySINner.CharacterObject, PluginHandler.MySINnerLoading);
-            MyCE.ZipFilePath = await MyCE.PrepareModelAsync();
+            MyCE.ZipFilePath = await MyCE.PrepareModelAsync(token);
             //MyCE.ZipFilePath = await MyCE.PrepareModelAsync();
 
             TabSINnersBasic = new ucSINnersBasic(this)
@@ -68,8 +69,8 @@ namespace ChummerHub.Client.UI
             {
                 try
                 {
-                    if (await mySINner.CharacterObject.DoOnSaveCompletedAsync.RemoveAsync(PluginHandler.MyOnSaveUpload))
-                        await mySINner.CharacterObject.DoOnSaveCompletedAsync.AddAsync(PluginHandler.MyOnSaveUpload);
+                    if (await mySINner.CharacterObject.DoOnSaveCompletedAsync.RemoveAsync(PluginHandler.MyOnSaveUpload, token))
+                        await mySINner.CharacterObject.DoOnSaveCompletedAsync.AddAsync(PluginHandler.MyOnSaveUpload, token);
                 }
                 catch (Exception e)
                 {
@@ -80,13 +81,13 @@ namespace ChummerHub.Client.UI
             return MyCE;
         }
 
-        public async Task RemoveSINnerAsync()
+        public async Task RemoveSINnerAsync(CancellationToken token = default)
         {
             try
             {
                 SinnersClient client = StaticUtils.GetClient();
                 if (MyCE.MySINnerFile.Id != null)
-                    await client.DeleteAsync(MyCE.MySINnerFile.Id.Value);
+                    await client.DeleteAsync(MyCE.MySINnerFile.Id.Value, token);
             }
             catch (Exception ex)
             {

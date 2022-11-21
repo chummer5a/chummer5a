@@ -18,6 +18,7 @@
  */
 using System;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using Chummer;
 
@@ -50,17 +51,17 @@ namespace ChummerHub.Client.Sinners
             }
         }
 
-        public CharacterCache GetCharacterCache()
+        public CharacterCache GetCharacterCache(CancellationToken token = default)
         {
-            return GetCharacterCacheCoreAsync(true).GetAwaiter().GetResult();
+            return GetCharacterCacheCoreAsync(true, token).GetAwaiter().GetResult();
         }
 
-        public Task<CharacterCache> GetCharacterCacheAsync()
+        public Task<CharacterCache> GetCharacterCacheAsync(CancellationToken token = default)
         {
-            return GetCharacterCacheCoreAsync(false);
+            return GetCharacterCacheCoreAsync(false, token);
         }
 
-        private async Task<CharacterCache> GetCharacterCacheCoreAsync(bool blnSync)
+        private async Task<CharacterCache> GetCharacterCacheCoreAsync(bool blnSync, CancellationToken token = default)
         {
             string strPath = FilePath;
             if (!string.IsNullOrEmpty(strPath))
@@ -70,7 +71,7 @@ namespace ChummerHub.Client.Sinners
                     // ReSharper disable once MethodHasAsyncOverload
                     objReturn = new CharacterCache(strPath);
                 else
-                    objReturn = await CharacterCache.CreateFromFileAsync(strPath);
+                    objReturn = await CharacterCache.CreateFromFileAsync(strPath, token);
                 return objReturn;
             }
             return null;

@@ -324,7 +324,7 @@ namespace Chummer.Plugins
             GC.SuppressFinalize(this);
         }
 
-        private async Task<bool> HandleLoadCommand(string argument)
+        private async Task<bool> HandleLoadCommand(string argument, CancellationToken token = default)
         {
             //check global mutex
             bool blnHasDuplicate;
@@ -345,7 +345,7 @@ namespace Chummer.Plugins
                     TimeSpan uptime = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
                     if (uptime < TimeSpan.FromSeconds(2))
                     {
-                        await Task.Delay(TimeSpan.FromSeconds(1)).ConfigureAwait(false);
+                        await Task.Delay(TimeSpan.FromSeconds(1), token).ConfigureAwait(false);
                     }
                 }
                 if (PipeManager != null)
@@ -366,7 +366,7 @@ namespace Chummer.Plugins
                                 transaction = transaction.Substring(0, callbackInt).TrimEnd(':');
                                 callback = WebUtility.UrlDecode(callback);
                             }
-                            await StaticUtils.WebCall(callback, 10, "Sending Open Character Request");
+                            await StaticUtils.WebCall(callback, 10, "Sending Open Character Request", token);
                         }
                     }
                     catch (Exception e)
@@ -378,7 +378,7 @@ namespace Chummer.Plugins
                     Log.Trace("Sending argument to Pipeserver: " + msg);
                     PipeManager.Write(msg);
                 }
-            });
+            }, token);
             if (blnHasDuplicate)
             {
                 Environment.ExitCode = -1;
@@ -409,9 +409,15 @@ namespace Chummer.Plugins
             {
                 Stopwatch sw = new Stopwatch();
                 sw.Start();
-                await uc.SetCharacterFrom(input);
-                sw.Stop();
-                Log.Trace("ucSINnersUserControl SetCharacterFrom finished in " + sw.ElapsedMilliseconds + "ms.");
+                try
+                {
+                    await uc.SetCharacterFrom(input, token);
+                }
+                finally
+                {
+                    sw.Stop();
+                    Log.Trace("ucSINnersUserControl SetCharacterFrom finished in " + sw.ElapsedMilliseconds + "ms.");
+                }
             }
             catch (Exception e)
             {
@@ -484,25 +490,25 @@ namespace Chummer.Plugins
                         }
 
                         TabPage tabPage = null;
-                        CharacterShared found = MainForm.OpenCharacterEditorForms.FirstOrDefault(x => x.CharacterObject == input);
+                        CharacterShared found = await MainForm.OpenCharacterEditorForms.FirstOrDefaultAsync(x => x.CharacterObject == input, token: token);
                         switch (found)
                         {
                             case CharacterCreate frm when frm.TabCharacterTabs.TabPages.ContainsKey("SINners"):
                                 {
-                                    Utils.RunOnMainThread(() =>
+                                    await Utils.RunOnMainThreadAsync(() =>
                                     {
                                         int index = frm.TabCharacterTabs.TabPages.IndexOfKey("SINners");
                                         tabPage = frm.TabCharacterTabs.TabPages[index];
-                                    });
+                                    }, token);
                                     break;
                                 }
                             case CharacterCareer frm2 when frm2.TabCharacterTabs.TabPages.ContainsKey("SINners"):
                                 {
-                                    Utils.RunOnMainThread(() =>
+                                    await Utils.RunOnMainThreadAsync(() =>
                                     {
                                         int index = frm2.TabCharacterTabs.TabPages.IndexOfKey("SINners");
                                         tabPage = frm2.TabCharacterTabs.TabPages[index];
-                                    });
+                                    }, token);
                                     break;
                                 }
                         }
@@ -513,7 +519,7 @@ namespace Chummer.Plugins
                         foreach (Control uc in ucseq)
                         {
                             if (uc is ucSINnersBasic sb)
-                                await sb.CheckSINnerStatus();
+                                await sb.CheckSINnerStatus(token);
                         }
 
                         Control[] ucseq2 = tabPage.Controls.Find("SINnersAdvanced", true);
@@ -574,7 +580,7 @@ namespace Chummer.Plugins
 
                 sinnertab = myCollection.OfType<TabPage>().FirstOrDefault(x => x.Name == "SINners");
             }
-            
+
             CharacterCache myCharacterCache;
             if (blnSync)
                 // ReSharper disable once MethodHasAsyncOverload
@@ -849,7 +855,7 @@ namespace Chummer.Plugins
                             return ret;
                         }
 
-                        res = await ChummerHub.Client.Backend.Utils.GetCharacterRosterTreeNode(forceUpdate, getSINnersFunction);
+                        res = await ChummerHub.Client.Backend.Utils.GetCharacterRosterTreeNode(forceUpdate, getSINnersFunction, token);
                         if (res == null)
                         {
                             throw new ArgumentException("Could not load owned SINners from WebService.");
@@ -928,7 +934,7 @@ namespace Chummer.Plugins
                     Tag = e
 
                 };
-                
+
                 return new List<TreeNode>
                 {
                     node
@@ -937,7 +943,7 @@ namespace Chummer.Plugins
         }
 
 
-        
+
 
         private async void SINnersCreateGroupOnClick(object sender, EventArgs e)
         {
@@ -958,13 +964,13 @@ namespace Chummer.Plugins
             await ShowMySINners();
         }
 
-        private async ValueTask ShowMySINners()
+        private async ValueTask ShowMySINners(CancellationToken token = default)
         {
             try
             {
-                using (await CursorWait.NewAsync(MainForm.CharacterRoster, true))
+                using (await CursorWait.NewAsync(MainForm.CharacterRoster, true, token))
                 {
-                    SINSearchGroupResult MySINSearchGroupResult = await ucSINnerGroupSearch.SearchForGroups(null);
+                    SINSearchGroupResult MySINSearchGroupResult = await ucSINnerGroupSearch.SearchForGroups(null, token);
                     SINnerSearchGroup item = MySINSearchGroupResult.SinGroups.FirstOrDefault(x => x.Groupname?.Contains("My Data") == true);
                     if (item != null)
                     {
@@ -972,9 +978,9 @@ namespace Chummer.Plugins
                         IEnumerable<TreeNode> nodelist = ChummerHub.Client.Backend.Utils.CharacterRosterTreeNodifyGroupList(list);
                         foreach (TreeNode node in nodelist)
                         {
-                            await MyTreeNodes2Add.AddOrUpdateAsync(node.Name, node, (key, oldValue) => node);
+                            await MyTreeNodes2Add.AddOrUpdateAsync(node.Name, node, (key, oldValue) => node, token);
                         }
-                        await MainForm.CharacterRoster.RefreshPluginNodesAsync(this);
+                        await MainForm.CharacterRoster.RefreshPluginNodesAsync(this, token);
                         MainForm.CharacterRoster.BringToFront();
                     }
                 }
@@ -1080,7 +1086,7 @@ namespace Chummer.Plugins
                                 {
                                     await MainForm.CharacterRoster.RefreshPluginNodesAsync(this);
                                 }
-                            
+
                             }
                             catch(ApiException e1)
                             {
@@ -1250,7 +1256,7 @@ namespace Chummer.Plugins
 
         private static string fileNameToLoad = string.Empty;
 
-        public static async Task HandleNamedPipe_OpenRequest(string argument)
+        public static async Task HandleNamedPipe_OpenRequest(string argument, CancellationToken token = default)
         {
             Log.Trace("Pipeserver receiced a request: " + argument);
             if (!string.IsNullOrEmpty(argument))
@@ -1258,7 +1264,7 @@ namespace Chummer.Plugins
                 //make sure the mainform is visible ...
                 TimeSpan uptime = DateTime.UtcNow - Process.GetCurrentProcess().StartTime.ToUniversalTime();
                 if (uptime < TimeSpan.FromSeconds(5))
-                    await Task.Delay(TimeSpan.FromSeconds(4)).ConfigureAwait(false);
+                    await Task.Delay(TimeSpan.FromSeconds(4), token).ConfigureAwait(false);
                 if (!MainForm.Visible)
                 {
                     await MainForm.DoThreadSafeAsync(x =>
@@ -1266,7 +1272,7 @@ namespace Chummer.Plugins
                         ChummerMainForm objMainForm = x;
                         if (objMainForm.WindowState == FormWindowState.Minimized)
                             objMainForm.WindowState = FormWindowState.Normal;
-                    });
+                    }, token: token);
                 }
 
                 await MainForm.DoThreadSafeAsync(x =>
@@ -1274,11 +1280,11 @@ namespace Chummer.Plugins
                     ChummerMainForm objMainForm = x;
                     objMainForm.Activate();
                     objMainForm.BringToFront();
-                });
+                }, token: token);
                 SinnersClient client = StaticUtils.GetClient();
                 while (!MainForm.Visible)
                 {
-                    await Task.Delay(TimeSpan.FromSeconds(1)).ConfigureAwait(false);
+                    await Task.Delay(TimeSpan.FromSeconds(1), token).ConfigureAwait(false);
                 }
                 if (argument.StartsWith("Load:", StringComparison.Ordinal))
                 {
@@ -1303,30 +1309,30 @@ namespace Chummer.Plugins
                             }
 
                             await StaticUtils.WebCall(callback, 30,
-                                "Open Character Request received!");
+                                "Open Character Request received!", token);
                         }
 
                         if (Guid.TryParse(SINnerIdvalue, out Guid SINnerId))
                         {
 
-                            ResultSinnerGetSINById found = await client.GetSINByIdAsync(SINnerId);
-                            await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(found);
+                            ResultSinnerGetSINById found = await client.GetSINByIdAsync(SINnerId, token);
+                            await ChummerHub.Client.Backend.Utils.ShowErrorResponseFormAsync(found, token: token);
                             if (found?.CallSuccess == true)
                             {
                                 await StaticUtils.WebCall(callback, 40,
-                                    "Character found online");
+                                    "Character found online", token);
                                 fileNameToLoad =
-                                    await ChummerHub.Client.Backend.Utils.DownloadFileTask(found.MySINner, null);
+                                    await ChummerHub.Client.Backend.Utils.DownloadFileTask(found.MySINner, null, token);
                                 await StaticUtils.WebCall(callback, 70,
-                                    "Character downloaded");
-                                await MainFormLoadChar(fileNameToLoad);
+                                    "Character downloaded", token);
+                                await MainFormLoadChar(fileNameToLoad, token);
                                 await StaticUtils.WebCall(callback, 100,
-                                    "Character opened");
+                                    "Character opened", token);
                             }
                             else if (found == null || !found.CallSuccess)
                             {
                                 await StaticUtils.WebCall(callback, 0,
-                                    "Character not found");
+                                    "Character not found", token);
                                 Program.ShowMessageBox("Could not find a SINner with Id " + SINnerId + " online!");
                             }
                         }
@@ -1345,29 +1351,29 @@ namespace Chummer.Plugins
             }
         }
 
-        private static async ValueTask MainFormLoadChar(string fileToLoad)
+        private static async ValueTask MainFormLoadChar(string fileToLoad, CancellationToken token = default)
         {
             //already open
-            Character objCharacter = Program.OpenCharacters.FirstOrDefault(a => a.FileName == fileToLoad);
+            Character objCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(a => a.FileName == fileToLoad, token: token);
             if (objCharacter == null)
             {
                 objCharacter = new Character
                 {
                     FileName = fileToLoad
                 };
-                using (ThreadSafeForm<LoadingBar> frmLoadingForm = await Program.CreateAndShowProgressBarAsync(Path.GetFileName(fileToLoad), Character.NumLoadingSections))
+                using (ThreadSafeForm<LoadingBar> frmLoadingForm = await Program.CreateAndShowProgressBarAsync(Path.GetFileName(fileToLoad), Character.NumLoadingSections, token))
                 {
-                    if (await objCharacter.LoadAsync(frmLoadingForm: frmLoadingForm.MyForm, showWarnings: Settings.Default.IgnoreWarningsOnOpening))
-                        await Program.OpenCharacters.AddAsync(objCharacter);
+                    if (await objCharacter.LoadAsync(frmLoadingForm: frmLoadingForm.MyForm, showWarnings: Settings.Default.IgnoreWarningsOnOpening, token: token))
+                        await Program.OpenCharacters.AddAsync(objCharacter, token);
                     else
                         return;
                 }
             }
-            using (await CursorWait.NewAsync(MainForm))
+            using (await CursorWait.NewAsync(MainForm, token: token))
             {
-                if (!await Program.SwitchToOpenCharacter(objCharacter))
-                    await Program.OpenCharacter(objCharacter, false);
-                await MainForm.DoThreadSafeAsync(x => x.BringToFront());
+                if (!await Program.SwitchToOpenCharacter(objCharacter, token))
+                    await Program.OpenCharacter(objCharacter, false, token);
+                await MainForm.DoThreadSafeAsync(x => x.BringToFront(), token: token);
             }
         }
 
@@ -1415,13 +1421,13 @@ namespace Chummer.Plugins
                             }
                             case CharacterCache objCache:
                             {
-                                if (objCache.MyPluginDataDic.TryGetValue("SINnerId", out object sinidob))
+                                if (objCache.MyPluginDataDic.TryGetValue("SINnerId", out object sinidob, token))
                                 {
                                     mySiNnerId = (Guid?) sinidob;
                                 }
                                 else
                                 {
-                                    using (CharacterExtended ce = await ChummerHub.Client.Backend.Utils.UploadCharacterFromFile(objCache.FilePath))
+                                    using (CharacterExtended ce = await ChummerHub.Client.Backend.Utils.UploadCharacterFromFile(objCache.FilePath, token))
                                         mySiNnerId = ce?.MySINnerFile?.Id;
                                 }
 

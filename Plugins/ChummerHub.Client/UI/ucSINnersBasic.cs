@@ -20,6 +20,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer;
@@ -96,20 +97,20 @@ namespace ChummerHub.Client.UI
             _inConstructor = false;
         }
 
-        public async Task<bool> CheckSINnerStatus()
+        public async Task<bool> CheckSINnerStatus(CancellationToken token = default)
         {
             try
             {
                 if (myUC?.MyCE?.MySINnerFile?.Id == null || myUC.MyCE.MySINnerFile.Id == Guid.Empty)
                 {
-                    await bUpload.DoThreadSafeAsync(x => x.Text = "SINless Character/Error" );
+                    await bUpload.DoThreadSafeAsync(x => x.Text = "SINless Character/Error", token: token);
                     return false;
                 }
 
-                using (await CursorWait.NewAsync(this, true))
+                using (await CursorWait.NewAsync(this, true, token))
                 {
                     SinnersClient client = StaticUtils.GetClient();
-                    ResultSinnerGetSINnerGroupFromSINerById response = await client.GetSINnerGroupFromSINerByIdAsync(myUC.MyCE.MySINnerFile.Id.Value);
+                    ResultSinnerGetSINnerGroupFromSINerById response = await client.GetSINnerGroupFromSINerByIdAsync(myUC.MyCE.MySINnerFile.Id.Value, token);
 
                     SINnerGroup objMySiNnerGroup = response.MySINnerGroup;
 
@@ -146,14 +147,14 @@ namespace ChummerHub.Client.UI
                         //}
                         cbTagCustom.Enabled = false;
                         TagValueCustomName.Enabled = false;
-                    });
-                    await this.DoThreadSafeAsync(UpdateTags);
+                    }, token: token);
+                    await this.DoThreadSafeAsync(UpdateTags, token: token);
                 }
             }
             catch (Exception ex)
             {
                 Log.Error(ex);
-                await bUpload.DoThreadSafeAsync(x => x.Text = "Unknown Status");
+                await bUpload.DoThreadSafeAsync(x => x.Text = "Unknown Status", token: token);
                 return false;
             }
             return true;

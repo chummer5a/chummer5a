@@ -492,11 +492,11 @@ namespace ChummerHub.Client.Sinners
                 }
             }
 
-            if (MyCharacterCache?.MyPluginDataDic.TryGetValue("SINnerId", out object sinidob) == true)
+            if (MyCharacterCache?.MyPluginDataDic.TryGetValue("SINnerId", out object sinidob, token) == true)
             {
                 MySINnerFile.Id = (Guid)sinidob;
             }
-            else if (MySINnerIds.TryGetValue(MyCharacter.FileName, out Guid singuid))
+            else if (MySINnerIds.TryGetValue(MyCharacter.FileName, out Guid singuid, token))
                 MySINnerFile.Id = singuid;
             else
             {
@@ -732,10 +732,10 @@ namespace ChummerHub.Client.Sinners
             {
                 string path2 = MyCharacter.FileName.Substring(0, MyCharacter.FileName.LastIndexOf('\\'));
                 CreateDirectoryRecursively(path2);
-            
+
                 if (blnSync)
                     // ReSharper disable once MethodHasAsyncOverload
-                    MyCharacter.Save(MyCharacter.FileName, false, false);
+                    MyCharacter.Save(MyCharacter.FileName, false, false, token);
                 else
                     await MyCharacter.SaveAsync(MyCharacter.FileName, false, false, token);
             }
@@ -743,7 +743,7 @@ namespace ChummerHub.Client.Sinners
             {
                 if (blnSync)
                     // ReSharper disable once MethodHasAsyncOverload
-                    MyCharacter.Save(tempfile, false, false);
+                    MyCharacter.Save(tempfile, false, false, token);
                 else
                     await MyCharacter.SaveAsync(tempfile, false, false, token);
             }
@@ -807,11 +807,11 @@ namespace ChummerHub.Client.Sinners
         }
 
 
-        public async Task<bool> UploadInBackground(ucSINnerShare.MyUserState myState)
+        public async Task<bool> UploadInBackground(ucSINnerShare.MyUserState myState, CancellationToken token = default)
         {
             try
             {
-                using (await CursorWait.NewAsync(PluginHandler.MainForm, true))
+                using (await CursorWait.NewAsync(PluginHandler.MainForm, true, token))
                 {
                     if (myState != null)
                     {
@@ -819,7 +819,7 @@ namespace ChummerHub.Client.Sinners
                         myState.myWorker?.ReportProgress(myState.CurrentProgress, myState);
                     }
                     PopulateTags();
-                    await PrepareModelAsync();
+                    await PrepareModelAsync(token);
                     if (myState != null)
                     {
                         myState.CurrentProgress += myState.ProgressSteps;
@@ -827,7 +827,7 @@ namespace ChummerHub.Client.Sinners
                         myState.myWorker?.ReportProgress(myState.CurrentProgress, myState);
                     }
 
-                    ResultSinnerPostSIN response = await Utils.PostSINnerAsync(this);
+                    ResultSinnerPostSIN response = await Utils.PostSINnerAsync(this, token);
                     if (response?.CallSuccess == true)
                     {
                         try
@@ -849,7 +849,7 @@ namespace ChummerHub.Client.Sinners
                                 myState.myWorker?.ReportProgress(myState.CurrentProgress, myState);
                             }
 
-                            ResultSINnerPut uploadresult = await Utils.UploadChummerFileAsync(this);
+                            ResultSINnerPut uploadresult = await Utils.UploadChummerFileAsync(this, token);
 
                             if (!uploadresult.CallSuccess)
                             {
