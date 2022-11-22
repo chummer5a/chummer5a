@@ -149,7 +149,8 @@ namespace Chummer.Backend.Skills
                     {
                         if (objOldAttribute == objNewAttribute)
                             return;
-                        Utils.RunWithoutThreadLock(
+                        Utils.RunWithoutThreadLock(new Action[]
+                        {
                             () =>
                             {
                                 if (objOldAttribute == null)
@@ -163,7 +164,8 @@ namespace Chummer.Backend.Skills
                                     return;
                                 using (objNewAttribute.LockObject.EnterWriteLock())
                                     objNewAttribute.PropertyChanged += OnLinkedAttributeChanged;
-                            });
+                            }
+                        }, token);
                     }
                     finally
                     {
@@ -1429,15 +1431,15 @@ namespace Chummer.Backend.Skills
                             x => x.ImproveType == Improvement.ImprovementType.Skill && x.Enabled, token: token)
                         .ConfigureAwait(false)).Sum(x => x.Maximum);
                 CharacterSettings objSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
-                int intBaseMax = await (IsKnowledgeSkill
-                    ? objSettings.GetMaxKnowledgeSkillRatingAsync(token)
-                    : objSettings.GetMaxSkillRatingAsync(token)).ConfigureAwait(false);
+                int intBaseMax = IsKnowledgeSkill
+                    ? await objSettings.GetMaxKnowledgeSkillRatingAsync(token).ConfigureAwait(false)
+                    : await objSettings.GetMaxSkillRatingAsync(token).ConfigureAwait(false);
                 if (!await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false) &&
                     !await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))
                 {
-                    intBaseMax = await (IsKnowledgeSkill
-                        ? objSettings.GetMaxKnowledgeSkillRatingCreateAsync(token)
-                        : objSettings.GetMaxSkillRatingCreateAsync(token)).ConfigureAwait(false);
+                    intBaseMax = IsKnowledgeSkill
+                        ? await objSettings.GetMaxKnowledgeSkillRatingCreateAsync(token).ConfigureAwait(false)
+                        : await objSettings.GetMaxSkillRatingCreateAsync(token).ConfigureAwait(false);
                 }
 
                 return intBaseMax + intOtherBonus;

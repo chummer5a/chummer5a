@@ -350,7 +350,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static XPathNavigator LoadXPath(string strFileName, IReadOnlyList<string> lstEnabledCustomDataPaths = null, string strLanguage = "", bool blnLoadFile = false, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => LoadXPathCoreAsync(true, strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile, token));
+            return Utils.SafelyRunSynchronously(() => LoadXPathCoreAsync(true, strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile, token), token);
         }
 
         /// <summary>
@@ -457,7 +457,7 @@ namespace Chummer
                 if (!blnDoLoad)
                 {
                     if (blnSync)
-                        blnDoLoad = !s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn);
+                        blnDoLoad = !s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn, token);
                     else
                     {
                         bool blnLoadSuccess;
@@ -474,7 +474,7 @@ namespace Chummer
                     {
                         // ReSharper disable once MethodHasAsyncOverload
                         xmlDocumentOfReturn = Load(strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile, token);
-                        blnLoadSuccess = s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn);
+                        blnLoadSuccess = s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn, token);
                     }
                     else
                     {
@@ -536,7 +536,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static XmlDocument Load(string strFileName, IReadOnlyList<string> lstEnabledCustomDataPaths = null, string strLanguage = "", bool blnLoadFile = false, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile, token));
+            return Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, strFileName, lstEnabledCustomDataPaths, strLanguage, blnLoadFile, token), token);
         }
 
         /// <summary>
@@ -615,7 +615,7 @@ namespace Chummer
                 if (blnSync)
                 {
                     // ReSharper disable MethodHasAsyncOverload
-                    if (!s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn))
+                    if (!s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn, token))
                     {
                         int intEmergencyRelease = 0;
                         xmlReferenceOfReturn = new XmlReference();
@@ -633,7 +633,7 @@ namespace Chummer
                             xmlReferenceOfReturn.Dispose();
 
                             // It somehow got added in the meantime, so let's fetch it again
-                            if (s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn))
+                            if (s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn, token))
                                 break;
                             // We're iterating the loop because we failed to get the reference, so we need to re-allocate our reference because it was in an out-argument above
                             xmlReferenceOfReturn = new XmlReference();
