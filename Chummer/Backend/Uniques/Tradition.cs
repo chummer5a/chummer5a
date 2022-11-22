@@ -45,7 +45,7 @@ namespace Chummer.Backend.Uniques
     /// A Tradition
     /// </summary>
     [HubClassTag("SourceID", true, "Name", "Extra")]
-    public sealed class Tradition : IHasInternalId, IHasName, IHasXmlDataNode, IHasSource, INotifyMultiplePropertyChanged, IHasLockObject
+    public sealed class Tradition : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasSource, INotifyMultiplePropertyChanged, IHasLockObject
     {
         private Guid _guiID;
         private Guid _guiSourceID;

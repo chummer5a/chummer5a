@@ -933,6 +933,10 @@ namespace Chummer
         private static void CheckIdNode(XmlNode xmlParentNode, ICollection<string> setDuplicateIDs, ICollection<string> lstItemsWithMalformedIDs, IDictionary<string, IList<string>> dicItemsWithIDs, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            // Do not check required or forbidden nodes because ids within those are always references to an entry, not a new entry
+            if (string.Equals(xmlParentNode.Name, "required", StringComparison.OrdinalIgnoreCase)
+                || string.Equals(xmlParentNode.Name, "forbidden", StringComparison.OrdinalIgnoreCase))
+                return;
             using (XmlNodeList xmlChildNodeList = xmlParentNode.SelectNodes("*"))
             {
                 if (!(xmlChildNodeList?.Count > 0))
@@ -941,12 +945,16 @@ namespace Chummer
                 foreach (XmlNode xmlLoopNode in xmlChildNodeList)
                 {
                     token.ThrowIfCancellationRequested();
+                    // Do not check required or forbidden nodes because ids within those are always references to an entry, not a new entry
+                    if (string.Equals(xmlLoopNode.Name, "required", StringComparison.OrdinalIgnoreCase)
+                        || string.Equals(xmlLoopNode.Name, "forbidden", StringComparison.OrdinalIgnoreCase))
+                        continue;
                     string strId = xmlLoopNode["id"]?.InnerText;
                     if (!string.IsNullOrEmpty(strId))
                     {
-                        strId = strId.ToUpperInvariant();
                         if (xmlLoopNode.Name == "knowledgeskilllevel")
                             continue; //TODO: knowledgeskilllevel node in lifemodules.xml uses ids instead of name references. Find a better way to manage this!
+                        strId = strId.ToUpperInvariant();
                         string strItemName = xmlLoopNode["name"]?.InnerText
                                              ?? xmlLoopNode["stage"]?.InnerText
                                              ?? xmlLoopNode["category"]?.InnerText

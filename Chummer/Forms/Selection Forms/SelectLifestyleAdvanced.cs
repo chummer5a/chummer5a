@@ -601,13 +601,11 @@ namespace Chummer
 
         private async void cmdAddQuality_Click(object sender, EventArgs e)
         {
-            string strBaseLifestyle = await cboBaseLifestyle.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false) ?? string.Empty;
             bool blnAddAgain;
             do
             {
                 using (ThreadSafeForm<SelectLifestyleQuality> frmSelectLifestyleQuality =
-                       await ThreadSafeForm<SelectLifestyleQuality>.GetAsync(() => new SelectLifestyleQuality(_objCharacter,
-                                                                                 strBaseLifestyle, _objLifestyle.LifestyleQualities)).ConfigureAwait(false))
+                       await ThreadSafeForm<SelectLifestyleQuality>.GetAsync(() => new SelectLifestyleQuality(_objCharacter, _objLifestyle)).ConfigureAwait(false))
                 {
                     // Don't do anything else if the form was canceled.
                     if (await frmSelectLifestyleQuality.ShowDialogSafeAsync(this).ConfigureAwait(false) == DialogResult.Cancel)

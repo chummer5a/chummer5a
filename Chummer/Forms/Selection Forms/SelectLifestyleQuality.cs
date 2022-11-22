@@ -25,11 +25,8 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using System.Xml;
 using System.Xml.XPath;
-using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
-using Chummer.Backend.Skills;
 
 namespace Chummer
 {
@@ -40,10 +37,9 @@ namespace Chummer
         private bool _blnAddAgain;
         private readonly Character _objCharacter;
         private string _strIgnoreQuality = string.Empty;
-        private readonly string _strSelectedLifestyle;
-        private readonly IReadOnlyCollection<LifestyleQuality> _lstExistingQualities;
+        private readonly Lifestyle _objParentLifestyle;
 
-        private readonly XmlDocument _objXmlDocument;
+        private readonly XPathNavigator _objXPathDocument;
 
         private List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
         private static readonly ReadOnlyCollection<string> s_LifestylesSorted = Array.AsReadOnly(new[] { "Street", "Squatter", "Low", "Medium", "High", "Luxury" });
@@ -51,42 +47,30 @@ namespace Chummer
 
         private static string _strSelectCategory = string.Empty;
 
-        private readonly XmlDocument _objMetatypeDocument;
-        private readonly XmlDocument _objCritterDocument;
-
         #region Control Events
 
-        public SelectLifestyleQuality(Character objCharacter, string strSelectedLifestyle, IReadOnlyCollection<LifestyleQuality> lstExistingQualities)
+        public SelectLifestyleQuality(Character objCharacter, Lifestyle objParentLifestyle)
         {
             Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstCategory);
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
             _objCharacter = objCharacter;
-            _strSelectedLifestyle = strSelectedLifestyle;
-            _lstExistingQualities = lstExistingQualities;
+            _objParentLifestyle = objParentLifestyle;
 
             // Load the Quality information.
-            _objXmlDocument = _objCharacter.LoadData("lifestyles.xml");
-            _objMetatypeDocument = _objCharacter.LoadData("metatypes.xml");
-            _objCritterDocument = _objCharacter.LoadData("critters.xml");
+            _objXPathDocument = _objCharacter.LoadDataXPath("lifestyles.xml");
         }
 
         private async void SelectLifestyleQuality_Load(object sender, EventArgs e)
         {
             // Populate the Quality Category list.
-            using (XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category"))
+            foreach (XPathNavigator objXmlCategory in await _objXPathDocument.SelectAndCacheExpressionAsync("/chummer/categories/category"))
             {
-                if (objXmlCategoryList?.Count > 0)
+                string strCategory = objXmlCategory.Value;
+                if (await AnyItemInList(strCategory).ConfigureAwait(false))
                 {
-                    foreach (XmlNode objXmlCategory in objXmlCategoryList)
-                    {
-                        string strCategory = objXmlCategory.InnerText;
-                        if (await AnyItemInList(strCategory).ConfigureAwait(false))
-                        {
-                            _lstCategory.Add(new ListItem(strCategory, objXmlCategory.Attributes?["translate"]?.InnerText ?? strCategory));
-                        }
-                    }
+                    _lstCategory.Add(new ListItem(strCategory, (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate"))?.Value ?? strCategory));
                 }
             }
 
@@ -136,7 +120,7 @@ namespace Chummer
                 return;
             }
 
-            XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + strSelectedLifestyleId.CleanXPath() + ']');
+            XPathNavigator objXmlQuality = _objXPathDocument.SelectSingleNode("/chummer/qualities/quality[id = " + strSelectedLifestyleId.CleanXPath() + ']');
             if (objXmlQuality == null)
             {
                 await tlpRight.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
@@ -154,10 +138,11 @@ namespace Chummer
                 await lblBP.DoThreadSafeAsync(x => x.Text = strBP).ConfigureAwait(false);
                 await lblBPLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strBP)).ConfigureAwait(false);
 
-                string strSource = objXmlQuality["source"]?.InnerText
+                string strSource = (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("source"))?.Value
                                    ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
-                string strPage = objXmlQuality["altpage"]?.InnerText ?? objXmlQuality["page"]?.InnerText
-                    ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
+                string strPage = (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("altpage"))?.Value
+                                 ?? (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("page"))?.Value
+                                 ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
                 {
                     SourceString objSourceString = await SourceString.GetSourceStringAsync(
@@ -172,11 +157,12 @@ namespace Chummer
                     await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
                 }
 
-                if (objXmlQuality["allowed"] != null)
+                string strAllowed = (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("allowed"))?.Value;
+                if (!string.IsNullOrEmpty(strAllowed))
                 {
                     await lblMinimum.DoThreadSafeAsync(x =>
                     {
-                        x.Text = GetMinimumRequirement(objXmlQuality["allowed"].InnerText);
+                        x.Text = GetMinimumRequirement(strAllowed);
                         x.Visible = true;
                     }).ConfigureAwait(false);
                     await lblMinimumLabel.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
@@ -187,20 +173,19 @@ namespace Chummer
                     await lblMinimumLabel.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
                 }
 
-                if (objXmlQuality["cost"] != null)
+                string strCost = (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("cost"))?.Value;
+                if (!string.IsNullOrEmpty(strCost))
                 {
-                    string strCost;
                     if (chkFree.Checked)
                     {
                         strCost = await LanguageManager.GetStringAsync("Checkbox_Free").ConfigureAwait(false);
                     }
-                    else if (objXmlQuality["allowed"]?.InnerText.Contains(_strSelectedLifestyle) == true)
+                    else if (strAllowed?.Contains(_objParentLifestyle.BaseLifestyle) == true)
                     {
                         strCost = await LanguageManager.GetStringAsync("String_LifestyleFreeNuyen").ConfigureAwait(false);
                     }
                     else
                     {
-                        strCost = objXmlQuality["cost"]?.InnerText;
                         (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost).ConfigureAwait(false);
                         decimal decCost = blnIsSuccess ? Convert.ToDecimal((double) objProcess) : 0;
                         strCost = decCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
@@ -397,7 +382,7 @@ namespace Chummer
                     }
                 }
 
-                if (_strSelectedLifestyle != "Bolt Hole")
+                if (_objParentLifestyle.BaseLifestyle != "Bolt Hole")
                 {
                     sbdFilter.Append(" and (name != \"Dug a Hole\")");
                 }
@@ -412,32 +397,28 @@ namespace Chummer
             List<ListItem> lstLifestyleQuality = blnDoUIUpdate ? Utils.ListItemListPool.Get() : null;
             try
             {
-                using (XmlNodeList objXmlQualityList
-                       = _objXmlDocument.SelectNodes("/chummer/qualities/quality" + strFilter))
+                bool blnLimitList = await chkLimitList.DoThreadSafeFuncAsync(x => x.Checked, token: token)
+                                                      .ConfigureAwait(false);
+                foreach (XPathNavigator objXmlQuality in _objXPathDocument.Select("/chummer/qualities/quality" + strFilter))
                 {
-                    if (objXmlQualityList?.Count > 0)
+                    string strId = (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("id", token))?.Value;
+                    if (string.IsNullOrEmpty(strId))
+                        continue;
+                    if (!blnDoUIUpdate)
                     {
-                        bool blnLimitList = await chkLimitList.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
-                        foreach (XmlNode objXmlQuality in objXmlQualityList)
-                        {
-                            string strId = objXmlQuality["id"]?.InnerText;
-                            if (string.IsNullOrEmpty(strId))
-                                continue;
-                            if (!blnDoUIUpdate)
-                            {
-                                return true;
-                            }
-
-                            if (blnLimitList && !await RequirementMet(objXmlQuality, false, token).ConfigureAwait(false))
-                                continue;
-
-                            lstLifestyleQuality.Add(
-                                new ListItem(
-                                    strId,
-                                    objXmlQuality["translate"]?.InnerText ?? objXmlQuality["name"]?.InnerText
-                                    ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false)));
-                        }
+                        return true;
                     }
+
+                    if (blnLimitList && !objXmlQuality.RequirementsMet(_objCharacter, _objParentLifestyle, _strIgnoreQuality))
+                        continue;
+
+                    lstLifestyleQuality.Add(
+                        new ListItem(
+                            strId,
+                            (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("translate", token))?.Value
+                            ?? (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("name", token))?.Value
+                            ?? await LanguageManager.GetStringAsync("String_Unknown", token: token)
+                                                    .ConfigureAwait(false)));
                 }
 
                 if (blnDoUIUpdate)
@@ -474,961 +455,24 @@ namespace Chummer
             string strSelectedSourceIDString = await lstLifestyleQualities.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strSelectedSourceIDString))
                 return;
-            XmlNode objNode = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + strSelectedSourceIDString.CleanXPath() + ']');
-            if (objNode == null || !await RequirementMet(objNode, true, token: token).ConfigureAwait(false))
+            XPathNavigator objNode = _objXPathDocument.SelectSingleNode("/chummer/qualities/quality[id = " + strSelectedSourceIDString.CleanXPath() + ']');
+            if (objNode == null || !objNode.RequirementsMet(_objCharacter, _objParentLifestyle,
+                                                            (await objNode.SelectSingleNodeAndCacheExpressionAsync(
+                                                                "translate", token))?.Value
+                                                            ?? (await objNode.SelectSingleNodeAndCacheExpressionAsync(
+                                                                "name", token))?.Value, _strIgnoreQuality))
                 return;
 
             _strSelectedQuality = strSelectedSourceIDString;
             _strSelectCategory = (GlobalSettings.SearchInCategoryOnly || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength, token: token).ConfigureAwait(false) == 0)
                 ? await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false)
-                : objNode["category"]?.InnerText;
+                : (await objNode.SelectSingleNodeAndCacheExpressionAsync("category", token))?.Value;
 
             await this.DoThreadSafeAsync(x =>
             {
                 x.DialogResult = DialogResult.OK;
                 x.Close();
             }, token: token).ConfigureAwait(false);
-        }
-
-        /// <summary>
-        /// Check if the Quality's requirements/restrictions are being met.
-        /// </summary>
-        /// <param name="objXmlQuality">XmlNode of the Quality.</param>
-        /// <param name="blnShowMessage">Whether or not a message should be shown if the requirements are not met.</param>
-        /// <param name="token">Cancellation token to listen to.</param>
-        private async ValueTask<bool> RequirementMet(XmlNode objXmlQuality, bool blnShowMessage, CancellationToken token = default)
-        {
-            // Ignore the rules.
-            if (await _objCharacter.GetIgnoreRulesAsync(token).ConfigureAwait(false))
-                return true;
-
-            // See if the character already has this Quality and whether or not multiple copies are allowed.
-            if (objXmlQuality["limit"]?.InnerText != bool.FalseString)
-            {
-                // Multiples aren't allowed, so make sure the character does not already have it.
-                foreach (LifestyleQuality objQuality in _lstExistingQualities)
-                {
-                    if (objXmlQuality["allowmultiple"] == null && objQuality.Name == objXmlQuality["name"].InnerText)
-                    {
-                        if (blnShowMessage)
-                            Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectQuality_QualityLimit", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_SelectQuality_QualityLimit", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return false;
-                    }
-                }
-            }
-
-            if (objXmlQuality.InnerXml.Contains("forbidden"))
-            {
-                bool blnRequirementForbidden = false;
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                              out StringBuilder sbdForbidden))
-                {
-                    // Loop through the oneof requirements.
-                    using (XmlNodeList objXmlForbiddenList = objXmlQuality.SelectNodes("forbidden/oneof"))
-                    {
-                        foreach (XmlNode objXmlOneOf in objXmlForbiddenList)
-                        {
-                            using (XmlNodeList objXmlOneOfList = objXmlOneOf.ChildNodes)
-                            {
-                                foreach (XmlNode objXmlForbidden in objXmlOneOfList)
-                                {
-                                    switch (objXmlForbidden.Name)
-                                    {
-                                        case "quality":
-                                            // Run through all of the Qualities the character has and see if the current forbidden item exists.
-                                            // If so, turn on the RequirementForbidden flag so it cannot be selected.
-                                            foreach (LifestyleQuality objQuality in _lstExistingQualities)
-                                            {
-                                                if (objQuality.Name == objXmlForbidden.InnerText
-                                                    && objQuality.Name != _strIgnoreQuality)
-                                                {
-                                                    blnRequirementForbidden = true;
-                                                    sbdForbidden.AppendLine().Append('\t')
-                                                                .Append(await objQuality.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
-                                                }
-                                            }
-
-                                            break;
-
-                                        case "characterquality":
-                                            // Run through all of the Qualities the character has and see if the current forbidden item exists.
-                                            // If so, turn on the RequirementForbidden flag so it cannot be selected.
-                                            foreach (Quality objQuality in _objCharacter.Qualities)
-                                            {
-                                                if (objQuality.Name == objXmlForbidden.InnerText
-                                                    && objQuality.Name != _strIgnoreQuality)
-                                                {
-                                                    blnRequirementForbidden = true;
-                                                    sbdForbidden.AppendLine().Append('\t')
-                                                                .Append(await objQuality.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
-                                                }
-                                            }
-
-                                            break;
-
-                                        case "metatype":
-                                            // Check the Metatype restriction.
-                                            if (objXmlForbidden.InnerText == _objCharacter.Metatype)
-                                            {
-                                                blnRequirementForbidden = true;
-                                                XmlNode objNode
-                                                    = _objMetatypeDocument.SelectSingleNode(
-                                                          "/chummer/metatypes/metatype[name = "
-                                                          + objXmlForbidden.InnerText.CleanXPath() + ']') ??
-                                                      _objCritterDocument.SelectSingleNode(
-                                                          "/chummer/metatypes/metatype[name = "
-                                                          + objXmlForbidden.InnerText.CleanXPath() + ']');
-                                                sbdForbidden.AppendLine().Append('\t')
-                                                            .Append(
-                                                                objNode["translate"]?.InnerText
-                                                                ?? objXmlForbidden.InnerText);
-                                            }
-
-                                            break;
-
-                                        case "metatypecategory":
-                                            // Check the Metatype Category restriction.
-                                            if (objXmlForbidden.InnerText == _objCharacter.MetatypeCategory)
-                                            {
-                                                blnRequirementForbidden = true;
-                                                XmlNode objNode
-                                                    = _objMetatypeDocument.SelectSingleNode(
-                                                          "/chummer/categories/category[. = "
-                                                          + objXmlForbidden.InnerText.CleanXPath() + ']') ??
-                                                      _objCritterDocument.SelectSingleNode(
-                                                          "/chummer/categories/category[. = "
-                                                          + objXmlForbidden.InnerText.CleanXPath() + ']');
-                                                sbdForbidden.AppendLine().Append('\t').Append(
-                                                    objNode.Attributes["translate"]?.InnerText
-                                                    ?? objXmlForbidden.InnerText);
-                                            }
-
-                                            break;
-
-                                        case "metavariant":
-                                            // Check the Metavariant restriction.
-                                            if (objXmlForbidden.InnerText == _objCharacter.Metavariant)
-                                            {
-                                                blnRequirementForbidden = true;
-                                                XmlNode objNode
-                                                    = _objMetatypeDocument.SelectSingleNode(
-                                                          "/chummer/metatypes/metatype/metavariants/metavariant[name = "
-                                                          + objXmlForbidden.InnerText.CleanXPath() + ']') ??
-                                                      _objCritterDocument.SelectSingleNode(
-                                                          "/chummer/metatypes/metatype/metavariants/metavariant[name = "
-                                                          + objXmlForbidden.InnerText.CleanXPath() + ']');
-                                                sbdForbidden.AppendLine().Append('\t')
-                                                            .Append(
-                                                                objNode["translate"]?.InnerText
-                                                                ?? objXmlForbidden.InnerText);
-                                            }
-
-                                            break;
-
-                                        case "metagenic":
-                                            // Check to see if the character has a Metagenic Quality.
-                                            foreach (Quality objQuality in _objCharacter.Qualities)
-                                            {
-                                                XPathNavigator objInnerNode = (await objQuality.GetNodeXPathAsync(token: token)
-                                                    .ConfigureAwait(false));
-                                                if (objInnerNode != null
-                                                    && (await objInnerNode.SelectSingleNodeAndCacheExpressionAsync(
-                                                        "metagenic", token).ConfigureAwait(false))?.Value == bool.TrueString)
-                                                {
-                                                    blnRequirementForbidden = true;
-                                                    sbdForbidden.AppendLine().Append('\t')
-                                                                .Append(await objQuality.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
-                                                    break;
-                                                }
-                                            }
-
-                                            break;
-                                    }
-                                }
-                            }
-                        }
-                    }
-
-                    // The character is not allowed to take the Quality, so display a message and uncheck the item.
-                    if (blnRequirementForbidden)
-                    {
-                        if (blnShowMessage)
-                            Program.ShowMessageBox(this,
-                                                            await LanguageManager.GetStringAsync(
-                                                                "Message_SelectQuality_QualityRestriction", token: token).ConfigureAwait(false)
-                                                            + sbdForbidden,
-                                                            await LanguageManager.GetStringAsync(
-                                                                "MessageTitle_SelectQuality_QualityRestriction", token: token).ConfigureAwait(false),
-                                                            MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        return false;
-                    }
-                }
-            }
-
-            if (objXmlQuality.InnerXml.Contains("required"))
-            {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                              out StringBuilder sbdRequirement))
-                {
-                    bool blnRequirementMet = true;
-
-                    XmlDocument objXmlQualityDocument = await _objCharacter.LoadDataAsync("qualities.xml", token: token).ConfigureAwait(false);
-                    // Loop through the oneof requirements.
-                    using (XmlNodeList objXmlRequiredList = objXmlQuality.SelectNodes("required/oneof"))
-                    {
-                        foreach (XmlNode objXmlOneOf in objXmlRequiredList)
-                        {
-                            bool blnOneOfMet = false;
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                          out StringBuilder sbdThisRequirement))
-                            {
-                                sbdThisRequirement.AppendLine()
-                                                  .Append(await LanguageManager.GetStringAsync(
-                                                              "Message_SelectQuality_OneOf", token: token).ConfigureAwait(false));
-                                using (XmlNodeList objXmlOneOfList = objXmlOneOf.ChildNodes)
-                                {
-                                    foreach (XmlNode objXmlRequired in objXmlOneOfList)
-                                    {
-                                        switch (objXmlRequired.Name)
-                                        {
-                                            case "quality":
-                                                // Run through all of the Qualities the character has and see if the current required item exists.
-                                                // If so, turn on the RequirementMet flag so it can be selected.
-                                                foreach (LifestyleQuality objQuality in _lstExistingQualities)
-                                                {
-                                                    if (objQuality.Name == objXmlRequired.InnerText)
-                                                        blnOneOfMet = true;
-                                                }
-
-                                                if (!blnOneOfMet)
-                                                {
-                                                    XmlNode objNode = _objXmlDocument.SelectSingleNode(
-                                                        "/chummer/qualities/quality[name = "
-                                                        + objXmlRequired.InnerText.CleanXPath()
-                                                        +
-                                                        "]");
-                                                    sbdThisRequirement.AppendLine().Append('\t')
-                                                                      .Append(objNode["translate"]?.InnerText
-                                                                              ?? objXmlRequired.InnerText);
-                                                }
-
-                                                break;
-
-                                            case "characterquality":
-
-                                                // Run through all of the Qualities the character has and see if the current required item exists.
-                                                // If so, turn on the RequirementMet flag so it can be selected.
-                                                foreach (Quality objQuality in _objCharacter.Qualities)
-                                                {
-                                                    if (objQuality.Name == objXmlRequired.InnerText)
-                                                        blnOneOfMet = true;
-                                                }
-
-                                                if (!blnOneOfMet)
-                                                {
-                                                    XmlNode objNode = objXmlQualityDocument.SelectSingleNode(
-                                                        "/chummer/qualities/quality[name = "
-                                                        + objXmlRequired.InnerText.CleanXPath()
-                                                        +
-                                                        "]");
-                                                    sbdThisRequirement.AppendLine().Append('\t')
-                                                                      .Append(objNode["translate"]?.InnerText
-                                                                              ?? objXmlRequired.InnerText);
-                                                }
-
-                                                break;
-
-                                            case "metatype":
-                                                // Check the Metatype requirement.
-                                                if (objXmlRequired.InnerText == _objCharacter.Metatype)
-                                                    blnOneOfMet = true;
-                                                else
-                                                {
-                                                    XmlNode objNode =
-                                                        _objMetatypeDocument.SelectSingleNode(
-                                                            "/chummer/metatypes/metatype[name = " +
-                                                            objXmlRequired.InnerText.CleanXPath() +
-                                                            "]") ??
-                                                        _objCritterDocument.SelectSingleNode(
-                                                            "/chummer/metatypes/metatype[name = " +
-                                                            objXmlRequired.InnerText.CleanXPath() +
-                                                            "]");
-                                                    sbdThisRequirement.AppendLine().Append('\t')
-                                                                      .Append(objNode["translate"]?.InnerText
-                                                                              ?? objXmlRequired.InnerText);
-                                                }
-
-                                                break;
-
-                                            case "metatypecategory":
-                                                // Check the Metatype Category requirement.
-                                                if (objXmlRequired.InnerText == _objCharacter.MetatypeCategory)
-                                                    blnOneOfMet = true;
-                                                else
-                                                {
-                                                    XmlNode objNode =
-                                                        _objMetatypeDocument.SelectSingleNode(
-                                                            "/chummer/categories/category[. = " +
-                                                            objXmlRequired.InnerText.CleanXPath() +
-                                                            "]") ??
-                                                        _objCritterDocument.SelectSingleNode(
-                                                            "/chummer/categories/category[. = " +
-                                                            objXmlRequired.InnerText.CleanXPath() +
-                                                            "]");
-                                                    sbdThisRequirement.AppendLine().Append('\t')
-                                                                      .Append(objNode["translate"]?.InnerText
-                                                                              ?? objXmlRequired.InnerText);
-                                                }
-
-                                                break;
-
-                                            case "metavariant":
-                                                // Check the Metavariant requirement.
-                                                if (objXmlRequired.InnerText == _objCharacter.Metavariant)
-                                                    blnOneOfMet = true;
-                                                else
-                                                {
-                                                    XmlNode objNode =
-                                                        _objMetatypeDocument.SelectSingleNode(
-                                                            "/chummer/metatypes/metatype/metavariants/metavariant[name = "
-                                                            +
-                                                            objXmlRequired.InnerText.CleanXPath() + ']') ??
-                                                        _objCritterDocument.SelectSingleNode(
-                                                            "/chummer/metatypes/metatype/metavariants/metavariant[name = "
-                                                            +
-                                                            objXmlRequired.InnerText.CleanXPath() + ']');
-                                                    sbdThisRequirement.AppendLine().Append('\t')
-                                                                      .Append(objNode["translate"]?.InnerText
-                                                                              ?? objXmlRequired.InnerText);
-                                                }
-
-                                                break;
-
-                                            case "inherited":
-                                                sbdThisRequirement.AppendLine().Append('\t')
-                                                                  .Append(
-                                                                      await LanguageManager.GetStringAsync(
-                                                                          "Message_SelectQuality_Inherit", token: token).ConfigureAwait(false));
-                                                break;
-
-                                            case "careerkarma":
-                                                // Check Career Karma requirement.
-                                                if (_objCharacter.CareerKarma >= Convert.ToInt32(
-                                                        objXmlRequired.InnerText,
-                                                        GlobalSettings.InvariantCultureInfo))
-                                                    blnOneOfMet = true;
-                                                else
-                                                    sbdThisRequirement.AppendLine().Append('\t').AppendFormat(
-                                                        GlobalSettings.CultureInfo,
-                                                        await LanguageManager.GetStringAsync(
-                                                            "Message_SelectQuality_RequireKarma", token: token).ConfigureAwait(false),
-                                                        objXmlRequired.InnerText);
-                                                break;
-
-                                            case "ess":
-                                                // Check Essence requirement.
-                                                if (objXmlRequired.InnerText.StartsWith('-'))
-                                                {
-                                                    // Essence must be less than the value.
-                                                    if (await _objCharacter.EssenceAsync(token: token).ConfigureAwait(false) < Convert.ToDecimal(
-                                                            objXmlRequired.InnerText.TrimStart('-'),
-                                                            GlobalSettings.InvariantCultureInfo))
-                                                        blnOneOfMet = true;
-                                                }
-                                                else
-                                                {
-                                                    // Essence must be equal to or greater than the value.
-                                                    if (await _objCharacter.EssenceAsync(token: token).ConfigureAwait(false)
-                                                        >= Convert.ToDecimal(objXmlRequired.InnerText,
-                                                                             GlobalSettings.InvariantCultureInfo))
-                                                        blnOneOfMet = true;
-                                                }
-
-                                                break;
-
-                                            case "skill":
-                                                // Check if the character has the required Skill.
-                                                Skill objSkill
-                                                    = await _objCharacter.SkillsSection.GetActiveSkillAsync(
-                                                        objXmlRequired["name"].InnerText, token).ConfigureAwait(false);
-                                                if ((objSkill?.Rating ?? 0)
-                                                    >= Convert.ToInt32(objXmlRequired["val"].InnerText,
-                                                                       GlobalSettings.InvariantCultureInfo))
-                                                {
-                                                    blnOneOfMet = true;
-                                                }
-
-                                                break;
-
-                                            case "attribute":
-                                                // Check to see if an Attribute meets a requirement.
-                                                CharacterAttrib objAttribute
-                                                    = await _objCharacter.GetAttributeAsync(objXmlRequired["name"].InnerText, token: token).ConfigureAwait(false);
-                                                // Make sure the Attribute's total value meets the requirement.
-                                                if (objXmlRequired["total"] != null && await objAttribute.GetTotalValueAsync(token).ConfigureAwait(false)
-                                                    >= Convert.ToInt32(objXmlRequired["total"].InnerText,
-                                                                       GlobalSettings.InvariantCultureInfo))
-                                                {
-                                                    blnOneOfMet = true;
-                                                }
-
-                                                break;
-
-                                            case "attributetotal":
-                                                // Check if the character's Attributes add up to a particular total.
-                                                string strAttributes = objXmlRequired["attributes"].InnerText;
-                                                strAttributes
-                                                    = await _objCharacter.AttributeSection
-                                                                         .ProcessAttributesInXPathAsync(strAttributes, token: token).ConfigureAwait(false);
-                                                (bool blnIsSuccess, object objProcess)
-                                                    = await CommonFunctions.EvaluateInvariantXPathAsync(
-                                                        strAttributes, token).ConfigureAwait(false);
-                                                if ((blnIsSuccess ? ((double) objProcess).StandardRound() : 0)
-                                                    >= Convert.ToInt32(objXmlRequired["val"].InnerText,
-                                                                       GlobalSettings.InvariantCultureInfo))
-                                                    blnOneOfMet = true;
-                                                break;
-
-                                            case "skillgrouptotal":
-                                            {
-                                                // Check if the total combined Ratings of Skill Groups adds up to a particular total.
-                                                int intTotal = 0;
-                                                foreach (string strGroup in objXmlRequired["skillgroups"].InnerText
-                                                             .SplitNoAlloc('+', StringSplitOptions.RemoveEmptyEntries))
-                                                {
-                                                    foreach (SkillGroup objGroup in _objCharacter.SkillsSection
-                                                                 .SkillGroups)
-                                                    {
-                                                        if (objGroup.Name == strGroup)
-                                                        {
-                                                            intTotal += objGroup.Rating;
-                                                            break;
-                                                        }
-                                                    }
-                                                }
-
-                                                if (intTotal >= Convert.ToInt32(objXmlRequired["val"].InnerText,
-                                                        GlobalSettings.InvariantCultureInfo))
-                                                    blnOneOfMet = true;
-                                            }
-                                                break;
-
-                                            case "lifestyle":
-                                                if (_strSelectedLifestyle == objXmlRequired.InnerText)
-                                                    blnOneOfMet = true;
-                                                break;
-
-                                            case "cyberwares":
-                                            {
-                                                // Check to see if the character has a number of the required Cyberware/Bioware items.
-                                                int intTotal = 0;
-
-                                                // Check Cyberware.
-                                                foreach (XmlNode objXmlCyberware in objXmlRequired.SelectNodes(
-                                                             "cyberware"))
-                                                {
-                                                    foreach (Cyberware objCyberware in _objCharacter.Cyberware.Where(
-                                                                 objCyberware =>
-                                                                     objCyberware.Name == objXmlCyberware.InnerText))
-                                                    {
-                                                        string strSelect = objXmlCyberware.Attributes["select"]
-                                                            ?.InnerText;
-                                                        if (string.IsNullOrEmpty(strSelect)
-                                                            || strSelect == objCyberware.Extra)
-                                                        {
-                                                            intTotal++;
-                                                            break;
-                                                        }
-                                                    }
-                                                }
-
-                                                // Check Bioware.
-                                                foreach (XmlNode objXmlBioware in objXmlRequired.SelectNodes("bioware"))
-                                                {
-                                                    if (await _objCharacter.Cyberware.AnyAsync(
-                                                            objCyberware =>
-                                                                objCyberware.Name == objXmlBioware.InnerText, token: token).ConfigureAwait(false))
-                                                    {
-                                                        intTotal++;
-                                                    }
-                                                }
-
-                                                // Check Cyberware name that contain a straing.
-                                                foreach (XmlNode objXmlCyberware in objXmlRequired.SelectNodes(
-                                                             "cyberwarecontains"))
-                                                {
-                                                    foreach (Cyberware objCyberware in _objCharacter.Cyberware.Where(
-                                                                 objCyberware =>
-                                                                     objCyberware.Name.Contains(
-                                                                         objXmlCyberware.InnerText)))
-                                                    {
-                                                        string strSelect = objXmlCyberware.Attributes["select"]
-                                                            ?.InnerText;
-                                                        if (string.IsNullOrEmpty(strSelect)
-                                                            || strSelect == objCyberware.Extra)
-                                                        {
-                                                            intTotal++;
-                                                            break;
-                                                        }
-                                                    }
-                                                }
-
-                                                // Check Bioware name that contain a straing.
-                                                foreach (XmlNode objXmlCyberware in objXmlRequired.SelectNodes(
-                                                             "biowarecontains"))
-                                                {
-                                                    foreach (Cyberware objCyberware in _objCharacter.Cyberware)
-                                                    {
-                                                        if (objCyberware.Name.Contains(objXmlCyberware.InnerText))
-                                                        {
-                                                            string strSelect = objXmlCyberware.Attributes["select"]
-                                                                ?.InnerText;
-                                                            if (string.IsNullOrEmpty(strSelect)
-                                                                || strSelect == objCyberware.Extra)
-                                                            {
-                                                                intTotal++;
-                                                                break;
-                                                            }
-                                                        }
-                                                    }
-                                                }
-
-                                                // Check for Cyberware Plugins.
-                                                foreach (XmlNode objXmlCyberware in objXmlRequired.SelectNodes(
-                                                             "cyberwareplugin"))
-                                                {
-                                                    foreach (Cyberware objCyberware in _objCharacter.Cyberware)
-                                                    {
-                                                        if (await objCyberware.Children.AnyAsync(
-                                                                objPlugin =>
-                                                                    objPlugin.Name == objXmlCyberware.InnerText, token: token).ConfigureAwait(false))
-                                                        {
-                                                            intTotal++;
-                                                        }
-                                                    }
-                                                }
-
-                                                // Check for Cyberware Categories.
-                                                foreach (XmlNode objXmlCyberware in objXmlRequired.SelectNodes(
-                                                             "cyberwarecategory"))
-                                                {
-                                                    intTotal += await _objCharacter.Cyberware.CountAsync(objCyberware =>
-                                                        objCyberware.Category == objXmlCyberware.InnerText, token: token).ConfigureAwait(false);
-                                                }
-
-                                                if (intTotal >= Convert.ToInt32(objXmlRequired["count"].InnerText,
-                                                        GlobalSettings.InvariantCultureInfo))
-                                                    blnOneOfMet = true;
-                                            }
-                                                break;
-
-                                            case "streetcredvsnotoriety":
-                                                // Street Cred must be higher than Notoriety.
-                                                if (_objCharacter.StreetCred >= _objCharacter.Notoriety)
-                                                    blnOneOfMet = true;
-                                                break;
-
-                                            case "damageresistance":
-                                                // Damage Resistance must be a particular value.
-                                                if (await _objCharacter.BOD.GetTotalValueAsync(token).ConfigureAwait(false)
-                                                    + await ImprovementManager.ValueOfAsync(_objCharacter,
-                                                        Improvement.ImprovementType
-                                                                   .DamageResistance, token: token).ConfigureAwait(false)
-                                                    >= Convert.ToInt32(objXmlRequired.InnerText,
-                                                                       GlobalSettings.InvariantCultureInfo))
-                                                    blnOneOfMet = true;
-                                                break;
-                                        }
-                                    }
-                                }
-
-                                // Update the flag for requirements met.
-                                blnRequirementMet = blnRequirementMet && blnOneOfMet;
-                                sbdRequirement.Append(sbdThisRequirement);
-                            }
-                        }
-                    }
-
-                    // Loop through the allof requirements.
-                    using (XmlNodeList objXmlRequiredList = objXmlQuality.SelectNodes("required/allof"))
-                    {
-                        foreach (XmlNode objXmlAllOf in objXmlRequiredList)
-                        {
-                            bool blnAllOfMet = true;
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                          out StringBuilder sbdThisRequirement))
-                            {
-                                sbdThisRequirement.AppendLine()
-                                                  .Append(await LanguageManager.GetStringAsync(
-                                                              "Message_SelectQuality_AllOf", token: token).ConfigureAwait(false));
-                                using (XmlNodeList objXmlAllOfList = objXmlAllOf.ChildNodes)
-                                {
-                                    foreach (XmlNode objXmlRequired in objXmlAllOfList)
-                                    {
-                                        bool blnFound = false;
-                                        switch (objXmlRequired.Name)
-                                        {
-                                            case "quality":
-
-                                                // Run through all of the Qualities the character has and see if the current required item exists.
-                                                // If so, turn on the RequirementMet flag so it can be selected.
-                                                foreach (LifestyleQuality objQuality in _lstExistingQualities)
-                                                {
-                                                    if (objQuality.Name == objXmlRequired.InnerText)
-                                                        blnFound = true;
-                                                }
-
-                                                if (!blnFound)
-                                                {
-                                                    XmlNode objNode = _objXmlDocument.SelectSingleNode(
-                                                        "/chummer/qualities/quality[name = "
-                                                        + objXmlRequired.InnerText.CleanXPath()
-                                                        +
-                                                        "]/translate");
-                                                    sbdThisRequirement.AppendLine().Append('\t')
-                                                                      .Append(
-                                                                          objNode?.InnerText
-                                                                          ?? objXmlRequired.InnerText);
-                                                }
-
-                                                break;
-
-                                            case "metatype":
-                                                // Check the Metatype requirement.
-                                                if (objXmlRequired.InnerText == _objCharacter.Metatype)
-                                                    blnFound = true;
-                                                else
-                                                {
-                                                    XmlNode objNode =
-                                                        _objMetatypeDocument.SelectSingleNode(
-                                                            "/chummer/metatypes/metatype[name = " +
-                                                            objXmlRequired.InnerText.CleanXPath() +
-                                                            "]") ??
-                                                        _objCritterDocument.SelectSingleNode(
-                                                            "/chummer/metatypes/metatype[name = " +
-                                                            objXmlRequired.InnerText.CleanXPath() +
-                                                            "]");
-                                                    sbdThisRequirement.AppendLine().Append('\t')
-                                                                      .Append(objNode["translate"]?.InnerText ??
-                                                                              objXmlRequired.InnerText);
-                                                }
-
-                                                break;
-
-                                            case "metatypecategory":
-                                                // Check the Metatype Category requirement.
-                                                if (objXmlRequired.InnerText == _objCharacter.MetatypeCategory)
-                                                    blnFound = true;
-                                                else
-                                                {
-                                                    XmlNode objNode =
-                                                        _objMetatypeDocument.SelectSingleNode(
-                                                            "/chummer/categories/category[. = " +
-                                                            objXmlRequired.InnerText.CleanXPath() +
-                                                            "]") ??
-                                                        _objCritterDocument.SelectSingleNode(
-                                                            "/chummer/categories/category[. = " +
-                                                            objXmlRequired.InnerText.CleanXPath() +
-                                                            "]");
-                                                    sbdThisRequirement.AppendLine().Append('\t')
-                                                                      .Append(objNode["translate"]?.InnerText ??
-                                                                              objXmlRequired.InnerText);
-                                                }
-
-                                                break;
-
-                                            case "metavariant":
-                                                // Check the Metavariant requirement.
-                                                if (objXmlRequired.InnerText == _objCharacter.Metavariant)
-                                                    blnFound = true;
-                                                else
-                                                {
-                                                    XmlNode objNode =
-                                                        _objMetatypeDocument.SelectSingleNode(
-                                                            "/chummer/metatypes/metatype/metavariants/metavariant[name = "
-                                                            +
-                                                            objXmlRequired.InnerText.CleanXPath() + ']') ??
-                                                        _objCritterDocument.SelectSingleNode(
-                                                            "/chummer/metatypes/metatype/metavariants/metavariant[name = "
-                                                            +
-                                                            objXmlRequired.InnerText.CleanXPath() + ']');
-                                                    sbdThisRequirement.AppendLine().Append('\t')
-                                                                      .Append(objNode["translate"]?.InnerText
-                                                                              ?? objXmlRequired.InnerText);
-                                                }
-
-                                                break;
-
-                                            case "inherited":
-                                                sbdThisRequirement.AppendLine().Append('\t')
-                                                                  .Append(
-                                                                      await LanguageManager.GetStringAsync(
-                                                                          "Message_SelectQuality_Inherit", token: token).ConfigureAwait(false));
-                                                break;
-
-                                            case "careerkarma":
-                                                // Check Career Karma requirement.
-                                                if (_objCharacter.CareerKarma >= Convert.ToInt32(
-                                                        objXmlRequired.InnerText,
-                                                        GlobalSettings.InvariantCultureInfo))
-                                                    blnFound = true;
-                                                else
-                                                    sbdThisRequirement.AppendLine().Append('\t').AppendFormat(
-                                                        GlobalSettings.CultureInfo,
-                                                        await LanguageManager.GetStringAsync(
-                                                            "Message_SelectQuality_RequireKarma", token: token).ConfigureAwait(false),
-                                                        objXmlRequired.InnerText);
-                                                break;
-
-                                            case "ess":
-                                                // Check Essence requirement.
-                                                if (objXmlRequired.InnerText.StartsWith('-'))
-                                                {
-                                                    // Essence must be less than the value.
-                                                    if (await _objCharacter.EssenceAsync(token: token).ConfigureAwait(false) < Convert.ToDecimal(
-                                                            objXmlRequired.InnerText.TrimStart('-'),
-                                                            GlobalSettings.InvariantCultureInfo))
-                                                        blnFound = true;
-                                                }
-                                                else
-                                                {
-                                                    // Essence must be equal to or greater than the value.
-                                                    if (await _objCharacter.EssenceAsync(token: token).ConfigureAwait(false)
-                                                        >= Convert.ToDecimal(objXmlRequired.InnerText,
-                                                                             GlobalSettings.InvariantCultureInfo))
-                                                        blnFound = true;
-                                                }
-
-                                                break;
-
-                                            case "skill":
-                                                // Check if the character has the required Skill.
-                                                Skill objSkill
-                                                    = await _objCharacter.SkillsSection.GetActiveSkillAsync(
-                                                        objXmlRequired["name"].InnerText, token).ConfigureAwait(false);
-                                                if ((objSkill?.Rating ?? 0)
-                                                    >= Convert.ToInt32(objXmlRequired["val"].InnerText,
-                                                                       GlobalSettings.InvariantCultureInfo))
-                                                {
-                                                    blnFound = true;
-                                                }
-
-                                                break;
-
-                                            case "attribute":
-                                                // Check to see if an Attribute meets a requirement.
-                                                CharacterAttrib objAttribute
-                                                    = await _objCharacter.GetAttributeAsync(objXmlRequired["name"].InnerText, token: token).ConfigureAwait(false);
-                                                // Make sure the Attribute's total value meets the requirement.
-                                                if (objXmlRequired["total"] != null && await objAttribute.GetTotalValueAsync(token).ConfigureAwait(false)
-                                                    >= Convert.ToInt32(objXmlRequired["total"].InnerText,
-                                                                       GlobalSettings.InvariantCultureInfo))
-                                                {
-                                                    blnFound = true;
-                                                }
-
-                                                break;
-
-                                            case "attributetotal":
-                                                // Check if the character's Attributes add up to a particular total.
-                                                string strAttributes = objXmlRequired["attributes"].InnerText;
-                                                strAttributes
-                                                    = await _objCharacter.AttributeSection
-                                                                         .ProcessAttributesInXPathAsync(strAttributes, token: token).ConfigureAwait(false);
-                                                (bool blnIsSuccess, object objProcess)
-                                                    = await CommonFunctions.EvaluateInvariantXPathAsync(
-                                                        strAttributes, token).ConfigureAwait(false);
-                                                if ((blnIsSuccess ? ((double)objProcess).StandardRound() : 0)
-                                                    >= Convert.ToInt32(objXmlRequired["val"].InnerText,
-                                                                       GlobalSettings.InvariantCultureInfo))
-                                                    blnFound = true;
-                                                break;
-
-                                            case "skillgrouptotal":
-                                                {
-                                                    // Check if the total combined Ratings of Skill Groups adds up to a particular total.
-                                                    int intTotal = 0;
-                                                    foreach (string strGroup in objXmlRequired["skillgroups"].InnerText
-                                                                 .SplitNoAlloc('+', StringSplitOptions.RemoveEmptyEntries))
-                                                    {
-                                                        foreach (SkillGroup objGroup in _objCharacter.SkillsSection
-                                                                     .SkillGroups)
-                                                        {
-                                                            if (objGroup.Name == strGroup)
-                                                            {
-                                                                intTotal += objGroup.Rating;
-                                                                break;
-                                                            }
-                                                        }
-                                                    }
-
-                                                    if (intTotal >= Convert.ToInt32(objXmlRequired["val"].InnerText,
-                                                            GlobalSettings.InvariantCultureInfo))
-                                                        blnFound = true;
-                                                }
-                                                break;
-
-                                            case "lifestyle":
-                                                if (_strSelectedLifestyle == objXmlRequired.InnerText)
-                                                    blnFound = true;
-                                                break;
-
-                                            case "cyberwares":
-                                                {
-                                                    // Check to see if the character has a number of the required Cyberware/Bioware items.
-                                                    int intTotal = 0;
-
-                                                    // Check Cyberware.
-                                                    foreach (XmlNode objXmlCyberware in objXmlRequired.SelectNodes(
-                                                                 "cyberware"))
-                                                    {
-                                                        foreach (Cyberware objCyberware in _objCharacter.Cyberware)
-                                                        {
-                                                            if (objCyberware.Name == objXmlCyberware.InnerText)
-                                                            {
-                                                                string strSelect = objXmlCyberware.Attributes["select"]
-                                                                    ?.InnerText;
-                                                                if (string.IsNullOrEmpty(strSelect)
-                                                                    || strSelect == objCyberware.Extra)
-                                                                {
-                                                                    intTotal++;
-                                                                    break;
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-
-                                                    // Check Bioware.
-                                                    foreach (XmlNode objXmlBioware in objXmlRequired.SelectNodes("bioware"))
-                                                    {
-                                                        if (await _objCharacter.Cyberware.AnyAsync(
-                                                                objCyberware =>
-                                                                    objCyberware.Name == objXmlBioware.InnerText, token: token).ConfigureAwait(false))
-                                                        {
-                                                            intTotal++;
-                                                        }
-                                                    }
-
-                                                    // Check Cyberware name that contain a string.
-                                                    foreach (XmlNode objXmlCyberware in objXmlRequired.SelectNodes(
-                                                                 "cyberwarecontains"))
-                                                    {
-                                                        foreach (Cyberware objCyberware in await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
-                                                        {
-                                                            if (objCyberware.Name.Contains(objXmlCyberware.InnerText))
-                                                            {
-                                                                string strSelect = objXmlCyberware.Attributes["select"]
-                                                                    ?.InnerText;
-                                                                if (string.IsNullOrEmpty(strSelect)
-                                                                    || strSelect == objCyberware.Extra)
-                                                                {
-                                                                    intTotal++;
-                                                                    break;
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-
-                                                    // Check Bioware name that contain a string.
-                                                    foreach (XmlNode objXmlCyberware in objXmlRequired.SelectNodes(
-                                                                 "biowarecontains"))
-                                                    {
-                                                        foreach (Cyberware objCyberware in await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
-                                                        {
-                                                            if (objCyberware.Name.Contains(objXmlCyberware.InnerText))
-                                                            {
-                                                                string strSelect = objXmlCyberware.Attributes["select"]
-                                                                    ?.InnerText;
-                                                                if (string.IsNullOrEmpty(strSelect)
-                                                                    || strSelect == objCyberware.Extra)
-                                                                {
-                                                                    intTotal++;
-                                                                    break;
-                                                                }
-                                                            }
-                                                        }
-                                                    }
-
-                                                    // Check for Cyberware Plugins.
-                                                    foreach (XmlNode objXmlCyberware in objXmlRequired.SelectNodes(
-                                                                 "cyberwareplugin"))
-                                                    {
-                                                        foreach (Cyberware objCyberware in _objCharacter.Cyberware)
-                                                        {
-                                                            if (await objCyberware.Children.AnyAsync(
-                                                                    objPlugin =>
-                                                                        objPlugin.Name == objXmlCyberware.InnerText, token: token).ConfigureAwait(false))
-                                                            {
-                                                                intTotal++;
-                                                            }
-                                                        }
-                                                    }
-
-                                                    // Check for Cyberware Categories.
-                                                    foreach (XmlNode objXmlCyberware in objXmlRequired.SelectNodes(
-                                                                 "cyberwarecategory"))
-                                                    {
-                                                        intTotal += await _objCharacter.Cyberware.CountAsync(
-                                                            objCyberware =>
-                                                                objCyberware.Category == objXmlCyberware.InnerText, token: token).ConfigureAwait(false);
-                                                    }
-
-                                                    if (intTotal >= Convert.ToInt32(objXmlRequired["count"].InnerText,
-                                                            GlobalSettings.InvariantCultureInfo))
-                                                        blnFound = true;
-                                                }
-                                                break;
-
-                                            case "streetcredvsnotoriety":
-                                                // Street Cred must be higher than Notoriety.
-                                                if (_objCharacter.StreetCred >= _objCharacter.Notoriety)
-                                                    blnFound = true;
-                                                break;
-
-                                            case "damageresistance":
-                                                // Damage Resistance must be a particular value.
-                                                if (await _objCharacter.BOD.GetTotalValueAsync(token).ConfigureAwait(false)
-                                                    + await ImprovementManager.ValueOfAsync(_objCharacter,
-                                                        Improvement.ImprovementType
-                                                                   .DamageResistance, token: token).ConfigureAwait(false)
-                                                    >= Convert.ToInt32(objXmlRequired.InnerText,
-                                                                       GlobalSettings.InvariantCultureInfo))
-                                                    blnFound = true;
-                                                break;
-                                        }
-
-                                        // If this item was not found, fail the AllOfMet condition.
-                                        if (!blnFound)
-                                            blnAllOfMet = false;
-                                    }
-                                }
-
-                                // Update the flag for requirements met.
-                                blnRequirementMet = blnRequirementMet && blnAllOfMet;
-                                sbdRequirement.Append(sbdThisRequirement);
-                            }
-                        }
-                    }
-
-                    // The character has not met the requirements, so display a message and uncheck the item.
-                    if (!blnRequirementMet)
-                    {
-                        if (blnShowMessage)
-                        {
-                            string strMessage = await LanguageManager.GetStringAsync("Message_SelectQuality_QualityRequirement", token: token).ConfigureAwait(false);
-                            strMessage += sbdRequirement.ToString();
-                            Program.ShowMessageBox(this, strMessage,
-                                                            await LanguageManager.GetStringAsync(
-                                                                "MessageTitle_SelectQuality_QualityRequirement", token: token).ConfigureAwait(false),
-                                                            MessageBoxButtons.OK, MessageBoxIcon.Information);
-                        }
-
-                        return false;
-                    }
-                }
-            }
-
-            return true;
         }
 
         private async void OpenSourceFromLabel(object sender, EventArgs e)

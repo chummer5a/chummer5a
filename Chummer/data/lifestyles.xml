@@ -881,8 +881,8 @@
       <lp>-1</lp>
       <forbidden>
         <oneof>
-          <quality>Local Bar Patron</quality>
-          <quality>Patron of the Arts (Private Club)</quality>
+          <lifestylequality>Local Bar Patron</lifestylequality>
+          <lifestylequality>Patron of the Arts (Private Club)</lifestylequality>
         </oneof>
       </forbidden>
       <source>RF</source>
@@ -948,7 +948,7 @@
       <lp>-1</lp>
       <forbidden>
         <oneof>
-          <quality>Cleaning Service</quality>
+          <lifestylequality>Cleaning Service</lifestylequality>
         </oneof>
       </forbidden>
       <source>RF</source>
@@ -971,8 +971,8 @@
       <multiplier>10</multiplier>
       <forbidden>
         <oneof>
-          <quality>Discreet Deliveryman</quality>
-          <quality>Discreet Candyman</quality>
+          <lifestylequality>Discreet Deliveryman</lifestylequality>
+          <lifestylequality>Discreet Candyman</lifestylequality>
         </oneof>
       </forbidden>
       <source>SR5</source>
@@ -1006,18 +1006,18 @@
       <lp>-1</lp>
       <required>
         <oneof>
-          <quality>Garage (Airplane)</quality>
-          <quality>Garage (Boat)</quality>
-          <quality>Garage (Car (Body 4 or Less))</quality>
-          <quality>Garage (Car (Body 5 or More))</quality>
-          <quality>Garage (Helicopter)</quality>
-          <quality>Cramped Garage (Airplane)</quality>
-          <quality>Cramped Garage (Boat)</quality>
-          <quality>Cramped Garage (Car (Body 4 or Less))</quality>
-          <quality>Cramped Garage (Car (Body 5 or More))</quality>
-          <quality>Cramped Garage (Helicopter)</quality>
-          <quality>Workshop/Facility</quality>
-          <quality>Cramped Workshop/Facility</quality>
+          <lifestylequality>Garage (Airplane)</lifestylequality>
+          <lifestylequality>Garage (Boat)</lifestylequality>
+          <lifestylequality>Garage (Car (Body 4 or Less))</lifestylequality>
+          <lifestylequality>Garage (Car (Body 5 or More))</lifestylequality>
+          <lifestylequality>Garage (Helicopter)</lifestylequality>
+          <lifestylequality>Cramped Garage (Airplane)</lifestylequality>
+          <lifestylequality>Cramped Garage (Boat)</lifestylequality>
+          <lifestylequality>Cramped Garage (Car (Body 4 or Less))</lifestylequality>
+          <lifestylequality>Cramped Garage (Car (Body 5 or More))</lifestylequality>
+          <lifestylequality>Cramped Garage (Helicopter)</lifestylequality>
+          <lifestylequality>Workshop/Facility</lifestylequality>
+          <lifestylequality>Cramped Workshop/Facility</lifestylequality>
         </oneof>
       </required>
       <source>RF</source>
@@ -1345,7 +1345,6 @@
       <id>23dcd584-9650-44b0-9273-896873ba6f61</id>
     </quality>
     <!-- Region Shadows in Focus: Butte-->
-
     <quality>
       <id>79de178b-6064-468f-bb8d-72b510dc0239</id>
       <name>Escape Tunnel, 100 Meters</name>

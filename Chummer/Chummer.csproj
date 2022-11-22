@@ -396,6 +396,7 @@
     <Compile Include="Backend\Interfaces\IHasCharacterObjects.cs" />
     <Compile Include="Backend\Interfaces\IHasCost.cs" />
     <Compile Include="Backend\Interfaces\IHasLockObject.cs" />
+    <Compile Include="Backend\Interfaces\IHasSourceId.cs" />
     <Compile Include="Backend\Interfaces\IHasXmlDataNode.cs" />
     <Compile Include="Backend\Static\Extensions\BoolArrayExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\BoolExtensions.cs" />

@@ -39,7 +39,7 @@ namespace Chummer.Backend.Skills
 {
     [DebuggerDisplay("{_strName} {_intBase} {_intKarma} {Rating}")]
     [HubClassTag("SkillId", true, "Name", "Rating;Specialization")]
-    public class Skill : INotifyMultiplePropertyChanged, IHasName, IHasXmlDataNode, IHasNotes, IHasLockObject
+    public class Skill : INotifyMultiplePropertyChanged, IHasName, IHasSourceId, IHasXmlDataNode, IHasNotes, IHasLockObject
     {
         private CharacterAttrib _objAttribute;
         private string _strDefaultAttribute;
@@ -3032,6 +3032,19 @@ namespace Chummer.Backend.Skills
         {
             using (EnterReadLock.Enter(objOtherSkill.LockObject))
                 Id = objOtherSkill.Id;
+        }
+
+        public Guid SourceID => SkillId;
+
+        public string SourceIDString
+        {
+            get
+            {
+                Guid guidReturn = SourceID;
+                return guidReturn == Guid.Empty
+                    ? string.Empty
+                    : guidReturn.ToString("D", GlobalSettings.InvariantCultureInfo);
+            }
         }
 
         private Guid _guidSkillId = Guid.Empty;
