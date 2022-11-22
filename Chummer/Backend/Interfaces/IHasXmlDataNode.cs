@@ -54,7 +54,7 @@ namespace Chummer
         /// </summary>
         public static XPathNavigator GetNodeXPath(this IHasXmlDataNode objThis, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => objThis.GetNodeXPathCoreAsync(true, GlobalSettings.DefaultLanguage, token));
+            return Utils.SafelyRunSynchronously(() => objThis.GetNodeXPathCoreAsync(true, GlobalSettings.DefaultLanguage, token), token);
         }
 
         /// <summary>
@@ -62,7 +62,7 @@ namespace Chummer
         /// </summary>
         public static XPathNavigator GetNodeXPath(this IHasXmlDataNode objThis, string strLanguage, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => objThis.GetNodeXPathCoreAsync(true, strLanguage, token));
+            return Utils.SafelyRunSynchronously(() => objThis.GetNodeXPathCoreAsync(true, strLanguage, token), token);
         }
 
         /// <summary>
@@ -86,7 +86,7 @@ namespace Chummer
         /// </summary>
         public static XmlNode GetNode(this IHasXmlDataNode objThis, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => objThis.GetNodeCoreAsync(true, GlobalSettings.DefaultLanguage, token));
+            return Utils.SafelyRunSynchronously(() => objThis.GetNodeCoreAsync(true, GlobalSettings.DefaultLanguage, token), token);
         }
 
         /// <summary>
@@ -94,7 +94,7 @@ namespace Chummer
         /// </summary>
         public static XmlNode GetNode(this IHasXmlDataNode objThis, string strLanguage, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => objThis.GetNodeCoreAsync(true, strLanguage, token));
+            return Utils.SafelyRunSynchronously(() => objThis.GetNodeCoreAsync(true, strLanguage, token), token);
         }
 
         /// <summary>
