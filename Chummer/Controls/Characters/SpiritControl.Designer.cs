@@ -346,6 +346,7 @@ namespace Chummer
             this.cmdDelete.TabIndex = 28;
             this.cmdDelete.Tag = "";
             this.cmdDelete.UseVisualStyleBackColor = true;
+            this.cmdDelete.Click += new System.EventHandler(this.cmdDelete_Click);
             // 
             // SpiritControl
             // 

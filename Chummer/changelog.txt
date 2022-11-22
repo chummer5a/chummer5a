@@ -34,6 +34,7 @@ Application Changes:
 - Added bonus nodes that allow defaulting to be disabled for a specific skill or skill category.
 - Fixed various weird issues with custom lifestyle qualities with certain specific requirements.
 - Required and forbidden node contents can now accept GUIDs instead of just names. This is important when the presence or absence of a specific item is needed to be checked instead of all items with the same name.
+- Bound spirits can now properly be deleted.
 
 Data Changes:
 - Added Quick-Start Rules content: 15 scrumptious menu items brought to you by McHughes™!
