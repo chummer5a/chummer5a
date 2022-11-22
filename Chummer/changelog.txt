@@ -36,6 +36,7 @@ Application Changes:
 - Required and forbidden node contents can now accept GUIDs instead of just names. This is important when the presence or absence of a specific item is needed to be checked instead of all items with the same name.
 - Bound spirits can now properly be deleted.
 - Fixed various bugs where some parts of a character's contacts would not get saved properly.
+- Notes added to gear attached to weapon accessories can now be properly edited.
 
 Data Changes:
 - Added Quick-Start Rules content: 15 scrumptious menu items brought to you by McHughes™!
