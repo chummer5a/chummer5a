@@ -26,6 +26,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Chummer
 {
@@ -33,6 +34,9 @@ namespace Chummer
     {
         private readonly Contact _objContact;
         private int _intLoading = 1;
+
+        private int _intUpdatingMetatype = 1;
+        private readonly Timer _tmrMetatypeChangeTimer;
 
         // Events.
         public event EventHandler<TextEventArgs> ContactDetailChanged;
@@ -45,6 +49,9 @@ namespace Chummer
         {
             _objContact = objContact;
             InitializeComponent();
+
+            _tmrMetatypeChangeTimer = new Timer { Interval = 1000 };
+            _tmrMetatypeChangeTimer.Tick += UpdateMetatype;
 
             Disposed += (sender, args) => UnbindPetControl();
 
@@ -63,11 +70,13 @@ namespace Chummer
 
             await DoDataBindings().ConfigureAwait(false);
 
+            Interlocked.Decrement(ref _intUpdatingMetatype);
             Interlocked.Decrement(ref _intLoading);
         }
 
         public void UnbindPetControl()
         {
+            _tmrMetatypeChangeTimer.Dispose();
             foreach (Control objControl in Controls)
             {
                 objControl.DataBindings.Clear();
@@ -80,27 +89,41 @@ namespace Chummer
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("Name"));
         }
 
-        private void UpdateMetatype(object sender, EventArgs e)
+        private void cboMetatype_TextChanged(object sender, EventArgs e)
         {
-            if (_intLoading > 0 || _objContact.DisplayMetatype == cboMetatype.Text)
+            if (_tmrMetatypeChangeTimer == null)
                 return;
-            _objContact.DisplayMetatype = cboMetatype.Text;
-            if (_objContact.DisplayMetatype != cboMetatype.Text)
+            if (_tmrMetatypeChangeTimer.Enabled)
+                _tmrMetatypeChangeTimer.Stop();
+            if (_intUpdatingMetatype > 0)
+                return;
+            _tmrMetatypeChangeTimer.Start();
+        }
+
+        private async void UpdateMetatype(object sender, EventArgs e)
+        {
+            if (_intLoading > 0 || _intUpdatingMetatype > 0)
+                return;
+            _tmrMetatypeChangeTimer.Stop();
+            string strNew = await cboMetatype.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
+            string strOld = await _objContact.GetDisplayMetatypeAsync().ConfigureAwait(false);
+            if (strOld == strNew)
+                return;
+            await _objContact.SetDisplayMetatypeAsync(strNew).ConfigureAwait(false);
+            strOld = await _objContact.GetDisplayMetatypeAsync().ConfigureAwait(false);
+            if (strOld != strNew)
             {
-                if (Interlocked.Increment(ref _intLoading) != 1)
-                {
-                    Interlocked.Decrement(ref _intLoading);
-                    return;
-                }
+                Interlocked.Increment(ref _intUpdatingMetatype);
                 try
                 {
-                    cboMetatype.Text = _objContact.DisplayMetatype;
+                    await cboMetatype.DoThreadSafeAsync(x => x.Text = strOld).ConfigureAwait(false);
                 }
                 finally
                 {
-                    Interlocked.Decrement(ref _intLoading);
+                    Interlocked.Decrement(ref _intUpdatingMetatype);
                 }
             }
+
             ContactDetailChanged?.Invoke(this, new TextEventArgs("Metatype"));
         }
 

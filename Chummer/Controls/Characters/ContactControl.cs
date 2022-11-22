@@ -28,6 +28,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
 using Chummer.Properties;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Chummer
 {
@@ -39,6 +40,23 @@ namespace Chummer
         private int _intStatBlockIsLoaded;
         //private readonly int _intLowHeight = 25;
         //private readonly int _intFullHeight = 156;
+
+        private int _intUpdatingRole = 1;
+        private readonly Timer _tmrRoleChangeTimer;
+        private int _intUpdatingMetatype = 1;
+        private readonly Timer _tmrMetatypeChangeTimer;
+        private int _intUpdatingGender = 1;
+        private readonly Timer _tmrGenderChangeTimer;
+        private int _intUpdatingAge = 1;
+        private readonly Timer _tmrAgeChangeTimer;
+        private int _intUpdatingType = 1;
+        private readonly Timer _tmrTypeChangeTimer;
+        private int _intUpdatingPersonalLife = 1;
+        private readonly Timer _tmrPersonalLifeChangeTimer;
+        private int _intUpdatingPreferredPayment = 1;
+        private readonly Timer _tmrPreferredPaymentChangeTimer;
+        private int _intUpdatingHobbiesVice = 1;
+        private readonly Timer _tmrHobbiesViceChangeTimer;
 
         // Events.
         public event EventHandler<TextEventArgs> ContactDetailChanged;
@@ -52,6 +70,23 @@ namespace Chummer
             _objContact = objContact ?? throw new ArgumentNullException(nameof(objContact));
 
             InitializeComponent();
+
+            _tmrRoleChangeTimer = new Timer { Interval = 1000 };
+            _tmrRoleChangeTimer.Tick += UpdateContactRole;
+            _tmrMetatypeChangeTimer = new Timer { Interval = 1000 };
+            _tmrMetatypeChangeTimer.Tick += UpdateMetatype;
+            _tmrGenderChangeTimer = new Timer { Interval = 1000 };
+            _tmrGenderChangeTimer.Tick += UpdateGender;
+            _tmrAgeChangeTimer = new Timer { Interval = 1000 };
+            _tmrAgeChangeTimer.Tick += UpdateAge;
+            _tmrTypeChangeTimer = new Timer { Interval = 1000 };
+            _tmrTypeChangeTimer.Tick += UpdateType;
+            _tmrPersonalLifeChangeTimer = new Timer { Interval = 1000 };
+            _tmrPersonalLifeChangeTimer.Tick += UpdatePersonalLife;
+            _tmrPreferredPaymentChangeTimer = new Timer { Interval = 1000 };
+            _tmrPreferredPaymentChangeTimer.Tick += UpdatePreferredPayment;
+            _tmrHobbiesViceChangeTimer = new Timer { Interval = 1000 };
+            _tmrHobbiesViceChangeTimer.Tick += UpdateHobbiesVice;
 
             Disposed += (sender, args) => UnbindContactControl();
 
@@ -104,11 +139,20 @@ namespace Chummer
                 await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap()).ConfigureAwait(false);
             }
 
+            Interlocked.Decrement(ref _intUpdatingRole);
             Interlocked.Decrement(ref _intLoading);
         }
 
         public void UnbindContactControl()
         {
+            _tmrRoleChangeTimer.Dispose();
+            _tmrMetatypeChangeTimer.Dispose();
+            _tmrGenderChangeTimer.Dispose();
+            _tmrAgeChangeTimer.Dispose();
+            _tmrTypeChangeTimer.Dispose();
+            _tmrPersonalLifeChangeTimer.Dispose();
+            _tmrPreferredPaymentChangeTimer.Dispose();
+            _tmrHobbiesViceChangeTimer.Dispose();
             foreach (Control objControl in Controls)
             {
                 objControl.DataBindings.Clear();
@@ -154,13 +198,6 @@ namespace Chummer
             await SetExpandedAsync(!await GetExpandedAsync().ConfigureAwait(false)).ConfigureAwait(false);
         }
 
-        private void cboContactRole_TextChanged(object sender, EventArgs e)
-        {
-            if (_intLoading > 0)
-                return;
-            ContactDetailChanged?.Invoke(this, new TextEventArgs("Role"));
-        }
-
         private void txtContactName_TextChanged(object sender, EventArgs e)
         {
             if (_intLoading > 0)
@@ -181,6 +218,9 @@ namespace Chummer
                 return;
             while (_intStatBlockIsLoaded == 1)
                 await Utils.SafeSleepAsync().ConfigureAwait(false);
+            if (_intUpdatingMetatype > 0)
+                return;
+            _tmrMetatypeChangeTimer.Stop();
             string strNew = await cboMetatype.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             string strOld = await _objContact.GetDisplayMetatypeAsync().ConfigureAwait(false);
             if (strOld == strNew)
@@ -189,14 +229,14 @@ namespace Chummer
             strOld = await _objContact.GetDisplayMetatypeAsync().ConfigureAwait(false);
             if (strOld != strNew)
             {
-                Interlocked.Increment(ref _intLoading);
+                Interlocked.Increment(ref _intUpdatingMetatype);
                 try
                 {
                     await cboMetatype.DoThreadSafeAsync(x => x.Text = strOld).ConfigureAwait(false);
                 }
                 finally
                 {
-                    Interlocked.Decrement(ref _intLoading);
+                    Interlocked.Decrement(ref _intUpdatingMetatype);
                 }
             }
 
@@ -209,6 +249,9 @@ namespace Chummer
                 return;
             while (_intStatBlockIsLoaded == 1)
                 await Utils.SafeSleepAsync().ConfigureAwait(false);
+            if (_intUpdatingGender > 0)
+                return;
+            _tmrGenderChangeTimer.Stop();
             string strNew = await cboGender.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             string strOld = await _objContact.GetDisplayGenderAsync().ConfigureAwait(false);
             if (strOld == strNew)
@@ -217,14 +260,14 @@ namespace Chummer
             strOld = await _objContact.GetDisplayGenderAsync().ConfigureAwait(false);
             if (strOld != strNew)
             {
-                Interlocked.Increment(ref _intLoading);
+                Interlocked.Increment(ref _intUpdatingGender);
                 try
                 {
                     await cboGender.DoThreadSafeAsync(x => x.Text = strOld).ConfigureAwait(false);
                 }
                 finally
                 {
-                    Interlocked.Decrement(ref _intLoading);
+                    Interlocked.Decrement(ref _intUpdatingGender);
                 }
             }
 
@@ -235,6 +278,11 @@ namespace Chummer
         {
             if (_intLoading > 0 || _intStatBlockIsLoaded <= 1)
                 return;
+            while (_intStatBlockIsLoaded == 1)
+                await Utils.SafeSleepAsync().ConfigureAwait(false);
+            if (_intUpdatingAge > 0)
+                return;
+            _tmrAgeChangeTimer.Stop();
             string strNew = await cboAge.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             string strOld = await _objContact.GetDisplayAgeAsync().ConfigureAwait(false);
             if (strOld == strNew)
@@ -243,14 +291,14 @@ namespace Chummer
             strOld = await _objContact.GetDisplayAgeAsync().ConfigureAwait(false);
             if (strOld != strNew)
             {
-                Interlocked.Increment(ref _intLoading);
+                Interlocked.Increment(ref _intUpdatingAge);
                 try
                 {
                     await cboAge.DoThreadSafeAsync(x => x.Text = strOld).ConfigureAwait(false);
                 }
                 finally
                 {
-                    Interlocked.Decrement(ref _intLoading);
+                    Interlocked.Decrement(ref _intUpdatingAge);
                 }
             }
 
@@ -263,6 +311,9 @@ namespace Chummer
                 return;
             while (_intStatBlockIsLoaded == 1)
                 await Utils.SafeSleepAsync().ConfigureAwait(false);
+            if (_intUpdatingPersonalLife > 0)
+                return;
+            _tmrPersonalLifeChangeTimer.Stop();
             string strNew = await cboPersonalLife.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             string strOld = await _objContact.GetDisplayPersonalLifeAsync().ConfigureAwait(false);
             if (strOld == strNew)
@@ -271,14 +322,14 @@ namespace Chummer
             strOld = await _objContact.GetDisplayPersonalLifeAsync().ConfigureAwait(false);
             if (strOld != strNew)
             {
-                Interlocked.Increment(ref _intLoading);
+                Interlocked.Increment(ref _intUpdatingPersonalLife);
                 try
                 {
                     await cboPersonalLife.DoThreadSafeAsync(x => x.Text = strOld).ConfigureAwait(false);
                 }
                 finally
                 {
-                    Interlocked.Decrement(ref _intLoading);
+                    Interlocked.Decrement(ref _intUpdatingPersonalLife);
                 }
             }
 
@@ -291,6 +342,9 @@ namespace Chummer
                 return;
             while (_intStatBlockIsLoaded == 1)
                 await Utils.SafeSleepAsync().ConfigureAwait(false);
+            if (_intUpdatingType > 0)
+                return;
+            _tmrTypeChangeTimer.Stop();
             string strNew = await cboType.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             string strOld = await _objContact.GetDisplayTypeAsync().ConfigureAwait(false);
             if (strOld == strNew)
@@ -299,14 +353,14 @@ namespace Chummer
             strOld = await _objContact.GetDisplayTypeAsync().ConfigureAwait(false);
             if (strOld != strNew)
             {
-                Interlocked.Increment(ref _intLoading);
+                Interlocked.Increment(ref _intUpdatingType);
                 try
                 {
                     await cboType.DoThreadSafeAsync(x => x.Text = strOld).ConfigureAwait(false);
                 }
                 finally
                 {
-                    Interlocked.Decrement(ref _intLoading);
+                    Interlocked.Decrement(ref _intUpdatingType);
                 }
             }
 
@@ -319,6 +373,9 @@ namespace Chummer
                 return;
             while (_intStatBlockIsLoaded == 1)
                 await Utils.SafeSleepAsync().ConfigureAwait(false);
+            if (_intUpdatingPreferredPayment > 0)
+                return;
+            _tmrPreferredPaymentChangeTimer.Stop();
             string strNew = await cboPreferredPayment.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             string strOld = await _objContact.GetDisplayPreferredPaymentAsync().ConfigureAwait(false);
             if (strOld == strNew)
@@ -327,14 +384,14 @@ namespace Chummer
             strOld = await _objContact.GetDisplayPreferredPaymentAsync().ConfigureAwait(false);
             if (strOld != strNew)
             {
-                Interlocked.Increment(ref _intLoading);
+                Interlocked.Increment(ref _intUpdatingPreferredPayment);
                 try
                 {
                     await cboPreferredPayment.DoThreadSafeAsync(x => x.Text = strOld).ConfigureAwait(false);
                 }
                 finally
                 {
-                    Interlocked.Decrement(ref _intLoading);
+                    Interlocked.Decrement(ref _intUpdatingPreferredPayment);
                 }
             }
 
@@ -347,6 +404,9 @@ namespace Chummer
                 return;
             while (_intStatBlockIsLoaded == 1)
                 await Utils.SafeSleepAsync().ConfigureAwait(false);
+            if (_intUpdatingHobbiesVice > 0)
+                return;
+            _tmrHobbiesViceChangeTimer.Stop();
             string strNew = await cboHobbiesVice.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             string strOld = await _objContact.GetDisplayHobbiesViceAsync().ConfigureAwait(false);
             if (strOld == strNew)
@@ -355,14 +415,14 @@ namespace Chummer
             strOld = await _objContact.GetDisplayHobbiesViceAsync().ConfigureAwait(false);
             if (strOld != strNew)
             {
-                Interlocked.Increment(ref _intLoading);
+                Interlocked.Increment(ref _intUpdatingHobbiesVice);
                 try
                 {
                     await cboHobbiesVice.DoThreadSafeAsync(x => x.Text = strOld).ConfigureAwait(false);
                 }
                 finally
                 {
-                    Interlocked.Decrement(ref _intLoading);
+                    Interlocked.Decrement(ref _intUpdatingHobbiesVice);
                 }
             }
 
@@ -371,10 +431,9 @@ namespace Chummer
 
         private async void UpdateContactRole(object sender, EventArgs e)
         {
-            if (_intLoading > 0 || _intStatBlockIsLoaded < 1)
+            if (_intLoading > 0 || _intUpdatingRole > 0)
                 return;
-            while (_intStatBlockIsLoaded == 1)
-                await Utils.SafeSleepAsync().ConfigureAwait(false);
+            _tmrRoleChangeTimer.Stop();
             string strNew = await cboContactRole.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             string strOld = await _objContact.GetDisplayRoleAsync().ConfigureAwait(false);
             if (strOld == strNew)
@@ -383,14 +442,14 @@ namespace Chummer
             strOld = await _objContact.GetDisplayRoleAsync().ConfigureAwait(false);
             if (strOld != strNew)
             {
-                Interlocked.Increment(ref _intLoading);
+                Interlocked.Increment(ref _intUpdatingRole);
                 try
                 {
                     await cboContactRole.DoThreadSafeAsync(x => x.Text = strOld).ConfigureAwait(false);
                 }
                 finally
                 {
-                    Interlocked.Decrement(ref _intLoading);
+                    Interlocked.Decrement(ref _intUpdatingRole);
                 }
             }
 
@@ -1145,21 +1204,22 @@ namespace Chummer
                             x.cboHobbiesVice.Text = x._objContact.DisplayHobbiesVice;
                     }
 
-                    x.cboMetatype.SelectedIndexChanged += UpdateMetatype;
-                    x.cboGender.SelectedIndexChanged += UpdateGender;
-                    x.cboAge.SelectedIndexChanged += UpdateAge;
-                    x.cboType.SelectedIndexChanged += UpdateType;
-                    x.cboPersonalLife.SelectedIndexChanged += UpdatePersonalLife;
-                    x.cboPreferredPayment.SelectedIndexChanged += UpdatePreferredPayment;
-                    x.cboHobbiesVice.SelectedIndexChanged += UpdateHobbiesVice;
-                    x.cboMetatype.Leave += UpdateMetatype;
-                    x.cboGender.Leave += UpdateGender;
-                    x.cboAge.Leave += UpdateAge;
-                    x.cboType.Leave += UpdateType;
-                    x.cboPersonalLife.Leave += UpdatePersonalLife;
-                    x.cboPreferredPayment.Leave += UpdatePreferredPayment;
-                    x.cboHobbiesVice.Leave += UpdateHobbiesVice;
+                    x.cboMetatype.TextChanged += MetatypeOnTextChanged;
+                    x.cboGender.TextChanged += GenderOnTextChanged;
+                    x.cboAge.TextChanged += AgeOnTextChanged;
+                    x.cboType.TextChanged += TypeOnTextChanged;
+                    x.cboPersonalLife.TextChanged += PersonalLifeOnTextChanged;
+                    x.cboPreferredPayment.TextChanged += PreferredPaymentOnTextChanged;
+                    x.cboHobbiesVice.TextChanged += HobbiesViceOnTextChanged;
                 });
+
+                Interlocked.Decrement(ref _intUpdatingMetatype);
+                Interlocked.Decrement(ref _intUpdatingGender);
+                Interlocked.Decrement(ref _intUpdatingAge);
+                Interlocked.Decrement(ref _intUpdatingType);
+                Interlocked.Decrement(ref _intUpdatingPersonalLife);
+                Interlocked.Decrement(ref _intUpdatingPreferredPayment);
+                Interlocked.Decrement(ref _intUpdatingHobbiesVice);
             }
         }
 
@@ -1409,22 +1469,111 @@ namespace Chummer
                 // Need these as separate instead of as simple data bindings so that we don't get annoying live partial translations
                 await this.DoThreadSafeAsync(x =>
                 {
-                    x.cboMetatype.SelectedIndexChanged += UpdateMetatype;
-                    x.cboGender.SelectedIndexChanged += UpdateGender;
-                    x.cboAge.SelectedIndexChanged += UpdateAge;
-                    x.cboType.SelectedIndexChanged += UpdateType;
-                    x.cboPersonalLife.SelectedIndexChanged += UpdatePersonalLife;
-                    x.cboPreferredPayment.SelectedIndexChanged += UpdatePreferredPayment;
-                    x.cboHobbiesVice.SelectedIndexChanged += UpdateHobbiesVice;
-                    x.cboMetatype.Leave += UpdateMetatype;
-                    x.cboGender.Leave += UpdateGender;
-                    x.cboAge.Leave += UpdateAge;
-                    x.cboType.Leave += UpdateType;
-                    x.cboPersonalLife.Leave += UpdatePersonalLife;
-                    x.cboPreferredPayment.Leave += UpdatePreferredPayment;
-                    x.cboHobbiesVice.Leave += UpdateHobbiesVice;
+                    x.cboMetatype.TextChanged += MetatypeOnTextChanged;
+                    x.cboGender.TextChanged += GenderOnTextChanged;
+                    x.cboAge.TextChanged += AgeOnTextChanged;
+                    x.cboType.TextChanged += TypeOnTextChanged;
+                    x.cboPersonalLife.TextChanged += PersonalLifeOnTextChanged;
+                    x.cboPreferredPayment.TextChanged += PreferredPaymentOnTextChanged;
+                    x.cboHobbiesVice.TextChanged += HobbiesViceOnTextChanged;
                 }, token).ConfigureAwait(false);
+
+                Interlocked.Decrement(ref _intUpdatingMetatype);
+                Interlocked.Decrement(ref _intUpdatingGender);
+                Interlocked.Decrement(ref _intUpdatingAge);
+                Interlocked.Decrement(ref _intUpdatingType);
+                Interlocked.Decrement(ref _intUpdatingPersonalLife);
+                Interlocked.Decrement(ref _intUpdatingPreferredPayment);
+                Interlocked.Decrement(ref _intUpdatingHobbiesVice);
             }
+        }
+
+        private void cboContactRole_TextChanged(object sender, EventArgs e)
+        {
+            if (_tmrRoleChangeTimer == null)
+                return;
+            if (_tmrRoleChangeTimer.Enabled)
+                _tmrRoleChangeTimer.Stop();
+            if (_intUpdatingRole > 0)
+                return;
+            _tmrRoleChangeTimer.Start();
+        }
+
+        private void MetatypeOnTextChanged(object sender, EventArgs e)
+        {
+            if (_tmrMetatypeChangeTimer == null)
+                return;
+            if (_tmrMetatypeChangeTimer.Enabled)
+                _tmrMetatypeChangeTimer.Stop();
+            if (_intUpdatingMetatype > 0)
+                return;
+            _tmrMetatypeChangeTimer.Start();
+        }
+
+        private void GenderOnTextChanged(object sender, EventArgs e)
+        {
+            if (_tmrGenderChangeTimer == null)
+                return;
+            if (_tmrGenderChangeTimer.Enabled)
+                _tmrGenderChangeTimer.Stop();
+            if (_intUpdatingGender > 0)
+                return;
+            _tmrGenderChangeTimer.Start();
+        }
+
+        private void AgeOnTextChanged(object sender, EventArgs e)
+        {
+            if (_tmrAgeChangeTimer == null)
+                return;
+            if (_tmrAgeChangeTimer.Enabled)
+                _tmrAgeChangeTimer.Stop();
+            if (_intUpdatingAge > 0)
+                return;
+            _tmrAgeChangeTimer.Start();
+        }
+
+        private void TypeOnTextChanged(object sender, EventArgs e)
+        {
+            if (_tmrTypeChangeTimer == null)
+                return;
+            if (_tmrTypeChangeTimer.Enabled)
+                _tmrTypeChangeTimer.Stop();
+            if (_intUpdatingType > 0)
+                return;
+            _tmrTypeChangeTimer.Start();
+        }
+
+        private void PersonalLifeOnTextChanged(object sender, EventArgs e)
+        {
+            if (_tmrPersonalLifeChangeTimer == null)
+                return;
+            if (_tmrPersonalLifeChangeTimer.Enabled)
+                _tmrPersonalLifeChangeTimer.Stop();
+            if (_intUpdatingPersonalLife > 0)
+                return;
+            _tmrPersonalLifeChangeTimer.Start();
+        }
+
+        private void PreferredPaymentOnTextChanged(object sender, EventArgs e)
+        {
+            if (_tmrPreferredPaymentChangeTimer == null)
+                return;
+            if (_tmrPreferredPaymentChangeTimer.Enabled)
+                _tmrPreferredPaymentChangeTimer.Stop();
+            if (_intUpdatingPreferredPayment > 0)
+                return;
+            _tmrPreferredPaymentChangeTimer.Start();
+        }
+
+        private void HobbiesViceOnTextChanged(object sender, EventArgs e)
+        {
+            if (_tmrHobbiesViceChangeTimer == null)
+                return;
+            if (_tmrHobbiesViceChangeTimer.Enabled)
+                _tmrHobbiesViceChangeTimer.Stop();
+            if (_intUpdatingHobbiesVice > 0)
+                return;
+            _tmrHobbiesViceChangeTimer.Start();
         }
 
         private void LoadStatBlockLists()
