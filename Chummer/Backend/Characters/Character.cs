@@ -618,13 +618,14 @@ namespace Chummer
             using (EnterReadLock.Enter(AttributeSection.LockObject))
             using (EnterReadLock.Enter(AttributeSection.Attributes.LockObject))
             {
-                foreach (CharacterAttrib objAttrib in AttributeSection.Attributes)
-                    objAttrib.LockObject.EnterReadLock();
+                Stack<CharacterAttrib> stkLockedAttribs = new Stack<CharacterAttrib>();
                 try
                 {
                     // First remove all existing bindings
                     foreach (CharacterAttrib objAttribute in AttributeSection.Attributes)
                     {
+                        objAttribute.LockObject.EnterReadLock();
+                        stkLockedAttribs.Push(objAttribute);
                         switch (objAttribute.Abbrev)
                         {
                             case "BOD":
@@ -732,8 +733,10 @@ namespace Chummer
                 }
                 finally
                 {
-                    foreach (CharacterAttrib objAttrib in AttributeSection.Attributes)
-                        objAttrib.LockObject.EnterReadLock();
+                    while (stkLockedAttribs.Count > 0)
+                    {
+                        stkLockedAttribs.Pop().LockObject.ExitReadLock();
+                    }
                 }
             }
         }
@@ -754,16 +757,12 @@ namespace Chummer
                                 await objAttributes.GetCountAsync(token).ConfigureAwait(false));
                         try
                         {
+                            // First remove all existing bindings
                             await objAttributes.ForEachAsync(
                                 async objAttribute =>
                                 {
                                     await objAttribute.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                                     stkLockedAttribs.Push(objAttribute);
-                                }, token).ConfigureAwait(false);
-                            // First remove all existing bindings
-                            await objAttributes.ForEachAsync(
-                                async objAttribute =>
-                                {
                                     switch (objAttribute.Abbrev)
                                     {
                                         case "BOD":
