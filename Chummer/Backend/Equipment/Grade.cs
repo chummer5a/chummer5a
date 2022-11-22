@@ -109,7 +109,7 @@ namespace Chummer.Backend.Equipment
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadData(GetDataFileNameFromImprovementSource(_eSource), strLanguage, token: token)
                     : await _objCharacter.LoadDataAsync(GetDataFileNameFromImprovementSource(_eSource), strLanguage, token: token).ConfigureAwait(false))
-                .SelectSingleNode(SourceId == Guid.Empty
+                .SelectSingleNode(SourceID == Guid.Empty
                                       ? "/chummer/grades/grade[name = "
                                         + Name.CleanXPath() + ']'
                                       : "/chummer/grades/grade[id = "
@@ -134,7 +134,7 @@ namespace Chummer.Backend.Equipment
                     ? _objCharacter.LoadDataXPath(GetDataFileNameFromImprovementSource(_eSource), strLanguage, token: token)
                     : await _objCharacter.LoadDataXPathAsync(GetDataFileNameFromImprovementSource(_eSource),
                                                              strLanguage, token: token).ConfigureAwait(false))
-                .SelectSingleNode(SourceId == Guid.Empty
+                .SelectSingleNode(SourceID == Guid.Empty
                                       ? "/chummer/grades/grade[name = "
                                         + Name.CleanXPath() + ']'
                                       : "/chummer/grades/grade[id = "
@@ -206,10 +206,10 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Identifier of the object within data files.
         /// </summary>
-        public Guid SourceId => _guiSourceID;
+        public Guid SourceID => _guiSourceID;
 
         /// <summary>
-        /// String-formatted identifier of the <inheritdoc cref="SourceId"/> from the data files.
+        /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
         /// </summary>
         public string SourceIDString => _guiSourceID.ToString("D", GlobalSettings.InvariantCultureInfo);
 
