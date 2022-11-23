@@ -4115,7 +4115,6 @@ namespace Chummer
             this.tsCyberwareGearReapplyImprovements});
             this.cmsCyberwareGear.Name = "cmsCyberwareGear";
             this.cmsCyberwareGear.Size = new System.Drawing.Size(204, 48);
-            this.cmsCyberwareGear.Click += new System.EventHandler(this.tsCyberwareReapplyImprovements_Click);
             // 
             // tsCyberwareGearMenuAddAsPlugin
             // 
@@ -4145,6 +4144,7 @@ namespace Chummer
             this.tsCyberwareGearReapplyImprovements.Size = new System.Drawing.Size(203, 22);
             this.tsCyberwareGearReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
             this.tsCyberwareGearReapplyImprovements.Text = "Re-Apply Improvements";
+            this.tsCyberwareGearReapplyImprovements.Click += new System.EventHandler(this.tsCyberwareReapplyImprovements_Click);
             // 
             // cmsVehicleCyberwareGear
             // 

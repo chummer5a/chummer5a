@@ -3086,7 +3086,6 @@ namespace Chummer
             this.tsGearButtonReapplyImprovements});
             this.cmsGearButton.Name = "cmsGearButton";
             this.cmsGearButton.Size = new System.Drawing.Size(204, 48);
-            this.cmsGearButton.Click += new System.EventHandler(this.tsGearReapplyImprovements_Click);
             // 
             // tsGearButtonAddAccessory
             // 
@@ -3116,6 +3115,7 @@ namespace Chummer
             this.tsGearButtonReapplyImprovements.Size = new System.Drawing.Size(203, 22);
             this.tsGearButtonReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
             this.tsGearButtonReapplyImprovements.Text = "Re-Apply Improvements";
+            this.tsGearButtonReapplyImprovements.Click += new System.EventHandler(this.tsGearReapplyImprovements_Click);
             // 
             // cmsDeleteGear
             // 
@@ -6439,7 +6439,6 @@ namespace Chummer
             this.tsQualityReapplyImprovements});
             this.cmsQuality.Name = "cmsQuality";
             this.cmsQuality.Size = new System.Drawing.Size(204, 48);
-            this.cmsQuality.Click += new System.EventHandler(this.tsQualityReapplyImprovements_Click);
             // 
             // tsQualityNotes
             // 
@@ -6469,6 +6468,7 @@ namespace Chummer
             this.tsQualityReapplyImprovements.Size = new System.Drawing.Size(203, 22);
             this.tsQualityReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
             this.tsQualityReapplyImprovements.Text = "Re-Apply Improvements";
+            this.tsQualityReapplyImprovements.Click += new System.EventHandler(this.tsQualityReapplyImprovements_Click);
             // 
             // cmsSpell
             // 
@@ -6759,7 +6759,6 @@ namespace Chummer
             this.tsGearPluginReapplyImprovements});
             this.cmsGearPlugin.Name = "cmsGearPlugin";
             this.cmsGearPlugin.Size = new System.Drawing.Size(204, 48);
-            this.cmsGearPlugin.Click += new System.EventHandler(this.tsGearReapplyImprovements_Click);
             // 
             // tsGearPluginNotes
             // 
@@ -6789,6 +6788,7 @@ namespace Chummer
             this.tsGearPluginReapplyImprovements.Size = new System.Drawing.Size(203, 22);
             this.tsGearPluginReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
             this.tsGearPluginReapplyImprovements.Text = "Re-Apply Improvements";
+            this.tsGearPluginReapplyImprovements.Click += new System.EventHandler(this.tsGearReapplyImprovements_Click);
             // 
             // splitMain
             // 
