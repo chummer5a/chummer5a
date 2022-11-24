@@ -46,7 +46,7 @@ namespace Chummer
             this.txtFileName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txtFileName.Location = new System.Drawing.Point(74, 29);
             this.txtFileName.Name = "txtFileName";
-            this.txtFileName.Size = new System.Drawing.Size(369, 20);
+            this.txtFileName.Size = new System.Drawing.Size(209, 20);
             this.txtFileName.TabIndex = 3;
             this.txtFileName.Text = "custom_cyberware.xml";
             // 
@@ -68,7 +68,7 @@ namespace Chummer
             this.txtName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txtName.Location = new System.Drawing.Point(74, 3);
             this.txtName.Name = "txtName";
-            this.txtName.Size = new System.Drawing.Size(369, 20);
+            this.txtName.Size = new System.Drawing.Size(209, 20);
             this.txtName.TabIndex = 1;
             // 
             // lblName
@@ -134,7 +134,7 @@ namespace Chummer
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpMain.Size = new System.Drawing.Size(446, 83);
+            this.tlpMain.Size = new System.Drawing.Size(286, 103);
             this.tlpMain.TabIndex = 6;
             // 
             // tlpButtons
@@ -148,7 +148,7 @@ namespace Chummer
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
             this.tlpButtons.Controls.Add(this.cmdOK, 1, 0);
-            this.tlpButtons.Location = new System.Drawing.Point(274, 54);
+            this.tlpButtons.Location = new System.Drawing.Point(114, 74);
             this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
@@ -161,9 +161,8 @@ namespace Chummer
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoSize = true;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(464, 101);
+            this.ClientSize = new System.Drawing.Size(304, 121);
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;

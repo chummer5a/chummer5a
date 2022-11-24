@@ -57,7 +57,7 @@ namespace Chummer
             this.cboMembership.FormattingEnabled = true;
             this.cboMembership.Location = new System.Drawing.Point(140, 29);
             this.cboMembership.Name = "cboMembership";
-            this.cboMembership.Size = new System.Drawing.Size(223, 21);
+            this.cboMembership.Size = new System.Drawing.Size(303, 21);
             this.cboMembership.TabIndex = 3;
             this.cboMembership.TooltipText = "";
             this.cboMembership.SelectedIndexChanged += new System.EventHandler(this.cboMembership_SelectedIndexChanged);
@@ -81,7 +81,7 @@ namespace Chummer
             this.cboAreaOfInfluence.FormattingEnabled = true;
             this.cboAreaOfInfluence.Location = new System.Drawing.Point(140, 56);
             this.cboAreaOfInfluence.Name = "cboAreaOfInfluence";
-            this.cboAreaOfInfluence.Size = new System.Drawing.Size(223, 21);
+            this.cboAreaOfInfluence.Size = new System.Drawing.Size(303, 21);
             this.cboAreaOfInfluence.TabIndex = 5;
             this.cboAreaOfInfluence.TooltipText = "";
             this.cboAreaOfInfluence.SelectedIndexChanged += new System.EventHandler(this.cboAreaOfInfluence_SelectedIndexChanged);
@@ -105,7 +105,7 @@ namespace Chummer
             this.cboMagicalResources.FormattingEnabled = true;
             this.cboMagicalResources.Location = new System.Drawing.Point(140, 83);
             this.cboMagicalResources.Name = "cboMagicalResources";
-            this.cboMagicalResources.Size = new System.Drawing.Size(223, 21);
+            this.cboMagicalResources.Size = new System.Drawing.Size(303, 21);
             this.cboMagicalResources.TabIndex = 7;
             this.cboMagicalResources.TooltipText = "";
             this.cboMagicalResources.SelectedIndexChanged += new System.EventHandler(this.cboMagicalResources_SelectedIndexChanged);
@@ -129,7 +129,7 @@ namespace Chummer
             this.cboMatrixResources.FormattingEnabled = true;
             this.cboMatrixResources.Location = new System.Drawing.Point(140, 110);
             this.cboMatrixResources.Name = "cboMatrixResources";
-            this.cboMatrixResources.Size = new System.Drawing.Size(223, 21);
+            this.cboMatrixResources.Size = new System.Drawing.Size(303, 21);
             this.cboMatrixResources.TabIndex = 9;
             this.cboMatrixResources.TooltipText = "";
             this.cboMatrixResources.SelectedIndexChanged += new System.EventHandler(this.cboMatrixResources_SelectedIndexChanged);
@@ -217,7 +217,7 @@ namespace Chummer
             this.txtGroupName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.txtGroupName.Location = new System.Drawing.Point(140, 3);
             this.txtGroupName.Name = "txtGroupName";
-            this.txtGroupName.Size = new System.Drawing.Size(223, 20);
+            this.txtGroupName.Size = new System.Drawing.Size(303, 20);
             this.txtGroupName.TabIndex = 1;
             this.txtGroupName.TextChanged += new System.EventHandler(this.txtGroupName_TextChanged);
             // 
@@ -229,7 +229,7 @@ namespace Chummer
             this.cmdChangeColor.Location = new System.Drawing.Point(140, 162);
             this.cmdChangeColor.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdChangeColor.Name = "cmdChangeColor";
-            this.cmdChangeColor.Size = new System.Drawing.Size(87, 23);
+            this.cmdChangeColor.Size = new System.Drawing.Size(81, 23);
             this.cmdChangeColor.TabIndex = 13;
             this.cmdChangeColor.Tag = "Button_SelectContactConnection_ChangeColor";
             this.cmdChangeColor.Text = "Change Color";
@@ -286,7 +286,7 @@ namespace Chummer
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMain.Size = new System.Drawing.Size(366, 223);
+            this.tlpMain.Size = new System.Drawing.Size(446, 243);
             this.tlpMain.TabIndex = 16;
             // 
             // tlpButtons
@@ -300,7 +300,7 @@ namespace Chummer
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
             this.tlpButtons.Controls.Add(this.cmdOK, 1, 0);
-            this.tlpButtons.Location = new System.Drawing.Point(194, 194);
+            this.tlpButtons.Location = new System.Drawing.Point(274, 214);
             this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
@@ -316,7 +316,7 @@ namespace Chummer
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(384, 241);
+            this.ClientSize = new System.Drawing.Size(464, 261);
             this.Controls.Add(this.tlpMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;

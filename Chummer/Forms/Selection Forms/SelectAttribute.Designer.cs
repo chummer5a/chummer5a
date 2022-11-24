@@ -60,7 +60,7 @@ namespace Chummer
             | System.Windows.Forms.AnchorStyles.Right)));
             this.cboAttribute.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboAttribute.FormattingEnabled = true;
-            this.cboAttribute.Location = new System.Drawing.Point(3, 35);
+            this.cboAttribute.Location = new System.Drawing.Point(3, 45);
             this.cboAttribute.Name = "cboAttribute";
             this.cboAttribute.Size = new System.Drawing.Size(320, 21);
             this.cboAttribute.TabIndex = 1;
@@ -73,7 +73,7 @@ namespace Chummer
             this.lblDescription.Location = new System.Drawing.Point(3, 6);
             this.lblDescription.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDescription.Name = "lblDescription";
-            this.lblDescription.Size = new System.Drawing.Size(320, 20);
+            this.lblDescription.Size = new System.Drawing.Size(320, 30);
             this.lblDescription.TabIndex = 0;
             this.lblDescription.Text = "Description goes here.";
             // 
@@ -98,7 +98,7 @@ namespace Chummer
             this.chkDoNotAffectMetatypeMaximum.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkDoNotAffectMetatypeMaximum.AutoSize = true;
             this.chkDoNotAffectMetatypeMaximum.DefaultColorScheme = true;
-            this.chkDoNotAffectMetatypeMaximum.Location = new System.Drawing.Point(3, 63);
+            this.chkDoNotAffectMetatypeMaximum.Location = new System.Drawing.Point(3, 73);
             this.chkDoNotAffectMetatypeMaximum.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkDoNotAffectMetatypeMaximum.Name = "chkDoNotAffectMetatypeMaximum";
             this.chkDoNotAffectMetatypeMaximum.Size = new System.Drawing.Size(182, 17);
@@ -126,7 +126,7 @@ namespace Chummer
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.Size = new System.Drawing.Size(326, 113);
+            this.tlpMain.Size = new System.Drawing.Size(326, 123);
             this.tlpMain.TabIndex = 5;
             // 
             // tlpButtons
@@ -139,7 +139,7 @@ namespace Chummer
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
             this.tlpButtons.Controls.Add(this.cmdOK, 1, 0);
-            this.tlpButtons.Location = new System.Drawing.Point(154, 84);
+            this.tlpButtons.Location = new System.Drawing.Point(154, 94);
             this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
@@ -152,10 +152,8 @@ namespace Chummer
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoSize = true;
-            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(344, 131);
+            this.ClientSize = new System.Drawing.Size(344, 141);
             this.ControlBox = false;
             this.Controls.Add(this.tlpMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;

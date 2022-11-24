@@ -89,7 +89,7 @@ namespace Chummer
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpMain.Size = new System.Drawing.Size(286, 113);
+            this.tlpMain.Size = new System.Drawing.Size(326, 123);
             this.tlpMain.TabIndex = 5;
             // 
             // lblDescription
@@ -99,7 +99,7 @@ namespace Chummer
             this.lblDescription.Location = new System.Drawing.Point(3, 6);
             this.lblDescription.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDescription.Name = "lblDescription";
-            this.lblDescription.Size = new System.Drawing.Size(280, 18);
+            this.lblDescription.Size = new System.Drawing.Size(320, 28);
             this.lblDescription.TabIndex = 0;
             this.lblDescription.Tag = "Label_SelectExoticSkill_Description";
             this.lblDescription.Text = "Select an Exotic Active Skill to add to your character.";
@@ -109,9 +109,9 @@ namespace Chummer
             this.cboCategory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboCategory.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboCategory.FormattingEnabled = true;
-            this.cboCategory.Location = new System.Drawing.Point(3, 33);
+            this.cboCategory.Location = new System.Drawing.Point(3, 43);
             this.cboCategory.Name = "cboCategory";
-            this.cboCategory.Size = new System.Drawing.Size(280, 21);
+            this.cboCategory.Size = new System.Drawing.Size(320, 21);
             this.cboCategory.TabIndex = 1;
             this.cboCategory.TooltipText = "";
             this.cboCategory.SelectedIndexChanged += new System.EventHandler(this.cboCategory_SelectedIndexChanged);
@@ -121,9 +121,9 @@ namespace Chummer
             this.cboSkillSpecialisations.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboSkillSpecialisations.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
             this.cboSkillSpecialisations.FormattingEnabled = true;
-            this.cboSkillSpecialisations.Location = new System.Drawing.Point(3, 60);
+            this.cboSkillSpecialisations.Location = new System.Drawing.Point(3, 70);
             this.cboSkillSpecialisations.Name = "cboSkillSpecialisations";
-            this.cboSkillSpecialisations.Size = new System.Drawing.Size(280, 21);
+            this.cboSkillSpecialisations.Size = new System.Drawing.Size(320, 21);
             this.cboSkillSpecialisations.TabIndex = 4;
             this.cboSkillSpecialisations.TooltipText = "";
             // 
@@ -137,7 +137,7 @@ namespace Chummer
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
             this.tlpButtons.Controls.Add(this.cmdOK, 1, 0);
-            this.tlpButtons.Location = new System.Drawing.Point(114, 84);
+            this.tlpButtons.Location = new System.Drawing.Point(154, 94);
             this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
@@ -150,10 +150,8 @@ namespace Chummer
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoSize = true;
-            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(304, 131);
+            this.ClientSize = new System.Drawing.Size(344, 141);
             this.ControlBox = false;
             this.Controls.Add(this.tlpMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;

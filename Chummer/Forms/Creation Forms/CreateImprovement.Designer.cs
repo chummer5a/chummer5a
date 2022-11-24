@@ -374,7 +374,7 @@ namespace Chummer
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpMain.Size = new System.Drawing.Size(686, 263);
+            this.tlpMain.Size = new System.Drawing.Size(686, 303);
             this.tlpMain.TabIndex = 20;
             // 
             // txtTranslateSelection
@@ -424,7 +424,7 @@ namespace Chummer
             this.txtHelp.ReadOnly = true;
             this.tlpMain.SetRowSpan(this.txtHelp, 8);
             this.txtHelp.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtHelp.Size = new System.Drawing.Size(196, 230);
+            this.txtHelp.Size = new System.Drawing.Size(196, 270);
             this.txtHelp.TabIndex = 23;
             this.txtHelp.Tag = "String_Empty";
             this.txtHelp.Text = "[Help]";
@@ -440,7 +440,7 @@ namespace Chummer
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
             this.tlpButtons.Controls.Add(this.cmdOK, 1, 0);
-            this.tlpButtons.Location = new System.Drawing.Point(514, 234);
+            this.tlpButtons.Location = new System.Drawing.Point(514, 274);
             this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
@@ -453,9 +453,8 @@ namespace Chummer
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoSize = true;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(704, 281);
+            this.ClientSize = new System.Drawing.Size(704, 321);
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;

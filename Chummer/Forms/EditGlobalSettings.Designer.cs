@@ -110,12 +110,6 @@ namespace Chummer
             this.chkEnablePlugins = new Chummer.ColorableCheckBox();
             this.cmdPluginsHelp = new System.Windows.Forms.Button();
             this.chkLifeModule = new Chummer.ColorableCheckBox();
-            this.lblPDFParametersLabel = new System.Windows.Forms.Label();
-            this.cboPDFParameters = new Chummer.ElasticComboBox();
-            this.lblPDFAppPath = new System.Windows.Forms.Label();
-            this.flpBrowserVersion = new System.Windows.Forms.FlowLayoutPanel();
-            this.lblBrowserVersion = new System.Windows.Forms.Label();
-            this.nudBrowserVersion = new Chummer.NumericUpDownEx();
             this.lblMugshotCompression = new System.Windows.Forms.Label();
             this.lblCharacterRosterLabel = new System.Windows.Forms.Label();
             this.lblDefaultCharacterSetting = new System.Windows.Forms.Label();
@@ -126,6 +120,12 @@ namespace Chummer
             this.chkCreateBackupOnCareer = new Chummer.ColorableCheckBox();
             this.chkSaveCompressionLevel = new System.Windows.Forms.Label();
             this.cboChum5lzCompressionLevel = new Chummer.ElasticComboBox();
+            this.lblPDFAppPath = new System.Windows.Forms.Label();
+            this.lblPDFParametersLabel = new System.Windows.Forms.Label();
+            this.cboPDFParameters = new Chummer.ElasticComboBox();
+            this.flpBrowserVersion = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblBrowserVersion = new System.Windows.Forms.Label();
+            this.nudBrowserVersion = new Chummer.NumericUpDownEx();
             this.gpbEditSourcebookInfo = new System.Windows.Forms.GroupBox();
             this.lstGlobalSourcebookInfos = new System.Windows.Forms.ListBox();
             this.tabCustomDataDirectories = new System.Windows.Forms.TabPage();
@@ -1532,94 +1532,6 @@ namespace Chummer
             this.chkLifeModule.UseVisualStyleBackColor = true;
             this.chkLifeModule.CheckedChanged += new System.EventHandler(this.chkLifeModules_CheckedChanged);
             // 
-            // lblPDFParametersLabel
-            // 
-            this.lblPDFParametersLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblPDFParametersLabel.AutoSize = true;
-            this.lblPDFParametersLabel.Location = new System.Drawing.Point(572, 487);
-            this.lblPDFParametersLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblPDFParametersLabel.Name = "lblPDFParametersLabel";
-            this.lblPDFParametersLabel.Size = new System.Drawing.Size(87, 13);
-            this.lblPDFParametersLabel.TabIndex = 19;
-            this.lblPDFParametersLabel.Tag = "Label_Options_PDFParameters";
-            this.lblPDFParametersLabel.Text = "PDF Parameters:";
-            this.lblPDFParametersLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // cboPDFParameters
-            // 
-            this.cboPDFParameters.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboPDFParameters.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboPDFParameters.FormattingEnabled = true;
-            this.cboPDFParameters.Location = new System.Drawing.Point(665, 483);
-            this.cboPDFParameters.Name = "cboPDFParameters";
-            this.cboPDFParameters.Size = new System.Drawing.Size(216, 21);
-            this.cboPDFParameters.TabIndex = 26;
-            this.cboPDFParameters.TooltipText = "";
-            this.cboPDFParameters.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
-            // 
-            // lblPDFAppPath
-            // 
-            this.lblPDFAppPath.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblPDFAppPath.AutoSize = true;
-            this.lblPDFAppPath.Location = new System.Drawing.Point(518, 458);
-            this.lblPDFAppPath.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblPDFAppPath.Name = "lblPDFAppPath";
-            this.lblPDFAppPath.Size = new System.Drawing.Size(141, 13);
-            this.lblPDFAppPath.TabIndex = 9;
-            this.lblPDFAppPath.Tag = "Label_Options_PDFApplicationPath";
-            this.lblPDFAppPath.Text = "Location of PDF application:";
-            this.lblPDFAppPath.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // flpBrowserVersion
-            // 
-            this.flpBrowserVersion.AutoSize = true;
-            this.flpBrowserVersion.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpGlobalOptions.SetColumnSpan(this.flpBrowserVersion, 2);
-            this.flpBrowserVersion.Controls.Add(this.lblBrowserVersion);
-            this.flpBrowserVersion.Controls.Add(this.nudBrowserVersion);
-            this.flpBrowserVersion.Location = new System.Drawing.Point(441, 507);
-            this.flpBrowserVersion.Margin = new System.Windows.Forms.Padding(0);
-            this.flpBrowserVersion.Name = "flpBrowserVersion";
-            this.flpBrowserVersion.Size = new System.Drawing.Size(237, 26);
-            this.flpBrowserVersion.TabIndex = 77;
-            // 
-            // lblBrowserVersion
-            // 
-            this.lblBrowserVersion.AutoSize = true;
-            this.lblBrowserVersion.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lblBrowserVersion.Location = new System.Drawing.Point(3, 6);
-            this.lblBrowserVersion.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblBrowserVersion.Name = "lblBrowserVersion";
-            this.lblBrowserVersion.Size = new System.Drawing.Size(190, 14);
-            this.lblBrowserVersion.TabIndex = 53;
-            this.lblBrowserVersion.Tag = "Label_Options_BrowserVersion";
-            this.lblBrowserVersion.Text = "Preview uses Internet Explorer version:";
-            this.lblBrowserVersion.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // nudBrowserVersion
-            // 
-            this.nudBrowserVersion.AutoSize = true;
-            this.nudBrowserVersion.Location = new System.Drawing.Point(199, 3);
-            this.nudBrowserVersion.Maximum = new decimal(new int[] {
-            11,
-            0,
-            0,
-            0});
-            this.nudBrowserVersion.Minimum = new decimal(new int[] {
-            8,
-            0,
-            0,
-            0});
-            this.nudBrowserVersion.Name = "nudBrowserVersion";
-            this.nudBrowserVersion.Size = new System.Drawing.Size(35, 20);
-            this.nudBrowserVersion.TabIndex = 54;
-            this.nudBrowserVersion.Value = new decimal(new int[] {
-            8,
-            0,
-            0,
-            0});
-            this.nudBrowserVersion.ValueChanged += new System.EventHandler(this.OptionsChanged);
-            // 
             // lblMugshotCompression
             // 
             this.lblMugshotCompression.Anchor = System.Windows.Forms.AnchorStyles.Right;
@@ -1760,6 +1672,94 @@ namespace Chummer
             this.cboChum5lzCompressionLevel.TabIndex = 87;
             this.cboChum5lzCompressionLevel.TooltipText = "";
             this.cboChum5lzCompressionLevel.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
+            // 
+            // lblPDFAppPath
+            // 
+            this.lblPDFAppPath.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblPDFAppPath.AutoSize = true;
+            this.lblPDFAppPath.Location = new System.Drawing.Point(518, 458);
+            this.lblPDFAppPath.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblPDFAppPath.Name = "lblPDFAppPath";
+            this.lblPDFAppPath.Size = new System.Drawing.Size(141, 13);
+            this.lblPDFAppPath.TabIndex = 9;
+            this.lblPDFAppPath.Tag = "Label_Options_PDFApplicationPath";
+            this.lblPDFAppPath.Text = "Location of PDF application:";
+            this.lblPDFAppPath.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // lblPDFParametersLabel
+            // 
+            this.lblPDFParametersLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblPDFParametersLabel.AutoSize = true;
+            this.lblPDFParametersLabel.Location = new System.Drawing.Point(572, 487);
+            this.lblPDFParametersLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblPDFParametersLabel.Name = "lblPDFParametersLabel";
+            this.lblPDFParametersLabel.Size = new System.Drawing.Size(87, 13);
+            this.lblPDFParametersLabel.TabIndex = 19;
+            this.lblPDFParametersLabel.Tag = "Label_Options_PDFParameters";
+            this.lblPDFParametersLabel.Text = "PDF Parameters:";
+            this.lblPDFParametersLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // cboPDFParameters
+            // 
+            this.cboPDFParameters.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboPDFParameters.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboPDFParameters.FormattingEnabled = true;
+            this.cboPDFParameters.Location = new System.Drawing.Point(665, 483);
+            this.cboPDFParameters.Name = "cboPDFParameters";
+            this.cboPDFParameters.Size = new System.Drawing.Size(216, 21);
+            this.cboPDFParameters.TabIndex = 26;
+            this.cboPDFParameters.TooltipText = "";
+            this.cboPDFParameters.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
+            // 
+            // flpBrowserVersion
+            // 
+            this.flpBrowserVersion.AutoSize = true;
+            this.flpBrowserVersion.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpGlobalOptions.SetColumnSpan(this.flpBrowserVersion, 2);
+            this.flpBrowserVersion.Controls.Add(this.lblBrowserVersion);
+            this.flpBrowserVersion.Controls.Add(this.nudBrowserVersion);
+            this.flpBrowserVersion.Location = new System.Drawing.Point(441, 507);
+            this.flpBrowserVersion.Margin = new System.Windows.Forms.Padding(0);
+            this.flpBrowserVersion.Name = "flpBrowserVersion";
+            this.flpBrowserVersion.Size = new System.Drawing.Size(237, 26);
+            this.flpBrowserVersion.TabIndex = 77;
+            // 
+            // lblBrowserVersion
+            // 
+            this.lblBrowserVersion.AutoSize = true;
+            this.lblBrowserVersion.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lblBrowserVersion.Location = new System.Drawing.Point(3, 6);
+            this.lblBrowserVersion.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblBrowserVersion.Name = "lblBrowserVersion";
+            this.lblBrowserVersion.Size = new System.Drawing.Size(190, 14);
+            this.lblBrowserVersion.TabIndex = 53;
+            this.lblBrowserVersion.Tag = "Label_Options_BrowserVersion";
+            this.lblBrowserVersion.Text = "Preview uses Internet Explorer version:";
+            this.lblBrowserVersion.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // nudBrowserVersion
+            // 
+            this.nudBrowserVersion.AutoSize = true;
+            this.nudBrowserVersion.Location = new System.Drawing.Point(199, 3);
+            this.nudBrowserVersion.Maximum = new decimal(new int[] {
+            11,
+            0,
+            0,
+            0});
+            this.nudBrowserVersion.Minimum = new decimal(new int[] {
+            8,
+            0,
+            0,
+            0});
+            this.nudBrowserVersion.Name = "nudBrowserVersion";
+            this.nudBrowserVersion.Size = new System.Drawing.Size(35, 20);
+            this.nudBrowserVersion.TabIndex = 54;
+            this.nudBrowserVersion.Value = new decimal(new int[] {
+            8,
+            0,
+            0,
+            0});
+            this.nudBrowserVersion.ValueChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // gpbEditSourcebookInfo
             // 
@@ -2316,7 +2316,6 @@ namespace Chummer
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoScroll = true;
-            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(1264, 681);
             this.Controls.Add(this.tlpOptions);
             this.DoubleBuffered = true;

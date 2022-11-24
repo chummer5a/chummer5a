@@ -47,7 +47,7 @@ namespace Chummer
             this.lblSettingDescription.Location = new System.Drawing.Point(3, 6);
             this.lblSettingDescription.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSettingDescription.Name = "lblSettingDescription";
-            this.lblSettingDescription.Size = new System.Drawing.Size(440, 55);
+            this.lblSettingDescription.Size = new System.Drawing.Size(320, 55);
             this.lblSettingDescription.TabIndex = 0;
             this.lblSettingDescription.Tag = "Label_SelectSetting_SettingsDescription";
             this.lblSettingDescription.Text = "Select a Settings file to use. Settings determine the default build method, numbe" +
@@ -73,7 +73,7 @@ namespace Chummer
             this.cboSetting.FormattingEnabled = true;
             this.cboSetting.Location = new System.Drawing.Point(76, 70);
             this.cboSetting.Name = "cboSetting";
-            this.cboSetting.Size = new System.Drawing.Size(367, 21);
+            this.cboSetting.Size = new System.Drawing.Size(247, 21);
             this.cboSetting.TabIndex = 2;
             this.cboSetting.TooltipText = "";
             // 
@@ -126,7 +126,7 @@ namespace Chummer
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.Size = new System.Drawing.Size(446, 123);
+            this.tlpMain.Size = new System.Drawing.Size(326, 123);
             this.tlpMain.TabIndex = 5;
             // 
             // tlpButtons
@@ -140,7 +140,7 @@ namespace Chummer
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
             this.tlpButtons.Controls.Add(this.cmdOK, 1, 0);
-            this.tlpButtons.Location = new System.Drawing.Point(274, 94);
+            this.tlpButtons.Location = new System.Drawing.Point(154, 94);
             this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
@@ -153,10 +153,8 @@ namespace Chummer
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoSize = true;
-            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(464, 141);
+            this.ClientSize = new System.Drawing.Size(344, 141);
             this.ControlBox = false;
             this.Controls.Add(this.tlpMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;

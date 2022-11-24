@@ -62,7 +62,7 @@ namespace Chummer
             this.cboAmmo.FormattingEnabled = true;
             this.cboAmmo.Location = new System.Drawing.Point(48, 3);
             this.cboAmmo.Name = "cboAmmo";
-            this.cboAmmo.Size = new System.Drawing.Size(275, 21);
+            this.cboAmmo.Size = new System.Drawing.Size(235, 21);
             this.cboAmmo.TabIndex = 1;
             this.cboAmmo.TooltipText = "";
             // 
@@ -86,7 +86,7 @@ namespace Chummer
             this.cboType.FormattingEnabled = true;
             this.cboType.Location = new System.Drawing.Point(48, 30);
             this.cboType.Name = "cboType";
-            this.cboType.Size = new System.Drawing.Size(275, 21);
+            this.cboType.Size = new System.Drawing.Size(235, 21);
             this.cboType.TabIndex = 3;
             this.cboType.TooltipText = "";
             // 
@@ -139,7 +139,7 @@ namespace Chummer
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.Size = new System.Drawing.Size(326, 83);
+            this.tlpMain.Size = new System.Drawing.Size(286, 103);
             this.tlpMain.TabIndex = 6;
             // 
             // tlpButtons
@@ -153,7 +153,7 @@ namespace Chummer
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
             this.tlpButtons.Controls.Add(this.cmdOK, 1, 0);
-            this.tlpButtons.Location = new System.Drawing.Point(154, 54);
+            this.tlpButtons.Location = new System.Drawing.Point(114, 74);
             this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
@@ -166,9 +166,8 @@ namespace Chummer
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoSize = true;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(344, 101);
+            this.ClientSize = new System.Drawing.Size(304, 121);
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;

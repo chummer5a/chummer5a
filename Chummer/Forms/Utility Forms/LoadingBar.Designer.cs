@@ -29,7 +29,6 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(LoadingBar));
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.lblLoadingInfo = new System.Windows.Forms.Label();
@@ -51,7 +50,7 @@ namespace Chummer
             this.tlpMain.RowCount = 2;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.Size = new System.Drawing.Size(418, 59);
+            this.tlpMain.Size = new System.Drawing.Size(446, 63);
             this.tlpMain.TabIndex = 0;
             this.tlpMain.UseWaitCursor = true;
             // 
@@ -59,7 +58,7 @@ namespace Chummer
             // 
             this.lblLoadingInfo.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.lblLoadingInfo.AutoSize = true;
-            this.lblLoadingInfo.Location = new System.Drawing.Point(3, 8);
+            this.lblLoadingInfo.Location = new System.Drawing.Point(3, 12);
             this.lblLoadingInfo.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblLoadingInfo.Name = "lblLoadingInfo";
             this.lblLoadingInfo.Size = new System.Drawing.Size(83, 13);
@@ -71,9 +70,9 @@ namespace Chummer
             // pgbLoadingProgress
             // 
             this.pgbLoadingProgress.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pgbLoadingProgress.Location = new System.Drawing.Point(3, 30);
+            this.pgbLoadingProgress.Location = new System.Drawing.Point(3, 34);
             this.pgbLoadingProgress.Name = "pgbLoadingProgress";
-            this.pgbLoadingProgress.Size = new System.Drawing.Size(412, 26);
+            this.pgbLoadingProgress.Size = new System.Drawing.Size(440, 26);
             this.pgbLoadingProgress.Step = 1;
             this.pgbLoadingProgress.TabIndex = 1;
             this.pgbLoadingProgress.UseWaitCursor = true;
@@ -82,9 +81,7 @@ namespace Chummer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoSize = true;
-            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(436, 77);
+            this.ClientSize = new System.Drawing.Size(464, 81);
             this.ControlBox = false;
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;

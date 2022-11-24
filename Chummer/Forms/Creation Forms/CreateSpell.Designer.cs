@@ -131,7 +131,7 @@ namespace Chummer
             this.cboCategory.FormattingEnabled = true;
             this.cboCategory.Location = new System.Drawing.Point(81, 29);
             this.cboCategory.Name = "cboCategory";
-            this.cboCategory.Size = new System.Drawing.Size(212, 21);
+            this.cboCategory.Size = new System.Drawing.Size(170, 21);
             this.cboCategory.TabIndex = 3;
             this.cboCategory.TooltipText = "";
             this.cboCategory.SelectedIndexChanged += new System.EventHandler(this.cboCategory_SelectedIndexChanged);
@@ -157,7 +157,7 @@ namespace Chummer
             this.cboType.FormattingEnabled = true;
             this.cboType.Location = new System.Drawing.Point(81, 56);
             this.cboType.Name = "cboType";
-            this.cboType.Size = new System.Drawing.Size(212, 21);
+            this.cboType.Size = new System.Drawing.Size(170, 21);
             this.cboType.TabIndex = 5;
             this.cboType.TooltipText = "";
             this.cboType.SelectedIndexChanged += new System.EventHandler(this.cboType_SelectedIndexChanged);
@@ -183,7 +183,7 @@ namespace Chummer
             this.cboRange.FormattingEnabled = true;
             this.cboRange.Location = new System.Drawing.Point(81, 83);
             this.cboRange.Name = "cboRange";
-            this.cboRange.Size = new System.Drawing.Size(212, 21);
+            this.cboRange.Size = new System.Drawing.Size(170, 21);
             this.cboRange.TabIndex = 7;
             this.cboRange.TooltipText = "";
             this.cboRange.SelectedIndexChanged += new System.EventHandler(this.cboRange_SelectedIndexChanged);
@@ -243,7 +243,7 @@ namespace Chummer
             this.cboDuration.FormattingEnabled = true;
             this.cboDuration.Location = new System.Drawing.Point(81, 136);
             this.cboDuration.Name = "cboDuration";
-            this.cboDuration.Size = new System.Drawing.Size(212, 21);
+            this.cboDuration.Size = new System.Drawing.Size(170, 21);
             this.cboDuration.TabIndex = 12;
             this.cboDuration.TooltipText = "";
             this.cboDuration.SelectedIndexChanged += new System.EventHandler(this.cboDuration_SelectedIndexChanged);
@@ -500,7 +500,7 @@ namespace Chummer
             this.tlpMain.SetColumnSpan(this.txtName, 2);
             this.txtName.Location = new System.Drawing.Point(81, 3);
             this.txtName.Name = "txtName";
-            this.txtName.Size = new System.Drawing.Size(430, 20);
+            this.txtName.Size = new System.Drawing.Size(346, 20);
             this.txtName.TabIndex = 1;
             // 
             // chkArea
@@ -508,7 +508,7 @@ namespace Chummer
             this.chkArea.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkArea.AutoSize = true;
             this.chkArea.DefaultColorScheme = true;
-            this.chkArea.Location = new System.Drawing.Point(299, 85);
+            this.chkArea.Location = new System.Drawing.Point(257, 85);
             this.chkArea.Name = "chkArea";
             this.chkArea.Size = new System.Drawing.Size(48, 17);
             this.chkArea.TabIndex = 19;
@@ -522,7 +522,7 @@ namespace Chummer
             this.chkLimited.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkLimited.AutoSize = true;
             this.chkLimited.DefaultColorScheme = true;
-            this.chkLimited.Location = new System.Drawing.Point(299, 31);
+            this.chkLimited.Location = new System.Drawing.Point(257, 31);
             this.chkLimited.Name = "chkLimited";
             this.chkLimited.Size = new System.Drawing.Size(85, 17);
             this.chkLimited.TabIndex = 20;
@@ -567,7 +567,7 @@ namespace Chummer
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.Size = new System.Drawing.Size(734, 519);
+            this.tlpMain.Size = new System.Drawing.Size(606, 423);
             this.tlpMain.TabIndex = 21;
             // 
             // flpRestrictedTarget
@@ -592,7 +592,7 @@ namespace Chummer
             this.flpDV.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flpDV.Controls.Add(this.lblDVLabel);
             this.flpDV.Controls.Add(this.lblDV);
-            this.flpDV.Location = new System.Drawing.Point(514, 27);
+            this.flpDV.Location = new System.Drawing.Point(430, 27);
             this.flpDV.Margin = new System.Windows.Forms.Padding(0);
             this.flpDV.Name = "flpDV";
             this.flpDV.Size = new System.Drawing.Size(56, 25);
@@ -623,7 +623,7 @@ namespace Chummer
             this.flpModifiers.Location = new System.Drawing.Point(78, 160);
             this.flpModifiers.Margin = new System.Windows.Forms.Padding(0);
             this.flpModifiers.Name = "flpModifiers";
-            this.flpModifiers.Size = new System.Drawing.Size(656, 330);
+            this.flpModifiers.Size = new System.Drawing.Size(528, 234);
             this.flpModifiers.TabIndex = 24;
             this.flpModifiers.WrapContents = false;
             // 
@@ -651,7 +651,7 @@ namespace Chummer
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
             this.tlpButtons.Controls.Add(this.cmdOK, 1, 0);
-            this.tlpButtons.Location = new System.Drawing.Point(562, 490);
+            this.tlpButtons.Location = new System.Drawing.Point(434, 394);
             this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
@@ -664,9 +664,8 @@ namespace Chummer
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoSize = true;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(752, 537);
+            this.ClientSize = new System.Drawing.Size(624, 441);
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;

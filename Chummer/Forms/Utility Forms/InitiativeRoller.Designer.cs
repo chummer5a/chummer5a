@@ -43,7 +43,7 @@ namespace Chummer
             this.nudDiceResult.AutoSize = true;
             this.nudDiceResult.CausesValidation = false;
             this.tlpMain.SetColumnSpan(this.nudDiceResult, 2);
-            this.nudDiceResult.Location = new System.Drawing.Point(103, 31);
+            this.nudDiceResult.Location = new System.Drawing.Point(103, 51);
             this.nudDiceResult.Maximum = new decimal(new int[] {
             100,
             0,
@@ -62,7 +62,7 @@ namespace Chummer
             // 
             this.lblDice.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblDice.AutoSize = true;
-            this.lblDice.Location = new System.Drawing.Point(22, 34);
+            this.lblDice.Location = new System.Drawing.Point(22, 54);
             this.lblDice.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDice.Name = "lblDice";
             this.lblDice.Size = new System.Drawing.Size(75, 13);
@@ -76,7 +76,7 @@ namespace Chummer
             this.cmdOK.AutoSize = true;
             this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdOK.Location = new System.Drawing.Point(103, 57);
+            this.cmdOK.Location = new System.Drawing.Point(103, 77);
             this.cmdOK.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(80, 23);
@@ -88,9 +88,8 @@ namespace Chummer
             // 
             // lblDescription
             // 
-            this.lblDescription.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblDescription.AutoSize = true;
-            this.lblDescription.Location = new System.Drawing.Point(3, 7);
+            this.lblDescription.Location = new System.Drawing.Point(3, 6);
             this.lblDescription.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDescription.Name = "lblDescription";
             this.lblDescription.Size = new System.Drawing.Size(88, 13);
@@ -117,7 +116,7 @@ namespace Chummer
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.Size = new System.Drawing.Size(286, 83);
+            this.tlpMain.Size = new System.Drawing.Size(286, 103);
             this.tlpMain.TabIndex = 10;
             // 
             // InitiativeRoller
@@ -125,8 +124,7 @@ namespace Chummer
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(304, 101);
+            this.ClientSize = new System.Drawing.Size(304, 121);
             this.Controls.Add(this.tlpMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
