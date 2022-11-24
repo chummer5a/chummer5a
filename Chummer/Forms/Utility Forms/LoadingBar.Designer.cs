@@ -81,6 +81,7 @@ namespace Chummer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(464, 81);
             this.ControlBox = false;
             this.Controls.Add(this.tlpMain);
@@ -93,6 +94,7 @@ namespace Chummer
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowIcon = false;
             this.ShowInTaskbar = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "String_Loading";
             this.Text = "Loading [Character]...";
             this.UseWaitCursor = true;
