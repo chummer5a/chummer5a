@@ -53,7 +53,7 @@ namespace Chummer.Forms
 
             InitializeComponent();
             this.UpdateLightDarkMode();
-            
+
             txtText.Text = text;
             txtText.AutoSetScrollbars();
             Text = string.IsNullOrWhiteSpace(caption) ? string.Empty : caption;

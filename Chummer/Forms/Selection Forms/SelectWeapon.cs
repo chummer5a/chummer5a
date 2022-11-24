@@ -715,7 +715,7 @@ namespace Chummer
         private void txtSearch_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Up)
-                txtSearch.Select(txtSearch.Text.Length, 0);
+                txtSearch.Select(txtSearch.TextLength, 0);
         }
 
         private async void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
@@ -855,7 +855,7 @@ namespace Chummer
                 case 1:
                     if (dgvWeapons.SelectedRows.Count == 1)
                     {
-                        if (txtSearch.Text.Length > 1)
+                        if (txtSearch.TextLength > 1)
                         {
                             string strWeapon = dgvWeapons.SelectedRows[0].Cells[0].Value.ToString();
                             if (!string.IsNullOrEmpty(strWeapon))

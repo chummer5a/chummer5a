@@ -256,7 +256,7 @@ namespace Chummer.Backend.Equipment
 
                 case NotifyCollectionChangedAction.Reset:
                     blnRecreateInternalClip = true;
-                    blnDoEncumbranceRefresh = Equipped && ParentVehicle == null;
+                    blnDoEncumbranceRefresh = blnEverDoEncumbranceRefresh;
                     break;
             }
 

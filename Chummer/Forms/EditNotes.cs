@@ -36,7 +36,7 @@ namespace Chummer
         // Set to DPI-based 360 in constructor, needs to be there because of DPI dependency
         private static int _intHeight = int.MinValue;
 
-        private readonly bool _blnLoading;
+        private bool _blnLoading = true;
         private string _strNotes;
         private Color _colNotes;
 
@@ -52,25 +52,11 @@ namespace Chummer
         {
             _objMyToken = objMyToken;
             InitializeComponent();
-            this.UpdateLightDarkMode();
-            this.TranslateWinForm();
-            if (_intWidth <= 0 || _intHeight <= 0)
-            {
-                using (Graphics g = CreateGraphics())
-                {
-                    if (_intWidth <= 0)
-                        _intWidth = (int)(640 * g.DpiX / 96.0f);
-                    if (_intHeight <= 0)
-                        _intHeight = (int)(360 * g.DpiY / 96.0f);
-                }
-            }
-            _blnLoading = true;
-            Width = _intWidth;
-            Height = _intHeight;
-            _blnLoading = false;
+            this.UpdateLightDarkMode(objMyToken);
+            this.TranslateWinForm(token: objMyToken);
             txtNotes.Text = _strNotes = strOldNotes.NormalizeLineEndings();
 
-            btnColorSelect.Enabled = txtNotes.Text.Length > 0;
+            btnColorSelect.Enabled = _strNotes.Length > 0;
 
             _colNotes = colNotes;
             if (_colNotes.IsEmpty)
@@ -81,7 +67,20 @@ namespace Chummer
         {
             try
             {
+                if (_intWidth <= 0 || _intHeight <= 0)
+                {
+                    using (Graphics g = CreateGraphics())
+                    {
+                        if (_intWidth <= 0)
+                            _intWidth = (int)(640 * g.DpiX / 96.0f);
+                        if (_intHeight <= 0)
+                            _intHeight = (int)(360 * g.DpiY / 96.0f);
+                    }
+                }
+                Width = _intWidth;
+                Height = _intHeight;
                 await UpdateColorRepresentation(_objMyToken).ConfigureAwait(false);
+                _blnLoading = false;
             }
             catch (OperationCanceledException)
             {
