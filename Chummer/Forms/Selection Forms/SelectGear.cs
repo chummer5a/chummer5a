@@ -703,14 +703,11 @@ namespace Chummer
                     {
                         string strCost = objCostNode.Value;
 
-                        if (strCost.StartsWith("FixedValues(", StringComparison.Ordinal))
+                        if (strCost.StartsWith("FixedValues(", StringComparison.Ordinal) && intRatingValue > 0)
                         {
-                            if (intRatingValue > 0)
-                            {
-                                strCost = strCost.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
-                                                 .SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
-                                                 .ElementAt(intRatingValue - 1).Trim('[', ']');
-                            }
+                            strCost = strCost.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
+                                             .SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
+                                             .ElementAt(intRatingValue - 1).Trim('[', ']');
                         }
 
                         if (strCost.StartsWith("Variable(", StringComparison.Ordinal))
@@ -1121,7 +1118,7 @@ namespace Chummer
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdCategoryFilter))
                     {
-                        foreach (string strItem in _lstCategory.Select(x => x.Value))
+                        foreach (string strItem in _lstCategory.Select(x => x.Value.ToString()))
                         {
                             sbdCategoryFilter.Append("category = ").Append(strItem.CleanXPath()).Append(" or ");
                         }

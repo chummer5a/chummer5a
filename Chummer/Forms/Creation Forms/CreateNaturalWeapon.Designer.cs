@@ -338,6 +338,7 @@ namespace Chummer
             this.Name = "CreateNaturalWeapon";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_CreateNaturalWeapon";
             this.Text = "Create Natural Weapon";
             this.Load += new System.EventHandler(this.CreateNaturalWeapon_Load);

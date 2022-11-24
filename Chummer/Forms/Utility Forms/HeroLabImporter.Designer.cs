@@ -522,6 +522,7 @@ namespace Chummer
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "HeroLabImporter";
             this.Padding = new System.Windows.Forms.Padding(9);
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_HeroLabImporter";
             this.Text = "Hero Lab Importer";
             this.Load += new System.EventHandler(this.HeroLabImporter_Load);

@@ -304,6 +304,7 @@ namespace Chummer
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MasterIndex";
             this.Padding = new System.Windows.Forms.Padding(9);
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_MasterIndex";
             this.Text = "Master Index";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MasterIndex_FormClosing);

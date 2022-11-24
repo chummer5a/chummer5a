@@ -568,6 +568,7 @@ namespace Chummer
             this.MinimizeBox = false;
             this.Name = "CreateWeaponMount";
             this.Padding = new System.Windows.Forms.Padding(9);
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_CreateWeaponMount";
             this.Text = "Create Weapon Mount";
             this.Load += new System.EventHandler(this.CreateWeaponMount_Load);

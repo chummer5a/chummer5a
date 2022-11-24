@@ -310,6 +310,7 @@ namespace Chummer
             this.Name = "SelectLifeModule";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Select Life Module";
             this.Load += new System.EventHandler(this.SelectLifeModule_Load);
             this.tlpMain.ResumeLayout(false);
