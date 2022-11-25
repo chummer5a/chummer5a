@@ -17525,6 +17525,7 @@
       </bonus>
       <required>
         <oneof>
+          <quality>Adept</quality>
           <quality>Aware</quality>
           <quality>Aspected Magician</quality>
           <quality>Apprentice</quality>
@@ -17551,6 +17552,7 @@
       </bonus>
       <required>
         <oneof>
+          <quality>Adept</quality>
           <quality>Aware</quality>
           <quality>Aspected Magician</quality>
           <quality>Apprentice</quality>
@@ -17577,6 +17579,7 @@
       </bonus>
       <required>
         <oneof>
+          <quality>Adept</quality>
           <quality>Aware</quality>
           <quality>Aspected Magician</quality>
           <quality>Apprentice</quality>
@@ -17603,6 +17606,7 @@
       </bonus>
       <required>
         <oneof>
+          <quality>Adept</quality>
           <quality>Aware</quality>
           <quality>Aspected Magician</quality>
           <quality>Apprentice</quality>
@@ -17630,6 +17634,7 @@
       </bonus>
       <required>
         <oneof>
+          <quality>Adept</quality>
           <quality>Aware</quality>
           <quality>Aspected Magician</quality>
           <quality>Apprentice</quality>
@@ -17656,6 +17661,7 @@
       </bonus>
       <required>
         <oneof>
+          <quality>Adept</quality>
           <quality>Aware</quality>
           <quality>Aspected Magician</quality>
           <quality>Apprentice</quality>
@@ -17686,6 +17692,7 @@
       </bonus>
       <required>
         <oneof>
+          <quality>Adept</quality>
           <quality>Aware</quality>
           <quality>Aspected Magician</quality>
           <quality>Apprentice</quality>

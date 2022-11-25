@@ -63,6 +63,7 @@ Data Changes:
 - "Advanced Medkit" has been renamed to "Medkit (Bullets & Bandages)" and now has the same availability and abilities as the medkit entry from the core rulebook.
 - Hedge Witch/Wizard drain modifiers now work properly. Fixes #4957.
 - Uneducated now properly disables defaulting on Professional, Academic, and Technical Active skills. Existing characters with this quality will need to re-add the quality or reapply improvements to see this effect.
+- Physical adepts can now take any of the special Awakened type qualities from Forbidden Arcana to be consistent with Aware and Explorers being able to take those as well. This does not mean all players should be allowed to take any of these qualities for adepts, but rather that because the rulebooks are silent on who can and cannot take these qualities, Chummer will technically allow players to take them so that GMs can make case-by-case decisions on the matter.
 
 Changed/New Strings:
 - LimitCondition_SoldierParagon
