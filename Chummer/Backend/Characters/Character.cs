@@ -13782,10 +13782,12 @@ namespace Chummer
                                           await objLoopAttrib.GetTotalMinimumAsync(token).ConfigureAwait(false));
                                 if (intLoopAttribValue > 1)
                                 {
+                                    bool blnIsRegularAttribute
+                                        = strAttributeName != "MAG" && strAttributeName != "MAGAdept" &&
+                                          strAttributeName != "RES" && strAttributeName != "DEP";
                                     intMetatypeExtraAttributesValue += ((intLoopAttribValue + 1) * intLoopAttribValue / 2 - 1)
                                                                        * await objSettings.GetKarmaAttributeAsync(token).ConfigureAwait(false);
-                                    if (strAttributeName != "MAG" && strAttributeName != "MAGAdept" &&
-                                        strAttributeName != "RES" && strAttributeName != "DEP")
+                                    if (blnIsRegularAttribute)
                                     {
                                         int intMetatypeMinimumDelta = await objLoopAttrib.GetMetatypeMinimumAsync(token)
                                             .ConfigureAwait(false) - 1;
@@ -13805,6 +13807,17 @@ namespace Chummer
                                     else
                                         intAttributesValue += ((intLoopAttribValue + 1) * intLoopAttribValue / 2 - 1) *
                                                               await objSettings.GetKarmaAttributeAsync(token).ConfigureAwait(false);
+
+                                    // Separately calculate and apply Point Buy calculation modification from higher metatype minima
+                                    int intMetatypeBaseAttribValue = await objLoopAttrib.GetMetatypeMinimumAsync(token)
+                                        .ConfigureAwait(false);
+                                    if (intMetatypeBaseAttribValue > blnIsRegularAttribute.ToInt32())
+                                    {
+                                        intExtraKarmaToRemoveForPointBuyComparison
+                                            += ((intMetatypeBaseAttribValue + 1) * intMetatypeBaseAttribValue / 2
+                                                - blnIsRegularAttribute.ToInt32())
+                                               * await objSettings.GetKarmaAttributeAsync(token).ConfigureAwait(false);
+                                    }
                                 }
                             }
                         }
