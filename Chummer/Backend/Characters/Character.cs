@@ -26118,7 +26118,7 @@ namespace Chummer
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (_decNuyen == value)
+                if (_decStolenNuyen == value)
                     return;
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
