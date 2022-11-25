@@ -13762,6 +13762,7 @@ namespace Chummer
                         int intAttributesValue = 0;
                         // Zeroed to -10 because that's Human's value at default settings
                         int intMetatypeExtraAttributesValue = -2 * objSettings.KarmaAttribute;
+                        intExtraKarmaToRemoveForPointBuyComparison -= 2 * objSettings.KarmaAttribute;
                         // Value from attribute points and raised attribute minimums
                         foreach (CharacterAttrib objLoopAttrib in AttributeSection.AttributeList.Concat(AttributeSection
                                      .SpecialAttributeList))
