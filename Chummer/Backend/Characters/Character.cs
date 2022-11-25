@@ -13739,8 +13739,7 @@ namespace Chummer
 
                     if (await GetEffectiveBuildMethodUsesPriorityTablesAsync(token).ConfigureAwait(false))
                     {
-                        // Zeroed to -10 because that's Human's value at default settings
-                        int intMetatypeQualitiesValue = -2 * objSettings.KarmaAttribute;
+                        int intMetatypeQualitiesValue = 0;
                         // Karma value of all qualities (we're ignoring metatype cost because Point Buy karma costs don't line up with other methods' values)
                         await (await GetQualitiesAsync(token).ConfigureAwait(false)).ForEachAsync(async objQuality =>
                         {
@@ -13761,7 +13760,8 @@ namespace Chummer
                         // For point buy comparisons, we need to use the metatype's Point Buy cost for the comparison, not attributes + metatype qualities.
                         intExtraKarmaToRemoveForPointBuyComparison += intMetatypePriorityKarmaCost + intMetatypeQualitiesValue;
                         int intAttributesValue = 0;
-                        int intMetatypeExtraAttributesValue = 0;
+                        // Zeroed to -10 because that's Human's value at default settings
+                        int intMetatypeExtraAttributesValue = -2 * objSettings.KarmaAttribute;
                         // Value from attribute points and raised attribute minimums
                         foreach (CharacterAttrib objLoopAttrib in AttributeSection.AttributeList.Concat(AttributeSection
                                      .SpecialAttributeList))
@@ -13809,14 +13809,21 @@ namespace Chummer
                                                               await objSettings.GetKarmaAttributeAsync(token).ConfigureAwait(false);
 
                                     // Separately calculate and apply Point Buy calculation modification from higher metatype minima
-                                    int intMetatypeBaseAttribValue = await objLoopAttrib.GetMetatypeMinimumAsync(token)
-                                        .ConfigureAwait(false);
-                                    if (intMetatypeBaseAttribValue > blnIsRegularAttribute.ToInt32())
+                                    if (blnIsRegularAttribute)
                                     {
-                                        intExtraKarmaToRemoveForPointBuyComparison
-                                            += ((intMetatypeBaseAttribValue + 1) * intMetatypeBaseAttribValue / 2
-                                                - blnIsRegularAttribute.ToInt32())
-                                               * await objSettings.GetKarmaAttributeAsync(token).ConfigureAwait(false);
+                                        // All non-regular attributes are forced to start at 0 or 1 anyway, so while it is hacky to
+                                        // only consider regular attributes, it is what makes the math work 99% of the time, and
+                                        // handling non-regular attributes in a special way would be too complicated in Chummer's setup.
+                                        int intMetatypeBaseAttribValue = await objLoopAttrib
+                                                                               .GetMetatypeMinimumAsync(token)
+                                                                               .ConfigureAwait(false);
+                                        if (intMetatypeBaseAttribValue > 1)
+                                        {
+                                            intExtraKarmaToRemoveForPointBuyComparison
+                                                += ((intMetatypeBaseAttribValue + 1) * intMetatypeBaseAttribValue / 2
+                                                    - 1) * await objSettings.GetKarmaAttributeAsync(token)
+                                                                            .ConfigureAwait(false);
+                                        }
                                     }
                                 }
                             }
