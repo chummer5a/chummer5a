@@ -3939,17 +3939,38 @@ namespace Chummer
                     Improvement.ImprovementType eImprovementType = objImprovement.ImproveType;
                     // See if the character has anything else that is granting them the same bonus as this improvement
                     bool blnHasDuplicate;
-                    if (blnAllowDuplicatesFromSameSource)
-                        blnHasDuplicate = objCharacter.Improvements.Any(
+                    if (blnSync)
+                    {
+                        if (blnAllowDuplicatesFromSameSource)
+                            blnHasDuplicate = objCharacter.Improvements.Any(
+                                x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
+                                                                   && x.ImproveType == eImprovementType
+                                                                   && x.Enabled
+                                                                   && !ReferenceEquals(x, objImprovement));
+                        else
+                        {
+                            string strSourceName = objImprovement.SourceName;
+                            blnHasDuplicate = objCharacter.Improvements.Any(
+                                x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
+                                                                   && x.ImproveType == eImprovementType
+                                                                   && x.SourceName != strSourceName
+                                                                   && x.Enabled);
+                        }
+                    }
+                    else if (blnAllowDuplicatesFromSameSource)
+                        blnHasDuplicate = await objCharacter.Improvements.AnyAsync(
                             x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
-                                                               && x.ImproveType == eImprovementType);
+                                                               && x.ImproveType == eImprovementType
+                                                               && x.Enabled
+                                                               && !ReferenceEquals(x, objImprovement), token).ConfigureAwait(false);
                     else
                     {
                         string strSourceName = objImprovement.SourceName;
-                        blnHasDuplicate = objCharacter.Improvements.Any(
+                        blnHasDuplicate = await objCharacter.Improvements.AnyAsync(
                             x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
                                                                && x.ImproveType == eImprovementType
-                                                               && x.SourceName != strSourceName);
+                                                               && x.SourceName != strSourceName
+                                                               && x.Enabled, token).ConfigureAwait(false);
                     }
 
                     switch (eImprovementType)
