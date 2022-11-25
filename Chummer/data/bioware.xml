@@ -541,6 +541,16 @@
       <cost>Rating * 31000</cost>
       <bonus>
         <sociallimit>Rating</sociallimit>
+        <skillgroup>
+          <name>Acting</name>
+          <bonus>Rating</bonus>
+          <condition>People who can smell you</condition>
+        </skillgroup>
+        <skillgroup>
+          <name>Influence</name>
+          <bonus>Rating</bonus>
+          <condition>People who can smell you</condition>
+        </skillgroup>
       </bonus>
       <rating>3</rating>
       <source>SR5</source>
