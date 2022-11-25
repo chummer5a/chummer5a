@@ -3959,10 +3959,12 @@ namespace Chummer
                     }
                     else if (blnAllowDuplicatesFromSameSource)
                         blnHasDuplicate = await objCharacter.Improvements.AnyAsync(
-                            x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
-                                                               && x.ImproveType == eImprovementType
-                                                               && x.Enabled
-                                                               && !ReferenceEquals(x, objImprovement), token).ConfigureAwait(false);
+                                                                x => x.UniqueName == strUniqueName
+                                                                     && x.ImprovedName == strImprovedName
+                                                                     && x.ImproveType == eImprovementType
+                                                                     && x.Enabled
+                                                                     && !ReferenceEquals(x, objImprovement), token)
+                                                            .ConfigureAwait(false);
                     else
                     {
                         string strSourceName = objImprovement.SourceName;
