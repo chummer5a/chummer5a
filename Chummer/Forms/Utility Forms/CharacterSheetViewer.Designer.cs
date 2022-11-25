@@ -234,6 +234,7 @@ namespace Chummer
             this.cmdSaveAsPdf.Location = new System.Drawing.Point(107, 3);
             this.cmdSaveAsPdf.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdSaveAsPdf.Name = "cmdSaveAsPdf";
+            this.cmdSaveAsPdf.ShowSplit = true;
             this.cmdSaveAsPdf.Size = new System.Drawing.Size(98, 23);
             this.cmdSaveAsPdf.SplitMenuStrip = this.cmsSaveButton;
             this.cmdSaveAsPdf.TabIndex = 1;
@@ -252,6 +253,7 @@ namespace Chummer
             this.cmdPrint.Location = new System.Drawing.Point(3, 3);
             this.cmdPrint.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdPrint.Name = "cmdPrint";
+            this.cmdPrint.ShowSplit = true;
             this.cmdPrint.Size = new System.Drawing.Size(98, 23);
             this.cmdPrint.SplitMenuStrip = this.cmsPrintButton;
             this.cmdPrint.TabIndex = 103;
@@ -264,6 +266,7 @@ namespace Chummer
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(784, 561);
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;

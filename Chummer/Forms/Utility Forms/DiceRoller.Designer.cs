@@ -462,6 +462,7 @@ namespace Chummer
             // DiceRoller
             // 
             this.AcceptButton = this.cmdRollDice;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(624, 441);
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
