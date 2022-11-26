@@ -13853,6 +13853,13 @@
       <capacity>0</capacity>
       <requireparent />
       <cost>Parent Cost * -.5</cost>
+      <required>
+        <geardetails>
+          <OR>
+            <category>Drugs</category>
+          </OR>
+        </geardetails>
+      </required>
     </gear>    
     <gear>
       <id>21f33089-cb7a-4bef-80ae-03d04f1c47ad</id>
@@ -13865,6 +13872,13 @@
       <capacity>0</capacity>
       <requireparent />
       <cost>Parent Cost</cost>
+      <required>
+        <geardetails>
+          <OR>
+            <category>Drugs</category>
+          </OR>
+        </geardetails>
+      </required>
     </gear>    
     <gear>
       <id>d8cdb6ea-5150-4ec0-8166-88d33e714364</id>
@@ -13877,6 +13891,13 @@
       <capacity>0</capacity>
       <requireparent />
       <cost>Parent Cost * 5</cost>
+      <required>
+        <geardetails>
+          <OR>
+            <category>Drugs</category>
+          </OR>
+        </geardetails>
+      </required>
     </gear>
     <!-- End Region -->
     <!-- Region Armor Enhancements -->
