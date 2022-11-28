@@ -33,7 +33,7 @@
           <conceal>0</conceal>
           <accuracy>6</accuracy>
           <reach>0</reach>
-          <damage>(STR+1)P</damage>
+          <damage>({STR}+1)P</damage>
           <ap>-4</ap>
           <mode>0</mode>
           <rc>0</rc>
