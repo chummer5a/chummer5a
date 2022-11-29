@@ -20372,7 +20372,7 @@
       <page>170</page>
       <avail>+4</avail>
       <requireparent />
-      <cost>{Parent Cost}*2</cost>
+      <cost>(Parent Cost * 2)</cost>
     </gear>
     <gear>
       <id>357d77f6-0e9e-4e5f-87f2-9c4b5422d23c</id>
@@ -20485,7 +20485,7 @@
       <page>175</page>
       <avail>8</avail>
       <bonus />
-      <cost>{Parent Cost}*2</cost>
+      <cost>(Parent Cost * 2)</cost>
       <requireparent />
       <required>
         <geardetails>
