@@ -41,6 +41,7 @@ Application Changes:
 
 Data Changes:
 - Added Quick-Start Rules content: 15 scrumptious menu items brought to you by McHughes™!
+- Stealth errata of core rulebook content in Chrome Flesh and Forbidden Arcana are now available as custom datasets. The default dataset has been adjusted to the non-stealth-errata'ed version. Users who wish to make use of stealth errata'd content will need to enable these custom datasets in their character settings. Of the built-in character settings, all Full House and Shadowrun Missions settings have both stealth errata datasets enabled, and all Neon Anarchy settings have the Chrome Flesh stealth errata dataset enabled.
 - Added bonus nodes for Shooter (The Soldier) paragon's Compiling dice pool penalty and +1 limit for attack actions. Fixes #4935.
 - Corrected the Cybercombat dice bonus of Intrusion Countermeasure (The Guardian) to be conditional because it is not granted against IC.
 - Added bonus nodes for Architect (The Builder) and Archivist (The Secret Keeper) paragons' dice bonuses for the Edit File and Matrix Search Computer actions respectively.

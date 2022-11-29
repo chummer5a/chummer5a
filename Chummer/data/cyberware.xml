@@ -455,7 +455,7 @@
       <ess>Rating * 0.1</ess>
       <capacity>0</capacity>
       <avail>Rating * 2</avail>
-      <cost>Rating * 10000</cost>
+      <cost>Rating * 20000</cost>
       <source>SR5</source>
       <page>452</page>
       <bonus>

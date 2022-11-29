@@ -840,6 +840,12 @@
     <Content Include="customdata\Bone Lacing Adds to Body\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\Chrome Flesh Stealth Errata\amend_cyberware.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Chrome Flesh Stealth Errata\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\College Education Qualities Stack\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -954,6 +960,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Flashback System Enables Cyberzombies\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Forbidden Arcana Stealth Errata\amend_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Forbidden Arcana Stealth Errata\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\German Data Changes\amend_armor.xml">
