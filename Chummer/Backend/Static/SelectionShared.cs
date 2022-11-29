@@ -1720,10 +1720,10 @@ namespace Chummer
                     {
                         KnowledgeSkill objKnowledgeSkill = string.IsNullOrEmpty(strSpec)
                             ? objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(
-                                objSkill => (objSkill.SourceIDString == strNodeId || objSkill.Name == strNodeName)
+                                objSkill => (objSkill.SourceIDString == strNodeId || objSkill.DictionaryKey == strNodeName)
                                             && objSkill.TotalBaseRating >= intValue)
                             : objCharacter.SkillsSection.KnowledgeSkills.FirstOrDefault(
-                                objSkill => (objSkill.SourceIDString == strNodeId || objSkill.Name == strNodeName)
+                                objSkill => (objSkill.SourceIDString == strNodeId || objSkill.DictionaryKey == strNodeName)
                                             && objSkill.Specializations.Any(objSpec => objSpec.Name == strSpec)
                                             && objSkill.TotalBaseRating >= intValue);
 
@@ -1879,7 +1879,7 @@ namespace Chummer
                                 {
                                     foreach (KnowledgeSkill objGroup in objCharacter.SkillsSection.KnowledgeSkills)
                                     {
-                                        if (objGroup.Name != strGroups[i] && objGroup.SourceIDString != strGroups[i])
+                                        if (objGroup.DictionaryKey != strGroups[i] && objGroup.SourceIDString != strGroups[i])
                                             continue;
                                         if (blnShowMessage)
                                             sbdOutput.Append(objGroup.CurrentDisplayName).Append(',')
@@ -1895,7 +1895,7 @@ namespace Chummer
                                 {
                                     foreach (Skill objGroup in objCharacter.SkillsSection.Skills)
                                     {
-                                        if (objGroup.Name != strGroups[i] && objGroup.SourceIDString != strGroups[i])
+                                        if (objGroup.DictionaryKey != strGroups[i] && objGroup.SourceIDString != strGroups[i])
                                             continue;
                                         if (blnShowMessage)
                                             sbdOutput.Append(objGroup.CurrentDisplayName).Append(',')

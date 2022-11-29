@@ -1402,7 +1402,7 @@ namespace Chummer.Backend.Skills
                 using (EnterReadLock.Enter(LockObject))
                 {
                     int intOtherBonus =
-                        RelevantImprovements(x => x.ImproveType == Improvement.ImprovementType.Skill && x.Enabled)
+                        RelevantImprovements(x => x.ImproveType == Improvement.ImprovementType.Skill)
                             .Sum(x => x.Maximum);
                     int intBaseMax = IsKnowledgeSkill
                         ? CharacterObject.Settings.MaxKnowledgeSkillRating
@@ -1428,7 +1428,7 @@ namespace Chummer.Backend.Skills
             {
                 int intOtherBonus =
                     (await RelevantImprovementsAsync(
-                            x => x.ImproveType == Improvement.ImprovementType.Skill && x.Enabled, token: token)
+                            x => x.ImproveType == Improvement.ImprovementType.Skill, token: token)
                         .ConfigureAwait(false)).Sum(x => x.Maximum);
                 CharacterSettings objSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
                 int intBaseMax = IsKnowledgeSkill

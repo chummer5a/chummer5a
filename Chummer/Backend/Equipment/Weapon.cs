@@ -1712,7 +1712,13 @@ namespace Chummer.Backend.Equipment
 
                 await objWriter.WriteElementStringAsync("dicepool", (await GetDicePoolAsync(token: token).ConfigureAwait(false)).ToString(objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("dicepool_noammo", (await GetDicePoolAsync(false, token: token).ConfigureAwait(false)).ToString(objCulture), token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("skill", Skill?.Name, token).ConfigureAwait(false);
+                Skill objSkill = Skill;
+                await objWriter
+                      .WriteElementStringAsync(
+                          "skill",
+                          objSkill != null
+                              ? await objSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false)
+                              : string.Empty, token).ConfigureAwait(false);
 
                 await objWriter.WriteElementStringAsync("wirelesson", WirelessOn.ToString(GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
                 if (GlobalSettings.PrintNotes)
@@ -6178,28 +6184,17 @@ namespace Chummer.Backend.Equipment
                     strSkill = UseSkill;
                     strSpec = string.Empty;
 
-                    if (ExoticSkill.IsExoticSkillName(UseSkill))
+                    if (ExoticSkill.IsExoticSkillName(_objCharacter, UseSkill))
                         strSpec = UseSkillSpec;
                 }
 
                 // Locate the Active Skill to be used.
-                Skill objSkill = null;
-                foreach (Skill objCharacterSkill in _objCharacter.SkillsSection.Skills)
-                {
-                    if (objCharacterSkill.Name != strSkill)
-                        continue;
-                    if (string.IsNullOrEmpty(strSpec) || objCharacterSkill.HasSpecialization(strSpec) || objCharacterSkill.HasSpecialization(Name))
-                    {
-                        objSkill = objCharacterSkill;
-                        break;
-                    }
-                    //If the weapon doesn't have a Spec2 or it doesn't match, move along. Mostly affects exotics.
-                    if (string.IsNullOrEmpty(Spec2) || !objCharacterSkill.HasSpecialization(Spec2))
-                        continue;
-                    objSkill = objCharacterSkill;
-                    break;
-                }
-                return objSkill;
+                Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(strSkill);
+                if (string.IsNullOrEmpty(strSpec) || objSkill.HasSpecialization(strSpec)
+                                                  || objSkill.HasSpecialization(Name) || (!string.IsNullOrEmpty(Spec2)
+                                                      && objSkill.HasSpecialization(Spec2)))
+                    return objSkill;
+                return null;
             }
         }
 

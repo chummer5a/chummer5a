@@ -68,7 +68,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(_strForceSkill))
                 {
                     objXmlSkillList = _objXmlDocument.Select("/chummer/skills/skill[name = "
-                                                             + _strForceSkill.CleanXPath() + " and not(exotic) and ("
+                                                             + _strForceSkill.CleanXPath() + " and not(exotic = 'True') and ("
                                                              + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false) + ")]");
                 }
                 else if (!string.IsNullOrEmpty(_strLimitToCategories))
@@ -79,7 +79,7 @@ namespace Chummer
                     string strFilter = string.Empty;
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                     {
-                        sbdFilter.Append("not(exotic) and (").Append(await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false)).Append(')');
+                        sbdFilter.Append("not(exotic = 'True') and (").Append(await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false)).Append(')');
                         if (!string.IsNullOrEmpty(_strIncludeCategory))
                         {
                             sbdFilter.Append(" and (");

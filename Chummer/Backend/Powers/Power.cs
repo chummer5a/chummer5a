@@ -924,10 +924,7 @@ namespace Chummer
                 using (EnterReadLock.Enter(LockObject))
                 {
                     //TODO: This isn't super safe, but it's more reliable than checking it at load as improvement effects like Essence Loss take effect after powers are loaded. Might need another solution.
-                    if (_intRating <= TotalMaximumLevels)
-                        return _intRating;
-                    _intRating = TotalMaximumLevels;
-                    return _intRating;
+                    return _intRating = Math.Min(_intRating, TotalMaximumLevels);
                 }
             }
             set

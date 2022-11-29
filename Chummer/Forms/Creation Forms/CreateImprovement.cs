@@ -859,7 +859,7 @@ namespace Chummer
                     : await LanguageManager.GetStringAsync("String_Attribute" + strToTranslate + "Short", token: token).ConfigureAwait(false);
 
                 case "SelectSkill":
-                    if (ExoticSkill.IsExoticSkillName(strToTranslate))
+                    if (await ExoticSkill.IsExoticSkillNameAsync(_objCharacter, strToTranslate, token).ConfigureAwait(false))
                     {
                         string[] astrToTranslateParts = strToTranslate.Split('(', StringSplitOptions.RemoveEmptyEntries);
                         astrToTranslateParts[0] = astrToTranslateParts[0].Trim();

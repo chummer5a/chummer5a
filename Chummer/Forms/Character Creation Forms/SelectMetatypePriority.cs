@@ -251,7 +251,7 @@ namespace Chummer
                         string strSkill = _lstPrioritySkills.ElementAtOrDefault(0);
                         if (!string.IsNullOrEmpty(strSkill))
                         {
-                            if (ExoticSkill.IsExoticSkillName(strSkill))
+                            if (await ExoticSkill.IsExoticSkillNameAsync(_objCharacter, strSkill).ConfigureAwait(false))
                             {
                                 int intParenthesesIndex = strSkill.IndexOf(" (", StringComparison.OrdinalIgnoreCase);
                                 if (intParenthesesIndex > 0)
@@ -264,7 +264,7 @@ namespace Chummer
                         string strSkill2 = _lstPrioritySkills.ElementAtOrDefault(1);
                         if (!string.IsNullOrEmpty(strSkill2))
                         {
-                            if (ExoticSkill.IsExoticSkillName(strSkill2))
+                            if (await ExoticSkill.IsExoticSkillNameAsync(_objCharacter, strSkill2).ConfigureAwait(false))
                             {
                                 int intParenthesesIndex = strSkill2.IndexOf(" (", StringComparison.OrdinalIgnoreCase);
                                 if (intParenthesesIndex > 0)
@@ -277,7 +277,7 @@ namespace Chummer
                         string strSkill3 = _lstPrioritySkills.ElementAtOrDefault(2);
                         if (!string.IsNullOrEmpty(strSkill3))
                         {
-                            if (ExoticSkill.IsExoticSkillName(strSkill3))
+                            if (await ExoticSkill.IsExoticSkillNameAsync(_objCharacter, strSkill3).ConfigureAwait(false))
                             {
                                 int intParenthesesIndex = strSkill3.IndexOf(" (", StringComparison.OrdinalIgnoreCase);
                                 if (intParenthesesIndex > 0)
@@ -627,10 +627,10 @@ namespace Chummer
                                     if (await cboSkill2.DoThreadSafeFuncAsync(x => x.SelectedIndex, token)
                                                        .ConfigureAwait(false) == await cboSkill1
                                             .DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false)
-                                        && !ExoticSkill.IsExoticSkillName(
-                                            await cboSkill2
-                                                  .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token)
-                                                  .ConfigureAwait(false)))
+                                        && !await ExoticSkill.IsExoticSkillNameAsync(
+                                            _objCharacter, await cboSkill2
+                                                                 .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token)
+                                                                 .ConfigureAwait(false), token).ConfigureAwait(false))
                                     {
                                         if (await cboSkill2.DoThreadSafeFuncAsync(x => x.SelectedIndex, token)
                                                            .ConfigureAwait(false) + 1
@@ -689,10 +689,10 @@ namespace Chummer
                                                             .ConfigureAwait(false)
                                              == await cboSkill2.DoThreadSafeFuncAsync(x => x.SelectedIndex, token)
                                                                .ConfigureAwait(false)) &&
-                                            !ExoticSkill.IsExoticSkillName(
-                                                await cboSkill3
-                                                      .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token)
-                                                      .ConfigureAwait(false)))
+                                            !await ExoticSkill.IsExoticSkillNameAsync(
+                                                _objCharacter, await cboSkill3
+                                                                     .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token)
+                                                                     .ConfigureAwait(false), token).ConfigureAwait(false))
                                         {
                                             int intNewIndex = await cboSkill3
                                                                     .DoThreadSafeFuncAsync(x => x.SelectedIndex, token)
@@ -714,8 +714,8 @@ namespace Chummer
                                                                              .DoThreadSafeFuncAsync(
                                                                                  x => x.SelectedIndex, token)
                                                                              .ConfigureAwait(false)
-                                                     && !ExoticSkill.IsExoticSkillName(
-                                                         lstSkills[intNewIndex].Value.ToString()));
+                                                     && !await ExoticSkill.IsExoticSkillNameAsync(
+                                                         _objCharacter, lstSkills[intNewIndex].Value.ToString(), token).ConfigureAwait(false));
 
                                             await cboSkill3.DoThreadSafeAsync(x => x.SelectedIndex = intNewIndex, token)
                                                            .ConfigureAwait(false);
@@ -1114,7 +1114,7 @@ namespace Chummer
                     return;
                 }
 
-                if (ExoticSkill.IsExoticSkillName(strSkill1))
+                if (await ExoticSkill.IsExoticSkillNameAsync(_objCharacter, strSkill1, token).ConfigureAwait(false))
                 {
                     using (ThreadSafeForm<SelectExoticSkill> frmSelectExotic =
                            await ThreadSafeForm<SelectExoticSkill>.GetAsync(() => new SelectExoticSkill(_objCharacter),
@@ -1127,7 +1127,7 @@ namespace Chummer
                     }
                 }
 
-                if (ExoticSkill.IsExoticSkillName(strSkill2))
+                if (await ExoticSkill.IsExoticSkillNameAsync(_objCharacter, strSkill2, token).ConfigureAwait(false))
                 {
                     using (ThreadSafeForm<SelectExoticSkill> frmSelectExotic =
                            await ThreadSafeForm<SelectExoticSkill>.GetAsync(() => new SelectExoticSkill(_objCharacter),
@@ -1140,7 +1140,7 @@ namespace Chummer
                     }
                 }
 
-                if (ExoticSkill.IsExoticSkillName(strSkill3))
+                if (await ExoticSkill.IsExoticSkillNameAsync(_objCharacter, strSkill3, token).ConfigureAwait(false))
                 {
                     using (ThreadSafeForm<SelectExoticSkill> frmSelectExotic =
                            await ThreadSafeForm<SelectExoticSkill>.GetAsync(() => new SelectExoticSkill(_objCharacter),
@@ -1849,7 +1849,7 @@ namespace Chummer
                 async ValueTask AddExoticSkillIfNecessary(string strDictionaryKey)
                 {
                     // Add exotic skills if we are increasing their base level
-                    if (!ExoticSkill.IsExoticSkillName(strDictionaryKey) ||
+                    if (!await ExoticSkill.IsExoticSkillNameAsync(_objCharacter, strDictionaryKey, token).ConfigureAwait(false) ||
                         await _objCharacter.SkillsSection.GetActiveSkillAsync(strDictionaryKey, token).ConfigureAwait(false) != null)
                         return;
                     string strSkillName = strDictionaryKey;

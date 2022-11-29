@@ -1746,10 +1746,23 @@ namespace Chummer
             }
             else if (!string.IsNullOrEmpty(ForcedValue))
             {
-                XPathNavigator xmlSkillNode = objCharacter.LoadDataXPath("skills.xml").SelectSingleNode(
-                    "/chummer/skills/skill[name = "
-                    + ForcedValue.CleanXPath() + " and not(exotic) and ("
-                    + objCharacter.Settings.BookXPath() + ")]");
+                (bool blnIsExotic, string strExoticName)
+                    = ExoticSkill.IsExoticSkillNameTuple(objCharacter, ForcedValue);
+                string strFilter;
+                if (blnIsExotic)
+                {
+                    strFilter = "/chummer/skills/skill[name = "
+                                + strExoticName.CleanXPath() + " and exotic = 'True' and ("
+                                + objCharacter.Settings.BookXPath() + ")]";
+                }
+                else
+                {
+                    strFilter = "/chummer/skills/skill[name = "
+                                + ForcedValue.CleanXPath() + " and not(exotic = 'True') and ("
+                                + objCharacter.Settings.BookXPath() + ")]";
+                }
+
+                XPathNavigator xmlSkillNode = objCharacter.LoadDataXPath("skills.xml").SelectSingleNode(strFilter);
                 if (xmlSkillNode == null)
                     throw new AbortedException();
                 int intMinimumRating = 0;
@@ -1775,10 +1788,12 @@ namespace Chummer
                             throw new AbortedException();
                     }
                 }
+
                 XmlNode xmlSkillCategories = xmlBonusNode.SelectSingleNode("skillcategories");
                 if (xmlSkillCategories != null)
                 {
-                    string strCategory = xmlSkillNode.SelectSingleNodeAndCacheExpression("category")?.Value ?? string.Empty;
+                    string strCategory = xmlSkillNode.SelectSingleNodeAndCacheExpression("category")?.Value
+                                         ?? string.Empty;
                     if (string.IsNullOrWhiteSpace(strCategory))
                         throw new AbortedException();
                     using (XmlNodeList xmlCategoryList = xmlSkillCategories.SelectNodes("category"))
@@ -1789,47 +1804,77 @@ namespace Chummer
                             throw new AbortedException();
                     }
                 }
+
                 string strTemp = xmlBonusNode.SelectSingleNode("@skillcategory")?.InnerText;
                 if (!string.IsNullOrEmpty(strTemp))
                 {
-                    string strCategory = xmlSkillNode.SelectSingleNodeAndCacheExpression("category")?.Value ?? string.Empty;
-                    if (string.IsNullOrWhiteSpace(strCategory) || !strTemp.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(strCategory))
+                    string strCategory = xmlSkillNode.SelectSingleNodeAndCacheExpression("category")?.Value
+                                         ?? string.Empty;
+                    if (string.IsNullOrWhiteSpace(strCategory) || !strTemp
+                                                                   .SplitNoAlloc(
+                                                                       ',', StringSplitOptions.RemoveEmptyEntries)
+                                                                   .Contains(strCategory))
                         throw new AbortedException();
                 }
+
                 strTemp = xmlBonusNode.SelectSingleNode("@skillgroup")?.InnerText;
                 if (!string.IsNullOrEmpty(strTemp))
                 {
-                    string strSkillGroup = xmlSkillNode.SelectSingleNodeAndCacheExpression("skillgroup")?.Value ?? string.Empty;
-                    if (string.IsNullOrWhiteSpace(strSkillGroup) || !strTemp.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(strSkillGroup))
+                    string strSkillGroup = xmlSkillNode.SelectSingleNodeAndCacheExpression("skillgroup")?.Value
+                                           ?? string.Empty;
+                    if (string.IsNullOrWhiteSpace(strSkillGroup) || !strTemp
+                                                                     .SplitNoAlloc(
+                                                                         ',', StringSplitOptions.RemoveEmptyEntries)
+                                                                     .Contains(strSkillGroup))
                         throw new AbortedException();
                 }
+
                 strTemp = xmlBonusNode.SelectSingleNode("@excludecategory")?.InnerText;
                 if (!string.IsNullOrEmpty(strTemp))
                 {
-                    string strCategory = xmlSkillNode.SelectSingleNodeAndCacheExpression("category")?.Value ?? string.Empty;
-                    if (!string.IsNullOrWhiteSpace(strCategory) && strTemp.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(strCategory))
+                    string strCategory = xmlSkillNode.SelectSingleNodeAndCacheExpression("category")?.Value
+                                         ?? string.Empty;
+                    if (!string.IsNullOrWhiteSpace(strCategory) && strTemp
+                                                                   .SplitNoAlloc(
+                                                                       ',', StringSplitOptions.RemoveEmptyEntries)
+                                                                   .Contains(strCategory))
                         throw new AbortedException();
                 }
+
                 strTemp = xmlBonusNode.SelectSingleNode("@excludeskillgroup")?.InnerText;
                 if (!string.IsNullOrEmpty(strTemp))
                 {
-                    string strSkillGroup = xmlSkillNode.SelectSingleNodeAndCacheExpression("skillgroup")?.Value ?? string.Empty;
-                    if (!string.IsNullOrWhiteSpace(strSkillGroup) && strTemp.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(strSkillGroup))
+                    string strSkillGroup = xmlSkillNode.SelectSingleNodeAndCacheExpression("skillgroup")?.Value
+                                           ?? string.Empty;
+                    if (!string.IsNullOrWhiteSpace(strSkillGroup) && strTemp
+                                                                     .SplitNoAlloc(
+                                                                         ',', StringSplitOptions.RemoveEmptyEntries)
+                                                                     .Contains(strSkillGroup))
                         throw new AbortedException();
                 }
+
                 strTemp = xmlBonusNode.SelectSingleNode("@limittoskill")?.InnerText;
-                if (!string.IsNullOrEmpty(strTemp) && !strTemp.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(ForcedValue))
+                if (!string.IsNullOrEmpty(strTemp) && !strTemp
+                                                       .SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
+                                                       .Contains(ForcedValue))
                     throw new AbortedException();
                 strTemp = xmlBonusNode.SelectSingleNode("@excludeskill")?.InnerText;
-                if (!string.IsNullOrEmpty(strTemp) && strTemp.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(ForcedValue))
+                if (!string.IsNullOrEmpty(strTemp) && strTemp
+                                                      .SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
+                                                      .Contains(ForcedValue))
                     throw new AbortedException();
                 strTemp = xmlBonusNode.SelectSingleNode("@limittoattribute")?.InnerText;
                 if (!string.IsNullOrEmpty(strTemp))
                 {
-                    string strAttribute = xmlSkillNode.SelectSingleNodeAndCacheExpression("attribute")?.Value ?? string.Empty;
-                    if (string.IsNullOrWhiteSpace(strAttribute) || !strTemp.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Contains(strAttribute))
+                    string strAttribute = xmlSkillNode.SelectSingleNodeAndCacheExpression("attribute")?.Value
+                                          ?? string.Empty;
+                    if (string.IsNullOrWhiteSpace(strAttribute) || !strTemp
+                                                                    .SplitNoAlloc(
+                                                                        ',', StringSplitOptions.RemoveEmptyEntries)
+                                                                    .Contains(strAttribute))
                         throw new AbortedException();
                 }
+
                 strSelectedSkill = ForcedValue;
             }
             else

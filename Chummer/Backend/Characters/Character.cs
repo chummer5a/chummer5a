@@ -2954,7 +2954,7 @@ namespace Chummer
 
                     if (objSkill == null)
                     {
-                        if (ExoticSkill.IsExoticSkillName(strSkill))
+                        if (ExoticSkill.IsExoticSkillName(this, strSkill))
                         {
                             SkillsSection.AddExoticSkill(strSkill, strSpec);
                             continue;
@@ -3022,7 +3022,7 @@ namespace Chummer
                         string strRating = xmlSkill.Attributes?["rating"]?.InnerText;
                         if (string.IsNullOrEmpty(strRating))
                             continue;
-                        if (SkillsSection.KnowledgeSkills.All(x => x.Name != strName))
+                        if (SkillsSection.KnowledgeSkills.All(x => x.DictionaryKey != strName))
                         {
                             XmlNode objXmlSkillNode =
                                 xmlSkillsDocumentKnowledgeSkillsNode.SelectSingleNode("skill[name = " +

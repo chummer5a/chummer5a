@@ -37,6 +37,7 @@ Application Changes:
 - Bound spirits can now properly be deleted.
 - Fixed various bugs where some parts of a character's contacts would not get saved properly.
 - Notes added to gear attached to weapon accessories can now be properly edited.
+- Improvements and bonuses that are chosen to affect an exotic skill's dice or skill rating now properly work.
 
 Data Changes:
 - Added Quick-Start Rules content: 15 scrumptious menu items brought to you by McHughes™!

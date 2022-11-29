@@ -692,9 +692,9 @@ namespace Chummer
             // Find the selected Skill.
             if (blnIsKnowledgeSkill)
             {
-                if (_objCharacter.SkillsSection.KnowledgeSkills.Any(k => k.Name == strSelectedSkill))
+                if (_objCharacter.SkillsSection.KnowledgeSkills.Any(k => k.DictionaryKey == strSelectedSkill))
                 {
-                    foreach (string strName in _objCharacter.SkillsSection.KnowledgeSkills.Select(x => x.Name))
+                    foreach (string strName in _objCharacter.SkillsSection.KnowledgeSkills.Select(x => x.DictionaryKey))
                     {
                         if (strName != strSelectedSkill)
                             continue;
@@ -733,7 +733,7 @@ namespace Chummer
                     // We've found the selected Skill.
                     if (!string.IsNullOrEmpty(strVal))
                     {
-                        CreateImprovement(objKnowledgeSkill.Name, _objImprovementSource, SourceName,
+                        CreateImprovement(objKnowledgeSkill.DictionaryKey, _objImprovementSource, SourceName,
                             Improvement.ImprovementType.Skill,
                             _strUnique,
                             ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating), 1, 0, 0, 0, 0, string.Empty,
@@ -742,14 +742,14 @@ namespace Chummer
 
                     if (blnDisableSpec)
                     {
-                        CreateImprovement(objKnowledgeSkill.Name, _objImprovementSource, SourceName,
+                        CreateImprovement(objKnowledgeSkill.DictionaryKey, _objImprovementSource, SourceName,
                             Improvement.ImprovementType.DisableSpecializationEffects,
                             _strUnique);
                     }
 
                     if (!string.IsNullOrEmpty(strMax))
                     {
-                        CreateImprovement(objKnowledgeSkill.Name, _objImprovementSource, SourceName,
+                        CreateImprovement(objKnowledgeSkill.DictionaryKey, _objImprovementSource, SourceName,
                             Improvement.ImprovementType.Skill,
                             _strUnique,
                             0, 1, 0, ImprovementManager.ValueToInt(_objCharacter, strMax, _intRating), 0, 0, string.Empty,
@@ -757,12 +757,13 @@ namespace Chummer
                     }
                 }
             }
-            else if (ExoticSkill.IsExoticSkillName(strSelectedSkill))
+            else if (ExoticSkill.IsExoticSkillName(_objCharacter, strSelectedSkill))
             {
                 if (!string.IsNullOrEmpty(strVal))
                 {
                     // Make sure we have the exotic skill in the list if we're altering any values
-                    if (_objCharacter.SkillsSection.Skills.All(s => s.DictionaryKey != strSelectedSkill || !s.IsExoticSkill))
+                    Skill objExistingSkill = _objCharacter.SkillsSection.GetActiveSkill(strSelectedSkill);
+                    if (objExistingSkill?.IsExoticSkill != true)
                     {
                         string strSkillName = strSelectedSkill;
                         int intParenthesesIndex = strSkillName.IndexOf(" (", StringComparison.OrdinalIgnoreCase);
@@ -799,36 +800,31 @@ namespace Chummer
             }
             else
             {
-                foreach (string strName in _objCharacter.SkillsSection.Skills.Select(x => x.Name))
+                // Add in improvements even if we have matching skill in case the matching skill gets added later.
+                if (!string.IsNullOrEmpty(strVal))
                 {
-                    if (strName != strSelectedSkill)
-                        continue;
-                    // We've found the selected Skill.
-                    if (!string.IsNullOrEmpty(strVal))
-                    {
-                        CreateImprovement(strName, _objImprovementSource, SourceName,
-                                          Improvement.ImprovementType.Skill,
-                                          _strUnique,
-                                          ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating), 1, 0, 0, 0, 0,
-                                          string.Empty,
-                                          blnAddToRating);
-                    }
+                    CreateImprovement(strSelectedSkill, _objImprovementSource, SourceName,
+                                      Improvement.ImprovementType.Skill,
+                                      _strUnique,
+                                      ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating), 1, 0, 0, 0, 0,
+                                      string.Empty,
+                                      blnAddToRating);
+                }
 
-                    if (blnDisableSpec)
-                    {
-                        CreateImprovement(strName, _objImprovementSource, SourceName,
-                                          Improvement.ImprovementType.DisableSpecializationEffects,
-                                          _strUnique);
-                    }
+                if (blnDisableSpec)
+                {
+                    CreateImprovement(strSelectedSkill, _objImprovementSource, SourceName,
+                                      Improvement.ImprovementType.DisableSpecializationEffects,
+                                      _strUnique);
+                }
 
-                    if (!string.IsNullOrEmpty(strMax))
-                    {
-                        CreateImprovement(strName, _objImprovementSource, SourceName,
-                                          Improvement.ImprovementType.Skill,
-                                          _strUnique,
-                                          0, 1, 0, ImprovementManager.ValueToInt(_objCharacter, strMax, _intRating), 0, 0, string.Empty,
-                                          blnAddToRating);
-                    }
+                if (!string.IsNullOrEmpty(strMax))
+                {
+                    CreateImprovement(strSelectedSkill, _objImprovementSource, SourceName,
+                                      Improvement.ImprovementType.Skill,
+                                      _strUnique,
+                                      0, 1, 0, ImprovementManager.ValueToInt(_objCharacter, strMax, _intRating), 0, 0, string.Empty,
+                                      blnAddToRating);
                 }
             }
         }
@@ -2451,12 +2447,13 @@ namespace Chummer
 
             string strVal = bonusNode["val"]?.InnerText;
 
-            if (ExoticSkill.IsExoticSkillName(SelectedValue))
+            if (ExoticSkill.IsExoticSkillName(_objCharacter, SelectedValue))
             {
                 if (!string.IsNullOrEmpty(strVal))
                 {
                     // Make sure we have the exotic skill in the list if we're adding an activesoft
-                    if (_objCharacter.SkillsSection.Skills.All(s => s.DictionaryKey != SelectedValue || !s.IsExoticSkill))
+                    Skill objExistingSkill = _objCharacter.SkillsSection.GetActiveSkill(SelectedValue);
+                    if (objExistingSkill?.IsExoticSkill != true)
                     {
                         string strSkillName = SelectedValue;
                         int intParenthesesIndex = strSkillName.IndexOf(" (", StringComparison.OrdinalIgnoreCase);
@@ -2473,21 +2470,12 @@ namespace Chummer
                         ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating));
                 }
             }
-            else
+            else if (!string.IsNullOrEmpty(strVal))
             {
-                foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
-                {
-                    if (objSkill.Name != SelectedValue)
-                        continue;
-                    // We've found the selected Skill.
-                    if (!string.IsNullOrEmpty(strVal))
-                    {
-                        CreateImprovement(SelectedValue, _objImprovementSource, SourceName,
-                            Improvement.ImprovementType.Activesoft,
-                            _strUnique,
-                            ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating));
-                    }
-                }
+                CreateImprovement(SelectedValue, _objImprovementSource, SourceName,
+                                  Improvement.ImprovementType.Activesoft,
+                                  _strUnique,
+                                  ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating));
             }
 
             if (bonusNode["addknowledge"] != null)
@@ -5256,12 +5244,8 @@ namespace Chummer
                 {
                     Log.Trace("skill");
                     string strKey = objNodeAttributes["skill"].InnerText;
-                    Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(strKey);
                     Log.Trace(strKey);
-                    if (objSkill != null)
-                    {
-                        CreateImprovement(objSkill.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeSpellsSkill, strSpellTypeLimit);
-                    }
+                    CreateImprovement(strKey, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeSpellsSkill, strSpellTypeLimit);
                 }
                 else
                 {
@@ -5647,7 +5631,7 @@ namespace Chummer
                     objXmlDocument.Select("/chummer/armors/armor[(" + _objCharacter.Settings.BookXPath() + ") and mods[name = 'Custom Fit']]");
             }
 
-            //.SelectNodes("/chummer/skills/skill[not(exotic) and (" + _objCharacter.Settings.BookXPath() + ')' + SkillFilter(filter) + ']');
+            //.SelectNodes("/chummer/skills/skill[not(exotic = 'True') and (" + _objCharacter.Settings.BookXPath() + ')' + SkillFilter(filter) + ']');
 
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstArmors))
             {
@@ -6396,14 +6380,14 @@ namespace Chummer
                 {
                     // Create the Improvement.
                     string strSpec = bonusNode["spec"]?.InnerText;
-                    CreateImprovement(objSkill.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecializationOption, strSpec);
+                    CreateImprovement(objSkill.DictionaryKey, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecializationOption, strSpec);
                     if (_objCharacter.Settings.FreeMartialArtSpecialization && _objImprovementSource == Improvement.ImprovementSource.MartialArt)
                     {
                         SkillSpecialization objSpec = new SkillSpecialization(_objCharacter, strSpec);
                         try
                         {
                             objSkill.Specializations.Add(objSpec);
-                            CreateImprovement(objSkill.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecialization, objSpec.InternalId);
+                            CreateImprovement(objSkill.DictionaryKey, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecialization, objSpec.InternalId);
                         }
                         catch
                         {
