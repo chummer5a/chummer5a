@@ -5292,8 +5292,9 @@ namespace Chummer.Backend.Equipment
                     objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
 
+                _objCachedMyXPathNode = objReturn;
                 _strCachedXPathNodeLanguage = strLanguage;
-                return _objCachedMyXPathNode;
+                return objReturn;
             }
         }
 
