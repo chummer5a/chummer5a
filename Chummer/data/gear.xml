@@ -13614,7 +13614,7 @@
     <gear>
       <id>1131acde-3791-4870-8c05-1b261e3beaa1</id>
       <name>PsychChips (Illegal)</name>
-      <category>BTLs</category>
+      <category>Drugs</category>
       <rating>0</rating>
       <source>CF</source>
       <page>187</page>
@@ -13624,7 +13624,7 @@
     <gear>
       <id>48c252e2-8bfd-46e4-ae77-b394b9e92773</id>
       <name>PsychChips (Legal)</name>
-      <category>BTLs</category>
+      <category>Drugs</category>
       <rating>0</rating>
       <source>CF</source>
       <page>187</page>
@@ -14017,10 +14017,7 @@
       <cost>Parent Cost * -.5</cost>
       <required>
         <geardetails>
-          <OR>
-            <category>BTLs</category>
-            <category>Drugs</category>
-          </OR>
+          <category>Drugs</category>
         </geardetails>
       </required>
     </gear>
@@ -14037,10 +14034,7 @@
       <cost>Parent Cost</cost>
       <required>
         <geardetails>
-          <OR>
-            <category>BTLs</category>
-            <category>Drugs</category>
-          </OR>
+          <category>Drugs</category>
         </geardetails>
       </required>
     </gear>
@@ -14057,10 +14051,7 @@
       <cost>Parent Cost * 5</cost>
       <required>
         <geardetails>
-          <OR>
-            <category>BTLs</category>
-            <category>Drugs</category>
-          </OR>
+          <category>Drugs</category>
         </geardetails>
       </required>
     </gear>
