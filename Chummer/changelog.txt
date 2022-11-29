@@ -68,6 +68,7 @@ Data Changes:
 - Lingos listed in the core rulebook have been added to all appropriate language skills' suggested specializations list.
 - Internal SmartCam and Synthlink costs are now properly double the cost of whatever they are put into.
 - Drug grades have been added for regular drugs. Currently, they are available as plugins for gear entries that can have drug grades, which is a cumbersome solution, but it works.
+- Added previously missing Stolen Souls entries for items that have nominal duplicates in other books, but these duplicates often don't have the exact same mechanics as the ones listed in Stolen Souls.
 
 Changed/New Strings:
 - LimitCondition_SoldierParagon

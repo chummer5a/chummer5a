@@ -9947,7 +9947,6 @@
     </vehicle>
     <!-- End Region -->
     <!-- Region No Future -->
-
     <vehicle>
       <id>378178d4-e941-4f43-acc0-b14a551c0f7b</id>
       <name>Ford Broadcast</name>
@@ -12570,6 +12569,17 @@
       </required>
     </mod>
     <mod>
+      <id>d36e13b2-205a-48b6-b423-64a272df3eab</id>
+      <name>Spoof Chips</name>
+      <page>177</page>
+      <source>SS</source>
+      <avail>8F</avail>
+      <category>All</category>
+      <cost>500</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+    </mod>
+    <mod>
       <id>99f438a6-7543-4bb0-a1dc-4cef3112f003</id>
       <name>Spoof Chips</name>
       <page>152</page>
@@ -12752,7 +12762,7 @@
     </mod>
     <mod>
       <id>6a8805ee-2e3b-4010-8671-c196a1c44b51</id>
-      <name>Chameleon Coating[Stolen Souls]</name>
+      <name>Chameleon Coating</name>
       <page>174</page>
       <source>SS</source>
       <avail>12R</avail>
@@ -12780,6 +12790,17 @@
       <avail>15F</avail>
       <category>All</category>
       <cost>5000</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+    </mod>
+    <mod>
+      <id>290ca406-2bd8-496a-9c1e-2b46eb7df4f8</id>
+      <name>Morphing License Plate</name>
+      <page>186</page>
+      <source>SS</source>
+      <avail>8F</avail>
+      <category>All</category>
+      <cost>1000</cost>
       <rating>0</rating>
       <slots>0</slots>
     </mod>
@@ -12899,6 +12920,18 @@
       <category>All</category>
       <cost>7000</cost>
       <rating>0</rating>
+      <slots>0</slots>
+    </mod>
+    <mod>
+      <id>d36e13b2-205a-48b6-b423-64a272df3eab</id>
+      <name>Rigger Services (1 hour)</name>
+      <page>186</page>
+      <source>SS</source>
+      <avail>0</avail>
+      <category>All</category>
+      <cost>500</cost>
+      <rating>1000000</rating>
+      <ratinglabel>String_Hours</ratinglabel>
       <slots>0</slots>
     </mod>
     <mod>

@@ -1353,6 +1353,17 @@
     <!-- End Region -->
     <!-- Region Stolen Souls -->
     <power>
+      <id>9fd628cc-dd06-435c-80d3-5261e7e5b1e5</id>
+      <name>Commanding Voice</name>
+      <points>1</points>
+      <levels>False</levels>
+      <limit>1</limit>
+      <source>SS</source>
+      <page>191</page>
+      <action>Complex</action>
+      <adeptway>0.5</adeptway>
+    </power>
+    <power>
       <id>b6982580-fb86-4ac8-9312-98459ecbe811</id>
       <name>Light Touch</name>
       <points>0.25</points>
@@ -1372,15 +1383,45 @@
       <maxlevels>6</maxlevels>
     </power>
     <power>
-      <id>9fd628cc-dd06-435c-80d3-5261e7e5b1e5</id>
-      <name>Commanding Voice</name>
+      <id>a66b175c-512b-4a31-ad61-27eb3bd05055</id>
+      <name>Nerve Strike</name>
       <points>1</points>
       <levels>False</levels>
       <limit>1</limit>
       <source>SS</source>
       <page>191</page>
-      <action>Complex</action>
       <adeptway>0.5</adeptway>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Invisible Way</quality>
+            <quality>The Spiritual Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
+    </power>
+    <power>
+      <id>4c7771f6-e071-46a4-a42b-5bfa7194f0b8</id>
+      <name>Nimble Fingers</name>
+      <points>0.25</points>
+      <levels>False</levels>
+      <limit>1</limit>
+      <source>SS</source>
+      <page>191</page>
+      <adeptwayrequires>
+        <required>
+          <oneof>
+            <quality>The Artist's Way</quality>
+            <quality>The Spiritual Way</quality>
+          </oneof>
+        </required>
+      </adeptwayrequires>
+      <bonus>
+        <specificskill>
+          <name>Palming</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </bonus>
     </power>
     <!-- End Region -->
     <!-- Region Shadow Spells -->

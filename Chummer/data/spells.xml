@@ -3722,6 +3722,18 @@
       <type>P</type>
     </spell>
     <spell>
+      <id>547c0959-7a9b-487c-adec-54f639585695</id>
+      <name>Fashion</name>
+      <page>190</page>
+      <source>SS</source>
+      <category>Manipulation</category>
+      <damage>0</damage>
+      <duration>P</duration>
+      <dv>F-1</dv>
+      <range>T (A)</range>
+      <type>P</type>
+    </spell>
+    <spell>
       <id>ad128cba-aa39-4433-ab1e-9259e19778f6</id>
       <name>Hibernate</name>
       <page>190</page>
@@ -3733,6 +3745,19 @@
       <dv>F-2</dv>
       <range>T</range>
       <type>M</type>
+    </spell>
+    <spell>
+      <id>ffc5309a-9ae8-4770-aabd-2abe8246c0ec</id>
+      <name>Interference</name>
+      <page>190</page>
+      <source>SS</source>
+      <category>Manipulation</category>
+      <damage>0</damage>
+      <descriptor>Environmental, Area</descriptor>
+      <duration>S</duration>
+      <dv>F-2</dv>
+      <range>LOS (A)</range>
+      <type>P</type>
     </spell>
     <spell>
       <id>d3431ff8-e33f-4cd4-a185-4817b5cce2f8</id>
@@ -3757,6 +3782,32 @@
       <descriptor />
       <duration>P</duration>
       <dv>F-3</dv>
+      <range>T</range>
+      <type>P</type>
+    </spell>
+    <spell>
+      <id>8b3edb22-35ab-44a3-aa9d-0553a1af4da4</id>
+      <name>Sound Barrier</name>
+      <page>190</page>
+      <source>SS</source>
+      <category>Illusion</category>
+      <damage>0</damage>
+      <descriptor>Realistic, Single-Sense, Area</descriptor>
+      <duration>S</duration>
+      <dv>F-2</dv>
+      <range>LOS (A)</range>
+      <type>P</type>
+    </spell>
+    <spell>
+      <id>58331f62-e907-4a4a-a59c-f9303d16dcbe</id>
+      <name>Vehicle Mask</name>
+      <page>190</page>
+      <source>SS</source>
+      <category>Illusion</category>
+      <damage>0</damage>
+      <descriptor>Realistic, Multi-Sense</descriptor>
+      <duration>S</duration>
+      <dv>F-2</dv>
       <range>T</range>
       <type>P</type>
     </spell>

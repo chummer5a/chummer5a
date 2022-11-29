@@ -2503,6 +2503,26 @@
       <cost>Variable(2000-15000)</cost>
     </gear>
     <gear>
+      <id>33197941-e114-457f-b118-786fed2404c4</id>
+      <name>Fixer Services (1 hour)</name>
+      <category>Disguises</category>
+      <rating>0</rating>
+      <source>SS</source>
+      <page>186</page>
+      <avail>0</avail>
+      <cost>250</cost>
+    </gear>
+    <gear>
+      <id>d42c49a8-87a6-4faa-832a-07ace75c3dca</id>
+      <name>Forger Services</name>
+      <category>Disguises</category>
+      <rating>0</rating>
+      <source>SS</source>
+      <page>186</page>
+      <avail>0</avail>
+      <cost>Variable(500-1000000)</cost>
+    </gear>
+    <gear>
       <id>d05a6375-7c82-4d32-952e-cc356b5b079d</id>
       <name>Faceless - Specific Face</name>
       <category>Disguises</category>
