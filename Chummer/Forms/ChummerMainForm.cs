@@ -111,7 +111,7 @@ namespace Chummer
                     MdiParent = this
                 };
                 if (Interlocked.CompareExchange(ref _frmMasterIndex, frmMasterIndex, null) == null)
-                    frmMasterIndex.FormClosed += (sender, args) => _frmMasterIndex = null;
+                    frmMasterIndex.FormClosed += (sender, args) => Interlocked.CompareExchange(ref _frmMasterIndex, null, frmMasterIndex);
                 else
                     frmMasterIndex.Close();
             }
@@ -122,7 +122,7 @@ namespace Chummer
                     MdiParent = this
                 };
                 if (Interlocked.CompareExchange(ref _frmCharacterRoster, frmCharacterRoster, null) == null)
-                    frmCharacterRoster.FormClosed += (sender, args) => _frmCharacterRoster = null;
+                    frmCharacterRoster.FormClosed += (sender, args) => Interlocked.CompareExchange(ref _frmCharacterRoster, null, frmCharacterRoster);
                 else
                     frmCharacterRoster.Close();
             }
@@ -794,13 +794,7 @@ namespace Chummer
                                 MasterIndex frmMasterIndex = MasterIndex;
                                 if (frmMasterIndex != null)
                                 {
-                                    await frmMasterIndex.DoThreadSafeAsync(x =>
-                                    {
-                                        if (CharacterRoster == null)
-                                            x.WindowState = FormWindowState.Maximized;
-                                        _objGenericToken.ThrowIfCancellationRequested();
-                                        x.Show();
-                                    }, token: _objGenericToken).ConfigureAwait(false);
+                                    await frmMasterIndex.DoThreadSafeAsync(x => x.Show(), token: _objGenericToken).ConfigureAwait(false);
                                 }
 
                                 await frmLoadingBar.MyForm.PerformStepAsync(
@@ -811,13 +805,7 @@ namespace Chummer
                                 CharacterRoster frmCharacterRoster = CharacterRoster;
                                 if (frmCharacterRoster != null)
                                 {
-                                    await frmCharacterRoster.DoThreadSafeAsync(x =>
-                                    {
-                                        if (MasterIndex == null)
-                                            x.WindowState = FormWindowState.Maximized;
-                                        _objGenericToken.ThrowIfCancellationRequested();
-                                        x.Show();
-                                    }, token: _objGenericToken).ConfigureAwait(false);
+                                    await frmCharacterRoster.DoThreadSafeAsync(x => x.Show(), token: _objGenericToken).ConfigureAwait(false);
                                 }
 
                                 if (GlobalSettings.AllowEasterEggs)
@@ -845,15 +833,25 @@ namespace Chummer
                                 // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
                                 frmMasterIndex = MasterIndex;
                                 frmCharacterRoster = CharacterRoster;
-                                if (frmMasterIndex != null && frmCharacterRoster != null)
+                                if (frmMasterIndex != null)
                                 {
                                     await frmMasterIndex.DoThreadSafeAsync(
-                                        x => x.WindowState = FormWindowState.Maximized,
+                                        x =>
+                                        {
+                                            if (x.WindowState == FormWindowState.Normal)
+                                                x.WindowState = FormWindowState.Maximized;
+                                        },
                                         token: _objGenericToken).ConfigureAwait(false);
+                                }
+                                if (frmCharacterRoster != null)
+                                {
                                     await frmCharacterRoster.DoThreadSafeAsync(
-                                                                x => x.WindowState = FormWindowState.Maximized,
-                                                                token: _objGenericToken)
-                                                            .ConfigureAwait(false);
+                                        x =>
+                                        {
+                                            if (x.WindowState == FormWindowState.Normal)
+                                                x.WindowState = FormWindowState.Maximized;
+                                        },
+                                        token: _objGenericToken).ConfigureAwait(false);
                                 }
 
                                 if (blnShowTest)
@@ -1054,11 +1052,15 @@ namespace Chummer
             get
             {
                 CharacterRoster frmReturn = _frmCharacterRoster;
-                if (frmReturn == null || frmReturn.Disposing || frmReturn.IsDisposed)
+                if (frmReturn == null)
+                    return null;
+
+                if (frmReturn.Disposing || frmReturn.IsDisposed)
                 {
-                    _frmCharacterRoster = null;
+                    Interlocked.CompareExchange(ref _frmCharacterRoster, null, frmReturn);
                     return null;
                 }
+
                 return frmReturn;
             }
         }
@@ -1068,11 +1070,15 @@ namespace Chummer
             get
             {
                 MasterIndex frmReturn = _frmMasterIndex;
-                if (frmReturn == null || frmReturn.Disposing || frmReturn.IsDisposed)
+                if (frmReturn == null)
+                    return null;
+
+                if (frmReturn.Disposing || frmReturn.IsDisposed)
                 {
-                    _frmMasterIndex = null;
+                    Interlocked.CompareExchange(ref _frmMasterIndex, null, frmReturn);
                     return null;
                 }
+
                 return frmReturn;
             }
         }
@@ -1293,7 +1299,7 @@ namespace Chummer
                                     Disposed += (sender, args) => frmUpdater.Dispose();
                                     await frmUpdater.DoThreadSafeAsync(x =>
                                     {
-                                        x.FormClosed += ResetChummerUpdater;
+                                        x.FormClosed += (o, args) => ResetChummerUpdater(x);
                                         x.SilentMode = true;
                                     }, objNewToken);
                                 }
@@ -1415,7 +1421,7 @@ namespace Chummer
                         Disposed += (o, args) => frmUpdater.Dispose();
                         await frmUpdater.DoThreadSafeAsync(x =>
                         {
-                            x.FormClosed += ResetChummerUpdater;
+                            x.FormClosed += (o, args) => ResetChummerUpdater(x);
                             x.Show();
                         }, _objGenericToken).ConfigureAwait(false);
                     }
@@ -1467,21 +1473,47 @@ namespace Chummer
                 if (frmMasterIndex.IsNullOrDisposed())
                 {
                     frmMasterIndex = await this.DoThreadSafeFuncAsync(() => new MasterIndex(), token: _objGenericToken).ConfigureAwait(false);
-                    if (Interlocked.CompareExchange(ref _frmMasterIndex, frmMasterIndex, null) == null)
+                    MasterIndex frmOldMasterIndex
+                        = Interlocked.CompareExchange(ref _frmMasterIndex, frmMasterIndex, null);
+                    if (frmOldMasterIndex == null)
                     {
                         await frmMasterIndex.DoThreadSafeAsync(x =>
                         {
-                            x.FormClosed += (y, args) => _frmMasterIndex = null;
+                            x.FormClosed += (y, args) => Interlocked.CompareExchange(ref _frmMasterIndex, null, x);
                             x.MdiParent = this;
-                            if (CharacterRoster.IsNullOrDisposed())
+                            bool blnMaximizePreShow = MdiChildren.Length <= 1 && (MdiChildren.Length == 0 || ReferenceEquals(MdiChildren[0], x));
+                            Stack<Form> stkToMaximize = null;
+                            if (blnMaximizePreShow)
                                 x.WindowState = FormWindowState.Maximized;
+                            else
+                            {
+                                // There is an issue in WinForms MDI Containers where showing a new form when other forms are maximized can cause a crash,
+                                // so let's make sure we un-maximize all maximized forms before showing this newly added one
+                                stkToMaximize = new Stack<Form>(MdiChildren.Length);
+                                stkToMaximize.Push(x);
+                                foreach (Form frmLoop in MdiChildren)
+                                {
+                                    if (frmLoop.WindowState == FormWindowState.Maximized && !ReferenceEquals(frmLoop, x))
+                                    {
+                                        frmLoop.WindowState = FormWindowState.Normal;
+                                        stkToMaximize.Push(frmLoop);
+                                    }
+                                }
+                            }
                             x.Show();
-                            if (!CharacterRoster.IsNullOrDisposed())
-                                x.WindowState = FormWindowState.Maximized;
+                            if (stkToMaximize?.Count > 0)
+                            {
+                                while (stkToMaximize.Count > 0)
+                                    stkToMaximize.Pop().WindowState = FormWindowState.Maximized;
+                            }
                         }, token: _objGenericToken).ConfigureAwait(false);
                     }
                     else
+                    {
                         await frmMasterIndex.DoThreadSafeAsync(x => x.Close(), _objGenericToken).ConfigureAwait(false);
+                        await frmOldMasterIndex.DoThreadSafeAsync(x => x.BringToFront(), _objGenericToken)
+                                               .ConfigureAwait(false);
+                    }
                 }
                 else
                 {
@@ -1514,21 +1546,48 @@ namespace Chummer
                 if (frmCharacterRoster.IsNullOrDisposed())
                 {
                     frmCharacterRoster = await this.DoThreadSafeFuncAsync(() => new CharacterRoster(), token: _objGenericToken).ConfigureAwait(false);
-                    if (Interlocked.CompareExchange(ref _frmCharacterRoster, frmCharacterRoster, null) == null)
+                    CharacterRoster frmOldCharacterRoster
+                        = Interlocked.CompareExchange(ref _frmCharacterRoster, frmCharacterRoster, null);
+                    if (frmOldCharacterRoster == null)
                     {
                         await frmCharacterRoster.DoThreadSafeAsync(x =>
                         {
-                            x.FormClosed += (y, args) => _frmCharacterRoster = null;
+                            x.FormClosed += (y, args) => Interlocked.CompareExchange(ref _frmCharacterRoster, null, x);
                             x.MdiParent = this;
-                            if (CharacterRoster.IsNullOrDisposed())
+                            bool blnMaximizePreShow = MdiChildren.Length <= 1 && (MdiChildren.Length == 0 || ReferenceEquals(MdiChildren[0], x));
+                            Stack<Form> stkToMaximize = null;
+                            if (blnMaximizePreShow)
                                 x.WindowState = FormWindowState.Maximized;
+                            else
+                            {
+                                // There is an issue in WinForms MDI Containers where showing a new form when other forms are maximized can cause a crash,
+                                // so let's make sure we un-maximize all maximized forms before showing this newly added one
+                                stkToMaximize = new Stack<Form>(MdiChildren.Length);
+                                stkToMaximize.Push(x);
+                                foreach (Form frmLoop in MdiChildren)
+                                {
+                                    if (frmLoop.WindowState == FormWindowState.Maximized && !ReferenceEquals(frmLoop, x))
+                                    {
+                                        frmLoop.WindowState = FormWindowState.Normal;
+                                        stkToMaximize.Push(frmLoop);
+                                    }
+                                }
+                            }
                             x.Show();
-                            if (!CharacterRoster.IsNullOrDisposed())
-                                x.WindowState = FormWindowState.Maximized;
+                            if (stkToMaximize?.Count > 0)
+                            {
+                                while (stkToMaximize.Count > 0)
+                                    stkToMaximize.Pop().WindowState = FormWindowState.Maximized;
+                            }
                         }, token: _objGenericToken).ConfigureAwait(false);
                     }
                     else
-                        await frmCharacterRoster.DoThreadSafeAsync(x => x.Close(), _objGenericToken).ConfigureAwait(false);
+                    {
+                        await frmCharacterRoster.DoThreadSafeAsync(x => x.Close(), _objGenericToken)
+                                                .ConfigureAwait(false);
+                        await frmOldCharacterRoster.DoThreadSafeAsync(x => x.BringToFront(), _objGenericToken)
+                                                   .ConfigureAwait(false);
+                    }
                 }
                 else
                 {
@@ -1553,10 +1612,12 @@ namespace Chummer
             }
         }
 
-        private void ResetChummerUpdater(object sender, EventArgs e)
+        private void ResetChummerUpdater(ChummerUpdater frmExistingUpdater)
         {
-            ChummerUpdater frmUpdate = Interlocked.Exchange(ref _frmUpdate, null);
-            frmUpdate?.Close();
+            if (frmExistingUpdater == null)
+                Interlocked.Exchange(ref _frmUpdate, null)?.Close();
+            else if (Interlocked.CompareExchange(ref _frmUpdate, null, frmExistingUpdater) == frmExistingUpdater)
+                frmExistingUpdater.Close();
         }
 
         private async void aboutToolStripMenuItem_Click(object sender, EventArgs e)
@@ -2638,12 +2699,31 @@ namespace Chummer
                             {
                                 MdiParent = x
                             };
-                            if (MdiChildren.Length <= 1)
+                            bool blnMaximizePreShow = x.MdiChildren.Length <= 1 && (x.MdiChildren.Length == 0 || ReferenceEquals(MdiChildren[0], frmNewCharacter));
+                            Stack<Form> stkToMaximize = null;
+                            if (blnMaximizePreShow)
                                 frmNewCharacter.WindowState = FormWindowState.Maximized;
+                            else
+                            {
+                                // There is an issue in WinForms MDI Containers where showing a new form when other forms are maximized can cause a crash,
+                                // so let's make sure we un-maximize all maximized forms before showing this newly added one
+                                stkToMaximize = new Stack<Form>(x.MdiChildren.Length);
+                                stkToMaximize.Push(frmNewCharacter);
+                                foreach (Form frmLoop in x.MdiChildren)
+                                {
+                                    if (frmLoop.WindowState == FormWindowState.Maximized && !ReferenceEquals(frmLoop, frmNewCharacter))
+                                    {
+                                        frmLoop.WindowState = FormWindowState.Normal;
+                                        stkToMaximize.Push(frmLoop);
+                                    }
+                                }
+                            }
                             frmNewCharacter.Show();
-                            // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
-                            if (MdiChildren.Length > 1)
-                                frmNewCharacter.WindowState = FormWindowState.Maximized;
+                            if (stkToMaximize?.Count > 0)
+                            {
+                                while (stkToMaximize.Count > 0)
+                                    stkToMaximize.Pop().WindowState = FormWindowState.Maximized;
+                            }
                         }, token: _objGenericToken).ConfigureAwait(false);
                     }
                     finally
@@ -2767,13 +2847,11 @@ namespace Chummer
                     List<Character> lstNewCharacters = lstCharacters.ToList();
                     if (lstNewCharacters.Count == 0)
                         return;
-                    FormWindowState wsPreference
+                    bool blnMaximizeNewForm
                         = await this.DoThreadSafeFuncAsync(x => x.MdiChildren.Length == 0
                                                                 || x.MdiChildren.Any(
                                                                     y => y.WindowState == FormWindowState.Maximized),
-                                                           token).ConfigureAwait(false)
-                            ? FormWindowState.Maximized
-                            : FormWindowState.Normal;
+                                                           token).ConfigureAwait(false);
                     string strUI = await LanguageManager.GetStringAsync("String_UI", token: token).ConfigureAwait(false);
                     string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
                     string strTooManyHandles
@@ -2815,12 +2893,35 @@ namespace Chummer
                                     ? (CharacterShared) new CharacterCareer(objCharacter)
                                     : new CharacterCreate(objCharacter);
                                 frmNewCharacter.MdiParent = y;
-                                if (y.MdiChildren.Length <= 1)
-                                    frmNewCharacter.WindowState = wsPreference;
+                                bool blnMaximizePreShow = y.MdiChildren.Length <= 1 && (y.MdiChildren.Length == 0 || ReferenceEquals(MdiChildren[0], frmNewCharacter));
+                                Stack<Form> stkToMaximize = null;
+                                if (blnMaximizePreShow)
+                                {
+                                    if (blnMaximizeNewForm)
+                                        frmNewCharacter.WindowState = FormWindowState.Maximized;
+                                }
+                                else
+                                {
+                                    // There is an issue in WinForms MDI Containers where showing a new form when other forms are maximized can cause a crash,
+                                    // so let's make sure we un-maximize all maximized forms before showing this newly added one
+                                    stkToMaximize = new Stack<Form>(y.MdiChildren.Length);
+                                    if (blnMaximizeNewForm)
+                                        stkToMaximize.Push(frmNewCharacter);
+                                    foreach (Form frmLoop in y.MdiChildren)
+                                    {
+                                        if (frmLoop.WindowState == FormWindowState.Maximized && !ReferenceEquals(frmLoop, frmNewCharacter))
+                                        {
+                                            frmLoop.WindowState = FormWindowState.Normal;
+                                            stkToMaximize.Push(frmLoop);
+                                        }
+                                    }
+                                }
                                 frmNewCharacter.Show();
-                                // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
-                                if (y.MdiChildren.Length > 1)
-                                    frmNewCharacter.WindowState = wsPreference;
+                                if (stkToMaximize?.Count > 0)
+                                {
+                                    while (stkToMaximize.Count > 0)
+                                        stkToMaximize.Pop().WindowState = FormWindowState.Maximized;
+                                }
                             }, token).ConfigureAwait(false);
                             if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)
                                                 && File.Exists(objCharacter.FileName))
@@ -2940,13 +3041,11 @@ namespace Chummer
                     List<Character> lstNewCharacters = lstCharacters.ToList();
                     if (lstNewCharacters.Count == 0)
                         return;
-                    FormWindowState wsPreference
+                    bool blnMaximizeNewForm
                         = await this.DoThreadSafeFuncAsync(x => x.MdiChildren.Length == 0
                                                                 || x.MdiChildren.Any(
                                                                     y => y.WindowState == FormWindowState.Maximized),
-                                                           token).ConfigureAwait(false)
-                            ? FormWindowState.Maximized
-                            : FormWindowState.Normal;
+                                                           token).ConfigureAwait(false);
                     List<Tuple<CharacterSheetViewer, Character>> lstNewFormsToProcess
                         = new List<Tuple<CharacterSheetViewer, Character>>(lstNewCharacters.Count);
                     string strUI = await LanguageManager.GetStringAsync("String_UI", token: token).ConfigureAwait(false);
@@ -3003,28 +3102,58 @@ namespace Chummer
                         }
                     }
 
-                    // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
                     foreach ((CharacterSheetViewer frmViewer, Character objCharacter) in lstNewFormsToProcess)
                     {
                         await frmViewer.SetCharacters(token, objCharacter).ConfigureAwait(false);
-                        if (await this.DoThreadSafeFuncAsync(y => y.MdiChildren.Length, token).ConfigureAwait(false) <= 1)
+                    }
+
+                    await this.DoThreadSafeAsync(x =>
+                    {
+                        bool blnMaximizePreShow = x.MdiChildren.Length <= 1 && (x.MdiChildren.Length == 0
+                            || ReferenceEquals(x.MdiChildren[0], lstNewFormsToProcess[0].Item1));
+                        Stack<Form> stkToMaximize = null;
+                        if (blnMaximizePreShow)
                         {
-                            await frmViewer.DoThreadSafeAsync(x =>
+                            if (blnMaximizeNewForm)
                             {
-                                x.WindowState = wsPreference;
-                                // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
-                                x.Show();
-                            }, token).ConfigureAwait(false);
+                                foreach ((CharacterSheetViewer frmViewer, Character _) in lstNewFormsToProcess)
+                                {
+                                    frmViewer.WindowState = FormWindowState.Maximized;
+                                }
+                            }
                         }
                         else
                         {
-                            await frmViewer.DoThreadSafeAsync(x =>
+                            // There is an issue in WinForms MDI Containers where showing a new form when other forms are maximized can cause a crash,
+                            // so let's make sure we un-maximize all maximized forms before showing this newly added one
+                            stkToMaximize = new Stack<Form>(x.MdiChildren.Length);
+                            if (blnMaximizeNewForm)
                             {
-                                x.Show();
-                                x.WindowState = wsPreference;
-                            }, token).ConfigureAwait(false);
+                                foreach ((CharacterSheetViewer frmViewer, Character _) in lstNewFormsToProcess)
+                                {
+                                    stkToMaximize.Push(frmViewer);
+                                }
+                            }
+
+                            foreach (Form frmLoop in x.MdiChildren)
+                            {
+                                if (frmLoop.WindowState == FormWindowState.Maximized
+                                    && lstNewFormsToProcess.All(z => !ReferenceEquals(z.Item1, frmLoop)))
+                                {
+                                    frmLoop.WindowState = FormWindowState.Normal;
+                                    stkToMaximize.Push(frmLoop);
+                                }
+                            }
                         }
-                    }
+
+                        foreach ((CharacterSheetViewer frmViewer, Character _) in lstNewFormsToProcess)
+                            frmViewer.Show();
+                        if (stkToMaximize?.Count > 0)
+                        {
+                            while (stkToMaximize.Count > 0)
+                                stkToMaximize.Pop().WindowState = FormWindowState.Maximized;
+                        }
+                    }, _objGenericToken).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -3136,13 +3265,11 @@ namespace Chummer
                     List<Character> lstNewCharacters = lstCharacters.ToList();
                     if (lstNewCharacters.Count == 0)
                         return;
-                    FormWindowState wsPreference
+                    bool blnMaximizeNewForm
                         = await this.DoThreadSafeFuncAsync(x => x.MdiChildren.Length == 0
                                                                 || x.MdiChildren.Any(
                                                                     y => y.WindowState == FormWindowState.Maximized),
-                                                           token).ConfigureAwait(false)
-                            ? FormWindowState.Maximized
-                            : FormWindowState.Normal;
+                                                           token).ConfigureAwait(false);
                     string strUI = await LanguageManager.GetStringAsync("String_UI", token: token).ConfigureAwait(false);
                     string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
                     string strTooManyHandles
@@ -3183,12 +3310,35 @@ namespace Chummer
                                 {
                                     MdiParent = y
                                 };
-                                if (y.MdiChildren.Length <= 1)
-                                    frmViewer.WindowState = wsPreference;
+                                bool blnMaximizePreShow = y.MdiChildren.Length <= 1 && (y.MdiChildren.Length == 0 || ReferenceEquals(MdiChildren[0], frmViewer));
+                                Stack<Form> stkToMaximize = null;
+                                if (blnMaximizePreShow)
+                                {
+                                    if (blnMaximizeNewForm)
+                                        frmViewer.WindowState = FormWindowState.Maximized;
+                                }
+                                else
+                                {
+                                    // There is an issue in WinForms MDI Containers where showing a new form when other forms are maximized can cause a crash,
+                                    // so let's make sure we un-maximize all maximized forms before showing this newly added one
+                                    stkToMaximize = new Stack<Form>(y.MdiChildren.Length);
+                                    if (blnMaximizeNewForm)
+                                        stkToMaximize.Push(frmViewer);
+                                    foreach (Form frmLoop in y.MdiChildren)
+                                    {
+                                        if (frmLoop.WindowState == FormWindowState.Maximized && !ReferenceEquals(frmLoop, frmViewer))
+                                        {
+                                            frmLoop.WindowState = FormWindowState.Normal;
+                                            stkToMaximize.Push(frmLoop);
+                                        }
+                                    }
+                                }
                                 frmViewer.Show();
-                                // This weird ordering of WindowState after Show() is meant to counteract a weird WinForms issue where form handle creation crashes
-                                if (y.MdiChildren.Length > 1)
-                                    frmViewer.WindowState = wsPreference;
+                                if (stkToMaximize?.Count > 0)
+                                {
+                                    while (stkToMaximize.Count > 0)
+                                        stkToMaximize.Pop().WindowState = FormWindowState.Maximized;
+                                }
                             }, token).ConfigureAwait(false);
                             if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)
                                                 && File.Exists(objCharacter.FileName))
