@@ -19,7 +19,7 @@
   https://github.com/chummer5a/chummer5a
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-     xsi:schemaLocation="http://www.w3.org/2001/XMLSchema gear.xsd">
+         xsi:schemaLocation="http://www.w3.org/2001/XMLSchema gear.xsd">
   <!-- Due to the large variety of items in gear.xml, Regions are organised by category rather than sourcebook. -->
 
   <categories>
@@ -1526,7 +1526,7 @@
       </weaponbonus>
       <ammoforweapontype noextra="True">firefighting cannons</ammoforweapontype>
     </gear>
-	<gear>
+    <gear>
       <id>d71ea9c1-9b5f-428e-b849-7d665eb31c5e</id>
       <name>Ammo: Slingshot Acid Capsules</name>
       <category>Ammunition</category>
@@ -1538,11 +1538,11 @@
       <costfor>10</costfor>
       <weaponbonus>
         <damagereplace>6P</damagereplace>
-		<damagetype>Acid</damagetype>
+        <damagetype>Acid</damagetype>
       </weaponbonus>
       <ammoforweapontype noextra="True">slingshot</ammoforweapontype>
     </gear>
-	<gear>
+    <gear>
       <id>e20f021b-1d00-4443-a481-d417114e067e</id>
       <name>Ammo: Slingshot Paint Capsules</name>
       <category>Ammunition</category>
@@ -1557,7 +1557,7 @@
       </weaponbonus>
       <ammoforweapontype noextra="True">slingshot</ammoforweapontype>
     </gear>
-	<gear>
+    <gear>
       <id>5ece577b-7c15-4f2c-9f4b-cd325154cf9c</id>
       <name>Ammo: Slingshot Poison Capsules</name>
       <category>Ammunition</category>
@@ -1572,7 +1572,7 @@
       </weaponbonus>
       <ammoforweapontype noextra="True">slingshot</ammoforweapontype>
     </gear>
-	<gear>
+    <gear>
       <id>d82e68e5-08d1-4f27-af45-de54ad1dcd72</id>
       <name>Ammo: Slingshot Capsule Round</name>
       <category>Ammunition</category>
@@ -1584,7 +1584,7 @@
       <costfor>10</costfor>
       <weaponbonus>
         <damagereplace>As Drug/Toxin</damagereplace>
-		<userange>Light Pistol</userange>
+        <userange>Light Pistol</userange>
       </weaponbonus>
       <ammoforweapontype noextra="True">slingshot</ammoforweapontype>
     </gear>
@@ -6135,7 +6135,7 @@
       <avail>4R</avail>
       <cost>250</cost>
     </gear>
-	<gear>
+    <gear>
       <id>075435ea-d988-44e1-9603-5e64eab762e8</id>
       <name>Cry Wolf</name>
       <category>Hacking Programs</category>
@@ -12286,7 +12286,7 @@
       </bonus>
       <cost>2000</cost>
     </gear>
-	<gear>
+    <gear>
       <id>39904022-312d-49d8-9f4c-b2626e971fe6</id>
       <name>FAB I</name>
       <category>Magical Supplies</category>
@@ -12296,7 +12296,7 @@
       <avail>10</avail>
       <cost>50</cost>
     </gear>
-	<gear>
+    <gear>
       <id>056ff454-2e43-4351-b934-93ef1451b610</id>
       <name>FAB II</name>
       <category>Magical Supplies</category>
@@ -12306,7 +12306,7 @@
       <avail>16R</avail>
       <cost>Rating * 50</cost>
     </gear>
-	<gear>
+    <gear>
       <id>f03501df-05c3-4d47-b068-d64fe829df05</id>
       <name>FAB III</name>
       <category>Magical Supplies</category>
@@ -13839,9 +13839,7 @@
       <avail>8F</avail>
       <cost>200</cost>
     </gear>
-    
-   
-      <!-- Adds the drug grades as a plugin for drugs. -->
+    <!-- Adds the drug grades as a plugin for drugs. -->
     <gear>
       <id>f22e79fa-fb04-4369-a761-a1a46e242bc8</id>
       <name>Street Cooked</name>
@@ -13856,11 +13854,12 @@
       <required>
         <geardetails>
           <OR>
+            <category>BTLs</category>
             <category>Drugs</category>
           </OR>
         </geardetails>
       </required>
-    </gear>    
+    </gear>
     <gear>
       <id>21f33089-cb7a-4bef-80ae-03d04f1c47ad</id>
       <name>Pharmaceutical</name>
@@ -13875,11 +13874,12 @@
       <required>
         <geardetails>
           <OR>
+            <category>BTLs</category>
             <category>Drugs</category>
           </OR>
         </geardetails>
       </required>
-    </gear>    
+    </gear>
     <gear>
       <id>d8cdb6ea-5150-4ec0-8166-88d33e714364</id>
       <name>Designer</name>
@@ -13894,6 +13894,7 @@
       <required>
         <geardetails>
           <OR>
+            <category>BTLs</category>
             <category>Drugs</category>
           </OR>
         </geardetails>
