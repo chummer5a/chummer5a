@@ -13004,6 +13004,7 @@
       <name>Bliss</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>SR5</source>
       <page>411</page>
@@ -13016,6 +13017,7 @@
       <name>Cram</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>SR5</source>
       <page>411</page>
@@ -13028,6 +13030,7 @@
       <name>Deepweed</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>SR5</source>
       <page>411</page>
@@ -13040,6 +13043,7 @@
       <name>Jazz</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>SR5</source>
       <page>411</page>
@@ -13052,6 +13056,7 @@
       <name>Kamikaze</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>SR5</source>
       <page>412</page>
@@ -13064,6 +13069,7 @@
       <name>Long Haul</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>SR5</source>
       <page>412</page>
@@ -13075,6 +13081,7 @@
       <name>Nitro</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>SR5</source>
       <page>412</page>
@@ -13087,6 +13094,7 @@
       <name>Novacoke</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>SR5</source>
       <page>412</page>
@@ -13099,6 +13107,7 @@
       <name>Psyche</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>SR5</source>
       <page>412</page>
@@ -13110,6 +13119,7 @@
       <name>Zen</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>SR5</source>
       <page>412</page>
@@ -13122,6 +13132,7 @@
       <name>Crash</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>BB</source>
       <page>19</page>
@@ -13133,6 +13144,7 @@
       <name>Cryo</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>BB</source>
       <page>19</page>
@@ -13145,6 +13157,7 @@
       <name>HemoSynth</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>BB</source>
       <page>19</page>
@@ -13156,6 +13169,7 @@
       <name>NanoScan</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>BB</source>
       <page>19</page>
@@ -13167,6 +13181,7 @@
       <name>Neostigmine</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>BB</source>
       <page>19</page>
@@ -13178,6 +13193,7 @@
       <name>Ondansetron</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>BB</source>
       <page>19</page>
@@ -13189,6 +13205,7 @@
       <name>Sugammadex</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>BB</source>
       <page>19</page>
@@ -13200,6 +13217,7 @@
       <name>Evo Aphrodite Reactive Biomatter</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>TVG</source>
       <page>19</page>
@@ -13212,6 +13230,7 @@
       <name>Accelerator</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>LCD</source>
       <page>205</page>
@@ -13224,6 +13243,7 @@
       <name>Buffout</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>LCD</source>
       <page>204</page>
@@ -13236,6 +13256,7 @@
       <name>Numb</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>LCD</source>
       <page>204</page>
@@ -13247,6 +13268,7 @@
       <name>Pinpoint</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>LCD</source>
       <page>204</page>
@@ -13259,6 +13281,7 @@
       <name>Liquid Nutrients</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>SS</source>
       <page>189</page>
@@ -13270,6 +13293,7 @@
       <name>Normal Saline</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>SS</source>
       <page>189</page>
@@ -13291,6 +13315,7 @@
       <name>AEXD</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>179</page>
@@ -13302,6 +13327,7 @@
       <name>Aisa</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>179</page>
@@ -13313,6 +13339,7 @@
       <name>Animal Tongue</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>186</page>
@@ -13324,6 +13351,7 @@
       <name>Ayao's Will</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>184</page>
@@ -13335,6 +13363,7 @@
       <name>Betameth</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>180</page>
@@ -13347,6 +13376,7 @@
       <name>Betel</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>180</page>
@@ -13358,6 +13388,7 @@
       <name>Cereprax</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>180</page>
@@ -13369,6 +13400,7 @@
       <name>Crimson Orchid</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>184</page>
@@ -13380,6 +13412,7 @@
       <name>Dopadrine</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>180</page>
@@ -13391,6 +13424,7 @@
       <name>eX</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>180</page>
@@ -13402,6 +13436,7 @@
       <name>Forget-Me-Not</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>180</page>
@@ -13413,6 +13448,7 @@
       <name>Galak</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>180</page>
@@ -13424,6 +13460,7 @@
       <name>G3</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>181</page>
@@ -13435,6 +13472,7 @@
       <name>Guts</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>181</page>
@@ -13447,6 +13485,7 @@
       <name>Hecate's Blessing</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>185</page>
@@ -13458,6 +13497,7 @@
       <name>Hurlg</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>181</page>
@@ -13469,6 +13509,7 @@
       <name>Immortal Flower</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>186</page>
@@ -13480,6 +13521,7 @@
       <name>K-10</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>181</page>
@@ -13491,6 +13533,7 @@
       <name>Laés</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>185</page>
@@ -13502,6 +13545,7 @@
       <name>Leäl</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>185</page>
@@ -13513,6 +13557,7 @@
       <name>Little Smoke</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>187</page>
@@ -13525,6 +13570,7 @@
       <name>Memory Fog</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>181</page>
@@ -13536,6 +13582,7 @@
       <name>Nightwatch</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>182</page>
@@ -13547,6 +13594,7 @@
       <name>NoPaint</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>182</page>
@@ -13558,6 +13606,7 @@
       <name>Oneiro</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>186</page>
@@ -13570,6 +13619,7 @@
       <name>Overdrive</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>186</page>
@@ -13582,6 +13632,7 @@
       <name>Oxygenated Fluorocarbons</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>182</page>
@@ -13593,6 +13644,7 @@
       <name>Pixie Dust</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>186</page>
@@ -13605,6 +13657,7 @@
       <name>Push</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>182</page>
@@ -13636,6 +13689,7 @@
       <name>Red Mescaline</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>182</page>
@@ -13647,6 +13701,7 @@
       <name>Ripper</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>182</page>
@@ -13658,6 +13713,7 @@
       <name>Rock Lizard Blood</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>187</page>
@@ -13669,6 +13725,7 @@
       <name>Shade</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>187</page>
@@ -13681,6 +13738,7 @@
       <name>Slab</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>183</page>
@@ -13692,6 +13750,7 @@
       <name>Reaper</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>183</page>
@@ -13703,6 +13762,7 @@
       <name>Snuff</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>183</page>
@@ -13715,6 +13775,7 @@
       <name>Sober Time</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>183</page>
@@ -13726,6 +13787,7 @@
       <name>Soothsayer</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>184</page>
@@ -13737,6 +13799,7 @@
       <name>Trance</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>186</page>
@@ -13749,6 +13812,7 @@
       <name>Woad</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>184</page>
@@ -13760,6 +13824,7 @@
       <name>Wudu'aku</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>187</page>
@@ -13772,6 +13837,7 @@
       <name>Zero</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>184</page>
@@ -13783,6 +13849,7 @@
       <name>Zombie Dust</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>CF</source>
       <page>187</page>
@@ -13794,6 +13861,7 @@
       <name>Shiva (Vintage)</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <avail>12F</avail>
       <cost>200</cost>
@@ -13805,6 +13873,7 @@
       <name>Shiva II</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <avail>6R</avail>
       <cost>150</cost>
@@ -20149,6 +20218,7 @@
       <name>Kamikaze (2050)</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>2050</source>
       <page>197</page>
@@ -20483,6 +20553,7 @@
       <name>NanoScrub</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>DTR</source>
       <page>83</page>
@@ -20494,6 +20565,7 @@
       <name>Overwriter Nanites</name>
       <category>Drugs</category>
       <addoncategory>Drug Grades</addoncategory>
+      <addoncategory>Custom</addoncategory>
       <rating>0</rating>
       <source>DTR</source>
       <page>83</page>
