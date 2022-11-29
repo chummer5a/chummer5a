@@ -32,12 +32,27 @@
       <id>d9b811f4-aa64-46fb-b67d-2995134eda4e</id> <!-- Improved Potential (Physical) -->
       <levels>True</levels>
     </power>
+    <power>
+      <!-- Keratin Control is in the main book and not errata -->
+      <id>830de0b7-8d83-467b-91e4-ce10081838b0</id>
+      <source>SG</source>
+      <page>201</page>
+    </power>
+    <power>
+      <!-- Living Focus is in the main book and not errata -->
+      <id>ee72398d-9daf-493f-b79b-5dab81e84013</id>
+      <source>SG</source>
+      <page>202</page>
+    </power>
     <!-- Authoritative Tone (SG 170) and Commanding Voice (SS 191) are different powers according to English source books. -->
     <!-- According to German rules both spells are identical (named 'Gebieterischer Ton'), but differ from the English attributes. -->
     <!-- Begin Street Grimoire: Authoritative Tone, in German: 'Gebieterischer Ton' -->
     <power>
       <id>5f1ebcd8-9571-4716-b7fd-ec674306b833</id>
       <points>0.25</points>
+      <!-- Authoritative Tone is in the main book and not errata -->
+      <source>SG</source>
+      <page>199</page>
     </power>
     <!-- End Street Grimoire: Authoritative Tone -->
     <!-- Begin Stolen Souls: Commanding Voice, in German: 'Gebieterischer Ton' -->
