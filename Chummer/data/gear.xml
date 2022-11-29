@@ -6449,7 +6449,8 @@
       <page>127</page>
       <avail>Rating * 2</avail>
       <bonus>
-        <selectskill limittoskill="First Aid,Hardware,Instruction,Aeronautics Mechanic,Automotive Mechanic,Industrial Mechanic,Nautical Mechanic,Navigation,Performance" />
+        <selectskill
+          limittoskill="First Aid,Hardware,Instruction,Aeronautics Mechanic,Automotive Mechanic,Industrial Mechanic,Nautical Mechanic,Navigation,Performance" />
       </bonus>
       <cost>Rating * 500</cost>
     </gear>
@@ -7386,7 +7387,8 @@
       <avail>0</avail>
       <armorcapacity>[6]</armorcapacity>
       <bonus>
-        <selecttext xml="skills.xml" xpath="/chummer/skills/skill/name | /chummer/knowledgeskills/skill/name" allowedit="True" />
+        <selecttext xml="skills.xml" xpath="/chummer/skills/skill/name | /chummer/knowledgeskills/skill/name"
+                    allowedit="True" />
       </bonus>
       <cost>500</cost>
     </gear>
@@ -7399,7 +7401,8 @@
       <page>443</page>
       <avail>8</avail>
       <bonus>
-        <selecttext xml="skills.xml" xpath="/chummer/skills/skill/name | /chummer/knowledgeskills/skill/name" allowedit="True" />
+        <selecttext xml="skills.xml" xpath="/chummer/skills/skill/name | /chummer/knowledgeskills/skill/name"
+                    allowedit="True" />
       </bonus>
       <cost>5000</cost>
     </gear>
@@ -7412,7 +7415,8 @@
       <page>443</page>
       <avail>12</avail>
       <bonus>
-        <selecttext xml="skills.xml" xpath="/chummer/skills/skill/name | /chummer/knowledgeskills/skill/name" allowedit="True" />
+        <selecttext xml="skills.xml" xpath="/chummer/skills/skill/name | /chummer/knowledgeskills/skill/name"
+                    allowedit="True" />
       </bonus>
       <cost>50000</cost>
     </gear>
@@ -11019,7 +11023,12 @@
           <bonus>Rating</bonus>
         </specificskill>
         <selecttradition />
-      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
       <cost>Rating * 5000</cost>
     </gear>
     <gear>
@@ -11036,7 +11045,12 @@
           <bonus>Rating</bonus>
         </specificskill>
         <selecttradition />
-      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
       <cost>Rating * 5000</cost>
     </gear>
     <gear>
@@ -11049,7 +11063,12 @@
       <avail>(Rating * 3)R</avail>
       <bonus>
         <selecttradition />
-      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
       <cost>Rating * 9000</cost>
     </gear>
     <gear>
@@ -11062,7 +11081,12 @@
       <avail>(Rating * 3)R</avail>
       <bonus>
         <selecttradition />
-      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
       <cost>Rating * 9000</cost>
     </gear>
     <gear>
@@ -11075,7 +11099,12 @@
       <avail>(Rating * 3)R</avail>
       <bonus>
         <selecttradition />
-      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
       <cost>Rating * 9000</cost>
     </gear>
     <gear>
@@ -11088,7 +11117,12 @@
       <avail>(Rating * 3)R</avail>
       <bonus>
         <selecttradition />
-      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
       <cost>Rating * 9000</cost>
     </gear>
     <gear>
@@ -11105,7 +11139,12 @@
           <bonus>Rating</bonus>
         </skillattribute>
         <selecttradition />
-      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
       <cost>Rating * 18000</cost>
     </gear>
     <gear>
@@ -11125,7 +11164,12 @@
             <pointsperlevel>0.25</pointsperlevel>
           </selectpower>
         </selectpowers>
-      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
       <cost>Rating * 3000</cost>
     </gear>
     <gear>
@@ -11138,7 +11182,12 @@
       <avail>(Rating * 3)R</avail>
       <bonus>
         <selecttradition />
-      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -11151,7 +11200,12 @@
       <avail>(Rating * 3)R</avail>
       <bonus>
         <selecttradition />
-      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -11168,7 +11222,12 @@
           <val>Rating</val>
         </spellcategory>
         <selecttradition />
-      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -11181,7 +11240,12 @@
       <avail>(Rating * 3)R</avail>
       <bonus>
         <selecttradition />
-      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -11194,7 +11258,12 @@
       <avail>(Rating * 3)R</avail>
       <bonus>
         <selecttradition />
-      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -11207,7 +11276,12 @@
       <avail>(Rating * 3)R</avail>
       <bonus>
         <selecttradition />
-      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -11224,7 +11298,12 @@
           <val>Rating</val>
         </spellcategory>
         <selecttradition />
-      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -11237,7 +11316,12 @@
       <avail>(Rating * 3)R</avail>
       <bonus>
         <selecttradition />
-      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -11250,7 +11334,12 @@
       <avail>(Rating * 3)R</avail>
       <bonus>
         <selecttradition />
-      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -11263,7 +11352,12 @@
       <avail>(Rating * 3)R</avail>
       <bonus>
         <selecttradition />
-      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -11280,7 +11374,12 @@
           <val>Rating</val>
         </spellcategory>
         <selecttradition />
-      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -11293,7 +11392,12 @@
       <avail>(Rating * 3)R</avail>
       <bonus>
         <selecttradition />
-      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -11306,7 +11410,12 @@
       <avail>(Rating * 3)R</avail>
       <bonus>
         <selecttradition />
-      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -11319,7 +11428,12 @@
       <avail>(Rating * 3)R</avail>
       <bonus>
         <selecttradition />
-      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -11336,7 +11450,12 @@
           <val>Rating</val>
         </spellcategory>
         <selecttradition />
-      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -11349,7 +11468,12 @@
       <avail>(Rating * 3)R</avail>
       <bonus>
         <selecttradition />
-      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -11362,7 +11486,12 @@
       <avail>(Rating * 3)R</avail>
       <bonus>
         <selecttradition />
-      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -11375,7 +11504,12 @@
       <avail>(Rating * 3)R</avail>
       <bonus>
         <selecttradition />
-      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -11392,7 +11526,12 @@
           <val>Rating</val>
         </spellcategory>
         <selecttradition />
-      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -11405,7 +11544,12 @@
       <avail>(Rating * 3)R</avail>
       <bonus>
         <selecttradition />
-      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -11418,7 +11562,12 @@
       <avail>(Rating * 3)R</avail>
       <bonus>
         <selecttext xml="strings.xml" xpath="/chummer/spiritcategories/category" />
-      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -11431,7 +11580,12 @@
       <avail>(Rating * 3)R</avail>
       <bonus>
         <selecttext xml="strings.xml" xpath="/chummer/spiritcategories/category" />
-      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -11444,7 +11598,12 @@
       <avail>(Rating * 3)R</avail>
       <bonus>
         <selecttext xml="strings.xml" xpath="/chummer/spiritcategories/category" />
-      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
       <cost>Rating * 4000</cost>
     </gear>
     <gear>
@@ -11457,7 +11616,12 @@
       <avail>(Rating * 4)R</avail>
       <bonus>
         <weaponspecificdice type="Melee">Rating</weaponspecificdice>
-      </bonus><required><oneof><quality>Mentor Spirit</quality></oneof></required>
+      </bonus>
+      <required>
+        <oneof>
+          <quality>Mentor Spirit</quality>
+        </oneof>
+      </required>
       <cost>Rating * 7000</cost>
     </gear>
     <!-- End Region -->
@@ -19906,7 +20070,8 @@
       <page>196</page>
       <avail>5</avail>
       <bonus>
-        <selecttext xml="skills.xml" xpath="/chummer/skills/skill/name | /chummer/knowledgeskills/skill/name" allowedit="True" />
+        <selecttext xml="skills.xml" xpath="/chummer/skills/skill/name | /chummer/knowledgeskills/skill/name"
+                    allowedit="True" />
       </bonus>
       <cost>500</cost>
     </gear>
@@ -19919,7 +20084,8 @@
       <page>196</page>
       <avail>8</avail>
       <bonus>
-        <selecttext xml="skills.xml" xpath="/chummer/skills/skill/name | /chummer/knowledgeskills/skill/name" allowedit="True" />
+        <selecttext xml="skills.xml" xpath="/chummer/skills/skill/name | /chummer/knowledgeskills/skill/name"
+                    allowedit="True" />
       </bonus>
       <cost>5000</cost>
     </gear>
@@ -19932,7 +20098,8 @@
       <page>196</page>
       <avail>14</avail>
       <bonus>
-        <selecttext xml="skills.xml" xpath="/chummer/skills/skill/name | /chummer/knowledgeskills/skill/name" allowedit="True" />
+        <selecttext xml="skills.xml" xpath="/chummer/skills/skill/name | /chummer/knowledgeskills/skill/name"
+                    allowedit="True" />
       </bonus>
       <cost>100000</cost>
     </gear>
