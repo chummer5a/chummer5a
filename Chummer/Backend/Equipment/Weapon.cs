@@ -6184,15 +6184,20 @@ namespace Chummer.Backend.Equipment
                     strSkill = UseSkill;
                     strSpec = string.Empty;
 
-                    if (ExoticSkill.IsExoticSkillName(_objCharacter, UseSkill))
+                    (bool blnIsExotic, string strSkillName)
+                        = ExoticSkill.IsExoticSkillNameTuple(_objCharacter, UseSkill);
+                    if (blnIsExotic)
+                    {
+                        strSkill = strSkillName;
                         strSpec = UseSkillSpec;
+                    }
                 }
 
                 // Locate the Active Skill to be used.
                 Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(strSkill);
-                if (string.IsNullOrEmpty(strSpec) || objSkill.HasSpecialization(strSpec)
-                                                  || objSkill.HasSpecialization(Name) || (!string.IsNullOrEmpty(Spec2)
-                                                      && objSkill.HasSpecialization(Spec2)))
+                if (string.IsNullOrEmpty(strSpec) || objSkill == null || objSkill.HasSpecialization(strSpec)
+                    || objSkill.HasSpecialization(Name)
+                    || (!string.IsNullOrEmpty(Spec2) && objSkill.HasSpecialization(Spec2)))
                     return objSkill;
                 return null;
             }
