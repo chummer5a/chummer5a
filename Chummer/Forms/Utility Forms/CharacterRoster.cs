@@ -2121,32 +2121,41 @@ namespace Chummer
                 return;
             try
             {
-                TreeNode objSelectedNode = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode, _objGenericToken).ConfigureAwait(false);
+                TreeNode objSelectedNode = await treCharacterList
+                                                 .DoThreadSafeFuncAsync(x => x.SelectedNode, _objGenericToken)
+                                                 .ConfigureAwait(false);
                 if (objSelectedNode?.Level <= 0)
                     return;
                 string strFile = objSelectedNode?.Tag?.ToString();
                 if (string.IsNullOrEmpty(strFile))
                     return;
-                Character objOpenCharacter
-                    = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == strFile, _objGenericToken).ConfigureAwait(false);
-                if (objOpenCharacter != null)
+                CursorWait objCursorWait
+                    = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
+                try
                 {
-                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                    try
+                    Character objOpenCharacter
+                        = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == strFile, _objGenericToken)
+                                       .ConfigureAwait(false);
+                    if (objOpenCharacter != null)
                     {
+                        Stack<Form> stkToClose = new Stack<Form>();
                         foreach (IHasCharacterObjects objOpenForm in Program.MainForm.OpenFormsWithCharacters)
                         {
+                            _objGenericToken.ThrowIfCancellationRequested();
                             if (objOpenForm.CharacterObjects.Contains(objOpenCharacter)
                                 && objOpenForm is Form frmOpenForm)
                             {
-                                await frmOpenForm.DoThreadSafeAsync(x => x.Close(), _objGenericToken).ConfigureAwait(false);
+                                stkToClose.Push(frmOpenForm);
                             }
                         }
+                        _objGenericToken.ThrowIfCancellationRequested();
+                        while (stkToClose.Count > 0)
+                            await stkToClose.Pop().DoThreadSafeAsync(x => x.Close(), _objGenericToken).ConfigureAwait(false);
                     }
-                    finally
-                    {
-                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                    }
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
