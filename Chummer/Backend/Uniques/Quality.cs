@@ -1906,9 +1906,6 @@ namespace Chummer
                             {
                                 blnAddItem = false;
                             }
-
-                            if (!blnAddItem)
-                                return false;
                         }
                         else
                         {
@@ -1950,10 +1947,9 @@ namespace Chummer
                                 // Trading a more expensive quality for a less expensive quality shouldn't give you karma. TODO: Optional rule to govern this behaviour.
                                 intKarmaCost = 0;
                             }
-
-                            if (!blnAddItem)
-                                return false;
                         }
+                        if (!blnAddItem)
+                            return false;
                     }
 
                     // Removing the old quality from the character
@@ -1973,7 +1969,7 @@ namespace Chummer
                         }
                         catch
                         {
-                            await objNewQualityLevel.DisposeAsync().ConfigureAwait(false);
+                            await objNewQualityLevel.DeleteQualityAsync(token: token).ConfigureAwait(false);
                             throw;
                         }
                     }

@@ -7148,17 +7148,20 @@ namespace Chummer
 
                 if (intRatingToAdd > 0)
                 {
+                    bool blnAdded = false;
                     Quality objNewQuality = new Quality(CharacterObject);
                     try
                     {
-                        await objNewQuality.Swap(objQuality, objXmlQuality, intRatingToAdd, GenericToken)
-                                           .ConfigureAwait(false);
+                        blnAdded = await objNewQuality.Swap(objQuality, objXmlQuality, intRatingToAdd, GenericToken)
+                                                   .ConfigureAwait(false);
                     }
                     catch
                     {
-                        await objNewQuality.DisposeAsync().ConfigureAwait(false);
+                        await objNewQuality.DeleteQualityAsync(token: GenericToken).ConfigureAwait(false);
                         throw;
                     }
+                    if (!blnAdded)
+                        await objNewQuality.DeleteQualityAsync(token: GenericToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
