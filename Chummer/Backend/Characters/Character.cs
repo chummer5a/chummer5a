@@ -2910,7 +2910,7 @@ namespace Chummer
                         Cost = "0",
                         UseSkill = objXmlNaturalWeapon["useskill"]?.InnerText ?? string.Empty,
                         Source = objXmlNaturalWeapon["source"]?.InnerText ?? "SR5",
-                        Page = objXmlNaturalWeapon["page"]?.InnerText ? "0?"
+                        Page = objXmlNaturalWeapon["page"]?.InnerText ?? "0"
                     };
                     Weapons.Add(objWeapon);
                 }
@@ -6874,7 +6874,11 @@ namespace Chummer
                                             && strLoopSourceName.IsGuid())
                                         {
                                             string strNeedle = "<guid>" + strLoopSourceName + "</guid>";
-                                            if (!strCharacterInnerXml.Contains(strNeedle, StringComparison.OrdinalIgnoreCase))
+                                            string strNeedle2 = "<metatypeid>" + strLoopSourceName + "</metatypeid>";
+                                            string strNeedle3 = "<metavariantid>" + strLoopSourceName + "</metavariantid>";
+                                            if (!strCharacterInnerXml.Contains(strNeedle, StringComparison.OrdinalIgnoreCase)
+                                                && !strCharacterInnerXml.Contains(strNeedle2, StringComparison.OrdinalIgnoreCase)
+                                                && !strCharacterInnerXml.Contains(strNeedle3, StringComparison.OrdinalIgnoreCase))
                                             {
                                                 //Utils.BreakIfDebug();
                                                 if (blnRemoveImprovements
