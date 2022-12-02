@@ -6867,66 +6867,41 @@ namespace Chummer
                                             break;
                                     }
 
-                                    string strLoopSourceName = objXmlImprovement["sourcename"]?.InnerText;
-                                    if ((blnRemoveImprovements || showWarnings)
-                                        && !string.IsNullOrEmpty(strLoopSourceName)
-                                        && strLoopSourceName.IsGuid()
-                                        && objXmlImprovement["custom"]?.InnerText != bool.TrueString)
+                                    if ((blnRemoveImprovements || showWarnings) && objXmlImprovement["custom"]?.InnerText != bool.TrueString)
                                     {
-                                        // Hacky way to make sure this character isn't loading in any orphaned improvements.
-                                        // SourceName ID will pop up minimum twice in the save if the improvement's source is actually present:
-                                        // once in the improvement and once in the parent that added it.
-                                        int intFirstIdIndex =
-                                            strCharacterInnerXml.IndexOf(strLoopSourceName,
-                                                                         StringComparison.Ordinal);
-                                        int intLastIdIndex =
-                                            strCharacterInnerXml.LastIndexOf(strLoopSourceName,
-                                                                             StringComparison.Ordinal);
-                                        // Catch orphaned improvements that used to have the same source parent by making sure that at least one of
-                                        // the IDs found is not an improvement's `<sourcename>` node's contents.
-                                        // Spans are faster than substrings because they do not make allocations, so that is why they are used
-                                        if (intFirstIdIndex >= 12
-                                            && strCharacterInnerXml.AsSpan(intFirstIdIndex - 12, 12) ==
-                                            "<sourcename>".AsSpan())
+                                        string strLoopSourceName = objXmlImprovement["sourcename"]?.InnerText;
+                                        if (!string.IsNullOrEmpty(strLoopSourceName)
+                                            && strLoopSourceName.IsGuid())
                                         {
-                                            while (intLastIdIndex > intFirstIdIndex
-                                                   && strCharacterInnerXml.AsSpan(intLastIdIndex - 12, 12) ==
-                                                   "<sourcename>".AsSpan())
+                                            string strNeedle = "<guid>" + strLoopSourceName + "</guid>";
+                                            if (!strCharacterInnerXml.Contains(strNeedle, StringComparison.OrdinalIgnoreCase))
                                             {
-                                                intLastIdIndex =
-                                                    strCharacterInnerXml.LastIndexOf(strLoopSourceName,
-                                                        intLastIdIndex,
-                                                        StringComparison.Ordinal);
-                                            }
-                                        }
-
-                                        if (intFirstIdIndex == intLastIdIndex)
-                                        {
-                                            //Utils.BreakIfDebug();
-                                            if (blnRemoveImprovements
-                                                || (Program.ShowMessageBox(
-                                                        blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString(
-                                                                "Message_OrphanedImprovements", token: token)
-                                                            : await LanguageManager.GetStringAsync(
+                                                //Utils.BreakIfDebug();
+                                                if (blnRemoveImprovements
+                                                    || (Program.ShowMessageBox(
+                                                            blnSync
+                                                                // ReSharper disable once MethodHasAsyncOverload
+                                                                ? LanguageManager.GetString(
                                                                     "Message_OrphanedImprovements", token: token)
-                                                                .ConfigureAwait(false),
-                                                        blnSync
-                                                            // ReSharper disable once MethodHasAsyncOverload
-                                                            ? LanguageManager.GetString(
-                                                                "MessageTitle_OrphanedImprovements", token: token)
-                                                            : await LanguageManager.GetStringAsync(
+                                                                : await LanguageManager.GetStringAsync(
+                                                                        "Message_OrphanedImprovements", token: token)
+                                                                    .ConfigureAwait(false),
+                                                            blnSync
+                                                                // ReSharper disable once MethodHasAsyncOverload
+                                                                ? LanguageManager.GetString(
                                                                     "MessageTitle_OrphanedImprovements", token: token)
-                                                                .ConfigureAwait(false),
-                                                        MessageBoxButtons.YesNo, MessageBoxIcon.Error) ==
-                                                    DialogResult.Yes))
-                                            {
-                                                blnRemoveImprovements = true;
-                                                continue;
-                                            }
+                                                                : await LanguageManager.GetStringAsync(
+                                                                        "MessageTitle_OrphanedImprovements", token: token)
+                                                                    .ConfigureAwait(false),
+                                                            MessageBoxButtons.YesNo, MessageBoxIcon.Error) ==
+                                                        DialogResult.Yes))
+                                                {
+                                                    blnRemoveImprovements = true;
+                                                    continue;
+                                                }
 
-                                            return false;
+                                                return false;
+                                            }
                                         }
                                     }
 
