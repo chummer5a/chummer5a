@@ -2024,6 +2024,42 @@
       <page>21</page>
     </weapon>
     <weapon>
+      <id>2c65e7ad-41a9-45aa-9668-b7c7efa6e342</id>
+      <name>Chainsaw</name>
+      <category>Exotic Melee Weapons</category>
+      <type>Melee</type>
+      <conceal>8</conceal>
+      <accuracy>3</accuracy>
+      <reach>1</reach>
+      <damage>6P</damage>
+      <ap>-4</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>2</avail>
+      <cost>150</cost>
+      <source>RG</source>
+      <page>21</page>
+    </weapon>
+    <weapon>
+      <id>0170c709-6c90-4a87-93be-64b62a7dcb4f</id>
+      <name>Monofilament Chainsaw</name>
+      <category>Exotic Melee Weapons</category>
+      <type>Melee</type>
+      <conceal>8</conceal>
+      <accuracy>3</accuracy>
+      <reach>1</reach>
+      <damage>10P</damage>
+      <ap>-8</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>6R</avail>
+      <cost>1500</cost>
+      <source>RG</source>
+      <page>21</page>
+    </weapon>
+    <weapon>
       <id>e3f90df3-a19e-458a-a09f-01ee4cd04502</id>
       <name>Bullwhip</name>
       <category>Exotic Melee Weapons</category>

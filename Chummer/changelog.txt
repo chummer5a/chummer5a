@@ -70,6 +70,7 @@ Data Changes:
 - Internal SmartCam and Synthlink costs are now properly double the cost of whatever they are put into.
 - Drug grades have been added for regular drugs. Currently, they are available as plugins for gear entries that can have drug grades, which is a cumbersome solution, but it works.
 - Added previously missing Stolen Souls entries for items that have nominal duplicates in other books, but these duplicates often don't have the exact same mechanics as the ones listed in Stolen Souls.
+- Added entries for the non-combat versions of the combat chainsaws from Run & Gun.
 
 Changed/New Strings:
 - LimitCondition_SoldierParagon
