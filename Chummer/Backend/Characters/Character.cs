@@ -2897,20 +2897,20 @@ namespace Chummer
                     Weapon objWeapon = new Weapon(this)
                     {
                         Name = objXmlNaturalWeapon["name"].InnerText,
-                        Category = LanguageManager.GetString("Tab_Critter", token: token),
+                        Category = LanguageManager.GetString("Tab_Critter", GlobalSettings.DefaultLanguage, token: token),
                         RangeType = "Melee",
                         Reach =
-                            CommonFunctions.ExpressionToInt(objXmlNaturalWeapon["reach"]?.InnerText, intForce, 0, 0),
-                        Damage = objXmlNaturalWeapon["damage"]?.InnerText ?? "0S",
+                            CommonFunctions.ExpressionToInt(objXmlNaturalWeapon["reach"]?.InnerText ?? "0", intForce, 0, 0),
+                        Damage = objXmlNaturalWeapon["damage"]?.InnerText ?? "({STR})S",
                         AP = objXmlNaturalWeapon["ap"]?.InnerText ?? "0",
                         Mode = "0",
                         RC = "0",
                         Concealability = 0,
                         Avail = "0",
                         Cost = "0",
-                        UseSkill = objXmlNaturalWeapon["useskill"]?.InnerText,
-                        Source = objXmlNaturalWeapon["source"].InnerText,
-                        Page = objXmlNaturalWeapon["page"].InnerText
+                        UseSkill = objXmlNaturalWeapon["useskill"]?.InnerText ?? string.Empty,
+                        Source = objXmlNaturalWeapon["source"]?.InnerText ?? "SR5",
+                        Page = objXmlNaturalWeapon["page"]?.InnerText ? "0?"
                     };
                     Weapons.Add(objWeapon);
                 }

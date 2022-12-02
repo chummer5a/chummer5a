@@ -67,8 +67,8 @@ namespace Chummer
                                           ?? strName));
                 }
 
-                lstDVBase.Add(new ListItem("(STR/2)", '(' + _objCharacter.STR.DisplayAbbrev + "/2)"));
-                lstDVBase.Add(new ListItem("(STR)", '(' + _objCharacter.STR.DisplayAbbrev + ')'));
+                lstDVBase.Add(new ListItem("({STR}/2)", '(' + _objCharacter.STR.DisplayAbbrev + "/2)"));
+                lstDVBase.Add(new ListItem("({STR})", '(' + _objCharacter.STR.DisplayAbbrev + ')'));
                 for (int i = 1; i <= 20; ++i)
                 {
                     lstDVBase.Add(new ListItem(i.ToString(GlobalSettings.InvariantCultureInfo),
@@ -154,7 +154,7 @@ namespace Chummer
                 _objWeapon = new Weapon(_objCharacter)
                 {
                     Name = txtName.Text,
-                    Category = await LanguageManager.GetStringAsync("Tab_Critter", token: token).ConfigureAwait(false),
+                    Category = await LanguageManager.GetStringAsync("Tab_Critter", GlobalSettings.DefaultLanguage, token: token).ConfigureAwait(false),
                     RangeType = "Melee",
                     Reach = await nudReach.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token).ConfigureAwait(false),
                     Damage = strDamage,
@@ -166,8 +166,8 @@ namespace Chummer
                     Cost = "0",
                     Ammo = "0",
                     UseSkill = await cboSkill.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token).ConfigureAwait(false),
-                    Source = (await objPower.SelectSingleNodeAndCacheExpressionAsync("source", token: token).ConfigureAwait(false))?.Value,
-                    Page = (await objPower.SelectSingleNodeAndCacheExpressionAsync("page", token: token).ConfigureAwait(false))?.Value
+                    Source = (await objPower.SelectSingleNodeAndCacheExpressionAsync("source", token: token).ConfigureAwait(false))?.Value ?? "SR5",
+                    Page = (await objPower.SelectSingleNodeAndCacheExpressionAsync("page", token: token).ConfigureAwait(false))?.Value ?? "0"
                 };
                 _objWeapon.CreateClips();
 

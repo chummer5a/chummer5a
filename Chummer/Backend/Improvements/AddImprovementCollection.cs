@@ -1965,12 +1965,12 @@ namespace Chummer
             Weapon objWeapon = new Weapon(_objCharacter)
             {
                 Name = bonusNode["name"]?.InnerText ?? _strFriendlyName,
-                Category = LanguageManager.GetString("Tab_Critter"),
+                Category = LanguageManager.GetString("Tab_Critter", GlobalSettings.DefaultLanguage),
                 RangeType = "Melee",
-                Reach = Convert.ToInt32(bonusNode["reach"]?.InnerText, GlobalSettings.InvariantCultureInfo),
-                Accuracy = bonusNode["accuracy"]?.InnerText ?? string.Empty,
-                Damage = bonusNode["damage"]?.InnerText ?? string.Empty,
-                AP = bonusNode["ap"]?.InnerText ?? string.Empty,
+                Reach = Convert.ToInt32(bonusNode["reach"]?.InnerText ?? "0", GlobalSettings.InvariantCultureInfo),
+                Accuracy = bonusNode["accuracy"]?.InnerText ?? "0",
+                Damage = bonusNode["damage"]?.InnerText ?? "({STR})S",
+                AP = bonusNode["ap"]?.InnerText ?? "0",
                 Mode = "0",
                 RC = "0",
                 Concealability = 0,
