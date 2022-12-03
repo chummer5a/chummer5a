@@ -2902,6 +2902,7 @@ namespace Chummer
                         Reach =
                             CommonFunctions.ExpressionToInt(objXmlNaturalWeapon["reach"]?.InnerText ?? "0", intForce, 0, 0),
                         Damage = objXmlNaturalWeapon["damage"]?.InnerText ?? "({STR})S",
+                        Accuracy = objXmlNaturalWeapon["accuracy"]?.InnerText ?? "Physical",
                         AP = objXmlNaturalWeapon["ap"]?.InnerText ?? "0",
                         Mode = "0",
                         RC = "0",

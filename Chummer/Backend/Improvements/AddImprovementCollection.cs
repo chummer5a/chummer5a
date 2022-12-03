@@ -1968,7 +1968,7 @@ namespace Chummer
                 Category = LanguageManager.GetString("Tab_Critter", GlobalSettings.DefaultLanguage),
                 RangeType = "Melee",
                 Reach = Convert.ToInt32(bonusNode["reach"]?.InnerText ?? "0", GlobalSettings.InvariantCultureInfo),
-                Accuracy = bonusNode["accuracy"]?.InnerText ?? "0",
+                Accuracy = bonusNode["accuracy"]?.InnerText ?? "Physical",
                 Damage = bonusNode["damage"]?.InnerText ?? "({STR})S",
                 AP = bonusNode["ap"]?.InnerText ?? "0",
                 Mode = "0",
