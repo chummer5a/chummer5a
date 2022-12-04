@@ -1,4 +1,4 @@
-Future Build 225
+Build 225
 Application Changes:
 - Added the ability to re-apply the improvements of individual items instead of only for the entire character all at once. Implements #4628.
 - Attempting to reassign or reapply priorities or metatypes that give access to special attributes and/or skills linked to special attributes no longer causes Chummer to crash.
