@@ -2521,43 +2521,59 @@ namespace Chummer
 #endif
             for (int i = await _lstOpenCharacterEditorForms.GetCountAsync(CancellationToken.None).ConfigureAwait(false) - 1; i >= 0; --i)
             {
-                CharacterShared frmToClose = await _lstOpenCharacterEditorForms.GetValueAtAsync(i, CancellationToken.None).ConfigureAwait(false);
+                CharacterShared frmToClose = await _lstOpenCharacterEditorForms
+                                                   .GetValueAtAsync(i, CancellationToken.None).ConfigureAwait(false);
                 Character objFormCharacter = frmToClose.CharacterObject;
                 await frmToClose.DoThreadSafeAsync(x => x.Close(), CancellationToken.None).ConfigureAwait(false);
                 await objFormCharacter.DisposeAsync().ConfigureAwait(false);
             }
+
             for (int i = await _lstOpenCharacterExportForms.GetCountAsync(CancellationToken.None).ConfigureAwait(false) - 1; i >= 0; --i)
             {
-                ExportCharacter frmToClose = await _lstOpenCharacterExportForms.GetValueAtAsync(i, CancellationToken.None).ConfigureAwait(false);
+                ExportCharacter frmToClose = await _lstOpenCharacterExportForms
+                                                   .GetValueAtAsync(i, CancellationToken.None).ConfigureAwait(false);
                 Character objFormCharacter = frmToClose.CharacterObject;
                 await frmToClose.DoThreadSafeAsync(x => x.Close(), CancellationToken.None).ConfigureAwait(false);
                 await objFormCharacter.DisposeAsync().ConfigureAwait(false);
             }
+
             for (int i = await _lstOpenCharacterSheetViewers.GetCountAsync(CancellationToken.None).ConfigureAwait(false) - 1; i >= 0; --i)
             {
-                CharacterSheetViewer frmToClose = await _lstOpenCharacterSheetViewers.GetValueAtAsync(i, CancellationToken.None).ConfigureAwait(false);
+                CharacterSheetViewer frmToClose = await _lstOpenCharacterSheetViewers
+                                                        .GetValueAtAsync(i, CancellationToken.None)
+                                                        .ConfigureAwait(false);
                 List<Character> lstFormCharacters = frmToClose.CharacterObjects.ToList();
                 await frmToClose.DoThreadSafeAsync(x => x.Close(), CancellationToken.None).ConfigureAwait(false);
                 foreach (Character objFormCharacter in lstFormCharacters)
                     await objFormCharacter.DisposeAsync().ConfigureAwait(false);
             }
 
-            // ReSharper disable MethodSupportsCancellation
             await Task.WhenAll(_lstOpenCharacterEditorForms.ClearAsync(CancellationToken.None).AsTask(),
                                _lstOpenCharacterExportForms.ClearAsync(CancellationToken.None).AsTask(),
-                               _lstOpenCharacterSheetViewers.ClearAsync(CancellationToken.None).AsTask()).ConfigureAwait(false);
-
-            // ReSharper restore MethodSupportsCancellation
-            Properties.Settings.Default.WindowState = WindowState;
-            if (WindowState == FormWindowState.Normal)
+                               _lstOpenCharacterSheetViewers.ClearAsync(CancellationToken.None).AsTask())
+                      .ConfigureAwait(false);
+            FormWindowState eWindowState = await this.DoThreadSafeFuncAsync(x => x.WindowState, CancellationToken.None)
+                                                     .ConfigureAwait(false);
+            Properties.Settings.Default.WindowState = eWindowState;
+            if (eWindowState == FormWindowState.Normal)
             {
-                Properties.Settings.Default.Location = Location;
-                Properties.Settings.Default.Size = Size;
+                Properties.Settings.Default.Location = await this
+                                                             .DoThreadSafeFuncAsync(
+                                                                 x => x.Location, CancellationToken.None)
+                                                             .ConfigureAwait(false);
+                Properties.Settings.Default.Size = await this.DoThreadSafeFuncAsync(x => x.Size, CancellationToken.None)
+                                                             .ConfigureAwait(false);
             }
             else
             {
-                Properties.Settings.Default.Location = RestoreBounds.Location;
-                Properties.Settings.Default.Size = RestoreBounds.Size;
+                Properties.Settings.Default.Location = await this
+                                                             .DoThreadSafeFuncAsync(
+                                                                 x => x.RestoreBounds.Location, CancellationToken.None)
+                                                             .ConfigureAwait(false);
+                Properties.Settings.Default.Size = await this
+                                                         .DoThreadSafeFuncAsync(
+                                                             x => x.RestoreBounds.Size, CancellationToken.None)
+                                                         .ConfigureAwait(false);
             }
 
             try
