@@ -2519,21 +2519,21 @@ namespace Chummer
                 //swallow this
             }
 #endif
-            for (int i = await _lstOpenCharacterEditorForms.GetCountAsync(CancellationToken.None).ConfigureAwait(false); i >= 0; --i)
+            for (int i = await _lstOpenCharacterEditorForms.GetCountAsync(CancellationToken.None).ConfigureAwait(false) - 1; i >= 0; --i)
             {
                 CharacterShared frmToClose = await _lstOpenCharacterEditorForms.GetValueAtAsync(i, CancellationToken.None).ConfigureAwait(false);
                 Character objFormCharacter = frmToClose.CharacterObject;
                 await frmToClose.DoThreadSafeAsync(x => x.Close(), CancellationToken.None).ConfigureAwait(false);
                 await objFormCharacter.DisposeAsync().ConfigureAwait(false);
             }
-            for (int i = await _lstOpenCharacterExportForms.GetCountAsync(CancellationToken.None).ConfigureAwait(false); i >= 0; --i)
+            for (int i = await _lstOpenCharacterExportForms.GetCountAsync(CancellationToken.None).ConfigureAwait(false) - 1; i >= 0; --i)
             {
                 ExportCharacter frmToClose = await _lstOpenCharacterExportForms.GetValueAtAsync(i, CancellationToken.None).ConfigureAwait(false);
                 Character objFormCharacter = frmToClose.CharacterObject;
                 await frmToClose.DoThreadSafeAsync(x => x.Close(), CancellationToken.None).ConfigureAwait(false);
                 await objFormCharacter.DisposeAsync().ConfigureAwait(false);
             }
-            for (int i = await _lstOpenCharacterSheetViewers.GetCountAsync(CancellationToken.None).ConfigureAwait(false); i >= 0; --i)
+            for (int i = await _lstOpenCharacterSheetViewers.GetCountAsync(CancellationToken.None).ConfigureAwait(false) - 1; i >= 0; --i)
             {
                 CharacterSheetViewer frmToClose = await _lstOpenCharacterSheetViewers.GetValueAtAsync(i, CancellationToken.None).ConfigureAwait(false);
                 List<Character> lstFormCharacters = frmToClose.CharacterObjects.ToList();
@@ -2543,9 +2543,9 @@ namespace Chummer
             }
 
             // ReSharper disable MethodSupportsCancellation
-            await Task.WhenAll(_lstOpenCharacterEditorForms.ClearAsync().AsTask(),
-                               _lstOpenCharacterExportForms.ClearAsync().AsTask(),
-                               _lstOpenCharacterSheetViewers.ClearAsync().AsTask()).ConfigureAwait(false);
+            await Task.WhenAll(_lstOpenCharacterEditorForms.ClearAsync(CancellationToken.None).AsTask(),
+                               _lstOpenCharacterExportForms.ClearAsync(CancellationToken.None).AsTask(),
+                               _lstOpenCharacterSheetViewers.ClearAsync(CancellationToken.None).AsTask()).ConfigureAwait(false);
 
             // ReSharper restore MethodSupportsCancellation
             Properties.Settings.Default.WindowState = WindowState;
