@@ -1,3 +1,7 @@
+Future Build 226
+Application Changes:
+- XPath 1.0 functions like ceiling() and floor() are now properly supported in all fields that work off of the document-invariant XPath processor.
+
 Build 225
 Application Changes:
 - Added the ability to re-apply the improvements of individual items instead of only for the entire character all at once. Implements #4628.
