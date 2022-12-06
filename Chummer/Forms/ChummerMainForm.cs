@@ -45,6 +45,7 @@ namespace Chummer
     public sealed partial class ChummerMainForm : Form
     {
         private bool _blnAbleToReceiveData;
+        private int _intFormClosing;
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
         private ChummerUpdater _frmUpdate;
@@ -130,7 +131,7 @@ namespace Chummer
 
         private async void OpenCharacterExportFormsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (Utils.IsUnitTest)
+            if (Utils.IsUnitTest || _intFormClosing > 0)
                 return;
             try
             {
@@ -161,6 +162,8 @@ namespace Chummer
 
         private async void OpenCharacterExportFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            if (_intFormClosing > 0)
+                return;
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
@@ -267,7 +270,7 @@ namespace Chummer
 
         private async void OpenCharacterSheetViewersOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (Utils.IsUnitTest)
+            if (Utils.IsUnitTest || _intFormClosing > 0)
                 return;
             try
             {
@@ -298,6 +301,8 @@ namespace Chummer
 
         private async void OpenCharacterSheetViewersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            if (_intFormClosing > 0)
+                return;
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
@@ -399,7 +404,7 @@ namespace Chummer
 
         private async void OpenCharacterEditorFormsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (Utils.IsUnitTest)
+            if (Utils.IsUnitTest || _intFormClosing > 0)
                 return;
             Interlocked.Increment(ref _intSkipReopenUntilAllClear);
             try
@@ -444,6 +449,8 @@ namespace Chummer
 
         private async void OpenCharacterEditorFormsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
+            if (_intFormClosing > 0)
+                return;
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
@@ -2475,6 +2482,8 @@ namespace Chummer
 
         private async void ChummerMainForm_Closing(object sender, FormClosingEventArgs e)
         {
+            if (Interlocked.Exchange(ref _intFormClosing, 1) == 1)
+                return;
             Program.OpenCharacters.CollectionChanged -= OpenCharactersOnCollectionChanged;
             foreach (Character objCharacter in Program.OpenCharacters)
             {
@@ -2510,10 +2519,34 @@ namespace Chummer
                 //swallow this
             }
 #endif
+            for (int i = await _lstOpenCharacterEditorForms.GetCountAsync(CancellationToken.None).ConfigureAwait(false); i >= 0; --i)
+            {
+                CharacterShared frmToClose = await _lstOpenCharacterEditorForms.GetValueAtAsync(i, CancellationToken.None).ConfigureAwait(false);
+                Character objFormCharacter = frmToClose.CharacterObject;
+                await frmToClose.DoThreadSafeAsync(x => x.Close(), CancellationToken.None).ConfigureAwait(false);
+                await objFormCharacter.DisposeAsync().ConfigureAwait(false);
+            }
+            for (int i = await _lstOpenCharacterExportForms.GetCountAsync(CancellationToken.None).ConfigureAwait(false); i >= 0; --i)
+            {
+                ExportCharacter frmToClose = await _lstOpenCharacterExportForms.GetValueAtAsync(i, CancellationToken.None).ConfigureAwait(false);
+                Character objFormCharacter = frmToClose.CharacterObject;
+                await frmToClose.DoThreadSafeAsync(x => x.Close(), CancellationToken.None).ConfigureAwait(false);
+                await objFormCharacter.DisposeAsync().ConfigureAwait(false);
+            }
+            for (int i = await _lstOpenCharacterSheetViewers.GetCountAsync(CancellationToken.None).ConfigureAwait(false); i >= 0; --i)
+            {
+                CharacterSheetViewer frmToClose = await _lstOpenCharacterSheetViewers.GetValueAtAsync(i, CancellationToken.None).ConfigureAwait(false);
+                List<Character> lstFormCharacters = frmToClose.CharacterObjects.ToList();
+                await frmToClose.DoThreadSafeAsync(x => x.Close(), CancellationToken.None).ConfigureAwait(false);
+                foreach (Character objFormCharacter in lstFormCharacters)
+                    await objFormCharacter.DisposeAsync().ConfigureAwait(false);
+            }
+
             // ReSharper disable MethodSupportsCancellation
             await Task.WhenAll(_lstOpenCharacterEditorForms.ClearAsync().AsTask(),
                                _lstOpenCharacterExportForms.ClearAsync().AsTask(),
                                _lstOpenCharacterSheetViewers.ClearAsync().AsTask()).ConfigureAwait(false);
+
             // ReSharper restore MethodSupportsCancellation
             Properties.Settings.Default.WindowState = WindowState;
             if (WindowState == FormWindowState.Normal)
