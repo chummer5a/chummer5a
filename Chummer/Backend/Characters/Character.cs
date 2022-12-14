@@ -30274,6 +30274,7 @@ namespace Chummer
                                                    .GetCachedImprovementListForValueOf(
                                                        this, Improvement.ImprovementType.Seeker)
                                                    .ConvertAll(objImprovement => objImprovement.ImprovedName);
+                lstSeekerAttributes.RemoveAll(x => x != "BOX" && !AttributeSection.AttributeStrings.Contains(x));
                 //if neither contains anything, it is safe to exit
                 if (lstSeekerImprovements.Count == 0 && lstSeekerAttributes.Count == 0)
                 {

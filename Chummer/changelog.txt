@@ -2,6 +2,7 @@ Future Build 226
 Application Changes:
 - XPath 1.0 functions like ceiling() and floor() are now properly supported in all fields that work off of the document-invariant XPath processor.
 - Having multiple conditional bonuses to the same skill now only makes the greatest conditional bonus show up in the skill pool's modified rating.
+- Corrupted save data for Cyber-Singularity Seeker and/or Redliner can no longer cause duplicates to be generated for their bonuses.
 
 Build 225
 Application Changes:
