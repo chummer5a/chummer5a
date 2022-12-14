@@ -1637,8 +1637,36 @@ namespace Chummer.Backend.Skills
             using (EnterReadLock.Enter(LockObject))
             {
                 //Some of this is not future proof. Rating that don't stack is not supported but i'm not aware of any cases where that will happen (for skills)
-                return (RelevantImprovements(x => x.AddToRating == blnAddToRating, strUseAttribute,
-                    blnIncludeConditionals).Sum(x => x.Value)).StandardRound();
+                if (blnIncludeConditionals)
+                {
+                    decimal decReturn = 0;
+                    decimal decMaxConditionalValue = 0;
+                    SkillSpecialization objMaxConditionalSpecialization = null;
+                    foreach (Improvement objImprovement in RelevantImprovements(
+                                 x => x.AddToRating == blnAddToRating, strUseAttribute, true))
+                    {
+                        if (string.IsNullOrEmpty(objImprovement.Condition))
+                            decReturn += objImprovement.Value;
+                        else
+                        {
+                            decimal decLoopMaxValue = decMaxConditionalValue;
+                            if (objMaxConditionalSpecialization != null)
+                                decLoopMaxValue += objMaxConditionalSpecialization.SpecializationBonus;
+                            decimal decLoop = objImprovement.Value;
+                            SkillSpecialization objLoopSpec = GetSpecialization(objImprovement.Condition);
+                            if (objLoopSpec != null)
+                                decLoop += objLoopSpec.SpecializationBonus;
+                            if (decLoop > decLoopMaxValue)
+                            {
+                                decMaxConditionalValue = objImprovement.Value;
+                                objMaxConditionalSpecialization = objLoopSpec;
+                            }
+                        }
+                    }
+
+                    return (decReturn + decMaxConditionalValue).StandardRound();
+                }
+                return RelevantImprovements(x => x.AddToRating == blnAddToRating, strUseAttribute).Sum(x => x.Value).StandardRound();
             }
         }
 
@@ -1652,6 +1680,35 @@ namespace Chummer.Backend.Skills
                     strUseAttribute, blnIncludeConditionals,
                     token: token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
+                if (blnIncludeConditionals)
+                {
+                    decimal decReturn = 0;
+                    decimal decMaxConditionalValue = 0;
+                    SkillSpecialization objMaxConditionalSpecialization = null;
+                    foreach (Improvement objImprovement in lstImprovements)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (string.IsNullOrEmpty(objImprovement.Condition))
+                            decReturn += objImprovement.Value;
+                        else
+                        {
+                            decimal decLoopMaxValue = decMaxConditionalValue;
+                            if (objMaxConditionalSpecialization != null)
+                                decLoopMaxValue += objMaxConditionalSpecialization.SpecializationBonus;
+                            decimal decLoop = objImprovement.Value;
+                            SkillSpecialization objLoopSpec = await GetSpecializationAsync(objImprovement.Condition, token).ConfigureAwait(false);
+                            if (objLoopSpec != null)
+                                decLoop += objLoopSpec.SpecializationBonus;
+                            if (decLoop > decLoopMaxValue)
+                            {
+                                decMaxConditionalValue = objImprovement.Value;
+                                objMaxConditionalSpecialization = objLoopSpec;
+                            }
+                        }
+                    }
+                    token.ThrowIfCancellationRequested();
+                    return (decReturn + decMaxConditionalValue).StandardRound();
+                }
                 return lstImprovements.Sum(x => x.Value).StandardRound();
             }
         }
@@ -3615,21 +3672,31 @@ namespace Chummer.Backend.Skills
                                 .Append(Math.Abs(intDefaultModifier).ToString(GlobalSettings.CultureInfo)).Append(')');
                     }
 
+                    List<Improvement> lstConditionalImprovements = new List<Improvement>();
                     foreach (Improvement source in lstRelevantImprovements)
                     {
                         if (source.AddToRating
                             || source.ImproveType == Improvement.ImprovementType.SwapSkillAttribute
                             || source.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute)
                             continue;
-                        sbdReturn.Append(strSpace).Append('+').Append(strSpace)
-                            .Append(CharacterObject.GetObjectName(source));
                         if (!string.IsNullOrEmpty(source.Condition))
                         {
-                            sbdReturn.Append(strSpace).Append('(').Append(source.Condition).Append(')');
+                            lstConditionalImprovements.Add(source);
+                            continue;
                         }
+                        sbdReturn.Append(strSpace).Append('+').Append(strSpace)
+                                 .Append(CharacterObject.GetObjectName(source)).Append(strSpace).Append('(')
+                                 .Append(source.Value.ToString(GlobalSettings.CultureInfo)).Append(')');
+                    }
 
-                        sbdReturn.Append(strSpace).Append('(').Append(source.Value.ToString(GlobalSettings.CultureInfo))
-                            .Append(')');
+                    if (lstConditionalImprovements.Count > 0)
+                    {
+                        sbdReturn.Append(strSpace).Append('+').Append(strSpace).Append('(').AppendJoin(
+                            strSpace + LanguageManager.GetString("String_Or") + strSpace,
+                            lstConditionalImprovements.Select(
+                                x => CharacterObject.GetObjectName(x) + strSpace + '('
+                                     + x.Value.ToString(GlobalSettings.CultureInfo) + ',' + strSpace
+                                     + x.Condition + ')')).Append(')');
                     }
 
                     int wound = CharacterObject.WoundModifier;
