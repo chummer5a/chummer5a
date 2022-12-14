@@ -13622,7 +13622,7 @@
       <name>PSG Enforcer</name>
       <category>Sniper Rifles</category>
       <type>Ranged</type>
-      <conceal>+8</conceal>
+      <conceal>8</conceal>
       <accuracy>6</accuracy>
       <reach>0</reach>
       <damage>12P</damage>
@@ -15431,9 +15431,9 @@
     <weapon>
       <id>6cebbb41-57af-42ca-88e9-7fffffffb01e</id>
       <name>Krime AKM-SU97</name>
-      <category>Carbines</category>
+      <category>Submachine Guns</category>
       <type>Ranged</type>
-      <conceal>4</conceal>
+      <conceal>2</conceal>
       <accuracy>4</accuracy>
       <reach>0</reach>
       <damage>9P</damage>
@@ -15457,7 +15457,6 @@
         <mount>Stock</mount>
         <mount>Side</mount>
         <mount>Barrel</mount>
-        <mount>Under</mount>
         <mount>Top</mount>
       </accessorymounts>
     </weapon>
@@ -15522,7 +15521,7 @@
     <weapon>
       <id>7fffffff-bd92-4531-931d-69a43e0d262f</id>
       <name>Krime Ditch (Rifle)</name>
-      <category>Sporting Rifles</category>
+      <category>Sniper Rifles</category>
       <type>Ranged</type>
       <conceal>6</conceal>
       <accuracy>4</accuracy>
@@ -15557,7 +15556,7 @@
     <weapon>
       <id>7fffffff-bf58-494c-88a8-5107a3210405</id>
       <name>Krime Stopper-II (Homeguard)</name>
-      <category>Shotguns</category>
+      <category>Heavy Pistols</category>
       <type>Ranged</type>
       <conceal>4</conceal>
       <accuracy>4</accuracy>
@@ -15581,13 +15580,12 @@
         <mount>Side</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
-        <mount>Under</mount>
       </accessorymounts>
     </weapon>
     <weapon>
       <id>7fffffff-a4f5-4358-a0cb-7fffffff7193</id>
       <name>Krime Stopper-II (Shopkeeper)</name>
-      <category>Shotguns</category>
+      <category>Heavy Pistols</category>
       <type>Ranged</type>
       <conceal>2</conceal>
       <accuracy>4</accuracy>
@@ -15614,13 +15612,12 @@
         <mount>Side</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
-        <mount>Under</mount>
       </accessorymounts>
     </weapon>
     <weapon>
       <id>23368c46-c374-4497-b273-61467489ab46</id>
       <name>Krime Stopper-II</name>
-      <category>Shotguns</category>
+      <category>Heavy Pistols</category>
       <type>Ranged</type>
       <conceal>2</conceal>
       <accuracy>4</accuracy>
@@ -15644,7 +15641,6 @@
         <mount>Side</mount>
         <mount>Barrel</mount>
         <mount>Top</mount>
-        <mount>Under</mount>
       </accessorymounts>
     </weapon>
     <weapon>
@@ -15697,9 +15693,9 @@
     <weapon>
       <id>7fffffff-fae8-45cb-ac9c-7fffffffe169</id>
       <name>Krime Soldier</name>
-      <category>Assault Rifles</category>
+      <category>Sniper Rifles</category>
       <type>Ranged</type>
-      <conceal>6</conceal>
+      <conceal>8</conceal>
       <accuracy>3</accuracy>
       <reach>0</reach>
       <damage>12P</damage>
@@ -15944,7 +15940,7 @@
     <weapon>
       <id>7fffffff-a7c4-4acf-9193-7fffffff0537</id>
       <name>Krime Ripper</name>
-      <category>Medium Machine Guns</category>
+      <category>Light Machine Guns</category>
       <type>Ranged</type>
       <conceal>10</conceal>
       <accuracy>5</accuracy>
@@ -15987,7 +15983,7 @@
         <mount>Top</mount>
         <mount>Under</mount>
       </accessorymounts>
-      <range>Medium/Heavy Machinegun</range>
+      <range>Light Machine Guns</range>
       <spec>Machine Guns</spec>
     </weapon>
     <weapon>

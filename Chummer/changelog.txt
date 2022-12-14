@@ -4,6 +4,9 @@ Application Changes:
 - Having multiple conditional bonuses to the same skill now only makes the greatest conditional bonus show up in the skill pool's modified rating.
 - Corrupted save data for Cyber-Singularity Seeker and/or Redliner can no longer cause duplicates to be generated for their bonuses.
 
+Data Changes:
+- Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.
+
 Build 225
 Application Changes:
 - Added the ability to re-apply the improvements of individual items instead of only for the entire character all at once. Implements #4628.
