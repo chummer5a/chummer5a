@@ -1753,10 +1753,10 @@ namespace Chummer
                 return;
             if ((await cboGrade.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false)).StartsWith('*'))
             {
-                Program.ShowMessageBox(this,
-                    await LanguageManager.GetStringAsync("Message_BannedGrade", token: token).ConfigureAwait(false),
-                    await LanguageManager.GetStringAsync("MessageTitle_BannedGrade", token: token).ConfigureAwait(false),
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowScrollableMessageBox(this,
+                                                 await LanguageManager.GetStringAsync("Message_BannedGrade", token: token).ConfigureAwait(false),
+                                                 await LanguageManager.GetStringAsync("MessageTitle_BannedGrade", token: token).ConfigureAwait(false),
+                                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             XPathNavigator objCyberwareNode = _xmlBaseCyberwareDataNode.SelectSingleNode(_strNodeXPath + "[id = " + strSelectedId.CleanXPath() + ']');
@@ -1791,10 +1791,10 @@ namespace Chummer
 
                     if (decMaximumCapacityUsed - decCapacity < 0)
                     {
-                        Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_OverCapacityLimit", token: token).ConfigureAwait(false)
-                                , decMaximumCapacityUsed.ToString("#,0.##", GlobalSettings.CultureInfo)
-                                , decCapacity.ToString("#,0.##", GlobalSettings.CultureInfo)),
-                            await LanguageManager.GetStringAsync("MessageTitle_OverCapacityLimit", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Program.ShowScrollableMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_OverCapacityLimit", token: token).ConfigureAwait(false)
+                                                                             , decMaximumCapacityUsed.ToString("#,0.##", GlobalSettings.CultureInfo)
+                                                                             , decCapacity.ToString("#,0.##", GlobalSettings.CultureInfo)),
+                                                         await LanguageManager.GetStringAsync("MessageTitle_OverCapacityLimit", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
                     }
                 }

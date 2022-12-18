@@ -524,7 +524,7 @@ namespace Chummer
                         // For safety purposes, do not allow unprompted deleting of any files outside of the Chummer folder itself
                         if (blnShowUnauthorizedAccess)
                         {
-                            if (Program.ShowMessageBox(
+                            if (Program.ShowScrollableMessageBox(
                                     string.Format(GlobalSettings.CultureInfo,
                                                   blnSync
                                                       // ReSharper disable once MethodHasAsyncOverload
@@ -556,7 +556,7 @@ namespace Chummer
                 {
                     // We do not have sufficient privileges to delete this file.
                     if (blnShowUnauthorizedAccess)
-                        Program.ShowMessageBox(blnSync
+                        Program.ShowScrollableMessageBox(blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? LanguageManager.GetString("Message_Insufficient_Permissions_Warning", token: token)
                             : await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token).ConfigureAwait(false));
@@ -659,7 +659,7 @@ namespace Chummer
                         // For safety purposes, do not allow unprompted deleting of any files outside of the Chummer folder itself
                         if (blnShowUnauthorizedAccess)
                         {
-                            if (Program.ShowMessageBox(
+                            if (Program.ShowScrollableMessageBox(
                                     string.Format(GlobalSettings.CultureInfo,
                                         blnSync
                                             // ReSharper disable once MethodHasAsyncOverload
@@ -694,7 +694,7 @@ namespace Chummer
                 {
                     // We do not have sufficient privileges to delete this file.
                     if (blnShowUnauthorizedAccess)
-                        Program.ShowMessageBox(blnSync
+                        Program.ShowScrollableMessageBox(blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? LanguageManager.GetString("Message_Insufficient_Permissions_Warning", token: token)
                             : await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token).ConfigureAwait(false));
@@ -788,7 +788,7 @@ namespace Chummer
                 // For safety purposes, do not allow unprompted deleting of any files outside of the Chummer folder itself
                 if (blnShowUnauthorizedAccess)
                 {
-                    if (Program.ShowMessageBox(
+                    if (Program.ShowScrollableMessageBox(
                             string.Format(GlobalSettings.Language,
                                 blnSync
                                     // ReSharper disable once MethodHasAsyncOverload
@@ -853,7 +853,7 @@ namespace Chummer
                 string caption
                     = await LanguageManager.GetStringAsync("MessageTitle_Options_CloseForms", strLanguage, token: token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
-                if (Program.ShowMessageBox(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                if (Program.ShowScrollableMessageBox(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question)
                     != DialogResult.Yes)
                     return;
             }
@@ -867,7 +867,7 @@ namespace Chummer
                 if (objOpenCharacterForm.IsDirty)
                 {
                     string strCharacterName = objOpenCharacterForm.CharacterObject.CharacterName;
-                    switch (Program.ShowMessageBox(
+                    switch (Program.ShowScrollableMessageBox(
                                 string.Format(GlobalSettings.CultureInfo,
                                               await LanguageManager.GetStringAsync(
                                                   "Message_UnsavedChanges", strLanguage, token: token).ConfigureAwait(false), strCharacterName),

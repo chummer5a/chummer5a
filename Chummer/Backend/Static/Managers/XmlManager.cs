@@ -910,7 +910,7 @@ namespace Chummer
                             sbdDuplicatesNames.AppendJoin(Environment.NewLine, lstDuplicateNames);
                         }
 
-                        Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo
+                        Program.ShowScrollableMessageBox(string.Format(GlobalSettings.CultureInfo
                             , LanguageManager.GetString(
                                 "Message_DuplicateGuidWarning", token: token)
                             , setDuplicateIDs.Count
@@ -922,7 +922,7 @@ namespace Chummer
 
             if (lstItemsWithMalformedIDs.Count > 0)
             {
-                Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo
+                Program.ShowScrollableMessageBox(string.Format(GlobalSettings.CultureInfo
                     , LanguageManager.GetString("Message_NonGuidIdWarning", token: token)
                     , lstItemsWithMalformedIDs.Count
                     , strFileName
@@ -1594,7 +1594,7 @@ namespace Chummer
                         }
                         catch (ArgumentException ex)
                         {
-                            Program.ShowMessageBox(ex.ToString());
+                            Program.ShowScrollableMessageBox(ex.ToString());
                             return false;
                         }
 
@@ -1803,7 +1803,7 @@ namespace Chummer
                                                             }
                                                             catch (ArgumentException ex)
                                                             {
-                                                                Program.ShowMessageBox(ex.ToString());
+                                                                Program.ShowScrollableMessageBox(ex.ToString());
                                                                 // If we get a RegEx parse error for the first node, we'll get it for all nodes being modified by this amend
                                                                 // So just exit out early instead of spamming the user with a bunch of error messages
                                                                 if (!blnReturn)
@@ -1832,7 +1832,7 @@ namespace Chummer
                                                     }
                                                     catch (ArgumentException ex)
                                                     {
-                                                        Program.ShowMessageBox(ex.ToString());
+                                                        Program.ShowScrollableMessageBox(ex.ToString());
                                                         // If we get a RegEx parse error for the first node, we'll get it for all nodes being modified by this amend
                                                         // So just exit out early instead of spamming the user with a bunch of error messages
                                                         if (!blnReturn)
@@ -2169,12 +2169,12 @@ namespace Chummer
             }
             catch (IOException ex)
             {
-                Program.ShowMessageBox(ex.ToString());
+                Program.ShowScrollableMessageBox(ex.ToString());
                 return;
             }
             catch (XmlException ex)
             {
-                Program.ShowMessageBox(ex.ToString());
+                Program.ShowScrollableMessageBox(ex.ToString());
                 return;
             }
 

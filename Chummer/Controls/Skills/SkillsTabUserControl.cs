@@ -955,9 +955,9 @@ namespace Chummer.UI.Skills
                         && await objSkill.GetUpgradeKarmaCostAsync(MyToken).ConfigureAwait(false)
                         > await _objCharacter.GetKarmaAsync(MyToken).ConfigureAwait(false))
                     {
-                        Program.ShowMessageBox(await LanguageManager
-                                                     .GetStringAsync("Message_NotEnoughKarma", token: MyToken)
-                                                     .ConfigureAwait(false));
+                        Program.ShowScrollableMessageBox(await LanguageManager
+                                                               .GetStringAsync("Message_NotEnoughKarma", token: MyToken)
+                                                               .ConfigureAwait(false));
                         await _objCharacter.SkillsSection.Skills.RemoveAsync(objSkill, MyToken)
                                            .ConfigureAwait(false);
                         return;
@@ -1004,7 +1004,7 @@ namespace Chummer.UI.Skills
                         && (await skill.GetIsLanguageAsync(MyToken).ConfigureAwait(false)
                             || string.IsNullOrEmpty(await skill.GetTypeAsync(MyToken).ConfigureAwait(false))))
                     {
-                        DialogResult eDialogResult = Program.ShowMessageBox(this,
+                        DialogResult eDialogResult = Program.ShowScrollableMessageBox(this,
                                                                             string.Format(GlobalSettings.CultureInfo,
                                                                                 await LanguageManager
                                                                                     .GetStringAsync(

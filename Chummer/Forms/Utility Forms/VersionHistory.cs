@@ -44,10 +44,10 @@ namespace Chummer
             }
             catch
             {
-                Program.ShowMessageBox(this,
-                    await LanguageManager.GetStringAsync("Message_History_FileNotFound").ConfigureAwait(false),
-                    await LanguageManager.GetStringAsync("MessageTitle_FileNotFound").ConfigureAwait(false), MessageBoxButtons.OK,
-                    MessageBoxIcon.Exclamation);
+                Program.ShowScrollableMessageBox(this,
+                                                 await LanguageManager.GetStringAsync("Message_History_FileNotFound").ConfigureAwait(false),
+                                                 await LanguageManager.GetStringAsync("MessageTitle_FileNotFound").ConfigureAwait(false), MessageBoxButtons.OK,
+                                                 MessageBoxIcon.Exclamation);
                 await this.DoThreadSafeAsync(x => x.Close()).ConfigureAwait(false);
                 return;
             }

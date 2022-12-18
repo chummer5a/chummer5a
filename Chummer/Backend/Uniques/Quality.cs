@@ -1883,7 +1883,7 @@ namespace Chummer
 
                             if (intKarmaCost > await _objCharacter.GetKarmaAsync(token).ConfigureAwait(false))
                             {
-                                Program.ShowMessageBox(
+                                Program.ShowScrollableMessageBox(
                                     await LanguageManager.GetStringAsync("Message_NotEnoughKarma", token: token)
                                                          .ConfigureAwait(false),
                                     await LanguageManager.GetStringAsync(
@@ -1919,7 +1919,7 @@ namespace Chummer
                             {
                                 if (intKarmaCost > await _objCharacter.GetKarmaAsync(token).ConfigureAwait(false))
                                 {
-                                    Program.ShowMessageBox(
+                                    Program.ShowScrollableMessageBox(
                                         await LanguageManager.GetStringAsync("Message_NotEnoughKarma", token: token)
                                                              .ConfigureAwait(false),
                                         await LanguageManager

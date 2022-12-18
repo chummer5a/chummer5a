@@ -7559,14 +7559,14 @@ namespace Chummer.Backend.Equipment
                 // Make sure the character has some form of Ammunition for this Weapon.
                 if (lstAmmo.Count == 0)
                 {
-                    Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
-                                                         await LanguageManager
-                                                               .GetStringAsync("Message_OutOfAmmoType", token: token)
-                                                               .ConfigureAwait(false),
-                                                         await GetCurrentDisplayNameAsync(token).ConfigureAwait(false)),
-                                           await LanguageManager.GetStringAsync("Message_OutOfAmmo", token: token)
-                                                                .ConfigureAwait(false),
-                                           icon: MessageBoxIcon.Warning);
+                    Program.ShowScrollableMessageBox(string.Format(GlobalSettings.CultureInfo,
+                                                                   await LanguageManager
+                                                                         .GetStringAsync("Message_OutOfAmmoType", token: token)
+                                                                         .ConfigureAwait(false),
+                                                                   await GetCurrentDisplayNameAsync(token).ConfigureAwait(false)),
+                                                     await LanguageManager.GetStringAsync("Message_OutOfAmmo", token: token)
+                                                                          .ConfigureAwait(false),
+                                                     icon: MessageBoxIcon.Warning);
                     return;
                 }
             }
@@ -8470,7 +8470,7 @@ namespace Chummer.Backend.Equipment
                 // Cyberweapons cannot be removed through here and must be done by removing the piece of Cyberware.
                 if (Cyberware)
                 {
-                    Program.ShowMessageBox(
+                    Program.ShowScrollableMessageBox(
                         LanguageManager.GetString("Message_CannotRemoveCyberweapon"),
                         LanguageManager.GetString("MessageTitle_CannotRemoveCyberweapon"),
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -8480,7 +8480,7 @@ namespace Chummer.Backend.Equipment
                 // Qualities cannot be removed through here and must be done by removing the piece of Cyberware.
                 if (Category.StartsWith("Quality", StringComparison.Ordinal))
                 {
-                    Program.ShowMessageBox(
+                    Program.ShowScrollableMessageBox(
                         LanguageManager.GetString("Message_CannotRemoveQualityWeapon"),
                         LanguageManager.GetString("MessageTitle_CannotRemoveQualityWeapon"),
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -8489,7 +8489,7 @@ namespace Chummer.Backend.Equipment
 
                 if (Category == "Gear")
                 {
-                    Program.ShowMessageBox(
+                    Program.ShowScrollableMessageBox(
                         LanguageManager.GetString(ParentVehicle != null ? "Message_CannotRemoveGearWeaponVehicle" : "Message_CannotRemoveGearWeapon"),
                         LanguageManager.GetString("MessageTitle_CannotRemoveGearWeapon"),
                         MessageBoxButtons.OK, MessageBoxIcon.Information);

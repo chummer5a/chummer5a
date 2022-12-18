@@ -276,7 +276,7 @@ namespace Chummer
             {
                 Log.Error(e);
 #if DEBUG
-                Program.ShowMessageBox(objControl, e.ToString());
+                Program.ShowScrollableMessageBox(objControl, e.ToString());
 #endif
                 throw;
             }
@@ -322,7 +322,7 @@ namespace Chummer
             {
                 Log.Error(e);
 #if DEBUG
-                Program.ShowMessageBox(objControl, e.ToString());
+                Program.ShowScrollableMessageBox(objControl, e.ToString());
 #endif
                 throw;
             }
@@ -370,7 +370,7 @@ namespace Chummer
             {
                 Log.Error(e);
 #if DEBUG
-                Program.ShowMessageBox(objControl, e.ToString());
+                Program.ShowScrollableMessageBox(objControl, e.ToString());
 #endif
                 throw;
             }
@@ -418,7 +418,7 @@ namespace Chummer
             {
                 Log.Error(e);
 #if DEBUG
-                Program.ShowMessageBox(objControl, e.ToString());
+                Program.ShowScrollableMessageBox(objControl, e.ToString());
 #endif
                 throw;
             }
@@ -464,7 +464,7 @@ namespace Chummer
             {
                 Log.Error(e);
 #if DEBUG
-                Program.ShowMessageBox(objControl, e.ToString());
+                Program.ShowScrollableMessageBox(objControl, e.ToString());
 #endif
                 return Task.FromException(e);
             }
@@ -513,7 +513,7 @@ namespace Chummer
             {
                 Log.Error(e);
 #if DEBUG
-                Program.ShowMessageBox(objControl, e.ToString());
+                Program.ShowScrollableMessageBox(objControl, e.ToString());
 #endif
                 return Task.FromException(e);
             }
@@ -562,7 +562,7 @@ namespace Chummer
             {
                 Log.Error(e);
 #if DEBUG
-                Program.ShowMessageBox(objControl, e.ToString());
+                Program.ShowScrollableMessageBox(objControl, e.ToString());
 #endif
                 return Task.FromException(e);
             }
@@ -611,7 +611,7 @@ namespace Chummer
             {
                 Log.Error(e);
 #if DEBUG
-                Program.ShowMessageBox(objControl, e.ToString());
+                Program.ShowScrollableMessageBox(objControl, e.ToString());
 #endif
                 return Task.FromException(e);
             }
@@ -655,7 +655,7 @@ namespace Chummer
             {
                 Log.Error(e);
 #if DEBUG
-                Program.ShowMessageBox(objControl, e.ToString());
+                Program.ShowScrollableMessageBox(objControl, e.ToString());
 #endif
                 throw;
             }
@@ -700,7 +700,7 @@ namespace Chummer
             {
                 Log.Error(e);
 #if DEBUG
-                Program.ShowMessageBox(objControl, e.ToString());
+                Program.ShowScrollableMessageBox(objControl, e.ToString());
 #endif
                 throw;
             }
@@ -749,7 +749,7 @@ namespace Chummer
             {
                 Log.Error(e);
 #if DEBUG
-                Program.ShowMessageBox(objControl, e.ToString());
+                Program.ShowScrollableMessageBox(objControl, e.ToString());
 #endif
                 throw;
             }
@@ -798,7 +798,7 @@ namespace Chummer
             {
                 Log.Error(e);
 #if DEBUG
-                Program.ShowMessageBox(objControl, e.ToString());
+                Program.ShowScrollableMessageBox(objControl, e.ToString());
 #endif
                 throw;
             }
@@ -848,7 +848,7 @@ namespace Chummer
             {
                 Log.Error(e);
 #if DEBUG
-                Program.ShowMessageBox(objControl, e.ToString());
+                Program.ShowScrollableMessageBox(objControl, e.ToString());
 #endif
                 return Task.FromException<T2>(e);
             }
@@ -898,7 +898,7 @@ namespace Chummer
             {
                 Log.Error(e);
 #if DEBUG
-                Program.ShowMessageBox(objControl, e.ToString());
+                Program.ShowScrollableMessageBox(objControl, e.ToString());
 #endif
                 return Task.FromException<T2>(e);
             }
@@ -948,7 +948,7 @@ namespace Chummer
             {
                 Log.Error(e);
 #if DEBUG
-                Program.ShowMessageBox(objControl, e.ToString());
+                Program.ShowScrollableMessageBox(objControl, e.ToString());
 #endif
                 return Task.FromException<T2>(e);
             }
@@ -998,7 +998,7 @@ namespace Chummer
             {
                 Log.Error(e);
 #if DEBUG
-                Program.ShowMessageBox(objControl, e.ToString());
+                Program.ShowScrollableMessageBox(objControl, e.ToString());
 #endif
                 return Task.FromException<T2>(e);
             }
@@ -1995,40 +1995,37 @@ namespace Chummer
         /// <param name="txtTextBox">Control to analyze and potentially (un)set scrollbars</param>
         public static void AutoSetScrollbars(this TextBox txtTextBox)
         {
-            txtTextBox.DoThreadSafe(txtText =>
+            // Set textbox vertical scrollbar based on whether it's needed or not
+            string[] astrLines = txtTextBox.Lines;
+            int intNumDisplayedLines = 0;
+            int intMaxLineHeight = 0;
+            if (astrLines != null)
             {
-                // Set textbox vertical scrollbar based on whether it's needed or not
-                string[] astrLines = txtText.Lines;
-                int intNumDisplayedLines = 0;
-                int intMaxLineHeight = 0;
-                if (astrLines != null)
+                foreach (string strLine in astrLines)
                 {
-                    foreach (string strLine in astrLines)
-                    {
-                        Size objTextSize = TextRenderer.MeasureText(strLine, txtText.Font);
-                        intNumDisplayedLines += ((decimal)objTextSize.Width / txtText.Width).StandardRound();
-                        intMaxLineHeight = Math.Max(intMaxLineHeight, objTextSize.Height);
-                    }
+                    Size objTextSize = TextRenderer.MeasureText(strLine, txtTextBox.Font);
+                    intNumDisplayedLines += ((decimal)objTextSize.Width / txtTextBox.Width).StandardRound();
+                    intMaxLineHeight = Math.Max(intMaxLineHeight, objTextSize.Height);
                 }
+            }
 
-                // Search the height of the biggest line and set scrollbars based on that
-                ScrollBars eOldScrollBars = txtText.ScrollBars;
-                ScrollBars eNewScrollBars
-                    = intNumDisplayedLines * intMaxLineHeight >= Math.Max(txtText.Height, txtText.PreferredHeight)
-                        ? ScrollBars.Vertical
-                        : ScrollBars.None;
-                if (eOldScrollBars == eNewScrollBars)
-                    return;
-                txtText.SuspendLayout();
-                try
-                {
-                    txtText.ScrollBars = eNewScrollBars;
-                }
-                finally
-                {
-                    txtText.ResumeLayout();
-                }
-            });
+            // Search the height of the biggest line and set scrollbars based on that
+            ScrollBars eOldScrollBars = txtTextBox.ScrollBars;
+            ScrollBars eNewScrollBars
+                = intNumDisplayedLines * intMaxLineHeight >= Math.Max(txtTextBox.Height, txtTextBox.PreferredHeight)
+                    ? ScrollBars.Vertical
+                    : ScrollBars.None;
+            if (eOldScrollBars == eNewScrollBars)
+                return;
+            txtTextBox.SuspendLayout();
+            try
+            {
+                txtTextBox.ScrollBars = eNewScrollBars;
+            }
+            finally
+            {
+                txtTextBox.ResumeLayout();
+            }
         }
 
         #endregion TextBox Extensions

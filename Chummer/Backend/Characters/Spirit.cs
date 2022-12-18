@@ -910,7 +910,7 @@ namespace Chummer
                                     !x.Fettered))
                         {
                             // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
-                            Program.ShowMessageBox(
+                            Program.ShowScrollableMessageBox(
                                 LanguageManager.GetString(EntityType == SpiritType.Sprite
                                                               ? "Message_UnregisteredSpriteLimit"
                                                               : "Message_UnboundSpiritLimit"),
@@ -932,7 +932,7 @@ namespace Chummer
 
                         if (value > intSkillValue)
                         {
-                            Program.ShowMessageBox(
+                            Program.ShowScrollableMessageBox(
                                 LanguageManager.GetString(EntityType == SpiritType.Spirit
                                                               ? "Message_SpiritServices"
                                                               : "Message_SpriteServices"),
@@ -1004,7 +1004,7 @@ namespace Chummer
                                                            !x.Fettered))
                     {
                         // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
-                        Program.ShowMessageBox(
+                        Program.ShowScrollableMessageBox(
                             LanguageManager.GetString(EntityType == SpiritType.Sprite
                                                           ? "Message_UnregisteredSpriteLimit"
                                                           : "Message_UnboundSpiritLimit"),
@@ -1229,7 +1229,7 @@ namespace Chummer
                                 !x.Fettered))
                         {
                             // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
-                            Program.ShowMessageBox(
+                            Program.ShowScrollableMessageBox(
                                 LanguageManager.GetString(EntityType == SpiritType.Sprite
                                                               ? "Message_UnregisteredSpriteLimit"
                                                               : "Message_UnboundSpiritLimit"),
@@ -1447,7 +1447,7 @@ namespace Chummer
 
                         if (blnError && blnShowError)
                         {
-                            Program.ShowMessageBox(
+                            Program.ShowScrollableMessageBox(
                                 string.Format(GlobalSettings.CultureInfo,
                                               LanguageManager.GetString("Message_FileNotFound"),
                                               FileName),
@@ -1750,10 +1750,10 @@ namespace Chummer
                         }
                         catch (UnauthorizedAccessException)
                         {
-                            Program.ShowMessageBox(await LanguageManager
-                                                         .GetStringAsync(
-                                                             "Message_Insufficient_Permissions_Warning", token: token)
-                                                         .ConfigureAwait(false));
+                            Program.ShowScrollableMessageBox(await LanguageManager
+                                                                   .GetStringAsync(
+                                                                       "Message_Insufficient_Permissions_Warning", token: token)
+                                                                   .ConfigureAwait(false));
                         }
                     }
 

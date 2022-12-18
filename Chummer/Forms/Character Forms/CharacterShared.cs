@@ -325,7 +325,7 @@ namespace Chummer
                         }
                         catch (UnauthorizedAccessException)
                         {
-                            Program.ShowMessageBox(
+                            Program.ShowScrollableMessageBox(
                                 this, await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token).ConfigureAwait(false));
                             return;
                         }
@@ -380,7 +380,7 @@ namespace Chummer
                 //If the LimitModifier couldn't be found (Ie it comes from an Improvement or the user hasn't properly selected a treenode, fail out early.
                 if (objLimitModifier == null)
                 {
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Warning_NoLimitFound", token: token).ConfigureAwait(false));
+                    Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Warning_NoLimitFound", token: token).ConfigureAwait(false));
                     return;
                 }
 
@@ -5230,7 +5230,7 @@ namespace Chummer
                                                         objNode.Checked = false;
                                                         if (!blnWarned)
                                                         {
-                                                            Program.ShowMessageBox(this,
+                                                            Program.ShowScrollableMessageBox(this,
                                                                 await LanguageManager.GetStringAsync(
                                                                     "Message_FocusMaximumForce", token: token).ConfigureAwait(false),
                                                                 await LanguageManager.GetStringAsync(
@@ -5438,7 +5438,7 @@ namespace Chummer
                                                         objNode.Checked = false;
                                                         if (!blnWarned)
                                                         {
-                                                            Program.ShowMessageBox(this,
+                                                            Program.ShowScrollableMessageBox(this,
                                                                 await LanguageManager.GetStringAsync(
                                                                     "Message_FocusMaximumForce", token: token).ConfigureAwait(false),
                                                                 await LanguageManager.GetStringAsync(
@@ -7883,12 +7883,12 @@ namespace Chummer
                 }
                 catch (IOException ex)
                 {
-                    Program.ShowMessageBox(this, ex.ToString());
+                    Program.ShowScrollableMessageBox(this, ex.ToString());
                     return;
                 }
                 catch (XmlException ex)
                 {
-                    Program.ShowMessageBox(this, ex.ToString());
+                    Program.ShowScrollableMessageBox(this, ex.ToString());
                     return;
                 }
 
@@ -8255,7 +8255,7 @@ namespace Chummer
             // The number of bound Spirits cannot exceed the character's CHA.
             if (!CharacterObject.IgnoreRules && CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Spirit && x.Bound && !x.Fettered) >= CharacterObject.BoundSpiritLimit)
             {
-                Program.ShowMessageBox(
+                Program.ShowScrollableMessageBox(
                     this,
                     string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_BoundSpiritLimit", token: token).ConfigureAwait(false),
                                   CharacterObject.Settings.BoundSpiritExpression, CharacterObject.BoundSpiritLimit),
@@ -8281,7 +8281,7 @@ namespace Chummer
                 CharacterObject.Spirits.Count(x => x.EntityType == SpiritType.Sprite && x.Bound && !x.Fettered) >=
                 CharacterObject.RegisteredSpriteLimit)
             {
-                Program.ShowMessageBox(
+                Program.ShowScrollableMessageBox(
                     this,
                     string.Format(GlobalSettings.CultureInfo,
                                   await LanguageManager.GetStringAsync("Message_RegisteredSpriteLimit", token: token).ConfigureAwait(false),
@@ -8383,7 +8383,7 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     if (!File.Exists(strFileName))
                     {
-                        Program.ShowMessageBox(string.Format(strErrorString, strFileName));
+                        Program.ShowScrollableMessageBox(string.Format(strErrorString, strFileName));
                         blnMakeLoop = true;
                     }
                 }
@@ -9140,7 +9140,7 @@ namespace Chummer
                             {
                                 if (decCost > CharacterObject.Nuyen)
                                 {
-                                    Program.ShowMessageBox(this,
+                                    Program.ShowScrollableMessageBox(this,
                                                            await LanguageManager.GetStringAsync(
                                                                "Message_NotEnoughNuyen", token: token).ConfigureAwait(false),
                                                            await LanguageManager.GetStringAsync(

@@ -61,7 +61,7 @@ namespace Chummer
         {
             if (KarmaNuyenExchange && _eMode == ExpenseType.Nuyen && await nudAmount.DoThreadSafeFuncAsync(x => x.Value).ConfigureAwait(false) % _objCharacterSettings.NuyenPerBPWftP != 0)
             {
-                Program.ShowMessageBox(
+                Program.ShowScrollableMessageBox(
                     this,
                     string.Format(GlobalSettings.CultureInfo,
                                   await LanguageManager.GetStringAsync("Message_KarmaNuyenExchange").ConfigureAwait(false),

@@ -733,7 +733,7 @@ namespace Chummer
                                                             x => Path.GetFileNameWithoutExtension(x)
                                                                  != strAutosaveName))
                                                     {
-                                                        if (Program.ShowMessageBox(
+                                                        if (Program.ShowScrollableMessageBox(
                                                                 string.Format(GlobalSettings.CultureInfo,
                                                                               await LanguageManager.GetStringAsync(
                                                                                       "Message_PossibleCrashAutosaveFound",
@@ -2599,9 +2599,9 @@ namespace Chummer
         {
             try
             {
-                if (Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_HeroLabImporterWarning", token: _objGenericToken).ConfigureAwait(false),
-                                           await LanguageManager.GetStringAsync("Message_HeroLabImporterWarning_Title", token: _objGenericToken).ConfigureAwait(false),
-                                           MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                if (Program.ShowScrollableMessageBox(await LanguageManager.GetStringAsync("Message_HeroLabImporterWarning", token: _objGenericToken).ConfigureAwait(false),
+                                                     await LanguageManager.GetStringAsync("Message_HeroLabImporterWarning_Title", token: _objGenericToken).ConfigureAwait(false),
+                                                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                     return;
 
                 HeroLabImporter frmImporter = await this.DoThreadSafeFuncAsync(() => new HeroLabImporter(), token: _objGenericToken).ConfigureAwait(false);
@@ -2939,7 +2939,7 @@ namespace Chummer
                                     x => x.CharacterObject == objCharacter, token).ConfigureAwait(false))
                                 continue;
                             if (Program.MyProcess.HandleCount >= (objCharacter.Created ? 8000 : 7500)
-                                && Program.ShowMessageBox(
+                                && Program.ShowScrollableMessageBox(
                                     string.Format(strTooManyHandles, objCharacter.CharacterName),
                                     strTooManyHandlesTitle,
                                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
@@ -3136,7 +3136,7 @@ namespace Chummer
                                 continue;
 
                             if (Program.MyProcess.HandleCount >= 9500
-                                && Program.ShowMessageBox(
+                                && Program.ShowScrollableMessageBox(
                                     string.Format(strTooManyHandles, objCharacter.CharacterName),
                                     strTooManyHandlesTitle,
                                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
@@ -3356,7 +3356,7 @@ namespace Chummer
                                     x => x.CharacterObject == objCharacter, token).ConfigureAwait(false))
                                 continue;
                             if (Program.MyProcess.HandleCount >= 9500
-                                && Program.ShowMessageBox(
+                                && Program.ShowScrollableMessageBox(
                                     string.Format(strTooManyHandles, objCharacter.CharacterName),
                                     strTooManyHandlesTitle,
                                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
@@ -3782,7 +3782,7 @@ namespace Chummer
                                                 x => Path.GetFileNameWithoutExtension(x) != strAutosaveName)
                                             && GlobalSettings.FavoriteCharacters.All(
                                                 x => Path.GetFileNameWithoutExtension(x) != strAutosaveName)
-                                            && Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
+                                            && Program.ShowScrollableMessageBox(string.Format(GlobalSettings.CultureInfo,
                                                                           LanguageManager.GetString(
                                                                               "Message_PossibleCrashAutosaveFound"),
                                                                           objMostRecentAutosave.Name,

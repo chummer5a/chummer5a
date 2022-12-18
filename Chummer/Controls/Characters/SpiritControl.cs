@@ -222,7 +222,12 @@ namespace Chummer
 
                     if (blnError)
                     {
-                        Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_FileNotFound").ConfigureAwait(false), _objSpirit.FileName), await LanguageManager.GetStringAsync("MessageTitle_FileNotFound").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Program.ShowScrollableMessageBox(
+                            string.Format(GlobalSettings.CultureInfo,
+                                          await LanguageManager.GetStringAsync("Message_FileNotFound")
+                                                               .ConfigureAwait(false), _objSpirit.FileName),
+                            await LanguageManager.GetStringAsync("MessageTitle_FileNotFound").ConfigureAwait(false),
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                 }
@@ -234,12 +239,19 @@ namespace Chummer
         private async void tsRemoveCharacter_Click(object sender, EventArgs e)
         {
             // Remove the file association from the Contact.
-            if (Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_RemoveCharacterAssociation").ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_RemoveCharacterAssociation").ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (Program.ShowScrollableMessageBox(
+                    await LanguageManager.GetStringAsync("Message_RemoveCharacterAssociation").ConfigureAwait(false),
+                    await LanguageManager.GetStringAsync("MessageTitle_RemoveCharacterAssociation")
+                                         .ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                == DialogResult.Yes)
             {
                 _objSpirit.FileName = string.Empty;
                 _objSpirit.RelativeFileName = string.Empty;
                 string strText = await LanguageManager.GetStringAsync(
-                    _objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_LinkSpirit" : "Tip_Sprite_LinkSprite").ConfigureAwait(false);
+                                                          _objSpirit.EntityType == SpiritType.Spirit
+                                                              ? "Tip_Spirit_LinkSpirit"
+                                                              : "Tip_Sprite_LinkSprite")
+                                                      .ConfigureAwait(false);
                 await cmdLink.SetToolTipTextAsync(strText).ConfigureAwait(false);
 
                 // Set the relative path.
@@ -293,7 +305,10 @@ namespace Chummer
             string strSpiritName = await cboSpiritName.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strSpiritName))
             {
-                Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_SelectCritterType").ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_SelectCritterType").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.ShowScrollableMessageBox(
+                    await LanguageManager.GetStringAsync("Message_SelectCritterType").ConfigureAwait(false),
+                    await LanguageManager.GetStringAsync("MessageTitle_SelectCritterType").ConfigureAwait(false),
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
@@ -578,7 +593,7 @@ namespace Chummer
             // If the Critter could not be found, show an error and get out of here.
             if (objXmlMetatype == null)
             {
-                Program.ShowMessageBox(
+                Program.ShowScrollableMessageBox(
                     string.Format(GlobalSettings.CultureInfo,
                                   await LanguageManager.GetStringAsync("Message_UnknownCritterType", token: token).ConfigureAwait(false),
                                   strCritterName),

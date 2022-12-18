@@ -308,7 +308,7 @@ namespace Chummer
                         "metatype[id = " + strSelectedMetatype.CleanXPath() + ']');
                 if (objXmlMetatype == null)
                 {
-                    Program.ShowMessageBox(
+                    Program.ShowScrollableMessageBox(
                         this, await LanguageManager.GetStringAsync("Message_Metatype_SelectMetatype", token: token).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectMetatype", token: token).ConfigureAwait(false),
                         MessageBoxButtons.OK,
@@ -425,7 +425,7 @@ namespace Chummer
             }
             else
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Metatype_SelectMetatype", token: token).ConfigureAwait(false),
+                Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_Metatype_SelectMetatype", token: token).ConfigureAwait(false),
                                        await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectMetatype", token: token).ConfigureAwait(false),
                                        MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
@@ -914,7 +914,7 @@ namespace Chummer
                     {
                         Interlocked.Decrement(ref _intLoading);
                     }
-                    
+
                     if (!string.IsNullOrEmpty(strOldSelectedValue))
                     {
                         bool blnDoProcess = await cboMetavariant.DoThreadSafeFuncAsync(x =>
@@ -957,7 +957,7 @@ namespace Chummer
                 {
                     Interlocked.Decrement(ref _intLoading);
                 }
-                
+
                 await cboMetavariant.DoThreadSafeAsync(x => x.SelectedIndex = 0, token).ConfigureAwait(false);
 
                 await lblForceLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
@@ -986,10 +986,10 @@ namespace Chummer
                                                                        && (GlobalSettings.SearchInCategoryOnly
                                                                            || strSearchText.Length == 0))
                             sbdFilter.Append(" and category = ").Append(strSelectedCategory.CleanXPath());
-                        
+
                         if (!string.IsNullOrEmpty(txtSearch.Text))
                             sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(strSearchText));
-                        
+
                         if (sbdFilter.Length > 0)
                             strFilter = '[' + sbdFilter.ToString() + ']';
                     }
@@ -1011,7 +1011,7 @@ namespace Chummer
                     }
 
                     lstMetatypeItems.Sort(CompareListItems.CompareNames);
-                    
+
                     string strOldSelected
                         = await lstMetatypes.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false)
                           ?? _objCharacter?.MetatypeGuid.ToString(
@@ -1036,7 +1036,7 @@ namespace Chummer
                     {
                         Interlocked.Decrement(ref _intLoading);
                     }
-                    
+
                     // Attempt to select the default Human item. If it could not be found, select the first item in the list instead.
                     if (!string.IsNullOrEmpty(strOldSelected))
                     {

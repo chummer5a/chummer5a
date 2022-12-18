@@ -1916,7 +1916,7 @@ namespace Chummer
 
                         if (blnError && blnShowError)
                         {
-                            Program.ShowMessageBox(
+                            Program.ShowScrollableMessageBox(
                                 string.Format(GlobalSettings.CultureInfo,
                                               LanguageManager.GetString("Message_FileNotFound"),
                                               FileName),
@@ -2231,9 +2231,9 @@ namespace Chummer
                         }
                         catch (UnauthorizedAccessException)
                         {
-                            Program.ShowMessageBox(await LanguageManager
-                                                         .GetStringAsync("Message_Insufficient_Permissions_Warning",
-                                                                         token: token).ConfigureAwait(false));
+                            Program.ShowScrollableMessageBox(await LanguageManager
+                                                                   .GetStringAsync("Message_Insufficient_Permissions_Warning",
+                                                                       token: token).ConfigureAwait(false));
                         }
                     }
 

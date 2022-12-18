@@ -103,7 +103,7 @@ namespace Chummer
                 {
                     Log.Info("More than one instance, exiting");
                     if (!SilentMode)
-                        Program.ShowMessageBox(
+                        Program.ShowScrollableMessageBox(
                             this,
                             await LanguageManager.GetStringAsync("Message_Update_MultipleInstances",
                                                                  token: _objGenericToken).ConfigureAwait(false),
@@ -415,7 +415,7 @@ namespace Chummer
             if (!blnChummerVersionGotten || LatestVersion == strError)
             {
                 if (!SilentMode)
-                    Program.ShowMessageBox(this,
+                    Program.ShowScrollableMessageBox(this,
                     string.IsNullOrEmpty(_strExceptionString)
                         ? await LanguageManager.GetStringAsync("Warning_Update_CouldNotConnect", token: token).ConfigureAwait(false)
                         : string.Format(GlobalSettings.CultureInfo,
@@ -459,7 +459,7 @@ namespace Chummer
                     strException = strException.Substring(0, intNewLineLocation);
                 _strExceptionString = strException;
                 if (!SilentMode)
-                    Program.ShowMessageBox(this,
+                    Program.ShowScrollableMessageBox(this,
                                            string.Format(GlobalSettings.CultureInfo,
                                                          await LanguageManager
                                                                .GetStringAsync(
@@ -480,7 +480,7 @@ namespace Chummer
                     strException = strException.Substring(0, intNewLineLocation);
                 _strExceptionString = strException;
                 if (!SilentMode)
-                    Program.ShowMessageBox(this,
+                    Program.ShowScrollableMessageBox(this,
                                            string.Format(GlobalSettings.CultureInfo,
                                                          await LanguageManager
                                                                .GetStringAsync(
@@ -761,21 +761,21 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 if (!SilentMode)
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token).ConfigureAwait(false));
+                    Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token).ConfigureAwait(false));
                 return false;
             }
             catch (IOException)
             {
                 token.ThrowIfCancellationRequested();
                 if (!SilentMode)
-                    Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token).ConfigureAwait(false), Path.GetFileName(strBackupZipPath)));
+                    Program.ShowScrollableMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token).ConfigureAwait(false), Path.GetFileName(strBackupZipPath)));
                 return false;
             }
             catch (NotSupportedException)
             {
                 token.ThrowIfCancellationRequested();
                 if (!SilentMode)
-                    Program.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token).ConfigureAwait(false), Path.GetFileName(strBackupZipPath)));
+                    Program.ShowScrollableMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token).ConfigureAwait(false), Path.GetFileName(strBackupZipPath)));
                 return false;
             }
             return true;
@@ -858,7 +858,7 @@ namespace Chummer
         private async ValueTask DoCleanReinstall(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Updater_CleanReinstallPrompt", token: token).ConfigureAwait(false),
+            if (Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_Updater_CleanReinstallPrompt", token: token).ConfigureAwait(false),
                                        await LanguageManager.GetStringAsync("MessageTitle_Updater_CleanReinstallPrompt", token: token).ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                 return;
             if (Directory.Exists(_strAppPath) && File.Exists(_strTempLatestVersionZipPath))
@@ -960,7 +960,7 @@ namespace Chummer
                             catch (IOException)
                             {
                                 if (!SilentMode)
-                                    Program.ShowMessageBox(
+                                    Program.ShowScrollableMessageBox(
                                         this,
                                         string.Format(GlobalSettings.CultureInfo,
                                                       await LanguageManager.GetStringAsync(
@@ -974,7 +974,7 @@ namespace Chummer
                             catch (NotSupportedException)
                             {
                                 if (!SilentMode)
-                                    Program.ShowMessageBox(
+                                    Program.ShowScrollableMessageBox(
                                         this,
                                         string.Format(GlobalSettings.CultureInfo,
                                                       await LanguageManager.GetStringAsync(
@@ -988,7 +988,7 @@ namespace Chummer
                             catch (UnauthorizedAccessException)
                             {
                                 if (!SilentMode)
-                                    Program.ShowMessageBox(
+                                    Program.ShowScrollableMessageBox(
                                         this,
                                         await LanguageManager.GetStringAsync(
                                                                  "Message_Insufficient_Permissions_Warning",
@@ -1005,7 +1005,7 @@ namespace Chummer
                 catch (IOException)
                 {
                     if (!SilentMode)
-                        Program.ShowMessageBox(
+                        Program.ShowScrollableMessageBox(
                             this,
                             string.Format(GlobalSettings.CultureInfo,
                                           await LanguageManager
@@ -1017,7 +1017,7 @@ namespace Chummer
                 catch (NotSupportedException)
                 {
                     if (!SilentMode)
-                        Program.ShowMessageBox(
+                        Program.ShowScrollableMessageBox(
                             this,
                             string.Format(GlobalSettings.CultureInfo,
                                           await LanguageManager
@@ -1029,7 +1029,7 @@ namespace Chummer
                 catch (UnauthorizedAccessException)
                 {
                     if (!SilentMode)
-                        Program.ShowMessageBox(
+                        Program.ShowScrollableMessageBox(
                             this,
                             await LanguageManager
                                   .GetStringAsync("Message_Insufficient_Permissions_Warning", token: token)
@@ -1112,7 +1112,7 @@ namespace Chummer
                                     sbdOutput.AppendLine().Append(strFile);
                                 }
 
-                                Program.ShowMessageBox(this, sbdOutput.ToString(), null, MessageBoxButtons.OK,
+                                Program.ShowScrollableMessageBox(this, sbdOutput.ToString(), null, MessageBoxButtons.OK,
                                                        MessageBoxIcon.Information);
                             }
                         }
@@ -1205,7 +1205,7 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     // Show the warning even if we're in silent mode, because the user should still know that the update check could not be performed
                     if (!SilentMode)
-                        Program.ShowMessageBox(
+                        Program.ShowScrollableMessageBox(
                             this,
                             string.Format(GlobalSettings.CultureInfo,
                                           await LanguageManager.GetStringAsync(
@@ -1276,7 +1276,7 @@ namespace Chummer
                 Log.Info("wc_DownloadExeFileCompleted exit");
                 if (SilentMode)
                 {
-                    if (Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Update_CloseForms", token: _objGenericToken).ConfigureAwait(false),
+                    if (Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_Update_CloseForms", token: _objGenericToken).ConfigureAwait(false),
                                                await LanguageManager.GetStringAsync(
                                                    "Title_Update", token: _objGenericToken).ConfigureAwait(false), MessageBoxButtons.YesNo,
                                                MessageBoxIcon.Question) ==

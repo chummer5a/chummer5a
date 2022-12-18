@@ -387,7 +387,9 @@ namespace Chummer
 
             // No character-created limits found, which means it comes from an improvement.
             // TODO: ImprovementSource exists for a reason.
-            Program.ShowMessageBox(LanguageManager.GetString("Message_CannotDeleteLimitModifier"), LanguageManager.GetString("MessageTitle_CannotDeleteLimitModifier"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Program.ShowScrollableMessageBox(LanguageManager.GetString("Message_CannotDeleteLimitModifier"),
+                                             LanguageManager.GetString("MessageTitle_CannotDeleteLimitModifier"),
+                                             MessageBoxButtons.OK, MessageBoxIcon.Information);
             return false;
         }
     }

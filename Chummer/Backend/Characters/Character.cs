@@ -4170,7 +4170,7 @@ namespace Chummer
                             if (Utils.IsUnitTest)
                                 throw;
                             // ReSharper disable once MethodHasAsyncOverload
-                            Program.ShowMessageBox(
+                            Program.ShowScrollableMessageBox(
                                 LanguageManager.GetString("Message_Save_Error_Warning", token: token));
                             blnErrorFree = false;
                         }
@@ -4180,14 +4180,14 @@ namespace Chummer
                             if (Utils.IsUnitTest)
                                 throw;
                             // ReSharper disable once MethodHasAsyncOverload
-                            Program.ShowMessageBox(
+                            Program.ShowScrollableMessageBox(
                                 LanguageManager.GetString("Message_Save_Error_Warning", token: token));
                             blnErrorFree = false;
                         }
                         catch (UnauthorizedAccessException) when (!Utils.IsUnitTest)
                         {
                             // ReSharper disable once MethodHasAsyncOverload
-                            Program.ShowMessageBox(
+                            Program.ShowScrollableMessageBox(
                                 LanguageManager.GetString("Message_Save_Error_Warning", token: token));
                             blnErrorFree = false;
                         }
@@ -5159,10 +5159,10 @@ namespace Chummer
                             Log.Error(e);
                             if (Utils.IsUnitTest)
                                 throw;
-                            Program.ShowMessageBox(await LanguageManager
-                                                         .GetStringAsync(
-                                                             "Message_Save_Error_Warning", token: innerToken)
-                                                         .ConfigureAwait(false));
+                            Program.ShowScrollableMessageBox(await LanguageManager
+                                                                   .GetStringAsync(
+                                                                       "Message_Save_Error_Warning", token: innerToken)
+                                                                   .ConfigureAwait(false));
                             blnErrorFree = false;
                         }
                         catch (XmlException ex)
@@ -5170,18 +5170,18 @@ namespace Chummer
                             Log.Warn(ex);
                             if (Utils.IsUnitTest)
                                 throw;
-                            Program.ShowMessageBox(await LanguageManager
-                                                         .GetStringAsync(
-                                                             "Message_Save_Error_Warning", token: innerToken)
-                                                         .ConfigureAwait(false));
+                            Program.ShowScrollableMessageBox(await LanguageManager
+                                                                   .GetStringAsync(
+                                                                       "Message_Save_Error_Warning", token: innerToken)
+                                                                   .ConfigureAwait(false));
                             blnErrorFree = false;
                         }
                         catch (UnauthorizedAccessException) when (!Utils.IsUnitTest)
                         {
-                            Program.ShowMessageBox(await LanguageManager
-                                                         .GetStringAsync(
-                                                             "Message_Save_Error_Warning", token: innerToken)
-                                                         .ConfigureAwait(false));
+                            Program.ShowScrollableMessageBox(await LanguageManager
+                                                                   .GetStringAsync(
+                                                                       "Message_Save_Error_Warning", token: innerToken)
+                                                                   .ConfigureAwait(false));
                             blnErrorFree = false;
                         }
                     }
@@ -5594,7 +5594,7 @@ namespace Chummer
                                             being loaded (Expected to be notes ingested from PDF mostly) prompt the user whether to use unsafe methods.
                                             If yes, restart the load, explicitly ignoring invalid characters.*/
 
-                                            if (Program.ShowMessageBox(
+                                            if (Program.ShowScrollableMessageBox(
                                                     LanguageManager.GetString("Message_InvalidTextFound", token: token),
                                                     LanguageManager.GetString(
                                                         "Message_InvalidTextFound_Title", token: token),
@@ -5610,7 +5610,7 @@ namespace Chummer
                                         {
                                             if (showWarnings)
                                             {
-                                                Program.ShowMessageBox(
+                                                Program.ShowScrollableMessageBox(
                                                     string.Format(GlobalSettings.CultureInfo,
                                                                   LanguageManager.GetString(
                                                                       "Message_FailedLoad", token: token),
@@ -5658,7 +5658,7 @@ namespace Chummer
                                             being loaded (Expected to be notes ingested from PDF mostly) prompt the user whether to use unsafe methods.
                                             If yes, restart the load, explicitly ignoring invalid characters.*/
 
-                                            if (Program.ShowMessageBox(
+                                            if (Program.ShowScrollableMessageBox(
                                                     await LanguageManager
                                                           .GetStringAsync("Message_InvalidTextFound", token: token)
                                                           .ConfigureAwait(false),
@@ -5678,7 +5678,7 @@ namespace Chummer
                                         {
                                             if (showWarnings)
                                             {
-                                                Program.ShowMessageBox(
+                                                Program.ShowScrollableMessageBox(
                                                     string.Format(GlobalSettings.CultureInfo,
                                                                   await LanguageManager
                                                                         .GetStringAsync(
@@ -5759,7 +5759,7 @@ namespace Chummer
                                     showWarnings &&
                                     !Utils.IsUnitTest)
                                 {
-                                    Program.ShowMessageBox(
+                                    Program.ShowScrollableMessageBox(
                                         blnSync
                                             // ReSharper disable once MethodHasAsyncOverload
                                             ? LanguageManager.GetString("Message_IncorrectGameVersion_SR4",
@@ -6108,7 +6108,7 @@ namespace Chummer
                                         // Prompt if we want to switch options or leave
                                         if (!Utils.IsUnitTest && showWarnings)
                                         {
-                                            if (Program.ShowMessageBox(
+                                            if (Program.ShowScrollableMessageBox(
                                                     string.Format(GlobalSettings.CultureInfo,
                                                                   blnSync
                                                                       // ReSharper disable once MethodHasAsyncOverload
@@ -6203,7 +6203,7 @@ namespace Chummer
                                         // Prompt if we want to switch options or leave
                                         if (!Utils.IsUnitTest && showWarnings)
                                         {
-                                            if (Program.ShowMessageBox(
+                                            if (Program.ShowScrollableMessageBox(
                                                     string.Format(GlobalSettings.CultureInfo,
                                                                   blnSync
                                                                       // ReSharper disable once MethodHasAsyncOverload
@@ -6344,7 +6344,7 @@ namespace Chummer
 
                                             if (blnPromptConfirmSetting)
                                             {
-                                                DialogResult eShowBPResult = Program.ShowMessageBox(
+                                                DialogResult eShowBPResult = Program.ShowScrollableMessageBox(
                                                     string.Format(
                                                         GlobalSettings.CultureInfo,
                                                         blnSync
@@ -6387,7 +6387,7 @@ namespace Chummer
                                                          token).ConfigureAwait(false))
                                                  != intSettingsHashCode)
                                         {
-                                            DialogResult eShowBPResult = Program.ShowMessageBox(
+                                            DialogResult eShowBPResult = Program.ShowScrollableMessageBox(
                                                 string.Format(
                                                     GlobalSettings.CultureInfo,
                                                     blnSync
@@ -6883,7 +6883,7 @@ namespace Chummer
                                             {
                                                 //Utils.BreakIfDebug();
                                                 if (blnRemoveImprovements
-                                                    || (Program.ShowMessageBox(
+                                                    || (Program.ShowScrollableMessageBox(
                                                             blnSync
                                                                 // ReSharper disable once MethodHasAsyncOverload
                                                                 ? LanguageManager.GetString(
@@ -15399,7 +15399,7 @@ namespace Chummer
                         }
                         catch (UnauthorizedAccessException)
                         {
-                            Program.ShowMessageBox(
+                            Program.ShowScrollableMessageBox(
                                 await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token).ConfigureAwait(false));
                         }
                     }
@@ -34486,7 +34486,7 @@ namespace Chummer
                                 Log.Error(ex);
                             }
 
-                            Program.ShowMessageBox(
+                            Program.ShowScrollableMessageBox(
                                 string.Format(GlobalSettings.CultureInfo,
                                               blnSync
                                                   // ReSharper disable once MethodHasAsyncOverload
@@ -34509,7 +34509,7 @@ namespace Chummer
                                 Log.Error(ex);
                             }
 
-                            Program.ShowMessageBox(
+                            Program.ShowScrollableMessageBox(
                                 string.Format(GlobalSettings.CultureInfo,
                                               blnSync
                                                   // ReSharper disable once MethodHasAsyncOverload
@@ -34532,7 +34532,7 @@ namespace Chummer
                                 Log.Error(ex);
                             }
 
-                            Program.ShowMessageBox(
+                            Program.ShowScrollableMessageBox(
                                 string.Format(GlobalSettings.CultureInfo,
                                               blnSync
                                                   // ReSharper disable once MethodHasAsyncOverload
@@ -34998,7 +34998,7 @@ namespace Chummer
 
                                 if (string.IsNullOrEmpty(strSettingsKey))
                                 {
-                                    if (Program.ShowMessageBox(
+                                    if (Program.ShowScrollableMessageBox(
                                             string.Format(GlobalSettings.CultureInfo,
                                                           blnSync
                                                               // ReSharper disable once MethodHasAsyncOverload
@@ -37867,15 +37867,15 @@ namespace Chummer
 
                 if (!blnEssence || !blnEnabled)
                 {
-                    Program.ShowMessageBox(strMessage,
-                        await LanguageManager.GetStringAsync("MessageTitle_CyberzombieRequirements", token: token).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Program.ShowScrollableMessageBox(strMessage,
+                                                     await LanguageManager.GetStringAsync("MessageTitle_CyberzombieRequirements", token: token).ConfigureAwait(false),
+                                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                     return false;
                 }
 
-                if (Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_CyberzombieConfirm", token: token).ConfigureAwait(false),
-                        await LanguageManager.GetStringAsync("MessageTitle_CyberzombieConfirm", token: token).ConfigureAwait(false),
-                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
+                if (Program.ShowScrollableMessageBox(await LanguageManager.GetStringAsync("Message_CyberzombieConfirm", token: token).ConfigureAwait(false),
+                                                     await LanguageManager.GetStringAsync("MessageTitle_CyberzombieConfirm", token: token).ConfigureAwait(false),
+                                                     MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
                     return false;
 
                 int intWILResult;

@@ -303,11 +303,11 @@ namespace Chummer
                 }
                 catch (XmlException)
                 {
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Save_Error_Warning", token: _objGenericToken).ConfigureAwait(false));
+                    Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_Save_Error_Warning", token: _objGenericToken).ConfigureAwait(false));
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_Save_Error_Warning", token: _objGenericToken).ConfigureAwait(false));
+                    Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_Save_Error_Warning", token: _objGenericToken).ConfigureAwait(false));
                 }
             }
             catch (OperationCanceledException)
@@ -403,7 +403,7 @@ namespace Chummer
 
                     if (!string.IsNullOrEmpty(strPdfPrinter))
                     {
-                        DialogResult ePdfPrinterDialogResult = Program.ShowMessageBox(this,
+                        DialogResult ePdfPrinterDialogResult = Program.ShowScrollableMessageBox(this,
                             string.Format(GlobalSettings.CultureInfo,
                                           await LanguageManager.GetStringAsync("Message_Viewer_FoundPDFPrinter", token: _objGenericToken).ConfigureAwait(false),
                                           strPdfPrinter),
@@ -416,7 +416,7 @@ namespace Chummer
                                 return;
 
                             case DialogResult.Yes:
-                                Program.ShowMessageBox(this,
+                                Program.ShowScrollableMessageBox(this,
                                                        await LanguageManager.GetStringAsync(
                                                            "Message_Viewer_PDFPrinterError", token: _objGenericToken).ConfigureAwait(false));
                                 break;
@@ -439,7 +439,7 @@ namespace Chummer
 
                     if (!Directory.Exists(Path.GetDirectoryName(strSaveFile)) || !Utils.CanWriteToPath(strSaveFile))
                     {
-                        Program.ShowMessageBox(this,
+                        Program.ShowScrollableMessageBox(this,
                                                string.Format(GlobalSettings.CultureInfo,
                                                              await LanguageManager.GetStringAsync(
                                                                  "Message_File_Cannot_Be_Accessed", token: _objGenericToken).ConfigureAwait(false), strSaveFile));
@@ -448,7 +448,7 @@ namespace Chummer
 
                     if (!await Utils.SafeDeleteFileAsync(strSaveFile, true, token: _objGenericToken).ConfigureAwait(false))
                     {
-                        Program.ShowMessageBox(this,
+                        Program.ShowScrollableMessageBox(this,
                                                string.Format(GlobalSettings.CultureInfo,
                                                              await LanguageManager.GetStringAsync(
                                                                  "Message_File_Cannot_Be_Accessed", token: _objGenericToken).ConfigureAwait(false), strSaveFile));
@@ -503,7 +503,7 @@ namespace Chummer
                     }
                     catch (Exception ex)
                     {
-                        Program.ShowMessageBox(this, ex.ToString());
+                        Program.ShowScrollableMessageBox(this, ex.ToString());
                     }
                 }
                 finally
@@ -814,7 +814,7 @@ namespace Chummer
                     string strReturn = "File not found when attempting to load " + _strSelectedSheet +
                                        Environment.NewLine;
                     Log.Debug(strReturn);
-                    Program.ShowMessageBox(this, strReturn);
+                    Program.ShowScrollableMessageBox(this, strReturn);
                     return;
                 }
 
@@ -835,7 +835,7 @@ namespace Chummer
                                        + _strSelectedSheet +
                                        Environment.NewLine;
                     Log.Debug(strReturn);
-                    Program.ShowMessageBox(this, strReturn);
+                    Program.ShowScrollableMessageBox(this, strReturn);
                     return;
                 }
                 catch (PathTooLongException)
@@ -848,7 +848,7 @@ namespace Chummer
                                        + _strSelectedSheet +
                                        Environment.NewLine;
                     Log.Debug(strReturn);
-                    Program.ShowMessageBox(this, strReturn);
+                    Program.ShowScrollableMessageBox(this, strReturn);
                     return;
                 }
                 catch (UnauthorizedAccessException)
@@ -861,7 +861,7 @@ namespace Chummer
                                        + _strSelectedSheet +
                                        Environment.NewLine;
                     Log.Debug(strReturn);
-                    Program.ShowMessageBox(this, strReturn);
+                    Program.ShowScrollableMessageBox(this, strReturn);
                     return;
                 }
                 catch (XsltException ex)
@@ -874,7 +874,7 @@ namespace Chummer
                     Log.Debug(strReturn);
                     Log.Error("ERROR Message = " + ex.Message);
                     strReturn += ex.Message;
-                    Program.ShowMessageBox(this, strReturn);
+                    Program.ShowScrollableMessageBox(this, strReturn);
                     return;
                 }
 

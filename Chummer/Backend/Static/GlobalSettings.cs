@@ -456,11 +456,11 @@ namespace Chummer
                 }
                 catch (System.Security.SecurityException)
                 {
-                    Program.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
+                    Program.ShowScrollableMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    Program.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
+                    Program.ShowScrollableMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
                 }
             }
 
@@ -600,7 +600,7 @@ namespace Chummer
                 *#else
                 *                string msg = "Error while loading PluginOptions from registry: " + Environment.NewLine;
                 *                msg += e.Message;
-                *                Program.ShowMessageBox(msg);
+                *                Program.ShowScrollableMessageBox(msg);
                 */
 #endif
             }
@@ -652,7 +652,7 @@ namespace Chummer
                                 = new CustomDataDirectoryInfo(strDirectoryName, strPath);
                             if (objCustomDataDirectory.XmlException != default)
                             {
-                                Program.ShowMessageBox(
+                                Program.ShowScrollableMessageBox(
                                     string.Format(CultureInfo, LanguageManager.GetString("Message_FailedLoad"),
                                         objCustomDataDirectory.XmlException.Message),
                                     string.Format(CultureInfo,
@@ -672,7 +672,7 @@ namespace Chummer
                                     {
                                         if (objExistingInfo.HasManifest)
                                         {
-                                            Program.ShowMessageBox(
+                                            Program.ShowScrollableMessageBox(
                                                 string.Format(
                                                     LanguageManager.GetString("Message_Duplicate_CustomDataDirectory"),
                                                     objExistingInfo.Name, objCustomDataDirectory.Name),
@@ -719,7 +719,7 @@ namespace Chummer
                         = new CustomDataDirectoryInfo(Path.GetFileName(strLoopDirectoryPath), strLoopDirectoryPath);
                     if (objCustomDataDirectory.XmlException != default)
                     {
-                        Program.ShowMessageBox(
+                        Program.ShowScrollableMessageBox(
                             string.Format(CultureInfo, LanguageManager.GetString("Message_FailedLoad"),
                                 objCustomDataDirectory.XmlException.Message),
                             string.Format(CultureInfo,
@@ -739,7 +739,7 @@ namespace Chummer
                             {
                                 if (objExistingInfo.HasManifest)
                                 {
-                                    Program.ShowMessageBox(
+                                    Program.ShowScrollableMessageBox(
                                         string.Format(
                                             LanguageManager.GetString("Message_Duplicate_CustomDataDirectory"),
                                             objExistingInfo.Name, objCustomDataDirectory.Name),
@@ -921,17 +921,17 @@ namespace Chummer
             }
             catch (System.Security.SecurityException)
             {
-                Program.ShowMessageBox(
+                Program.ShowScrollableMessageBox(
                     await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token).ConfigureAwait(false));
             }
             catch (UnauthorizedAccessException)
             {
-                Program.ShowMessageBox(
+                Program.ShowScrollableMessageBox(
                     await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token).ConfigureAwait(false));
             }
             catch (ArgumentNullException e) when (e.ParamName == nameof(Registry))
             {
-                Program.ShowMessageBox(
+                Program.ShowScrollableMessageBox(
                     await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token).ConfigureAwait(false));
             }
         }
@@ -1820,17 +1820,17 @@ namespace Chummer
             }
             catch (System.Security.SecurityException)
             {
-                Program.ShowMessageBox(
+                Program.ShowScrollableMessageBox(
                     LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
             }
             catch (UnauthorizedAccessException)
             {
-                Program.ShowMessageBox(
+                Program.ShowScrollableMessageBox(
                     LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
             }
             catch (ArgumentNullException ex) when (ex.ParamName == nameof(Registry))
             {
-                Program.ShowMessageBox(
+                Program.ShowScrollableMessageBox(
                     LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
             }
         }
@@ -1935,17 +1935,17 @@ namespace Chummer
             }
             catch (System.Security.SecurityException)
             {
-                Program.ShowMessageBox(
+                Program.ShowScrollableMessageBox(
                     LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
             }
             catch (UnauthorizedAccessException)
             {
-                Program.ShowMessageBox(
+                Program.ShowScrollableMessageBox(
                     LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
             }
             catch (ArgumentNullException ex) when (ex.ParamName == nameof(Registry))
             {
-                Program.ShowMessageBox(
+                Program.ShowScrollableMessageBox(
                     LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
             }
         }

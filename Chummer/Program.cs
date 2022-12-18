@@ -448,8 +448,8 @@ namespace Chummer
                                     const string strMessage =
                                         "Please enable Plugins to use command-line arguments invoking specific plugin-functions!";
                                     Log.Warn(strMessage);
-                                    ShowMessageBox(strMessage, "Plugins not enabled", MessageBoxButtons.OK,
-                                        MessageBoxIcon.Exclamation);
+                                    ShowScrollableMessageBox(strMessage, "Plugins not enabled", MessageBoxButtons.OK,
+                                                             MessageBoxIcon.Exclamation);
                                 }
                                 else
                                 {
@@ -471,8 +471,8 @@ namespace Chummer
                                                 Environment.NewLine
                                                 + "If you want to use command-line arguments, please enable this plugin and restart the program.";
                                             Log.Warn(strMessage);
-                                            ShowMessageBox(strMessage, strWhatPlugin + " not enabled",
-                                                MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                            ShowScrollableMessageBox(strMessage, strWhatPlugin + " not enabled",
+                                                                     MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
                                         }
                                     }
                                     else
@@ -1084,7 +1084,7 @@ namespace Chummer
                         }
                     }
 
-                    if (!string.IsNullOrEmpty(strAutosaveName) && ShowMessageBox(
+                    if (!string.IsNullOrEmpty(strAutosaveName) && ShowScrollableMessageBox(
                             string.Format(GlobalSettings.CultureInfo,
                                           // ReSharper disable once MethodHasAsyncOverload
                                           blnSync
@@ -1141,20 +1141,20 @@ namespace Chummer
             }
             else if (blnShowErrors)
             {
-                ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
-                                             blnSync
-                                                 // ReSharper disable once MethodHasAsyncOverload
-                                                 ? LanguageManager.GetString("Message_FileNotFound", token: token)
-                                                 : await LanguageManager
-                                                         .GetStringAsync("Message_FileNotFound", token: token)
-                                                         .ConfigureAwait(false),
-                                             strFileName),
-                               blnSync
-                                   // ReSharper disable once MethodHasAsyncOverload
-                                   ? LanguageManager.GetString("MessageTitle_FileNotFound", token: token)
-                                   : await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: token)
-                                                          .ConfigureAwait(false),
-                               MessageBoxButtons.OK, MessageBoxIcon.Error);
+                ShowScrollableMessageBox(string.Format(GlobalSettings.CultureInfo,
+                                                       blnSync
+                                                           // ReSharper disable once MethodHasAsyncOverload
+                                                           ? LanguageManager.GetString("Message_FileNotFound", token: token)
+                                                           : await LanguageManager
+                                                                   .GetStringAsync("Message_FileNotFound", token: token)
+                                                                   .ConfigureAwait(false),
+                                                       strFileName),
+                                         blnSync
+                                             // ReSharper disable once MethodHasAsyncOverload
+                                             ? LanguageManager.GetString("MessageTitle_FileNotFound", token: token)
+                                             : await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: token)
+                                                                    .ConfigureAwait(false),
+                                         MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             return objCharacter;

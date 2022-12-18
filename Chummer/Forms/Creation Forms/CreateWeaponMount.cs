@@ -406,9 +406,9 @@ namespace Chummer
 
                     if (decCost > _objCharacter.Nuyen)
                     {
-                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen").ConfigureAwait(false),
-                                                        await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen").ConfigureAwait(false),
-                                                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen").ConfigureAwait(false),
+                                                         await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen").ConfigureAwait(false),
+                                                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                         if (blnRemoveMountAfterCheck)
                         {
                             await _objVehicle.WeaponMounts.RemoveAsync(_objMount).ConfigureAwait(false);
@@ -445,9 +445,9 @@ namespace Chummer
 
                     if (blnOverCapacity)
                     {
-                        Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_CapacityReached").ConfigureAwait(false),
-                                                        await LanguageManager.GetStringAsync("MessageTitle_CapacityReached").ConfigureAwait(false),
-                                                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_CapacityReached").ConfigureAwait(false),
+                                                         await LanguageManager.GetStringAsync("MessageTitle_CapacityReached").ConfigureAwait(false),
+                                                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                         if (blnRemoveMountAfterCheck)
                         {
                             await _objVehicle.WeaponMounts.RemoveAsync(_objMount).ConfigureAwait(false);

@@ -543,7 +543,7 @@ namespace Chummer.UI.Shared
             //If the LimitModifier couldn't be found (Ie it comes from an Improvement or the user hasn't properly selected a treenode, fail out early.
             if (objLimitModifier == null)
             {
-                Program.ShowMessageBox(await LanguageManager.GetStringAsync("Warning_NoLimitFound", token: token).ConfigureAwait(false));
+                Program.ShowScrollableMessageBox(await LanguageManager.GetStringAsync("Warning_NoLimitFound", token: token).ConfigureAwait(false));
                 return;
             }
 

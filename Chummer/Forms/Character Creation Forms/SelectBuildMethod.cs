@@ -52,11 +52,11 @@ namespace Chummer
             CharacterBuildMethod eSelectedBuildMethod = objSelectedGameplayOption.BuildMethod;
             if (_blnForExistingCharacter && !_objCharacter.Created && _objCharacter.Settings.BuildMethod == _objCharacter.EffectiveBuildMethod && eSelectedBuildMethod != _eStartingBuildMethod)
             {
-                if (Program.ShowMessageBox(this,
-                    string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_SelectBP_SwitchBuildMethods").ConfigureAwait(false),
-                        await LanguageManager.GetStringAsync("String_" + eSelectedBuildMethod).ConfigureAwait(false), await LanguageManager.GetStringAsync("String_" + _eStartingBuildMethod).ConfigureAwait(false)).WordWrap(),
-                    await LanguageManager.GetStringAsync("MessageTitle_SelectBP_SwitchBuildMethods").ConfigureAwait(false), MessageBoxButtons.YesNo,
-                    MessageBoxIcon.Warning) != DialogResult.Yes)
+                if (Program.ShowScrollableMessageBox(this,
+                                                     string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_SelectBP_SwitchBuildMethods").ConfigureAwait(false),
+                                                                   await LanguageManager.GetStringAsync("String_" + eSelectedBuildMethod).ConfigureAwait(false), await LanguageManager.GetStringAsync("String_" + _eStartingBuildMethod).ConfigureAwait(false)).WordWrap(),
+                                                     await LanguageManager.GetStringAsync("MessageTitle_SelectBP_SwitchBuildMethods").ConfigureAwait(false), MessageBoxButtons.YesNo,
+                                                     MessageBoxIcon.Warning) != DialogResult.Yes)
                     return;
                 string strOldCharacterSettingsKey = await _objCharacter.GetSettingsKeyAsync().ConfigureAwait(false);
                 await _objCharacter.SetSettingsKeyAsync((await (await SettingsManager.GetLoadedCharacterSettingsAsync().ConfigureAwait(false))

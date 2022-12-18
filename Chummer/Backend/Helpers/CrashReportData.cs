@@ -85,8 +85,8 @@ namespace Chummer
                 }
 
                 report.Send();
-                Program.ShowMessageBox("Crash report sent." + Environment.NewLine + "Please refer to the crash id "
-                                       + report.Id);
+                Program.ShowScrollableMessageBox("Crash report sent." + Environment.NewLine + "Please refer to the crash id "
+                                                 + report.Id);
             }
         }
 

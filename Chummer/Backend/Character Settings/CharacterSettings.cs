@@ -996,7 +996,7 @@ namespace Chummer
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    Program.ShowMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                    Program.ShowScrollableMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
                     return false;
                 }
             }
@@ -1705,7 +1705,7 @@ namespace Chummer
                     catch (IOException)
                     {
                         if (blnShowDialogs)
-                            Program.ShowMessageBox(
+                            Program.ShowScrollableMessageBox(
                                 LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"),
                                 LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"),
                                 MessageBoxButtons.OK,
@@ -1715,7 +1715,7 @@ namespace Chummer
                     catch (XmlException)
                     {
                         if (blnShowDialogs)
-                            Program.ShowMessageBox(
+                            Program.ShowScrollableMessageBox(
                                 LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"),
                                 LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"),
                                 MessageBoxButtons.OK,
@@ -1726,7 +1726,7 @@ namespace Chummer
                 else
                 {
                     if (blnShowDialogs)
-                        Program.ShowMessageBox(
+                        Program.ShowScrollableMessageBox(
                             LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"),
                             LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"),
                             MessageBoxButtons.OK,
@@ -2454,7 +2454,7 @@ namespace Chummer
                     catch (IOException)
                     {
                         if (blnShowDialogs)
-                            Program.ShowMessageBox(
+                            Program.ShowScrollableMessageBox(
                                 await LanguageManager.GetStringAsync("Message_CharacterOptions_CannotLoadCharacter", token: token).ConfigureAwait(false),
                                 await LanguageManager.GetStringAsync("MessageText_CharacterOptions_CannotLoadCharacter", token: token).ConfigureAwait(false),
                                 MessageBoxButtons.OK,
@@ -2464,7 +2464,7 @@ namespace Chummer
                     catch (XmlException)
                     {
                         if (blnShowDialogs)
-                            Program.ShowMessageBox(
+                            Program.ShowScrollableMessageBox(
                                 await LanguageManager.GetStringAsync("Message_CharacterOptions_CannotLoadCharacter", token: token).ConfigureAwait(false),
                                 await LanguageManager.GetStringAsync("MessageText_CharacterOptions_CannotLoadCharacter", token: token).ConfigureAwait(false),
                                 MessageBoxButtons.OK,
@@ -2475,7 +2475,7 @@ namespace Chummer
                 else
                 {
                     if (blnShowDialogs)
-                        Program.ShowMessageBox(
+                        Program.ShowScrollableMessageBox(
                             await LanguageManager.GetStringAsync("Message_CharacterOptions_CannotLoadCharacter", token: token).ConfigureAwait(false),
                             await LanguageManager.GetStringAsync("MessageText_CharacterOptions_CannotLoadCharacter", token: token).ConfigureAwait(false),
                             MessageBoxButtons.OK,

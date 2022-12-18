@@ -42,7 +42,7 @@ namespace Chummer
             if ((PreventXPathErrors && strValue.Contains('"'))
                 || (PreventFileNameCharErrors && strValue.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0))
             {
-                Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("Message_InvalidCharacters").ConfigureAwait(false), string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_InvalidCharacters").ConfigureAwait(false), string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
             {

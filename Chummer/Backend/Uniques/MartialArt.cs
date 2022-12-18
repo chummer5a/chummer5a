@@ -814,7 +814,7 @@ namespace Chummer
                             int intKarmaCost = objMartialArt.Cost;
                             if (intKarmaCost > await objCharacter.GetKarmaAsync(token).ConfigureAwait(false))
                             {
-                                Program.ShowMessageBox(
+                                Program.ShowScrollableMessageBox(
                                     await LanguageManager.GetStringAsync("Message_NotEnoughKarma", token: token)
                                                          .ConfigureAwait(false),
                                     await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma", token: token)

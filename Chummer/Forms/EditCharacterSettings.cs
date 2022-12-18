@@ -211,7 +211,7 @@ namespace Chummer
         private async void cmdDelete_Click(object sender, EventArgs e)
         {
             // Verify that the user wants to delete this setting
-            if (Program.ShowMessageBox(
+            if (Program.ShowScrollableMessageBox(
                     string.Format(GlobalSettings.CultureInfo,
                                   await LanguageManager.GetStringAsync("Message_CharacterOptions_ConfirmDelete")
                                                        .ConfigureAwait(false),
@@ -312,7 +312,7 @@ namespace Chummer
 
                     if (dicCharacterSettings.Any(x => x.Value.Name == strSelectedName))
                     {
-                        DialogResult eCreateDuplicateSetting = Program.ShowMessageBox(
+                        DialogResult eCreateDuplicateSetting = Program.ShowScrollableMessageBox(
                             string.Format(
                                 await LanguageManager.GetStringAsync("Message_CharacterOptions_DuplicateSettingName")
                                                      .ConfigureAwait(false),
@@ -349,7 +349,7 @@ namespace Chummer
                                                                   GlobalSettings.InvariantCultureInfo) + ".xml";
                     if (strSelectedFullFileName.Length > intMaxNameLength)
                     {
-                        Program.ShowMessageBox(
+                        Program.ShowScrollableMessageBox(
                             await LanguageManager.GetStringAsync("Message_CharacterOptions_SettingFileNameTooLongError")
                                                  .ConfigureAwait(false),
                             await LanguageManager
@@ -429,16 +429,16 @@ namespace Chummer
 
                         if (sbdConflictingCharacters.Length > 0)
                         {
-                            Program.ShowMessageBox(this,
-                                                   await LanguageManager.GetStringAsync(
-                                                                            "Message_CharacterOptions_OpenCharacterOnBuildMethodChange")
-                                                                        .ConfigureAwait(false)
-                                                   +
-                                                   sbdConflictingCharacters,
-                                                   await LanguageManager.GetStringAsync(
-                                                                            "MessageTitle_CharacterOptions_OpenCharacterOnBuildMethodChange")
-                                                                        .ConfigureAwait(false),
-                                                   MessageBoxButtons.OK, MessageBoxIcon.Error);
+                            Program.ShowScrollableMessageBox(this,
+                                                             await LanguageManager.GetStringAsync(
+                                                                     "Message_CharacterOptions_OpenCharacterOnBuildMethodChange")
+                                                                 .ConfigureAwait(false)
+                                                             +
+                                                             sbdConflictingCharacters,
+                                                             await LanguageManager.GetStringAsync(
+                                                                     "MessageTitle_CharacterOptions_OpenCharacterOnBuildMethodChange")
+                                                                 .ConfigureAwait(false),
+                                                             MessageBoxButtons.OK, MessageBoxIcon.Error);
                             return;
                         }
                     }
@@ -486,7 +486,7 @@ namespace Chummer
                 string caption = await LanguageManager.GetStringAsync("MessageTitle_CharacterOptions_UnsavedDirty")
                                                       .ConfigureAwait(false);
 
-                if (Program.ShowMessageBox(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) !=
+                if (Program.ShowScrollableMessageBox(text, caption, MessageBoxButtons.YesNo, MessageBoxIcon.Question) !=
                     DialogResult.Yes)
                 {
                     Interlocked.Increment(ref _intLoading);
@@ -557,7 +557,7 @@ namespace Chummer
         private async void cmdRestoreDefaults_Click(object sender, EventArgs e)
         {
             // Verify that the user wants to reset these values.
-            if (Program.ShowMessageBox(
+            if (Program.ShowScrollableMessageBox(
                     await LanguageManager.GetStringAsync("Message_Options_RestoreDefaults").ConfigureAwait(false),
                     await LanguageManager.GetStringAsync("MessageTitle_Options_RestoreDefaults").ConfigureAwait(false),
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
@@ -665,7 +665,7 @@ namespace Chummer
 
         private async void EditCharacterSettings_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (IsDirty && Program.ShowMessageBox(
+            if (IsDirty && Program.ShowScrollableMessageBox(
                     await LanguageManager.GetStringAsync("Message_CharacterOptions_UnsavedDirty").ConfigureAwait(false),
                     await LanguageManager.GetStringAsync("MessageTitle_CharacterOptions_UnsavedDirty")
                                          .ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question)

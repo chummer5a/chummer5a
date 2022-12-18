@@ -235,11 +235,12 @@ namespace Chummer.Backend
             }
             catch (Exception nex)
             {
-                Program.ShowMessageBox(
-                    "Failed to create crash report." + Environment.NewLine +
-                    "Chummer crashed with version: " + Utils.CurrentChummerVersion + Environment.NewLine +
-                    "Here is some information to help the developers figure out why:" + Environment.NewLine + nex +
-                    Environment.NewLine + "Crash information:" + Environment.NewLine + ex, "Failed to Create Crash Report", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.ShowScrollableMessageBox(
+                    "Failed to create crash report." + Environment.NewLine + "Chummer crashed with version: "
+                    + Utils.CurrentChummerVersion + Environment.NewLine
+                    + "Here is some information to help the developers figure out why:" + Environment.NewLine + nex
+                    + Environment.NewLine + "Crash information:" + Environment.NewLine + ex,
+                    "Failed to Create Crash Report", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

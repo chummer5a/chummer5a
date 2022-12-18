@@ -8361,7 +8361,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (Capacity == "[*]" && Parent != null && (!_objCharacter.IgnoreRules || _objCharacter.Created))
                 {
-                    Program.ShowMessageBox(
+                    Program.ShowScrollableMessageBox(
                         LanguageManager.GetString("Message_CannotRemoveCyberware"),
                         LanguageManager.GetString("MessageTitle_CannotRemoveCyberware"),
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -8388,7 +8388,7 @@ namespace Chummer.Backend.Equipment
                 {
                     if (Capacity == "[*]" && Parent != null && (!_objCharacter.IgnoreRules || _objCharacter.Created))
                     {
-                        Program.ShowMessageBox(
+                        Program.ShowScrollableMessageBox(
                             LanguageManager.GetString("Message_CannotRemoveCyberware"),
                             LanguageManager.GetString("MessageTitle_CannotRemoveCyberware"),
                             MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -8415,7 +8415,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (Capacity == "[*]" && Parent != null && (!_objCharacter.IgnoreRules || _objCharacter.Created))
                 {
-                    Program.ShowMessageBox(
+                    Program.ShowScrollableMessageBox(
                         LanguageManager.GetString("Message_CannotRemoveCyberware"),
                         LanguageManager.GetString("MessageTitle_CannotRemoveCyberware"),
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -8527,7 +8527,7 @@ namespace Chummer.Backend.Equipment
 
                         if (decCost > _objCharacter.Nuyen)
                         {
-                            Program.ShowMessageBox(
+                            Program.ShowScrollableMessageBox(
                                 LanguageManager.GetString("Message_NotEnoughNuyen"),
                                 LanguageManager.GetString("MessageTitle_NotEnoughNuyen"),
                                 MessageBoxButtons.OK,
@@ -8605,7 +8605,7 @@ namespace Chummer.Backend.Equipment
                 decimal decNewCost = blnFree ? 0 : CalculatedTotalCost(intRating, objGrade) - decSaleCost;
                 if (decNewCost > _objCharacter.Nuyen)
                 {
-                    Program.ShowMessageBox(
+                    Program.ShowScrollableMessageBox(
                         LanguageManager.GetString("Message_NotEnoughNuyen"),
                         LanguageManager.GetString("MessageTitle_NotEnoughNuyen"),
                         MessageBoxButtons.OK, MessageBoxIcon.Information);

@@ -1073,19 +1073,19 @@ namespace Chummer
                     int intSumToTen = await SumToTen(false, token).ConfigureAwait(false);
                     if (intSumToTen != _objCharacter.Settings.SumtoTen)
                     {
-                        Program.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
-                                                             await LanguageManager.GetStringAsync(
-                                                                 "Message_SumtoTen", token: token).ConfigureAwait(false),
-                                                             _objCharacter.Settings.SumtoTen.ToString(
-                                                                 GlobalSettings.CultureInfo),
-                                                             intSumToTen.ToString(GlobalSettings.CultureInfo)));
+                        Program.ShowScrollableMessageBox(string.Format(GlobalSettings.CultureInfo,
+                                                                       await LanguageManager.GetStringAsync(
+                                                                           "Message_SumtoTen", token: token).ConfigureAwait(false),
+                                                                       _objCharacter.Settings.SumtoTen.ToString(
+                                                                           GlobalSettings.CultureInfo),
+                                                                       intSumToTen.ToString(GlobalSettings.CultureInfo)));
                         return;
                     }
                 }
 
                 if (await cboTalents.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) == -1)
                 {
-                    Program.ShowMessageBox(
+                    Program.ShowScrollableMessageBox(
                         this, await LanguageManager.GetStringAsync("Message_Metatype_SelectTalent", token: token).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectTalent", token: token).ConfigureAwait(false),
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -1107,7 +1107,7 @@ namespace Chummer
                     || (await cboSkill3.DoThreadSafeFuncAsync(x => x.Visible, token).ConfigureAwait(false)
                         && string.IsNullOrEmpty(strSkill3)))
                 {
-                    Program.ShowMessageBox(
+                    Program.ShowScrollableMessageBox(
                         this, await LanguageManager.GetStringAsync("Message_Metatype_SelectSkill", token: token).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectSkill", token: token).ConfigureAwait(false),
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -1156,7 +1156,7 @@ namespace Chummer
                 if ((!string.IsNullOrEmpty(strSkill1) && (strSkill1 == strSkill2 || strSkill1 == strSkill3))
                     || (!string.IsNullOrEmpty(strSkill2) && strSkill2 == strSkill3))
                 {
-                    Program.ShowMessageBox(
+                    Program.ShowScrollableMessageBox(
                         this, await LanguageManager.GetStringAsync("Message_Metatype_Duplicate", token: token).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_Metatype_Duplicate", token: token).ConfigureAwait(false),
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -1172,7 +1172,7 @@ namespace Chummer
                             "metatype[name = " + strSelectedMetatype.CleanXPath() + ']');
                     if (objXmlMetatype == null)
                     {
-                        Program.ShowMessageBox(
+                        Program.ShowScrollableMessageBox(
                             this, await LanguageManager.GetStringAsync("Message_Metatype_SelectMetatype", token: token).ConfigureAwait(false),
                             await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectMetatype", token: token).ConfigureAwait(false),
                             MessageBoxButtons.OK,
@@ -1783,7 +1783,7 @@ namespace Chummer
                 }
                 else
                 {
-                    Program.ShowMessageBox(
+                    Program.ShowScrollableMessageBox(
                         this, await LanguageManager.GetStringAsync("Message_Metatype_SelectMetatype", token: token).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_Metatype_SelectMetatype", token: token).ConfigureAwait(false),
                         MessageBoxButtons.OK, MessageBoxIcon.Information);
@@ -2006,7 +2006,7 @@ namespace Chummer
             {
                 if (objXmlMetavariantPriorityNode == null)
                 {
-                    Program.ShowMessageBox(this, await LanguageManager.GetStringAsync("String_NotSupported", token: token).ConfigureAwait(false),
+                    Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("String_NotSupported", token: token).ConfigureAwait(false),
                                            Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
                     await cmdOK.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
                 }

@@ -292,9 +292,9 @@ namespace Chummer.UI.Attributes
                 if (intUpgradeKarmaCost == -1) return; //TODO: more descriptive
                 if (intUpgradeKarmaCost > await _objCharacter.GetKarmaAsync().ConfigureAwait(false))
                 {
-                    Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_NotEnoughKarma").ConfigureAwait(false),
-                        await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma").ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    Program.ShowScrollableMessageBox(await LanguageManager.GetStringAsync("Message_NotEnoughKarma").ConfigureAwait(false),
+                                                     await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma").ConfigureAwait(false),
+                                                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                     return;
                 }
 
@@ -421,7 +421,7 @@ namespace Chummer.UI.Attributes
                 if (await _objCharacter.AttributeSection.CanRaiseAttributeToMetatypeMax(objAttribute, token).ConfigureAwait(false))
                     return true;
 
-                Program.ShowMessageBox(
+                Program.ShowScrollableMessageBox(
                     string.Format(GlobalSettings.CultureInfo,
                         await LanguageManager.GetStringAsync("Message_AttributeMaximum", token: token).ConfigureAwait(false),
                         _objCharacter.Settings.MaxNumberMaxAttributesCreate),
@@ -457,16 +457,16 @@ namespace Chummer.UI.Attributes
             {
                 if (await objAttribute.GetValueAsync().ConfigureAwait(false) <= 0)
                 {
-                    Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_CannotBurnEdge").ConfigureAwait(false),
-                        await LanguageManager.GetStringAsync("MessageTitle_CannotBurnEdge").ConfigureAwait(false), MessageBoxButtons.OK,
-                        MessageBoxIcon.Exclamation);
+                    Program.ShowScrollableMessageBox(await LanguageManager.GetStringAsync("Message_CannotBurnEdge").ConfigureAwait(false),
+                                                     await LanguageManager.GetStringAsync("MessageTitle_CannotBurnEdge").ConfigureAwait(false), MessageBoxButtons.OK,
+                                                     MessageBoxIcon.Exclamation);
                     return;
                 }
 
                 // Verify that the user wants to Burn a point of Edge.
-                if (Program.ShowMessageBox(await LanguageManager.GetStringAsync("Message_BurnEdge").ConfigureAwait(false),
-                        await LanguageManager.GetStringAsync("MessageTitle_BurnEdge").ConfigureAwait(false), MessageBoxButtons.YesNo,
-                        MessageBoxIcon.Question) == DialogResult.No)
+                if (Program.ShowScrollableMessageBox(await LanguageManager.GetStringAsync("Message_BurnEdge").ConfigureAwait(false),
+                                                     await LanguageManager.GetStringAsync("MessageTitle_BurnEdge").ConfigureAwait(false), MessageBoxButtons.YesNo,
+                                                     MessageBoxIcon.Question) == DialogResult.No)
                     return;
 
                 await objAttribute.Degrade(1).ConfigureAwait(false);
