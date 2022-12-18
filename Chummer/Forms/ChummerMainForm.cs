@@ -85,11 +85,13 @@ namespace Chummer
             Utils.IsUnitTestForUI = blnIsUnitTestForUI;
             InitializeComponent();
 #if DEBUG
-            DpiFriendlyToolStripMenuItem mnuForceCrash = new DpiFriendlyToolStripMenuItem();
-            mnuForceCrash.ImageDpi96 = Properties.Resources.error;
-            mnuForceCrash.ImageDpi192 = Properties.Resources.error1;
-            mnuForceCrash.Name = "mnuForceCrash";
-            mnuForceCrash.Text = "&Force Crash";
+            DpiFriendlyToolStripMenuItem mnuForceCrash = new DpiFriendlyToolStripMenuItem
+            {
+                ImageDpi96 = Properties.Resources.error,
+                ImageDpi192 = Properties.Resources.error1,
+                Name = "mnuForceCrash",
+                Text = "&Force Crash"
+            };
             mnuForceCrash.Click += mnuForceCrash_Click;
             toolsMenu.DropDownItems.Add(mnuForceCrash);
 #endif

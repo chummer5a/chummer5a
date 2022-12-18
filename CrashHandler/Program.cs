@@ -38,11 +38,6 @@ namespace CrashHandler
 
         private static void ShowCrashReport(string[] args)
         {
-            if (args.Contains("--debug") && !Debugger.IsAttached)
-            {
-                Debugger.Launch();
-            }
-            
             using (CrashDumper objDumper = new CrashDumper(args[0], args[1]))
             {
                 Application.Run(new CrashReporter(objDumper));
@@ -55,6 +50,33 @@ namespace CrashHandler
         [STAThread]
         private static void Main(string[] args)
         {
+            int intDebugArgIndex = -1;
+            for (int i = 0; i < args.Length - 1; ++i)
+            {
+                if (args[i].Equals("--debug", StringComparison.OrdinalIgnoreCase))
+                {
+                    if (!Debugger.IsAttached)
+                        Debugger.Launch();
+                    intDebugArgIndex = i;
+                    break;
+                }
+            }
+
+            if (intDebugArgIndex >= 0)
+            {
+                string[] astrNewArgs = new string[args.Length - 1];
+                for (int i = 0; i < args.Length - 1; ++i)
+                {
+                    if (i == intDebugArgIndex)
+                        continue;
+                    if (i > intDebugArgIndex)
+                        astrNewArgs[i - 1] = args[i];
+                    else
+                        astrNewArgs[i] = args[i];
+                }
+                args = astrNewArgs;
+            }
+
             Chummer.Program.SetProcessDPI(GlobalSettings.DpiScalingMethodSetting);
             if (Chummer.Program.IsMainThread)
                 Chummer.Program.SetThreadDPI(GlobalSettings.DpiScalingMethodSetting);

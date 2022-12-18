@@ -225,13 +225,30 @@ namespace Chummer.Backend
                 }
 
 #if DEBUG
-                using (Process crashHandler
-                       = Process.Start(Path.Combine(Utils.GetStartupPath, "CrashHandler.exe"), "crash \"" + strJsonPath + "\" \"" + datCrashDateTime.ToFileTimeUtc() + "\" --debug"))
+                using (Process prcCrashHandler
+                       = Process.Start(Path.Combine(Utils.GetStartupPath, "CrashHandler.exe"),
+                                       "crash \"" + strJsonPath + "\" \"" + datCrashDateTime.ToFileTimeUtc()
+                                       + "\" --debug"))
 #else
-                using (Process crashHandler
-                       = Process.Start(Path.Combine(Utils.GetStartupPath, "CrashHandler.exe"), "crash \"" + strJsonPath + "\" \"" + datCrashDateTime.ToFileTimeUtc() + "\""))
+                using (Process prcCrashHandler
+                       = Process.Start(Path.Combine(Utils.GetStartupPath, "CrashHandler.exe"),
+                                       "crash \"" + strJsonPath + "\" \"" + datCrashDateTime.ToFileTimeUtc() + "\""))
 #endif
-                    crashHandler?.WaitForExit();
+                {
+                    if (prcCrashHandler == null)
+                        return;
+                    prcCrashHandler.WaitForExit();
+                    if (prcCrashHandler.ExitCode != 0)
+                    {
+                        Program.ShowScrollableMessageBox(
+                            "Failed to create crash report because of an issue with the crash handler."
+                            + Environment.NewLine + "Chummer crashed with version: " + Utils.CurrentChummerVersion
+                            + Environment.NewLine + "Crash Handler crashed with exit code: "
+                            + prcCrashHandler.ExitCode + Environment.NewLine + "Crash information:"
+                            + Environment.NewLine + ex, "Failed to Create Crash Report", MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+                    }
+                }
             }
             catch (Exception nex)
             {
