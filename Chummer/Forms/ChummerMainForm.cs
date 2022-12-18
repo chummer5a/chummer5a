@@ -84,6 +84,15 @@ namespace Chummer
             Utils.IsUnitTest = blnIsUnitTest;
             Utils.IsUnitTestForUI = blnIsUnitTestForUI;
             InitializeComponent();
+#if DEBUG
+            DpiFriendlyToolStripMenuItem mnuForceCrash = new DpiFriendlyToolStripMenuItem();
+            mnuForceCrash.ImageDpi96 = Properties.Resources.error;
+            mnuForceCrash.ImageDpi192 = Properties.Resources.error1;
+            mnuForceCrash.Name = "mnuForceCrash";
+            mnuForceCrash.Text = "&Force Crash";
+            mnuForceCrash.Click += mnuForceCrash_Click;
+            toolsMenu.DropDownItems.Add(mnuForceCrash);
+#endif
             tabForms.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
@@ -2684,6 +2693,13 @@ namespace Chummer
                 tabForms.ItemSize.Width * e.DeviceDpiNew / Math.Max(e.DeviceDpiOld, 1),
                 tabForms.ItemSize.Height * e.DeviceDpiNew / Math.Max(e.DeviceDpiOld, 1));
         }
+
+#if DEBUG
+        private void mnuForceCrash_Click(object sender, EventArgs e)
+        {
+            throw new InvalidOperationException();
+        }
+#endif
 
 #endregion Control Events
 
