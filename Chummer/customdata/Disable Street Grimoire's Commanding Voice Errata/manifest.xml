@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -17,19 +18,20 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-  <manifest xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema ../manifest.xsd">
-    <guid>3C9636B8-F5F6-49D4-AE8F-12F8F8371334</guid>
-    <version>1</version>
-    <authors>
-      <author>
-        <name>Teksura</name>
-        <main>true</main>
-      </author>
-    </authors>
-    <descriptions>
-      <description>
-        <text>This ruleset cdisables the Street Grimoire errata for Commanding Voice. Specifically, it removes Authorative Tone and replaces it with Commanding Voice as given in the original printing of Street Grimoire.</text>
-        <lang>en-us</lang>
-      </description>
-    </descriptions>
-  </manifest>
+
+<manifest xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema ../manifest.xsd">
+  <guid>3C9636B8-F5F6-49D4-AE8F-12F8F8371334</guid>
+  <version>1</version>
+  <authors>
+    <author>
+      <name>Teksura</name>
+      <main>true</main>
+    </author>
+  </authors>
+  <descriptions>
+    <description>
+      <text>This ruleset disables the Street Grimoire errata for Commanding Voice. Specifically, it removes Authoritative Tone and replaces it with Commanding Voice as given in the original printing of Street Grimoire.</text>
+      <lang>en-us</lang>
+    </description>
+  </descriptions>
+</manifest>
