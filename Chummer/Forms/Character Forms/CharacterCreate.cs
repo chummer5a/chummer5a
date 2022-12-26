@@ -12838,16 +12838,19 @@ namespace Chummer
             intPointsInContacts += await lstContacts.SumAsync(objContact =>
             {
                 // Don't care about free contacts
-                if (objContact.EntityType != ContactType.Contact || objContact.Free)
+                if (objContact.EntityType != ContactType.Contact)
+                    return 0;
+                int intCost = objContact.ContactPoints;
+                if (intCost == 0)
                     return 0;
 
                 if (objContact.Connection >= 8 && blnFriendsInHighPlaces)
                 {
-                    intHighPlacesFriends += objContact.Connection + objContact.Loyalty;
+                    intHighPlacesFriends += intCost;
                 }
                 else if (!objContact.IsGroup)
                 {
-                    int over = intContactPointsLeft - objContact.ContactPoints;
+                    int over = intContactPointsLeft - intCost;
 
                     //Prefers to eat 0, we went over
                     if (over < 0)
@@ -19520,12 +19523,18 @@ namespace Chummer
                         blnValid = false;
                     }
 
-                    if (CharacterObject.FriendsInHighPlaces)
+                    if (await CharacterObject.GetFriendsInHighPlacesAsync(token).ConfigureAwait(false))
                     {
-                        if (await CharacterObject.Contacts.AnyAsync(x => x.Connection < 8
-                                                                         && Math.Max(0, x.Connection)
-                                                                         + Math.Max(0, x.Loyalty) > 7
-                                                                         && !x.Free, token).ConfigureAwait(false))
+                        // If we have Friends in High Places, then we need to account for any mixture of Friends in High Places plus contact karma discounts (e.g. from Massive Network)
+                        if (await CharacterObject.Contacts.AnyAsync(x => x.Connection < 8 && x.ContactPoints > 7, token)
+                                                 .ConfigureAwait(false)
+                            // With Friends in High Places, we can only have "too high contacts" if we overspend our Friends in High Places karma on eligible contacts
+                            || await CharacterObject.Contacts
+                                                    .SumAsync(x => x.Connection >= 8 && x.ContactPoints > 7,
+                                                              x => x.ContactPoints, token).ConfigureAwait(false)
+                            > 4 * await (await CharacterObject.GetAttributeAsync("CHA", token: token)
+                                                              .ConfigureAwait(false)).GetValueAsync(token)
+                                .ConfigureAwait(false))
                         {
                             blnValid = false;
                             sbdMessage.AppendLine().Append('\t')
@@ -19533,10 +19542,7 @@ namespace Chummer
                                                                    .ConfigureAwait(false));
                         }
                     }
-                    else if (await CharacterObject.Contacts.AnyAsync(
-                                                      x => Math.Max(0, x.Connection) + Math.Max(0, x.Loyalty) > 7
-                                                           && !x.Free, token)
-                                                  .ConfigureAwait(false))
+                    else if (await CharacterObject.Contacts.AnyAsync(x => x.ContactPoints > 7, token).ConfigureAwait(false))
                     {
                         blnValid = false;
                         sbdMessage.AppendLine().Append('\t')
