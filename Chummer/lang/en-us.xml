@@ -10724,6 +10724,10 @@
       <key>LimitCondition_SoldierParagon</key>
       <text>Only for attack actions</text>
     </string>
+    <string>
+      <key>LimitCondition_SkillsActiveLeadership</key>
+      <text>Only for Leadership</text>
+    </string>
     <!-- End Region -->
     <string>
       <key>String_CapacityRemaining</key>

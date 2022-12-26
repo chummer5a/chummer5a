@@ -3879,6 +3879,25 @@
       <capacity>0</capacity>
       <avail>Rating*6</avail>
       <cost>Rating*8000</cost>
+      <bonus>
+        <limitmodifier>
+          <limit>Social</limit>
+          <value>Rating</value>
+          <condition>LimitCondition_SkillsActiveLeadership</condition>
+        </limitmodifier>
+        <limitmodifier>
+          <limit>Social</limit>
+          <value>Rating</value>
+          <condition>LimitCondition_SkillsActivePerformanceSinging</condition>
+        </limitmodifier>
+      </bonus>
+      <bannedgrades>
+        <grade>Used</grade>
+        <grade>Standard</grade>
+        <grade>Standard (Burnout's Way)</grade>
+        <grade>Alphaware</grade>
+        <grade>Omegaware</grade>
+      </bannedgrades>
       <source>NF</source>
       <page>175</page>
     </bioware>
