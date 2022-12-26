@@ -39,6 +39,7 @@ using DragDropEffects = System.Windows.Forms.DragDropEffects;
 using DragEventArgs = System.Windows.Forms.DragEventArgs;
 using Path = System.IO.Path;
 using Size = System.Drawing.Size;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Chummer
 {
@@ -55,6 +56,8 @@ namespace Chummer
             = new ThreadSafeObservableCollection<CharacterSheetViewer>();
         private readonly ThreadSafeObservableCollection<ExportCharacter> _lstOpenCharacterExportForms
             = new ThreadSafeObservableCollection<ExportCharacter>();
+        private ConcurrentStringHashSet _setCharactersToOpen;
+        private readonly Timer _tmrCharactersToOpenCheck = new Timer();
         private readonly string _strCurrentVersion;
         private Chummy _mascotChummy;
         private readonly CancellationTokenSource _objGenericCancellationTokenSource = new CancellationTokenSource();
@@ -106,6 +109,8 @@ namespace Chummer
                 _lstOpenCharacterEditorForms.Dispose();
                 _lstOpenCharacterSheetViewers.Dispose();
                 _lstOpenCharacterExportForms.Dispose();
+                _tmrCharactersToOpenCheck.Stop();
+                _tmrCharactersToOpenCheck.Dispose();
             };
 
             _lstOpenCharacterEditorForms.BeforeClearCollectionChanged += OpenCharacterEditorFormsOnBeforeClearCollectionChanged;
@@ -114,6 +119,8 @@ namespace Chummer
             _lstOpenCharacterSheetViewers.CollectionChanged += OpenCharacterSheetViewersOnCollectionChanged;
             _lstOpenCharacterExportForms.BeforeClearCollectionChanged += OpenCharacterExportFormsOnBeforeClearCollectionChanged;
             _lstOpenCharacterExportForms.CollectionChanged += OpenCharacterExportFormsOnCollectionChanged;
+            _tmrCharactersToOpenCheck.Interval = 1000;
+            _tmrCharactersToOpenCheck.Tick += CharactersToOpenCheckOnTick;
 
             //lets write that in separate lines to see where the exception is thrown
             if (!GlobalSettings.HideMasterIndex || blnIsUnitTest)
@@ -138,6 +145,13 @@ namespace Chummer
                 else
                     frmCharacterRoster.Close();
             }
+        }
+
+        private async void CharactersToOpenCheckOnTick(object sender, EventArgs e)
+        {
+            if (Utils.IsUnitTest || _intFormClosing > 0)
+                return;
+            await ProcessQueuedCharactersToOpen();
         }
 
         private async void OpenCharacterExportFormsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -642,14 +656,12 @@ namespace Chummer
 
                             Program.MainForm = this;
 
-                            ConcurrentBag<Character> lstCharactersToLoad = new ConcurrentBag<Character>();
                             using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                    = await Program.CreateAndShowProgressBarAsync(
                                                       Text,
                                                       GlobalSettings.AllowEasterEggs ? 4 : 3, _objGenericToken)
                                                   .ConfigureAwait(false))
                             {
-                                Task objCharacterLoadingTask = null;
                                 await frmLoadingBar.MyForm.PerformStepAsync(
                                     await LanguageManager.GetStringAsync("String_UI", token: _objGenericToken)
                                                          .ConfigureAwait(false),
@@ -776,26 +788,15 @@ namespace Chummer
 
                                         if (setFilesToLoad.Count > 0)
                                         {
-                                            await frmLoadingBar.MyForm.ResetAsync(
-                                                (GlobalSettings.AllowEasterEggs ? 3 : 2)
-                                                + setFilesToLoad.Count * Character.NumLoadingSections,
-                                                _objGenericToken).ConfigureAwait(false);
-                                            List<Task> tskLoadingTasks = new List<Task>(setFilesToLoad.Count);
+                                            ConcurrentStringHashSet setNewCharactersToOpen = new ConcurrentStringHashSet();
+                                            ConcurrentStringHashSet setCharactersToOpen
+                                                = Interlocked.CompareExchange(
+                                                    ref _setCharactersToOpen, setNewCharactersToOpen, null);
+                                            if (setCharactersToOpen != null)
+                                                setNewCharactersToOpen = setCharactersToOpen;
                                             foreach (string strFile in setFilesToLoad)
-                                            {
-                                                tskLoadingTasks.Add(Task.Run(async () =>
-                                                {
-                                                    Character objCharacter
-                                                        = await Program.LoadCharacterAsync(
-                                                            // ReSharper disable once AccessToDisposedClosure
-                                                            strFile, frmLoadingBar: frmLoadingBar.MyForm,
-                                                            token: _objGenericToken).ConfigureAwait(false);
-                                                    // ReSharper disable once AccessToDisposedClosure
-                                                    lstCharactersToLoad.Add(objCharacter);
-                                                }, _objGenericToken));
-                                            }
-
-                                            objCharacterLoadingTask = Task.WhenAll(tskLoadingTasks);
+                                                setNewCharactersToOpen.TryAdd(strFile);
+                                            _tmrCharactersToOpenCheck.Start();
                                         }
                                     }
                                     finally
@@ -902,14 +903,7 @@ namespace Chummer
                                         tssItem.TranslateToolStripItemsRecursively(token: _objGenericToken);
                                     }
                                 }, token: _objGenericToken).ConfigureAwait(false);
-
-                                if (objCharacterLoadingTask?.IsCompleted == false)
-                                    await objCharacterLoadingTask.ConfigureAwait(false);
                             }
-
-                            if (!lstCharactersToLoad.IsEmpty)
-                                await OpenCharacterList(lstCharactersToLoad, token: _objGenericToken)
-                                    .ConfigureAwait(false);
                         }
                         catch (Exception ex)
                         {
@@ -3426,6 +3420,51 @@ namespace Chummer
             }
         }
 
+        private async Task ProcessQueuedCharactersToOpen()
+        {
+            ConcurrentStringHashSet setCharactersToOpen = Interlocked.Exchange(ref _setCharactersToOpen, null);
+            if (setCharactersToOpen == null || setCharactersToOpen.Count == 0)
+                return;
+
+            try
+            {
+                CursorWait objCursorWait
+                    = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
+                try
+                {
+                    List<Character> lstCharacters = new List<Character>(setCharactersToOpen.Count);
+                    using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                           = await Program.CreateAndShowProgressBarAsync(string.Empty,
+                                                                         Character.NumLoadingSections
+                                                                         * setCharactersToOpen.Count, _objGenericToken)
+                                          .ConfigureAwait(false))
+                    {
+                        List<Task<Character>> tskCharacterLoads = new List<Task<Character>>(setCharactersToOpen.Count);
+                        while (setCharactersToOpen.TryTake(out string strFile))
+                        {
+                            // ReSharper disable once AccessToDisposedClosure
+                            tskCharacterLoads.Add(Task.Run(
+                                                      () => Program.LoadCharacterAsync(
+                                                          strFile, frmLoadingBar: frmLoadingBar.MyForm,
+                                                          token: _objGenericToken), _objGenericToken));
+                        }
+                        Character[] aobjCharacters = await Task.WhenAll(tskCharacterLoads).ConfigureAwait(false);
+                        lstCharacters.AddRange(aobjCharacters);
+                    }
+
+                    await OpenCharacterList(lstCharacters, token: _objGenericToken).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
         /// <summary>
         /// Populate the MRU items.
         /// </summary>
@@ -3715,13 +3754,8 @@ namespace Chummer
             {
                 try
                 {
-                    List<Character> lstCharactersToLoad = new List<Character>(1);
-
                     using (CursorWait.New(this, true))
-                    using (ThreadSafeForm<LoadingBar> frmLoadingBar = Program.CreateAndShowProgressBar())
                     {
-                        Task<Character[]> tskCharacterLoading = null;
-                        Task<Character>[] atskLoadingTasks = null;
                         // Extract the file name
                         NativeMethods.CopyDataStruct objReceivedData
                             = (NativeMethods.CopyDataStruct) Marshal.PtrToStructure(
@@ -3802,20 +3836,15 @@ namespace Chummer
 
                                 if (setFilesToLoad.Count > 0)
                                 {
-                                    frmLoadingBar.MyForm.Reset(setFilesToLoad.Count * Character.NumLoadingSections);
-                                    atskLoadingTasks = new Task<Character>[setFilesToLoad.Count];
-                                    for (int i = 0; i < setFilesToLoad.Count; ++i)
-                                    {
-                                        string strFile = setFilesToLoad.ElementAt(i);
-                                        // ReSharper disable once AccessToDisposedClosure
-                                        atskLoadingTasks[i]
-                                            = Task.Run(
-                                                () => Program.LoadCharacterAsync(
-                                                    strFile, frmLoadingBar: frmLoadingBar.MyForm,
-                                                    token: _objGenericToken), _objGenericToken);
-                                    }
-
-                                    tskCharacterLoading = Task.WhenAll(atskLoadingTasks);
+                                    ConcurrentStringHashSet setNewCharactersToOpen = new ConcurrentStringHashSet();
+                                    ConcurrentStringHashSet setCharactersToOpen
+                                        = Interlocked.CompareExchange(
+                                            ref _setCharactersToOpen, setNewCharactersToOpen, null);
+                                    if (setCharactersToOpen != null)
+                                        setNewCharactersToOpen = setCharactersToOpen;
+                                    foreach (string strFile in setFilesToLoad)
+                                        setNewCharactersToOpen.TryAdd(strFile);
+                                    _tmrCharactersToOpenCheck.Start();
                                 }
                             }
                             finally
@@ -3829,22 +3858,7 @@ namespace Chummer
                                 frmTestData.Show();
                             }
                         }
-
-                        Utils.SafelyRunSynchronously(async () =>
-                        {
-                            if (tskCharacterLoading?.IsCompleted == false)
-                                await tskCharacterLoading.ConfigureAwait(false);
-                            if (atskLoadingTasks != null)
-                            {
-                                foreach (Task<Character> tskLoadingTask in atskLoadingTasks)
-                                    lstCharactersToLoad.Add(await tskLoadingTask.ConfigureAwait(false));
-                            }
-                        }, _objGenericToken);
                     }
-
-                    if (lstCharactersToLoad.Count > 0)
-                        Utils.SafelyRunSynchronously(
-                            () => OpenCharacterList(lstCharactersToLoad, token: _objGenericToken), _objGenericToken);
                 }
                 catch (OperationCanceledException)
                 {

@@ -1165,7 +1165,7 @@ namespace Chummer
         /// <summary>
         /// Run code on the main (UI) thread in a synchronous fashion.
         /// </summary>
-        public static void RunOnMainThread(Action func)
+        public static void RunOnMainThread(Action func, JoinableTaskCreationOptions eOptions = JoinableTaskCreationOptions.None)
         {
             if (Program.IsMainThread)
                 func.Invoke();
@@ -1175,14 +1175,14 @@ namespace Chummer
                 {
                     await JoinableTaskFactory.SwitchToMainThreadAsync();
                     func.Invoke();
-                });
+                }, eOptions);
             }
         }
 
         /// <summary>
         /// Run code on the main (UI) thread in a synchronous fashion.
         /// </summary>
-        public static T RunOnMainThread<T>(Func<T> func)
+        public static T RunOnMainThread<T>(Func<T> func, JoinableTaskCreationOptions eOptions = JoinableTaskCreationOptions.None)
         {
             return Program.IsMainThread
                 ? func.Invoke()
@@ -1190,7 +1190,7 @@ namespace Chummer
                 {
                     await JoinableTaskFactory.SwitchToMainThreadAsync();
                     return func.Invoke();
-                });
+                }, eOptions);
         }
 
         /// <summary>
@@ -1231,19 +1231,54 @@ namespace Chummer
         /// <summary>
         /// Run code on the main (UI) thread in a synchronous fashion.
         /// </summary>
-        public static void RunOnMainThread(Func<Task> func, CancellationToken token = default)
+        public static void RunOnMainThread(Action func, JoinableTaskCreationOptions eOptions, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
-            JoinableTaskFactory.Run(func);
+            if (Program.IsMainThread)
+                func.Invoke();
+            else
+            {
+                JoinableTaskFactory.Run(async () =>
+                {
+                    token.ThrowIfCancellationRequested();
+                    await JoinableTaskFactory.SwitchToMainThreadAsync();
+                    func.Invoke();
+                }, eOptions);
+            }
         }
 
         /// <summary>
         /// Run code on the main (UI) thread in a synchronous fashion.
         /// </summary>
-        public static T RunOnMainThread<T>(Func<Task<T>> func, CancellationToken token = default)
+        public static T RunOnMainThread<T>(Func<T> func, JoinableTaskCreationOptions eOptions, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
-            return JoinableTaskFactory.Run(func);
+            return Program.IsMainThread
+                ? func.Invoke()
+                : JoinableTaskFactory.Run(async () =>
+                {
+                    token.ThrowIfCancellationRequested();
+                    await JoinableTaskFactory.SwitchToMainThreadAsync();
+                    return func.Invoke();
+                }, eOptions);
+        }
+
+        /// <summary>
+        /// Run code on the main (UI) thread in a synchronous fashion.
+        /// </summary>
+        public static void RunOnMainThread(Func<Task> func, JoinableTaskCreationOptions eOptions = JoinableTaskCreationOptions.None, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            JoinableTaskFactory.Run(func, eOptions);
+        }
+
+        /// <summary>
+        /// Run code on the main (UI) thread in a synchronous fashion.
+        /// </summary>
+        public static T RunOnMainThread<T>(Func<Task<T>> func, JoinableTaskCreationOptions eOptions = JoinableTaskCreationOptions.None, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return JoinableTaskFactory.Run(func, eOptions);
         }
         /// <summary>
         /// Run code on the main (UI) thread in an awaitable, asynchronous fashion.
@@ -1561,7 +1596,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             if (Program.IsMainThread)
-                JoinableTaskFactory.Run(funcToRun);
+                JoinableTaskFactory.Run(funcToRun, JoinableTaskCreationOptions.LongRunning);
             else
                 funcToRun.Invoke().GetAwaiter().GetResult();
         }
@@ -1577,7 +1612,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             return Program.IsMainThread
-                ? JoinableTaskFactory.Run(funcToRun)
+                ? JoinableTaskFactory.Run(funcToRun, JoinableTaskCreationOptions.LongRunning)
                 : funcToRun.Invoke().GetAwaiter().GetResult();
         }
 
@@ -1596,7 +1631,7 @@ namespace Chummer
                 foreach (Func<Task> funcToRun in afuncToRun)
                 {
                     token.ThrowIfCancellationRequested();
-                    JoinableTaskFactory.Run(funcToRun);
+                    JoinableTaskFactory.Run(funcToRun, JoinableTaskCreationOptions.LongRunning);
                 }
             }
             else
@@ -1627,7 +1662,7 @@ namespace Chummer
                 foreach (Func<Task<T>> funcToRun in afuncToRun)
                 {
                     token.ThrowIfCancellationRequested();
-                    aobjReturn[i++] = JoinableTaskFactory.Run(funcToRun);
+                    aobjReturn[i++] = JoinableTaskFactory.Run(funcToRun, JoinableTaskCreationOptions.LongRunning);
                 }
             }
             else
@@ -1885,7 +1920,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (Program.IsMainThread && _intIsOkToRunDoEvents < 1)
             {
-                return JoinableTaskFactory.Run(funcToRun);
+                return JoinableTaskFactory.Run(funcToRun, JoinableTaskCreationOptions.LongRunning);
             }
             if (!EverDoEvents)
             {
@@ -1911,7 +1946,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (Program.IsMainThread && _intIsOkToRunDoEvents < 1)
             {
-                return JoinableTaskFactory.Run(() => funcToRun(token));
+                return JoinableTaskFactory.Run(() => funcToRun(token), JoinableTaskCreationOptions.LongRunning);
             }
             if (!EverDoEvents)
             {
@@ -1954,7 +1989,7 @@ namespace Chummer
                 {
                     if (token.IsCancellationRequested || y.ShouldExitCurrentIteration)
                         y.Stop();
-                    aobjReturn[i] = JoinableTaskFactory.Run(afuncToRun[i]);
+                    aobjReturn[i] = JoinableTaskFactory.Run(afuncToRun[i], JoinableTaskCreationOptions.LongRunning);
                 });
                 token.ThrowIfCancellationRequested();
                 return aobjReturn;
@@ -2019,7 +2054,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (Program.IsMainThread && _intIsOkToRunDoEvents < 1)
             {
-                JoinableTaskFactory.Run(funcToRun);
+                JoinableTaskFactory.Run(funcToRun, JoinableTaskCreationOptions.LongRunning);
                 return;
             }
             if (!EverDoEvents)
@@ -2050,7 +2085,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (Program.IsMainThread && _intIsOkToRunDoEvents < 1)
             {
-                JoinableTaskFactory.Run(() => funcToRun(token));
+                JoinableTaskFactory.Run(() => funcToRun(token), JoinableTaskCreationOptions.LongRunning);
                 return;
             }
             if (!EverDoEvents)
@@ -2095,7 +2130,7 @@ namespace Chummer
                 {
                     if (token.IsCancellationRequested || y.ShouldExitCurrentIteration)
                         y.Stop();
-                    JoinableTaskFactory.Run(funcToRun);
+                    JoinableTaskFactory.Run(funcToRun, JoinableTaskCreationOptions.LongRunning);
                 });
                 token.ThrowIfCancellationRequested();
                 return;
