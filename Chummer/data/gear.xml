@@ -20756,7 +20756,7 @@
       <page>170</page>
       <avail>+4</avail>
       <requireparent />
-      <cost>(Parent Cost * 2)</cost>
+      <cost>(Parent Cost)</cost>
     </gear>
     <gear>
       <id>357d77f6-0e9e-4e5f-87f2-9c4b5422d23c</id>
