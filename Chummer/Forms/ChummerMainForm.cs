@@ -2489,6 +2489,7 @@ namespace Chummer
         {
             if (Interlocked.Exchange(ref _intFormClosing, 1) == 1)
                 return;
+            _objGenericCancellationTokenSource.Cancel(false);
             Program.OpenCharacters.CollectionChanged -= OpenCharactersOnCollectionChanged;
             foreach (Character objCharacter in Program.OpenCharacters)
             {
@@ -2496,8 +2497,17 @@ namespace Chummer
                 {
                     try
                     {
-                        using (objCharacter.LockObject.EnterWriteLock())
+                        IAsyncDisposable objLocker = await objCharacter.LockObject
+                                                                       .EnterWriteLockAsync(CancellationToken.None)
+                                                                       .ConfigureAwait(false);
+                        try
+                        {
                             objCharacter.PropertyChanged -= UpdateCharacterTabTitle;
+                        }
+                        finally
+                        {
+                            await objLocker.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     catch (ObjectDisposedException)
                     {
@@ -2506,7 +2516,6 @@ namespace Chummer
                 }
             }
 
-            _objGenericCancellationTokenSource.Cancel(false);
 #if !DEBUG
             CancellationTokenSource objTemp = Interlocked.Exchange(ref _objVersionUpdaterCancellationTokenSource, null);
             if (objTemp?.IsCancellationRequested == false)
@@ -2553,10 +2562,6 @@ namespace Chummer
                     await objFormCharacter.DisposeAsync().ConfigureAwait(false);
             }
 
-            await Task.WhenAll(_lstOpenCharacterEditorForms.ClearAsync(CancellationToken.None).AsTask(),
-                               _lstOpenCharacterExportForms.ClearAsync(CancellationToken.None).AsTask(),
-                               _lstOpenCharacterSheetViewers.ClearAsync(CancellationToken.None).AsTask())
-                      .ConfigureAwait(false);
             FormWindowState eWindowState = await this.DoThreadSafeFuncAsync(x => x.WindowState, CancellationToken.None)
                                                      .ConfigureAwait(false);
             Properties.Settings.Default.WindowState = eWindowState;

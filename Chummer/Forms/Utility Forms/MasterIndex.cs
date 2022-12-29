@@ -112,10 +112,11 @@ namespace Chummer
             {
                 IAsyncReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings
                     = await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false);
-                foreach (CharacterSettings objLoopSettings in dicCharacterSettings.Select(x => x.Value))
+                await dicCharacterSettings.ForEachAsync(async x =>
                 {
-                    lstCharacterSettings.Add(new ListItem(objLoopSettings, await objLoopSettings.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)));
-                }
+                    lstCharacterSettings.Add(
+                        new ListItem(x.Value, await x.Value.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)));
+                }, token: token).ConfigureAwait(false);
 
                 lstCharacterSettings.Sort(CompareListItems.CompareNames);
 
