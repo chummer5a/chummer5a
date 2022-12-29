@@ -50,6 +50,12 @@ namespace CrashHandler
         [STAThread]
         private static void Main(string[] args)
         {
+            Chummer.Program.SetProcessDPI(GlobalSettings.DpiScalingMethodSetting);
+            if (Chummer.Program.IsMainThread)
+                Chummer.Program.SetThreadDPI(GlobalSettings.DpiScalingMethodSetting);
+            Application.EnableVisualStyles();
+            Application.SetCompatibleTextRenderingDefault(false);
+
             int intDebugArgIndex = -1;
             for (int i = 0; i < args.Length - 1; ++i)
             {
@@ -76,13 +82,6 @@ namespace CrashHandler
                 }
                 args = astrNewArgs;
             }
-
-            Chummer.Program.SetProcessDPI(GlobalSettings.DpiScalingMethodSetting);
-            if (Chummer.Program.IsMainThread)
-                Chummer.Program.SetThreadDPI(GlobalSettings.DpiScalingMethodSetting);
-
-            Application.EnableVisualStyles();
-            Application.SetCompatibleTextRenderingDefault(false);
 
             for (int i = 0; i < args.Length - 1; ++i)
             {

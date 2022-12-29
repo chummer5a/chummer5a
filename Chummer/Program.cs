@@ -606,12 +606,14 @@ namespace Chummer
 
         public static void SetProcessDPI(DpiScalingMethod eMethod)
         {
+            OperatingSystem objOSInfo = Environment.OSVersion;
+            Version objOSInfoVersion = objOSInfo.Version;
             switch (eMethod)
             {
                 case DpiScalingMethod.None:
-                    if (Environment.OSVersion.Version >= new Version(6, 3, 0)) // Windows 8.1 added SetProcessDpiAwareness
+                    if (objOSInfo.Platform == PlatformID.Win32NT && objOSInfoVersion >= new Version(6, 3, 0)) // Windows 8.1 added SetProcessDpiAwareness
                     {
-                        if (Environment.OSVersion.Version >= new Version(10, 0, 15063)) // Windows 10 Creators Update added SetProcessDpiAwarenessContext
+                        if (objOSInfoVersion >= new Version(10, 0, 15063)) // Windows 10 Creators Update added SetProcessDpiAwarenessContext
                             NativeMethods.SetProcessDpiAwarenessContext(NativeMethods.ContextDpiAwareness.Unaware);
                         else
                             NativeMethods.SetProcessDpiAwareness(NativeMethods.ProcessDpiAwareness.Unaware);
@@ -621,9 +623,9 @@ namespace Chummer
                     break;
                 // System
                 case DpiScalingMethod.Zoom:
-                    if (Environment.OSVersion.Version >= new Version(6, 3, 0)) // Windows 8.1 added SetProcessDpiAwareness
+                    if (objOSInfo.Platform == PlatformID.Win32NT && objOSInfoVersion >= new Version(6, 3, 0)) // Windows 8.1 added SetProcessDpiAwareness
                     {
-                        if (Environment.OSVersion.Version >= new Version(10, 0, 15063)) // Windows 10 Creators Update added SetProcessDpiAwarenessContext
+                        if (objOSInfoVersion >= new Version(10, 0, 15063)) // Windows 10 Creators Update added SetProcessDpiAwarenessContext
                             NativeMethods.SetProcessDpiAwarenessContext(NativeMethods.ContextDpiAwareness.System);
                         else
                             NativeMethods.SetProcessDpiAwareness(NativeMethods.ProcessDpiAwareness.System);
@@ -633,9 +635,9 @@ namespace Chummer
                     break;
                 // PerMonitor/PerMonitorV2
                 case DpiScalingMethod.Rescale:
-                    if (Environment.OSVersion.Version >= new Version(6, 3, 0)) // Windows 8.1 added SetProcessDpiAwareness
+                    if (objOSInfo.Platform == PlatformID.Win32NT && objOSInfoVersion >= new Version(6, 3, 0)) // Windows 8.1 added SetProcessDpiAwareness
                     {
-                        if (Environment.OSVersion.Version >= new Version(10, 0, 15063)) // Windows 10 Creators Update added SetProcessDpiAwarenessContext and PerMonitorV2
+                        if (objOSInfoVersion >= new Version(10, 0, 15063)) // Windows 10 Creators Update added SetProcessDpiAwarenessContext and PerMonitorV2
                             NativeMethods.SetProcessDpiAwarenessContext(NativeMethods.ContextDpiAwareness.PerMonitorV2);
                         else
                             NativeMethods.SetProcessDpiAwareness(NativeMethods.ProcessDpiAwareness.PerMonitor);
@@ -645,12 +647,12 @@ namespace Chummer
                     break;
                 // System (Enhanced)
                 case DpiScalingMethod.SmartZoom:
-                    if (Environment.OSVersion.Version >= new Version(6, 3, 0)) // Windows 8.1 added SetProcessDpiAwareness
+                    if (objOSInfo.Platform == PlatformID.Win32NT && objOSInfoVersion >= new Version(6, 3, 0)) // Windows 8.1 added SetProcessDpiAwareness
                     {
-                        if (Environment.OSVersion.Version >= new Version(10, 0, 15063)) // Windows 10 Creators Update added SetProcessDpiAwarenessContext
+                        if (objOSInfoVersion >= new Version(10, 0, 15063)) // Windows 10 Creators Update added SetProcessDpiAwarenessContext
                         {
                             NativeMethods.SetProcessDpiAwarenessContext(
-                                Environment.OSVersion.Version >= new Version(10, 0, 17763)
+                                objOSInfoVersion >= new Version(10, 0, 17763)
                                     ? NativeMethods.ContextDpiAwareness.UnawareGdiScaled // Windows 10 Version 1809 Added GDI+ Scaling
                                     : NativeMethods.ContextDpiAwareness.System); // System as backup, because it's better than remaining unaware if we want GDI+ Scaling
                         }
@@ -670,8 +672,15 @@ namespace Chummer
 
         public static void SetThreadDPI(DpiScalingMethod eMethod)
         {
-            if (Environment.OSVersion.Version <
-                new Version(10, 0, 15063)) // Windows 10 Creators Update added SetThreadDpiAwarenessContext
+            OperatingSystem objOSInfo = Environment.OSVersion;
+            if (objOSInfo.Platform != PlatformID.Win32NT)
+            {
+                SetProcessDPI(eMethod);
+                return;
+            }
+            Version objOSInfoVersion = objOSInfo.Version;
+            // Windows 10 Creators Update added SetThreadDpiAwarenessContext
+            if (objOSInfoVersion < new Version(10, 0, 15063))
             {
                 SetProcessDPI(eMethod);
                 return;
@@ -693,7 +702,7 @@ namespace Chummer
                 // System (Enhanced)
                 case DpiScalingMethod.SmartZoom:
                     NativeMethods.SetThreadDpiAwarenessContext(
-                        Environment.OSVersion.Version >= new Version(10, 0, 17763)
+                        objOSInfoVersion >= new Version(10, 0, 17763)
                             ? NativeMethods.ContextDpiAwareness.UnawareGdiScaled // Windows 10 Version 1809 Added GDI+ Scaling
                             : NativeMethods.ContextDpiAwareness.System); // System as backup, because it's better than remaining unaware if we want GDI+ Scaling
                     break;
