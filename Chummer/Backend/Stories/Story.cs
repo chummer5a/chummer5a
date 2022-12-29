@@ -21,16 +21,17 @@ using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.Globalization;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.XPath;
 
 namespace Chummer
 {
-    public sealed class Story : IDisposable
+    public sealed class Story : IHasLockObject
     {
         private readonly LockingDictionary<string, StoryModule> _dicPersistentModules = new LockingDictionary<string, StoryModule>();
         private readonly Character _objCharacter;
-        private readonly EnhancedObservableCollection<StoryModule> _lstStoryModules = new EnhancedObservableCollection<StoryModule>();
+        private readonly ThreadSafeObservableCollection<StoryModule> _lstStoryModules = new ThreadSafeObservableCollection<StoryModule>();
         private bool _blnNeedToRegeneratePersistents = true;
 
         // Note: as long as this is only used to generate language-agnostic information, it can be cached once when the object is created and left that way.
@@ -41,10 +42,10 @@ namespace Chummer
         {
             _objCharacter = objCharacter;
             _xmlStoryDocumentBaseNode = objCharacter.LoadDataXPath("stories.xml").SelectSingleNodeAndCacheExpression("/chummer");
-            _lstStoryModules.CollectionChanged += LstStoryModulesOnCollectionChanged;
+            _lstStoryModules.CollectionChanged += StoryModulesOnCollectionChanged;
         }
 
-        private void LstStoryModulesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void StoryModulesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {
@@ -59,14 +60,26 @@ namespace Chummer
                     {
                         _blnNeedToRegeneratePersistents = true;
                         foreach (StoryModule objModule in e.OldItems)
-                            objModule.ParentStory = null;
+                        {
+                            if (objModule.ParentStory == this)
+                            {
+                                objModule.ParentStory = null;
+                                objModule.Dispose();
+                            }
+                        }
                         break;
                     }
                 case NotifyCollectionChangedAction.Replace:
                     {
                         _blnNeedToRegeneratePersistents = true;
                         foreach (StoryModule objModule in e.OldItems)
-                            objModule.ParentStory = null;
+                        {
+                            if (objModule.ParentStory == this && !e.NewItems.Contains(objModule))
+                            {
+                                objModule.ParentStory = null;
+                                objModule.Dispose();
+                            }
+                        }
                         foreach (StoryModule objModule in e.NewItems)
                             objModule.ParentStory = this;
                         break;
@@ -79,24 +92,38 @@ namespace Chummer
             }
         }
 
-        public EnhancedObservableCollection<StoryModule> Modules => _lstStoryModules;
+        public ThreadSafeObservableCollection<StoryModule> Modules
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _lstStoryModules;
+            }
+        }
 
-        public LockingDictionary<string, StoryModule> PersistentModules => _dicPersistentModules;
+        public LockingDictionary<string, StoryModule> PersistentModules
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _dicPersistentModules;
+            }
+        }
 
-        public StoryModule GeneratePersistentModule(string strFunction)
+        public async ValueTask<StoryModule> GeneratePersistentModule(string strFunction, CancellationToken token = default)
         {
             XPathNavigator xmlStoryPool = _xmlStoryDocumentBaseNode.SelectSingleNode("storypools/storypool[name = " + strFunction.CleanXPath() + ']');
             if (xmlStoryPool != null)
             {
-                XPathNodeIterator xmlPossibleStoryList = xmlStoryPool.SelectAndCacheExpression("story");
+                XPathNodeIterator xmlPossibleStoryList = await xmlStoryPool.SelectAndCacheExpressionAsync("story", token: token).ConfigureAwait(false);
                 Dictionary<string, int> dicStoriesListWithWeights = new Dictionary<string, int>(xmlPossibleStoryList.Count);
                 int intTotalWeight = 0;
                 foreach (XPathNavigator xmlStory in xmlPossibleStoryList)
                 {
-                    string strStoryId = xmlStory.SelectSingleNodeAndCacheExpression("id")?.Value;
+                    string strStoryId = (await xmlStory.SelectSingleNodeAndCacheExpressionAsync("id", token: token).ConfigureAwait(false))?.Value;
                     if (!string.IsNullOrEmpty(strStoryId))
                     {
-                        if (!int.TryParse(xmlStory.SelectSingleNodeAndCacheExpression("weight")?.Value ?? "1", out int intWeight))
+                        if (!int.TryParse((await xmlStory.SelectSingleNodeAndCacheExpressionAsync("weight", token: token).ConfigureAwait(false))?.Value ?? "1", out int intWeight))
                             intWeight = 1;
                         intTotalWeight += intWeight;
                         if (dicStoriesListWithWeights.TryGetValue(strStoryId, out int intExistingWeight))
@@ -106,7 +133,7 @@ namespace Chummer
                     }
                 }
 
-                int intRandomResult = GlobalSettings.RandomGenerator.NextModuloBiasRemoved(intTotalWeight);
+                int intRandomResult = await GlobalSettings.RandomGenerator.NextModuloBiasRemovedAsync(intTotalWeight, token: token).ConfigureAwait(false);
                 string strSelectedId = string.Empty;
                 foreach (KeyValuePair<string, int> objStoryId in dicStoriesListWithWeights)
                 {
@@ -128,9 +155,17 @@ namespace Chummer
                             ParentStory = this,
                             IsRandomlyGenerated = true
                         };
-                        objPersistentStoryModule.Create(xmlNewPersistentNode);
-                        PersistentModules.TryAdd(strFunction, objPersistentStoryModule);
-                        return objPersistentStoryModule;
+                        try
+                        {
+                            await objPersistentStoryModule.CreateAsync(xmlNewPersistentNode, token).ConfigureAwait(false);
+                            await _dicPersistentModules.TryAddAsync(strFunction, objPersistentStoryModule, token).ConfigureAwait(false);
+                            return objPersistentStoryModule;
+                        }
+                        catch
+                        {
+                            await objPersistentStoryModule.DisposeAsync().ConfigureAwait(false);
+                            throw;
+                        }
                     }
                 }
             }
@@ -138,39 +173,78 @@ namespace Chummer
             return null;
         }
 
-        public async ValueTask GeneratePersistentsAsync(CultureInfo objCulture, string strLanguage)
+        public async ValueTask GeneratePersistentsAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            List<string> lstPersistentKeysToRemove = new List<string>(_dicPersistentModules.Count);
-            foreach (KeyValuePair<string, StoryModule> objPersistentModule in _dicPersistentModules)
+            IAsyncDisposable objLocker = null;
+            try
             {
-                if (objPersistentModule.Value.IsRandomlyGenerated)
-                    lstPersistentKeysToRemove.Add(objPersistentModule.Key);
+                objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                List<string> lstPersistentKeysToRemove
+                    = new List<string>(await _dicPersistentModules.GetCountAsync(token).ConfigureAwait(false));
+                foreach (KeyValuePair<string, StoryModule> objPersistentModule in _dicPersistentModules)
+                {
+                    if (objPersistentModule.Value.IsRandomlyGenerated)
+                        lstPersistentKeysToRemove.Add(objPersistentModule.Key);
+                }
+
+                foreach (string strKey in lstPersistentKeysToRemove)
+                    await _dicPersistentModules.RemoveAsync(strKey, token).ConfigureAwait(false);
+
+                foreach (StoryModule objModule in Modules)
+                    await objModule.TestRunToGeneratePersistents(objCulture, strLanguage, token).ConfigureAwait(false);
             }
-
-            foreach (string strKey in lstPersistentKeysToRemove)
-                _dicPersistentModules.Remove(strKey);
-
-            foreach (StoryModule objModule in Modules)
-                await objModule.TestRunToGeneratePersistents(objCulture, strLanguage);
+            finally
+            {
+                if (objLocker != null)
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
             _blnNeedToRegeneratePersistents = false;
         }
 
-        public async ValueTask<string> PrintStory(CultureInfo objCulture, string strLanguage)
+        public async ValueTask<string> PrintStory(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            if (_blnNeedToRegeneratePersistents)
-                await GeneratePersistentsAsync(objCulture, strLanguage);
-            string[] strModuleOutputStrings = new string[Modules.Count];
-            for (int i = 0; i < Modules.Count; ++i)
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                strModuleOutputStrings[i] = await Modules[i].PrintModule(objCulture, strLanguage);
+                if (_blnNeedToRegeneratePersistents)
+                    await GeneratePersistentsAsync(objCulture, strLanguage, token).ConfigureAwait(false);
+                int intCount = await Modules.GetCountAsync(token).ConfigureAwait(false);
+                string[] strModuleOutputStrings = new string[intCount];
+                for (int i = 0; i < intCount; ++i)
+                {
+                    strModuleOutputStrings[i] = await Modules[i].PrintModule(objCulture, strLanguage, token).ConfigureAwait(false);
+                }
+                return string.Concat(strModuleOutputStrings);
             }
-            return string.Concat(strModuleOutputStrings);
         }
 
         /// <inheritdoc />
         public void Dispose()
         {
-            _dicPersistentModules?.Dispose();
+            using (LockObject.EnterWriteLock())
+            {
+                _dicPersistentModules.Dispose();
+                _lstStoryModules.Dispose();
+            }
+            LockObject.Dispose();
         }
+
+        /// <inheritdoc />
+        public async ValueTask DisposeAsync()
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            try
+            {
+                await _dicPersistentModules.DisposeAsync().ConfigureAwait(false);
+                await _lstStoryModules.DisposeAsync().ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            await LockObject.DisposeAsync().ConfigureAwait(false);
+        }
+
+        /// <inheritdoc />
+        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
     }
 }

@@ -24,6 +24,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -36,9 +37,10 @@ namespace Chummer
     /// A Martial Art.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public sealed class MartialArt : IHasChildren<MartialArtTechnique>, IHasName, IHasInternalId, IHasXmlDataNode, IHasNotes, ICanRemove, IHasSource, IDisposable
+    public sealed class MartialArt : IHasChildren<MartialArtTechnique>, IHasName, IHasSourceId, IHasInternalId, IHasXmlDataNode, IHasNotes, ICanRemove, IHasSource, IHasLockObject
     {
-        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
         private Guid _guiID;
         private Guid _guiSourceID;
         private string _strName = string.Empty;
@@ -63,130 +65,152 @@ namespace Chummer
 
         private void TechniquesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            List<MartialArtTechnique> lstImprovementSourcesToProcess = new List<MartialArtTechnique>(e.NewItems?.Count ?? 0);
-            switch (e.Action)
+            using (EnterReadLock.Enter(LockObject))
             {
-                case NotifyCollectionChangedAction.Add:
-                    // ReSharper disable once PossibleNullReferenceException
-                    foreach (MartialArtTechnique objNewItem in e.NewItems)
-                    {
-                        objNewItem.Parent = this;
-                        lstImprovementSourcesToProcess.Add(objNewItem);
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (MartialArtTechnique objOldItem in e.OldItems)
-                    {
-                        if (objOldItem.Parent != this)
-                            continue;
-                        objOldItem.Parent = null;
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Replace:
-                    // ReSharper disable once AssignNullToNotNullAttribute
-                    HashSet<MartialArtTechnique> setNewItems = e.NewItems.OfType<MartialArtTechnique>().ToHashSet();
-                    foreach (MartialArtTechnique objOldItem in e.OldItems)
-                    {
-                        if (setNewItems.Contains(objOldItem))
-                            continue;
-                        if (objOldItem.Parent != this)
-                            continue;
-                        objOldItem.Parent = null;
-                    }
-
-                    foreach (MartialArtTechnique objNewItem in setNewItems)
-                    {
-                        objNewItem.Parent = this;
-                        lstImprovementSourcesToProcess.Add(objNewItem);
-                    }
-                    break;
-                case NotifyCollectionChangedAction.Reset:
-                case NotifyCollectionChangedAction.Move:
-                    break;
-            }
-            if (lstImprovementSourcesToProcess.Count > 0 && _objCharacter?.IsLoading == false)
-            {
-                using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
-                           Utils.DictionaryForMultiplePropertyChangedPool,
-                           out Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties))
+                List<MartialArtTechnique> lstImprovementSourcesToProcess
+                    = new List<MartialArtTechnique>(e.NewItems?.Count ?? 0);
+                switch (e.Action)
                 {
-                    try
-                    {
-                        foreach (MartialArtTechnique objNewItem in lstImprovementSourcesToProcess)
+                    case NotifyCollectionChangedAction.Add:
+                        // ReSharper disable once PossibleNullReferenceException
+                        foreach (MartialArtTechnique objNewItem in e.NewItems)
                         {
-                            // Needed in order to properly process named sources where
-                            // the tooltip was built before the object was added to the character
-                            foreach (Improvement objImprovement in _objCharacter.Improvements)
-                            {
-                                if (objImprovement.SourceName != objNewItem.InternalId || !objImprovement.Enabled)
-                                    continue;
-                                foreach ((INotifyMultiplePropertyChanged objToUpdate, string strPropertyName) in
-                                         objImprovement.GetRelevantPropertyChangers())
-                                {
-                                    if (!dicChangedProperties.TryGetValue(objToUpdate,
-                                                                          out HashSet<string> setChangedProperties))
-                                    {
-                                        setChangedProperties = Utils.StringHashSetPool.Get();
-                                        dicChangedProperties.Add(objToUpdate, setChangedProperties);
-                                    }
+                            objNewItem.Parent = this;
+                            lstImprovementSourcesToProcess.Add(objNewItem);
+                        }
 
-                                    setChangedProperties.Add(strPropertyName);
+                        break;
+
+                    case NotifyCollectionChangedAction.Remove:
+                        foreach (MartialArtTechnique objOldItem in e.OldItems)
+                        {
+                            if (objOldItem.Parent != this)
+                                continue;
+                            objOldItem.Parent = null;
+                        }
+
+                        break;
+
+                    case NotifyCollectionChangedAction.Replace:
+                        // ReSharper disable once AssignNullToNotNullAttribute
+                        HashSet<MartialArtTechnique> setNewItems = e.NewItems.OfType<MartialArtTechnique>().ToHashSet();
+                        foreach (MartialArtTechnique objOldItem in e.OldItems)
+                        {
+                            if (setNewItems.Contains(objOldItem))
+                                continue;
+                            if (objOldItem.Parent != this)
+                                continue;
+                            objOldItem.Parent = null;
+                        }
+
+                        foreach (MartialArtTechnique objNewItem in setNewItems)
+                        {
+                            objNewItem.Parent = this;
+                            lstImprovementSourcesToProcess.Add(objNewItem);
+                        }
+
+                        break;
+
+                    case NotifyCollectionChangedAction.Reset:
+                    case NotifyCollectionChangedAction.Move:
+                        break;
+                }
+
+                if (lstImprovementSourcesToProcess.Count > 0 && _objCharacter?.IsLoading == false)
+                {
+                    using (new FetchSafelyFromPool<Dictionary<INotifyMultiplePropertyChanged, HashSet<string>>>(
+                               Utils.DictionaryForMultiplePropertyChangedPool,
+                               out Dictionary<INotifyMultiplePropertyChanged, HashSet<string>> dicChangedProperties))
+                    {
+                        try
+                        {
+                            foreach (MartialArtTechnique objNewItem in lstImprovementSourcesToProcess)
+                            {
+                                // Needed in order to properly process named sources where
+                                // the tooltip was built before the object was added to the character
+                                foreach (Improvement objImprovement in _objCharacter.Improvements)
+                                {
+                                    if (objImprovement.SourceName != objNewItem.InternalId || !objImprovement.Enabled)
+                                        continue;
+                                    foreach ((INotifyMultiplePropertyChanged objToUpdate, string strPropertyName) in
+                                             objImprovement.GetRelevantPropertyChangers())
+                                    {
+                                        if (!dicChangedProperties.TryGetValue(objToUpdate,
+                                                                              out HashSet<string> setChangedProperties))
+                                        {
+                                            setChangedProperties = Utils.StringHashSetPool.Get();
+                                            dicChangedProperties.Add(objToUpdate, setChangedProperties);
+                                        }
+
+                                        setChangedProperties.Add(strPropertyName);
+                                    }
                                 }
                             }
-                        }
 
-                        foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToUpdate in
-                                 dicChangedProperties)
-                        {
-                            kvpToUpdate.Key.OnMultiplePropertyChanged(kvpToUpdate.Value);
+                            foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToUpdate in
+                                     dicChangedProperties)
+                            {
+                                kvpToUpdate.Key.OnMultiplePropertyChanged(kvpToUpdate.Value.ToList());
+                            }
                         }
-                    }
-                    finally
-                    {
-                        foreach (HashSet<string> setToReturn in dicChangedProperties.Values)
-                            Utils.StringHashSetPool.Return(setToReturn);
+                        finally
+                        {
+                            List<HashSet<string>> lstToReturn = dicChangedProperties.Values.ToList();
+                            for (int i = lstToReturn.Count - 1; i >= 0; --i)
+                            {
+                                HashSet<string> setLoop = lstToReturn[i];
+                                Utils.StringHashSetPool.Return(ref setLoop);
+                            }
+                        }
                     }
                 }
             }
         }
 
+        /// <summary>
         /// Create a Martial Art from an XmlNode.
+        /// </summary>
         /// <param name="objXmlArtNode">XmlNode to create the object from.</param>
         public void Create(XmlNode objXmlArtNode)
         {
-            if (!objXmlArtNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
+            using (LockObject.EnterWriteLock())
             {
-                Log.Warn(new object[] { "Missing id field for xmlnode", objXmlArtNode });
-                Utils.BreakIfDebug();
-            }
+                if (!objXmlArtNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
+                {
+                    Log.Warn(new object[] {"Missing id field for xmlnode", objXmlArtNode});
+                    Utils.BreakIfDebug();
+                }
 
-            if (objXmlArtNode.TryGetStringFieldQuickly("name", ref _strName))
-            {
-                _objCachedMyXmlNode = null;
-                _objCachedMyXPathNode = null;
-            }
+                if (objXmlArtNode.TryGetStringFieldQuickly("name", ref _strName))
+                {
+                    _objCachedMyXmlNode = null;
+                    _objCachedMyXPathNode = null;
+                }
 
-            objXmlArtNode.TryGetStringFieldQuickly("source", ref _strSource);
-            objXmlArtNode.TryGetStringFieldQuickly("page", ref _strPage);
-            objXmlArtNode.TryGetInt32FieldQuickly("cost", ref _intKarmaCost);
-            if (!objXmlArtNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
-                objXmlArtNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+                objXmlArtNode.TryGetStringFieldQuickly("source", ref _strSource);
+                objXmlArtNode.TryGetStringFieldQuickly("page", ref _strPage);
+                objXmlArtNode.TryGetInt32FieldQuickly("cost", ref _intKarmaCost);
+                if (!objXmlArtNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                    objXmlArtNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
-            string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
-            objXmlArtNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
-            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+                string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+                objXmlArtNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+                _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
-            _blnIsQuality = objXmlArtNode["isquality"]?.InnerText == bool.TrueString;
+                _blnIsQuality = objXmlArtNode["isquality"]?.InnerText == bool.TrueString;
 
-            if (objXmlArtNode["bonus"] != null)
-            {
-                ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MartialArt, InternalId,
-                    objXmlArtNode["bonus"], 1, DisplayNameShort(GlobalSettings.Language));
-            }
-            if (string.IsNullOrEmpty(Notes))
-            {
-                Notes = CommonFunctions.GetBookNotes(objXmlArtNode, Name, CurrentDisplayName, Source, Page,
-                    DisplayPage(GlobalSettings.Language), _objCharacter);
+                if (objXmlArtNode["bonus"] != null)
+                {
+                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MartialArt,
+                                                          InternalId,
+                                                          objXmlArtNode["bonus"], 1, CurrentDisplayNameShort);
+                }
+
+                if (string.IsNullOrEmpty(Notes))
+                {
+                    Notes = CommonFunctions.GetBookNotes(objXmlArtNode, Name, CurrentDisplayName, Source, Page,
+                                                         DisplayPage(GlobalSettings.Language), _objCharacter);
+                }
             }
         }
 
@@ -196,10 +220,14 @@ namespace Chummer
         {
             get
             {
-                if (_objCachedSourceDetail == default)
-                    _objCachedSourceDetail = new SourceString(Source, DisplayPage(GlobalSettings.Language),
-                        GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
-                return _objCachedSourceDetail;
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_objCachedSourceDetail == default)
+                        _objCachedSourceDetail = SourceString.GetSourceString(
+                            Source, DisplayPage(GlobalSettings.Language),
+                            GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
+                    return _objCachedSourceDetail;
+                }
             }
         }
 
@@ -207,27 +235,31 @@ namespace Chummer
         /// Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Save(XmlTextWriter objWriter)
+        public void Save(XmlWriter objWriter)
         {
             if (objWriter == null)
                 return;
-            objWriter.WriteStartElement("martialart");
-            objWriter.WriteElementString("name", _strName);
-            objWriter.WriteElementString("sourceid", SourceIDString);
-            objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("source", _strSource);
-            objWriter.WriteElementString("page", _strPage);
-            objWriter.WriteElementString("cost", _intKarmaCost.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("isquality", _blnIsQuality.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteStartElement("martialarttechniques");
-            foreach (MartialArtTechnique objTechnique in _lstTechniques)
+            using (EnterReadLock.Enter(LockObject))
             {
-                objTechnique.Save(objWriter);
+                objWriter.WriteStartElement("martialart");
+                objWriter.WriteElementString("name", _strName);
+                objWriter.WriteElementString("sourceid", SourceIDString);
+                objWriter.WriteElementString("guid", InternalId);
+                objWriter.WriteElementString("source", _strSource);
+                objWriter.WriteElementString("page", _strPage);
+                objWriter.WriteElementString("cost", _intKarmaCost.ToString(GlobalSettings.InvariantCultureInfo));
+                objWriter.WriteElementString("isquality", _blnIsQuality.ToString(GlobalSettings.InvariantCultureInfo));
+                objWriter.WriteStartElement("martialarttechniques");
+                foreach (MartialArtTechnique objTechnique in _lstTechniques)
+                {
+                    objTechnique.Save(objWriter);
+                }
+
+                objWriter.WriteEndElement();
+                objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+                objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
+                objWriter.WriteEndElement();
             }
-            objWriter.WriteEndElement();
-            objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
-            objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
-            objWriter.WriteEndElement();
         }
 
         /// <summary>
@@ -238,55 +270,60 @@ namespace Chummer
         {
             if (objNode == null)
                 return;
-            if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+            using (LockObject.EnterWriteLock())
             {
-                _guiID = Guid.NewGuid();
-            }
-
-            objNode.TryGetStringFieldQuickly("name", ref _strName);
-            _objCachedMyXmlNode = null;
-            _objCachedMyXPathNode = null;
-
-            if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
-            {
-                this.GetNodeXPath()?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
-            }
-            objNode.TryGetStringFieldQuickly("source", ref _strSource);
-            objNode.TryGetStringFieldQuickly("page", ref _strPage);
-            objNode.TryGetInt32FieldQuickly("cost", ref _intKarmaCost);
-            objNode.TryGetBoolFieldQuickly("isquality", ref _blnIsQuality);
-
-            using (XmlNodeList xmlLegacyTechniqueList = objNode.SelectNodes("martialartadvantages/martialartadvantage"))
-            {
-                if (xmlLegacyTechniqueList != null)
+                if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
                 {
-                    foreach (XmlNode nodTechnique in xmlLegacyTechniqueList)
+                    _guiID = Guid.NewGuid();
+                }
+
+                objNode.TryGetStringFieldQuickly("name", ref _strName);
+                _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
+
+                if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
+                {
+                    this.GetNodeXPath()?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                }
+
+                objNode.TryGetStringFieldQuickly("source", ref _strSource);
+                objNode.TryGetStringFieldQuickly("page", ref _strPage);
+                objNode.TryGetInt32FieldQuickly("cost", ref _intKarmaCost);
+                objNode.TryGetBoolFieldQuickly("isquality", ref _blnIsQuality);
+
+                using (XmlNodeList xmlLegacyTechniqueList
+                       = objNode.SelectNodes("martialartadvantages/martialartadvantage"))
+                {
+                    if (xmlLegacyTechniqueList != null)
                     {
-                        MartialArtTechnique objTechnique = new MartialArtTechnique(_objCharacter);
-                        objTechnique.Load(nodTechnique);
-                        _lstTechniques.Add(objTechnique);
+                        foreach (XmlNode nodTechnique in xmlLegacyTechniqueList)
+                        {
+                            MartialArtTechnique objTechnique = new MartialArtTechnique(_objCharacter);
+                            objTechnique.Load(nodTechnique);
+                            _lstTechniques.Add(objTechnique);
+                        }
                     }
                 }
-            }
 
-            using (XmlNodeList xmlTechniqueList = objNode.SelectNodes("martialarttechniques/martialarttechnique"))
-            {
-                if (xmlTechniqueList != null)
+                using (XmlNodeList xmlTechniqueList = objNode.SelectNodes("martialarttechniques/martialarttechnique"))
                 {
-                    foreach (XmlNode nodTechnique in xmlTechniqueList)
+                    if (xmlTechniqueList != null)
                     {
-                        MartialArtTechnique objTechnique = new MartialArtTechnique(_objCharacter);
-                        objTechnique.Load(nodTechnique);
-                        _lstTechniques.Add(objTechnique);
+                        foreach (XmlNode nodTechnique in xmlTechniqueList)
+                        {
+                            MartialArtTechnique objTechnique = new MartialArtTechnique(_objCharacter);
+                            objTechnique.Load(nodTechnique);
+                            _lstTechniques.Add(objTechnique);
+                        }
                     }
                 }
+
+                objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+                string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+                objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+                _colNotes = ColorTranslator.FromHtml(sNotesColor);
             }
-
-            objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
-
-            string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
-            objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
-            _colNotes = ColorTranslator.FromHtml(sNotesColor);
         }
 
         /// <summary>
@@ -295,28 +332,67 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
-            objWriter.WriteStartElement("martialart");
-            objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("sourceid", SourceIDString);
-            objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
-            objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
-            objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
-            objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
-            objWriter.WriteElementString("cost", Cost.ToString(objCulture));
-            objWriter.WriteStartElement("martialarttechniques");
-            foreach (MartialArtTechnique objTechnique in Techniques)
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                objTechnique.Print(objWriter, strLanguageToPrint);
+                // <martialart>
+                XmlElementWriteHelper objBaseElement
+                    = await objWriter.StartElementAsync("martialart", token: token).ConfigureAwait(false);
+                try
+                {
+                    await objWriter.WriteElementStringAsync("guid", InternalId, token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("sourceid", SourceIDString, token: token)
+                                   .ConfigureAwait(false);
+                    await objWriter
+                          .WriteElementStringAsync(
+                              "name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false),
+                              token: token).ConfigureAwait(false);
+                    await objWriter
+                          .WriteElementStringAsync(
+                              "fullname", await DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false),
+                              token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("name_english", Name, token: token).ConfigureAwait(false);
+                    await objWriter
+                          .WriteElementStringAsync(
+                              "source",
+                              await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token)
+                                                 .ConfigureAwait(false), token: token).ConfigureAwait(false);
+                    await objWriter
+                          .WriteElementStringAsync(
+                              "page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false),
+                              token: token)
+                          .ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("cost", Cost.ToString(objCulture), token: token)
+                                   .ConfigureAwait(false);
+                    // <martialarttechniques>
+                    XmlElementWriteHelper objTechniquesElement
+                        = await objWriter.StartElementAsync("martialarttechniques", token: token).ConfigureAwait(false);
+                    try
+                    {
+                        foreach (MartialArtTechnique objTechnique in Techniques)
+                        {
+                            await objTechnique.Print(objWriter, strLanguageToPrint, token).ConfigureAwait(false);
+                        }
+                    }
+                    finally
+                    {
+                        // </martialarttechniques>
+                        await objTechniquesElement.DisposeAsync().ConfigureAwait(false);
+                    }
+
+                    if (GlobalSettings.PrintNotes)
+                        await objWriter.WriteElementStringAsync("notes", Notes, token: token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    // </martialart>
+                    await objBaseElement.DisposeAsync().ConfigureAwait(false);
+                }
             }
-            objWriter.WriteEndElement();
-            if (GlobalSettings.PrintNotes)
-                objWriter.WriteElementString("notes", Notes);
-            objWriter.WriteEndElement();
         }
 
         #endregion Create, Save, Load, and Print Methods
@@ -328,17 +404,25 @@ namespace Chummer
         /// </summary>
         public string Name
         {
-            get => _strName;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strName;
+            }
             set
             {
-                if (_strName == value)
-                    return;
-                if (SourceID == Guid.Empty)
+                using (EnterReadLock.Enter(LockObject))
                 {
-                    _objCachedMyXmlNode = null;
-                    _objCachedMyXPathNode = null;
+                    if (Interlocked.Exchange(ref _strName, value) == value)
+                        return;
+                    if (SourceID != Guid.Empty)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _objCachedMyXmlNode = null;
+                        _objCachedMyXPathNode = null;
+                    }
                 }
-                _strName = value;
             }
         }
 
@@ -347,23 +431,47 @@ namespace Chummer
         /// </summary>
         public Guid SourceID
         {
-            get => _guiSourceID;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _guiSourceID;
+            }
             set
             {
-                if (_guiSourceID == value)
-                    return;
-                _objCachedMyXmlNode = null;
-                _objCachedMyXPathNode = null;
-                _guiSourceID = value;
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (_guiSourceID == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _objCachedMyXmlNode = null;
+                        _objCachedMyXPathNode = null;
+                        _guiSourceID = value;
+                    }
+                }
             }
         }
 
         /// <summary>
         /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
         /// </summary>
-        public string SourceIDString => _guiSourceID.ToString("D", GlobalSettings.InvariantCultureInfo);
+        public string SourceIDString
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _guiSourceID.ToString("D", GlobalSettings.InvariantCultureInfo);
+            }
+        }
 
-        public string InternalId => _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
+        public string InternalId
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
+            }
+        }
 
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
@@ -374,28 +482,70 @@ namespace Chummer
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            return this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
+            using (EnterReadLock.Enter(LockObject))
+                return this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
         }
+
+        /// <summary>
+        /// The name of the object as it should be displayed on printouts (translated name only).
+        /// </summary>
+        public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
+        {
+            // Get the translated name if applicable.
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Name;
+
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
+                return objNode != null
+                    ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token)
+                                    .ConfigureAwait(false))?.Value ?? Name
+                    : Name;
+            }
+        }
+
+        public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
+
+        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) =>
+            DisplayNameShortAsync(GlobalSettings.Language, token);
 
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
         public string DisplayName(string strLanguage)
         {
-            string strReturn = DisplayNameShort(strLanguage);
+            return DisplayNameShort(strLanguage);
+        }
 
-            return strReturn;
+        /// <summary>
+        /// The name of the object as it should be displayed in lists. Name (Extra).
+        /// </summary>
+        public ValueTask<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
+        {
+            return DisplayNameShortAsync(strLanguage, token);
         }
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
+
+        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
+            DisplayNameAsync(GlobalSettings.Language, token);
 
         /// <summary>
         /// Sourcebook.
         /// </summary>
         public string Source
         {
-            get => _strSource;
-            set => _strSource = value;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strSource;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    _strSource = value;
+            }
         }
 
         /// <summary>
@@ -403,8 +553,16 @@ namespace Chummer
         /// </summary>
         public string Page
         {
-            get => _strPage;
-            set => _strPage = value;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strPage;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    _strPage = value;
+            }
         }
 
         /// <summary>
@@ -417,8 +575,33 @@ namespace Chummer
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
-            string s = this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
-            return !string.IsNullOrWhiteSpace(s) ? s : Page;
+            using (EnterReadLock.Enter(LockObject))
+            {
+                string s = this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
+                return !string.IsNullOrWhiteSpace(s) ? s : Page;
+            }
+        }
+
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns></returns>
+        public async ValueTask<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Page;
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
+                string s = objNode != null
+                    ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token)
+                                    .ConfigureAwait(false))?.Value ?? Page
+                    : Page;
+                return !string.IsNullOrWhiteSpace(s) ? s : Page;
+            }
         }
 
         /// <summary>
@@ -426,8 +609,16 @@ namespace Chummer
         /// </summary>
         public int Cost
         {
-            get => _intKarmaCost;
-            set => _intKarmaCost = value;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intKarmaCost;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    _intKarmaCost = value;
+            }
         }
 
         /// <summary>
@@ -435,14 +626,29 @@ namespace Chummer
         /// </summary>
         public bool IsQuality
         {
-            get => _blnIsQuality;
-            set => _blnIsQuality = value;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _blnIsQuality;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    _blnIsQuality = value;
+            }
         }
 
         /// <summary>
         /// Selected Martial Arts Techniques.
         /// </summary>
-        public TaggedObservableCollection<MartialArtTechnique> Techniques => _lstTechniques;
+        public TaggedObservableCollection<MartialArtTechnique> Techniques
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _lstTechniques;
+            }
+        }
 
         public TaggedObservableCollection<MartialArtTechnique> Children => Techniques;
 
@@ -451,8 +657,16 @@ namespace Chummer
         /// </summary>
         public string Notes
         {
-            get => _strNotes;
-            set => _strNotes = value;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _strNotes;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    _strNotes = value;
+            }
         }
 
         /// <summary>
@@ -460,56 +674,76 @@ namespace Chummer
         /// </summary>
         public Color NotesColor
         {
-            get => _colNotes;
-            set => _colNotes = value;
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _colNotes;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    _colNotes = value;
+            }
         }
 
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage)
+        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
-                                            && !GlobalSettings.LiveCustomData)
-                return _objCachedMyXmlNode;
-            _objCachedMyXmlNode = (blnSync
-                    // ReSharper disable once MethodHasAsyncOverload
-                    ? _objCharacter.LoadData("martialarts.xml", strLanguage)
-                    : await _objCharacter.LoadDataAsync("martialarts.xml", strLanguage))
-                .SelectSingleNode(SourceID == Guid.Empty
-                                      ? "/chummer/martialarts/martialart[name = "
-                                        + Name.CleanXPath() + ']'
-                                      : "/chummer/martialarts/martialart[id = "
-                                        + SourceIDString.CleanXPath()
-                                        + " or id = " + SourceIDString
-                                                        .ToUpperInvariant().CleanXPath()
-                                        + ']');
-            _strCachedXmlNodeLanguage = strLanguage;
-            return _objCachedMyXmlNode;
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                XmlNode objReturn = _objCachedMyXmlNode;
+                if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
+                                      && !GlobalSettings.LiveCustomData)
+                    return objReturn;
+                objReturn = (blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? _objCharacter.LoadData("martialarts.xml", strLanguage, token: token)
+                        : await _objCharacter.LoadDataAsync("martialarts.xml", strLanguage, token: token)
+                                             .ConfigureAwait(false))
+                    .SelectSingleNode(SourceID == Guid.Empty
+                                          ? "/chummer/martialarts/martialart[name = "
+                                            + Name.CleanXPath() + ']'
+                                          : "/chummer/martialarts/martialart[id = "
+                                            + SourceIDString.CleanXPath()
+                                            + " or id = " + SourceIDString
+                                                            .ToUpperInvariant().CleanXPath()
+                                            + ']');
+                _objCachedMyXmlNode = objReturn;
+                _strCachedXmlNodeLanguage = strLanguage;
+                return objReturn;
+            }
         }
 
         private XPathNavigator _objCachedMyXPathNode;
         private string _strCachedXPathNodeLanguage = string.Empty;
 
-        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage)
+        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
-                                              && !GlobalSettings.LiveCustomData)
-                return _objCachedMyXPathNode;
-            _objCachedMyXPathNode = (blnSync
-                    // ReSharper disable once MethodHasAsyncOverload
-                    ? _objCharacter.LoadDataXPath("martialarts.xml", strLanguage)
-                    : await _objCharacter.LoadDataXPathAsync("martialarts.xml", strLanguage))
-                .SelectSingleNode(SourceID == Guid.Empty
-                                      ? "/chummer/martialarts/martialart[name = "
-                                        + Name.CleanXPath() + ']'
-                                      : "/chummer/martialarts/martialart[id = "
-                                        + SourceIDString.CleanXPath()
-                                        + " or id = " + SourceIDString
-                                                        .ToUpperInvariant().CleanXPath()
-                                        + ']');
-            _strCachedXPathNodeLanguage = strLanguage;
-            return _objCachedMyXPathNode;
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                XPathNavigator objReturn = _objCachedMyXPathNode;
+                if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
+                                      && !GlobalSettings.LiveCustomData)
+                    return objReturn;
+                objReturn = (blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? _objCharacter.LoadDataXPath("martialarts.xml", strLanguage, token: token)
+                        : await _objCharacter.LoadDataXPathAsync("martialarts.xml", strLanguage, token: token)
+                                             .ConfigureAwait(false))
+                    .SelectSingleNode(SourceID == Guid.Empty
+                                          ? "/chummer/martialarts/martialart[name = "
+                                            + Name.CleanXPath() + ']'
+                                          : "/chummer/martialarts/martialart[id = "
+                                            + SourceIDString.CleanXPath()
+                                            + " or id = " + SourceIDString
+                                                            .ToUpperInvariant().CleanXPath()
+                                            + ']');
+                _objCachedMyXPathNode = objReturn;
+                _strCachedXPathNodeLanguage = strLanguage;
+                return objReturn;
+            }
         }
 
         #endregion Properties
@@ -518,78 +752,109 @@ namespace Chummer
 
         public TreeNode CreateTreeNode(ContextMenuStrip cmsMartialArt, ContextMenuStrip cmsMartialArtTechnique)
         {
-            if (IsQuality && !string.IsNullOrEmpty(Source) && !_objCharacter.Settings.BookEnabled(Source))
-                return null;
-
-            TreeNode objNode = new TreeNode
+            using (EnterReadLock.Enter(LockObject))
             {
-                Name = InternalId,
-                Text = CurrentDisplayName,
-                Tag = this,
-                ContextMenuStrip = cmsMartialArt,
-                ForeColor = PreferredColor,
-                ToolTipText = Notes.WordWrap()
-            };
+                if (IsQuality && !string.IsNullOrEmpty(Source) && !_objCharacter.Settings.BookEnabled(Source))
+                    return null;
 
-            TreeNodeCollection lstChildNodes = objNode.Nodes;
-            foreach (MartialArtTechnique objTechnique in Techniques)
-            {
-                TreeNode objLoopNode = objTechnique.CreateTreeNode(cmsMartialArtTechnique);
-                if (objLoopNode != null)
+                TreeNode objNode = new TreeNode
                 {
-                    lstChildNodes.Add(objLoopNode);
-                    objNode.Expand();
-                }
-            }
+                    Name = InternalId,
+                    Text = CurrentDisplayName,
+                    Tag = this,
+                    ContextMenuStrip = cmsMartialArt,
+                    ForeColor = PreferredColor,
+                    ToolTipText = Notes.WordWrap()
+                };
 
-            return objNode;
+                TreeNodeCollection lstChildNodes = objNode.Nodes;
+                foreach (MartialArtTechnique objTechnique in Techniques)
+                {
+                    TreeNode objLoopNode = objTechnique.CreateTreeNode(cmsMartialArtTechnique);
+                    if (objLoopNode != null)
+                    {
+                        lstChildNodes.Add(objLoopNode);
+                        objNode.Expand();
+                    }
+                }
+
+                return objNode;
+            }
         }
 
-        public static bool Purchase(Character objCharacter)
+        public static async ValueTask<bool> Purchase(Character objCharacter, CancellationToken token = default)
         {
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
+            bool blnReturn = false;
             bool blnAddAgain;
             do
             {
-                using (SelectMartialArt frmPickMartialArt = new SelectMartialArt(objCharacter))
+                using (ThreadSafeForm<SelectMartialArt> frmPickMartialArt
+                       = await ThreadSafeForm<SelectMartialArt>.GetAsync(
+                           () => new SelectMartialArt(objCharacter), token).ConfigureAwait(false))
                 {
-                    frmPickMartialArt.ShowDialogSafe(objCharacter);
+                    if (await frmPickMartialArt.ShowDialogSafeAsync(objCharacter, token).ConfigureAwait(false) == DialogResult.Cancel)
+                        return blnReturn;
 
-                    if (frmPickMartialArt.DialogResult == DialogResult.Cancel)
-                        return false;
-
-                    blnAddAgain = frmPickMartialArt.AddAgain;
+                    blnAddAgain = frmPickMartialArt.MyForm.AddAgain;
                     // Open the Martial Arts XML file and locate the selected piece.
-                    XmlNode objXmlArt = objCharacter.LoadData("martialarts.xml").SelectSingleNode("/chummer/martialarts/martialart[id = " + frmPickMartialArt.SelectedMartialArt.CleanXPath() + ']');
+                    XmlNode objXmlArt
+                        = (await objCharacter.LoadDataAsync("martialarts.xml", token: token).ConfigureAwait(false)).SelectSingleNode(
+                            "/chummer/martialarts/martialart[id = "
+                            + frmPickMartialArt.MyForm.SelectedMartialArt.CleanXPath() + ']');
 
                     MartialArt objMartialArt = new MartialArt(objCharacter);
-                    objMartialArt.Create(objXmlArt);
-
-                    if (objCharacter.Created)
+                    try
                     {
-                        int intKarmaCost = objMartialArt.Cost;
-                        if (intKarmaCost > objCharacter.Karma)
+                        objMartialArt.Create(objXmlArt);
+
+                        if (await objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                         {
-                            Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK,
-                                MessageBoxIcon.Information);
-                            ImprovementManager.RemoveImprovements(objCharacter, Improvement.ImprovementSource.MartialArt, objMartialArt.InternalId);
-                            return false;
+                            int intKarmaCost = objMartialArt.Cost;
+                            if (intKarmaCost > await objCharacter.GetKarmaAsync(token).ConfigureAwait(false))
+                            {
+                                Program.ShowScrollableMessageBox(
+                                    await LanguageManager.GetStringAsync("Message_NotEnoughKarma", token: token)
+                                                         .ConfigureAwait(false),
+                                    await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma", token: token)
+                                                         .ConfigureAwait(false),
+                                    MessageBoxButtons.OK,
+                                    MessageBoxIcon.Information);
+                                await ImprovementManager.RemoveImprovementsAsync(
+                                    objCharacter, Improvement.ImprovementSource.MartialArt, objMartialArt.InternalId,
+                                    token).ConfigureAwait(false);
+                                return blnReturn;
+                            }
+
+                            // Create the Expense Log Entry.
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(objCharacter);
+                            objExpense.Create(intKarmaCost * -1,
+                                              await LanguageManager.GetStringAsync(
+                                                  "String_ExpenseLearnMartialArt", token: token).ConfigureAwait(false)
+                                              + ' '
+                                              + await objMartialArt.GetCurrentDisplayNameShortAsync(token)
+                                                                   .ConfigureAwait(false),
+                                              ExpenseType.Karma,
+                                              DateTime.Now);
+                            await objCharacter.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
+                                              .ConfigureAwait(false);
+                            await objCharacter.ModifyKarmaAsync(-intKarmaCost, token).ConfigureAwait(false);
+
+                            ExpenseUndo objUndo = new ExpenseUndo();
+                            objUndo.CreateKarma(KarmaExpenseType.AddMartialArt, objMartialArt.InternalId);
+                            objExpense.Undo = objUndo;
                         }
 
-                        // Create the Expense Log Entry.
-                        ExpenseLogEntry objExpense = new ExpenseLogEntry(objCharacter);
-                        objExpense.Create(intKarmaCost * -1, LanguageManager.GetString("String_ExpenseLearnMartialArt") + ' ' + objMartialArt.DisplayNameShort(GlobalSettings.Language), ExpenseType.Karma,
-                            DateTime.Now);
-                        objCharacter.ExpenseEntries.AddWithSort(objExpense);
-                        objCharacter.Karma -= intKarmaCost;
-
-                        ExpenseUndo objUndo = new ExpenseUndo();
-                        objUndo.CreateKarma(KarmaExpenseType.AddMartialArt, objMartialArt.InternalId);
-                        objExpense.Undo = objUndo;
+                        await objCharacter.MartialArts.AddAsync(objMartialArt, token).ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        await objMartialArt.DisposeAsync().ConfigureAwait(false);
+                        throw;
                     }
 
-                    objCharacter.MartialArts.Add(objMartialArt);
+                    blnReturn = true;
                 }
             } while (blnAddAgain);
 
@@ -608,20 +873,68 @@ namespace Chummer
             return true;
         }
 
+        public async ValueTask<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
+        {
+            // Delete the selected Martial Art.
+            if (IsQuality)
+                return false;
+            if (blnConfirmDelete && !await CommonFunctions
+                                           .ConfirmDeleteAsync(
+                                               await LanguageManager
+                                                     .GetStringAsync("Message_DeleteMartialArt", token: token)
+                                                     .ConfigureAwait(false), token).ConfigureAwait(false))
+                return false;
+
+            await DeleteMartialArtAsync(token).ConfigureAwait(false);
+            return true;
+        }
+
         public decimal DeleteMartialArt()
         {
-            _objCharacter.MartialArts.Remove(this);
-
             decimal decReturn = 0;
-            // Remove the Improvements for any Techniques for the Martial Art that is being removed.
-            foreach (MartialArtTechnique objTechnique in Techniques.ToList()) // Need ToList() because removing techniques alters parent Art's Techniques list
+            using (LockObject.EnterWriteLock())
             {
-                decReturn += objTechnique.DeleteTechnique(false);
+                _objCharacter.MartialArts.Remove(this);
+
+                // Remove the Improvements for any Techniques for the Martial Art that is being removed.
+                foreach (MartialArtTechnique objTechnique in Techniques.ToList()) // Need ToList() because removing techniques alters parent Art's Techniques list
+                {
+                    decReturn += objTechnique.DeleteTechnique(false);
+                }
+
+                decReturn += ImprovementManager.RemoveImprovements(_objCharacter,
+                                                                   Improvement.ImprovementSource.MartialArt,
+                                                                   InternalId);
             }
-            decReturn += ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.MartialArt,
-                                                           InternalId);
 
             Dispose();
+            return decReturn;
+        }
+
+        public async ValueTask<decimal> DeleteMartialArtAsync(CancellationToken token = default)
+        {
+            decimal decReturn = 0;
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                await _objCharacter.MartialArts.RemoveAsync(this, token).ConfigureAwait(false);
+
+                // Remove the Improvements for any Techniques for the Martial Art that is being removed.
+                foreach (MartialArtTechnique objTechnique in await Techniques.ToListAsync(token: token).ConfigureAwait(false)) // Need ToList() because removing techniques alters parent Art's Techniques list
+                {
+                    decReturn += await objTechnique.DeleteTechniqueAsync(false, token).ConfigureAwait(false);
+                }
+
+                decReturn += await ImprovementManager.RemoveImprovementsAsync(
+                    _objCharacter, Improvement.ImprovementSource.MartialArt,
+                    InternalId, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            await DisposeAsync().ConfigureAwait(false);
             return decReturn;
         }
 
@@ -629,15 +942,19 @@ namespace Chummer
         {
             get
             {
-                if (!string.IsNullOrEmpty(Notes))
+                using (EnterReadLock.Enter(LockObject))
                 {
+                    if (!string.IsNullOrEmpty(Notes))
+                    {
+                        return IsQuality
+                            ? ColorManager.GenerateCurrentModeDimmedColor(NotesColor)
+                            : ColorManager.GenerateCurrentModeColor(NotesColor);
+                    }
+
                     return IsQuality
-                        ? ColorManager.GenerateCurrentModeDimmedColor(NotesColor)
-                        : ColorManager.GenerateCurrentModeColor(NotesColor);
+                        ? ColorManager.GrayText
+                        : ColorManager.WindowText;
                 }
-                return IsQuality
-                    ? ColorManager.GrayText
-                    : ColorManager.WindowText;
             }
         }
 
@@ -645,15 +962,49 @@ namespace Chummer
 
         public void SetSourceDetail(Control sourceControl)
         {
-            if (_objCachedSourceDetail.Language != GlobalSettings.Language)
-                _objCachedSourceDetail = default;
-            SourceDetail.SetControl(sourceControl);
+            using (EnterReadLock.Enter(LockObject))
+            {
+                if (_objCachedSourceDetail.Language != GlobalSettings.Language)
+                    _objCachedSourceDetail = default;
+                SourceDetail.SetControl(sourceControl);
+            }
+        }
+
+        public async Task SetSourceDetailAsync(Control sourceControl, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (_objCachedSourceDetail.Language != GlobalSettings.Language)
+                    _objCachedSourceDetail = default;
+                await SourceDetail.SetControlAsync(sourceControl, token).ConfigureAwait(false);
+            }
         }
 
         /// <inheritdoc />
         public void Dispose()
         {
-            _lstTechniques.Dispose();
+            using (LockObject.EnterWriteLock())
+                _lstTechniques.Dispose();
+            LockObject.Dispose();
         }
+
+        /// <inheritdoc />
+        public async ValueTask DisposeAsync()
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            try
+            {
+                await _lstTechniques.DisposeAsync().ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            await LockObject.DisposeAsync().ConfigureAwait(false);
+        }
+
+        /// <inheritdoc />
+        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
     }
 }

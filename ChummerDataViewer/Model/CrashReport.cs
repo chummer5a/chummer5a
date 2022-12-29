@@ -1,3 +1,21 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
 using System.IO;
 using System.IO.Compression;
@@ -115,19 +133,20 @@ namespace ChummerDataViewer.Model
                     using (Stream s = userstoryEntry.Open())
                     {
                         byte[] buffer = new byte[userstoryEntry.Length];
-                        s.Read(buffer, 0, buffer.Length);
-                        userstory = Encoding.UTF8.GetString(buffer);
+                        int intByteCount = s.Read(buffer, 0, buffer.Length);
+                        userstory = intByteCount > 0 ? Encoding.UTF8.GetString(buffer) : string.Empty;
                     }
                 }
 
                 ZipArchiveEntry exceptionEntry = archive.GetEntry("exception.txt");
                 if (exceptionEntry != null)
                 {
-                    Stream s = exceptionEntry.Open();
-                    byte[] buffer = new byte[exceptionEntry.Length];
-                    s.Read(buffer, 0, buffer.Length);
-                    exception = Encoding.UTF8.GetString(buffer);
-                    s.Close();
+                    using (Stream s = exceptionEntry.Open())
+                    {
+                        byte[] buffer = new byte[exceptionEntry.Length];
+                        int intByteCount = s.Read(buffer, 0, buffer.Length);
+                        exception = intByteCount > 0 ? Encoding.UTF8.GetString(buffer) : string.Empty;
+                    }
                 }
             }
             Userstory = userstory;

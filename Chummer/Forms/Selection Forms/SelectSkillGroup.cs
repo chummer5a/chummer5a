@@ -43,15 +43,15 @@ namespace Chummer
             _objXmlDocument = XmlManager.LoadXPath("skills.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths);
         }
 
-        private void SelectSkillGroup_Load(object sender, EventArgs e)
+        private async void SelectSkillGroup_Load(object sender, EventArgs e)
         {
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstGroups))
             {
                 if (string.IsNullOrEmpty(_strForceValue))
                 {
                     // Build the list of Skill Groups found in the Skills file.
-                    foreach (XPathNavigator objXmlSkill in _objXmlDocument.SelectAndCacheExpression(
-                                 "/chummer/skillgroups/name"))
+                    foreach (XPathNavigator objXmlSkill in await _objXmlDocument.SelectAndCacheExpressionAsync(
+                                 "/chummer/skillgroups/name").ConfigureAwait(false))
                     {
                         if (!string.IsNullOrEmpty(_strExcludeCategory))
                         {
@@ -77,7 +77,7 @@ namespace Chummer
 
                         string strInnerText = objXmlSkill.Value;
                         lstGroups.Add(new ListItem(strInnerText,
-                                                   objXmlSkill.SelectSingleNodeAndCacheExpression("@translate")?.Value
+                                                   (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("@translate").ConfigureAwait(false))?.Value
                                                    ?? strInnerText));
                     }
                 }
@@ -87,26 +87,33 @@ namespace Chummer
                 }
 
                 lstGroups.Sort(CompareListItems.CompareNames);
-                cboSkillGroup.BeginUpdate();
-                cboSkillGroup.PopulateWithListItems(lstGroups);
+                await cboSkillGroup.PopulateWithListItemsAsync(lstGroups).ConfigureAwait(false);
                 // Select the first Skill in the list.
-                cboSkillGroup.SelectedIndex = 0;
-                cboSkillGroup.EndUpdate();
+                await cboSkillGroup.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);
             }
 
-            if (cboSkillGroup.Items.Count == 1)
-                cmdOK_Click(sender, e);
+            if (await cboSkillGroup.DoThreadSafeFuncAsync(x => x.Items.Count).ConfigureAwait(false) == 1)
+            {
+                _strReturnValue = await cboSkillGroup.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString()).ConfigureAwait(false);
+                await this.DoThreadSafeAsync(x =>
+                {
+                    x.DialogResult = DialogResult.OK;
+                    x.Close();
+                }).ConfigureAwait(false);
+            }
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
             _strReturnValue = cboSkillGroup.SelectedValue.ToString();
             DialogResult = DialogResult.OK;
+            Close();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         #endregion Control Events

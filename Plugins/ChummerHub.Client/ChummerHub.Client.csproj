@@ -1,6 +1,7 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.props" Condition="Exists('..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.props')" />
+  <Import Project="..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.props" Condition="Exists('..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.props')" />
+  <Import Project="..\..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.3\build\Microsoft.CodeAnalysis.Analyzers.props" Condition="Exists('..\..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.3\build\Microsoft.CodeAnalysis.Analyzers.props')" />
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -31,6 +32,7 @@
     <PlatformTarget>AnyCPU</PlatformTarget>
     <LangVersion>7.3</LangVersion>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -41,6 +43,7 @@
     <WarningLevel>4</WarningLevel>
     <LangVersion>7.3</LangVersion>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
+    <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
   <PropertyGroup>
     <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
@@ -48,62 +51,102 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release %28for Testing%29|AnyCPU'">
     <OutputPath>bin\Release %28for Testing%29\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
-    <Optimize>true</Optimize>
+    <Optimize>false</Optimize>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
+    <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="GroupControls, Version=1.9.0.0, Culture=neutral, PublicKeyToken=3726d9da21b6ac8f, processorArchitecture=MSIL">
       <HintPath>..\..\packages\GroupControls.1.9.0\lib\net45\GroupControls.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.ApplicationInsights, Version=2.20.0.103, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.ApplicationInsights.2.20.0\lib\net46\Microsoft.ApplicationInsights.dll</HintPath>
+    <Reference Include="IdentityModel, Version=6.0.0.0, Culture=neutral, PublicKeyToken=e7877f4675df049f, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\IdentityModel.6.0.0\lib\net472\IdentityModel.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.ApplicationInsights, Version=2.21.0.429, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.ApplicationInsights.2.21.0\lib\net46\Microsoft.ApplicationInsights.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Bcl.AsyncInterfaces.7.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis, Version=4.4.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.CodeAnalysis.Common.4.4.0\lib\netstandard2.0\Microsoft.CodeAnalysis.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.CodeAnalysis.CSharp, Version=4.4.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.CodeAnalysis.CSharp.4.4.0\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.Extensions.ObjectPool, Version=6.0.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Extensions.ObjectPool.6.0.1\lib\net461\Microsoft.Extensions.ObjectPool.dll</HintPath>
+    <Reference Include="Microsoft.Extensions.ObjectPool, Version=7.0.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Extensions.ObjectPool.7.0.1\lib\net462\Microsoft.Extensions.ObjectPool.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Abstractions, Version=6.25.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.IdentityModel.Abstractions.6.25.1\lib\net472\Microsoft.IdentityModel.Abstractions.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.JsonWebTokens, Version=6.25.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.IdentityModel.JsonWebTokens.6.25.1\lib\net472\Microsoft.IdentityModel.JsonWebTokens.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Logging, Version=6.25.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.IdentityModel.Logging.6.25.1\lib\net472\Microsoft.IdentityModel.Logging.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IdentityModel.Tokens, Version=6.25.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.IdentityModel.Tokens.6.25.1\lib\net472\Microsoft.IdentityModel.Tokens.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.Rest.ClientRuntime, Version=2.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Microsoft.Rest.ClientRuntime.2.3.23\lib\net461\Microsoft.Rest.ClientRuntime.dll</HintPath>
+      <HintPath>..\..\packages\Microsoft.Rest.ClientRuntime.2.3.24\lib\net461\Microsoft.Rest.ClientRuntime.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Threading, Version=17.4.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.VisualStudio.Threading.17.4.27\lib\net472\Microsoft.VisualStudio.Threading.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Validation, Version=17.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.VisualStudio.Validation.17.0.64\lib\netstandard2.0\Microsoft.VisualStudio.Validation.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="Microsoft.Win32.Registry, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\Microsoft.Win32.Registry.5.0.0\lib\net461\Microsoft.Win32.Registry.dll</HintPath>
+      <Private>True</Private>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\..\packages\Newtonsoft.Json.13.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\NLog.4.7.13\lib\net45\NLog.dll</HintPath>
+    <Reference Include="NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\NLog.5.1.0\lib\net46\NLog.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
     </Reference>
+    <Reference Include="System.Collections.Immutable, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Collections.Immutable.7.0.0\lib\net462\System.Collections.Immutable.dll</HintPath>
+    </Reference>
     <Reference Include="System.ComponentModel.Annotations, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.ComponentModel.Annotations.5.0.0\lib\net461\System.ComponentModel.Annotations.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
-    <Reference Include="System.Composition.AttributedModel, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Composition.AttributedModel.6.0.0\lib\net461\System.Composition.AttributedModel.dll</HintPath>
+    <Reference Include="System.Composition.AttributedModel, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Composition.AttributedModel.7.0.0\lib\net462\System.Composition.AttributedModel.dll</HintPath>
     </Reference>
-    <Reference Include="System.Composition.Convention, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Composition.Convention.6.0.0\lib\net461\System.Composition.Convention.dll</HintPath>
+    <Reference Include="System.Composition.Convention, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Composition.Convention.7.0.0\lib\net462\System.Composition.Convention.dll</HintPath>
     </Reference>
-    <Reference Include="System.Composition.Hosting, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Composition.Hosting.6.0.0\lib\net461\System.Composition.Hosting.dll</HintPath>
+    <Reference Include="System.Composition.Hosting, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Composition.Hosting.7.0.0\lib\net462\System.Composition.Hosting.dll</HintPath>
     </Reference>
-    <Reference Include="System.Composition.Runtime, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Composition.Runtime.6.0.0\lib\net461\System.Composition.Runtime.dll</HintPath>
+    <Reference Include="System.Composition.Runtime, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Composition.Runtime.7.0.0\lib\net462\System.Composition.Runtime.dll</HintPath>
     </Reference>
-    <Reference Include="System.Composition.TypedParts, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Composition.TypedParts.6.0.0\lib\net461\System.Composition.TypedParts.dll</HintPath>
+    <Reference Include="System.Composition.TypedParts, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Composition.TypedParts.7.0.0\lib\net462\System.Composition.TypedParts.dll</HintPath>
     </Reference>
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Design" />
-    <Reference Include="System.Diagnostics.DiagnosticSource, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Diagnostics.DiagnosticSource.6.0.0\lib\net461\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Diagnostics.DiagnosticSource.7.0.0\lib\net462\System.Diagnostics.DiagnosticSource.dll</HintPath>
     </Reference>
     <Reference Include="System.IO, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.IO.4.3.0\lib\net462\System.IO.dll</HintPath>
@@ -112,8 +155,8 @@
     </Reference>
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
-    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
+    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
     </Reference>
     <Reference Include="System.Net" />
     <Reference Include="System.Net.Http, Version=4.1.1.3, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -126,6 +169,9 @@
     <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
     </Reference>
+    <Reference Include="System.Reflection.Metadata, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Reflection.Metadata.7.0.0\lib\net462\System.Reflection.Metadata.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Runtime.4.3.1\lib\net462\System.Runtime.dll</HintPath>
       <Private>True</Private>
@@ -135,6 +181,10 @@
       <HintPath>..\..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security.AccessControl, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Security.AccessControl.6.0.0\lib\net461\System.Security.AccessControl.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.Security.Cryptography.Algorithms, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Security.Cryptography.Algorithms.4.3.1\lib\net463\System.Security.Cryptography.Algorithms.dll</HintPath>
       <Private>True</Private>
@@ -155,17 +205,31 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Security.Principal.Windows, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Security.Principal.Windows.5.0.0\lib\net461\System.Security.Principal.Windows.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
-    <Reference Include="System.Text.Encodings.Web, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\..\packages\System.Text.Encodings.Web.6.0.0\lib\net461\System.Text.Encodings.Web.dll</HintPath>
+    <Reference Include="System.Text.Encoding.CodePages, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Text.Encoding.CodePages.7.0.0\lib\net462\System.Text.Encoding.CodePages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Encodings.Web, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Text.Encodings.Web.7.0.0\lib\net462\System.Text.Encodings.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Json, Version=7.0.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.Text.Json.7.0.1\lib\net462\System.Text.Json.dll</HintPath>
     </Reference>
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
     <Reference Include="System.Transactions" />
+    <Reference Include="System.ValueTuple, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\..\packages\System.ValueTuple.4.5.0\lib\net47\System.ValueTuple.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Web" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
     <Reference Include="WindowsBase" />
@@ -191,6 +255,49 @@
     <Compile Include="Model\SINnerVisibility.cs" />
     <Compile Include="Model\SINSearchGroupResult.cs" />
     <Compile Include="Model\Tag.cs" />
+    <Compile Include="OidcClient\IdentityTokenValidator\JwtHandlerIdentityTokenValidator.cs" />
+    <Compile Include="OidcClient\Oidc\AssemblyAttributes.cs" />
+    <Compile Include="OidcClient\Oidc\AuthorizeClient.cs" />
+    <Compile Include="OidcClient\Oidc\AuthorizeState.cs" />
+    <Compile Include="OidcClient\Oidc\Browser\BrowserOptions.cs" />
+    <Compile Include="OidcClient\Oidc\Browser\BrowserResult.cs" />
+    <Compile Include="OidcClient\Oidc\Browser\BrowserResultType.cs" />
+    <Compile Include="OidcClient\Oidc\Browser\DisplayMode.cs" />
+    <Compile Include="OidcClient\Oidc\Browser\IBrowser.cs" />
+    <Compile Include="OidcClient\Oidc\CryptoHelper.cs" />
+    <Compile Include="OidcClient\Oidc\IIdentityTokenValidator.cs" />
+    <Compile Include="OidcClient\Oidc\Infrastructure\LoggingExtensions.cs" />
+    <Compile Include="OidcClient\Oidc\Infrastructure\LogSerializer.cs" />
+    <Compile Include="OidcClient\Oidc\Infrastructure\OidcClientOptionsExtensions.cs" />
+    <Compile Include="OidcClient\Oidc\Infrastructure\StringExtensions.cs" />
+    <Compile Include="OidcClient\Oidc\NoValidationIdentityTokenValidator.cs" />
+    <Compile Include="OidcClient\Oidc\OidcClient.cs" />
+    <Compile Include="OidcClient\Oidc\OidcClientOptions.cs" />
+    <Compile Include="OidcClient\Oidc\Policy.cs" />
+    <Compile Include="OidcClient\Oidc\ProviderInformation.cs" />
+    <Compile Include="OidcClient\Oidc\RefreshTokenDelegatingHandler.cs" />
+    <Compile Include="OidcClient\Oidc\Requests\AuthorizeRequest.cs" />
+    <Compile Include="OidcClient\Oidc\Requests\LoginRequest.cs" />
+    <Compile Include="OidcClient\Oidc\Requests\LogoutRequest.cs" />
+    <Compile Include="OidcClient\Oidc\ResponseProcessor.cs" />
+    <Compile Include="OidcClient\Oidc\Results\AuthorizeResult.cs" />
+    <Compile Include="OidcClient\Oidc\Results\IdentityTokenValidationResult.cs" />
+    <Compile Include="OidcClient\Oidc\Results\LoginResult.cs" />
+    <Compile Include="OidcClient\Oidc\Results\LogoutResult.cs" />
+    <Compile Include="OidcClient\Oidc\Results\RefreshTokenResult.cs" />
+    <Compile Include="OidcClient\Oidc\Results\ResponseValidationResult.cs" />
+    <Compile Include="OidcClient\Oidc\Results\Result.cs" />
+    <Compile Include="OidcClient\Oidc\Results\TokenResponseValidationResult.cs" />
+    <Compile Include="OidcClient\Oidc\Results\UserInfoResult.cs" />
+    <Compile Include="OidcClient\Oidc\TokenRefreshedEventArgs.cs" />
+    <Compile Include="OidcClient\SimpleHttpServer\HttpBuilder.cs" />
+    <Compile Include="OidcClient\SimpleHttpServer\HttpProcessor.cs" />
+    <Compile Include="OidcClient\SimpleHttpServer\HttpServer.cs" />
+    <Compile Include="OidcClient\SimpleHttpServer\Models\HttpRequest.cs" />
+    <Compile Include="OidcClient\SimpleHttpServer\Models\HttpResponse.cs" />
+    <Compile Include="OidcClient\SimpleHttpServer\Models\Route.cs" />
+    <Compile Include="OidcClient\SimpleHttpServer\RouteHandlers\FileSystemRouteHandler.cs" />
+    <Compile Include="OidcClient\SystemBrowser.cs" />
     <Compile Include="OpenAPIs\swagger.cs" />
     <Compile Include="Properties\Resources.Designer.cs">
       <AutoGen>True</AutoGen>
@@ -402,43 +509,41 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="changelog.txt" />
+    <Content Include="OidcClient\SimpleHttpServer\Resources\Pages\404.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="OidcClient\SimpleHttpServer\Resources\Pages\500.html">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="plugin.txt">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Resource Include="Resources\group.png" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.NetAnalyzers.dll" />
-    <Analyzer Include="..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.NetAnalyzers.dll" />
+    <Analyzer Include="..\..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.3\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
+    <Analyzer Include="..\..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.3\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
+    <Analyzer Include="..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.NetAnalyzers.dll" />
+    <Analyzer Include="..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.NetAnalyzers.dll" />
+    <Analyzer Include="..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.4.27\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.CodeFixes.dll" />
+    <Analyzer Include="..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.4.27\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.CSharp.dll" />
+    <Analyzer Include="..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.4.27\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.dll" />
+    <Analyzer Include="..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.4.27\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.CodeFixes.dll" />
+    <Analyzer Include="..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.4.27\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.dll" />
+    <Analyzer Include="..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.4.27\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.VisualBasic.dll" />
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent>echo Statement 1: copy "$(TargetDir)$(TargetName).*" "$(TargetDir)Plugins\SINners\" /Y
-        copy "$(TargetDir)$(TargetName).*" "$(TargetDir)Plugins\SINners\" /Y
-        echo Statement 2: copy "$(TargetDir)$(TargetName).*" "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\" /Y
-        copy "$(TargetDir)$(TargetName).*" "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\" /Y
-        echo Statement 3: copy "$(TargetDir)Newtonsoft.Json.*" "$(TargetDir)Plugins\SINners\" /Y
-        copy "$(TargetDir)Newtonsoft.Json.*" "$(TargetDir)Plugins\SINners\" /Y
-        echo Statement 4: copy "$(TargetDir)Microsoft.Rest.ClientRuntime.*" "$(TargetDir)Plugins\SINners\" /Y
-        copy "$(TargetDir)Microsoft.Rest.ClientRuntime.*" "$(TargetDir)Plugins\SINners\" /Y
-        echo Statement 5: copy "$(TargetDir)NLog.*" "$(TargetDir)Plugins\SINners\" /Y
-        copy "$(TargetDir)NLog.*" "$(TargetDir)Plugins\SINners\" /Y
-        echo Statement 6: copy "$(TargetDir)System.Text.Encodings.Web.*" "$(TargetDir)Plugins\SINners\" /Y
-        copy "$(TargetDir)System.Text.Encodings.Web.*" "$(TargetDir)Plugins\SINners\" /Y
-        echo Statement 7: copy "$(TargetDir)System.Composition.*" "$(TargetDir)Plugins\SINners\" /Y
-        copy "$(TargetDir)System.Composition.*" "$(TargetDir)Plugins\SINners\" /Y
-        echo Statement 8: copy "$(TargetDir)System.Diagnostics.DiagnosticSource.*" "$(TargetDir)Plugins\SINners\" /Y
-        copy "$(TargetDir)System.Diagnostics.DiagnosticSource.*" "$(TargetDir)Plugins\SINners\" /Y
-        echo Statement 9: copy "$(TargetDir)Microsoft.ApplicationInsights.*" "$(TargetDir)Plugins\SINners\" /Y
-        copy "$(TargetDir)Microsoft.ApplicationInsights.*" "$(TargetDir)Plugins\SINners\" /Y
-        echo Statement 10: copy "$(TargetDir)GroupControls.*" "$(TargetDir)Plugins\SINners\" /Y
-        copy "$(TargetDir)GroupControls.*" "$(TargetDir)Plugins\SINners\" /Y
-        echo Statement 11: copy "$(TargetDir)System.Memory.*" "$(TargetDir)Plugins\SINners\" /Y
-        copy "$(TargetDir)System.Memory.*" "$(TargetDir)Plugins\SINners\" /Y
-        echo Statement 12: copy "$(TargetDir)*.txt" "$(TargetDir)Plugins\SINners\" /Y
-        copy "$(TargetDir)*.txt" "$(TargetDir)Plugins\SINners\" /Y
-        echo Statement 13: copy "$(TargetDir)Plugins\SINners\*" "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\" /Y
-        copy "$(TargetDir)Plugins\SINners\*" "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\" /Y
+    <PostBuildEvent>
+      echo Statement 1: copy "$(TargetDir)*.dll" "$(TargetDir)Plugins\SINners\" /Y
+      copy "$(TargetDir)*.dll" "$(TargetDir)Plugins\SINners\" /Y
+      echo Statement 2: copy "$(TargetDir)*.txt" "$(TargetDir)Plugins\SINners\" /Y
+      copy "$(TargetDir)*.txt" "$(TargetDir)Plugins\SINners\" /Y
+      echo Statement 3: copy "$(TargetDir)*.dll.config" "$(TargetDir)Plugins\SINners\" /Y
+      copy "$(TargetDir)*.dll.config" "$(TargetDir)Plugins\SINners\" /Y
+      echo Statement 4: copy "$(TargetDir)Plugins\SINners\*" "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\" /Y
+      copy "$(TargetDir)Plugins\SINners\*" "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\" /Y
 </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
@@ -452,8 +557,13 @@
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.props'))" />
-    <Error Condition="!Exists('..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets'))" />
+    <Error Condition="!Exists('..\..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.3\build\Microsoft.CodeAnalysis.Analyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.3\build\Microsoft.CodeAnalysis.Analyzers.props'))" />
+    <Error Condition="!Exists('..\..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.3\build\Microsoft.CodeAnalysis.Analyzers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.3\build\Microsoft.CodeAnalysis.Analyzers.targets'))" />
+    <Error Condition="!Exists('..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.props'))" />
+    <Error Condition="!Exists('..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets'))" />
+    <Error Condition="!Exists('..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.4.27\build\Microsoft.VisualStudio.Threading.Analyzers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.4.27\build\Microsoft.VisualStudio.Threading.Analyzers.targets'))" />
   </Target>
-  <Import Project="..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets" Condition="Exists('..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets')" />
+  <Import Project="..\..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.3\build\Microsoft.CodeAnalysis.Analyzers.targets" Condition="Exists('..\..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.3\build\Microsoft.CodeAnalysis.Analyzers.targets')" />
+  <Import Project="..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets" Condition="Exists('..\..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets')" />
+  <Import Project="..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.4.27\build\Microsoft.VisualStudio.Threading.Analyzers.targets" Condition="Exists('..\..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.4.27\build\Microsoft.VisualStudio.Threading.Analyzers.targets')" />
 </Project>

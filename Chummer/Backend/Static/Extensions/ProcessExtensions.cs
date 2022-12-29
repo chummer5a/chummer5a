@@ -30,35 +30,37 @@ namespace Chummer
         /// Starts a process and returns an await task linked to it.
         /// </summary>
         /// <param name="objProcess">The process to start.</param>
-        /// <param name="objCancellationToken">A cancellation token. If invoked, the task will return immediately as canceled.</param>
+        /// <param name="token">A cancellation token. If invoked, the task will return immediately as canceled.</param>
         /// <returns>A Task linked to the process' status code that will complete when the process exits.</returns>
-        public static Task<int> StartAsync(this Process objProcess, CancellationToken objCancellationToken = default)
+        public static async Task<int> StartAsync(this Process objProcess, CancellationToken token = default)
         {
             TaskCompletionSource<int> objTaskCompletionSource = new TaskCompletionSource<int>();
+            if (token != default)
+            {
+                using (token.Register(() => objTaskCompletionSource.TrySetCanceled(token)))
+                {
+                    objProcess.EnableRaisingEvents = true;
+                    objProcess.Exited += (sender, args) => objTaskCompletionSource.TrySetResult(objProcess.ExitCode);
+                    objProcess.Start();
+                    return await objTaskCompletionSource.Task.ConfigureAwait(false);
+                }
+            }
+
             objProcess.EnableRaisingEvents = true;
             objProcess.Exited += (sender, args) => objTaskCompletionSource.TrySetResult(objProcess.ExitCode);
-            if (objCancellationToken != default)
-                objCancellationToken.Register(() => objTaskCompletionSource.TrySetCanceled(objCancellationToken));
             objProcess.Start();
-            return objTaskCompletionSource.Task;
+            return await objTaskCompletionSource.Task.ConfigureAwait(false);
         }
 
         /// <summary>
         /// Starts a process and returns an await task linked to it.
         /// </summary>
         /// <param name="objStartInfo">The process start info to use.</param>
-        /// <param name="objCancellationToken">A cancellation token. If invoked, the task will return immediately as canceled.</param>
+        /// <param name="token">A cancellation token. If invoked, the task will return immediately as canceled.</param>
         /// <returns>A Task linked to the process' status code that will complete when the process exits.</returns>
-        public static Task<int> StartAsync(this ProcessStartInfo objStartInfo, CancellationToken objCancellationToken = default)
+        public static Task<int> StartAsync(this ProcessStartInfo objStartInfo, CancellationToken token = default)
         {
-            Process objProcess = new Process { StartInfo = objStartInfo };
-            TaskCompletionSource<int> objTaskCompletionSource = new TaskCompletionSource<int>();
-            objProcess.EnableRaisingEvents = true;
-            objProcess.Exited += (sender, args) => objTaskCompletionSource.TrySetResult(objProcess.ExitCode);
-            if (objCancellationToken != default)
-                objCancellationToken.Register(() => objTaskCompletionSource.TrySetCanceled(objCancellationToken));
-            objProcess.Start();
-            return objTaskCompletionSource.Task;
+            return StartAsync(new Process {StartInfo = objStartInfo}, token);
         }
 
         /// <summary>

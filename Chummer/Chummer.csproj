@@ -1,9 +1,10 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.props" Condition="Exists('..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.props')" />
+  <Import Project="..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.3\build\Microsoft.CodeAnalysis.Analyzers.props" Condition="Exists('..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.3\build\Microsoft.CodeAnalysis.Analyzers.props')" />
+  <Import Project="..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.props" Condition="Exists('..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
-    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProductVersion>8.0.30703</ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
     <ProjectGuid>{95279469-5A3E-42E6-993C-6A403586C86E}</ProjectGuid>
@@ -36,40 +37,6 @@
     <PublishWizardCompleted>true</PublishWizardCompleted>
     <BootstrapperEnabled>true</BootstrapperEnabled>
   </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|x86' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugSymbols>true</DebugSymbols>
-    <DebugType>full</DebugType>
-    <Optimize>false</Optimize>
-    <TransformOnBuild>True</TransformOnBuild>
-    <TransformOutOfDateOnly>false</TransformOutOfDateOnly>
-    <OutputPath>bin\Debug\</OutputPath>
-    <DefineConstants>DEBUG;TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <Prefer32Bit>true</Prefer32Bit>
-    <LangVersion>7.3</LangVersion>
-    <RunCodeAnalysis>false</RunCodeAnalysis>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <EnableNETAnalyzers>true</EnableNETAnalyzers>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
-    <PlatformTarget>AnyCPU</PlatformTarget>
-    <DebugType>pdbonly</DebugType>
-    <Optimize>true</Optimize>
-    <TransformOnBuild>True</TransformOnBuild>
-    <TransformOutOfDateOnly>false</TransformOutOfDateOnly>
-    <OutputPath>bin\Release\</OutputPath>
-    <DefineConstants>TRACE</DefineConstants>
-    <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
-    <UseVSHostingProcess>false</UseVSHostingProcess>
-    <DebugSymbols>true</DebugSymbols>
-    <Prefer32Bit>true</Prefer32Bit>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
-    <EnableNETAnalyzers>true</EnableNETAnalyzers>
-    <LangVersion>7.3</LangVersion>
-  </PropertyGroup>
   <PropertyGroup>
     <StartupObject>Chummer.Program</StartupObject>
   </PropertyGroup>
@@ -94,25 +61,46 @@
   <PropertyGroup>
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release %28for Testing%29|x86'">
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|AnyCPU'">
     <DebugSymbols>true</DebugSymbols>
-    <OutputPath>bin\x86\Release %28for Testing%29\</OutputPath>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <CheckForOverflowUnderflow>true</CheckForOverflowUnderflow>
+    <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Release\</OutputPath>
     <DefineConstants>TRACE</DefineConstants>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <Optimize>true</Optimize>
+    <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
     <DebugType>pdbonly</DebugType>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
-    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release %28for Testing%29|AnyCPU'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\Release %28for Testing%29\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+    <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="BouncyCastle.Crypto, Version=1.9.0.0, Culture=neutral, PublicKeyToken=0e99375e54769942, processorArchitecture=MSIL">
       <HintPath>..\packages\Portable.BouncyCastle.1.9.0\lib\net40\BouncyCastle.Crypto.dll</HintPath>
-    </Reference>
-    <Reference Include="Common.Logging, Version=3.4.1.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
-      <HintPath>..\packages\Common.Logging.3.4.1\lib\net40\Common.Logging.dll</HintPath>
     </Reference>
     <Reference Include="Common.Logging.Core, Version=3.4.1.0, Culture=neutral, PublicKeyToken=af08829b84f0328e, processorArchitecture=MSIL">
       <HintPath>..\packages\Common.Logging.Core.3.4.1\lib\net40\Common.Logging.Core.dll</HintPath>
@@ -123,35 +111,35 @@
     <Reference Include="HtmlRenderer.WinForms, Version=1.5.0.6, Culture=neutral, processorArchitecture=MSIL">
       <HintPath>..\packages\HtmlRenderer.WinForms.1.5.0.6\lib\net45\HtmlRenderer.WinForms.dll</HintPath>
     </Reference>
-    <Reference Include="itext.barcodes, Version=7.2.1.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.2.1\lib\net461\itext.barcodes.dll</HintPath>
+    <Reference Include="itext.barcodes, Version=7.2.4.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.2.4\lib\net461\itext.barcodes.dll</HintPath>
     </Reference>
-    <Reference Include="itext.commons, Version=7.2.1.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.commons.7.2.1\lib\net461\itext.commons.dll</HintPath>
+    <Reference Include="itext.commons, Version=7.2.4.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.commons.7.2.4\lib\net461\itext.commons.dll</HintPath>
     </Reference>
-    <Reference Include="itext.forms, Version=7.2.1.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.2.1\lib\net461\itext.forms.dll</HintPath>
+    <Reference Include="itext.forms, Version=7.2.4.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.2.4\lib\net461\itext.forms.dll</HintPath>
     </Reference>
-    <Reference Include="itext.io, Version=7.2.1.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.2.1\lib\net461\itext.io.dll</HintPath>
+    <Reference Include="itext.io, Version=7.2.4.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.2.4\lib\net461\itext.io.dll</HintPath>
     </Reference>
-    <Reference Include="itext.kernel, Version=7.2.1.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.2.1\lib\net461\itext.kernel.dll</HintPath>
+    <Reference Include="itext.kernel, Version=7.2.4.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.2.4\lib\net461\itext.kernel.dll</HintPath>
     </Reference>
-    <Reference Include="itext.layout, Version=7.2.1.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.2.1\lib\net461\itext.layout.dll</HintPath>
+    <Reference Include="itext.layout, Version=7.2.4.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.2.4\lib\net461\itext.layout.dll</HintPath>
     </Reference>
-    <Reference Include="itext.pdfa, Version=7.2.1.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.2.1\lib\net461\itext.pdfa.dll</HintPath>
+    <Reference Include="itext.pdfa, Version=7.2.4.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.2.4\lib\net461\itext.pdfa.dll</HintPath>
     </Reference>
-    <Reference Include="itext.sign, Version=7.2.1.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.2.1\lib\net461\itext.sign.dll</HintPath>
+    <Reference Include="itext.sign, Version=7.2.4.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.2.4\lib\net461\itext.sign.dll</HintPath>
     </Reference>
-    <Reference Include="itext.styledxmlparser, Version=7.2.1.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.2.1\lib\net461\itext.styledxmlparser.dll</HintPath>
+    <Reference Include="itext.styledxmlparser, Version=7.2.4.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.2.4\lib\net461\itext.styledxmlparser.dll</HintPath>
     </Reference>
-    <Reference Include="itext.svg, Version=7.2.1.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
-      <HintPath>..\packages\itext7.7.2.1\lib\net461\itext.svg.dll</HintPath>
+    <Reference Include="itext.svg, Version=7.2.4.0, Culture=neutral, PublicKeyToken=8354ae6d2174ddca, processorArchitecture=MSIL">
+      <HintPath>..\packages\itext7.7.2.4\lib\net461\itext.svg.dll</HintPath>
     </Reference>
     <Reference Include="LiveCharts, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
       <HintPath>..\packages\LiveCharts.0.9.7\lib\net45\LiveCharts.dll</HintPath>
@@ -162,64 +150,87 @@
     <Reference Include="LiveCharts.Wpf, Version=0.9.7.0, Culture=neutral, PublicKeyToken=0bc1f845d1ebb8df, processorArchitecture=MSIL">
       <HintPath>..\packages\LiveCharts.Wpf.0.9.7\lib\net45\LiveCharts.Wpf.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.AI.PerfCounterCollector, Version=2.20.0.103, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.20.0\lib\net452\Microsoft.AI.PerfCounterCollector.dll</HintPath>
+    <Reference Include="Microsoft.AI.PerfCounterCollector, Version=2.21.0.429, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.21.0\lib\net452\Microsoft.AI.PerfCounterCollector.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.ApplicationInsights, Version=2.20.0.103, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.ApplicationInsights.2.20.0\lib\net46\Microsoft.ApplicationInsights.dll</HintPath>
+    <Reference Include="Microsoft.ApplicationInsights, Version=2.21.0.429, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.2.21.0\lib\net46\Microsoft.ApplicationInsights.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.ApplicationInsights.NLogTarget, Version=2.20.0.103, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.ApplicationInsights.NLogTarget.2.20.0\lib\net452\Microsoft.ApplicationInsights.NLogTarget.dll</HintPath>
+    <Reference Include="Microsoft.ApplicationInsights.NLogTarget, Version=2.21.0.429, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.ApplicationInsights.NLogTarget.2.21.0\lib\net452\Microsoft.ApplicationInsights.NLogTarget.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.6.0.0\lib\net461\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
+    <Reference Include="Microsoft.Bcl.AsyncInterfaces, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Bcl.AsyncInterfaces.7.0.0\lib\net462\Microsoft.Bcl.AsyncInterfaces.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.CSharp" />
-    <Reference Include="Microsoft.Extensions.DependencyInjection, Version=6.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.6.0.0\lib\net461\Microsoft.Extensions.DependencyInjection.dll</HintPath>
+    <Reference Include="Microsoft.CodeAnalysis, Version=4.4.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeAnalysis.Common.4.4.0\lib\netstandard2.0\Microsoft.CodeAnalysis.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=6.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.6.0.0\lib\net461\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
+    <Reference Include="Microsoft.CodeAnalysis.CSharp, Version=4.4.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.CodeAnalysis.CSharp.4.4.0\lib\netstandard2.0\Microsoft.CodeAnalysis.CSharp.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Extensions.Logging, Version=6.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.Logging.6.0.0\lib\net461\Microsoft.Extensions.Logging.dll</HintPath>
+    <Reference Include="Microsoft.Extensions.DependencyInjection, Version=7.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.7.0.0\lib\net462\Microsoft.Extensions.DependencyInjection.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=6.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\lib\net461\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
+    <Reference Include="Microsoft.Extensions.DependencyInjection.Abstractions, Version=7.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.DependencyInjection.Abstractions.7.0.0\lib\net462\Microsoft.Extensions.DependencyInjection.Abstractions.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Extensions.ObjectPool, Version=6.0.1.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.ObjectPool.6.0.1\lib\net461\Microsoft.Extensions.ObjectPool.dll</HintPath>
+    <Reference Include="Microsoft.Extensions.Logging, Version=7.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Logging.7.0.0\lib\net462\Microsoft.Extensions.Logging.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Extensions.Options, Version=6.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.Options.6.0.0\lib\net461\Microsoft.Extensions.Options.dll</HintPath>
+    <Reference Include="Microsoft.Extensions.Logging.Abstractions, Version=7.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Logging.Abstractions.7.0.0\lib\net462\Microsoft.Extensions.Logging.Abstractions.dll</HintPath>
     </Reference>
-    <Reference Include="Microsoft.Extensions.Primitives, Version=6.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.Extensions.Primitives.6.0.0\lib\net461\Microsoft.Extensions.Primitives.dll</HintPath>
+    <Reference Include="Microsoft.Extensions.ObjectPool">
+      <HintPath>..\packages\Microsoft.Extensions.ObjectPool.7.0.1\lib\net462\Microsoft.Extensions.ObjectPool.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Options, Version=7.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Options.7.0.0\lib\net462\Microsoft.Extensions.Options.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Extensions.Primitives, Version=7.0.0.0, Culture=neutral, PublicKeyToken=adb9793829ddae60, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Extensions.Primitives.7.0.0\lib\net462\Microsoft.Extensions.Primitives.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.IO.RecyclableMemoryStream, Version=2.2.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.IO.RecyclableMemoryStream.2.2.1\lib\net462\Microsoft.IO.RecyclableMemoryStream.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Threading, Version=17.4.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.Threading.17.4.27\lib\net472\Microsoft.VisualStudio.Threading.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.VisualStudio.Validation, Version=17.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.VisualStudio.Validation.17.0.64\lib\netstandard2.0\Microsoft.VisualStudio.Validation.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Win32.Registry, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.Win32.Registry.5.0.0\lib\net461\Microsoft.Win32.Registry.dll</HintPath>
     </Reference>
     <Reference Include="Newtonsoft.Json, Version=13.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.13.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <HintPath>..\packages\Newtonsoft.Json.13.0.2\lib\net45\Newtonsoft.Json.dll</HintPath>
     </Reference>
-    <Reference Include="NLog, Version=4.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
-      <HintPath>..\packages\NLog.4.7.13\lib\net45\NLog.dll</HintPath>
+    <Reference Include="NLog, Version=5.0.0.0, Culture=neutral, PublicKeyToken=5120e14c03d0593c, processorArchitecture=MSIL">
+      <HintPath>..\packages\NLog.5.1.0\lib\net46\NLog.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
+    <Reference Include="RegexLib">
+      <HintPath>.\RegexLib.dll</HintPath>
+    </Reference>
     <Reference Include="RtfPipe, Version=2.0.7677.4303, Culture=neutral, PublicKeyToken=5f6ab4ce530296d2, processorArchitecture=MSIL">
       <HintPath>..\packages\RtfPipe.2.0.7677.4303\lib\net45\RtfPipe.dll</HintPath>
     </Reference>
     <Reference Include="System">
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.dll</HintPath>
     </Reference>
     <Reference Include="System.Buffers, Version=4.0.3.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Buffers.4.5.1\lib\net461\System.Buffers.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Collections.Immutable, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Collections.Immutable.7.0.0\lib\net462\System.Collections.Immutable.dll</HintPath>
     </Reference>
     <Reference Include="System.ComponentModel.Composition" />
     <Reference Include="System.ComponentModel.DataAnnotations" />
     <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Data.DataSetExtensions" />
-    <Reference Include="System.Diagnostics.DiagnosticSource, Version=6.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.6.0.0\lib\net461\System.Diagnostics.DiagnosticSource.dll</HintPath>
+    <Reference Include="System.Diagnostics.DiagnosticSource, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Diagnostics.DiagnosticSource.7.0.0\lib\net462\System.Diagnostics.DiagnosticSource.dll</HintPath>
     </Reference>
     <Reference Include="System.IO, Version=4.1.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.IO.4.3.0\lib\net462\System.IO.dll</HintPath>
@@ -228,8 +239,8 @@
     </Reference>
     <Reference Include="System.IO.Compression" />
     <Reference Include="System.IO.Compression.FileSystem" />
-    <Reference Include="System.Memory, Version=4.0.1.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
-      <HintPath>..\packages\System.Memory.4.5.4\lib\net461\System.Memory.dll</HintPath>
+    <Reference Include="System.Memory, Version=4.0.1.2, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Memory.4.5.5\lib\net461\System.Memory.dll</HintPath>
     </Reference>
     <Reference Include="System.Net" />
     <Reference Include="System.Net.Http, Version=4.1.1.3, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
@@ -241,6 +252,9 @@
     <Reference Include="System.Numerics.Vectors, Version=4.1.4.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Numerics.Vectors.4.5.0\lib\net46\System.Numerics.Vectors.dll</HintPath>
     </Reference>
+    <Reference Include="System.Reflection.Metadata, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Reflection.Metadata.7.0.0\lib\net462\System.Reflection.Metadata.dll</HintPath>
+    </Reference>
     <Reference Include="System.Runtime, Version=4.1.1.1, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Runtime.4.3.1\lib\net462\System.Runtime.dll</HintPath>
       <Private>True</Private>
@@ -251,6 +265,9 @@
       <HintPath>..\packages\System.Runtime.CompilerServices.Unsafe.6.0.0\lib\net461\System.Runtime.CompilerServices.Unsafe.dll</HintPath>
     </Reference>
     <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security.AccessControl, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.AccessControl.6.0.0\lib\net461\System.Security.AccessControl.dll</HintPath>
+    </Reference>
     <Reference Include="System.Security.Cryptography.Algorithms, Version=4.2.1.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Security.Cryptography.Algorithms.4.3.1\lib\net463\System.Security.Cryptography.Algorithms.dll</HintPath>
       <Private>True</Private>
@@ -271,7 +288,19 @@
       <Private>True</Private>
       <Private>True</Private>
     </Reference>
+    <Reference Include="System.Security.Principal.Windows, Version=5.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Security.Principal.Windows.5.0.0\lib\net461\System.Security.Principal.Windows.dll</HintPath>
+    </Reference>
     <Reference Include="System.ServiceModel" />
+    <Reference Include="System.Text.Encoding.CodePages, Version=7.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encoding.CodePages.7.0.0\lib\net462\System.Text.Encoding.CodePages.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Encodings.Web, Version=7.0.0.0, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Text.Encodings.Web.7.0.0\lib\net462\System.Text.Encodings.Web.dll</HintPath>
+    </Reference>
+    <Reference Include="System.Text.Json">
+      <HintPath>..\packages\System.Text.Json.7.0.1\lib\net462\System.Text.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System.Threading.Tasks.Extensions, Version=4.2.0.1, Culture=neutral, PublicKeyToken=cc7b13ffcd2ddd51, processorArchitecture=MSIL">
       <HintPath>..\packages\System.Threading.Tasks.Extensions.4.5.4\lib\net461\System.Threading.Tasks.Extensions.dll</HintPath>
     </Reference>
@@ -285,7 +314,7 @@
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing">
-      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.7.2\System.Drawing.dll</HintPath>
+      <HintPath>..\..\..\..\..\..\..\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.8\System.Drawing.dll</HintPath>
     </Reference>
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Xml" />
@@ -296,6 +325,21 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="7zip\Common\CommandLineParser.cs" />
+    <Compile Include="7zip\Common\CRC.cs" />
+    <Compile Include="7zip\Common\InBuffer.cs" />
+    <Compile Include="7zip\Common\OutBuffer.cs" />
+    <Compile Include="7zip\Compress\LZMA\LzmaBase.cs" />
+    <Compile Include="7zip\Compress\LZMA\LzmaDecoder.cs" />
+    <Compile Include="7zip\Compress\LZMA\LzmaEncoder.cs" />
+    <Compile Include="7zip\Compress\LZ\IMatchFinder.cs" />
+    <Compile Include="7zip\Compress\LZ\LzBinTree.cs" />
+    <Compile Include="7zip\Compress\LZ\LzInWindow.cs" />
+    <Compile Include="7zip\Compress\LZ\LzOutWindow.cs" />
+    <Compile Include="7zip\Compress\RangeCoder\RangeCoder.cs" />
+    <Compile Include="7zip\Compress\RangeCoder\RangeCoderBit.cs" />
+    <Compile Include="7zip\Compress\RangeCoder\RangeCoderBitTree.cs" />
+    <Compile Include="7zip\ICoder.cs" />
     <Compile Include="Backend\Attributes\AttributeSection.cs" />
     <Compile Include="Backend\Datastructures\AvailabilityValue.cs" />
     <Compile Include="Backend\Datastructures\CachedBindingList.cs" />
@@ -308,8 +352,11 @@
     <Compile Include="Backend\Datastructures\LockingEnumerator.cs" />
     <Compile Include="Backend\Datastructures\LockingHashSet.cs" />
     <Compile Include="Backend\Datastructures\LockingOrderedSet.cs" />
+    <Compile Include="Backend\Datastructures\LockingTypedOrderedDictionary.cs" />
     <Compile Include="Backend\Datastructures\OrderedSet.cs" />
     <Compile Include="Backend\Datastructures\PropertyDependencyGraph.cs" />
+    <Compile Include="Backend\Datastructures\ThreadSafeBindingList.cs" />
+    <Compile Include="Backend\Datastructures\ThreadSafeCachedRandom.cs" />
     <Compile Include="Backend\Datastructures\ThreadSafeList.cs" />
     <Compile Include="Backend\Datastructures\DependencyGraphNodeWithCondition.cs" />
     <Compile Include="Backend\Datastructures\MostRecentlyUsedCollection.cs" />
@@ -321,20 +368,48 @@
     <Compile Include="Backend\Datastructures\TextEventArgs.cs" />
     <Compile Include="Backend\Datastructures\ThreadSafeObservableCollection.cs" />
     <Compile Include="Backend\Datastructures\ThreadSafeObservableCollectionWithMaxSize.cs" />
+    <Compile Include="Backend\Datastructures\ThreadSafeQueue.cs" />
     <Compile Include="Backend\Datastructures\ThreadSafeRandom.cs" />
+    <Compile Include="Backend\Datastructures\ThreadSafeStack.cs" />
     <Compile Include="Backend\Datastructures\TypedOrderedDictionary.cs" />
     <Compile Include="Backend\Datastructures\LockingDictionary.cs" />
+    <Compile Include="Backend\Equipment\Clip.cs" />
     <Compile Include="Backend\Equipment\WeaponMount.cs" />
+    <Compile Include="Backend\Helpers\AsyncFriendlyReaderWriterLock.cs" />
+    <Compile Include="Backend\Helpers\AsyncLock.cs" />
+    <Compile Include="Backend\Helpers\CancellationTokenTaskSource.cs" />
+    <Compile Include="Backend\Helpers\DebuggableSemaphoreSlim.cs" />
+    <Compile Include="Backend\Helpers\LzmaHelper.cs" />
+    <Compile Include="Backend\Helpers\SafeDisposableObjectPool.cs" />
+    <Compile Include="Backend\Helpers\SafeObjectPool.cs" />
+    <Compile Include="Backend\Helpers\ThreadSafeForm.cs" />
+    <Compile Include="Backend\Helpers\XmlElementWriteHelper.cs" />
+    <Compile Include="Backend\Interfaces\IAsyncCollection.cs" />
+    <Compile Include="Backend\Interfaces\IAsyncDictionary.cs" />
+    <Compile Include="Backend\Interfaces\IAsyncEnumerable.cs" />
+    <Compile Include="Backend\Interfaces\IAsyncList.cs" />
+    <Compile Include="Backend\Interfaces\IAsyncProducerConsumerCollection.cs" />
+    <Compile Include="Backend\Interfaces\IAsyncReadOnlyCollection.cs" />
+    <Compile Include="Backend\Interfaces\IAsyncReadOnlyDictionary.cs" />
+    <Compile Include="Backend\Interfaces\IAsyncReadOnlyList.cs" />
+    <Compile Include="Backend\Interfaces\IAsyncSet.cs" />
+    <Compile Include="Backend\Interfaces\IHasCharacterObjects.cs" />
     <Compile Include="Backend\Interfaces\IHasCost.cs" />
     <Compile Include="Backend\Interfaces\IHasLockObject.cs" />
+    <Compile Include="Backend\Interfaces\IHasSourceId.cs" />
     <Compile Include="Backend\Interfaces\IHasXmlDataNode.cs" />
     <Compile Include="Backend\Static\Extensions\BoolArrayExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\BoolExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\CollectionExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\DecimalExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\DispatcherExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\DoubleExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\DictionaryExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\EnumeratorExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\EnumExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\FloatExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\IntegerExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\InterlockedExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\ListExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\ImageExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\LinqExtensions.cs" />
@@ -342,13 +417,19 @@
     <Compile Include="Backend\Static\Extensions\ObservableCollectionExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\ProcessExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\RandomExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\ReaderWriterLockSlimExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\ReadOnlyDictionaryExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\ReadOnlyListExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\SemaphoreSlimExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\StreamExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\StringBuilderExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\StringExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\VersionExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\WaitHandleExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\WinFormsExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\XmlDocumentExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\XmlWriterExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\XPathDocumentExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\XPathNavigatorExtensions.cs" />
     <Compile Include="Backend\Improvements\ImprovementMethods.cs">
       <AutoGen>True</AutoGen>
@@ -356,6 +437,15 @@
       <DependentUpon>ImprovementMethods.tt</DependentUpon>
     </Compile>
     <Compile Include="Backend\Static\Managers\ImprovementManager.cs" />
+    <Compile Include="Controls\Shared\Components\ColorableToolStripSeparator.cs">
+      <SubType>Component</SubType>
+    </Compile>
+    <Compile Include="Controls\Shared\ObservableCollectionDisplay.cs">
+      <SubType>UserControl</SubType>
+    </Compile>
+    <Compile Include="Controls\Shared\ObservableCollectionDisplay.Designer.cs">
+      <DependentUpon>ObservableCollectionDisplay.cs</DependentUpon>
+    </Compile>
     <Compile Include="Forms\Character Forms\CharacterShared.cs" />
     <Compile Include="Backend\Datastructures\DependencyGraphNode.cs" />
     <Compile Include="Backend\Datastructures\TranslatedField.cs" />
@@ -383,7 +473,6 @@
     <Compile Include="Backend\Skills\ExoticSkill.cs" />
     <Compile Include="Backend\Skills\KnowledgeSkill.cs" />
     <Compile Include="Backend\Skills\Skill.cs" />
-    <Compile Include="Backend\Skills\SkillExtensions.cs" />
     <Compile Include="Backend\Skills\SkillGroup.cs" />
     <Compile Include="Backend\Skills\SkillSorters.cs" />
     <Compile Include="Backend\Skills\SkillsSection.cs" />
@@ -429,7 +518,6 @@
     <Compile Include="Backend\Uniques\Expenses.cs" />
     <Compile Include="Backend\Static\Managers\LanguageManager.cs" />
     <Compile Include="Backend\Datastructures\ListItem.cs" />
-    <Compile Include="Backend\Static\Log.cs" />
     <Compile Include="Backend\Static\GlobalSettings.cs" />
     <Compile Include="Backend\Helpers\ParameterAttribute.cs" />
     <Compile Include="Backend\Stories\StoryBuilder.cs" />
@@ -445,18 +533,10 @@
     <Compile Include="Controls\Shared\Components\DpiFriendlyCheckBoxDisguisedAsButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\Shared\Components\DpiFriendlyCheckBoxDisguisedAsButton.Designer.cs">
-      <DependentUpon>DpiFriendlyCheckBoxDisguisedAsButton.cs</DependentUpon>
-    </Compile>
     <Compile Include="Controls\Shared\Components\DpiFriendlyImagedButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\Shared\Components\DpiFriendlyImagedButton.Designer.cs">
-      <DependentUpon>DpiFriendlyImagedButton.cs</DependentUpon>
-    </Compile>
     <Compile Include="Backend\Helpers\EnterReadLock.cs" />
-    <Compile Include="Backend\Helpers\EnterUpgradeableReadLock.cs" />
-    <Compile Include="Backend\Helpers\EnterWriteLock.cs" />
     <Compile Include="Backend\Helpers\FetchSafelyFromPool.cs" />
     <Compile Include="Backend\Interfaces\ICanBlackMarketDiscount.cs" />
     <Compile Include="Backend\Interfaces\ITranslatable.cs" />
@@ -469,6 +549,18 @@
     </Compile>
     <Compile Include="Controls\Shared\SustainedObjectControl.Designer.cs">
       <DependentUpon>SustainedObjectControl.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\DummyForm.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\DummyForm.Designer.cs">
+      <DependentUpon>DummyForm.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Forms\ScrollableMessageBox.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Forms\ScrollableMessageBox.Designer.cs">
+      <DependentUpon>ScrollableMessageBox.cs</DependentUpon>
     </Compile>
     <Compile Include="Forms\Utility Forms\CharacterRoster.cs">
       <SubType>Form</SubType>
@@ -499,18 +591,9 @@
     <Compile Include="Backend\Helpers\Application Insights\DropUserdataTelemetryProcessor.cs" />
     <Compile Include="Backend\Helpers\Application Insights\TranslateExceptionTelemetryProcessor.cs" />
     <Compile Include="Backend\Helpers\Application Insights\UploadObjectAsMetric.cs" />
-    <Compile Include="Controls\Shared\Components\BufferedTableLayoutPanel.cs">
-      <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\Shared\Components\BufferedTableLayoutPanel.Designer.cs">
-      <DependentUpon>BufferedTableLayoutPanel.cs</DependentUpon>
-    </Compile>
     <Compile Include="Backend\Helpers\CenterableMessageBox.cs" />
     <Compile Include="Controls\Shared\Components\ColorableCheckBox.cs">
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\Shared\Components\ColorableCheckBox.Designer.cs">
-      <DependentUpon>ColorableCheckBox.cs</DependentUpon>
     </Compile>
     <Compile Include="Backend\Helpers\CursorWait.cs" />
     <Compile Include="Backend\Helpers\DataGridViewTextBoxColumnTranslated.cs" />
@@ -518,14 +601,8 @@
     <Compile Include="Controls\Shared\Components\DpiFriendlyToolStripButton.cs">
       <SubType>Component</SubType>
     </Compile>
-    <Compile Include="Controls\Shared\Components\DpiFriendlyToolStripButton.Designer.cs">
-      <DependentUpon>DpiFriendlyToolStripButton.cs</DependentUpon>
-    </Compile>
     <Compile Include="Controls\Shared\Components\DpiFriendlyToolStripMenuItem.cs">
       <SubType>Component</SubType>
-    </Compile>
-    <Compile Include="Controls\Shared\Components\DpiFriendlyToolStripMenuItem.Designer.cs">
-      <DependentUpon>DpiFriendlyToolStripMenuItem.cs</DependentUpon>
     </Compile>
     <Compile Include="Controls\Shared\Components\ElasticComboBox.cs">
       <SubType>Component</SubType>
@@ -763,6 +840,12 @@
     <Content Include="customdata\Bone Lacing Adds to Body\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\Chrome Flesh Stealth Errata\amend_cyberware.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Chrome Flesh Stealth Errata\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\College Education Qualities Stack\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -778,10 +861,72 @@
     <Content Include="customdata\Cyberlimbs Cannot Add Headware\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_armor.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_bioware.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_critterpowers.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_critters.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_cyberware.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_gear.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_lifemodules.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_martialarts.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_mentors.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_metatypes.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_paragons.xml" />
+    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_powers.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_priorities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_skills.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_spells.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_streams.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_traditions.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake %28Lite%29\amend_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake %28Lite%29\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Delnar Skills Remake\amend_critters.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Delnar Skills Remake\amend_lifemodules.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Delnar Skills Remake\amend_paragons.xml" />
+    <Content Include="customdata\Delnar Skills Remake\amend_spells.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Delnar Skills Remake\manifest.xml">
@@ -799,16 +944,34 @@
     <Content Include="customdata\Delnar%27s One Karma Qualities\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\Disable Street Grimoire%27s Commanding Voice Errata\amend_powers.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Disable Street Grimoire%27s Commanding Voice Errata\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Education Qualities Apply Karma Discount in Create Mode\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Exclude German Sourcebooks\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Include="customdata\Fixed Nitama Sporter Stats\amend_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Fixed Nitama Sporter Stats\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Include="customdata\Flashback System Enables Cyberzombies\amend_cyberware.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Flashback System Enables Cyberzombies\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Forbidden Arcana Stealth Errata\amend_qualities.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Forbidden Arcana Stealth Errata\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\German Data Changes\amend_armor.xml">
@@ -997,9 +1160,6 @@
     <Content Include="customdata\Neon Anarchy House Rules\custom_qualities.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
-    <Content Include="customdata\Neon Anarchy House Rules\custom_ranges.xml">
-      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
-    </Content>
     <Content Include="customdata\Neon Anarchy House Rules\custom_skills.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -1007,6 +1167,12 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Neon Anarchy House Rules\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Optical Imaging Scopes\custom_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+    <Content Include="customdata\Optical Imaging Scopes\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="customdata\Orks Have Natural Weapon Tusks\amend_orktusk_metatypes.xml">
@@ -1660,6 +1826,9 @@
     <Compile Include="Controls\Shared\Components\SplitButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <EmbeddedResource Include="Controls\Shared\ObservableCollectionDisplay.resx">
+      <DependentUpon>ObservableCollectionDisplay.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Forms\Character Creation Forms\SelectLifeModule.resx">
       <DependentUpon>SelectLifeModule.cs</DependentUpon>
     </EmbeddedResource>
@@ -1672,6 +1841,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Controls\Shared\SustainedObjectControl.resx">
       <DependentUpon>SustainedObjectControl.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\DummyForm.resx">
+      <DependentUpon>DummyForm.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Forms\ScrollableMessageBox.resx">
+      <DependentUpon>ScrollableMessageBox.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Forms\Utility Forms\CharacterRoster.resx">
       <DependentUpon>CharacterRoster.cs</DependentUpon>
@@ -2445,6 +2620,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\application.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\application_add.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\application_cascade.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\application_cascade_delete.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\application_control_bar.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\application_delete.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\application_double.png" />
@@ -4133,7 +4309,9 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\folder_page_white.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\folder_palette.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\folder_picture.png" />
+    <None Include="Resources\icons\FatCow\FatCow_Icons16x16\folder_print.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\folder_red.png" />
+    <None Include="Resources\icons\FatCow\FatCow_Icons16x16\folder_script_go.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\folder_search.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\folder_stand.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\folder_star.png" />
@@ -5106,6 +5284,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\printer_delete.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\printer_empty.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\printer_error.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\printer_magnify.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\printer_network.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\printscreen_insert.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\print_size.png" />
@@ -6285,6 +6464,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\xhtml_valid.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\xing.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\xml_exports.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\xml_go.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\xml_imports.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\x_ray.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons16x16\yacht.png" />
@@ -10318,6 +10498,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\application.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\application_add.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\application_cascade.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\application_cascade_delete.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\application_control_bar.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\application_delete.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\application_double.png" />
@@ -12006,7 +12187,9 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\folder_page_white.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\folder_palette.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\folder_picture.png" />
+    <None Include="Resources\icons\FatCow\FatCow_Icons32x32\folder_print.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\folder_red.png" />
+    <None Include="Resources\icons\FatCow\FatCow_Icons32x32\folder_script_go.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\folder_search.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\folder_stand.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\folder_star.png" />
@@ -12979,6 +13162,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\printer_delete.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\printer_empty.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\printer_error.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\printer_magnify.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\printer_network.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\printscreen_insert.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\print_size.png" />
@@ -14158,6 +14342,7 @@
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\xhtml_valid.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\xing.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\xml_exports.png" />
+    <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\xml_go.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\xml_imports.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\x_ray.png" />
     <Content Include="Resources\icons\FatCow\FatCow_Icons32x32\yacht.png" />
@@ -18845,38 +19030,53 @@
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
   </ItemGroup>
   <ItemGroup>
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.NetAnalyzers.dll" />
-    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.NetAnalyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.3\analyzers\dotnet\cs\Microsoft.CodeAnalysis.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.3\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.CSharp.NetAnalyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.0\analyzers\dotnet\cs\Microsoft.CodeAnalysis.NetAnalyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.4.27\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.CodeFixes.dll" />
+    <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.4.27\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.CSharp.dll" />
+    <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.4.27\analyzers\cs\Microsoft.VisualStudio.Threading.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.4.27\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.CodeFixes.dll" />
+    <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.4.27\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.dll" />
+    <Analyzer Include="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.4.27\analyzers\vb\Microsoft.VisualStudio.Threading.Analyzers.VisualBasic.dll" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>
-    <PostBuildEvent Condition=" '$(OS)' != 'Unix' ">copy "$(SolutionDir)LICENSE.txt" "$(TargetDir)LICENSE.txt"
-</PostBuildEvent>
-    <PostBuildEvent Condition=" '$(OS)' == 'Unix' ">cp "$(SolutionDir)LICENSE.txt" "$(TargetDir)LICENSE.txt"
-</PostBuildEvent>
+    <PostBuildEvent Condition=" '$(OS)' != 'Unix' ">
+      copy "$(SolutionDir)LICENSE.txt" "$(TargetDir)LICENSE.txt"
+    </PostBuildEvent>
+    <PostBuildEvent Condition=" '$(OS)' == 'Unix' ">
+      cp "$(SolutionDir)LICENSE.txt" "$(TargetDir)LICENSE.txt"
+    </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PostBuildEvent>copy "$(SolutionDir)LICENSE.txt" "$(TargetDir)LICENSE.txt"</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>if exist "$(SolutionDir).git\hooks\" (
-copy /y "$(SolutionDir)git\hooks\*.*" "$(SolutionDir).git\hooks"
-) else (
-echo "No .git directory found, skipping copying of hooks."
-)</PreBuildEvent>
+    <PreBuildEvent>
+      if exist "$(SolutionDir).git\hooks\" (
+      copy /y "$(SolutionDir)git\hooks\*.*" "$(SolutionDir).git\hooks"
+      ) else (
+      echo "No .git directory found, skipping copying of hooks."
+      )
+    </PreBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
       <ErrorText>This project references NuGet package(s) that are missing on this computer. Use NuGet Package Restore to download them.  For more information, see http://go.microsoft.com/fwlink/?LinkID=322105. The missing file is {0}.</ErrorText>
     </PropertyGroup>
-    <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.props'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets'))" />
-    <Error Condition="!Exists('..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.20.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.20.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.21.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.21.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.4.27\build\Microsoft.VisualStudio.Threading.Analyzers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.4.27\build\Microsoft.VisualStudio.Threading.Analyzers.targets'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.3\build\Microsoft.CodeAnalysis.Analyzers.props')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.3\build\Microsoft.CodeAnalysis.Analyzers.props'))" />
+    <Error Condition="!Exists('..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.3\build\Microsoft.CodeAnalysis.Analyzers.targets')" Text="$([System.String]::Format('$(ErrorText)', '..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.3\build\Microsoft.CodeAnalysis.Analyzers.targets'))" />
   </Target>
-  <Import Project="..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets" Condition="Exists('..\packages\Microsoft.CodeAnalysis.NetAnalyzers.6.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets')" />
-  <Import Project="..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets" Condition="Exists('..\packages\Microsoft.Extensions.Logging.Abstractions.6.0.0\build\Microsoft.Extensions.Logging.Abstractions.targets')" />
-  <Import Project="..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.20.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets" Condition="Exists('..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.20.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets')" />
+  <Import Project="..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets" Condition="Exists('..\packages\Microsoft.CodeAnalysis.NetAnalyzers.7.0.0\build\Microsoft.CodeAnalysis.NetAnalyzers.targets')" />
+  <Import Project="..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.21.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets" Condition="Exists('..\packages\Microsoft.ApplicationInsights.PerfCounterCollector.2.21.0\build\Microsoft.ApplicationInsights.PerfCounterCollector.targets')" />
+  <Import Project="..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.4.27\build\Microsoft.VisualStudio.Threading.Analyzers.targets" Condition="Exists('..\packages\Microsoft.VisualStudio.Threading.Analyzers.17.4.27\build\Microsoft.VisualStudio.Threading.Analyzers.targets')" />
+  <Import Project="..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.3\build\Microsoft.CodeAnalysis.Analyzers.targets" Condition="Exists('..\packages\Microsoft.CodeAnalysis.Analyzers.3.3.3\build\Microsoft.CodeAnalysis.Analyzers.targets')" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it.
        Other similar extension points exist, see Microsoft.Common.targets.
   <Target Name="BeforeBuild">

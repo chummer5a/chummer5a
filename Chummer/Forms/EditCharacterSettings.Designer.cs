@@ -13,16 +13,9 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if(disposing)
+            if (disposing && (components != null))
             {
-                components?.Dispose();
-                if (_objCharacterSettings != null)
-                {
-                    _objCharacterSettings.PropertyChanged -= SettingsChanged;
-                    _objCharacterSettings.Dispose();
-                }
-                Utils.ListItemListPool.Return(_lstSettings);
-                Utils.StringHashSetPool.Return(_setPermanentSourcebooks);
+                components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -35,19 +28,18 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditCharacterSettings));
-            this.tlpOptions = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpOptions = new System.Windows.Forms.TableLayoutPanel();
             this.cboSetting = new Chummer.ElasticComboBox();
             this.tabOptions = new System.Windows.Forms.TabControl();
             this.tabBasicOptions = new System.Windows.Forms.TabPage();
-            this.tlpBasicOptions = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpBasicOptions = new System.Windows.Forms.TableLayoutPanel();
             this.cmdEnableSourcebooks = new System.Windows.Forms.Button();
             this.gpbSourcebook = new System.Windows.Forms.GroupBox();
             this.treSourcebook = new System.Windows.Forms.TreeView();
             this.flpBasicOptions = new System.Windows.Forms.FlowLayoutPanel();
             this.gpbBasicOptionsCreateSettings = new System.Windows.Forms.GroupBox();
-            this.tlpBasicOptionsCreateSettings = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpBasicOptionsCreateSettings = new System.Windows.Forms.TableLayoutPanel();
             this.lblAllowedCyberwareGrades = new System.Windows.Forms.Label();
             this.nudMaxAvail = new Chummer.NumericUpDownEx();
             this.cboPriorityTable = new Chummer.ElasticComboBox();
@@ -72,33 +64,39 @@ namespace Chummer
             this.txtNuyenExpression = new System.Windows.Forms.TextBox();
             this.lblContactPoints = new Chummer.LabelWithToolTip();
             this.txtContactPoints = new System.Windows.Forms.TextBox();
+            this.lblMaxNumberMaxAttributes = new Chummer.LabelWithToolTip();
+            this.nudMaxNumberMaxAttributes = new Chummer.NumericUpDownEx();
+            this.lblMaxSkillRatingCreate = new Chummer.LabelWithToolTip();
+            this.nudMaxSkillRatingCreate = new Chummer.NumericUpDownEx();
+            this.lblMaxKnowledgeSkillRatingCreate = new Chummer.LabelWithToolTip();
+            this.nudMaxKnowledgeSkillRatingCreate = new Chummer.NumericUpDownEx();
             this.gpbBasicOptionsOfficialRules = new System.Windows.Forms.GroupBox();
-            this.tlpBasicOptionsOfficialRules = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.chkAllowFreeGrids = new Chummer.ColorableCheckBox(this.components);
-            this.chkAllowPointBuySpecializationsOnKarmaSkills = new Chummer.ColorableCheckBox(this.components);
-            this.chkStrictSkillGroups = new Chummer.ColorableCheckBox(this.components);
-            this.chkEnforceCapacity = new Chummer.ColorableCheckBox(this.components);
-            this.chkLicenseEachRestrictedItem = new Chummer.ColorableCheckBox(this.components);
-            this.chkRestrictRecoil = new Chummer.ColorableCheckBox(this.components);
-            this.chkDronemodsMaximumPilot = new Chummer.ColorableCheckBox(this.components);
-            this.chkDronemods = new Chummer.ColorableCheckBox(this.components);
+            this.tlpBasicOptionsOfficialRules = new System.Windows.Forms.TableLayoutPanel();
+            this.chkAllowFreeGrids = new Chummer.ColorableCheckBox();
+            this.chkAllowPointBuySpecializationsOnKarmaSkills = new Chummer.ColorableCheckBox();
+            this.chkStrictSkillGroups = new Chummer.ColorableCheckBox();
+            this.chkEnforceCapacity = new Chummer.ColorableCheckBox();
+            this.chkLicenseEachRestrictedItem = new Chummer.ColorableCheckBox();
+            this.chkRestrictRecoil = new Chummer.ColorableCheckBox();
+            this.chkDronemodsMaximumPilot = new Chummer.ColorableCheckBox();
+            this.chkDronemods = new Chummer.ColorableCheckBox();
             this.gpbBasicOptionsEncumbrance = new System.Windows.Forms.GroupBox();
-            this.tlpBasicOptionsEncumbrance = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpBasicOptionsEncumbrance = new System.Windows.Forms.TableLayoutPanel();
             this.lblWeightDecimalPlaces = new Chummer.LabelWithToolTip();
             this.lblCarryLimit = new Chummer.LabelWithToolTip();
             this.lblLiftLimit = new Chummer.LabelWithToolTip();
             this.txtLiftLimit = new System.Windows.Forms.TextBox();
             this.txtCarryLimit = new System.Windows.Forms.TextBox();
             this.lblEncumbrancePenaltiesHeader = new System.Windows.Forms.Label();
-            this.tlpEncumbranceInterval = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpEncumbranceInterval = new System.Windows.Forms.TableLayoutPanel();
             this.lblEncumbranceIntervalLeft = new Chummer.LabelWithToolTip();
             this.txtEncumbranceInterval = new System.Windows.Forms.TextBox();
             this.lblEncumbranceIntervalRight = new Chummer.LabelWithToolTip();
-            this.chkEncumbrancePenaltyPhysicalLimit = new Chummer.ColorableCheckBox(this.components);
-            this.chkEncumbrancePenaltyMovementSpeed = new Chummer.ColorableCheckBox(this.components);
-            this.chkEncumbrancePenaltyAgility = new Chummer.ColorableCheckBox(this.components);
-            this.chkEncumbrancePenaltyReaction = new Chummer.ColorableCheckBox(this.components);
-            this.chkEncumbrancePenaltyWoundModifier = new Chummer.ColorableCheckBox(this.components);
+            this.chkEncumbrancePenaltyPhysicalLimit = new Chummer.ColorableCheckBox();
+            this.chkEncumbrancePenaltyMovementSpeed = new Chummer.ColorableCheckBox();
+            this.chkEncumbrancePenaltyAgility = new Chummer.ColorableCheckBox();
+            this.chkEncumbrancePenaltyReaction = new Chummer.ColorableCheckBox();
+            this.chkEncumbrancePenaltyWoundModifier = new Chummer.ColorableCheckBox();
             this.nudEncumbrancePenaltyPhysicalLimit = new Chummer.NumericUpDownEx();
             this.nudEncumbrancePenaltyAgility = new Chummer.NumericUpDownEx();
             this.nudEncumbrancePenaltyReaction = new Chummer.NumericUpDownEx();
@@ -107,33 +105,35 @@ namespace Chummer
             this.lblEncumbrancePenaltyMovementSpeedPercent = new Chummer.LabelWithToolTip();
             this.nudWeightDecimals = new Chummer.NumericUpDownEx();
             this.gpbBasicOptionsCyberlimbs = new System.Windows.Forms.GroupBox();
-            this.tlpBasicOptionsCyberlimbs = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpBasicOptionsCyberlimbs = new System.Windows.Forms.TableLayoutPanel();
             this.lblRedlinerLimbs = new System.Windows.Forms.Label();
-            this.chkCyberlegMovement = new Chummer.ColorableCheckBox(this.components);
-            this.chkDontUseCyberlimbCalculation = new Chummer.ColorableCheckBox(this.components);
+            this.chkCyberlegMovement = new Chummer.ColorableCheckBox();
+            this.chkDontUseCyberlimbCalculation = new Chummer.ColorableCheckBox();
             this.lblLimbCount = new System.Windows.Forms.Label();
             this.cboLimbCount = new Chummer.ElasticComboBox();
-            this.tlpCyberlimbAttributeBonusCap = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpCyberlimbAttributeBonusCap = new System.Windows.Forms.TableLayoutPanel();
             this.nudCyberlimbAttributeBonusCap = new Chummer.NumericUpDownEx();
             this.flpCyberlimbAttributeBonusCap = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkCyberlimbAttributeBonusCap = new Chummer.ColorableCheckBox(this.components);
+            this.chkCyberlimbAttributeBonusCap = new Chummer.ColorableCheckBox();
             this.lblCyberlimbAttributeBonusCapPlus = new System.Windows.Forms.Label();
             this.flpRedlinerLimbs = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkRedlinerLimbsSkull = new Chummer.ColorableCheckBox(this.components);
-            this.chkRedlinerLimbsTorso = new Chummer.ColorableCheckBox(this.components);
-            this.chkRedlinerLimbsArms = new Chummer.ColorableCheckBox(this.components);
-            this.chkRedlinerLimbsLegs = new Chummer.ColorableCheckBox(this.components);
+            this.chkRedlinerLimbsSkull = new Chummer.ColorableCheckBox();
+            this.chkRedlinerLimbsTorso = new Chummer.ColorableCheckBox();
+            this.chkRedlinerLimbsArms = new Chummer.ColorableCheckBox();
+            this.chkRedlinerLimbsLegs = new Chummer.ColorableCheckBox();
             this.gpbBasicOptionsRounding = new System.Windows.Forms.GroupBox();
-            this.tlpBasicOptionsRounding = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.chkDontRoundEssenceInternally = new Chummer.ColorableCheckBox(this.components);
+            this.tlpBasicOptionsRounding = new System.Windows.Forms.TableLayoutPanel();
+            this.lblEssenceModifierPostExpression = new System.Windows.Forms.Label();
+            this.chkDontRoundEssenceInternally = new Chummer.ColorableCheckBox();
             this.lblNuyenDecimalsMinimumLabel = new System.Windows.Forms.Label();
             this.lblNuyenDecimalsMaximumLabel = new System.Windows.Forms.Label();
             this.lblEssenceDecimals = new System.Windows.Forms.Label();
             this.nudNuyenDecimalsMinimum = new Chummer.NumericUpDownEx();
             this.nudNuyenDecimalsMaximum = new Chummer.NumericUpDownEx();
             this.nudEssenceDecimals = new Chummer.NumericUpDownEx();
+            this.txtEssenceModifierPostExpression = new System.Windows.Forms.TextBox();
             this.gpbBasicOptionsInitiativeDice = new System.Windows.Forms.GroupBox();
-            this.tlpBasicOptionsInitiativeDice = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpBasicOptionsInitiativeDice = new System.Windows.Forms.TableLayoutPanel();
             this.lblMinInitiativeDiceLabel = new System.Windows.Forms.Label();
             this.lblHotSimInitiativeDiceLabel = new System.Windows.Forms.Label();
             this.lblAstralInitiativeDiceLabel = new System.Windows.Forms.Label();
@@ -149,7 +149,7 @@ namespace Chummer
             this.nudMinColdSimInitiativeDice = new Chummer.NumericUpDownEx();
             this.nudMinHotSimInitiativeDice = new Chummer.NumericUpDownEx();
             this.tabKarmaCosts = new System.Windows.Forms.TabPage();
-            this.tlpKarmaCosts = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpKarmaCosts = new System.Windows.Forms.TableLayoutPanel();
             this.lblKarmaSpecialization = new System.Windows.Forms.Label();
             this.nudKarmaSpecialization = new Chummer.NumericUpDownEx();
             this.lblKarmaKnowledgeSpecialization = new System.Windows.Forms.Label();
@@ -268,17 +268,17 @@ namespace Chummer
             this.nudKarmaNuyenPerWftP = new Chummer.NumericUpDownEx();
             this.lblKarmaNuyenPerExtraWftP = new System.Windows.Forms.Label();
             this.tabCustomData = new System.Windows.Forms.TabPage();
-            this.tlpOptionalRules = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpOptionalRules = new System.Windows.Forms.TableLayoutPanel();
             this.treCustomDataDirectories = new System.Windows.Forms.TreeView();
             this.gpbDirectoryInfo = new System.Windows.Forms.GroupBox();
-            this.tlpDirectoryInfo = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpDirectoryInfo = new System.Windows.Forms.TableLayoutPanel();
             this.gbpDirectoryInfoDependencies = new System.Windows.Forms.GroupBox();
             this.pnlDirectoryDependencies = new System.Windows.Forms.Panel();
             this.lblDependencies = new System.Windows.Forms.Label();
             this.gbpDirectoryInfoIncompatibilities = new System.Windows.Forms.GroupBox();
             this.pnlDirectoryIncompatibilities = new System.Windows.Forms.Panel();
             this.lblIncompatibilities = new System.Windows.Forms.Label();
-            this.tlpDirectoryInfoLeft = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpDirectoryInfoLeft = new System.Windows.Forms.TableLayoutPanel();
             this.lblDirectoryNameLabel = new System.Windows.Forms.Label();
             this.lblDirectoryVersion = new System.Windows.Forms.Label();
             this.lblDirectoryName = new System.Windows.Forms.Label();
@@ -288,7 +288,7 @@ namespace Chummer
             this.lblDirectoryAuthors = new System.Windows.Forms.Label();
             this.rtbDirectoryDescription = new System.Windows.Forms.RichTextBox();
             this.lblCustomDataDirectoriesLabel = new System.Windows.Forms.Label();
-            this.tlpOptionalRulesButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpOptionalRulesButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdToTopCustomDirectoryLoadOrder = new System.Windows.Forms.Button();
             this.cmdToBottomCustomDirectoryLoadOrder = new System.Windows.Forms.Button();
             this.cmdDecreaseCustomDirectoryLoadOrder = new System.Windows.Forms.Button();
@@ -297,79 +297,75 @@ namespace Chummer
             this.tabHouseRules = new System.Windows.Forms.TabPage();
             this.flpHouseRules = new System.Windows.Forms.FlowLayoutPanel();
             this.gpbHouseRulesQualities = new System.Windows.Forms.GroupBox();
-            this.tlpHouseRulesQualities = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.chkExceedNegativeQualities = new Chummer.ColorableCheckBox(this.components);
-            this.chkDontDoubleQualityPurchases = new Chummer.ColorableCheckBox(this.components);
-            this.chkExceedPositiveQualities = new Chummer.ColorableCheckBox(this.components);
-            this.chkDontDoubleQualityRefunds = new Chummer.ColorableCheckBox(this.components);
-            this.chkExceedPositiveQualitiesCostDoubled = new Chummer.ColorableCheckBox(this.components);
-            this.chkExceedNegativeQualitiesLimit = new Chummer.ColorableCheckBox(this.components);
+            this.tlpHouseRulesQualities = new System.Windows.Forms.TableLayoutPanel();
+            this.chkExceedNegativeQualities = new Chummer.ColorableCheckBox();
+            this.chkDontDoubleQualityPurchases = new Chummer.ColorableCheckBox();
+            this.chkExceedPositiveQualities = new Chummer.ColorableCheckBox();
+            this.chkDontDoubleQualityRefunds = new Chummer.ColorableCheckBox();
+            this.chkExceedPositiveQualitiesCostDoubled = new Chummer.ColorableCheckBox();
+            this.chkExceedNegativeQualitiesNoBonus = new Chummer.ColorableCheckBox();
             this.gpbHouseRulesAttributes = new System.Windows.Forms.GroupBox();
-            this.tlpHouseRulesAttributes = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.chkESSLossReducesMaximumOnly = new Chummer.ColorableCheckBox(this.components);
-            this.chkAllowCyberwareESSDiscounts = new Chummer.ColorableCheckBox(this.components);
-            this.chkAlternateMetatypeAttributeKarma = new Chummer.ColorableCheckBox(this.components);
-            this.chkReverseAttributePriorityOrder = new Chummer.ColorableCheckBox(this.components);
+            this.tlpHouseRulesAttributes = new System.Windows.Forms.TableLayoutPanel();
+            this.chkESSLossReducesMaximumOnly = new Chummer.ColorableCheckBox();
+            this.chkAllowCyberwareESSDiscounts = new Chummer.ColorableCheckBox();
+            this.chkAlternateMetatypeAttributeKarma = new Chummer.ColorableCheckBox();
+            this.chkReverseAttributePriorityOrder = new Chummer.ColorableCheckBox();
             this.flpDroneArmorMultiplier = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkDroneArmorMultiplier = new Chummer.ColorableCheckBox(this.components);
+            this.chkDroneArmorMultiplier = new Chummer.ColorableCheckBox();
             this.lblDroneArmorMultiplierTimes = new System.Windows.Forms.Label();
             this.nudDroneArmorMultiplier = new Chummer.NumericUpDownEx();
-            this.chkUseCalculatedPublicAwareness = new Chummer.ColorableCheckBox(this.components);
-            this.chkUnclampAttributeMinimum = new Chummer.ColorableCheckBox(this.components);
+            this.chkUseCalculatedPublicAwareness = new Chummer.ColorableCheckBox();
+            this.chkUnclampAttributeMinimum = new Chummer.ColorableCheckBox();
             this.gpbHouseRulesSkills = new System.Windows.Forms.GroupBox();
-            this.tlpHouseRulesSkills = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.chkCompensateSkillGroupKarmaDifference = new Chummer.ColorableCheckBox(this.components);
-            this.chkAllowSkillRegrouping = new Chummer.ColorableCheckBox(this.components);
-            this.chkFreeMartialArtSpecialization = new Chummer.ColorableCheckBox(this.components);
-            this.chkUsePointsOnBrokenGroups = new Chummer.ColorableCheckBox(this.components);
+            this.tlpHouseRulesSkills = new System.Windows.Forms.TableLayoutPanel();
+            this.flpMaxSkillRating = new System.Windows.Forms.FlowLayoutPanel();
+            this.lblMaxSkillRating = new System.Windows.Forms.Label();
+            this.nudMaxSkillRating = new Chummer.NumericUpDownEx();
+            this.lblMaxKnowledgeSkillRating = new System.Windows.Forms.Label();
+            this.nudMaxKnowledgeSkillRating = new Chummer.NumericUpDownEx();
+            this.chkFreeMartialArtSpecialization = new Chummer.ColorableCheckBox();
+            this.chkUsePointsOnBrokenGroups = new Chummer.ColorableCheckBox();
+            this.chkAllowSkillRegrouping = new Chummer.ColorableCheckBox();
+            this.chkCompensateSkillGroupKarmaDifference = new Chummer.ColorableCheckBox();
+            this.chkSpecializationsBreakSkillGroups = new Chummer.ColorableCheckBox();
             this.gpbHouseRulesCombat = new System.Windows.Forms.GroupBox();
-            this.tlpHouseRulesCombat = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.chkNoArmorEncumbrance = new Chummer.ColorableCheckBox(this.components);
-            this.chkUnarmedSkillImprovements = new Chummer.ColorableCheckBox(this.components);
+            this.tlpHouseRulesCombat = new System.Windows.Forms.TableLayoutPanel();
+            this.chkUncappedArmorAccessoryBonuses = new Chummer.ColorableCheckBox();
+            this.chkNoArmorEncumbrance = new Chummer.ColorableCheckBox();
+            this.chkUnarmedSkillImprovements = new Chummer.ColorableCheckBox();
             this.gpbHouseRulesMagicResonance = new System.Windows.Forms.GroupBox();
-            this.tlpHouseRulesMagicResonance = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpHouseRulesMagicResonance = new System.Windows.Forms.TableLayoutPanel();
             this.lblRegisteredSprites = new Chummer.LabelWithToolTip();
-            this.chkMysAdPp = new Chummer.ColorableCheckBox(this.components);
-            this.chkPrioritySpellsAsAdeptPowers = new Chummer.ColorableCheckBox(this.components);
-            this.chkExtendAnyDetectionSpell = new Chummer.ColorableCheckBox(this.components);
-            this.chkIncreasedImprovedAbilityModifier = new Chummer.ColorableCheckBox(this.components);
-            this.chkIgnoreComplexFormLimit = new Chummer.ColorableCheckBox(this.components);
-            this.chkSpecialKarmaCost = new Chummer.ColorableCheckBox(this.components);
-            this.chkAllowTechnomancerSchooling = new Chummer.ColorableCheckBox(this.components);
-            this.chkAllowInitiation = new Chummer.ColorableCheckBox(this.components);
-            this.chkMysAdeptSecondMAGAttribute = new Chummer.ColorableCheckBox(this.components);
-            this.chkIgnoreArt = new Chummer.ColorableCheckBox(this.components);
+            this.chkMysAdPp = new Chummer.ColorableCheckBox();
+            this.chkPrioritySpellsAsAdeptPowers = new Chummer.ColorableCheckBox();
+            this.chkExtendAnyDetectionSpell = new Chummer.ColorableCheckBox();
+            this.chkIncreasedImprovedAbilityModifier = new Chummer.ColorableCheckBox();
+            this.chkIgnoreComplexFormLimit = new Chummer.ColorableCheckBox();
+            this.chkSpecialKarmaCost = new Chummer.ColorableCheckBox();
+            this.chkAllowTechnomancerSchooling = new Chummer.ColorableCheckBox();
+            this.chkAllowInitiation = new Chummer.ColorableCheckBox();
+            this.chkMysAdeptSecondMAGAttribute = new Chummer.ColorableCheckBox();
+            this.chkIgnoreArt = new Chummer.ColorableCheckBox();
             this.lblBoundSpiritLimit = new Chummer.LabelWithToolTip();
             this.txtBoundSpiritLimit = new System.Windows.Forms.TextBox();
             this.txtRegisteredSpriteLimit = new System.Windows.Forms.TextBox();
             this.gpbHouseRules4eAdaptations = new System.Windows.Forms.GroupBox();
-            this.tlpHouseRules4eAdaptations = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.chkEnemyKarmaQualityLimit = new Chummer.ColorableCheckBox(this.components);
-            this.chkEnable4eStyleEnemyTracking = new Chummer.ColorableCheckBox(this.components);
-            this.chkMoreLethalGameplay = new Chummer.ColorableCheckBox(this.components);
+            this.tlpHouseRules4eAdaptations = new System.Windows.Forms.TableLayoutPanel();
+            this.chkEnemyKarmaQualityLimit = new Chummer.ColorableCheckBox();
+            this.chkEnable4eStyleEnemyTracking = new Chummer.ColorableCheckBox();
+            this.chkMoreLethalGameplay = new Chummer.ColorableCheckBox();
             this.flpKarmaGainedFromEnemies = new System.Windows.Forms.FlowLayoutPanel();
             this.lblKarmaGainedFromEnemies = new System.Windows.Forms.Label();
             this.nudKarmaGainedFromEnemies = new Chummer.NumericUpDownEx();
             this.lblKarmaGainedFromEnemiesExtra = new System.Windows.Forms.Label();
             this.lblSettingName = new System.Windows.Forms.Label();
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdRename = new System.Windows.Forms.Button();
             this.cmdDelete = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdRestoreDefaults = new System.Windows.Forms.Button();
             this.cmdSave = new System.Windows.Forms.Button();
             this.cmdSaveAs = new System.Windows.Forms.Button();
-            this.lblMaxSkillRatingCreate = new Chummer.LabelWithToolTip();
-            this.nudMaxSkillRatingCreate = new Chummer.NumericUpDownEx();
-            this.lblMaxNumberMaxAttributes = new Chummer.LabelWithToolTip();
-            this.nudMaxNumberMaxAttributes = new Chummer.NumericUpDownEx();
-            this.lblMaxKnowledgeSkillRatingCreate = new Chummer.LabelWithToolTip();
-            this.nudMaxKnowledgeSkillRatingCreate = new Chummer.NumericUpDownEx();
-            this.flpMaxSkillRating = new System.Windows.Forms.FlowLayoutPanel();
-            this.lblMaxSkillRating = new System.Windows.Forms.Label();
-            this.nudMaxSkillRating = new Chummer.NumericUpDownEx();
-            this.lblMaxKnowledgeSkillRating = new System.Windows.Forms.Label();
-            this.nudMaxKnowledgeSkillRating = new Chummer.NumericUpDownEx();
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
             this.tabBasicOptions.SuspendLayout();
@@ -383,6 +379,9 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudSumToTen)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMaxNuyenKarma)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudQualityKarmaLimit)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxNumberMaxAttributes)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxSkillRatingCreate)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxKnowledgeSkillRatingCreate)).BeginInit();
             this.gpbBasicOptionsOfficialRules.SuspendLayout();
             this.tlpBasicOptionsOfficialRules.SuspendLayout();
             this.gpbBasicOptionsEncumbrance.SuspendLayout();
@@ -484,6 +483,9 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudDroneArmorMultiplier)).BeginInit();
             this.gpbHouseRulesSkills.SuspendLayout();
             this.tlpHouseRulesSkills.SuspendLayout();
+            this.flpMaxSkillRating.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxSkillRating)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxKnowledgeSkillRating)).BeginInit();
             this.gpbHouseRulesCombat.SuspendLayout();
             this.tlpHouseRulesCombat.SuspendLayout();
             this.gpbHouseRulesMagicResonance.SuspendLayout();
@@ -493,12 +495,6 @@ namespace Chummer
             this.flpKarmaGainedFromEnemies.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaGainedFromEnemies)).BeginInit();
             this.tlpButtons.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxSkillRatingCreate)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxNumberMaxAttributes)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxKnowledgeSkillRatingCreate)).BeginInit();
-            this.flpMaxSkillRating.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxSkillRating)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxKnowledgeSkillRating)).BeginInit();
             this.SuspendLayout();
             // 
             // tlpOptions
@@ -530,7 +526,7 @@ namespace Chummer
             this.cboSetting.FormattingEnabled = true;
             this.cboSetting.Location = new System.Drawing.Point(83, 638);
             this.cboSetting.Name = "cboSetting";
-            this.cboSetting.Size = new System.Drawing.Size(560, 21);
+            this.cboSetting.Size = new System.Drawing.Size(548, 21);
             this.cboSetting.TabIndex = 1;
             this.cboSetting.TooltipText = "";
             this.cboSetting.SelectedIndexChanged += new System.EventHandler(this.cboSetting_SelectedIndexChanged);
@@ -582,9 +578,11 @@ namespace Chummer
             // 
             // cmdEnableSourcebooks
             // 
-            this.cmdEnableSourcebooks.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cmdEnableSourcebooks.AutoSize = true;
+            this.cmdEnableSourcebooks.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdEnableSourcebooks.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdEnableSourcebooks.Location = new System.Drawing.Point(3, 558);
+            this.cmdEnableSourcebooks.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdEnableSourcebooks.Name = "cmdEnableSourcebooks";
             this.cmdEnableSourcebooks.Size = new System.Drawing.Size(297, 23);
             this.cmdEnableSourcebooks.TabIndex = 6;
@@ -1050,6 +1048,105 @@ namespace Chummer
             this.txtContactPoints.Text = "{CHAUnaug} * 3";
             this.txtContactPoints.TextChanged += new System.EventHandler(this.txtContactPoints_TextChanged);
             // 
+            // lblMaxNumberMaxAttributes
+            // 
+            this.lblMaxNumberMaxAttributes.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblMaxNumberMaxAttributes.AutoSize = true;
+            this.lblMaxNumberMaxAttributes.Location = new System.Drawing.Point(3, 137);
+            this.lblMaxNumberMaxAttributes.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblMaxNumberMaxAttributes.Name = "lblMaxNumberMaxAttributes";
+            this.lblMaxNumberMaxAttributes.Size = new System.Drawing.Size(161, 13);
+            this.lblMaxNumberMaxAttributes.TabIndex = 36;
+            this.lblMaxNumberMaxAttributes.Tag = "Label_CharacterOptions_MaxNumberMaxAttributes";
+            this.lblMaxNumberMaxAttributes.Text = "Max Number of Attributes at Max";
+            this.lblMaxNumberMaxAttributes.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblMaxNumberMaxAttributes.ToolTipText = "";
+            // 
+            // nudMaxNumberMaxAttributes
+            // 
+            this.nudMaxNumberMaxAttributes.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudMaxNumberMaxAttributes.AutoSize = true;
+            this.nudMaxNumberMaxAttributes.Location = new System.Drawing.Point(170, 134);
+            this.nudMaxNumberMaxAttributes.Maximum = new decimal(new int[] {
+            8,
+            0,
+            0,
+            0});
+            this.nudMaxNumberMaxAttributes.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudMaxNumberMaxAttributes.Name = "nudMaxNumberMaxAttributes";
+            this.nudMaxNumberMaxAttributes.Size = new System.Drawing.Size(29, 20);
+            this.nudMaxNumberMaxAttributes.TabIndex = 37;
+            // 
+            // lblMaxSkillRatingCreate
+            // 
+            this.lblMaxSkillRatingCreate.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblMaxSkillRatingCreate.AutoSize = true;
+            this.lblMaxSkillRatingCreate.Location = new System.Drawing.Point(226, 137);
+            this.lblMaxSkillRatingCreate.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblMaxSkillRatingCreate.Name = "lblMaxSkillRatingCreate";
+            this.lblMaxSkillRatingCreate.Size = new System.Drawing.Size(83, 13);
+            this.lblMaxSkillRatingCreate.TabIndex = 34;
+            this.lblMaxSkillRatingCreate.Tag = "Label_CharacterOptions_MaxSkillRating";
+            this.lblMaxSkillRatingCreate.Text = "Max Skill Rating";
+            this.lblMaxSkillRatingCreate.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblMaxSkillRatingCreate.ToolTipText = "";
+            // 
+            // nudMaxSkillRatingCreate
+            // 
+            this.nudMaxSkillRatingCreate.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudMaxSkillRatingCreate.AutoSize = true;
+            this.nudMaxSkillRatingCreate.Location = new System.Drawing.Point(315, 134);
+            this.nudMaxSkillRatingCreate.Maximum = new decimal(new int[] {
+            12,
+            0,
+            0,
+            0});
+            this.nudMaxSkillRatingCreate.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudMaxSkillRatingCreate.Name = "nudMaxSkillRatingCreate";
+            this.nudMaxSkillRatingCreate.Size = new System.Drawing.Size(35, 20);
+            this.nudMaxSkillRatingCreate.TabIndex = 35;
+            // 
+            // lblMaxKnowledgeSkillRatingCreate
+            // 
+            this.lblMaxKnowledgeSkillRatingCreate.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblMaxKnowledgeSkillRatingCreate.AutoSize = true;
+            this.lblMaxKnowledgeSkillRatingCreate.Location = new System.Drawing.Point(356, 137);
+            this.lblMaxKnowledgeSkillRatingCreate.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblMaxKnowledgeSkillRatingCreate.Name = "lblMaxKnowledgeSkillRatingCreate";
+            this.lblMaxKnowledgeSkillRatingCreate.Size = new System.Drawing.Size(139, 13);
+            this.lblMaxKnowledgeSkillRatingCreate.TabIndex = 38;
+            this.lblMaxKnowledgeSkillRatingCreate.Tag = "Label_CharacterOptions_MaxKnowledgeSkillRating";
+            this.lblMaxKnowledgeSkillRatingCreate.Text = "Max Knowledge Skill Rating";
+            this.lblMaxKnowledgeSkillRatingCreate.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            this.lblMaxKnowledgeSkillRatingCreate.ToolTipText = "";
+            // 
+            // nudMaxKnowledgeSkillRatingCreate
+            // 
+            this.nudMaxKnowledgeSkillRatingCreate.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.nudMaxKnowledgeSkillRatingCreate.AutoSize = true;
+            this.nudMaxKnowledgeSkillRatingCreate.Location = new System.Drawing.Point(501, 134);
+            this.nudMaxKnowledgeSkillRatingCreate.Maximum = new decimal(new int[] {
+            12,
+            0,
+            0,
+            0});
+            this.nudMaxKnowledgeSkillRatingCreate.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudMaxKnowledgeSkillRatingCreate.Name = "nudMaxKnowledgeSkillRatingCreate";
+            this.nudMaxKnowledgeSkillRatingCreate.Size = new System.Drawing.Size(35, 20);
+            this.nudMaxKnowledgeSkillRatingCreate.TabIndex = 39;
+            // 
             // gpbBasicOptionsOfficialRules
             // 
             this.gpbBasicOptionsOfficialRules.AutoSize = true;
@@ -1484,7 +1581,6 @@ namespace Chummer
             // 
             this.nudEncumbrancePenaltyPhysicalLimit.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudEncumbrancePenaltyPhysicalLimit.AutoSize = true;
-            this.nudEncumbrancePenaltyPhysicalLimit.Enabled = false;
             this.nudEncumbrancePenaltyPhysicalLimit.Location = new System.Drawing.Point(234, 132);
             this.nudEncumbrancePenaltyPhysicalLimit.Maximum = new decimal(new int[] {
             100,
@@ -1509,7 +1605,6 @@ namespace Chummer
             // 
             this.nudEncumbrancePenaltyAgility.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudEncumbrancePenaltyAgility.AutoSize = true;
-            this.nudEncumbrancePenaltyAgility.Enabled = false;
             this.nudEncumbrancePenaltyAgility.Location = new System.Drawing.Point(234, 184);
             this.nudEncumbrancePenaltyAgility.Maximum = new decimal(new int[] {
             100,
@@ -1534,7 +1629,6 @@ namespace Chummer
             // 
             this.nudEncumbrancePenaltyReaction.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudEncumbrancePenaltyReaction.AutoSize = true;
-            this.nudEncumbrancePenaltyReaction.Enabled = false;
             this.nudEncumbrancePenaltyReaction.Location = new System.Drawing.Point(234, 210);
             this.nudEncumbrancePenaltyReaction.Maximum = new decimal(new int[] {
             100,
@@ -1559,7 +1653,6 @@ namespace Chummer
             // 
             this.nudEncumbrancePenaltyWoundModifier.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudEncumbrancePenaltyWoundModifier.AutoSize = true;
-            this.nudEncumbrancePenaltyWoundModifier.Enabled = false;
             this.nudEncumbrancePenaltyWoundModifier.Location = new System.Drawing.Point(234, 236);
             this.nudEncumbrancePenaltyWoundModifier.Maximum = new decimal(new int[] {
             100,
@@ -1584,7 +1677,6 @@ namespace Chummer
             // 
             this.nudEncumbrancePenaltyMovementSpeed.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudEncumbrancePenaltyMovementSpeed.AutoSize = true;
-            this.nudEncumbrancePenaltyMovementSpeed.Enabled = false;
             this.nudEncumbrancePenaltyMovementSpeed.Location = new System.Drawing.Point(234, 158);
             this.nudEncumbrancePenaltyMovementSpeed.Maximum = new decimal(new int[] {
             100,
@@ -1909,7 +2001,7 @@ namespace Chummer
             this.gpbBasicOptionsRounding.Controls.Add(this.tlpBasicOptionsRounding);
             this.gpbBasicOptionsRounding.Location = new System.Drawing.Point(394, 521);
             this.gpbBasicOptionsRounding.Name = "gpbBasicOptionsRounding";
-            this.gpbBasicOptionsRounding.Size = new System.Drawing.Size(361, 122);
+            this.gpbBasicOptionsRounding.Size = new System.Drawing.Size(373, 148);
             this.gpbBasicOptionsRounding.TabIndex = 1;
             this.gpbBasicOptionsRounding.TabStop = false;
             this.gpbBasicOptionsRounding.Tag = "Label_CharacterOptions_DecimalsAndRounding";
@@ -1919,32 +2011,49 @@ namespace Chummer
             // 
             this.tlpBasicOptionsRounding.AutoSize = true;
             this.tlpBasicOptionsRounding.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpBasicOptionsRounding.ColumnCount = 2;
+            this.tlpBasicOptionsRounding.ColumnCount = 3;
+            this.tlpBasicOptionsRounding.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpBasicOptionsRounding.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpBasicOptionsRounding.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpBasicOptionsRounding.Controls.Add(this.lblEssenceModifierPostExpression, 0, 4);
             this.tlpBasicOptionsRounding.Controls.Add(this.chkDontRoundEssenceInternally, 0, 3);
             this.tlpBasicOptionsRounding.Controls.Add(this.lblNuyenDecimalsMinimumLabel, 0, 0);
             this.tlpBasicOptionsRounding.Controls.Add(this.lblNuyenDecimalsMaximumLabel, 0, 1);
             this.tlpBasicOptionsRounding.Controls.Add(this.lblEssenceDecimals, 0, 2);
-            this.tlpBasicOptionsRounding.Controls.Add(this.nudNuyenDecimalsMinimum, 1, 0);
-            this.tlpBasicOptionsRounding.Controls.Add(this.nudNuyenDecimalsMaximum, 1, 1);
-            this.tlpBasicOptionsRounding.Controls.Add(this.nudEssenceDecimals, 1, 2);
+            this.tlpBasicOptionsRounding.Controls.Add(this.nudNuyenDecimalsMinimum, 2, 0);
+            this.tlpBasicOptionsRounding.Controls.Add(this.nudNuyenDecimalsMaximum, 2, 1);
+            this.tlpBasicOptionsRounding.Controls.Add(this.nudEssenceDecimals, 2, 2);
+            this.tlpBasicOptionsRounding.Controls.Add(this.txtEssenceModifierPostExpression, 1, 4);
             this.tlpBasicOptionsRounding.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpBasicOptionsRounding.Location = new System.Drawing.Point(3, 16);
             this.tlpBasicOptionsRounding.Name = "tlpBasicOptionsRounding";
-            this.tlpBasicOptionsRounding.RowCount = 4;
+            this.tlpBasicOptionsRounding.RowCount = 5;
             this.tlpBasicOptionsRounding.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpBasicOptionsRounding.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpBasicOptionsRounding.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpBasicOptionsRounding.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpBasicOptionsRounding.Size = new System.Drawing.Size(355, 103);
+            this.tlpBasicOptionsRounding.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpBasicOptionsRounding.Size = new System.Drawing.Size(367, 129);
             this.tlpBasicOptionsRounding.TabIndex = 0;
+            // 
+            // lblEssenceModifierPostExpression
+            // 
+            this.lblEssenceModifierPostExpression.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblEssenceModifierPostExpression.AutoSize = true;
+            this.lblEssenceModifierPostExpression.Location = new System.Drawing.Point(3, 109);
+            this.lblEssenceModifierPostExpression.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblEssenceModifierPostExpression.Name = "lblEssenceModifierPostExpression";
+            this.lblEssenceModifierPostExpression.Size = new System.Drawing.Size(175, 13);
+            this.lblEssenceModifierPostExpression.TabIndex = 35;
+            this.lblEssenceModifierPostExpression.Tag = "Label_Options_EssenceModifierPostExpression";
+            this.lblEssenceModifierPostExpression.Text = "Post-Process Essence Modifiers as:";
+            this.lblEssenceModifierPostExpression.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // chkDontRoundEssenceInternally
             // 
             this.chkDontRoundEssenceInternally.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkDontRoundEssenceInternally.AutoSize = true;
-            this.tlpBasicOptionsRounding.SetColumnSpan(this.chkDontRoundEssenceInternally, 2);
+            this.tlpBasicOptionsRounding.SetColumnSpan(this.chkDontRoundEssenceInternally, 3);
             this.chkDontRoundEssenceInternally.DefaultColorScheme = true;
             this.chkDontRoundEssenceInternally.Location = new System.Drawing.Point(3, 82);
             this.chkDontRoundEssenceInternally.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
@@ -1959,7 +2068,8 @@ namespace Chummer
             // 
             this.lblNuyenDecimalsMinimumLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblNuyenDecimalsMinimumLabel.AutoSize = true;
-            this.lblNuyenDecimalsMinimumLabel.Location = new System.Drawing.Point(6, 6);
+            this.tlpBasicOptionsRounding.SetColumnSpan(this.lblNuyenDecimalsMinimumLabel, 2);
+            this.lblNuyenDecimalsMinimumLabel.Location = new System.Drawing.Point(68, 6);
             this.lblNuyenDecimalsMinimumLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblNuyenDecimalsMinimumLabel.Name = "lblNuyenDecimalsMinimumLabel";
             this.lblNuyenDecimalsMinimumLabel.Size = new System.Drawing.Size(255, 13);
@@ -1972,7 +2082,8 @@ namespace Chummer
             // 
             this.lblNuyenDecimalsMaximumLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblNuyenDecimalsMaximumLabel.AutoSize = true;
-            this.lblNuyenDecimalsMaximumLabel.Location = new System.Drawing.Point(3, 32);
+            this.tlpBasicOptionsRounding.SetColumnSpan(this.lblNuyenDecimalsMaximumLabel, 2);
+            this.lblNuyenDecimalsMaximumLabel.Location = new System.Drawing.Point(65, 32);
             this.lblNuyenDecimalsMaximumLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblNuyenDecimalsMaximumLabel.Name = "lblNuyenDecimalsMaximumLabel";
             this.lblNuyenDecimalsMaximumLabel.Size = new System.Drawing.Size(258, 13);
@@ -1985,7 +2096,8 @@ namespace Chummer
             // 
             this.lblEssenceDecimals.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblEssenceDecimals.AutoSize = true;
-            this.lblEssenceDecimals.Location = new System.Drawing.Point(31, 58);
+            this.tlpBasicOptionsRounding.SetColumnSpan(this.lblEssenceDecimals, 2);
+            this.lblEssenceDecimals.Location = new System.Drawing.Point(93, 58);
             this.lblEssenceDecimals.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblEssenceDecimals.Name = "lblEssenceDecimals";
             this.lblEssenceDecimals.Size = new System.Drawing.Size(230, 13);
@@ -1998,7 +2110,7 @@ namespace Chummer
             // 
             this.nudNuyenDecimalsMinimum.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudNuyenDecimalsMinimum.AutoSize = true;
-            this.nudNuyenDecimalsMinimum.Location = new System.Drawing.Point(267, 3);
+            this.nudNuyenDecimalsMinimum.Location = new System.Drawing.Point(329, 3);
             this.nudNuyenDecimalsMinimum.Maximum = new decimal(new int[] {
             28,
             0,
@@ -2017,7 +2129,7 @@ namespace Chummer
             // 
             this.nudNuyenDecimalsMaximum.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudNuyenDecimalsMaximum.AutoSize = true;
-            this.nudNuyenDecimalsMaximum.Location = new System.Drawing.Point(267, 29);
+            this.nudNuyenDecimalsMaximum.Location = new System.Drawing.Point(329, 29);
             this.nudNuyenDecimalsMaximum.Maximum = new decimal(new int[] {
             28,
             0,
@@ -2036,7 +2148,7 @@ namespace Chummer
             // 
             this.nudEssenceDecimals.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudEssenceDecimals.AutoSize = true;
-            this.nudEssenceDecimals.Location = new System.Drawing.Point(267, 55);
+            this.nudEssenceDecimals.Location = new System.Drawing.Point(329, 55);
             this.nudEssenceDecimals.Maximum = new decimal(new int[] {
             28,
             0,
@@ -2056,11 +2168,22 @@ namespace Chummer
             0,
             0});
             // 
+            // txtEssenceModifierPostExpression
+            // 
+            this.txtEssenceModifierPostExpression.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpBasicOptionsRounding.SetColumnSpan(this.txtEssenceModifierPostExpression, 2);
+            this.txtEssenceModifierPostExpression.Location = new System.Drawing.Point(184, 106);
+            this.txtEssenceModifierPostExpression.Name = "txtEssenceModifierPostExpression";
+            this.txtEssenceModifierPostExpression.Size = new System.Drawing.Size(180, 20);
+            this.txtEssenceModifierPostExpression.TabIndex = 36;
+            this.txtEssenceModifierPostExpression.Text = "{Modifier}";
+            this.txtEssenceModifierPostExpression.TextChanged += new System.EventHandler(this.txtEssenceModifierPostExpression_TextChanged);
+            // 
             // gpbBasicOptionsInitiativeDice
             // 
             this.gpbBasicOptionsInitiativeDice.AutoSize = true;
             this.gpbBasicOptionsInitiativeDice.Controls.Add(this.tlpBasicOptionsInitiativeDice);
-            this.gpbBasicOptionsInitiativeDice.Location = new System.Drawing.Point(3, 674);
+            this.gpbBasicOptionsInitiativeDice.Location = new System.Drawing.Point(3, 675);
             this.gpbBasicOptionsInitiativeDice.Name = "gpbBasicOptionsInitiativeDice";
             this.gpbBasicOptionsInitiativeDice.Size = new System.Drawing.Size(239, 148);
             this.gpbBasicOptionsInitiativeDice.TabIndex = 6;
@@ -4651,6 +4774,7 @@ namespace Chummer
             this.cmdToTopCustomDirectoryLoadOrder.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdToTopCustomDirectoryLoadOrder.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdToTopCustomDirectoryLoadOrder.Location = new System.Drawing.Point(253, 3);
+            this.cmdToTopCustomDirectoryLoadOrder.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdToTopCustomDirectoryLoadOrder.Name = "cmdToTopCustomDirectoryLoadOrder";
             this.cmdToTopCustomDirectoryLoadOrder.Size = new System.Drawing.Size(119, 23);
             this.cmdToTopCustomDirectoryLoadOrder.TabIndex = 46;
@@ -4665,6 +4789,7 @@ namespace Chummer
             this.cmdToBottomCustomDirectoryLoadOrder.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdToBottomCustomDirectoryLoadOrder.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdToBottomCustomDirectoryLoadOrder.Location = new System.Drawing.Point(503, 3);
+            this.cmdToBottomCustomDirectoryLoadOrder.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdToBottomCustomDirectoryLoadOrder.Name = "cmdToBottomCustomDirectoryLoadOrder";
             this.cmdToBottomCustomDirectoryLoadOrder.Size = new System.Drawing.Size(119, 23);
             this.cmdToBottomCustomDirectoryLoadOrder.TabIndex = 45;
@@ -4679,6 +4804,7 @@ namespace Chummer
             this.cmdDecreaseCustomDirectoryLoadOrder.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDecreaseCustomDirectoryLoadOrder.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdDecreaseCustomDirectoryLoadOrder.Location = new System.Drawing.Point(378, 3);
+            this.cmdDecreaseCustomDirectoryLoadOrder.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdDecreaseCustomDirectoryLoadOrder.Name = "cmdDecreaseCustomDirectoryLoadOrder";
             this.cmdDecreaseCustomDirectoryLoadOrder.Size = new System.Drawing.Size(119, 23);
             this.cmdDecreaseCustomDirectoryLoadOrder.TabIndex = 42;
@@ -4693,6 +4819,7 @@ namespace Chummer
             this.cmdIncreaseCustomDirectoryLoadOrder.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdIncreaseCustomDirectoryLoadOrder.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdIncreaseCustomDirectoryLoadOrder.Location = new System.Drawing.Point(128, 3);
+            this.cmdIncreaseCustomDirectoryLoadOrder.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdIncreaseCustomDirectoryLoadOrder.Name = "cmdIncreaseCustomDirectoryLoadOrder";
             this.cmdIncreaseCustomDirectoryLoadOrder.Size = new System.Drawing.Size(119, 23);
             this.cmdIncreaseCustomDirectoryLoadOrder.TabIndex = 43;
@@ -4707,6 +4834,7 @@ namespace Chummer
             this.cmdGlobalOptionsCustomData.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdGlobalOptionsCustomData.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdGlobalOptionsCustomData.Location = new System.Drawing.Point(3, 3);
+            this.cmdGlobalOptionsCustomData.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdGlobalOptionsCustomData.Name = "cmdGlobalOptionsCustomData";
             this.cmdGlobalOptionsCustomData.Size = new System.Drawing.Size(119, 23);
             this.cmdGlobalOptionsCustomData.TabIndex = 44;
@@ -4768,7 +4896,7 @@ namespace Chummer
             this.tlpHouseRulesQualities.Controls.Add(this.chkExceedPositiveQualities, 0, 2);
             this.tlpHouseRulesQualities.Controls.Add(this.chkDontDoubleQualityRefunds, 0, 1);
             this.tlpHouseRulesQualities.Controls.Add(this.chkExceedPositiveQualitiesCostDoubled, 0, 3);
-            this.tlpHouseRulesQualities.Controls.Add(this.chkExceedNegativeQualitiesLimit, 0, 5);
+            this.tlpHouseRulesQualities.Controls.Add(this.chkExceedNegativeQualitiesNoBonus, 0, 5);
             this.tlpHouseRulesQualities.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpHouseRulesQualities.Location = new System.Drawing.Point(3, 16);
             this.tlpHouseRulesQualities.Name = "tlpHouseRulesQualities";
@@ -4853,22 +4981,22 @@ namespace Chummer
             this.chkExceedPositiveQualitiesCostDoubled.Text = "Use Career costs for all Positive Quality karma costs in excess of the limit";
             this.chkExceedPositiveQualitiesCostDoubled.UseVisualStyleBackColor = true;
             // 
-            // chkExceedNegativeQualitiesLimit
+            // chkExceedNegativeQualitiesNoBonus
             // 
-            this.chkExceedNegativeQualitiesLimit.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkExceedNegativeQualitiesLimit.AutoSize = true;
-            this.chkExceedNegativeQualitiesLimit.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.chkExceedNegativeQualitiesLimit.DefaultColorScheme = true;
-            this.chkExceedNegativeQualitiesLimit.Enabled = false;
-            this.chkExceedNegativeQualitiesLimit.Location = new System.Drawing.Point(23, 129);
-            this.chkExceedNegativeQualitiesLimit.Margin = new System.Windows.Forms.Padding(23, 4, 3, 4);
-            this.chkExceedNegativeQualitiesLimit.Name = "chkExceedNegativeQualitiesLimit";
-            this.chkExceedNegativeQualitiesLimit.Size = new System.Drawing.Size(503, 17);
-            this.chkExceedNegativeQualitiesLimit.TabIndex = 18;
-            this.chkExceedNegativeQualitiesLimit.Tag = "Checkbox_Options_ExceedNegativeQualitiesLimit";
-            this.chkExceedNegativeQualitiesLimit.Text = "Characters do not gain Karma from taking Negative Qualities in excess of their Ga" +
+            this.chkExceedNegativeQualitiesNoBonus.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkExceedNegativeQualitiesNoBonus.AutoSize = true;
+            this.chkExceedNegativeQualitiesNoBonus.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.chkExceedNegativeQualitiesNoBonus.DefaultColorScheme = true;
+            this.chkExceedNegativeQualitiesNoBonus.Enabled = false;
+            this.chkExceedNegativeQualitiesNoBonus.Location = new System.Drawing.Point(23, 129);
+            this.chkExceedNegativeQualitiesNoBonus.Margin = new System.Windows.Forms.Padding(23, 4, 3, 4);
+            this.chkExceedNegativeQualitiesNoBonus.Name = "chkExceedNegativeQualitiesNoBonus";
+            this.chkExceedNegativeQualitiesNoBonus.Size = new System.Drawing.Size(503, 17);
+            this.chkExceedNegativeQualitiesNoBonus.TabIndex = 18;
+            this.chkExceedNegativeQualitiesNoBonus.Tag = "Checkbox_Options_ExceedNegativeQualitiesLimit";
+            this.chkExceedNegativeQualitiesNoBonus.Text = "Characters do not gain Karma from taking Negative Qualities in excess of their Ga" +
     "meplay Option\'s limit";
-            this.chkExceedNegativeQualitiesLimit.UseVisualStyleBackColor = true;
+            this.chkExceedNegativeQualitiesNoBonus.UseVisualStyleBackColor = true;
             // 
             // gpbHouseRulesAttributes
             // 
@@ -5065,7 +5193,7 @@ namespace Chummer
             this.gpbHouseRulesSkills.Controls.Add(this.tlpHouseRulesSkills);
             this.gpbHouseRulesSkills.Location = new System.Drawing.Point(3, 204);
             this.gpbHouseRulesSkills.Name = "gpbHouseRulesSkills";
-            this.gpbHouseRulesSkills.Size = new System.Drawing.Size(452, 145);
+            this.gpbHouseRulesSkills.Size = new System.Drawing.Size(452, 170);
             this.gpbHouseRulesSkills.TabIndex = 2;
             this.gpbHouseRulesSkills.TabStop = false;
             this.gpbHouseRulesSkills.Tag = "Tab_Skills";
@@ -5078,57 +5206,118 @@ namespace Chummer
             this.tlpHouseRulesSkills.ColumnCount = 1;
             this.tlpHouseRulesSkills.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpHouseRulesSkills.Controls.Add(this.flpMaxSkillRating, 0, 0);
-            this.tlpHouseRulesSkills.Controls.Add(this.chkCompensateSkillGroupKarmaDifference, 0, 1);
-            this.tlpHouseRulesSkills.Controls.Add(this.chkAllowSkillRegrouping, 0, 2);
-            this.tlpHouseRulesSkills.Controls.Add(this.chkFreeMartialArtSpecialization, 0, 4);
-            this.tlpHouseRulesSkills.Controls.Add(this.chkUsePointsOnBrokenGroups, 0, 3);
+            this.tlpHouseRulesSkills.Controls.Add(this.chkFreeMartialArtSpecialization, 0, 5);
+            this.tlpHouseRulesSkills.Controls.Add(this.chkUsePointsOnBrokenGroups, 0, 4);
+            this.tlpHouseRulesSkills.Controls.Add(this.chkAllowSkillRegrouping, 0, 3);
+            this.tlpHouseRulesSkills.Controls.Add(this.chkCompensateSkillGroupKarmaDifference, 0, 2);
+            this.tlpHouseRulesSkills.Controls.Add(this.chkSpecializationsBreakSkillGroups, 0, 1);
             this.tlpHouseRulesSkills.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpHouseRulesSkills.Location = new System.Drawing.Point(3, 16);
             this.tlpHouseRulesSkills.Name = "tlpHouseRulesSkills";
-            this.tlpHouseRulesSkills.RowCount = 5;
+            this.tlpHouseRulesSkills.RowCount = 6;
             this.tlpHouseRulesSkills.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpHouseRulesSkills.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpHouseRulesSkills.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpHouseRulesSkills.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpHouseRulesSkills.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpHouseRulesSkills.Size = new System.Drawing.Size(446, 126);
+            this.tlpHouseRulesSkills.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesSkills.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesSkills.Size = new System.Drawing.Size(446, 151);
             this.tlpHouseRulesSkills.TabIndex = 0;
             // 
-            // chkCompensateSkillGroupKarmaDifference
+            // flpMaxSkillRating
             // 
-            this.chkCompensateSkillGroupKarmaDifference.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkCompensateSkillGroupKarmaDifference.AutoSize = true;
-            this.chkCompensateSkillGroupKarmaDifference.DefaultColorScheme = true;
-            this.chkCompensateSkillGroupKarmaDifference.Location = new System.Drawing.Point(3, 30);
-            this.chkCompensateSkillGroupKarmaDifference.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkCompensateSkillGroupKarmaDifference.Name = "chkCompensateSkillGroupKarmaDifference";
-            this.chkCompensateSkillGroupKarmaDifference.Size = new System.Drawing.Size(440, 17);
-            this.chkCompensateSkillGroupKarmaDifference.TabIndex = 36;
-            this.chkCompensateSkillGroupKarmaDifference.Tag = "Checkbox_Options_CompensateSkillGroupKarmaDifference";
-            this.chkCompensateSkillGroupKarmaDifference.Text = "Compensate for higher karma costs when raising the rating of the last skill in a " +
-    "skill group";
-            this.chkCompensateSkillGroupKarmaDifference.UseVisualStyleBackColor = true;
+            this.flpMaxSkillRating.AutoSize = true;
+            this.flpMaxSkillRating.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flpMaxSkillRating.Controls.Add(this.lblMaxSkillRating);
+            this.flpMaxSkillRating.Controls.Add(this.nudMaxSkillRating);
+            this.flpMaxSkillRating.Controls.Add(this.lblMaxKnowledgeSkillRating);
+            this.flpMaxSkillRating.Controls.Add(this.nudMaxKnowledgeSkillRating);
+            this.flpMaxSkillRating.Location = new System.Drawing.Point(0, 0);
+            this.flpMaxSkillRating.Margin = new System.Windows.Forms.Padding(0);
+            this.flpMaxSkillRating.Name = "flpMaxSkillRating";
+            this.flpMaxSkillRating.Size = new System.Drawing.Size(328, 26);
+            this.flpMaxSkillRating.TabIndex = 53;
             // 
-            // chkAllowSkillRegrouping
+            // lblMaxSkillRating
             // 
-            this.chkAllowSkillRegrouping.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkAllowSkillRegrouping.AutoSize = true;
-            this.chkAllowSkillRegrouping.DefaultColorScheme = true;
-            this.chkAllowSkillRegrouping.Location = new System.Drawing.Point(3, 55);
-            this.chkAllowSkillRegrouping.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkAllowSkillRegrouping.Name = "chkAllowSkillRegrouping";
-            this.chkAllowSkillRegrouping.Size = new System.Drawing.Size(285, 17);
-            this.chkAllowSkillRegrouping.TabIndex = 39;
-            this.chkAllowSkillRegrouping.Tag = "Checkbox_Options_SkillRegroup";
-            this.chkAllowSkillRegrouping.Text = "Allow Skills to be re-Grouped if all Ratings are the same";
-            this.chkAllowSkillRegrouping.UseVisualStyleBackColor = true;
+            this.lblMaxSkillRating.AutoSize = true;
+            this.lblMaxSkillRating.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lblMaxSkillRating.Location = new System.Drawing.Point(3, 4);
+            this.lblMaxSkillRating.Margin = new System.Windows.Forms.Padding(3, 4, 3, 8);
+            this.lblMaxSkillRating.Name = "lblMaxSkillRating";
+            this.lblMaxSkillRating.Size = new System.Drawing.Size(83, 14);
+            this.lblMaxSkillRating.TabIndex = 27;
+            this.lblMaxSkillRating.Tag = "Label_CharacterOptions_MaxSkillRating";
+            this.lblMaxSkillRating.Text = "Max Skill Rating";
+            this.lblMaxSkillRating.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // nudMaxSkillRating
+            // 
+            this.nudMaxSkillRating.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudMaxSkillRating.AutoSize = true;
+            this.nudMaxSkillRating.Location = new System.Drawing.Point(92, 3);
+            this.nudMaxSkillRating.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudMaxSkillRating.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudMaxSkillRating.Name = "nudMaxSkillRating";
+            this.nudMaxSkillRating.Size = new System.Drawing.Size(41, 20);
+            this.nudMaxSkillRating.TabIndex = 26;
+            this.nudMaxSkillRating.Value = new decimal(new int[] {
+            12,
+            0,
+            0,
+            0});
+            // 
+            // lblMaxKnowledgeSkillRating
+            // 
+            this.lblMaxKnowledgeSkillRating.AutoSize = true;
+            this.lblMaxKnowledgeSkillRating.Dock = System.Windows.Forms.DockStyle.Right;
+            this.lblMaxKnowledgeSkillRating.Location = new System.Drawing.Point(139, 4);
+            this.lblMaxKnowledgeSkillRating.Margin = new System.Windows.Forms.Padding(3, 4, 3, 8);
+            this.lblMaxKnowledgeSkillRating.Name = "lblMaxKnowledgeSkillRating";
+            this.lblMaxKnowledgeSkillRating.Size = new System.Drawing.Size(139, 14);
+            this.lblMaxKnowledgeSkillRating.TabIndex = 28;
+            this.lblMaxKnowledgeSkillRating.Tag = "Label_CharacterOptions_MaxKnowledgeSkillRating";
+            this.lblMaxKnowledgeSkillRating.Text = "Max Knowledge Skill Rating";
+            this.lblMaxKnowledgeSkillRating.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // nudMaxKnowledgeSkillRating
+            // 
+            this.nudMaxKnowledgeSkillRating.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudMaxKnowledgeSkillRating.AutoSize = true;
+            this.nudMaxKnowledgeSkillRating.Location = new System.Drawing.Point(284, 3);
+            this.nudMaxKnowledgeSkillRating.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudMaxKnowledgeSkillRating.Minimum = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            this.nudMaxKnowledgeSkillRating.Name = "nudMaxKnowledgeSkillRating";
+            this.nudMaxKnowledgeSkillRating.Size = new System.Drawing.Size(41, 20);
+            this.nudMaxKnowledgeSkillRating.TabIndex = 29;
+            this.nudMaxKnowledgeSkillRating.Value = new decimal(new int[] {
+            12,
+            0,
+            0,
+            0});
             // 
             // chkFreeMartialArtSpecialization
             // 
             this.chkFreeMartialArtSpecialization.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkFreeMartialArtSpecialization.AutoSize = true;
             this.chkFreeMartialArtSpecialization.DefaultColorScheme = true;
-            this.chkFreeMartialArtSpecialization.Location = new System.Drawing.Point(3, 105);
+            this.chkFreeMartialArtSpecialization.Location = new System.Drawing.Point(3, 130);
             this.chkFreeMartialArtSpecialization.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkFreeMartialArtSpecialization.Name = "chkFreeMartialArtSpecialization";
             this.chkFreeMartialArtSpecialization.Size = new System.Drawing.Size(281, 17);
@@ -5142,7 +5331,7 @@ namespace Chummer
             this.chkUsePointsOnBrokenGroups.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkUsePointsOnBrokenGroups.AutoSize = true;
             this.chkUsePointsOnBrokenGroups.DefaultColorScheme = true;
-            this.chkUsePointsOnBrokenGroups.Location = new System.Drawing.Point(3, 80);
+            this.chkUsePointsOnBrokenGroups.Location = new System.Drawing.Point(3, 105);
             this.chkUsePointsOnBrokenGroups.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkUsePointsOnBrokenGroups.Name = "chkUsePointsOnBrokenGroups";
             this.chkUsePointsOnBrokenGroups.Size = new System.Drawing.Size(185, 17);
@@ -5151,6 +5340,49 @@ namespace Chummer
             this.chkUsePointsOnBrokenGroups.Text = "Use Skill Points on broken groups";
             this.chkUsePointsOnBrokenGroups.UseVisualStyleBackColor = true;
             // 
+            // chkAllowSkillRegrouping
+            // 
+            this.chkAllowSkillRegrouping.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkAllowSkillRegrouping.AutoSize = true;
+            this.chkAllowSkillRegrouping.DefaultColorScheme = true;
+            this.chkAllowSkillRegrouping.Location = new System.Drawing.Point(3, 80);
+            this.chkAllowSkillRegrouping.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkAllowSkillRegrouping.Name = "chkAllowSkillRegrouping";
+            this.chkAllowSkillRegrouping.Size = new System.Drawing.Size(285, 17);
+            this.chkAllowSkillRegrouping.TabIndex = 39;
+            this.chkAllowSkillRegrouping.Tag = "Checkbox_Options_SkillRegroup";
+            this.chkAllowSkillRegrouping.Text = "Allow Skills to be re-Grouped if all Ratings are the same";
+            this.chkAllowSkillRegrouping.UseVisualStyleBackColor = true;
+            // 
+            // chkCompensateSkillGroupKarmaDifference
+            // 
+            this.chkCompensateSkillGroupKarmaDifference.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkCompensateSkillGroupKarmaDifference.AutoSize = true;
+            this.chkCompensateSkillGroupKarmaDifference.DefaultColorScheme = true;
+            this.chkCompensateSkillGroupKarmaDifference.Location = new System.Drawing.Point(3, 55);
+            this.chkCompensateSkillGroupKarmaDifference.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkCompensateSkillGroupKarmaDifference.Name = "chkCompensateSkillGroupKarmaDifference";
+            this.chkCompensateSkillGroupKarmaDifference.Size = new System.Drawing.Size(440, 17);
+            this.chkCompensateSkillGroupKarmaDifference.TabIndex = 36;
+            this.chkCompensateSkillGroupKarmaDifference.Tag = "Checkbox_Options_CompensateSkillGroupKarmaDifference";
+            this.chkCompensateSkillGroupKarmaDifference.Text = "Compensate for higher karma costs when raising the rating of the last skill in a " +
+    "skill group";
+            this.chkCompensateSkillGroupKarmaDifference.UseVisualStyleBackColor = true;
+            // 
+            // chkSpecializationsBreakSkillGroups
+            // 
+            this.chkSpecializationsBreakSkillGroups.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkSpecializationsBreakSkillGroups.AutoSize = true;
+            this.chkSpecializationsBreakSkillGroups.DefaultColorScheme = true;
+            this.chkSpecializationsBreakSkillGroups.Location = new System.Drawing.Point(3, 30);
+            this.chkSpecializationsBreakSkillGroups.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkSpecializationsBreakSkillGroups.Name = "chkSpecializationsBreakSkillGroups";
+            this.chkSpecializationsBreakSkillGroups.Size = new System.Drawing.Size(181, 17);
+            this.chkSpecializationsBreakSkillGroups.TabIndex = 54;
+            this.chkSpecializationsBreakSkillGroups.Tag = "Checkbox_Options_SpecializationsBreakSkillGroups";
+            this.chkSpecializationsBreakSkillGroups.Text = "Specializations break skill groups";
+            this.chkSpecializationsBreakSkillGroups.UseVisualStyleBackColor = true;
+            // 
             // gpbHouseRulesCombat
             // 
             this.gpbHouseRulesCombat.AutoSize = true;
@@ -5158,7 +5390,7 @@ namespace Chummer
             this.gpbHouseRulesCombat.Controls.Add(this.tlpHouseRulesCombat);
             this.gpbHouseRulesCombat.Location = new System.Drawing.Point(461, 204);
             this.gpbHouseRulesCombat.Name = "gpbHouseRulesCombat";
-            this.gpbHouseRulesCombat.Size = new System.Drawing.Size(384, 69);
+            this.gpbHouseRulesCombat.Size = new System.Drawing.Size(384, 94);
             this.gpbHouseRulesCombat.TabIndex = 4;
             this.gpbHouseRulesCombat.TabStop = false;
             this.gpbHouseRulesCombat.Tag = "Label_CharacterOptions_Combat";
@@ -5170,16 +5402,32 @@ namespace Chummer
             this.tlpHouseRulesCombat.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpHouseRulesCombat.ColumnCount = 1;
             this.tlpHouseRulesCombat.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpHouseRulesCombat.Controls.Add(this.chkUncappedArmorAccessoryBonuses, 0, 1);
             this.tlpHouseRulesCombat.Controls.Add(this.chkNoArmorEncumbrance, 0, 0);
-            this.tlpHouseRulesCombat.Controls.Add(this.chkUnarmedSkillImprovements, 0, 1);
+            this.tlpHouseRulesCombat.Controls.Add(this.chkUnarmedSkillImprovements, 0, 2);
             this.tlpHouseRulesCombat.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpHouseRulesCombat.Location = new System.Drawing.Point(3, 16);
             this.tlpHouseRulesCombat.Name = "tlpHouseRulesCombat";
-            this.tlpHouseRulesCombat.RowCount = 2;
+            this.tlpHouseRulesCombat.RowCount = 3;
             this.tlpHouseRulesCombat.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpHouseRulesCombat.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpHouseRulesCombat.Size = new System.Drawing.Size(378, 50);
+            this.tlpHouseRulesCombat.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpHouseRulesCombat.Size = new System.Drawing.Size(378, 75);
             this.tlpHouseRulesCombat.TabIndex = 0;
+            // 
+            // chkUncappedArmorAccessoryBonuses
+            // 
+            this.chkUncappedArmorAccessoryBonuses.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkUncappedArmorAccessoryBonuses.AutoSize = true;
+            this.chkUncappedArmorAccessoryBonuses.DefaultColorScheme = true;
+            this.chkUncappedArmorAccessoryBonuses.Location = new System.Drawing.Point(3, 29);
+            this.chkUncappedArmorAccessoryBonuses.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkUncappedArmorAccessoryBonuses.Name = "chkUncappedArmorAccessoryBonuses";
+            this.chkUncappedArmorAccessoryBonuses.Size = new System.Drawing.Size(264, 17);
+            this.chkUncappedArmorAccessoryBonuses.TabIndex = 39;
+            this.chkUncappedArmorAccessoryBonuses.Tag = "Checkbox_Options_UncappedArmorAccessoryBonuses";
+            this.chkUncappedArmorAccessoryBonuses.Text = "No Cap on Armor Bonuses from Armor Accessories";
+            this.chkUncappedArmorAccessoryBonuses.UseVisualStyleBackColor = true;
             // 
             // chkNoArmorEncumbrance
             // 
@@ -5200,7 +5448,7 @@ namespace Chummer
             this.chkUnarmedSkillImprovements.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkUnarmedSkillImprovements.AutoSize = true;
             this.chkUnarmedSkillImprovements.DefaultColorScheme = true;
-            this.chkUnarmedSkillImprovements.Location = new System.Drawing.Point(3, 29);
+            this.chkUnarmedSkillImprovements.Location = new System.Drawing.Point(3, 54);
             this.chkUnarmedSkillImprovements.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkUnarmedSkillImprovements.Name = "chkUnarmedSkillImprovements";
             this.chkUnarmedSkillImprovements.Size = new System.Drawing.Size(372, 17);
@@ -5214,7 +5462,7 @@ namespace Chummer
             this.gpbHouseRulesMagicResonance.AutoSize = true;
             this.gpbHouseRulesMagicResonance.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbHouseRulesMagicResonance.Controls.Add(this.tlpHouseRulesMagicResonance);
-            this.gpbHouseRulesMagicResonance.Location = new System.Drawing.Point(3, 355);
+            this.gpbHouseRulesMagicResonance.Location = new System.Drawing.Point(3, 380);
             this.gpbHouseRulesMagicResonance.Name = "gpbHouseRulesMagicResonance";
             this.gpbHouseRulesMagicResonance.Size = new System.Drawing.Size(440, 321);
             this.gpbHouseRulesMagicResonance.TabIndex = 0;
@@ -5466,7 +5714,7 @@ namespace Chummer
             this.gpbHouseRules4eAdaptations.AutoSize = true;
             this.gpbHouseRules4eAdaptations.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbHouseRules4eAdaptations.Controls.Add(this.tlpHouseRules4eAdaptations);
-            this.gpbHouseRules4eAdaptations.Location = new System.Drawing.Point(449, 355);
+            this.gpbHouseRules4eAdaptations.Location = new System.Drawing.Point(449, 380);
             this.gpbHouseRules4eAdaptations.Name = "gpbHouseRules4eAdaptations";
             this.gpbHouseRules4eAdaptations.Size = new System.Drawing.Size(441, 120);
             this.gpbHouseRules4eAdaptations.TabIndex = 5;
@@ -5627,11 +5875,12 @@ namespace Chummer
             this.tlpButtons.Controls.Add(this.cmdRestoreDefaults, 0, 0);
             this.tlpButtons.Controls.Add(this.cmdSave, 4, 0);
             this.tlpButtons.Controls.Add(this.cmdSaveAs, 3, 0);
-            this.tlpButtons.Location = new System.Drawing.Point(649, 637);
+            this.tlpButtons.Location = new System.Drawing.Point(634, 634);
+            this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
             this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpButtons.Size = new System.Drawing.Size(594, 23);
+            this.tlpButtons.Size = new System.Drawing.Size(612, 29);
             this.tlpButtons.TabIndex = 6;
             // 
             // cmdRename
@@ -5639,10 +5888,10 @@ namespace Chummer
             this.cmdRename.AutoSize = true;
             this.cmdRename.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdRename.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdRename.Location = new System.Drawing.Point(102, 0);
-            this.cmdRename.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.cmdRename.Location = new System.Drawing.Point(105, 3);
+            this.cmdRename.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdRename.Name = "cmdRename";
-            this.cmdRename.Size = new System.Drawing.Size(93, 23);
+            this.cmdRename.Size = new System.Drawing.Size(96, 23);
             this.cmdRename.TabIndex = 10;
             this.cmdRename.Tag = "String_Rename";
             this.cmdRename.Text = "Rename";
@@ -5654,10 +5903,10 @@ namespace Chummer
             this.cmdDelete.AutoSize = true;
             this.cmdDelete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDelete.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdDelete.Location = new System.Drawing.Point(201, 0);
-            this.cmdDelete.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.cmdDelete.Location = new System.Drawing.Point(207, 3);
+            this.cmdDelete.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdDelete.Name = "cmdDelete";
-            this.cmdDelete.Size = new System.Drawing.Size(93, 23);
+            this.cmdDelete.Size = new System.Drawing.Size(96, 23);
             this.cmdDelete.TabIndex = 9;
             this.cmdDelete.Tag = "String_Delete";
             this.cmdDelete.Text = "Delete";
@@ -5670,8 +5919,8 @@ namespace Chummer
             this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdOK.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdOK.Location = new System.Drawing.Point(498, 0);
-            this.cmdOK.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
+            this.cmdOK.Location = new System.Drawing.Point(513, 3);
+            this.cmdOK.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdOK.Name = "cmdOK";
             this.cmdOK.Size = new System.Drawing.Size(96, 23);
             this.cmdOK.TabIndex = 6;
@@ -5685,8 +5934,8 @@ namespace Chummer
             this.cmdRestoreDefaults.AutoSize = true;
             this.cmdRestoreDefaults.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdRestoreDefaults.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdRestoreDefaults.Location = new System.Drawing.Point(0, 0);
-            this.cmdRestoreDefaults.Margin = new System.Windows.Forms.Padding(0, 0, 3, 0);
+            this.cmdRestoreDefaults.Location = new System.Drawing.Point(3, 3);
+            this.cmdRestoreDefaults.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdRestoreDefaults.Name = "cmdRestoreDefaults";
             this.cmdRestoreDefaults.Size = new System.Drawing.Size(96, 23);
             this.cmdRestoreDefaults.TabIndex = 8;
@@ -5701,10 +5950,10 @@ namespace Chummer
             this.cmdSave.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdSave.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdSave.Enabled = false;
-            this.cmdSave.Location = new System.Drawing.Point(399, 0);
-            this.cmdSave.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.cmdSave.Location = new System.Drawing.Point(411, 3);
+            this.cmdSave.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdSave.Name = "cmdSave";
-            this.cmdSave.Size = new System.Drawing.Size(93, 23);
+            this.cmdSave.Size = new System.Drawing.Size(96, 23);
             this.cmdSave.TabIndex = 5;
             this.cmdSave.Tag = "String_Save";
             this.cmdSave.Text = "Save";
@@ -5717,204 +5966,15 @@ namespace Chummer
             this.cmdSaveAs.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdSaveAs.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdSaveAs.Enabled = false;
-            this.cmdSaveAs.Location = new System.Drawing.Point(300, 0);
-            this.cmdSaveAs.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
+            this.cmdSaveAs.Location = new System.Drawing.Point(309, 3);
+            this.cmdSaveAs.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdSaveAs.Name = "cmdSaveAs";
-            this.cmdSaveAs.Size = new System.Drawing.Size(93, 23);
+            this.cmdSaveAs.Size = new System.Drawing.Size(96, 23);
             this.cmdSaveAs.TabIndex = 7;
             this.cmdSaveAs.Tag = "String_SaveAs";
             this.cmdSaveAs.Text = "Save As...";
             this.cmdSaveAs.UseVisualStyleBackColor = true;
             this.cmdSaveAs.Click += new System.EventHandler(this.cmdSaveAs_Click);
-            // 
-            // lblMaxSkillRatingCreate
-            // 
-            this.lblMaxSkillRatingCreate.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblMaxSkillRatingCreate.AutoSize = true;
-            this.lblMaxSkillRatingCreate.Location = new System.Drawing.Point(226, 137);
-            this.lblMaxSkillRatingCreate.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblMaxSkillRatingCreate.Name = "lblMaxSkillRatingCreate";
-            this.lblMaxSkillRatingCreate.Size = new System.Drawing.Size(83, 13);
-            this.lblMaxSkillRatingCreate.TabIndex = 34;
-            this.lblMaxSkillRatingCreate.Tag = "Label_CharacterOptions_MaxSkillRating";
-            this.lblMaxSkillRatingCreate.Text = "Max Skill Rating";
-            this.lblMaxSkillRatingCreate.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.lblMaxSkillRatingCreate.ToolTipText = "";
-            // 
-            // nudMaxSkillRatingCreate
-            // 
-            this.nudMaxSkillRatingCreate.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.nudMaxSkillRatingCreate.AutoSize = true;
-            this.nudMaxSkillRatingCreate.Location = new System.Drawing.Point(315, 134);
-            this.nudMaxSkillRatingCreate.Maximum = new decimal(new int[] {
-            12,
-            0,
-            0,
-            0});
-            this.nudMaxSkillRatingCreate.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudMaxSkillRatingCreate.Name = "nudMaxSkillRatingCreate";
-            this.nudMaxSkillRatingCreate.Size = new System.Drawing.Size(35, 20);
-            this.nudMaxSkillRatingCreate.TabIndex = 35;
-            // 
-            // lblMaxNumberMaxAttributes
-            // 
-            this.lblMaxNumberMaxAttributes.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblMaxNumberMaxAttributes.AutoSize = true;
-            this.lblMaxNumberMaxAttributes.Location = new System.Drawing.Point(3, 137);
-            this.lblMaxNumberMaxAttributes.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblMaxNumberMaxAttributes.Name = "lblMaxNumberMaxAttributes";
-            this.lblMaxNumberMaxAttributes.Size = new System.Drawing.Size(161, 13);
-            this.lblMaxNumberMaxAttributes.TabIndex = 36;
-            this.lblMaxNumberMaxAttributes.Tag = "Label_CharacterOptions_MaxNumberMaxAttributes";
-            this.lblMaxNumberMaxAttributes.Text = "Max Number of Attributes at Max";
-            this.lblMaxNumberMaxAttributes.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.lblMaxNumberMaxAttributes.ToolTipText = "";
-            // 
-            // nudMaxNumberMaxAttributes
-            // 
-            this.nudMaxNumberMaxAttributes.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.nudMaxNumberMaxAttributes.AutoSize = true;
-            this.nudMaxNumberMaxAttributes.Location = new System.Drawing.Point(170, 134);
-            this.nudMaxNumberMaxAttributes.Maximum = new decimal(new int[] {
-            8,
-            0,
-            0,
-            0});
-            this.nudMaxNumberMaxAttributes.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudMaxNumberMaxAttributes.Name = "nudMaxNumberMaxAttributes";
-            this.nudMaxNumberMaxAttributes.Size = new System.Drawing.Size(29, 20);
-            this.nudMaxNumberMaxAttributes.TabIndex = 37;
-            // 
-            // lblMaxKnowledgeSkillRatingCreate
-            // 
-            this.lblMaxKnowledgeSkillRatingCreate.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblMaxKnowledgeSkillRatingCreate.AutoSize = true;
-            this.lblMaxKnowledgeSkillRatingCreate.Location = new System.Drawing.Point(356, 137);
-            this.lblMaxKnowledgeSkillRatingCreate.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblMaxKnowledgeSkillRatingCreate.Name = "lblMaxKnowledgeSkillRatingCreate";
-            this.lblMaxKnowledgeSkillRatingCreate.Size = new System.Drawing.Size(139, 13);
-            this.lblMaxKnowledgeSkillRatingCreate.TabIndex = 38;
-            this.lblMaxKnowledgeSkillRatingCreate.Tag = "Label_CharacterOptions_MaxKnowledgeSkillRating";
-            this.lblMaxKnowledgeSkillRatingCreate.Text = "Max Knowledge Skill Rating";
-            this.lblMaxKnowledgeSkillRatingCreate.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.lblMaxKnowledgeSkillRatingCreate.ToolTipText = "";
-            // 
-            // nudMaxKnowledgeSkillRatingCreate
-            // 
-            this.nudMaxKnowledgeSkillRatingCreate.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.nudMaxKnowledgeSkillRatingCreate.AutoSize = true;
-            this.nudMaxKnowledgeSkillRatingCreate.Location = new System.Drawing.Point(501, 134);
-            this.nudMaxKnowledgeSkillRatingCreate.Maximum = new decimal(new int[] {
-            12,
-            0,
-            0,
-            0});
-            this.nudMaxKnowledgeSkillRatingCreate.Minimum = new decimal(new int[] {
-            0,
-            0,
-            0,
-            0});
-            this.nudMaxKnowledgeSkillRatingCreate.Name = "nudMaxKnowledgeSkillRatingCreate";
-            this.nudMaxKnowledgeSkillRatingCreate.Size = new System.Drawing.Size(35, 20);
-            this.nudMaxKnowledgeSkillRatingCreate.TabIndex = 39;
-            // 
-            // flpMaxSkillRating
-            // 
-            this.flpMaxSkillRating.AutoSize = true;
-            this.flpMaxSkillRating.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flpMaxSkillRating.Controls.Add(this.lblMaxSkillRating);
-            this.flpMaxSkillRating.Controls.Add(this.nudMaxSkillRating);
-            this.flpMaxSkillRating.Controls.Add(this.lblMaxKnowledgeSkillRating);
-            this.flpMaxSkillRating.Controls.Add(this.nudMaxKnowledgeSkillRating);
-            this.flpMaxSkillRating.Location = new System.Drawing.Point(0, 0);
-            this.flpMaxSkillRating.Margin = new System.Windows.Forms.Padding(0);
-            this.flpMaxSkillRating.Name = "flpMaxSkillRating";
-            this.flpMaxSkillRating.Size = new System.Drawing.Size(328, 26);
-            this.flpMaxSkillRating.TabIndex = 53;
-            // 
-            // lblMaxSkillRating
-            // 
-            this.lblMaxSkillRating.AutoSize = true;
-            this.lblMaxSkillRating.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lblMaxSkillRating.Location = new System.Drawing.Point(3, 4);
-            this.lblMaxSkillRating.Margin = new System.Windows.Forms.Padding(3, 4, 3, 8);
-            this.lblMaxSkillRating.Name = "lblMaxSkillRating";
-            this.lblMaxSkillRating.Size = new System.Drawing.Size(83, 14);
-            this.lblMaxSkillRating.TabIndex = 27;
-            this.lblMaxSkillRating.Tag = "Label_CharacterOptions_MaxSkillRating";
-            this.lblMaxSkillRating.Text = "Max Skill Rating";
-            this.lblMaxSkillRating.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // nudMaxSkillRating
-            // 
-            this.nudMaxSkillRating.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudMaxSkillRating.AutoSize = true;
-            this.nudMaxSkillRating.Enabled = false;
-            this.nudMaxSkillRating.Location = new System.Drawing.Point(92, 3);
-            this.nudMaxSkillRating.Maximum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            this.nudMaxSkillRating.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.nudMaxSkillRating.Name = "nudMaxSkillRating";
-            this.nudMaxSkillRating.Size = new System.Drawing.Size(41, 20);
-            this.nudMaxSkillRating.TabIndex = 26;
-            this.nudMaxSkillRating.Value = new decimal(new int[] {
-            12,
-            0,
-            0,
-            0});
-            // 
-            // lblMaxKnowledgeSkillRating
-            // 
-            this.lblMaxKnowledgeSkillRating.AutoSize = true;
-            this.lblMaxKnowledgeSkillRating.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lblMaxKnowledgeSkillRating.Location = new System.Drawing.Point(139, 4);
-            this.lblMaxKnowledgeSkillRating.Margin = new System.Windows.Forms.Padding(3, 4, 3, 8);
-            this.lblMaxKnowledgeSkillRating.Name = "lblMaxKnowledgeSkillRating";
-            this.lblMaxKnowledgeSkillRating.Size = new System.Drawing.Size(139, 14);
-            this.lblMaxKnowledgeSkillRating.TabIndex = 28;
-            this.lblMaxKnowledgeSkillRating.Tag = "Label_CharacterOptions_MaxKnowledgeSkillRating";
-            this.lblMaxKnowledgeSkillRating.Text = "Max Knowledge Skill Rating";
-            this.lblMaxKnowledgeSkillRating.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // nudMaxKnowledgeSkillRating
-            // 
-            this.nudMaxKnowledgeSkillRating.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudMaxKnowledgeSkillRating.AutoSize = true;
-            this.nudMaxKnowledgeSkillRating.Enabled = false;
-            this.nudMaxKnowledgeSkillRating.Location = new System.Drawing.Point(284, 3);
-            this.nudMaxKnowledgeSkillRating.Maximum = new decimal(new int[] {
-            100,
-            0,
-            0,
-            0});
-            this.nudMaxKnowledgeSkillRating.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.nudMaxKnowledgeSkillRating.Name = "nudMaxKnowledgeSkillRating";
-            this.nudMaxKnowledgeSkillRating.Size = new System.Drawing.Size(41, 20);
-            this.nudMaxKnowledgeSkillRating.TabIndex = 29;
-            this.nudMaxKnowledgeSkillRating.Value = new decimal(new int[] {
-            12,
-            0,
-            0,
-            0});
             // 
             // EditCharacterSettings
             // 
@@ -5953,6 +6013,9 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudSumToTen)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMaxNuyenKarma)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudQualityKarmaLimit)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxNumberMaxAttributes)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxSkillRatingCreate)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxKnowledgeSkillRatingCreate)).EndInit();
             this.gpbBasicOptionsOfficialRules.ResumeLayout(false);
             this.gpbBasicOptionsOfficialRules.PerformLayout();
             this.tlpBasicOptionsOfficialRules.ResumeLayout(false);
@@ -6088,6 +6151,10 @@ namespace Chummer
             this.gpbHouseRulesSkills.PerformLayout();
             this.tlpHouseRulesSkills.ResumeLayout(false);
             this.tlpHouseRulesSkills.PerformLayout();
+            this.flpMaxSkillRating.ResumeLayout(false);
+            this.flpMaxSkillRating.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxSkillRating)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxKnowledgeSkillRating)).EndInit();
             this.gpbHouseRulesCombat.ResumeLayout(false);
             this.gpbHouseRulesCombat.PerformLayout();
             this.tlpHouseRulesCombat.ResumeLayout(false);
@@ -6105,13 +6172,6 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaGainedFromEnemies)).EndInit();
             this.tlpButtons.ResumeLayout(false);
             this.tlpButtons.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxSkillRatingCreate)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxNumberMaxAttributes)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxKnowledgeSkillRatingCreate)).EndInit();
-            this.flpMaxSkillRating.ResumeLayout(false);
-            this.flpMaxSkillRating.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxSkillRating)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMaxKnowledgeSkillRating)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -6119,12 +6179,12 @@ namespace Chummer
 
         #endregion
 
-        private BufferedTableLayoutPanel tlpOptions;
+        private System.Windows.Forms.TableLayoutPanel tlpOptions;
         private System.Windows.Forms.Label lblSettingName;
         private ElasticComboBox cboSetting;
         private System.Windows.Forms.TabControl tabOptions;
         private System.Windows.Forms.TabPage tabBasicOptions;
-        private BufferedTableLayoutPanel tlpBasicOptions;
+        private System.Windows.Forms.TableLayoutPanel tlpBasicOptions;
         private System.Windows.Forms.TreeView treSourcebook;
         private ColorableCheckBox chkDontUseCyberlimbCalculation;
         private ColorableCheckBox chkEnforceCapacity;
@@ -6143,7 +6203,7 @@ namespace Chummer
         private ElasticComboBox cboLimbCount;
         private System.Windows.Forms.Button cmdEnableSourcebooks;
         private System.Windows.Forms.TabPage tabKarmaCosts;
-        private BufferedTableLayoutPanel tlpKarmaCosts;
+        private System.Windows.Forms.TableLayoutPanel tlpKarmaCosts;
         private NumericUpDownEx nudKarmaMysticAdeptPowerPoint;
         private System.Windows.Forms.Label lblKarmaSpecialization;
         private System.Windows.Forms.Label lblKarmaMysticAdeptPowerPoint;
@@ -6255,14 +6315,14 @@ namespace Chummer
         private NumericUpDownEx nudMetatypeCostsKarmaMultiplier;
         private System.Windows.Forms.Label lblMetatypeCostsKarmaMultiplierLabel;
         private System.Windows.Forms.TabPage tabCustomData;
-        private BufferedTableLayoutPanel tlpOptionalRules;
+        private System.Windows.Forms.TableLayoutPanel tlpOptionalRules;
         private System.Windows.Forms.Button cmdDecreaseCustomDirectoryLoadOrder;
         private System.Windows.Forms.Button cmdIncreaseCustomDirectoryLoadOrder;
         private System.Windows.Forms.Label lblCustomDataDirectoriesLabel;
         private System.Windows.Forms.TreeView treCustomDataDirectories;
         private System.Windows.Forms.TabPage tabHouseRules;
         private ColorableCheckBox chkIgnoreArt;
-        private ColorableCheckBox chkExceedNegativeQualitiesLimit;
+        private ColorableCheckBox chkExceedNegativeQualitiesNoBonus;
         private ColorableCheckBox chkExceedNegativeQualities;
         private ColorableCheckBox chkExceedPositiveQualitiesCostDoubled;
         private ColorableCheckBox chkExceedPositiveQualities;
@@ -6300,15 +6360,15 @@ namespace Chummer
         private System.Windows.Forms.FlowLayoutPanel flpBasicOptions;
         private System.Windows.Forms.GroupBox gpbBasicOptionsCyberlimbs;
         private System.Windows.Forms.GroupBox gpbBasicOptionsRounding;
-        private BufferedTableLayoutPanel tlpBasicOptionsRounding;
-        private BufferedTableLayoutPanel tlpBasicOptionsCyberlimbs;
+        private System.Windows.Forms.TableLayoutPanel tlpBasicOptionsRounding;
+        private System.Windows.Forms.TableLayoutPanel tlpBasicOptionsCyberlimbs;
         private ColorableCheckBox chkCyberlegMovement;
         private System.Windows.Forms.GroupBox gpbBasicOptionsOfficialRules;
-        private BufferedTableLayoutPanel tlpBasicOptionsOfficialRules;
+        private System.Windows.Forms.TableLayoutPanel tlpBasicOptionsOfficialRules;
         private ColorableCheckBox chkStrictSkillGroups;
         private ColorableCheckBox chkAllowFreeGrids;
         private ColorableCheckBox chkAllowPointBuySpecializationsOnKarmaSkills;
-        private BufferedTableLayoutPanel tlpCyberlimbAttributeBonusCap;
+        private System.Windows.Forms.TableLayoutPanel tlpCyberlimbAttributeBonusCap;
         private NumericUpDownEx nudCyberlimbAttributeBonusCap;
         private System.Windows.Forms.FlowLayoutPanel flpCyberlimbAttributeBonusCap;
         private ColorableCheckBox chkCyberlimbAttributeBonusCap;
@@ -6319,7 +6379,7 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtKnowledgePoints;
         private System.Windows.Forms.FlowLayoutPanel flpDroneArmorMultiplier;
         private System.Windows.Forms.GroupBox gpbBasicOptionsCreateSettings;
-        private BufferedTableLayoutPanel tlpBasicOptionsCreateSettings;
+        private System.Windows.Forms.TableLayoutPanel tlpBasicOptionsCreateSettings;
         private System.Windows.Forms.Label lblBuildMethod;
         private ElasticComboBox cboBuildMethod;
         private LabelWithToolTip lblPriorities;
@@ -6342,7 +6402,7 @@ namespace Chummer
         private NumericUpDownEx nudMaxNuyenKarma;
         private System.Windows.Forms.Button cmdSaveAs;
         private System.Windows.Forms.Button cmdRestoreDefaults;
-        private BufferedTableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
         private System.Windows.Forms.Label lblAllowedCyberwareGrades;
         private System.Windows.Forms.FlowLayoutPanel flpAllowedCyberwareGrades;
         private System.Windows.Forms.Label lblQualityKarmaLimit;
@@ -6350,22 +6410,22 @@ namespace Chummer
         private System.Windows.Forms.Button cmdDelete;
         private System.Windows.Forms.FlowLayoutPanel flpHouseRules;
         private System.Windows.Forms.GroupBox gpbHouseRulesQualities;
-        private BufferedTableLayoutPanel tlpHouseRulesQualities;
+        private System.Windows.Forms.TableLayoutPanel tlpHouseRulesQualities;
         private System.Windows.Forms.GroupBox gpbHouseRulesAttributes;
-        private BufferedTableLayoutPanel tlpHouseRulesAttributes;
+        private System.Windows.Forms.TableLayoutPanel tlpHouseRulesAttributes;
         private System.Windows.Forms.GroupBox gpbHouseRulesSkills;
-        private BufferedTableLayoutPanel tlpHouseRulesSkills;
+        private System.Windows.Forms.TableLayoutPanel tlpHouseRulesSkills;
         private System.Windows.Forms.GroupBox gpbHouseRulesCombat;
-        private BufferedTableLayoutPanel tlpHouseRulesCombat;
+        private System.Windows.Forms.TableLayoutPanel tlpHouseRulesCombat;
         private System.Windows.Forms.GroupBox gpbHouseRulesMagicResonance;
-        private BufferedTableLayoutPanel tlpHouseRulesMagicResonance;
+        private System.Windows.Forms.TableLayoutPanel tlpHouseRulesMagicResonance;
         private System.Windows.Forms.Button cmdGlobalOptionsCustomData;
         private System.Windows.Forms.Button cmdRename;
         private System.Windows.Forms.Label lblKarmaSpiritFettering;
         private NumericUpDownEx nudKarmaSpiritFettering;
         private System.Windows.Forms.Label lblKarmaSpiritFetteringExtra;
         private System.Windows.Forms.GroupBox gpbDirectoryInfo;
-        private BufferedTableLayoutPanel tlpDirectoryInfo;
+        private System.Windows.Forms.TableLayoutPanel tlpDirectoryInfo;
         private System.Windows.Forms.Label lblDirectoryNameLabel;
         private System.Windows.Forms.Label lblDirectoryVersion;
         private System.Windows.Forms.Label lblDirectoryName;
@@ -6377,8 +6437,8 @@ namespace Chummer
         private System.Windows.Forms.Label lblIncompatibilities;
         private System.Windows.Forms.Panel pnlDirectoryDependencies;
         private System.Windows.Forms.Panel pnlDirectoryIncompatibilities;
-        private BufferedTableLayoutPanel tlpOptionalRulesButtons;
-        private BufferedTableLayoutPanel tlpDirectoryInfoLeft;
+        private System.Windows.Forms.TableLayoutPanel tlpOptionalRulesButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpDirectoryInfoLeft;
         private System.Windows.Forms.GroupBox gpbDirectoryAuthors;
         private System.Windows.Forms.Panel pnlDirectoryAuthors;
         private LabelWithToolTip lblNuyenExpression;
@@ -6393,7 +6453,7 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtBoundSpiritLimit;
         private System.Windows.Forms.TextBox txtRegisteredSpriteLimit;
         private System.Windows.Forms.GroupBox gpbHouseRules4eAdaptations;
-        private BufferedTableLayoutPanel tlpHouseRules4eAdaptations;
+        private System.Windows.Forms.TableLayoutPanel tlpHouseRules4eAdaptations;
         private ColorableCheckBox chkEnemyKarmaQualityLimit;
         private ColorableCheckBox chkEnable4eStyleEnemyTracking;
         private System.Windows.Forms.FlowLayoutPanel flpKarmaGainedFromEnemies;
@@ -6401,7 +6461,7 @@ namespace Chummer
         private NumericUpDownEx nudKarmaGainedFromEnemies;
         private System.Windows.Forms.Label lblKarmaGainedFromEnemiesExtra;
         private System.Windows.Forms.GroupBox gpbBasicOptionsInitiativeDice;
-        private BufferedTableLayoutPanel tlpBasicOptionsInitiativeDice;
+        private System.Windows.Forms.TableLayoutPanel tlpBasicOptionsInitiativeDice;
         private System.Windows.Forms.Label lblInitiativeDiceLabel;
         private System.Windows.Forms.Label lblAstralInitiativeDiceLabel;
         private System.Windows.Forms.Label lblMinInitiativeDiceLabel;
@@ -6418,7 +6478,7 @@ namespace Chummer
         private NumericUpDownEx nudMinHotSimInitiativeDice;
         private System.Windows.Forms.RichTextBox rtbDirectoryDescription;
         private System.Windows.Forms.GroupBox gpbBasicOptionsEncumbrance;
-        private BufferedTableLayoutPanel tlpBasicOptionsEncumbrance;
+        private System.Windows.Forms.TableLayoutPanel tlpBasicOptionsEncumbrance;
         private LabelWithToolTip lblCarryLimit;
         private LabelWithToolTip lblLiftLimit;
         private System.Windows.Forms.TextBox txtLiftLimit;
@@ -6427,7 +6487,7 @@ namespace Chummer
         private LabelWithToolTip lblEncumbranceIntervalRight;
         private System.Windows.Forms.TextBox txtEncumbranceInterval;
         private System.Windows.Forms.Label lblEncumbrancePenaltiesHeader;
-        private BufferedTableLayoutPanel tlpEncumbranceInterval;
+        private System.Windows.Forms.TableLayoutPanel tlpEncumbranceInterval;
         private ColorableCheckBox chkEncumbrancePenaltyPhysicalLimit;
         private ColorableCheckBox chkEncumbrancePenaltyMovementSpeed;
         private ColorableCheckBox chkEncumbrancePenaltyAgility;
@@ -6452,5 +6512,9 @@ namespace Chummer
         private NumericUpDownEx nudMaxSkillRating;
         private System.Windows.Forms.Label lblMaxKnowledgeSkillRating;
         private NumericUpDownEx nudMaxKnowledgeSkillRating;
+        private ColorableCheckBox chkSpecializationsBreakSkillGroups;
+        private ColorableCheckBox chkUncappedArmorAccessoryBonuses;
+        private System.Windows.Forms.Label lblEssenceModifierPostExpression;
+        private System.Windows.Forms.TextBox txtEssenceModifierPostExpression;
     }
 }

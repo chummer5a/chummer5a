@@ -24,6 +24,16 @@
       <bonus>
         <specificskill xpathfilter="name = 'Intimidation' or name = 'Etiquette'" amendoperation="remove" />
       </bonus>
+      <armor>
+        <name>Rockblood Signature Armored Shirt</name>
+        <bonus>
+          <specificskill amendoperation="addnode">
+            <name>Socialize</name>
+            <bonus>1</bonus>
+            <condition>Troll Society</condition>
+          </specificskill>
+        </bonus>
+      </armor>
     </armor>
   </armors>
 </chummer>

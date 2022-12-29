@@ -28,14 +28,13 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.lblSettingDescription = new System.Windows.Forms.Label();
             this.lblSetting = new System.Windows.Forms.Label();
             this.cboSetting = new Chummer.ElasticComboBox();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.tlpMain.SuspendLayout();
             this.tlpButtons.SuspendLayout();
             this.SuspendLayout();
@@ -48,7 +47,7 @@ namespace Chummer
             this.lblSettingDescription.Location = new System.Drawing.Point(3, 6);
             this.lblSettingDescription.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSettingDescription.Name = "lblSettingDescription";
-            this.lblSettingDescription.Size = new System.Drawing.Size(440, 55);
+            this.lblSettingDescription.Size = new System.Drawing.Size(320, 55);
             this.lblSettingDescription.TabIndex = 0;
             this.lblSettingDescription.Tag = "Label_SelectSetting_SettingsDescription";
             this.lblSettingDescription.Text = "Select a Settings file to use. Settings determine the default build method, numbe" +
@@ -74,7 +73,7 @@ namespace Chummer
             this.cboSetting.FormattingEnabled = true;
             this.cboSetting.Location = new System.Drawing.Point(76, 70);
             this.cboSetting.Name = "cboSetting";
-            this.cboSetting.Size = new System.Drawing.Size(367, 21);
+            this.cboSetting.Size = new System.Drawing.Size(247, 21);
             this.cboSetting.TabIndex = 2;
             this.cboSetting.TooltipText = "";
             // 
@@ -85,8 +84,9 @@ namespace Chummer
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cmdCancel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdCancel.Location = new System.Drawing.Point(3, 3);
+            this.cmdCancel.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(50, 23);
+            this.cmdCancel.Size = new System.Drawing.Size(80, 23);
             this.cmdCancel.TabIndex = 4;
             this.cmdCancel.Tag = "String_Cancel";
             this.cmdCancel.Text = "Cancel";
@@ -98,9 +98,10 @@ namespace Chummer
             this.cmdOK.AutoSize = true;
             this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdOK.Location = new System.Drawing.Point(59, 3);
+            this.cmdOK.Location = new System.Drawing.Point(89, 3);
+            this.cmdOK.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdOK.Name = "cmdOK";
-            this.cmdOK.Size = new System.Drawing.Size(50, 23);
+            this.cmdOK.Size = new System.Drawing.Size(80, 23);
             this.cmdOK.TabIndex = 3;
             this.cmdOK.Tag = "String_OK";
             this.cmdOK.Text = "OK";
@@ -125,7 +126,7 @@ namespace Chummer
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.Size = new System.Drawing.Size(446, 123);
+            this.tlpMain.Size = new System.Drawing.Size(326, 123);
             this.tlpMain.TabIndex = 5;
             // 
             // tlpButtons
@@ -139,23 +140,22 @@ namespace Chummer
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
             this.tlpButtons.Controls.Add(this.cmdOK, 1, 0);
-            this.tlpButtons.Location = new System.Drawing.Point(334, 94);
+            this.tlpButtons.Location = new System.Drawing.Point(154, 94);
             this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
-            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpButtons.Size = new System.Drawing.Size(112, 29);
+            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpButtons.Size = new System.Drawing.Size(172, 29);
             this.tlpButtons.TabIndex = 4;
             // 
-            // frmSelectSetting
+            // SelectSetting
             // 
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(464, 141);
+            this.ClientSize = new System.Drawing.Size(344, 141);
             this.ControlBox = false;
             this.Controls.Add(this.tlpMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -184,7 +184,7 @@ namespace Chummer
         private ElasticComboBox cboSetting;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Button cmdOK;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
-        private BufferedTableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
     }
 }

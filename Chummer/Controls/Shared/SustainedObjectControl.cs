@@ -46,17 +46,24 @@ namespace Chummer
             }
         }
 
-        private void SustainedObjectControl_Load(object sender, EventArgs e)
+        private async void SustainedObjectControl_Load(object sender, EventArgs e)
         {
             try
             {
-                lblSustainedSpell.DoOneWayDataBinding("Text", _objLinkedSustainedObject, nameof(SustainedObject.CurrentDisplayName));
-                nudForce.DoDataBinding("Value", _objLinkedSustainedObject, nameof(SustainedObject.Force));
-                nudNetHits.DoDataBinding("Value", _objLinkedSustainedObject, nameof(SustainedObject.NetHits));
+                await lblSustainedSpell.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objLinkedSustainedObject,
+                                                                       nameof(SustainedObject.CurrentDisplayName),
+                                                                       x => x.GetCurrentDisplayNameAsync().AsTask())
+                                       .ConfigureAwait(false);
+                await nudForce.DoDataBindingAsync("Value", _objLinkedSustainedObject, nameof(SustainedObject.Force))
+                              .ConfigureAwait(false);
+                await nudNetHits.DoDataBindingAsync("Value", _objLinkedSustainedObject,
+                                                    nameof(SustainedObject.NetHits)).ConfigureAwait(false);
 
                 //Only do  the binding if it's actually needed
                 if (_objLinkedSustainedObject.LinkedObjectType != Improvement.ImprovementSource.CritterPower)
-                    chkSelfSustained.DoDataBinding("Checked", _objLinkedSustainedObject, nameof(SustainedObject.SelfSustained));
+                    await chkSelfSustained.DoDataBindingAsync("Checked", _objLinkedSustainedObject,
+                                                              nameof(SustainedObject.SelfSustained))
+                                          .ConfigureAwait(false);
             }
             finally
             {

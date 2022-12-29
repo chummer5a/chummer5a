@@ -13,10 +13,9 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && (components != null))
             {
-                components?.Dispose();
-                Utils.ListItemListPool.Return(_lstCategory);
+                components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -29,7 +28,6 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.lstQualities = new System.Windows.Forms.ListBox();
             this.lblCategory = new System.Windows.Forms.Label();
             this.cboCategory = new Chummer.ElasticComboBox();
@@ -40,30 +38,30 @@ namespace Chummer
             this.cmdOK = new System.Windows.Forms.Button();
             this.lblBP = new Chummer.LabelWithToolTip();
             this.lblBPLabel = new System.Windows.Forms.Label();
-            this.chkFree = new Chummer.ColorableCheckBox(this.components);
-            this.chkMetagenic = new Chummer.ColorableCheckBox(this.components);
+            this.chkFree = new Chummer.ColorableCheckBox();
+            this.chkMetagenic = new Chummer.ColorableCheckBox();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.lblSearchLabel = new System.Windows.Forms.Label();
-            this.chkNotMetagenic = new Chummer.ColorableCheckBox(this.components);
+            this.chkNotMetagenic = new Chummer.ColorableCheckBox();
             this.nudMinimumBP = new Chummer.NumericUpDownEx();
             this.nudValueBP = new Chummer.NumericUpDownEx();
             this.nudMaximumBP = new Chummer.NumericUpDownEx();
             this.lblMinimumBP = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
             this.label3 = new System.Windows.Forms.Label();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tableLayoutPanel2 = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpLowerRight = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.chkLimitList = new Chummer.ColorableCheckBox(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpLowerRight = new System.Windows.Forms.TableLayoutPanel();
+            this.chkLimitList = new Chummer.ColorableCheckBox();
             this.gpbKarmaFilter = new System.Windows.Forms.GroupBox();
-            this.tlpKarmaFilter = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpKarmaFilter = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
             this.flpRating = new System.Windows.Forms.FlowLayoutPanel();
             this.nudRating = new Chummer.NumericUpDownEx();
             this.lblRatingNALabel = new System.Windows.Forms.Label();
             this.lblRatingLabel = new System.Windows.Forms.Label();
-            this.bufferedTableLayoutPanel1 = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.bufferedTableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.nudMinimumBP)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudValueBP)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMaximumBP)).BeginInit();
@@ -147,9 +145,10 @@ namespace Chummer
             this.cmdOKAdd.AutoSize = true;
             this.cmdOKAdd.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdOKAdd.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdOKAdd.Location = new System.Drawing.Point(81, 3);
+            this.cmdOKAdd.Location = new System.Drawing.Point(89, 3);
+            this.cmdOKAdd.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdOKAdd.Name = "cmdOKAdd";
-            this.cmdOKAdd.Size = new System.Drawing.Size(72, 23);
+            this.cmdOKAdd.Size = new System.Drawing.Size(80, 23);
             this.cmdOKAdd.TabIndex = 13;
             this.cmdOKAdd.Tag = "String_AddMore";
             this.cmdOKAdd.Text = "&Add && More";
@@ -163,8 +162,9 @@ namespace Chummer
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cmdCancel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdCancel.Location = new System.Drawing.Point(3, 3);
+            this.cmdCancel.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(72, 23);
+            this.cmdCancel.Size = new System.Drawing.Size(80, 23);
             this.cmdCancel.TabIndex = 14;
             this.cmdCancel.Tag = "String_Cancel";
             this.cmdCancel.Text = "Cancel";
@@ -176,9 +176,10 @@ namespace Chummer
             this.cmdOK.AutoSize = true;
             this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdOK.Location = new System.Drawing.Point(159, 3);
+            this.cmdOK.Location = new System.Drawing.Point(175, 3);
+            this.cmdOK.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdOK.Name = "cmdOK";
-            this.cmdOK.Size = new System.Drawing.Size(72, 23);
+            this.cmdOK.Size = new System.Drawing.Size(80, 23);
             this.cmdOK.TabIndex = 12;
             this.cmdOK.Tag = "String_OK";
             this.cmdOK.Text = "OK";
@@ -432,12 +433,12 @@ namespace Chummer
             this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
             this.tlpButtons.Controls.Add(this.cmdOKAdd, 1, 0);
             this.tlpButtons.Controls.Add(this.cmdOK, 2, 0);
-            this.tlpButtons.Location = new System.Drawing.Point(372, 394);
+            this.tlpButtons.Location = new System.Drawing.Point(348, 394);
             this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
             this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpButtons.Size = new System.Drawing.Size(234, 29);
+            this.tlpButtons.Size = new System.Drawing.Size(258, 29);
             this.tlpButtons.TabIndex = 27;
             // 
             // tlpLowerRight
@@ -625,13 +626,12 @@ namespace Chummer
             this.bufferedTableLayoutPanel1.Size = new System.Drawing.Size(303, 26);
             this.bufferedTableLayoutPanel1.TabIndex = 30;
             // 
-            // frmSelectQuality
+            // SelectQuality
             // 
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(624, 441);
             this.Controls.Add(this.tlpMain);
@@ -695,15 +695,15 @@ namespace Chummer
         private System.Windows.Forms.Label lblMinimumBP;
         private System.Windows.Forms.Label label2;
         private System.Windows.Forms.Label label3;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
         private Chummer.ColorableCheckBox chkLimitList;
         private System.Windows.Forms.GroupBox gpbKarmaFilter;
-        private BufferedTableLayoutPanel tlpButtons;
-        private BufferedTableLayoutPanel tableLayoutPanel2;
-        private BufferedTableLayoutPanel tlpKarmaFilter;
-        private BufferedTableLayoutPanel tlpRight;
-        private BufferedTableLayoutPanel tlpLowerRight;
-        private BufferedTableLayoutPanel bufferedTableLayoutPanel1;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private System.Windows.Forms.TableLayoutPanel tlpKarmaFilter;
+        private System.Windows.Forms.TableLayoutPanel tlpRight;
+        private System.Windows.Forms.TableLayoutPanel tlpLowerRight;
+        private System.Windows.Forms.TableLayoutPanel bufferedTableLayoutPanel1;
         private System.Windows.Forms.Label lblRatingLabel;
         private System.Windows.Forms.FlowLayoutPanel flpRating;
         private NumericUpDownEx nudRating;

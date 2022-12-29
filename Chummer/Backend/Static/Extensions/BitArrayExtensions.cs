@@ -64,26 +64,35 @@ namespace Chummer
             int intArraySizeModulo32 = ablnToCount.Count % 32;
             if (intArraySizeModulo32 != 0)
                 ++intMaskSize;
-            // Can't use stackalloc because BitArray doesn't have a CopyTo implementation that works with span
-            int[] aintToCountMask = intMaskSize > GlobalSettings.MaxStackLimit ? ArrayPool<int>.Shared.Rent(intMaskSize) : new int[intMaskSize];
-            ablnToCount.CopyTo(aintToCountMask, 0);
-            // Fix for not truncated bits in last integer that may have been set to true with SetAll()
-            aintToCountMask[aintToCountMask.Length - 1] &= ~(-1 << intArraySizeModulo32);
             int intReturn = 0;
-            foreach (int intLoop in aintToCountMask)
+            // Can't use stackalloc because BitArray doesn't have a CopyTo implementation that works with span
+            int[] aintToCountMask = intMaskSize > GlobalSettings.MaxStackLimit
+                ? ArrayPool<int>.Shared.Rent(intMaskSize)
+                : new int[intMaskSize];
+            try
             {
-                int intLoopBlock = intLoop;
-                // magic (http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetParallel)
-                unchecked
+                ablnToCount.CopyTo(aintToCountMask, 0);
+                // Fix for not truncated bits in last integer that may have been set to true with SetAll()
+                aintToCountMask[intMaskSize - 1] &= ~(-1 << intArraySizeModulo32);
+                for (int i = 0; i < intMaskSize; ++i)
                 {
-                    intLoopBlock -= ((intLoopBlock >> 1) & 0x55555555);
-                    intLoopBlock = (intLoopBlock & 0x33333333) + ((intLoopBlock >> 2) & 0x33333333);
-                    intLoopBlock = ((intLoopBlock + (intLoopBlock >> 4) & 0xF0F0F0F) * 0x1010101) >> 24;
+                    int intLoopBlock = aintToCountMask[i];
+                    // magic (http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetParallel)
+                    unchecked
+                    {
+                        intLoopBlock -= ((intLoopBlock >> 1) & 0x55555555);
+                        intLoopBlock = (intLoopBlock & 0x33333333) + ((intLoopBlock >> 2) & 0x33333333);
+                        intLoopBlock = ((intLoopBlock + (intLoopBlock >> 4) & 0xF0F0F0F) * 0x1010101) >> 24;
+                    }
+
+                    intReturn += intLoopBlock;
                 }
-                intReturn += intLoopBlock;
             }
-            if (intMaskSize > GlobalSettings.MaxStackLimit)
-                ArrayPool<int>.Shared.Return(aintToCountMask);
+            finally
+            {
+                if (intMaskSize > GlobalSettings.MaxStackLimit)
+                    ArrayPool<int>.Shared.Return(aintToCountMask);
+            }
             return intReturn;
         }
 

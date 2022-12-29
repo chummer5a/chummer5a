@@ -17,12 +17,18 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System.Threading;
+using System.Threading.Tasks;
+using System.Windows.Forms;
+
 namespace Chummer
 {
     public interface IHasSource
     {
         SourceString SourceDetail { get; }
 
-        void SetSourceDetail(System.Windows.Forms.Control sourceControl);
+        void SetSourceDetail(Control sourceControl);
+
+        Task SetSourceDetailAsync(Control sourceControl, CancellationToken token = default);
     }
 }

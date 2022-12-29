@@ -42,8 +42,8 @@
     <!-- End Region -->
     <!-- Region File Dialog Filter Strings -->
     <string>
-      <key>DialogFilter_Chum5</key>
-      <text>Fichiers Chummer5 (*.chum5)|*.chum5</text>
+      <key>DialogFilter_Chummer</key>
+      <text>Fichiers Chummer5 (*.chum5;*.chum5lz)|*.chum5;*.chum5lz</text>
     </string>
     <string>
       <key>DialogFilter_Xml</key>
@@ -434,6 +434,10 @@
     <string>
       <key>String_Space</key>
       <text xml:space="preserve"> </text>
+    </string>
+    <string>
+      <key>String_NuyenSymbol</key>
+      <text>¥</text>
     </string>
     <string>
       <key>String_Colon</key>
@@ -6856,7 +6860,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Checkbox_Options_SpecialKarmaCost</key>
-      <text>Coût en Karma de l'augmentation Attributs spéciaux est réduite avec la perte d'essence</text>
+      <text>Coûts en Karma de l'augmentation Attributs spéciaux (points de pouvoir d'adepte mystique aussi) est réduite avec la perte d'essence</text>
     </string>
     <string>
       <key>Checkbox_Options_IgnoreComplexFormLimit</key>
@@ -7842,7 +7846,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>Message_KarmaNuyenExchange</key>
-      <text>Nuyen ne peut être échangé qu'en multiples de 2.000 ¥.</text>
+      <text>Nuyen ne peut être échangé qu'en multiples de {0}.</text>
     </string>
     <string>
       <key>Checkbox_Options_UseLifeModule</key>
@@ -9382,7 +9386,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>String_MetersPerHit</key>
-      <text>m/ hit</text>
+      <text>m / hit</text>
     </string>
     <string>
       <key>String_SuppressedBy</key>

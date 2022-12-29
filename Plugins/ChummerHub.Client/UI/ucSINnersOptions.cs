@@ -1,3 +1,21 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -9,10 +27,25 @@ using Chummer.Plugins;
 using ChummerHub.Client.Backend;
 using ChummerHub.Client.Properties;
 using Microsoft.Rest;
-using Newtonsoft.Json;
+//using Newtonsoft.Json;
 using ChummerHub.Client.Sinners;
+using GroupControls;
 using NLog;
 using Utils = ChummerHub.Client.Backend.Utils;
+using ChummerHub.Client.OidcClient;
+using IdentityModel.OidcClient;
+using System.Net.Http;
+using System.Text.Json;
+using Newtonsoft.Json;
+using System.Web;
+using System.Diagnostics;
+using System.Net;
+using IdentityModel;
+using IdentityModel.OidcClient.Results;
+using Claim = System.Security.Claims.Claim;
+using System.Text;
+using System.Security.Claims;
+using System.Threading;
 
 //using Nemiro.OAuth;
 //using Nemiro.OAuth.LoginForms;
@@ -21,7 +54,8 @@ namespace ChummerHub.Client.UI
 {
     public partial class ucSINnersOptions : UserControl
     {
-        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
         private bool? LoginStatus;
 
         private static SINnerVisibility _SINnerVisibility;
@@ -76,7 +110,7 @@ namespace ChummerHub.Client.UI
 
         private bool IsLoading;
 
-        private async Task InitializeMe(bool blnSync)
+        private async Task InitializeMe(bool blnSync, CancellationToken token = default)
         {
             if (IsLoading)
                 return;
@@ -84,20 +118,20 @@ namespace ChummerHub.Client.UI
             string tip = "Milestone builds always user sinners." + Environment.NewLine + "Nightly builds always user sinners-beta.";
             if (blnSync)
             {
-                // ReSharper disable once MethodHasAsyncOverload
-                cbSINnerUrl.DoThreadSafe(() =>
+                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                cbSINnerUrl.DoThreadSafe(x =>
                 {
-                    cbSINnerUrl.SetToolTip(tip);
-                    cbSINnerUrl.SelectedValueChanged -= CbSINnerUrl_SelectedValueChanged;
+                    x.SetToolTip(tip);
+                    x.SelectedValueChanged -= CbSINnerUrl_SelectedValueChanged;
                 });
             }
             else
             {
-                await cbSINnerUrl.DoThreadSafeAsync(() =>
+                await cbSINnerUrl.DoThreadSafeAsync(x =>
                 {
-                    cbSINnerUrl.SetToolTip(tip);
-                    cbSINnerUrl.SelectedValueChanged -= CbSINnerUrl_SelectedValueChanged;
-                });
+                    x.SetToolTip(tip);
+                    x.SelectedValueChanged -= CbSINnerUrl_SelectedValueChanged;
+                }, token: token);
             }
 
             Settings.Default.Reload();
@@ -108,27 +142,27 @@ namespace ChummerHub.Client.UI
             }
             if (blnSync)
             {
-                // ReSharper disable once MethodHasAsyncOverload
-                tbTempDownloadPath.DoThreadSafe(() =>
+                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                tbTempDownloadPath.DoThreadSafe(x =>
                 {
-                    tbTempDownloadPath.Text = Settings.Default.TempDownloadPath;
-                    tbTempDownloadPath.SetToolTip(
+                    x.Text = Settings.Default.TempDownloadPath;
+                    x.SetToolTip(
                         "Where should chummer download the temporary files from the WebService?");
                 });
             }
             else
             {
-                await tbTempDownloadPath.DoThreadSafeAsync(() =>
+                await tbTempDownloadPath.DoThreadSafeAsync(x =>
                 {
-                    tbTempDownloadPath.Text = Settings.Default.TempDownloadPath;
-                    tbTempDownloadPath.SetToolTip(
+                    x.Text = Settings.Default.TempDownloadPath;
+                    x.SetToolTip(
                         "Where should chummer download the temporary files from the WebService?");
-                });
+                }, token: token);
             }
 
             SinnersClient client = blnSync
                 ? this.DoThreadSafeFunc(() => StaticUtils.GetClient())
-                : await this.DoThreadSafeFuncAsync(() => StaticUtils.GetClient());
+                : await this.DoThreadSafeFuncAsync(() => StaticUtils.GetClient(), token: token);
             if (client == null)
             {
                 return;
@@ -136,113 +170,119 @@ namespace ChummerHub.Client.UI
             string sinnerurl = client.BaseUrl;
             Settings.Default.SINnerUrls.Clear();
             Settings.Default.Save();
+#if DEBUG
+            Settings.Default.SINnerUrls.Add("https://localhost:64939/");
+#endif
             Settings.Default.SINnerUrls.Add("https://chummer-stable.azurewebsites.net/");
             Settings.Default.SINnerUrls.Add("https://chummer-beta.azurewebsites.net/");
             Settings.Default.Save();
             if (blnSync)
             {
-                // ReSharper disable once MethodHasAsyncOverload
-                cbSINnerUrl.DoThreadSafe(() =>
+                // ReSharper disable MethodHasAsyncOverloadWithCancellation
+                cbSINnerUrl.DoThreadSafe(x =>
                 {
-                    cbSINnerUrl.DataSource = Settings.Default.SINnerUrls;
-                    cbSINnerUrl.SelectedItem = sinnerurl ?? Settings.Default.SINnerUrls[0];
-                    cbSINnerUrl.Enabled = true;
+                    x.DataSource = Settings.Default.SINnerUrls;
+                    x.SelectedItem = sinnerurl ?? Settings.Default.SINnerUrls[0];
+                    x.Enabled = true;
                 });
-                // ReSharper disable once MethodHasAsyncOverload
                 cbIgnoreWarnings.DoThreadSafe(
-                    () => cbIgnoreWarnings.Checked = Settings.Default.IgnoreWarningsOnOpening);
-                // ReSharper disable once MethodHasAsyncOverload
+                    x => x.Checked = Settings.Default.IgnoreWarningsOnOpening);
                 cbOpenChummerFromSharedLinks.DoThreadSafe(
-                    () => cbOpenChummerFromSharedLinks.Checked = Settings.Default.OpenChummerFromSharedLinks);
-                // ReSharper disable once MethodHasAsyncOverload
+                    x => x.Checked = Settings.Default.OpenChummerFromSharedLinks);
                 rbListUserMode.DoThreadSafe(
-                    () => rbListUserMode.SelectedIndex = Settings.Default.UserModeRegistered ? 1 : 0);
-                // ReSharper disable once MethodHasAsyncOverload
-                cbVisibilityIsPublic.DoThreadSafe(() =>
+                    x => x.SelectedIndex = Settings.Default.UserModeRegistered.ToInt32());
+                cbVisibilityIsPublic.DoThreadSafe(x =>
                 {
-                    cbVisibilityIsPublic.Checked = Settings.Default.VisibilityIsPublic;
-                    cbVisibilityIsPublic.BindingContext = new BindingContext();
+                    x.Checked = Settings.Default.VisibilityIsPublic;
+                    x.BindingContext = new BindingContext();
                 });
+                // ReSharper restore MethodHasAsyncOverloadWithCancellation
             }
             else
             {
-                await Task.WhenAll(
-                    cbSINnerUrl.DoThreadSafeAsync(() =>
-                    {
-                        cbSINnerUrl.DataSource = Settings.Default.SINnerUrls;
-                        cbSINnerUrl.SelectedItem = sinnerurl ?? Settings.Default.SINnerUrls[0];
-                        cbSINnerUrl.Enabled = true;
-                    }),
-                    cbIgnoreWarnings.DoThreadSafeAsync(() =>
-                        cbIgnoreWarnings.Checked = Settings.Default.IgnoreWarningsOnOpening),
-                    cbOpenChummerFromSharedLinks.DoThreadSafeAsync(() =>
-                        cbOpenChummerFromSharedLinks.Checked = Settings.Default.OpenChummerFromSharedLinks),
-                    rbListUserMode.DoThreadSafeAsync(() =>
-                        rbListUserMode.SelectedIndex = Settings.Default.UserModeRegistered ? 1 : 0),
-                    cbVisibilityIsPublic.DoThreadSafeAsync(() =>
-                    {
-                        cbVisibilityIsPublic.Checked = Settings.Default.VisibilityIsPublic;
-                        cbVisibilityIsPublic.BindingContext = new BindingContext();
-                    }));
+                await cbSINnerUrl.DoThreadSafeAsync(x =>
+                {
+                    x.DataSource = Settings.Default.SINnerUrls;
+                    x.SelectedItem = sinnerurl ?? Settings.Default.SINnerUrls[0];
+                    x.Enabled = true;
+                }, token: token);
+                await cbIgnoreWarnings.DoThreadSafeAsync(x =>
+                                                             x.Checked = Settings.Default.IgnoreWarningsOnOpening, token: token);
+                await cbOpenChummerFromSharedLinks.DoThreadSafeAsync(x =>
+                                                                         x.Checked = Settings.Default
+                                                                             .OpenChummerFromSharedLinks, token: token);
+                await rbListUserMode.DoThreadSafeAsync(x =>
+                                                           x.SelectedIndex = Settings.Default.UserModeRegistered.ToInt32(), token: token);
+                await cbVisibilityIsPublic.DoThreadSafeAsync(x =>
+                {
+                    x.Checked = Settings.Default.VisibilityIsPublic;
+                    x.BindingContext = new BindingContext();
+                }, token: token);
             }
 
             if (StaticUtils.UserRoles?.Count == 0)
             {
-                _ = Chummer.Utils.StartStaTask(
-                    async () =>
-                    {
-                        IList<string> roles = await GetRolesStatus(this);
-                        await UpdateDisplay();
-                        if (roles.Count == 0)
-                            ShowWebBrowser();
-                    });
+                if (blnSync)
+                {
+                    // ReSharper disable MethodHasAsyncOverloadWithCancellation
+                    IList<string> roles = GetRolesStatus(this);
+                    UpdateDisplay();
+                    if (roles.Count == 0)
+                        await SignIn(token); // TODO: Make this synchronous
+                    // ReSharper restore MethodHasAsyncOverloadWithCancellation
+                }
+                else
+                {
+                    IList<string> roles = await GetRolesStatusAsync(this, token);
+                    await UpdateDisplayAsync(token);
+                    if (roles.Count == 0)
+                        await SignIn(token);
+                }
             }
             else
             {
                 LoginStatus = true;
                 if (blnSync)
-                    Chummer.Utils.RunWithoutThreadLock(UpdateDisplay);
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                    UpdateDisplay();
                 else
-                    await UpdateDisplay();
+                    await UpdateDisplayAsync(token);
             }
 
             if (blnSync)
             {
-                // ReSharper disable once MethodHasAsyncOverload
-                cbUploadOnSave.DoThreadSafe(() =>
+                // ReSharper disable MethodHasAsyncOverloadWithCancellation
+                cbUploadOnSave.DoThreadSafe(x =>
                 {
-                    cbUploadOnSave.Checked = UploadOnSave;
-                    cbUploadOnSave.CheckedChanged += cbUploadOnSave_CheckedChanged;
+                    x.Checked = UploadOnSave;
+                    x.CheckedChanged += cbUploadOnSave_CheckedChanged;
                 });
-                // ReSharper disable once MethodHasAsyncOverload
-                cbSINnerUrl.DoThreadSafe(() => cbSINnerUrl.SelectedValueChanged += CbSINnerUrl_SelectedValueChanged);
-                // ReSharper disable once MethodHasAsyncOverload
-                cbVisibilityIsPublic.DoThreadSafe(() => cbVisibilityIsPublic.CheckedChanged += cbVisibilityIsPublic_CheckedChanged);
-                // ReSharper disable once MethodHasAsyncOverload
-                rbListUserMode.DoThreadSafe(() => rbListUserMode.SelectedIndexChanged += RbListUserMode_SelectedIndexChanged);
-                // ReSharper disable once MethodHasAsyncOverload
-                cbIgnoreWarnings.DoThreadSafe(() => cbIgnoreWarnings.CheckedChanged += CbIgnoreWarningsOnCheckedChanged);
-                // ReSharper disable once MethodHasAsyncOverload
-                cbOpenChummerFromSharedLinks.DoThreadSafe(() => cbOpenChummerFromSharedLinks.CheckedChanged += CbOpenChummerFromSharedLinksOnCheckedChanged);
+                cbSINnerUrl.DoThreadSafe(x => x.SelectedValueChanged += CbSINnerUrl_SelectedValueChanged);
+                cbVisibilityIsPublic.DoThreadSafe(x => x.CheckedChanged += cbVisibilityIsPublic_CheckedChanged);
+                rbListUserMode.DoThreadSafe(x => x.SelectedIndexChanged += RbListUserMode_SelectedIndexChanged);
+                cbIgnoreWarnings.DoThreadSafe(x => x.CheckedChanged += CbIgnoreWarningsOnCheckedChanged);
+                cbOpenChummerFromSharedLinks.DoThreadSafe(x => x.CheckedChanged += CbOpenChummerFromSharedLinksOnCheckedChanged);
+                // ReSharper restore MethodHasAsyncOverloadWithCancellation
             }
             else
             {
-                await Task.WhenAll(
-                    cbUploadOnSave.DoThreadSafeAsync(() =>
-                    {
-                        cbUploadOnSave.Checked = UploadOnSave;
-                        cbUploadOnSave.CheckedChanged += cbUploadOnSave_CheckedChanged;
-                    }),
-                    cbSINnerUrl.DoThreadSafeAsync(() =>
-                        cbSINnerUrl.SelectedValueChanged += CbSINnerUrl_SelectedValueChanged),
-                    cbVisibilityIsPublic.DoThreadSafeAsync(() =>
-                        cbVisibilityIsPublic.CheckedChanged += cbVisibilityIsPublic_CheckedChanged),
-                    rbListUserMode.DoThreadSafeAsync(() =>
-                        rbListUserMode.SelectedIndexChanged += RbListUserMode_SelectedIndexChanged),
-                    cbIgnoreWarnings.DoThreadSafeAsync(() =>
-                        cbIgnoreWarnings.CheckedChanged += CbIgnoreWarningsOnCheckedChanged),
-                    cbOpenChummerFromSharedLinks.DoThreadSafeAsync(() =>
-                        cbOpenChummerFromSharedLinks.CheckedChanged += CbOpenChummerFromSharedLinksOnCheckedChanged));
+                await cbUploadOnSave.DoThreadSafeAsync(x =>
+                {
+                    x.Checked = UploadOnSave;
+                    x.CheckedChanged += cbUploadOnSave_CheckedChanged;
+                }, token);
+                await cbSINnerUrl.DoThreadSafeAsync(x =>
+                                                        x.SelectedValueChanged += CbSINnerUrl_SelectedValueChanged, token);
+                await cbVisibilityIsPublic.DoThreadSafeAsync(x =>
+                                                                 x.CheckedChanged
+                                                                     += cbVisibilityIsPublic_CheckedChanged, token);
+                await rbListUserMode.DoThreadSafeAsync(x =>
+                                                           x.SelectedIndexChanged
+                                                               += RbListUserMode_SelectedIndexChanged, token);
+                await cbIgnoreWarnings.DoThreadSafeAsync(x =>
+                                                             x.CheckedChanged += CbIgnoreWarningsOnCheckedChanged, token);
+                await cbOpenChummerFromSharedLinks.DoThreadSafeAsync(x =>
+                                                                   x.CheckedChanged += CbOpenChummerFromSharedLinksOnCheckedChanged, token);
             }
             //AddShieldToButton(bRegisterUriScheme);
         }
@@ -257,21 +297,6 @@ namespace ChummerHub.Client.UI
             OptionsUpdate();
         }
 
-
-        //[DllImport("user32.dll")]
-        //public static extern int SendMessage(IntPtr hWnd,
-        //    uint Msg, int wParam, int lParam);
-
-        //// Make the button display the UAC shield.
-        //public static void AddShieldToButton(Button btn)
-        //{
-        //    const Int32 BCM_SETSHIELD = 0x160C;
-
-        //    // Give the button the flat style and make it
-        //    // display the UAC shield.
-        //    btn.FlatStyle = System.Windows.Forms.FlatStyle.System;
-        //    SendMessage(btn.Handle, BCM_SETSHIELD, 0, 1);
-        //}
 
         ~ucSINnersOptions()
         {
@@ -291,58 +316,133 @@ namespace ChummerHub.Client.UI
             await InitializeMe(false);
         }
 
-        public async Task UpdateDisplay()
+        public void UpdateDisplay()
         {
-            tlpOptions.Enabled = Settings.Default.UserModeRegistered;
-            string mail = await GetUserEmail();
-            await this.DoThreadSafeAsync(async () =>
+            tlpOptions.DoThreadSafe(x => x.Enabled = Settings.Default.UserModeRegistered);
+            string mail = GetUserEmail();
+            try
             {
-                try
-                {
-                    Settings.Default.Reload();
-                    tbTempDownloadPath.Text = Settings.Default.TempDownloadPath;
+                Settings.Default.Reload();
+                tbTempDownloadPath.DoThreadSafe(x => x.Text = Settings.Default.TempDownloadPath);
 
-                    if (!string.IsNullOrEmpty(mail))
-                    {
-                        lUsername.Text = mail;
-                        //also, since we are logged in in now, refresh the frmCharacterRoster!
-                        if (PluginHandler.MainForm != null)
-                            await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodes(PluginHandler.MyPluginHandlerInstance);
-                        bLogin.Text = "Logout";
-                        BindingSource bs = new BindingSource
-                        {
-                            DataSource = StaticUtils.UserRoles
-                        };
-                        cbRoles.DataSource = bs;
-                        HideWebBrowser();
-                    }
-                    else
-                    {
-                        bLogin.Text = "Login";
-                        BindingSource bs = new BindingSource
-                        {
-                            DataSource = StaticUtils.UserRoles
-                        };
-                        cbRoles.DataSource = bs;
-                    }
-                }
-                catch (Exception ex)
+                if (!string.IsNullOrEmpty(mail))
                 {
-                    Log.Warn(ex);
+                    lUsername.DoThreadSafe(x => x.Text = mail);
+                    //also, since we are logged in in now, refresh the frmCharacterRoster!
+                    if (PluginHandler.MainForm != null)
+                        Chummer.Utils.SafelyRunSynchronously(
+                            () => PluginHandler.MainForm.CharacterRoster.RefreshPluginNodesAsync(
+                                PluginHandler.MyPluginHandlerInstance));
+                    bLogin.DoThreadSafe(x => x.Text = "Logout");
+                    BindingSource bs = new BindingSource
+                    {
+                        DataSource = StaticUtils.UserRoles
+                    };
+                    cbRoles.DoThreadSafe(x => x.DataSource = bs);
+                    frmWebBrowser?.DoThreadSafe(x => x.Hide());
                 }
-            });
+                else
+                {
+                    bLogin.DoThreadSafe(x => x.Text = "Login");
+                    BindingSource bs = new BindingSource
+                    {
+                        DataSource = StaticUtils.UserRoles
+                    };
+                    cbRoles.DoThreadSafe(x => x.DataSource = bs);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Warn(ex);
+            }
         }
 
-        public async Task<string> GetUserEmail()
+        public async Task UpdateDisplayAsync(CancellationToken token = default)
         {
-            using (new CursorWait(this, true))
+            await tlpOptions.DoThreadSafeAsync(x => x.Enabled = Settings.Default.UserModeRegistered, token: token);
+            string mail = await GetUserEmailAsync(token);
+            try
+            {
+                Settings.Default.Reload();
+                await tbTempDownloadPath.DoThreadSafeAsync(x => x.Text = Settings.Default.TempDownloadPath, token: token);
+
+                if (!string.IsNullOrEmpty(mail))
+                {
+                    await lUsername.DoThreadSafeAsync(x => x.Text = mail, token);
+                    //also, since we are logged in in now, refresh the frmCharacterRoster!
+                    if (PluginHandler.MainForm != null)
+                        await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodesAsync(PluginHandler.MyPluginHandlerInstance, token);
+                    await bLogin.DoThreadSafeAsync(x => x.Text = "Logout", token);
+                    BindingSource bs = new BindingSource
+                    {
+                        DataSource = StaticUtils.UserRoles
+                    };
+                    await cbRoles.DoThreadSafeAsync(x => x.DataSource = bs, token);
+                    if (frmWebBrowser != null)
+                        await frmWebBrowser.DoThreadSafeAsync(x => x.Hide(), token);
+                }
+                else
+                {
+                    await bLogin.DoThreadSafeAsync(x => x.Text = "Login", token);
+                    BindingSource bs = new BindingSource
+                    {
+                        DataSource = StaticUtils.UserRoles
+                    };
+                    await cbRoles.DoThreadSafeAsync(x => x.DataSource = bs, token);
+                }
+            }
+            catch (Exception ex)
+            {
+                Log.Warn(ex);
+            }
+        }
+
+        public string GetUserEmail()
+        {
+            using (CursorWait.New(this, true))
             {
                 try
                 {
                     SinnersClient client = StaticUtils.GetClient();
                     if (client == null)
                         return null;
-                    ResultAccountGetUserByAuthorization result = await client.GetUserByAuthorizationAsync();
+                    ResultAccountGetUserByAuthorization result = Chummer.Utils.SafelyRunSynchronously(() => client.GetUserByAuthorizationAsync());
+                    if (result == null)
+                    {
+                        LoginStatus = false;
+                        return null;
+                    }
+                    string strEmail = result.MyApplicationUser.Email;
+                    if (!string.IsNullOrEmpty(strEmail))
+                    {
+                        Settings.Default.UserEmail = strEmail;
+                        Settings.Default.Save();
+                    }
+                    return strEmail;
+                }
+                catch (SerializationException)
+                {
+                    LoginStatus = false;
+                    return null;
+                }
+                catch (Exception ex)
+                {
+                    Log.Warn(ex);
+                }
+            }
+            return null;
+        }
+
+        public async Task<string> GetUserEmailAsync(CancellationToken token = default)
+        {
+            using (await CursorWait.NewAsync(this, true, token))
+            {
+                try
+                {
+                    SinnersClient client = StaticUtils.GetClient();
+                    if (client == null)
+                        return null;
+                    ResultAccountGetUserByAuthorization result = await client.GetUserByAuthorizationAsync(token);
                     if (result ==  null)
                     {
                         LoginStatus = false;
@@ -369,48 +469,218 @@ namespace ChummerHub.Client.UI
             return null;
         }
 
-        private void bLogin_ClickAsync(object sender, EventArgs e)
+        private async void bLogin_ClickAsync(object sender, EventArgs e)
         {
             if (bLogin.Text == "Logout")
             {
                 StaticUtils.AuthorizationCookieContainer = null;
                 LoginStatus = false;
                 bLogin.Text = "Login";
-                _ = Chummer.Utils.StartStaTask(
-                    async () =>
+                try
+                {
+                    SinnersClient client = StaticUtils.GetClient();
+                    if (await client.LogoutAsync())
                     {
-                        try
-                        {
-                            SinnersClient client = StaticUtils.GetClient();
-                            if (await client.LogoutAsync())
-                            {
-                                StaticUtils.UserRoles.Clear();
-                            }
-                            else
-                            {
-                                await GetRolesStatus(this);
-                            }
+                        StaticUtils.UserRoles.Clear();
+                    }
+                    else
+                    {
+                        await GetRolesStatusAsync(this);
+                    }
 
-                            await UpdateDisplay();
-                        }
-                        catch (Exception ex)
-                        {
-                            Log.Warn(ex);
-                        }
-                    });
+                    await UpdateDisplayAsync();
+                }
+                catch (Exception ex)
+                {
+                    Log.Warn(ex);
+                }
             }
             else
             {
                 Settings.Default.SINnerUrl = cbSINnerUrl.SelectedItem?.ToString();
                 Settings.Default.Save();
-                ShowWebBrowser();
+                try
+                {
+                    CursorWait objCursorWait = await CursorWait.NewAsync(frmWebBrowser);
+                    try
+                    {
+                        await SignIn();
+                        SinnersClient client = StaticUtils.GetClient(true);
+                        if (!string.IsNullOrEmpty(Settings.Default.AccessToken)
+                            && string.IsNullOrEmpty(Settings.Default.BearerToken))
+                        {
+                            Settings.Default.BearerToken =
+                                await client.AuthenticateAsync(default);
+                            Settings.Default.Save();
+                        }
+
+                        IList<string> roles = await GetRolesStatusAsync(this);
+                        await UpdateDisplayAsync();
+                    }
+                    finally
+                    {
+                        await objCursorWait.DisposeAsync();
+                    }
+                }
+                catch(Exception ex)
+                {
+                    Log.Warn(ex);
+                }
             }
         }
 
-        private void HideWebBrowser()
+
+
+
+        private static string _authority => StaticUtils.GetClient().BaseUrl;
+
+        private static string _api
         {
-            frmWebBrowser?.Hide();
+            get
+            {
+                if (StaticUtils.UrlIsValid(_authority))// + "/api/test"))
+                    return _authority;// + "/api/test";
+                return "https://demo.duendesoftware.com/api/test";
+            }
         }
+
+        static IdentityModel.OidcClient.OidcClient _oidcClient;
+        static HttpClient _apiClient = new HttpClient { BaseAddress = new Uri(_api) };
+
+        private static async Task SignIn(CancellationToken token = default)
+        {
+            // create a redirect URI using an available port on the loopback address.
+            // requires the OP to allow random ports on 127.0.0.1 - otherwise set a static port
+            SystemBrowser browser = new SystemBrowser();
+            string redirectUri = string.Format($"http://localhost:{browser.Port}/signin-oidc");
+
+            OidcClientOptions options = new OidcClientOptions
+            {
+                Authority = _authority,
+                ClientId = "Chummer5a",
+                RedirectUri = redirectUri,
+                Scope = "openid profile verification",
+                FilterClaims = false,
+                Browser = browser,
+                TokenClientCredentialStyle = IdentityModel.Client.ClientCredentialStyle.AuthorizationHeader,
+                ClientSecret = "secret".ToSha256(),
+                IdentityTokenValidator = new JwtHandlerIdentityTokenValidator(),
+                RefreshTokenInnerHttpHandler = new HttpClientHandler(),
+                //ProviderInformation = new ProviderInformation()
+                //{
+                //    IssuerName = _authority,
+                //    AuthorizeEndpoint
+                //}
+            };
+
+            _oidcClient = new IdentityModel.OidcClient.OidcClient(options);
+            LoginResult result = await _oidcClient.LoginAsync(new LoginRequest(), token);
+
+            if (result == null || result.IsError)
+            {
+                Log.Error("LoginAsync failed!");
+                return;
+            }
+
+            if (result.RefreshTokenHandler != null)
+            {
+                _apiClient = new HttpClient(result.RefreshTokenHandler)
+                {
+                    BaseAddress = new Uri(_api)
+                };
+            }
+
+            ShowResult(result);
+            await NextSteps(result, token);
+        }
+
+        private static void ShowResult(LoginResult result)
+        {
+            using (new FetchSafelyFromPool<StringBuilder>(Chummer.Utils.StringBuilderPool, out StringBuilder show))
+            {
+                if (result.IsError)
+                {
+                    Log.Warn("\n\nError:\n{0}", result.Error);
+                    return;
+                }
+
+                show.AppendLine().AppendLine().Append("Claims:");
+                foreach (Claim claim in result.User.Claims)
+                {
+                    show.AppendLine().Append(claim.Type).Append(": ").Append(claim.Value);
+                }
+
+                Dictionary<string, JsonElement> values
+                    = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(
+                        result.TokenResponse.Raw);
+                if (values != null)
+                {
+                    show.AppendLine().Append("token response...");
+                    foreach (KeyValuePair<string, JsonElement> item in values)
+                    {
+                        show.AppendLine().Append(item.Key).Append(": ").Append(item.Value);
+                    }
+                }
+
+                Log.Info(show);
+            }
+        }
+
+        private static async Task NextSteps(LoginResult result, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return;
+            string currentAccessToken = result.AccessToken;
+            string currentRefreshToken = result.RefreshToken;
+
+            string menu = "  x...exit  c...call api   ";
+            if (currentRefreshToken != null) menu += "r...refresh token   ";
+
+            while (true)
+            {
+                Console.WriteLine("\n\n");
+
+                Console.Write(menu);
+                ConsoleKeyInfo key = Console.ReadKey();
+
+                if (key.Key == ConsoleKey.X) return;
+                if (key.Key == ConsoleKey.C) await CallApi(token);
+                if (key.Key == ConsoleKey.R)
+                {
+                    RefreshTokenResult refreshResult = await _oidcClient.RefreshTokenAsync(currentRefreshToken, cancellationToken: token);
+                    if (refreshResult.IsError)
+                    {
+                        Console.WriteLine($"Error: {refreshResult.Error}");
+                    }
+                    else
+                    {
+                        currentRefreshToken = refreshResult.RefreshToken;
+                        currentAccessToken = refreshResult.AccessToken;
+
+                        Console.WriteLine("\n\n");
+                        Console.WriteLine($"access token:   {currentAccessToken}");
+                        Console.WriteLine($"refresh token:  {currentRefreshToken ?? "none"}");
+                    }
+                }
+            }
+        }
+
+        private static async Task CallApi(CancellationToken token = default)
+        {
+            HttpResponseMessage response = await _apiClient.GetAsync(string.Empty, token);
+
+            if (response.IsSuccessStatusCode)
+            {
+                JsonDocument json = JsonDocument.Parse(await response.Content.ReadAsStringAsync());
+                Console.WriteLine("\n\n");
+                Console.WriteLine(json.RootElement);
+            }
+            else
+            {
+                Console.WriteLine($"Error: {response.ReasonPhrase}");
+            }
+        }
+
 
         private frmWebBrowser frmWebBrowser;
 
@@ -420,33 +690,11 @@ namespace ChummerHub.Client.UI
             {
                 if (frmWebBrowser == null)
                 {
-                    frmWebBrowser = new frmWebBrowser();
+                    frmWebBrowser = Chummer.Utils.RunOnMainThread(() => new frmWebBrowser());
                 }
-                if(frmWebBrowser.InvokeRequired)
-                {
-                    Invoke((Action) (() =>
-                        {
-                            frmWebBrowser.ShowDialog(Program.MainForm);
-                            _ = Chummer.Utils.StartStaTask(
-                                async () =>
-                                {
-                                    await GetRolesStatus(this);
-                                    await UpdateDisplay();
-                                });
-                        })
-                    );
-                }
-                else
-                {
-                    frmWebBrowser.ShowDialog(Program.MainForm);
-                    _ = Chummer.Utils.StartStaTask(
-                        async () =>
-                        {
-                            await GetRolesStatus(this);
-                            await UpdateDisplay();
-                        });
-                }
-
+                frmWebBrowser.DoThreadSafe(x => x.ShowDialogSafe(Program.MainForm));
+                DoRolesStatus(this);
+                UpdateDisplay();
                 ResumeLayout(false);
             }
             catch (Exception ex)
@@ -455,18 +703,36 @@ namespace ChummerHub.Client.UI
             }
         }
 
-        private async Task<IList<string>> GetRolesStatus(Control sender)
+        private async Task ShowWebBrowserAsync(CancellationToken token = default)
         {
             try
             {
-                using (new CursorWait(sender, true))
+                if (frmWebBrowser == null)
                 {
-                    SinnersClient client = StaticUtils.GetClient();
-                    if (client == null)
-                        return StaticUtils.UserRoles;
-                    ResultAccountGetRoles myresult = await client.GetRolesAsync();
-                    await Utils.ShowErrorResponseFormAsync(myresult);
-                    await PluginHandler.MainForm.DoThreadSafeAsync(() =>
+                    frmWebBrowser = await Chummer.Utils.RunOnMainThreadAsync(() => new frmWebBrowser(), token).ConfigureAwait(false);
+                }
+                await frmWebBrowser.DoThreadSafeAsync(x => x.ShowDialogSafe(Program.MainForm), token: token);
+                await GetRolesStatusAsync(this, token);
+                await UpdateDisplayAsync(token);
+                ResumeLayout(false);
+            }
+            catch (Exception ex)
+            {
+                Log.Warn(ex);
+            }
+        }
+
+        private void DoRolesStatus(Control sender)
+        {
+            using (CursorWait.New(sender, true))
+            {
+                SinnersClient client = StaticUtils.GetClient();
+                if (client != null)
+                {
+                    ResultAccountGetRoles myresult
+                        = Chummer.Utils.SafelyRunSynchronously(() => client.GetRolesAsync());
+                    Utils.ShowErrorResponseForm(myresult);
+                    PluginHandler.MainForm.DoThreadSafe(() =>
                     {
                         if (myresult?.CallSuccess == true)
                         {
@@ -488,27 +754,98 @@ namespace ChummerHub.Client.UI
                         cbRoles.DataSource = bs;
                     });
                 }
+            }
+        }
 
-                return StaticUtils.UserRoles;
+        private async Task DoRolesStatusAsync(Control sender, CancellationToken token = default)
+        {
+            using (await CursorWait.NewAsync(sender, true, token))
+            {
+                SinnersClient client = StaticUtils.GetClient();
+                if (client != null)
+                {
+                    ResultAccountGetRoles myresult = await client.GetRolesAsync(token);
+                    await Utils.ShowErrorResponseFormAsync(myresult, token: token);
+                    await PluginHandler.MainForm.DoThreadSafeAsync(() =>
+                    {
+                        if (myresult?.CallSuccess == true)
+                        {
+                            StaticUtils.UserRoles = myresult.Roles.ToList();
+                            if (StaticUtils.UserRoles != null && StaticUtils.UserRoles.Count > 0)
+                            {
+                                LoginStatus = true;
+                            }
+
+                            StaticUtils.PossibleRoles = myresult.PossibleRoles.ToList();
+                        }
+
+                        //bBackup.Visible = StaticUtils.UserRoles.Contains("Administrator");
+                        //bRestore.Visible = StaticUtils.UserRoles.Contains("Administrator");
+                        BindingSource bs = new BindingSource
+                        {
+                            DataSource = StaticUtils.UserRoles
+                        };
+                        cbRoles.DataSource = bs;
+                    }, token: token);
+                }
+            }
+        }
+
+        private IList<string> GetRolesStatus(Control sender)
+        {
+            try
+            {
+                DoRolesStatus(sender);
             }
             catch (SerializationException)
             {
                 LoginStatus = false;
-                return null;
+                return Array.Empty<string>();
             }
             catch (TaskCanceledException ex)
             {
                 Log.Info(ex);
+                return Array.Empty<string>();
             }
             catch (Exception ex)
             {
                 Log.Warn(ex);
+                return Array.Empty<string>();
             }
             finally
             {
                 //myresult?.Dispose();
             }
-            return null;
+
+            return StaticUtils.UserRoles;
+        }
+
+        private async Task<IList<string>> GetRolesStatusAsync(Control sender, CancellationToken token = default)
+        {
+            try
+            {
+                await DoRolesStatusAsync(sender, token);
+            }
+            catch (SerializationException)
+            {
+                LoginStatus = false;
+                return Array.Empty<string>();
+            }
+            catch (TaskCanceledException ex)
+            {
+                Log.Info(ex);
+                return Array.Empty<string>();
+            }
+            catch (Exception ex)
+            {
+                Log.Warn(ex);
+                return Array.Empty<string>();
+            }
+            finally
+            {
+                //myresult?.Dispose();
+            }
+            return StaticUtils.UserRoles;
         }
 
         private void cbVisibilityIsGroupVisible_CheckedChanged(object sender, EventArgs e)
@@ -564,7 +901,7 @@ namespace ChummerHub.Client.UI
                     }
                 }
 
-                Program.MainForm.ShowMessageBox("Upload of " + thisDialog.FileNames.Length + " files finished (successful or not - its over).");
+                Program.ShowMessageBox("Upload of " + thisDialog.FileNames.Length + " files finished (successful or not - its over).");
             }
         }
 
@@ -584,21 +921,21 @@ namespace ChummerHub.Client.UI
                 {
                     await BackupTask(folderBrowserDialog1).ContinueWith(a =>
                     {
-                        Program.MainForm.ShowMessageBox(a.Status.ToString());
+                        Program.ShowMessageBox(a.Status.ToString());
                     });
                 }
             }
         }
 
-        private async Task BackupTask(FolderBrowserDialog folderBrowserDialog1)
+        private async Task BackupTask(FolderBrowserDialog folderBrowserDialog1, CancellationToken token = default)
         {
             string folderName = folderBrowserDialog1.SelectedPath;
-            using (new CursorWait(this, true))
+            using (await CursorWait.NewAsync(this, true, token))
             {
                 try
                 {
                     SinnersClient client = StaticUtils.GetClient();
-                    ICollection<SINner> getsinner = await client.AdminGetSINnersAsync();
+                    ICollection<SINner> getsinner = await client.AdminGetSINnersAsync(token);
                     foreach (SINner sinner in getsinner)
                     {
                         try
@@ -618,7 +955,7 @@ namespace ChummerHub.Client.UI
                         catch (Exception e2)
                         {
                             Log.Error(e2);
-                            Invoke(new Action(() => Program.MainForm.ShowMessageBox(e2.Message)));
+                            Invoke(new Action(() => Program.ShowMessageBox(e2.Message)));
                         }
                     }
                     //getsinner.Dispose();
@@ -626,7 +963,7 @@ namespace ChummerHub.Client.UI
                 catch (Exception ex)
                 {
                     Log.Error(ex);
-                    Invoke(new Action(() => Program.MainForm.ShowMessageBox(ex.Message)));
+                    Invoke(new Action(() => Program.ShowMessageBox(ex.Message)));
                 }
             }
         }
@@ -641,20 +978,20 @@ namespace ChummerHub.Client.UI
                 {
                     await RestoreTask(folderBrowserDialog1).ContinueWith(a =>
                     {
-                        Program.MainForm.ShowMessageBox(a.Status.ToString());
+                        Program.ShowMessageBox(a.Status.ToString());
                     });
                 }
             }
         }
 
-        private async Task RestoreTask(FolderBrowserDialog folderBrowserDialog1)
+        private async Task RestoreTask(FolderBrowserDialog folderBrowserDialog1, CancellationToken token = default)
         {
             string folderName = folderBrowserDialog1.SelectedPath;
             try
             {
                 DirectoryInfo d = new DirectoryInfo(folderName);//Assuming Test is your Folder
                 FileInfo[] Files = d.GetFiles("*.chum5json"); //Getting Text files
-                using (new CursorWait(this, true))
+                using (await CursorWait.NewAsync(this, true, token))
                 {
                     SinnersClient client = StaticUtils.GetClient();
                     foreach (FileInfo file in Files)
@@ -672,7 +1009,7 @@ namespace ChummerHub.Client.UI
                                     sin
                                 }
                             };
-                            ResultSinnerPostSIN posttask = await client.PostSINAsync(uploadInfoObject);
+                            ResultSinnerPostSIN posttask = await client.PostSINAsync(uploadInfoObject, token);
                             if (posttask.CallSuccess)
                             {
                                 Log.Info("SINner " + (sin?.Id.ToString() ?? "null") + " posted!");
@@ -700,7 +1037,7 @@ namespace ChummerHub.Client.UI
             catch (Exception ex)
             {
                 Log.Error(ex);
-                Program.MainForm.ShowMessageBox(ex.Message);
+                Program.ShowMessageBox(ex.Message);
             }
         }
 

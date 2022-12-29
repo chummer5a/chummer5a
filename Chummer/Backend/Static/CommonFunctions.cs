@@ -18,7 +18,9 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
@@ -35,6 +37,7 @@ using Chummer.Backend.Equipment;
 using iText.Kernel.Pdf;
 using iText.Kernel.Pdf.Canvas.Parser;
 using iText.Kernel.Pdf.Canvas.Parser.Listener;
+using Microsoft.IO;
 
 namespace Chummer
 {
@@ -44,172 +47,288 @@ namespace Chummer
 
         // TODO: implement a sane expression evaluator
         // A single instance of an XmlDocument and its corresponding XPathNavigator helps reduce overhead of evaluating XPaths that just contain mathematical operations
-        private static readonly XmlDocument s_ObjXPathNavigatorDocument = new XmlDocument {XmlResolver = null};
+        private static readonly XmlDocument s_ObjXPathNavigatorDocument = new XmlDocument { XmlResolver = null };
 
-        private static readonly XPathNavigator s_ObjXPathNavigator = s_ObjXPathNavigatorDocument.CreateNavigator();
+        private static readonly DebuggableSemaphoreSlim s_ObjXPathNavigatorDocumentLock = new DebuggableSemaphoreSlim();
+
+        private static readonly ConcurrentStack<XPathNavigator> s_StkXPathNavigatorPool
+            = new ConcurrentStack<XPathNavigator>();
 
         private static readonly LockingDictionary<string, Tuple<bool, object>> s_DicCompiledEvaluations =
             new LockingDictionary<string, Tuple<bool, object>>();
 
-        private static readonly char[] s_LstInvariantXPathLegalChars = "1234567890+-*abdegilmnortuv()[]{}!=<>&;. ".ToCharArray();
+        private static readonly ReadOnlyCollection<char> s_LstInvariantXPathLegalChars = Array.AsReadOnly("1234567890+-*abcdefghilmnorstuvw()[]{}!=<>&;. ".ToCharArray());
 
         /// <summary>
         /// Evaluate a string consisting of an XPath Expression that could be evaluated on an empty document.
         /// </summary>
         /// <param name="strXPath">String as XPath Expression to evaluate.</param>
-        /// <returns>System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>A tuple where the first element is if the calculation was successful and the second element is a System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static object EvaluateInvariantXPath(string strXPath)
+        public static async ValueTask<Tuple<bool, object>> EvaluateInvariantXPathAsync(string strXPath, CancellationToken token = default)
         {
-            if (s_DicCompiledEvaluations.TryGetValue(strXPath, out Tuple<bool, object> objCachedEvaluation))
+            (bool blnSuccess, Tuple<bool, object> objCachedEvaluation) = await s_DicCompiledEvaluations.TryGetValueAsync(strXPath, token).ConfigureAwait(false);
+            if (blnSuccess)
             {
-                return objCachedEvaluation.Item2;
+                return objCachedEvaluation;
             }
 
+            Tuple<bool, object> tupReturn;
             if (string.IsNullOrWhiteSpace(strXPath))
             {
-                s_DicCompiledEvaluations.TryAdd(strXPath, null);
-                return null;
+                tupReturn = new Tuple<bool, object>(false, null);
+                await s_DicCompiledEvaluations.TryAddAsync(strXPath, tupReturn, token).ConfigureAwait(false);
+                return tupReturn;
             }
 
             if (!strXPath.IsLegalCharsOnly(true, s_LstInvariantXPathLegalChars))
             {
-                s_DicCompiledEvaluations.TryAdd(strXPath, new Tuple<bool, object>(false, strXPath));
-                return strXPath;
+                tupReturn = new Tuple<bool, object>(false, strXPath);
+                await s_DicCompiledEvaluations.TryAddAsync(strXPath, tupReturn, token).ConfigureAwait(false);
+                return tupReturn;
+            }
+
+            object objReturn;
+            bool blnIsSuccess;
+            if (strXPath == "-")
+            {
+                objReturn = 0.0;
+                blnIsSuccess = true;
+            }
+            else
+            {
+                try
+                {
+                    if (!s_StkXPathNavigatorPool.TryPop(out XPathNavigator objEvaluator))
+                    {
+                        await s_ObjXPathNavigatorDocumentLock.WaitAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            objEvaluator = s_ObjXPathNavigatorDocument.CreateNavigator();
+                        }
+                        finally
+                        {
+                            s_ObjXPathNavigatorDocumentLock.Release();
+                        }
+                    }
+
+                    try
+                    {
+                        objReturn = objEvaluator?.Evaluate(strXPath.TrimStart('+'));
+                    }
+                    finally
+                    {
+                        s_StkXPathNavigatorPool.Push(objEvaluator);
+                    }
+
+                    blnIsSuccess = objReturn != null;
+                }
+                catch (ArgumentException)
+                {
+                    Utils.BreakIfDebug();
+                    objReturn = strXPath;
+                    blnIsSuccess = false;
+                }
+                catch (XPathException)
+                {
+                    Utils.BreakIfDebug();
+                    objReturn = strXPath;
+                    blnIsSuccess = false;
+                }
+            }
+
+            tupReturn = new Tuple<bool, object>(blnIsSuccess, objReturn);
+            await s_DicCompiledEvaluations.TryAddAsync(strXPath, tupReturn, token).ConfigureAwait(false); // don't want to store managed objects, only primitives
+            return tupReturn;
+        }
+
+        /// <summary>
+        /// Evaluate a string consisting of an XPath Expression that could be evaluated on an empty document.
+        /// </summary>
+        /// <param name="strXPath">String as XPath Expression to evaluate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>A tuple where the first element is if the calculation was successful and the second element is a System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Tuple<bool, object> EvaluateInvariantXPath(string strXPath, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (s_DicCompiledEvaluations.TryGetValue(strXPath, out Tuple<bool, object> objCachedEvaluation, token))
+            {
+                return objCachedEvaluation;
+            }
+
+            Tuple<bool, object> tupReturn;
+            if (string.IsNullOrWhiteSpace(strXPath))
+            {
+                tupReturn = new Tuple<bool, object>(false, null);
+                s_DicCompiledEvaluations.TryAdd(strXPath, tupReturn);
+                return tupReturn;
+            }
+
+            if (!strXPath.IsLegalCharsOnly(true, s_LstInvariantXPathLegalChars))
+            {
+                tupReturn = new Tuple<bool, object>(false, strXPath);
+                s_DicCompiledEvaluations.TryAdd(strXPath, tupReturn);
+                return tupReturn;
+            }
+
+            bool blnIsSuccess;
+            object objReturn;
+            if (strXPath == "-")
+            {
+                objReturn = 0.0;
+                blnIsSuccess = true;
+            }
+            else
+            {
+                try
+                {
+                    if (!s_StkXPathNavigatorPool.TryPop(out XPathNavigator objEvaluator))
+                    {
+                        s_ObjXPathNavigatorDocumentLock.SafeWait(token);
+                        try
+                        {
+                            objEvaluator = s_ObjXPathNavigatorDocument.CreateNavigator();
+                        }
+                        finally
+                        {
+                            s_ObjXPathNavigatorDocumentLock.Release();
+                        }
+                    }
+
+                    try
+                    {
+                        objReturn = objEvaluator?.Evaluate(strXPath.TrimStart('+'));
+                    }
+                    finally
+                    {
+                        s_StkXPathNavigatorPool.Push(objEvaluator);
+                    }
+
+                    blnIsSuccess = objReturn != null;
+                }
+                catch (ArgumentException)
+                {
+                    Utils.BreakIfDebug();
+                    objReturn = strXPath;
+                    blnIsSuccess = false;
+                }
+                catch (XPathException)
+                {
+                    Utils.BreakIfDebug();
+                    objReturn = strXPath;
+                    blnIsSuccess = false;
+                }
+            }
+
+            tupReturn = new Tuple<bool, object>(blnIsSuccess, objReturn);
+            s_DicCompiledEvaluations.TryAdd(strXPath, tupReturn); // don't want to store managed objects, only primitives
+            return tupReturn;
+        }
+
+        /// <summary>
+        /// Evaluate a string consisting of an XPath Expression that could be evaluated on an empty document.
+        /// </summary>
+        /// <param name="objXPath">XPath Expression to evaluate</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>A tuple where the first element is if the calculation was successful and the second element is a System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async ValueTask<Tuple<bool, object>> EvaluateInvariantXPathAsync(XPathExpression objXPath, CancellationToken token = default)
+        {
+            string strExpression = objXPath.Expression;
+            (bool blnSuccess, Tuple<bool, object> objCachedEvaluation) = await s_DicCompiledEvaluations.TryGetValueAsync(strExpression, token).ConfigureAwait(false);
+            if (blnSuccess)
+            {
+                return objCachedEvaluation;
             }
 
             object objReturn;
             bool blnIsSuccess;
             try
             {
-                objReturn = s_ObjXPathNavigator.Evaluate(strXPath.TrimStart('+'));
-                blnIsSuccess = true;
+                if (!s_StkXPathNavigatorPool.TryPop(out XPathNavigator objEvaluator))
+                {
+                    await s_ObjXPathNavigatorDocumentLock.WaitAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        objEvaluator = s_ObjXPathNavigatorDocument.CreateNavigator();
+                    }
+                    finally
+                    {
+                        s_ObjXPathNavigatorDocumentLock.Release();
+                    }
+                }
+
+                try
+                {
+                    objReturn = objEvaluator?.Evaluate(objXPath);
+                }
+                finally
+                {
+                    s_StkXPathNavigatorPool.Push(objEvaluator);
+                }
+
+                blnIsSuccess = objReturn != null;
             }
             catch (ArgumentException)
             {
                 Utils.BreakIfDebug();
-                objReturn = strXPath;
+                objReturn = strExpression;
                 blnIsSuccess = false;
             }
             catch (XPathException)
             {
                 Utils.BreakIfDebug();
-                objReturn = strXPath;
+                objReturn = strExpression;
                 blnIsSuccess = false;
-            }
-            s_DicCompiledEvaluations.TryAdd(strXPath, new Tuple<bool, object>(blnIsSuccess, objReturn)); // don't want to store managed objects, only primitives
-            return objReturn;
-        }
-
-        /// <summary>
-        /// Evaluate a string consisting of an XPath Expression that could be evaluated on an empty document.
-        /// </summary>
-        /// <param name="strXPath">String as XPath Expression to evaluate.</param>
-        /// <param name="blnIsSuccess">Whether we successfully processed the XPath (true) or encountered an error (false).</param>
-        /// <returns>System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static object EvaluateInvariantXPath(string strXPath, out bool blnIsSuccess)
-        {
-            if (s_DicCompiledEvaluations.TryGetValue(strXPath, out Tuple<bool, object> objCachedEvaluation))
-            {
-                blnIsSuccess = objCachedEvaluation.Item1;
-                return objCachedEvaluation.Item2;
             }
 
-            if (string.IsNullOrWhiteSpace(strXPath))
-            {
-                s_DicCompiledEvaluations.TryAdd(strXPath, new Tuple<bool, object>(false, null));
-                blnIsSuccess = false;
-                return null;
-            }
-
-            if (!strXPath.IsLegalCharsOnly(true, s_LstInvariantXPathLegalChars))
-            {
-                s_DicCompiledEvaluations.TryAdd(strXPath, new Tuple<bool, object>(false, strXPath));
-                blnIsSuccess = false;
-                return strXPath;
-            }
-
-            object objReturn;
-            try
-            {
-                objReturn = s_ObjXPathNavigator.Evaluate(strXPath.TrimStart('+'));
-                blnIsSuccess = true;
-            }
-            catch (ArgumentException)
-            {
-                Utils.BreakIfDebug();
-                objReturn = strXPath;
-                blnIsSuccess = false;
-            }
-            catch (XPathException)
-            {
-                Utils.BreakIfDebug();
-                objReturn = strXPath;
-                blnIsSuccess = false;
-            }
-            s_DicCompiledEvaluations.TryAdd(strXPath, new Tuple<bool, object>(blnIsSuccess, objReturn)); // don't want to store managed objects, only primitives
-            return objReturn;
+            Tuple<bool, object> tupReturn = new Tuple<bool, object>(blnIsSuccess, objReturn);
+            await s_DicCompiledEvaluations.TryAddAsync(strExpression, tupReturn, token).ConfigureAwait(false); // don't want to store managed objects, only primitives
+            return tupReturn;
         }
 
         /// <summary>
         /// Evaluate an XPath Expression that could be evaluated on an empty document.
         /// </summary>
         /// <param name="objXPath">XPath Expression to evaluate</param>
-        /// <returns>System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>A tuple where the first element is if the calculation was successful and the second element is a System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static object EvaluateInvariantXPath(XPathExpression objXPath)
+        public static Tuple<bool, object> EvaluateInvariantXPath(XPathExpression objXPath, CancellationToken token = default)
         {
             string strExpression = objXPath.Expression;
-            if (s_DicCompiledEvaluations.TryGetValue(strExpression, out Tuple<bool, object> objCachedEvaluation))
+            if (s_DicCompiledEvaluations.TryGetValue(strExpression, out Tuple<bool, object> objCachedEvaluation, token))
             {
-                return objCachedEvaluation.Item2;
+                return objCachedEvaluation;
             }
 
-            object objReturn;
             bool blnIsSuccess;
-            try
-            {
-                objReturn = s_ObjXPathNavigator.Evaluate(objXPath);
-                blnIsSuccess = true;
-            }
-            catch (ArgumentException)
-            {
-                Utils.BreakIfDebug();
-                objReturn = strExpression;
-                blnIsSuccess = false;
-            }
-            catch (XPathException)
-            {
-                Utils.BreakIfDebug();
-                objReturn = strExpression;
-                blnIsSuccess = false;
-            }
-            s_DicCompiledEvaluations.TryAdd(strExpression, new Tuple<bool, object>(blnIsSuccess, objReturn)); // don't want to store managed objects, only primitives
-            return objReturn;
-        }
-
-        /// <summary>
-        /// Evaluate an XPath Expression that could be evaluated on an empty document.
-        /// </summary>
-        /// <param name="objXPath">XPath Expression to evaluate</param>
-        /// <param name="blnIsSuccess">Whether we successfully processed the XPath (true) or encountered an error (false).</param>
-        /// <returns>System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static object EvaluateInvariantXPath(XPathExpression objXPath, out bool blnIsSuccess)
-        {
-            string strExpression = objXPath.Expression;
-            if (s_DicCompiledEvaluations.TryGetValue(strExpression, out Tuple<bool, object> objCachedEvaluation))
-            {
-                blnIsSuccess = objCachedEvaluation.Item1;
-                return objCachedEvaluation.Item2;
-            }
-
             object objReturn;
             try
             {
-                objReturn = s_ObjXPathNavigator.Evaluate(objXPath);
-                blnIsSuccess = true;
+                if (!s_StkXPathNavigatorPool.TryPop(out XPathNavigator objEvaluator))
+                {
+                    s_ObjXPathNavigatorDocumentLock.SafeWait(token);
+                    try
+                    {
+                        objEvaluator = s_ObjXPathNavigatorDocument.CreateNavigator();
+                    }
+                    finally
+                    {
+                        s_ObjXPathNavigatorDocumentLock.Release();
+                    }
+                }
+                try
+                {
+                    objReturn = objEvaluator?.Evaluate(objXPath);
+                }
+                finally
+                {
+                    s_StkXPathNavigatorPool.Push(objEvaluator);
+                }
+                blnIsSuccess = objReturn != null;
             }
             catch (ArgumentException)
             {
@@ -223,8 +342,10 @@ namespace Chummer
                 objReturn = strExpression;
                 blnIsSuccess = false;
             }
-            s_DicCompiledEvaluations.TryAdd(strExpression, new Tuple<bool, object>(blnIsSuccess, objReturn)); // don't want to store managed objects, only primitives
-            return objReturn;
+
+            Tuple<bool, object> tupReturn = new Tuple<bool, object>(blnIsSuccess, objReturn);
+            s_DicCompiledEvaluations.TryAdd(strExpression, tupReturn); // don't want to store managed objects, only primitives
+            return tupReturn;
         }
 
         /// <summary>
@@ -248,7 +369,33 @@ namespace Chummer
 
             if (string.IsNullOrEmpty(strXPathExpression))
                 return true;
-            EvaluateInvariantXPath(strXPathExpression, out bool blnSuccess);
+            (bool blnIsSuccess, _) = EvaluateInvariantXPath(strXPathExpression);
+            return blnIsSuccess;
+        }
+
+        /// <summary>
+        /// Parse an XPath for whether it is valid XPath.
+        /// </summary>
+        /// <param name="strXPathExpression" >XPath Expression to evaluate</param>
+        /// <param name="blnIsNullSuccess"   >Should a null or empty result be treated as success?</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async ValueTask<bool> IsCharacterAttributeXPathValidOrNullAsync(string strXPathExpression, bool blnIsNullSuccess = true, CancellationToken token = default)
+        {
+            if (string.IsNullOrEmpty(strXPathExpression))
+                return blnIsNullSuccess;
+            foreach (string strCharAttributeName in Backend.Attributes.AttributeSection.AttributeStrings)
+            {
+                if (!string.IsNullOrEmpty(strXPathExpression))
+                    strXPathExpression = strXPathExpression
+                                         .Replace('{' + strCharAttributeName + '}', "1")
+                                         .Replace('{' + strCharAttributeName + "Unaug}", "1")
+                                         .Replace('{' + strCharAttributeName + "Base}", "1");
+            }
+
+            if (string.IsNullOrEmpty(strXPathExpression))
+                return true;
+            (bool blnSuccess, object _) = await EvaluateInvariantXPathAsync(strXPathExpression, token).ConfigureAwait(false);
             return blnSuccess;
         }
 
@@ -334,6 +481,69 @@ namespace Chummer
             }
 
             objFoundVehicle = null;
+            objFoundWeaponAccessory = null;
+            objFoundCyberware = null;
+            return null;
+        }
+
+        /// <summary>
+        /// Locate a piece of Gear within one of a character's Vehicles.
+        /// </summary>
+        /// <param name="strGuid">InternalId of the Gear to find.</param>
+        /// <param name="objVehicle">Vehicle to search.</param>
+        public static Gear FindVehicleGear(this Vehicle objVehicle, string strGuid)
+        {
+            if (objVehicle == null)
+                throw new ArgumentNullException(nameof(objVehicle));
+            return objVehicle.FindVehicleGear(strGuid, out WeaponAccessory _, out Cyberware _);
+        }
+
+        /// <summary>
+        /// Locate a piece of Gear within one of a character's Vehicles.
+        /// </summary>
+        /// <param name="strGuid">InternalId of the Gear to find.</param>
+        /// <param name="objVehicle">Vehicle to search.</param>
+        /// <param name="objFoundWeaponAccessory">Weapon Accessory that the Gear was found in.</param>
+        /// <param name="objFoundCyberware">Cyberware that the Gear was found in.</param>
+        public static Gear FindVehicleGear(this Vehicle objVehicle, string strGuid, out WeaponAccessory objFoundWeaponAccessory, out Cyberware objFoundCyberware)
+        {
+            if (objVehicle == null)
+                throw new ArgumentNullException(nameof(objVehicle));
+            if (!string.IsNullOrEmpty(strGuid) && !strGuid.IsEmptyGuid())
+            {
+                Gear objReturn = objVehicle.GearChildren.DeepFindById(strGuid);
+                if (!string.IsNullOrEmpty(objReturn?.Name))
+                {
+                    objFoundWeaponAccessory = null;
+                    objFoundCyberware = null;
+                    return objReturn;
+                }
+
+                // Look for any Gear that might be attached to this Vehicle through Weapon Accessories or Cyberware.
+                foreach (VehicleMod objMod in objVehicle.Mods)
+                {
+                    // Weapon Accessories.
+                    objReturn = objMod.Weapons.FindWeaponGear(strGuid, out WeaponAccessory objAccessory);
+
+                    if (!string.IsNullOrEmpty(objReturn?.Name))
+                    {
+                        objFoundWeaponAccessory = objAccessory;
+                        objFoundCyberware = null;
+                        return objReturn;
+                    }
+
+                    // Cyberware.
+                    objReturn = objMod.Cyberware.FindCyberwareGear(strGuid, out Cyberware objCyberware);
+
+                    if (!string.IsNullOrEmpty(objReturn?.Name))
+                    {
+                        objFoundWeaponAccessory = null;
+                        objFoundCyberware = objCyberware;
+                        return objReturn;
+                    }
+                }
+            }
+
             objFoundWeaponAccessory = null;
             objFoundCyberware = null;
             return null;
@@ -823,13 +1033,17 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(objCharacter));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
-                foreach (Enhancement objEnhancement in objCharacter.Enhancements)
+                using (EnterReadLock.Enter(objCharacter.LockObject))
                 {
-                    if (objEnhancement.InternalId == strGuid)
-                        return objEnhancement;
-                }
+                    foreach (Enhancement objEnhancement in objCharacter.Enhancements)
+                    {
+                        if (objEnhancement.InternalId == strGuid)
+                            return objEnhancement;
+                    }
 
-                return objCharacter.Powers.SelectMany(objPower => objPower.Enhancements).FirstOrDefault(objEnhancement => objEnhancement.InternalId == strGuid);
+                    return objCharacter.Powers.SelectMany(objPower => objPower.Enhancements)
+                                       .FirstOrDefault(objEnhancement => objEnhancement.InternalId == strGuid);
+                }
             }
 
             return null;
@@ -847,10 +1061,11 @@ namespace Chummer
         {
             if (string.IsNullOrWhiteSpace(strAltCode))
                 return string.Empty;
-            XPathNavigator xmlOriginalCode = XmlManager.LoadXPath("books.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage)
-                                                       .SelectSingleNode("/chummer/books/book[altcode = " + strAltCode.CleanXPath() + "]/code");
+            XPathNavigator xmlOriginalCode = objCharacter != null
+                ? objCharacter.LoadDataXPath("books.xml", strLanguage)
+                : XmlManager.LoadXPath("books.xml", null, strLanguage);
+            xmlOriginalCode = xmlOriginalCode?.SelectSingleNode("/chummer/books/book[altcode = " + strAltCode.CleanXPath() + "]/code");
             return xmlOriginalCode?.Value ?? strAltCode;
-
         }
 
         /// <summary>
@@ -859,14 +1074,16 @@ namespace Chummer
         /// <param name="strAltCode">Book code to search for.</param>
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strLanguage">Language to load.</param>
-        public static async ValueTask<string> LanguageBookCodeFromAltCodeAsync(string strAltCode, string strLanguage = "", Character objCharacter = null)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async ValueTask<string> LanguageBookCodeFromAltCodeAsync(string strAltCode, string strLanguage = "", Character objCharacter = null, CancellationToken token = default)
         {
             if (string.IsNullOrWhiteSpace(strAltCode))
                 return string.Empty;
-            XPathNavigator xmlOriginalCode = (await XmlManager.LoadXPathAsync("books.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage))
-                .SelectSingleNode("/chummer/books/book[altcode = " + strAltCode.CleanXPath() + "]/code");
+            XPathNavigator xmlOriginalCode = objCharacter != null
+                ? await objCharacter.LoadDataXPathAsync("books.xml", strLanguage, token: token).ConfigureAwait(false)
+                : await XmlManager.LoadXPathAsync("books.xml", null, strLanguage, token: token).ConfigureAwait(false);
+            xmlOriginalCode = xmlOriginalCode?.SelectSingleNode("/chummer/books/book[altcode = " + strAltCode.CleanXPath() + "]/code");
             return xmlOriginalCode?.Value ?? strAltCode;
-
         }
 
         /// <summary>
@@ -879,10 +1096,11 @@ namespace Chummer
         {
             if (string.IsNullOrWhiteSpace(strCode))
                 return string.Empty;
-            XPathNavigator xmlAltCode = XmlManager.LoadXPath("books.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage)
-                                                  .SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + "]/altcode");
+            XPathNavigator xmlAltCode = objCharacter != null
+                ? objCharacter.LoadDataXPath("books.xml", strLanguage)
+                : XmlManager.LoadXPath("books.xml", null, strLanguage);
+            xmlAltCode = xmlAltCode?.SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + "]/altcode");
             return xmlAltCode?.Value ?? strCode;
-
         }
 
         /// <summary>
@@ -891,12 +1109,15 @@ namespace Chummer
         /// <param name="strCode">Book code to search for.</param>
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strLanguage">Language to load.</param>
-        public static async ValueTask<string> LanguageBookShortAsync(string strCode, string strLanguage = "", Character objCharacter = null)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async ValueTask<string> LanguageBookShortAsync(string strCode, string strLanguage = "", Character objCharacter = null, CancellationToken token = default)
         {
             if (string.IsNullOrWhiteSpace(strCode))
                 return string.Empty;
-            XPathNavigator xmlAltCode = (await XmlManager.LoadXPathAsync("books.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage))
-                                                  .SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + "]/altcode");
+            XPathNavigator xmlAltCode = objCharacter != null
+                ? await objCharacter.LoadDataXPathAsync("books.xml", strLanguage, token: token).ConfigureAwait(false)
+                : await XmlManager.LoadXPathAsync("books.xml", null, strLanguage, token: token).ConfigureAwait(false);
+            xmlAltCode = xmlAltCode?.SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + "]/altcode");
             return xmlAltCode?.Value ?? strCode;
         }
 
@@ -910,8 +1131,10 @@ namespace Chummer
         {
             if (string.IsNullOrWhiteSpace(strCode))
                 return string.Empty;
-            XPathNavigator xmlBook = XmlManager.LoadXPath("books.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage)
-                                               .SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + ']');
+            XPathNavigator xmlBook = objCharacter != null
+                ? objCharacter.LoadDataXPath("books.xml", strLanguage)
+                : XmlManager.LoadXPath("books.xml", null, strLanguage);
+            xmlBook = xmlBook?.SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + ']');
             if (xmlBook != null)
             {
                 string strReturn = xmlBook.SelectSingleNodeAndCacheExpression("translate")?.Value ?? xmlBook.SelectSingleNodeAndCacheExpression("name")?.Value;
@@ -928,15 +1151,19 @@ namespace Chummer
         /// <param name="strCode">Book code to search for.</param>
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strLanguage">Language to load.</param>
-        public static async ValueTask<string> LanguageBookLongAsync(string strCode, string strLanguage = "", Character objCharacter = null)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async ValueTask<string> LanguageBookLongAsync(string strCode, string strLanguage = "", Character objCharacter = null, CancellationToken token = default)
         {
             if (string.IsNullOrWhiteSpace(strCode))
                 return string.Empty;
-            XPathNavigator xmlBook = (await XmlManager.LoadXPathAsync("books.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths, strLanguage))
-                                               .SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + ']');
+            XPathNavigator xmlBook = objCharacter != null
+                ? await objCharacter.LoadDataXPathAsync("books.xml", strLanguage, token: token).ConfigureAwait(false)
+                : await XmlManager.LoadXPathAsync("books.xml", null, strLanguage, token: token).ConfigureAwait(false);
+            xmlBook = xmlBook?.SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + ']');
             if (xmlBook != null)
             {
-                string strReturn = xmlBook.SelectSingleNodeAndCacheExpression("translate")?.Value ?? xmlBook.SelectSingleNodeAndCacheExpression("name")?.Value;
+                string strReturn = (await xmlBook.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
+                                   ?? (await xmlBook.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value;
                 if (!string.IsNullOrWhiteSpace(strReturn))
                     return strReturn;
             }
@@ -947,14 +1174,6 @@ namespace Chummer
         /// <summary>
         /// Fetch the in-book description of a given object.
         /// </summary>
-        /// <param name="objNode"></param>
-        /// <param name="strName"></param>
-        /// <param name="strDisplayName"></param>
-        /// <param name="strSource"></param>
-        /// <param name="strPage"></param>
-        /// <param name="strDisplayPage"></param>
-        /// <param name="objCharacter"></param>
-        /// <returns></returns>
         public static string GetBookNotes(XmlNode objNode, string strName, string strDisplayName, string strSource, string strPage, string strDisplayPage, Character objCharacter)
         {
             string strEnglishNameOnPage = strName;
@@ -964,23 +1183,65 @@ namespace Chummer
                 !string.IsNullOrEmpty(strNameOnPage))
                 strEnglishNameOnPage = strNameOnPage;
 
-            string strGearNotes = GetTextFromPdf(strSource + ' ' + strPage, strEnglishNameOnPage, objCharacter);
+            using (EnterReadLock.Enter(objCharacter.LockObject))
+            {
+                string strGearNotes = GetTextFromPdf(strSource + ' ' + strPage, strEnglishNameOnPage, objCharacter);
 
-            if (!string.IsNullOrEmpty(strGearNotes) || GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
-                return strGearNotes;
-            string strTranslatedNameOnPage = strDisplayName;
+                if (!string.IsNullOrEmpty(strGearNotes)
+                    || GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
+                                                      StringComparison.OrdinalIgnoreCase))
+                    return strGearNotes;
+                string strTranslatedNameOnPage = strDisplayName;
 
-            // don't check again it is not translated
-            if (strTranslatedNameOnPage == strName)
-                return strGearNotes;
+                // don't check again it is not translated
+                if (strTranslatedNameOnPage == strName)
+                    return strGearNotes;
 
-            // if we found <altnameonpage>, and is not empty and not the same as english we must use that instead
-            if (objNode.TryGetStringFieldQuickly("altnameonpage", ref strNameOnPage)
-                && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
-                strTranslatedNameOnPage = strNameOnPage;
+                // if we found <altnameonpage>, and is not empty and not the same as english we must use that instead
+                if (objNode.TryGetStringFieldQuickly("altnameonpage", ref strNameOnPage)
+                    && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
+                    strTranslatedNameOnPage = strNameOnPage;
 
-            return GetTextFromPdf(strSource + ' ' + strDisplayPage,
-                                  strTranslatedNameOnPage, objCharacter);
+                return GetTextFromPdf(strSource + ' ' + strDisplayPage,
+                                      strTranslatedNameOnPage, objCharacter);
+            }
+        }
+
+        /// <summary>
+        /// Fetch the in-book description of a given object.
+        /// </summary>
+        public static async ValueTask<string> GetBookNotesAsync(XmlNode objNode, string strName, string strDisplayName, string strSource, string strPage, string strDisplayPage, Character objCharacter, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strEnglishNameOnPage = strName;
+            string strNameOnPage = string.Empty;
+            // make sure we have something and not just an empty tag
+            if (objNode.TryGetStringFieldQuickly("nameonpage", ref strNameOnPage) &&
+                !string.IsNullOrEmpty(strNameOnPage))
+                strEnglishNameOnPage = strNameOnPage;
+
+            using (await EnterReadLock.EnterAsync(objCharacter.LockObject, token).ConfigureAwait(false))
+            {
+                string strGearNotes = await GetTextFromPdfAsync(strSource + ' ' + strPage, strEnglishNameOnPage, objCharacter, token).ConfigureAwait(false);
+
+                if (!string.IsNullOrEmpty(strGearNotes)
+                    || GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
+                        StringComparison.OrdinalIgnoreCase))
+                    return strGearNotes;
+                string strTranslatedNameOnPage = strDisplayName;
+
+                // don't check again it is not translated
+                if (strTranslatedNameOnPage == strName)
+                    return strGearNotes;
+
+                // if we found <altnameonpage>, and is not empty and not the same as english we must use that instead
+                if (objNode.TryGetStringFieldQuickly("altnameonpage", ref strNameOnPage)
+                    && !string.IsNullOrEmpty(strNameOnPage) && strNameOnPage != strEnglishNameOnPage)
+                    strTranslatedNameOnPage = strNameOnPage;
+
+                return await GetTextFromPdfAsync(strSource + ' ' + strDisplayPage,
+                                                 strTranslatedNameOnPage, objCharacter, token).ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -997,7 +1258,7 @@ namespace Chummer
             string strSearchText = strNeedle.CleanXPath().ToUpperInvariant();
             // Construct a second needle for French where we have zero-width spaces between a starting consonant and an apostrophe in order to fix ListView's weird way of alphabetically sorting names
             string strSearchText2 = string.Empty;
-            if (GlobalSettings.Language.StartsWith("FR", StringComparison.InvariantCultureIgnoreCase) && strSearchText.Contains('\''))
+            if (GlobalSettings.Language.StartsWith("FR", StringComparison.OrdinalIgnoreCase) && strSearchText.Contains('\''))
             {
                 strSearchText2 = strSearchText
                                  .Replace("D\'A", "D\u200B\'A")
@@ -1035,22 +1296,22 @@ namespace Chummer
             // Treat everything as being uppercase so the search is case-insensitive.
             string strReturn = "((not(" + strTranslateElement + ") and contains(translate(" + strNameElement
                                // ReSharper disable once StringLiteralTypo
-                               + ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), "
+                               + ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżßａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻßABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), "
                                + strSearchText + ")) " +
                                "or contains(translate(" + strTranslateElement
                                // ReSharper disable once StringLiteralTypo
-                               + ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), "
+                               + ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżßａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻßABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), "
                                + strSearchText + "))";
             if (!string.IsNullOrEmpty(strSearchText2))
             {
                 strReturn = '(' + strReturn + " or ((not(" + strTranslateElement + ") and contains(translate("
                             + strNameElement
                             // ReSharper disable once StringLiteralTypo
-                            + ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), "
+                            + ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżßａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻßABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), "
                             + strSearchText2 + ")) " +
                             "or contains(translate(" + strTranslateElement
                             // ReSharper disable once StringLiteralTypo
-                            + ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżß','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻß'), "
+                            + ",'abcdefghijklmnopqrstuvwxyzàáâãäåæăąāçčćđďèéêëěęēėģğıìíîïīįķłĺļñňńņòóôõöőøœřŕšśşțťùúûüűůūųẃẁŵẅýỳŷÿžźżßａｂｃｄｅｆｇｈｉｊｋｌｍｎｏｐｑｒｓｔｕｖｗｘｙｚＡＢＣＤＥＦＧＨＩＪＫＬＭＮＯＰＱＲＳＴＵＶＷＸＹＺ０１２３４５６７８９','ABCDEFGHIJKLMNOPQRSTUVWXYZÀÁÂÃÄÅÆĂĄĀÇČĆĐĎÈÉÊËĚĘĒĖĢĞIÌÍÎÏĪĮĶŁĹĻÑŇŃŅÒÓÔÕÖŐØŒŘŔŠŚŞȚŤÙÚÛÜŰŮŪŲẂẀŴẄÝỲŶŸŽŹŻßABCDEFGHIJKLMNOPQRSTUVWXYZABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789'), "
                             + strSearchText2 + ")))";
             }
 
@@ -1074,9 +1335,54 @@ namespace Chummer
             // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
             try
             {
-                object objProcess = EvaluateInvariantXPath(
+                (bool blnIsSuccess, object objProcess) = EvaluateInvariantXPath(
                     strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce)
-                         .Replace("2D6", strForce), out bool blnIsSuccess);
+                         .Replace("2D6", strForce));
+                if (blnIsSuccess)
+                    intValue = ((double)objProcess).StandardRound();
+            }
+            catch (OverflowException)
+            {
+                // Result is text and not a double
+            }
+            catch (InvalidCastException)
+            {
+                // swallow this
+            }
+
+            intValue += intOffset;
+            if (intForce > 0)
+            {
+                if (intValue < intMinValueFromForce)
+                    return intMinValueFromForce;
+            }
+            else if (intValue < 0)
+                return 0;
+
+            return intValue;
+        }
+
+        /// <summary>
+        /// Convert Force, 1D6, or 2D6 into a usable value.
+        /// </summary>
+        /// <param name="strIn">Expression to convert.</param>
+        /// <param name="intForce">Force value to use.</param>
+        /// <param name="intOffset">Dice offset.</param>
+        /// <param name="intMinValueFromForce">Minimum value to return if Force is present (greater than 0).</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async ValueTask<int> ExpressionToIntAsync(string strIn, int intForce = 0, int intOffset = 0, int intMinValueFromForce = 1, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrWhiteSpace(strIn))
+                return intOffset;
+            int intValue = 1;
+            string strForce = intForce.ToString(GlobalSettings.InvariantCultureInfo);
+            // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
+            try
+            {
+                (bool blnIsSuccess, object objProcess) = await EvaluateInvariantXPathAsync(
+                    strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce)
+                         .Replace("2D6", strForce), token).ConfigureAwait(false);
                 if (blnIsSuccess)
                     intValue = ((double)objProcess).StandardRound();
             }
@@ -1118,9 +1424,9 @@ namespace Chummer
             // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
             try
             {
-                object objProcess = EvaluateInvariantXPath(
+                (bool blnIsSuccess, object objProcess) = EvaluateInvariantXPath(
                     strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce)
-                         .Replace("2D6", strForce), out bool blnIsSuccess);
+                         .Replace("2D6", strForce));
                 if (blnIsSuccess)
                     decValue = Convert.ToDecimal((double)objProcess);
             }
@@ -1146,12 +1452,79 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Convert Force, 1D6, or 2D6 into a usable value.
+        /// </summary>
+        /// <param name="strIn">Expression to convert.</param>
+        /// <param name="intForce">Force value to use.</param>
+        /// <param name="decOffset">Dice offset.</param>
+        /// <param name="decMinValueFromForce">Minimum value to return if Force is present (greater than 0).</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns></returns>
+        public static async ValueTask<decimal> ExpressionToDecimalAsync(string strIn, int intForce = 0, decimal decOffset = 0, decimal decMinValueFromForce = 1.0m, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrWhiteSpace(strIn))
+                return decOffset;
+            decimal decValue = 1;
+            string strForce = intForce.ToString(GlobalSettings.InvariantCultureInfo);
+            // This statement is wrapped in a try/catch since trying 1 div 2 results in an error with XSLT.
+            try
+            {
+                (bool blnIsSuccess, object objProcess) = await EvaluateInvariantXPathAsync(
+                    strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce)
+                         .Replace("2D6", strForce), token).ConfigureAwait(false);
+                if (blnIsSuccess)
+                    decValue = Convert.ToDecimal((double)objProcess);
+            }
+            catch (OverflowException)
+            {
+                // Result is text and not a double
+            }
+            catch (InvalidCastException)
+            {
+                // swallow this
+            }
+
+            decValue += decOffset;
+            if (intForce > 0)
+            {
+                if (decValue < decMinValueFromForce)
+                    return decMinValueFromForce;
+            }
+            else if (decValue < 0)
+                return 0;
+
+            return decValue;
+        }
+
+        public static void ShiftTabsOnMouseScroll(object sender, MouseEventArgs e)
+        {
+            if (!GlobalSettings.SwitchTabsOnHoverScroll || e == null)
+                return;
+            if (sender is TabControl tabControl && tabControl.DisplayRectangle.Contains(e.Location))
+            {
+                tabControl.SelectedIndex = (tabControl.SelectedIndex + e.Delta) % tabControl.TabCount;
+            }
+        }
+
+        /// <summary>
         /// Verify that the user wants to delete an item.
         /// </summary>
         public static bool ConfirmDelete(string strMessage)
         {
             return !GlobalSettings.ConfirmDelete ||
-                   Program.MainForm.ShowMessageBox(strMessage, LanguageManager.GetString("MessageTitle_Delete"),
+                   Program.ShowScrollableMessageBox(strMessage, LanguageManager.GetString("MessageTitle_Delete"),
+                       MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
+        }
+
+        /// <summary>
+        /// Verify that the user wants to delete an item.
+        /// </summary>
+        public static async ValueTask<bool> ConfirmDeleteAsync(string strMessage, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return !GlobalSettings.ConfirmDelete ||
+                   Program.ShowScrollableMessageBox(strMessage, await LanguageManager.GetStringAsync("MessageTitle_Delete", token: token).ConfigureAwait(false),
                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
         }
 
@@ -1161,7 +1534,18 @@ namespace Chummer
         public static bool ConfirmKarmaExpense(string strMessage)
         {
             return !GlobalSettings.ConfirmKarmaExpense ||
-                   Program.MainForm.ShowMessageBox(strMessage, LanguageManager.GetString("MessageTitle_ConfirmKarmaExpense"),
+                   Program.ShowScrollableMessageBox(strMessage, LanguageManager.GetString("MessageTitle_ConfirmKarmaExpense"),
+                       MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
+        }
+
+        /// <summary>
+        /// Verify that the user wants to spend their Karma and did not accidentally click the button.
+        /// </summary>
+        public static async ValueTask<bool> ConfirmKarmaExpenseAsync(string strMessage, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return !GlobalSettings.ConfirmKarmaExpense ||
+                   Program.ShowScrollableMessageBox(strMessage, await LanguageManager.GetStringAsync("MessageTitle_ConfirmKarmaExpense", token: token).ConfigureAwait(false),
                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
         }
 
@@ -1172,35 +1556,57 @@ namespace Chummer
 
         public static async Task<XmlDocument> GenerateCharactersExportXml(CultureInfo objCultureInfo, string strLanguage, CancellationToken objToken, params Character[] lstCharacters)
         {
-            if (objToken.IsCancellationRequested)
-                return null;
-            XmlDocument objReturn = new XmlDocument {XmlResolver = null};
-            // Write the Character information to a MemoryStream so we don't need to create any files.
-            using (MemoryStream objStream = new MemoryStream())
-            using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8))
+            objToken.ThrowIfCancellationRequested();
+            XmlDocument objReturn = new XmlDocument { XmlResolver = null };
+            // Write the Character information to a RecyclableMemoryStream so we don't need to create any files.
+            using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
             {
-                // Begin the document.
-                objWriter.WriteStartDocument();
-
-                // </characters>
-                objWriter.WriteStartElement("characters");
-
-                foreach (Character objCharacter in lstCharacters)
+                bool blnWriterError = false;
+                using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                 {
-                    await objCharacter.PrintToXmlTextWriter(objWriter, objCultureInfo, strLanguage);
-                    if (objToken.IsCancellationRequested)
-                        return objReturn;
+                    // Begin the document.
+                    await objWriter.WriteStartDocumentAsync().ConfigureAwait(false);
+                    try
+                    {
+                        // </characters>
+                        XmlElementWriteHelper objCharactersElement = await objWriter.StartElementAsync("characters", token: objToken).ConfigureAwait(false);
+                        try
+                        {
+                            foreach (Character objCharacter in lstCharacters)
+                            {
+                                await objCharacter.PrintToXmlTextWriter(objWriter, objCultureInfo, strLanguage, objToken).ConfigureAwait(false);
+                                if (objWriter.WriteState == WriteState.Error)
+                                {
+                                    Utils.BreakIfDebug();
+                                    throw new InvalidOperationException(nameof(objWriter));
+                                }
+                            }
+                        }
+                        finally
+                        {
+                            // </characters>
+                            await objCharactersElement.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                    finally
+                    {
+                        // Finish the document and flush the Writer and Stream.
+                        if (objWriter.WriteState == WriteState.Error)
+                        {
+                            objWriter.Close();
+                            blnWriterError = true;
+                        }
+                        else
+                        {
+                            await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
+                            await objWriter.FlushAsync().ConfigureAwait(false);
+                        }
+                    }
                 }
+                if (blnWriterError)
+                    throw new InvalidOperationException();
 
-                // </characters>
-                objWriter.WriteEndElement();
-
-                // Finish the document and flush the Writer and Stream.
-                objWriter.WriteEndDocument();
-                objWriter.Flush();
-
-                if (objToken.IsCancellationRequested)
-                    return objReturn;
+                objToken.ThrowIfCancellationRequested();
 
                 // Read the stream.
                 objStream.Position = 0;
@@ -1208,6 +1614,7 @@ namespace Chummer
                 using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalSettings.UnSafeXmlReaderSettings))
                     objReturn.Load(objXmlReader);
             }
+
             return objReturn;
         }
 
@@ -1217,26 +1624,34 @@ namespace Chummer
         /// Opens a PDF file using the provided source information.
         /// </summary>
         /// <param name="sender">Control from which this method was called.</param>
-        /// <param name="e">EventArgs used when this method was called.</param>
-        public static async ValueTask OpenPdfFromControl(object sender, EventArgs e)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async ValueTask OpenPdfFromControl(object sender, CancellationToken token = default)
         {
-            if (sender is Control objControl)
+            if (!(sender is Control objControl))
+                return;
+            Control objLoopControl = objControl;
+            Character objCharacter = null;
+            while (objLoopControl != null)
             {
-                Control objLoopControl = objControl;
-                Character objCharacter = null;
-                while (objLoopControl != null)
+                if (objLoopControl is CharacterShared objShared)
                 {
-                    if (objLoopControl is CharacterShared objShared)
-                    {
-                        objCharacter = objShared.CharacterObject;
-                        break;
-                    }
-
-                    objLoopControl = objLoopControl.Parent;
+                    objCharacter = objShared.CharacterObject;
+                    break;
                 }
 
-                using (new CursorWait(objControl.FindForm() ?? objControl))
-                    await OpenPdf(objControl.Text, objCharacter, string.Empty, string.Empty, true);
+                objLoopControl = await objLoopControl.DoThreadSafeFuncAsync(x => x.Parent, token: token).ConfigureAwait(false);
+            }
+
+            CursorWait objCursorWait
+                = await CursorWait.NewAsync(await objControl.DoThreadSafeFuncAsync(x => x.FindForm(), token: token).ConfigureAwait(false) ?? objControl, token: token).ConfigureAwait(false);
+            try
+            {
+                await OpenPdf(await objControl.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false), objCharacter, string.Empty,
+                              string.Empty, true, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1248,7 +1663,8 @@ namespace Chummer
         /// <param name="strPdfParameters">PDF parameters to use. If empty, use GlobalSettings.PdfParameters.</param>
         /// <param name="strPdfAppPath">PDF parameters to use. If empty, use GlobalSettings.PdfAppPath.</param>
         /// <param name="blnOpenOptions">If set to True, the user will be prompted whether they wish to link a PDF if no PDF is found.</param>
-        public static async ValueTask OpenPdf(string strSource, Character objCharacter = null, string strPdfParameters = "", string strPdfAppPath = "", bool blnOpenOptions = false)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async ValueTask OpenPdf(string strSource, Character objCharacter = null, string strPdfParameters = "", string strPdfAppPath = "", bool blnOpenOptions = false, CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(strSource))
                 return;
@@ -1259,30 +1675,38 @@ namespace Chummer
             // The user must have specified the arguments of their PDF application in order to use this functionality.
             while (string.IsNullOrWhiteSpace(strPdfParameters) || string.IsNullOrWhiteSpace(strPdfAppPath) || !File.Exists(strPdfAppPath))
             {
-                if (!blnOpenOptions || Program.MainForm.ShowMessageBox(await LanguageManager.GetStringAsync("Message_NoPDFProgramSet"),
-                    await LanguageManager.GetStringAsync("MessageTitle_NoPDFProgramSet"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                if (!blnOpenOptions || Program.ShowScrollableMessageBox(await LanguageManager.GetStringAsync("Message_NoPDFProgramSet", token: token).ConfigureAwait(false),
+                    await LanguageManager.GetStringAsync("MessageTitle_NoPDFProgramSet", token: token).ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
                     return;
-                using (new CursorWait(Program.MainForm))
-                using (EditGlobalSettings frmOptions = new EditGlobalSettings())
+                CursorWait objCursorWait = await CursorWait.NewAsync(Program.MainForm, token: token).ConfigureAwait(false);
+                try
                 {
-                    if (string.IsNullOrWhiteSpace(strPdfAppPath) || !File.Exists(strPdfAppPath))
-                        // ReSharper disable once AccessToDisposedClosure
-                        await frmOptions.DoLinkPdfReader();
-                    if (await frmOptions.ShowDialogSafeAsync(Program.MainForm) != DialogResult.OK)
-                        return;
-                    strPdfParameters = GlobalSettings.PdfParameters;
-                    strPdfAppPath = GlobalSettings.PdfAppPath;
+                    using (ThreadSafeForm<EditGlobalSettings> frmOptions
+                           = await ThreadSafeForm<EditGlobalSettings>.GetAsync(() => new EditGlobalSettings(), token).ConfigureAwait(false))
+                    {
+                        if (string.IsNullOrWhiteSpace(strPdfAppPath) || !File.Exists(strPdfAppPath))
+                            // ReSharper disable once AccessToDisposedClosure
+                            await frmOptions.MyForm.DoLinkPdfReader(token).ConfigureAwait(false);
+                        if (await frmOptions.ShowDialogSafeAsync(Program.MainForm, token).ConfigureAwait(false) != DialogResult.OK)
+                            return;
+                        strPdfParameters = GlobalSettings.PdfParameters;
+                        strPdfAppPath = GlobalSettings.PdfAppPath;
+                    }
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
 
-            string strSpace = await LanguageManager.GetStringAsync("String_Space");
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
             string[] astrSourceParts;
             if (!string.IsNullOrEmpty(strSpace))
                 astrSourceParts = strSource.Split(strSpace, StringSplitOptions.RemoveEmptyEntries);
             else if (strSource.StartsWith("SR5", StringComparison.Ordinal))
-                astrSourceParts = new[] {"SR5", strSource.Substring(3)};
+                astrSourceParts = new[] { "SR5", strSource.Substring(3) };
             else if (strSource.StartsWith("R5", StringComparison.Ordinal))
-                astrSourceParts = new[] {"R5", strSource.Substring(2)};
+                astrSourceParts = new[] { "R5", strSource.Substring(2) };
             else
             {
                 int i = strSource.Length - 1;
@@ -1294,7 +1718,7 @@ namespace Chummer
                     }
                 }
 
-                astrSourceParts = new[] {strSource.Substring(0, i), strSource.Substring(i)};
+                astrSourceParts = new[] { strSource.Substring(0, i), strSource.Substring(i) };
             }
 
             if (astrSourceParts.Length < 2)
@@ -1307,14 +1731,12 @@ namespace Chummer
                 return;
 
             // Revert the sourcebook code to the one from the XML file if necessary.
-            string strBook = await LanguageBookCodeFromAltCodeAsync(astrSourceParts[0], string.Empty, objCharacter);
+            string strBook = await LanguageBookCodeFromAltCodeAsync(astrSourceParts[0], string.Empty, objCharacter, token).ConfigureAwait(false);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
-            SourcebookInfo objBookInfo = GlobalSettings.SourcebookInfos.ContainsKey(strBook)
-                ? GlobalSettings.SourcebookInfos[strBook]
-                : null;
+            (bool blnSuccess, SourcebookInfo objBookInfo) = await (await GlobalSettings.GetSourcebookInfosAsync(token).ConfigureAwait(false)).TryGetValueAsync(strBook, token).ConfigureAwait(false);
             // If the sourcebook was not found, we can't open anything.
-            if (objBookInfo == null)
+            if (!blnSuccess || objBookInfo == null)
                 return;
             Uri uriPath = null;
             try
@@ -1330,26 +1752,36 @@ namespace Chummer
             // Check if the file actually exists.
             while (uriPath == null || !File.Exists(uriPath.LocalPath))
             {
-                if (!blnOpenOptions || Program.MainForm.ShowMessageBox(string.Format(await LanguageManager.GetStringAsync("Message_NoLinkedPDF"), await LanguageBookLongAsync(strBook)),
-                        await LanguageManager.GetStringAsync("MessageTitle_NoLinkedPDF"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                if (!blnOpenOptions)
                     return;
-                using (new CursorWait(Program.MainForm))
-                using (EditGlobalSettings frmOptions = new EditGlobalSettings())
+                if (Program.ShowScrollableMessageBox(string.Format(await LanguageManager.GetStringAsync("Message_NoLinkedPDF", token: token).ConfigureAwait(false), await LanguageBookLongAsync(strBook, token: token).ConfigureAwait(false)),
+                        await LanguageManager.GetStringAsync("MessageTitle_NoLinkedPDF", token: token).ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                    return;
+                CursorWait objCursorWait = await CursorWait.NewAsync(Program.MainForm, token: token).ConfigureAwait(false);
+                try
                 {
-                    // ReSharper disable once AccessToDisposedClosure
-                    await frmOptions.DoLinkPdf(objBookInfo.Code);
-                    if (await frmOptions.ShowDialogSafeAsync(Program.MainForm) != DialogResult.OK)
-                        return;
-                    uriPath = null;
-                    try
+                    using (ThreadSafeForm<EditGlobalSettings> frmOptions
+                           = await ThreadSafeForm<EditGlobalSettings>.GetAsync(() => new EditGlobalSettings(), token).ConfigureAwait(false))
                     {
-                        uriPath = new Uri(objBookInfo.Path);
+                        // ReSharper disable once AccessToDisposedClosure
+                        await frmOptions.MyForm.DoLinkPdf(objBookInfo.Code, token).ConfigureAwait(false);
+                        if (await frmOptions.ShowDialogSafeAsync(Program.MainForm, token).ConfigureAwait(false) != DialogResult.OK)
+                            return;
+                        uriPath = null;
+                        try
+                        {
+                            uriPath = new Uri(objBookInfo.Path);
+                        }
+                        catch (UriFormatException)
+                        {
+                            // Silently swallow the error because PDF fetching is usually done in the background
+                            objBookInfo.Path = string.Empty;
+                        }
                     }
-                    catch (UriFormatException)
-                    {
-                        // Silently swallow the error because PDF fetching is usually done in the background
-                        objBookInfo.Path = string.Empty;
-                    }
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
 
@@ -1376,6 +1808,35 @@ namespace Chummer
         /// <returns></returns>
         public static string GetTextFromPdf(string strSource, string strText, Character objCharacter = null)
         {
+            return Utils.SafelyRunSynchronously(() => GetTextFromPdfCoreAsync(true, strSource, strText, objCharacter));
+        }
+
+        /// <summary>
+        /// Gets a textblock from a given PDF document.
+        /// </summary>
+        /// <param name="strSource">Formatted Source to search, ie SR5 70</param>
+        /// <param name="strText">String to search for as an opener</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns></returns>
+        public static Task<string> GetTextFromPdfAsync(string strSource, string strText, Character objCharacter = null, CancellationToken token = default)
+        {
+            return GetTextFromPdfCoreAsync(false, strSource, strText, objCharacter, token);
+        }
+
+        /// <summary>
+        /// Gets a textblock from a given PDF document.
+        /// Uses flag hack method design outlined here to avoid locking:
+        /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development
+        /// </summary>
+        /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
+        /// <param name="strSource">Formatted Source to search, ie SR5 70</param>
+        /// <param name="strText">String to search for as an opener</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns></returns>
+        private static async Task<string> GetTextFromPdfCoreAsync(bool blnSync, string strSource, string strText, Character objCharacter, CancellationToken token = default)
+        {
             if (string.IsNullOrEmpty(strText) || string.IsNullOrEmpty(strSource))
                 return strText;
 
@@ -1390,14 +1851,20 @@ namespace Chummer
                 return string.Empty;
 
             // Revert the sourcebook code to the one from the XML file if necessary.
-            string strBook = LanguageBookCodeFromAltCode(strTemp[0], string.Empty, objCharacter);
+            string strBook = blnSync
+                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                ? LanguageBookCodeFromAltCode(strTemp[0], string.Empty, objCharacter)
+                : await LanguageBookCodeFromAltCodeAsync(strTemp[0], string.Empty, objCharacter, token).ConfigureAwait(false);
 
             // Retrieve the sourcebook information including page offset and PDF application name.
-            SourcebookInfo objBookInfo = GlobalSettings.SourcebookInfos.ContainsKey(strBook)
-                ? GlobalSettings.SourcebookInfos[strBook]
-                : null;
+            bool blnSuccess;
+            SourcebookInfo objBookInfo;
+            if (blnSync)
+                blnSuccess = GlobalSettings.SourcebookInfos.TryGetValue(strBook, out objBookInfo, token);
+            else
+                (blnSuccess, objBookInfo) = await (await GlobalSettings.GetSourcebookInfosAsync(token).ConfigureAwait(false)).TryGetValueAsync(strBook, token).ConfigureAwait(false);
             // If the sourcebook was not found, we can't open anything.
-            if (objBookInfo == null)
+            if (!blnSuccess || objBookInfo == null)
                 return string.Empty;
 
             Uri uriPath;
@@ -1415,10 +1882,6 @@ namespace Chummer
                 return string.Empty;
             intPage += objBookInfo.Offset;
 
-            PdfDocument objPdfDocument = objBookInfo.CachedPdfDocument;
-            if (objPdfDocument == null)
-                return string.Empty;
-
             // due to the tag <nameonpage> for the qualities those variants are no longer needed,
             // as such the code would run at most half of the comparisons with the variants
             // but to be sure we find everything still strip unnecessary stuff after the ':' and any number in it.
@@ -1434,157 +1897,175 @@ namespace Chummer
             int intBlockEndIndex = -1;
             int intExtraAllCapsInfo = 0;
             bool blnTitleWithColon = false; // it is either an uppercase title or title in a paragraph with a colon
-            int intMaxPagesToRead = 3; // parse at most 3 pages of content
-            // Loop through each page, starting at the listed page + offset.
-            for (; intPage <= objPdfDocument.GetNumberOfPages(); ++intPage)
+            string strReturn = blnSync ? Utils.SafelyRunSynchronously(FetchTexts, token) : await Task.Run(FetchTexts, token).ConfigureAwait(false);
+
+            async Task<string> FetchTexts()
             {
-                // failsafe if something goes wrong, I guess no description takes more than two full pages?
-                if (intMaxPagesToRead-- == 0)
-                    break;
+                PdfDocument objPdfDocument = objBookInfo.CachedPdfDocument;
+                if (objPdfDocument == null)
+                    return string.Empty;
 
-                int intProcessedStrings = lstStringFromPdf.Count;
-                // each page should have its own text extraction strategy for it to work properly
-                // this way we don't need to check for previous page appearing in the current page
-                // https://stackoverflow.com/questions/35911062/why-are-gettextfrompage-from-itextsharp-returning-longer-and-longer-strings
-
-                string strPageText;
-                try
+                int intMaxPagesToRead = 3; // parse at most 3 pages of content
+                // Loop through each page, starting at the listed page + offset.
+                for (; intPage <= objPdfDocument.GetNumberOfPages(); ++intPage)
                 {
-                    strPageText = PdfTextExtractor.GetTextFromPage(objPdfDocument.GetPage(intPage),
-                        new SimpleTextExtractionStrategy())
-                    .CleanStylisticLigatures().NormalizeWhiteSpace().NormalizeLineEndings();
-                }
-                catch(IndexOutOfRangeException)
-                {
-                    return LanguageManager.GetString("Error_Message_PDF_IndexOutOfBounds", false);
-                }
-
-                // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
-                lstStringFromPdf.AddRange(strPageText.SplitNoAlloc(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries).Where(s => !string.IsNullOrWhiteSpace(s)).Select(x => x.Trim()));
-
-                for (int i = intProcessedStrings; i < lstStringFromPdf.Count; i++)
-                {
-                    // failsafe for languages that don't have case distinction (chinese, japanese, etc)
-                    // there not much to be done for those languages, so stop after 10 continuous lines of uppercase text after our title
-                    if (intExtraAllCapsInfo > 10)
+                    // failsafe if something goes wrong, I guess no description takes more than two full pages?
+                    if (intMaxPagesToRead-- == 0)
                         break;
 
-                    string strCurrentLine = lstStringFromPdf[i];
-                    // we still haven't found anything
-                    if (intTitleIndex == -1)
+                    int intProcessedStrings = lstStringFromPdf.Count;
+                    // each page should have its own text extraction strategy for it to work properly
+                    // this way we don't need to check for previous page appearing in the current page
+                    // https://stackoverflow.com/questions/35911062/why-are-gettextfrompage-from-itextsharp-returning-longer-and-longer-strings
+
+                    string strPageText;
+                    try
                     {
-                        int intTextToSearchLength = strTextToSearch.Length;
-                        int intTitleExtraLines = 0;
-                        if (strCurrentLine.Length < intTextToSearchLength)
+                        strPageText = PdfTextExtractor.GetTextFromPage(objPdfDocument.GetPage(intPage),
+                                                                       new SimpleTextExtractionStrategy())
+                                                      .CleanStylisticLigatures().NormalizeWhiteSpace()
+                                                      .NormalizeLineEndings().CleanOfInvalidUnicodeChars();
+                    }
+                    catch (IndexOutOfRangeException)
+                    {
+                        return blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? LanguageManager.GetString("Error_Message_PDF_IndexOutOfBounds", false, token)
+                            : await LanguageManager.GetStringAsync("Error_Message_PDF_IndexOutOfBounds", false, token).ConfigureAwait(false);
+                    }
+
+                    // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
+                    lstStringFromPdf.AddRange(strPageText
+                        .SplitNoAlloc(Environment.NewLine, StringSplitOptions.RemoveEmptyEntries)
+                        .Where(s => !string.IsNullOrWhiteSpace(s)).Select(x => x.Trim()));
+
+                    for (int i = intProcessedStrings; i < lstStringFromPdf.Count; i++)
+                    {
+                        // failsafe for languages that don't have case distinction (chinese, japanese, etc)
+                        // there not much to be done for those languages, so stop after 10 continuous lines of uppercase text after our title
+                        if (intExtraAllCapsInfo > 10)
+                            break;
+
+                        string strCurrentLine = lstStringFromPdf[i];
+                        // we still haven't found anything
+                        if (intTitleIndex == -1)
                         {
-                            // if the line is smaller first check if it contains the start of the text, before parsing the rest
-                            if (strTextToSearch.StartsWith(strCurrentLine, StringComparison.OrdinalIgnoreCase))
+                            int intTextToSearchLength = strTextToSearch.Length;
+                            int intTitleExtraLines = 0;
+                            if (strCurrentLine.Length < intTextToSearchLength)
                             {
-                                // now just add more lines to it until it is enough
-                                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                              out StringBuilder sbdCurrentLine))
+                                // if the line is smaller first check if it contains the start of the text, before parsing the rest
+                                if (strTextToSearch.StartsWith(strCurrentLine, StringComparison.OrdinalIgnoreCase))
                                 {
-                                    sbdCurrentLine.Append(strCurrentLine);
-                                    while (sbdCurrentLine.Length < intTextToSearchLength
-                                           && (i + intTitleExtraLines + 1) < lstStringFromPdf.Count)
+                                    // now just add more lines to it until it is enough
+                                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                               out StringBuilder sbdCurrentLine))
                                     {
-                                        intTitleExtraLines++;
-                                        // add the content plus a space
-                                        sbdCurrentLine.Append(' ').Append(lstStringFromPdf[i + intTitleExtraLines]);
+                                        sbdCurrentLine.Append(strCurrentLine);
+                                        while (sbdCurrentLine.Length < intTextToSearchLength
+                                               && (i + intTitleExtraLines + 1) < lstStringFromPdf.Count)
+                                        {
+                                            intTitleExtraLines++;
+                                            // add the content plus a space
+                                            sbdCurrentLine.Append(' ').Append(lstStringFromPdf[i + intTitleExtraLines]);
+                                        }
+
+                                        strCurrentLine = sbdCurrentLine.ToString();
                                     }
-
-                                    strCurrentLine = sbdCurrentLine.ToString();
+                                }
+                                else
+                                {
+                                    // just go to the next line
+                                    continue;
                                 }
                             }
-                            else
+
+                            // now either we have enough text to search or the page doesn't have anymore stuff and must give up
+                            if (strCurrentLine.Length < intTextToSearchLength)
+                                break;
+
+                            if (strCurrentLine.StartsWith(strTextToSearch, StringComparison.OrdinalIgnoreCase))
                             {
-                                // just go to the next line
-                                continue;
+                                // WE FOUND SOMETHING! lets check what kind block we have
+                                // if it is bigger it must have a ':' after the name otherwise it is probably the wrong stuff
+                                if (strCurrentLine.Length > intTextToSearchLength)
+                                {
+                                    if (strCurrentLine[intTextToSearchLength] == ':')
+                                    {
+                                        intTitleIndex = i;
+                                        blnTitleWithColon = true;
+                                    }
+                                }
+                                else // if it is not bigger it is the same length
+                                {
+                                    // this must be an upper case title
+                                    if (strCurrentLine.IsAllLettersUpperCase())
+                                    {
+                                        intTitleIndex = i;
+                                        blnTitleWithColon = false;
+                                    }
+                                }
+
+                                // if we found the tile lets finish some things before finding the text block
+                                if (intTitleIndex != -1 && intTitleExtraLines > 0)
+                                {
+                                    // if we had to concatenate stuff lets fix the list of strings before continuing
+                                    lstStringFromPdf[i] = strCurrentLine;
+                                    lstStringFromPdf.RemoveRange(i + 1, intTitleExtraLines);
+                                }
                             }
                         }
-
-                        // now either we have enough text to search or the page doesn't have anymore stuff and must give up
-                        if (strCurrentLine.Length < intTextToSearchLength)
-                            break;
-
-                        if (strCurrentLine.StartsWith(strTextToSearch, StringComparison.OrdinalIgnoreCase))
+                        else // we already found our title, just go to the end of the block
                         {
-                            // WE FOUND SOMETHING! lets check what kind block we have
-                            // if it is bigger it must have a ':' after the name otherwise it is probably the wrong stuff
-                            if (strCurrentLine.Length > intTextToSearchLength)
+                            // it is something in all caps we need to verify what it is
+                            if (strCurrentLine.IsAllLettersUpperCase())
                             {
-                                if (strCurrentLine[intTextToSearchLength] == ':')
+                                // if it is header or footer information just remove it
+                                // do we also include lines with just numbers as probably page numbers??
+                                if (strCurrentLine.All(char.IsDigit) || strCurrentLine.Contains(">>") ||
+                                    strCurrentLine.Contains("<<"))
                                 {
-                                    intTitleIndex = i;
-                                    blnTitleWithColon = true;
+                                    lstStringFromPdf.RemoveAt(i);
+                                    // rewind and go again
+                                    i--;
+                                    continue;
                                 }
-                            }
-                            else // if it is not bigger it is the same length
-                            {
-                                // this must be an upper case title
-                                if (strCurrentLine.IsAllLettersUpperCase())
+
+                                // if it is a line in all caps following the all caps title just skip it
+                                if (!blnTitleWithColon && i == intTitleIndex + intExtraAllCapsInfo + 1)
                                 {
-                                    intTitleIndex = i;
-                                    blnTitleWithColon = false;
+                                    intExtraAllCapsInfo++;
+                                    continue;
                                 }
+
+                                // if we are here it is the end of the block we found our end, mark it and be done
+                                intBlockEndIndex = i;
+                                break;
                             }
 
-                            // if we found the tile lets finish some things before finding the text block
-                            if (intTitleIndex != -1 && intTitleExtraLines > 0)
+                            // if it is a title with colon we stop in the next line that has a colon
+                            // this is not perfect, if we had bold information we could do more about that
+                            if (blnTitleWithColon && strCurrentLine.Contains(':'))
                             {
-                                // if we had to concatenate stuff lets fix the list of strings before continuing
-                                lstStringFromPdf[i] = strCurrentLine;
-                                lstStringFromPdf.RemoveRange(i + 1, intTitleExtraLines);
+                                intBlockEndIndex = i;
+                                break;
                             }
                         }
                     }
-                    else // we already found our title, just go to the end of the block
-                    {
-                        // it is something in all caps we need to verify what it is
-                        if (strCurrentLine.IsAllLettersUpperCase())
-                        {
-                            // if it is header or footer information just remove it
-                            // do we also include lines with just numbers as probably page numbers??
-                            if (strCurrentLine.All(char.IsDigit) || strCurrentLine.Contains(">>") || strCurrentLine.Contains("<<"))
-                            {
-                                lstStringFromPdf.RemoveAt(i);
-                                // rewind and go again
-                                i--;
-                                continue;
-                            }
 
-                            // if it is a line in all caps following the all caps title just skip it
-                            if (!blnTitleWithColon && i == intTitleIndex + intExtraAllCapsInfo + 1)
-                            {
-                                intExtraAllCapsInfo++;
-                                continue;
-                            }
-
-                            // if we are here it is the end of the block we found our end, mark it and be done
-                            intBlockEndIndex = i;
-                            break;
-                        }
-
-                        // if it is a title with colon we stop in the next line that has a colon
-                        // this is not perfect, if we had bold information we could do more about that
-                        if (blnTitleWithColon && strCurrentLine.Contains(':'))
-                        {
-                            intBlockEndIndex = i;
-                            break;
-                        }
-                    }
+                    // we scanned the first page and found nothing, just give up
+                    if (intTitleIndex == -1)
+                        return string.Empty;
+                    // already have our end, quit searching here
+                    if (intBlockEndIndex != -1)
+                        break;
                 }
 
-                // we scanned the first page and found nothing, just give up
-                if (intTitleIndex == -1)
-                    return string.Empty;
-                // already have our end, quit searching here
-                if (intBlockEndIndex != -1)
-                    break;
+                return string.Empty;
             }
 
             // we have our textblock, lets format it and be done with it
-            if (intBlockEndIndex != -1)
+            if (string.IsNullOrEmpty(strReturn) && intBlockEndIndex != -1)
             {
                 string[] strArray = lstStringFromPdf.ToArray();
                 // if it is a "paragraph title" just concatenate everything
@@ -1636,11 +2117,11 @@ namespace Chummer
                         }
                     }
 
-                    return sbdResultContent.ToString().Trim();
+                    strReturn = sbdResultContent.ToString().Trim();
                 }
             }
 
-            return string.Empty;
+            return strReturn;
         }
 
         #endregion PDF Functions
@@ -1735,10 +2216,55 @@ namespace Chummer
                     return LanguageManager.GetString("String_Days", strLanguage);
 
                 case Timescale.Instant:
-                    return LanguageManager.GetString("String_Immediate", strLanguage);
-
                 default:
                     return LanguageManager.GetString("String_Immediate", strLanguage);
+            }
+        }
+
+        /// <summary>
+        /// Convert a string to a Timescale.
+        /// </summary>
+        /// <param name="strValue">String value to convert.</param>
+        /// <param name="blnSingle">Whether to return multiple of the timescale (Hour vs Hours)</param>
+        /// <param name="strLanguage">Language to use. If left empty, will use current program language.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static Task<string> GetTimescaleStringAsync(Timescale strValue, bool blnSingle, string strLanguage = "", CancellationToken token = default)
+        {
+            switch (strValue)
+            {
+                case Timescale.Seconds when blnSingle:
+                    return LanguageManager.GetStringAsync("String_Second", strLanguage, token: token);
+
+                case Timescale.Seconds:
+                    return LanguageManager.GetStringAsync("String_Seconds", strLanguage, token: token);
+
+                case Timescale.CombatTurns when blnSingle:
+                    return LanguageManager.GetStringAsync("String_CombatTurn", strLanguage, token: token);
+
+                case Timescale.CombatTurns:
+                    return LanguageManager.GetStringAsync("String_CombatTurns", strLanguage, token: token);
+
+                case Timescale.Minutes when blnSingle:
+                    return LanguageManager.GetStringAsync("String_Minute", strLanguage, token: token);
+
+                case Timescale.Minutes:
+                    return LanguageManager.GetStringAsync("String_Minutes", strLanguage, token: token);
+
+                case Timescale.Hours when blnSingle:
+                    return LanguageManager.GetStringAsync("String_Hour", strLanguage, token: token);
+
+                case Timescale.Hours:
+                    return LanguageManager.GetStringAsync("String_Hours", strLanguage, token: token);
+
+                case Timescale.Days when blnSingle:
+                    return LanguageManager.GetStringAsync("String_Day", strLanguage, token: token);
+
+                case Timescale.Days:
+                    return LanguageManager.GetStringAsync("String_Days", strLanguage, token: token);
+
+                case Timescale.Instant:
+                default:
+                    return LanguageManager.GetStringAsync("String_Immediate", strLanguage, token: token);
             }
         }
 

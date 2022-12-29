@@ -95,7 +95,7 @@ namespace Chummer
             }
             finally
             {
-                Utils.StringHashSetPool.Return(setReturn);
+                Utils.StringHashSetPool.Return(ref setReturn);
             }
         }
     }

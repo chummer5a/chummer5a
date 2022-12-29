@@ -23,20 +23,22 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Runtime.Serialization;
 using System.Text;
-using System.Web.Script.Serialization;
 using System.Windows.Forms;
 using Microsoft.Win32;
+using Newtonsoft.Json;
 using NLog;
 
 namespace Chummer.Backend
 {
     public static class CrashHandler
     {
-        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
 
-        private sealed class DumpData : ISerializable, IDisposable
+        private sealed class DumpData : ISerializable, IDeserializationCallback
         {
             public DumpData(Exception ex)
             {
@@ -97,6 +99,7 @@ namespace Chummer.Backend
                     {
                         //On 32 bit builds? get 64 bit registry
                         objCurrentVersionKey.Close();
+                        objCurrentVersionKey.Dispose();
                         obj64BitRegistryKey = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
                         objCurrentVersionKey = obj64BitRegistryKey.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
                     }
@@ -135,7 +138,7 @@ namespace Chummer.Backend
 
             // JavaScriptSerializer requires that all properties it accesses be public.
             // ReSharper disable once MemberCanBePrivate.Local
-            public readonly LockingDictionary<string, string> _dicCapturedFiles = new LockingDictionary<string, string>();
+            public readonly Dictionary<string, string> _dicCapturedFiles = new Dictionary<string, string>();
 
             // ReSharper disable once MemberCanBePrivate.Local
             public readonly Dictionary<string, string> _dicPretendFiles;
@@ -149,79 +152,112 @@ namespace Chummer.Backend
             // ReSharper disable once MemberCanBePrivate.Local
             public readonly uint _uintThreadId = NativeMethods.GetCurrentThreadId();
 
-            public string SerializeBase64()
+            // ReSharper disable once MemberCanBePrivate.Local
+            public readonly IntPtr _ptrExceptionInfo = Marshal.GetExceptionPointers();
+
+            public void SerializeJson(JsonWriter objWriter)
             {
-                string altson = new JavaScriptSerializer().Serialize(this);
-                return Convert.ToBase64String(Encoding.UTF8.GetBytes(altson));
+                JsonSerializer.CreateDefault().Serialize(objWriter, this);
             }
 
-            public void AddFile(string strFileName)
+            internal void AddFile(string strFileName)
             {
+                if (_dicCapturedFiles.ContainsKey(strFileName))
+                    return;
+                try
+                {
+                    _dicCapturedFiles.Add(strFileName, string.Empty);
+                }
+                catch (ArgumentException)
+                {
+                    return;
+                }
                 string strContents;
                 try
                 {
-                    strContents = File.ReadAllText(strFileName);
+                    strContents = File.ReadAllText(strFileName, Encoding.UTF8);
                 }
                 catch (Exception e)
                 {
                     strContents = e.ToString();
                 }
-
-                if (!_dicCapturedFiles.TryAdd(strFileName, strContents))
-                    _dicCapturedFiles[strFileName] = strContents;
+                _dicCapturedFiles[strFileName] = strContents;
             }
 
             public void GetObjectData(SerializationInfo info, StreamingContext context)
             {
-                info.AddValue("procesid", _intProcessId);
-                info.AddValue("threadid", _uintThreadId);
-                foreach (KeyValuePair<string, string> objLoopKeyValuePair in _dicAttributes)
-                    info.AddValue(objLoopKeyValuePair.Key, objLoopKeyValuePair.Value);
-                foreach (KeyValuePair<string, string> objLoopKeyValuePair in _dicPretendFiles)
-                    info.AddValue(objLoopKeyValuePair.Key, objLoopKeyValuePair.Value);
-                foreach (KeyValuePair<string, string> objLoopKeyValuePair in _dicCapturedFiles)
-                    info.AddValue(objLoopKeyValuePair.Key, objLoopKeyValuePair.Value);
+                info.AddValue("_intProcessId", _intProcessId);
+                info.AddValue("_uintThreadId", _uintThreadId);
+                info.AddValue("_ptrExceptionInfo", _ptrExceptionInfo);
+                info.AddValue("_dicAttributes", _dicAttributes);
+                info.AddValue("_dicPretendFiles", _dicPretendFiles);
+                info.AddValue("_dicCapturedFiles", _dicCapturedFiles);
             }
 
             /// <inheritdoc />
-            public void Dispose()
+            public void OnDeserialization(object sender)
             {
-                _dicCapturedFiles?.Dispose();
+                _dicAttributes.OnDeserialization(sender);
+                _dicPretendFiles.OnDeserialization(sender);
             }
         }
 
-        public static void WebMiniDumpHandler(Exception ex)
+        public static void WebMiniDumpHandler(Exception ex, DateTime datCrashDateTime)
         {
-            
-
             try
             {
-                using (DumpData dump = new DumpData(ex))
+                DumpData dump = new DumpData(ex);
+                foreach (string strSettingFile in Directory.EnumerateFiles(Utils.GetSettingsFolderPath, "*.xml"))
                 {
-                    foreach (string strSettingFile in Directory.EnumerateFiles(
-                        Path.Combine(Utils.GetStartupPath, "settings"), "*.xml"))
-                    {
-                        dump.AddFile(strSettingFile);
-                    }
-
-                    dump.AddFile(Path.Combine(Utils.GetStartupPath, "chummerlog.txt"));
-
-                    byte[] info = new UTF8Encoding(true).GetBytes(dump.SerializeBase64());
-                    File.WriteAllBytes(Path.Combine(Utils.GetStartupPath, "json.txt"), info);
+                    dump.AddFile(strSettingFile);
                 }
 
-                //Process crashHandler = Process.Start("crashhandler", "crash " + Path.Combine(Utils.GetStartupPath, "json.txt") + " --debug");
-                Process crashHandler = Process.Start("crashhandler", "crash " + Path.Combine(Utils.GetStartupPath, "json.txt"));
+                string strChummerLog = Path.Combine(Utils.GetStartupPath, "chummerlog.txt");
+                if (File.Exists(strChummerLog))
+                    dump.AddFile(strChummerLog);
 
-                crashHandler?.WaitForExit();
+                string strJsonPath = Path.Combine(Utils.GetStartupPath, "chummer_crash_" + datCrashDateTime.ToFileTimeUtc() + ".json");
+                using (FileStream objFileStream = new FileStream(strJsonPath, FileMode.Create, FileAccess.Write, FileShare.None))
+                using (StreamWriter objStreamWriter = new StreamWriter(objFileStream))
+                using (JsonWriter objJsonWriter = new JsonTextWriter(objStreamWriter))
+                {
+                    dump.SerializeJson(objJsonWriter);
+                }
+
+#if DEBUG
+                using (Process prcCrashHandler
+                       = Process.Start(Path.Combine(Utils.GetStartupPath, "CrashHandler.exe"),
+                                       "crash \"" + strJsonPath + "\" \"" + datCrashDateTime.ToFileTimeUtc()
+                                       + "\" --debug"))
+#else
+                using (Process prcCrashHandler
+                       = Process.Start(Path.Combine(Utils.GetStartupPath, "CrashHandler.exe"),
+                                       "crash \"" + strJsonPath + "\" \"" + datCrashDateTime.ToFileTimeUtc() + "\""))
+#endif
+                {
+                    if (prcCrashHandler == null)
+                        return;
+                    prcCrashHandler.WaitForExit();
+                    if (prcCrashHandler.ExitCode != 0)
+                    {
+                        Program.ShowScrollableMessageBox(
+                            "Failed to create crash report because of an issue with the crash handler."
+                            + Environment.NewLine + "Chummer crashed with version: " + Utils.CurrentChummerVersion
+                            + Environment.NewLine + "Crash Handler crashed with exit code: "
+                            + prcCrashHandler.ExitCode + Environment.NewLine + "Crash information:"
+                            + Environment.NewLine + ex, "Failed to Create Crash Report", MessageBoxButtons.OK,
+                            MessageBoxIcon.Error);
+                    }
+                }
             }
             catch (Exception nex)
             {
-                Program.MainForm.ShowMessageBox(
-                    "Failed to create crash report." + Environment.NewLine +
-                    "Chummer crashed with version: " + Utils.CurrentChummerVersion + Environment.NewLine +
-                    "Here is some information to help the developers figure out why:" + Environment.NewLine + nex +
-                    Environment.NewLine + "Crash information:" + Environment.NewLine + ex, "Failed to Create Crash Report", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.ShowScrollableMessageBox(
+                    "Failed to create crash report." + Environment.NewLine + "Chummer crashed with version: "
+                    + Utils.CurrentChummerVersion + Environment.NewLine
+                    + "Here is some information to help the developers figure out why:" + Environment.NewLine + nex
+                    + Environment.NewLine + "Crash information:" + Environment.NewLine + ex,
+                    "Failed to Create Crash Report", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
     }

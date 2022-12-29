@@ -19,6 +19,8 @@
 
 using System;
 using System.Globalization;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -28,69 +30,97 @@ namespace Chummer
         private static readonly LockingDictionary<string, Tuple<string, string>> s_DicCachedStrings = new LockingDictionary<string, Tuple<string, string>>();
         private readonly int _intHashCode;
 
-        public SourceString(string strSourceString, string strLanguage = "", CultureInfo objCultureInfo = null, Character objCharacter = null)
+        public static readonly SourceString Blank = GetSourceString(string.Empty, 0, GlobalSettings.DefaultLanguage, GlobalSettings.InvariantCultureInfo);
+
+        public static SourceString GetSourceString(string strSourceString, string strLanguage = "",
+                                                   CultureInfo objCultureInfo = null, Character objCharacter = null)
         {
-            Language = !string.IsNullOrEmpty(strLanguage) ? strLanguage : GlobalSettings.Language;
-            CultureInfo = objCultureInfo ?? GlobalSettings.CultureInfo;
             string strCode = strSourceString ?? string.Empty;
-            Page = 0;
+            int intPage = 0;
             int intWhitespaceIndex = strCode.IndexOf(' ');
             if (intWhitespaceIndex != -1)
             {
                 strCode = strCode.Substring(0, intWhitespaceIndex);
                 if (intWhitespaceIndex + 1 < strCode.Length)
                 {
-                    int.TryParse(strCode.Substring(intWhitespaceIndex + 1), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intPage);
-                    Page = intPage;
+                    int.TryParse(strCode.Substring(intWhitespaceIndex + 1), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out intPage);
                 }
             }
-
-            Code = CommonFunctions.LanguageBookShort(strCode, Language, objCharacter);
-            _intHashCode = (Language, CultureInfo, Code, Page).GetHashCode();
-            if (!s_DicCachedStrings.ContainsKey(Language))
-                s_DicCachedStrings.TryAdd(Language, new Tuple<string, string>(
-                        LanguageManager.GetString("String_Space", Language),
-                        LanguageManager.GetString("String_Page", Language)));
-            string strSpace = s_DicCachedStrings[Language].Item1;
-            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strCode, Language, objCharacter) + strSpace + s_DicCachedStrings[Language].Item2 + strSpace + Page.ToString(CultureInfo);
+            return GetSourceString(strCode, intPage, strLanguage, objCultureInfo, objCharacter);
         }
 
-        public SourceString(string strSource, string strPage, string strLanguage, CultureInfo objCultureInfo = null, Character objCharacter = null)
+        public static ValueTask<SourceString> GetSourceStringAsync(string strSourceString, string strLanguage = "",
+                                                                         CultureInfo objCultureInfo = null, Character objCharacter = null, CancellationToken token = default)
         {
-            Language = !string.IsNullOrEmpty(strLanguage) ? strLanguage : GlobalSettings.Language;
-            CultureInfo = objCultureInfo ?? GlobalSettings.CultureInfo;
+            string strCode = strSourceString ?? string.Empty;
+            int intPage = 0;
+            int intWhitespaceIndex = strCode.IndexOf(' ');
+            if (intWhitespaceIndex != -1)
+            {
+                strCode = strCode.Substring(0, intWhitespaceIndex);
+                if (intWhitespaceIndex + 1 < strCode.Length)
+                {
+                    int.TryParse(strCode.Substring(intWhitespaceIndex + 1), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out intPage);
+                }
+            }
+            return GetSourceStringAsync(strCode, intPage, strLanguage, objCultureInfo, objCharacter, token);
+        }
+
+        public static SourceString GetSourceString(string strSource, string strPage, string strLanguage = "",
+                                                   CultureInfo objCultureInfo = null, Character objCharacter = null)
+        {
             int.TryParse(strPage, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intPage);
-            Page = intPage;
-
-            Code = CommonFunctions.LanguageBookShort(strSource, Language, objCharacter);
-            _intHashCode = (Language, CultureInfo, Code, Page).GetHashCode();
-            if (!s_DicCachedStrings.ContainsKey(Language))
-                s_DicCachedStrings.TryAdd(Language, new Tuple<string, string>(
-                    LanguageManager.GetString("String_Space", Language),
-                    LanguageManager.GetString("String_Page", Language)));
-            string strSpace = s_DicCachedStrings[Language].Item1;
-            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strSource, Language, objCharacter) + strSpace + s_DicCachedStrings[Language].Item2 + strSpace + Page.ToString(CultureInfo);
+            return GetSourceString(strSource, intPage, strLanguage, objCultureInfo, objCharacter);
         }
 
-        public SourceString(string strSource, int intPage, string strLanguage = "", CultureInfo objCultureInfo = null, Character objCharacter = null)
+        public static ValueTask<SourceString> GetSourceStringAsync(string strSource, string strPage, string strLanguage = "",
+                                                                   CultureInfo objCultureInfo = null, Character objCharacter = null, CancellationToken token = default)
+        {
+            int.TryParse(strPage, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intPage);
+            return GetSourceStringAsync(strSource, intPage, strLanguage, objCultureInfo, objCharacter, token);
+        }
+
+        public static SourceString GetSourceString(string strSource, int intPage, string strLanguage = "",
+                                                   CultureInfo objCultureInfo = null, Character objCharacter = null)
+        {
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalSettings.Language;
+            return new SourceString(CommonFunctions.LanguageBookShort(strSource, strLanguage, objCharacter),
+                                    CommonFunctions.LanguageBookLong(strSource, strLanguage, objCharacter), intPage,
+                                    strLanguage, objCultureInfo);
+        }
+
+        public static async ValueTask<SourceString> GetSourceStringAsync(string strSource, int intPage, string strLanguage = "",
+                                                                         CultureInfo objCultureInfo = null, Character objCharacter = null, CancellationToken token = default)
+        {
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalSettings.Language;
+            return new SourceString(await CommonFunctions.LanguageBookShortAsync(strSource, strLanguage, objCharacter, token).ConfigureAwait(false),
+                                    await CommonFunctions.LanguageBookLongAsync(strSource, strLanguage, objCharacter, token).ConfigureAwait(false), intPage,
+                                    strLanguage, objCultureInfo);
+        }
+
+        private SourceString(string strBookCodeShort, string strBookCodeLong, int intPage, string strLanguage, CultureInfo objCultureInfo)
         {
             Language = !string.IsNullOrEmpty(strLanguage) ? strLanguage : GlobalSettings.Language;
             CultureInfo = objCultureInfo ?? GlobalSettings.CultureInfo;
             Page = intPage;
 
-            Code = CommonFunctions.LanguageBookShort(strSource, Language, objCharacter);
+            Code = strBookCodeShort;
             _intHashCode = (Language, CultureInfo, Code, Page).GetHashCode();
             if (!s_DicCachedStrings.ContainsKey(Language))
                 s_DicCachedStrings.TryAdd(Language, new Tuple<string, string>(
                     LanguageManager.GetString("String_Space", Language),
                     LanguageManager.GetString("String_Page", Language)));
             string strSpace = s_DicCachedStrings[Language].Item1;
-            LanguageBookTooltip = CommonFunctions.LanguageBookLong(strSource, Language, objCharacter) + strSpace + s_DicCachedStrings[Language].Item2 + strSpace + Page.ToString(CultureInfo);
+            LanguageBookTooltip = strBookCodeLong + strSpace + s_DicCachedStrings[Language].Item2 + strSpace + Page.ToString(CultureInfo);
         }
 
         public override string ToString()
         {
-            return Code + s_DicCachedStrings[Language].Item1 + Page.ToString(CultureInfo);
+            return string.IsNullOrEmpty(Code)
+                ? string.Empty
+                : Code + s_DicCachedStrings[Language].Item1 + Page.ToString(CultureInfo);
         }
 
         /// <summary>
@@ -145,8 +175,23 @@ namespace Chummer
         {
             if (source == null)
                 return;
-            source.Text = ToString();
+            string strText = ToString();
+            source.DoThreadSafe(x => x.Text = strText);
             source.SetToolTip(LanguageBookTooltip);
+        }
+
+        /// <summary>
+        /// Set the Text and ToolTips for the selected control.
+        /// </summary>
+        /// <param name="source"></param>
+        /// <param name="token"></param>
+        public async Task SetControlAsync(Control source, CancellationToken token = default)
+        {
+            if (source == null)
+                return;
+            string strText = ToString();
+            await source.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
+            await source.SetToolTipAsync(LanguageBookTooltip, token).ConfigureAwait(false);
         }
 
         public bool Equals(SourceString other)

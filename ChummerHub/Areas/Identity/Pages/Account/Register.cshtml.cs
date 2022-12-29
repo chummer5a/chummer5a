@@ -1,20 +1,23 @@
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Text;
 using System.Text.Encodings.Web;
 using System.Threading.Tasks;
-using ChummerHub.API;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
 
 namespace ChummerHub.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel'
     public class RegisterModel : PageModel
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel'
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
@@ -38,41 +41,37 @@ namespace ChummerHub.Areas.Identity.Pages.Account
 
         public string ReturnUrl { get; set; }
 
+        public IList<AuthenticationScheme> ExternalLogins { get; set; }
+
         public class InputModel
         {
             [Required]
             [EmailAddress]
             [Display(Name = "Email")]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.InputModel.Email'
             public string Email { get; set; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.InputModel.Email'
 
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.InputModel.Password'
             public string Password { get; set; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.InputModel.Password'
 
             [DataType(DataType.Password)]
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "The password and confirmation password do not match.")]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.InputModel.ConfirmPassword'
             public string ConfirmPassword { get; set; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.InputModel.ConfirmPassword'
         }
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.OnGet(string)'
-        public void OnGet(string returnUrl = null)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'RegisterModel.OnGet(string)'
+        public async Task OnGetAsync(string returnUrl = null)
         {
             ReturnUrl = returnUrl;
+            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
         }
 
         public async Task<IActionResult> OnPostAsync(string returnUrl = null)
         {
-            returnUrl = returnUrl ?? Url.Content("~/");
+            returnUrl ??= Url.Content("~/");
+            ExternalLogins = (await _signInManager.GetExternalAuthenticationSchemesAsync()).ToList();
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email };
@@ -81,20 +80,26 @@ namespace ChummerHub.Areas.Identity.Pages.Account
                 {
                     _logger.LogInformation("User created a new account with password.");
 
-                    var result1 = await _userManager.AddToRoleAsync(user, Authorizarion.Constants.UserRoleRegistered);
-
                     var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                    code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
                     var callbackUrl = Url.Page(
                         "/Account/ConfirmEmail",
                         pageHandler: null,
-                        values: new { userId = user.Id, code },
+                        values: new { area = "Identity", userId = user.Id, code = code, returnUrl = returnUrl },
                         protocol: Request.Scheme);
 
                     await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
                         $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
 
-                    await _signInManager.SignInAsync(user, isPersistent: true);
-                    return LocalRedirect(returnUrl);
+                    if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                    {
+                        return RedirectToPage("RegisterConfirmation", new { email = Input.Email, returnUrl = returnUrl });
+                    }
+                    else
+                    {
+                        await _signInManager.SignInAsync(user, isPersistent: false);
+                        return LocalRedirect(returnUrl);
+                    }
                 }
                 foreach (var error in result.Errors)
                 {

@@ -28,14 +28,14 @@ namespace Chummer
 		/// </summary>
 		private void InitializeComponent()
 		{
-            this.components = new System.ComponentModel.Container();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(EditNotes));
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.txtNotes = new System.Windows.Forms.TextBox();
-            this.btnColorSelect = new Chummer.DpiFriendlyImagedButton(this.components);
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.btnColorSelect = new Chummer.DpiFriendlyImagedButton();
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.btnOK = new System.Windows.Forms.Button();
             this.btnCancel = new System.Windows.Forms.Button();
-            this.colorDialog1 = new System.Windows.Forms.ColorDialog();
+            this.dlgColor = new System.Windows.Forms.ColorDialog();
             this.tlpMain.SuspendLayout();
             this.tlpButtons.SuspendLayout();
             this.SuspendLayout();
@@ -87,6 +87,7 @@ namespace Chummer
             this.btnColorSelect.ImageDpi384 = null;
             this.btnColorSelect.ImageDpi96 = global::Chummer.Properties.Resources.color_wheel;
             this.btnColorSelect.Location = new System.Drawing.Point(3, 295);
+            this.btnColorSelect.MinimumSize = new System.Drawing.Size(80, 0);
             this.btnColorSelect.Name = "btnColorSelect";
             this.btnColorSelect.Size = new System.Drawing.Size(96, 23);
             this.btnColorSelect.TabIndex = 2;
@@ -107,12 +108,12 @@ namespace Chummer
             this.tlpButtons.Controls.Add(this.btnOK, 1, 0);
             this.tlpButtons.Controls.Add(this.btnCancel, 0, 0);
             this.tlpButtons.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpButtons.Location = new System.Drawing.Point(512, 292);
+            this.tlpButtons.Location = new System.Drawing.Point(452, 292);
             this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
             this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpButtons.Size = new System.Drawing.Size(112, 29);
+            this.tlpButtons.Size = new System.Drawing.Size(172, 29);
             this.tlpButtons.TabIndex = 3;
             // 
             // btnOK
@@ -121,9 +122,10 @@ namespace Chummer
             this.btnOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnOK.DialogResult = System.Windows.Forms.DialogResult.OK;
             this.btnOK.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnOK.Location = new System.Drawing.Point(59, 3);
+            this.btnOK.Location = new System.Drawing.Point(89, 3);
+            this.btnOK.MinimumSize = new System.Drawing.Size(80, 0);
             this.btnOK.Name = "btnOK";
-            this.btnOK.Size = new System.Drawing.Size(50, 23);
+            this.btnOK.Size = new System.Drawing.Size(80, 23);
             this.btnOK.TabIndex = 4;
             this.btnOK.Tag = "String_OK";
             this.btnOK.Text = "OK";
@@ -137,19 +139,20 @@ namespace Chummer
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.btnCancel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnCancel.Location = new System.Drawing.Point(3, 3);
+            this.btnCancel.MinimumSize = new System.Drawing.Size(80, 0);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(50, 23);
+            this.btnCancel.Size = new System.Drawing.Size(80, 23);
             this.btnCancel.TabIndex = 3;
             this.btnCancel.Tag = "String_Cancel";
             this.btnCancel.Text = "Cancel";
             this.btnCancel.UseVisualStyleBackColor = true;
             this.btnCancel.Click += new System.EventHandler(this.btnCancel_Click);
             // 
-            // colorDialog1
+            // dlgColor
             // 
-            this.colorDialog1.AnyColor = true;
+            this.dlgColor.AnyColor = true;
             // 
-            // frmNotes
+            // EditNotes
             // 
             this.AcceptButton = this.btnOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -159,13 +162,13 @@ namespace Chummer
             this.ClientSize = new System.Drawing.Size(624, 321);
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
-            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.SizableToolWindow;
-            this.Name = "frmNotes";
-            this.ShowIcon = false;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.Name = "EditNotes";
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_Notes";
             this.Text = "Notes";
+            this.Load += new System.EventHandler(this.EditNotes_Load);
             this.Shown += new System.EventHandler(this.EditNotes_Shown);
             this.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtNotes_KeyDown);
             this.Resize += new System.EventHandler(this.EditNotes_Resize);
@@ -179,11 +182,11 @@ namespace Chummer
 
         #endregion
 
-        private BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
         private System.Windows.Forms.TextBox txtNotes;
         private DpiFriendlyImagedButton btnColorSelect;
-        private System.Windows.Forms.ColorDialog colorDialog1;
-        private BufferedTableLayoutPanel tlpButtons;
+        private System.Windows.Forms.ColorDialog dlgColor;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
         private System.Windows.Forms.Button btnOK;
         private System.Windows.Forms.Button btnCancel;
     }

@@ -36,23 +36,29 @@ namespace Chummer
             this.TranslateWinForm();
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object sender, EventArgs e)
         {
-            if ((PreventXPathErrors && txtValue.Text.Contains('"'))
-                || (PreventFileNameCharErrors && txtValue.Text.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0))
+            string strValue = await txtValue.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
+            if ((PreventXPathErrors && strValue.Contains('"'))
+                || (PreventFileNameCharErrors && strValue.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_InvalidCharacters"), string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_InvalidCharacters").ConfigureAwait(false), string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             else
             {
-                _strReturnValue = txtValue.Text;
-                DialogResult = DialogResult.OK;
+                _strReturnValue = strValue;
+                await this.DoThreadSafeAsync(x =>
+                {
+                    x.DialogResult = DialogResult.OK;
+                    x.Close();
+                }).ConfigureAwait(false);
             }
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private void SelectText_Shown(object sender, EventArgs e)

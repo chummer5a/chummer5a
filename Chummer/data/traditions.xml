@@ -805,7 +805,9 @@
       <source>FA</source>
       <page>68</page>
       <bonus>
-        <specificpower>Berserker Temper</specificpower>
+        <specificpower>
+          <name>Berserker Temper</name>
+        </specificpower>
       </bonus>
       <required>
         <oneof>
@@ -3371,7 +3373,7 @@
       </skills>
       <source>SG</source>
       <page>93</page>
-    </spirit>   
+    </spirit>
     <spirit>
       <id>5b122a59-408e-4634-855a-763b25fbad16</id>
       <name>Master Shedim</name>

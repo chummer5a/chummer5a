@@ -46,6 +46,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -61,7 +62,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -203,6 +204,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -218,7 +220,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -360,6 +362,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -375,7 +378,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -517,6 +520,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -532,7 +536,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -674,6 +678,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -689,7 +694,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -831,6 +836,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -846,7 +852,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -988,6 +994,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -1003,7 +1010,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -1146,6 +1153,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -1161,7 +1169,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -1310,6 +1318,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -1325,7 +1334,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -1468,6 +1477,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -1483,7 +1493,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -1618,13 +1628,15 @@
       <allow2ndmaxattribute>False</allow2ndmaxattribute>
       <contactpointsexpression>{CHAUnaug} * 3</contactpointsexpression>
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
-      <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>      <boundspiritexpression>{CHA}</boundspiritexpression>
+      <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
+      <boundspiritexpression>{CHA}</boundspiritexpression>
       <compiledspiritexpression>{LOG}</compiledspiritexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -1640,7 +1652,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -1788,6 +1800,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -1803,7 +1816,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -1952,6 +1965,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -1967,7 +1981,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -2121,6 +2135,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -2136,7 +2151,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -2285,6 +2300,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -2300,7 +2316,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -2415,6 +2431,7 @@
         <book>LCD</book>
         <book>NF</book>
         <book>NP</book>
+        <book>QSR</book>
         <book>R5</book>
         <book>RG</book>
         <book>RF</book>
@@ -2436,7 +2453,18 @@
         <book>TSG</book>
         <book>TVG</book>
       </books>
-      <customdatadirectorynames />
+      <customdatadirectorynames>
+        <customdatadirectoryname>
+          <directoryname>Chrome Flesh Stealth Errata</directoryname>
+          <order>0</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>Forbidden Arcana Stealth Errata</directoryname>
+          <order>1</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+      </customdatadirectorynames>
       <buildmethod>Priority</buildmethod>
       <buildpoints>25</buildpoints>
       <qualitykarmalimit>25</qualitykarmalimit>
@@ -2481,6 +2509,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -2496,7 +2525,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -2611,6 +2640,7 @@
         <book>LCD</book>
         <book>NF</book>
         <book>NP</book>
+        <book>QSR</book>
         <book>R5</book>
         <book>RG</book>
         <book>RF</book>
@@ -2632,7 +2662,18 @@
         <book>TSG</book>
         <book>TVG</book>
       </books>
-      <customdatadirectorynames />
+      <customdatadirectorynames>
+        <customdatadirectoryname>
+          <directoryname>Chrome Flesh Stealth Errata</directoryname>
+          <order>0</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>Forbidden Arcana Stealth Errata</directoryname>
+          <order>1</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+      </customdatadirectorynames>
       <buildmethod>SumtoTen</buildmethod>
       <buildpoints>25</buildpoints>
       <qualitykarmalimit>25</qualitykarmalimit>
@@ -2677,6 +2718,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -2692,7 +2734,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -2807,6 +2849,7 @@
         <book>LCD</book>
         <book>NF</book>
         <book>NP</book>
+        <book>QSR</book>
         <book>R5</book>
         <book>RG</book>
         <book>RF</book>
@@ -2830,8 +2873,18 @@
       </books>
       <customdatadirectorynames>
         <customdatadirectoryname>
-          <directoryname>Sum-to-Ten Improved</directoryname>
+          <directoryname>Chrome Flesh Stealth Errata</directoryname>
           <order>0</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>Forbidden Arcana Stealth Errata</directoryname>
+          <order>1</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>Sum-to-Ten Improved</directoryname>
+          <order>2</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -2879,6 +2932,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -2894,7 +2948,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -3009,6 +3063,7 @@
         <book>LCD</book>
         <book>NF</book>
         <book>NP</book>
+        <book>QSR</book>
         <book>R5</book>
         <book>RG</book>
         <book>RF</book>
@@ -3030,7 +3085,18 @@
         <book>TSG</book>
         <book>TVG</book>
       </books>
-      <customdatadirectorynames />
+      <customdatadirectorynames>
+        <customdatadirectoryname>
+          <directoryname>Chrome Flesh Stealth Errata</directoryname>
+          <order>0</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>Forbidden Arcana Stealth Errata</directoryname>
+          <order>1</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+      </customdatadirectorynames>
       <buildmethod>Karma</buildmethod>
       <buildpoints>800</buildpoints>
       <qualitykarmalimit>25</qualitykarmalimit>
@@ -3075,6 +3141,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -3090,7 +3157,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -3210,6 +3277,7 @@
         <book>LCD</book>
         <book>NF</book>
         <book>NP</book>
+        <book>QSR</book>
         <book>R5</book>
         <book>RG</book>
         <book>SASS</book>
@@ -3235,8 +3303,18 @@
       </books>
       <customdatadirectorynames>
         <customdatadirectoryname>
-          <directoryname>German Data Changes</directoryname>
+          <directoryname>Chrome Flesh Stealth Errata</directoryname>
           <order>0</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>Forbidden Arcana Stealth Errata</directoryname>
+          <order>1</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>German Data Changes</directoryname>
+          <order>2</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -3284,6 +3362,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -3299,7 +3378,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -3419,6 +3498,7 @@
         <book>LCD</book>
         <book>NF</book>
         <book>NP</book>
+        <book>QSR</book>
         <book>R5</book>
         <book>RG</book>
         <book>SASS</book>
@@ -3444,8 +3524,18 @@
       </books>
       <customdatadirectorynames>
         <customdatadirectoryname>
-          <directoryname>German Data Changes</directoryname>
+          <directoryname>Chrome Flesh Stealth Errata</directoryname>
           <order>0</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>Forbidden Arcana Stealth Errata</directoryname>
+          <order>1</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>German Data Changes</directoryname>
+          <order>2</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -3493,6 +3583,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -3508,7 +3599,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -3628,6 +3719,7 @@
         <book>LCD</book>
         <book>NF</book>
         <book>NP</book>
+        <book>QSR</book>
         <book>R5</book>
         <book>RG</book>
         <book>SASS</book>
@@ -3653,13 +3745,18 @@
       </books>
       <customdatadirectorynames>
         <customdatadirectoryname>
-          <directoryname>German Data Changes</directoryname>
+          <directoryname>Chrome Flesh Stealth Errata</directoryname>
           <order>0</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>Sum-to-Ten Improved</directoryname>
+          <directoryname>Forbidden Arcana Stealth Errata</directoryname>
           <order>1</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>German Data Changes</directoryname>
+          <order>2</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -3707,6 +3804,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -3722,7 +3820,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>False</exceednegativequalities>
-      <exceednegativequalitieslimit>False</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>False</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -3842,6 +3940,7 @@
         <book>LCD</book>
         <book>NF</book>
         <book>NP</book>
+        <book>QSR</book>
         <book>R5</book>
         <book>RG</book>
         <book>SASS</book>
@@ -3867,8 +3966,18 @@
       </books>
       <customdatadirectorynames>
         <customdatadirectoryname>
-          <directoryname>German Data Changes</directoryname>
+          <directoryname>Chrome Flesh Stealth Errata</directoryname>
           <order>0</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>Forbidden Arcana Stealth Errata</directoryname>
+          <order>1</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>German Data Changes</directoryname>
+          <order>2</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -3916,6 +4025,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -3931,7 +4041,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>True</exceednegativequalities>
-      <exceednegativequalitieslimit>True</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>True</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -4080,6 +4190,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -4095,7 +4206,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>True</exceednegativequalities>
-      <exceednegativequalitieslimit>True</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>True</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -4249,6 +4360,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -4264,7 +4376,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>True</exceednegativequalities>
-      <exceednegativequalitieslimit>True</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>True</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -4397,8 +4509,18 @@
       </books>
       <customdatadirectorynames>
         <customdatadirectoryname>
-          <directoryname>Shadowrun Missions Rules</directoryname>
+          <directoryname>Chrome Flesh Stealth Errata</directoryname>
           <order>0</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>Forbidden Arcana Stealth Errata</directoryname>
+          <order>1</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>Shadowrun Missions Rules</directoryname>
+          <order>2</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -4447,6 +4569,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -4462,7 +4585,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>True</exceednegativequalities>
-      <exceednegativequalitieslimit>True</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>True</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -4595,8 +4718,18 @@
       </books>
       <customdatadirectorynames>
         <customdatadirectoryname>
-          <directoryname>Shadowrun Missions Rules</directoryname>
+          <directoryname>Chrome Flesh Stealth Errata</directoryname>
           <order>0</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>Forbidden Arcana Stealth Errata</directoryname>
+          <order>1</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>Shadowrun Missions Rules</directoryname>
+          <order>2</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -4645,6 +4778,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -4660,7 +4794,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>True</exceednegativequalities>
-      <exceednegativequalitieslimit>True</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>True</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -4793,13 +4927,23 @@
       </books>
       <customdatadirectorynames>
         <customdatadirectoryname>
-          <directoryname>Shadowrun Missions Rules</directoryname>
+          <directoryname>Chrome Flesh Stealth Errata</directoryname>
           <order>0</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>Shadowrun Missions Neotokyo Rules</directoryname>
+          <directoryname>Forbidden Arcana Stealth Errata</directoryname>
           <order>1</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>Shadowrun Missions Rules</directoryname>
+          <order>2</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>Shadowrun Missions Neotokyo Rules</directoryname>
+          <order>3</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -4848,6 +4992,7 @@
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
       <ignorecomplexformlimit>False</ignorecomplexformlimit>
       <noarmorencumbrance>False</noarmorencumbrance>
+      <uncappedarmoraccessorybonuses>False</uncappedarmoraccessorybonuses>
       <esslossreducesmaximumonly>False</esslossreducesmaximumonly>
       <allowskillregrouping>True</allowskillregrouping>
       <metatypecostskarma>True</metatypecostskarma>
@@ -4863,7 +5008,7 @@
       <mysaddppcareer>False</mysaddppcareer>
       <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>True</exceednegativequalities>
-      <exceednegativequalitieslimit>True</exceednegativequalitieslimit>
+      <exceednegativequalitiesnobonus>True</exceednegativequalitiesnobonus>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
       <multiplyforbiddencost>False</multiplyforbiddencost>
       <restrictedcostmultiplier>1</restrictedcostmultiplier>
@@ -4997,13 +5142,23 @@
       </books>
       <customdatadirectorynames>
         <customdatadirectoryname>
-          <directoryname>Shadowrun Missions Rules</directoryname>
+          <directoryname>Chrome Flesh Stealth Errata</directoryname>
           <order>0</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>Shadowrun Missions Neotokyo Rules</directoryname>
+          <directoryname>Forbidden Arcana Stealth Errata</directoryname>
           <order>1</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>Shadowrun Missions Rules</directoryname>
+          <order>2</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>Shadowrun Missions Neotokyo Rules</directoryname>
+          <order>3</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -5029,12 +5184,12 @@
     <!-- Bellow you will find 6 setting presets for Neon Anarchy LC Character Generation -->
     <setting>
       <id>ada01e21-258b-43cc-a515-acf72daba6f4</id>
-      <name>Neon Anarchy Prime Point Buy</name>
+      <name>Neon Anarchy Prime Point Buy </name>
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
-      <nuyenperbpwftm>4000</nuyenperbpwftm>
-      <nuyenperbpwftp>4000</nuyenperbpwftp>
+      <nuyenperbpwftm>3000</nuyenperbpwftm>
+      <nuyenperbpwftp>3000</nuyenperbpwftp>
       <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
       <allowinitiationincreatemode>False</allowinitiationincreatemode>
       <usepointsonbrokengroups>False</usepointsonbrokengroups>
@@ -5047,7 +5202,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspiritexpression>{LOG}</compiledspiritexpression>
+      <compiledspriteexpression>{LOG}</compiledspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -5066,7 +5221,7 @@
       <exceedpositivequalities>False</exceedpositivequalities>
       <exceedpositivequalitiescostdoubled>False</exceedpositivequalitiescostdoubled>
       <mysaddppcareer>False</mysaddppcareer>
-      <mysadeptsecondmagattribute>True</mysadeptsecondmagattribute>
+      <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>True</exceednegativequalities>
       <exceednegativequalitieslimit>True</exceednegativequalitieslimit>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
@@ -5160,57 +5315,62 @@
         <karmaspiritfettering>3</karmaspiritfettering>
       </karmacost>
       <books>
-        <book>SR5</book>
         <book>AP</book>
-        <book>BTB</book>
-        <book>AET</book>
-        <book>BLB</book>
-        <book>BOTL</book>
-        <book>BB</book>
-        <book>CF</book>
-        <book>CA</book>
-        <book>DTR</book>
-        <book>DT</book>
-        <book>FA</book>
         <book>GH3</book>
-        <book>HT</book>
-        <book>HS</book>
-        <book>KC</book>
-        <book>KK</book>
-        <book>LCD</book>
-        <book>NA</book>
-        <book>NF</book>
-        <book>R5</book>
         <book>RG</book>
-        <book>RF</book>
-        <book>SASS</book>
-        <book>SSP</book>
-        <book>SFB</book>
-        <book>SFME</book>
-        <book>SFM</book>
-        <book>SFCC</book>
-        <book>SS</book>
-        <book>SAG</book>
+        <book>SR5</book>
         <book>SG</book>
         <book>SGE</book>
-        <book>SL</book>
+        <book>BB</book>
+        <book>SASS</book>
+        <book>SS</book>
+        <book>RF</book>
+        <book>SSP</book>
+        <book>DT</book>
+        <book>CF</book>
+        <book>HT</book>
+        <book>BLB</book>
+        <book>R5</book>
+        <book>HS</book>
+        <book>SFB</book>
+        <book>LCD</book>
+        <book>SFM</book>
+        <book>SFME</book>
+        <book>CA</book>
+        <book>BOTL</book>
+        <book>FA</book>
+        <book>SAG</book>
         <book>TCT</book>
+        <book>SFCC</book>
+        <book>DTR</book>
         <book>TSG</book>
+        <book>SL</book>
+        <book>KC</book>
+        <book>BTB</book>
+        <book>AET</book>
+        <book>NF</book>
+        <book>KK</book>
+        <book>NA</book>
       </books>
       <customdatadirectorynames>
         <customdatadirectoryname>
-          <directoryname>39b1963e-dfb3-4082-8d7f-79f88dab786f&gt;1.0</directoryname>
+          <directoryname>Chrome Flesh Stealth Errata</directoryname>
           <order>0</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>4b3a4c48-d2af-4e46-9d27-9f06eab83c0c&gt;1.7.8</directoryname>
+          <directoryname>39b1963e-dfb3-4082-8d7f-79f88dab786f&gt;1.0</directoryname>
           <order>1</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>4873b11d-347a-4aa5-a41c-5f7d60a6433d&gt;1.7.8</directoryname>
+          <directoryname>4b3a4c48-d2af-4e46-9d27-9f06eab83c0c&gt;2.0.0</directoryname>
           <order>2</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>4873b11d-347a-4aa5-a41c-5f7d60a6433d&gt;2.0.0</directoryname>
+          <order>3</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -5226,6 +5386,7 @@
         <grade>Betaware</grade>
         <grade>Deltaware</grade>
         <grade>Gammaware</grade>
+        <grade>Greyware</grade>
       </bannedwaregrades>
       <redlinerexclusion>
         <limb>skull</limb>
@@ -5237,8 +5398,8 @@
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
-      <nuyenperbpwftm>4000</nuyenperbpwftm>
-      <nuyenperbpwftp>4000</nuyenperbpwftp>
+      <nuyenperbpwftm>3000</nuyenperbpwftm>
+      <nuyenperbpwftp>3000</nuyenperbpwftp>
       <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
       <allowinitiationincreatemode>False</allowinitiationincreatemode>
       <usepointsonbrokengroups>False</usepointsonbrokengroups>
@@ -5251,7 +5412,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspiritexpression>{LOG}</compiledspiritexpression>
+      <compiledspriteexpression>{LOG}</compiledspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -5270,7 +5431,7 @@
       <exceedpositivequalities>False</exceedpositivequalities>
       <exceedpositivequalitiescostdoubled>False</exceedpositivequalitiescostdoubled>
       <mysaddppcareer>False</mysaddppcareer>
-      <mysadeptsecondmagattribute>True</mysadeptsecondmagattribute>
+      <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>True</exceednegativequalities>
       <exceednegativequalitieslimit>True</exceednegativequalitieslimit>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
@@ -5364,57 +5525,62 @@
         <karmaspiritfettering>3</karmaspiritfettering>
       </karmacost>
       <books>
-        <book>SR5</book>
         <book>AP</book>
-        <book>BTB</book>
-        <book>AET</book>
-        <book>BLB</book>
-        <book>BOTL</book>
-        <book>BB</book>
-        <book>CF</book>
-        <book>CA</book>
-        <book>DTR</book>
-        <book>DT</book>
-        <book>FA</book>
         <book>GH3</book>
-        <book>HT</book>
-        <book>HS</book>
-        <book>KC</book>
-        <book>KK</book>
-        <book>LCD</book>
-        <book>NA</book>
-        <book>NF</book>
-        <book>R5</book>
         <book>RG</book>
-        <book>RF</book>
-        <book>SASS</book>
-        <book>SSP</book>
-        <book>SFB</book>
-        <book>SFME</book>
-        <book>SFM</book>
-        <book>SFCC</book>
-        <book>SS</book>
-        <book>SAG</book>
+        <book>SR5</book>
         <book>SG</book>
         <book>SGE</book>
-        <book>SL</book>
+        <book>BB</book>
+        <book>SASS</book>
+        <book>SS</book>
+        <book>RF</book>
+        <book>SSP</book>
+        <book>DT</book>
+        <book>CF</book>
+        <book>HT</book>
+        <book>BLB</book>
+        <book>R5</book>
+        <book>HS</book>
+        <book>SFB</book>
+        <book>LCD</book>
+        <book>SFM</book>
+        <book>SFME</book>
+        <book>CA</book>
+        <book>BOTL</book>
+        <book>FA</book>
+        <book>SAG</book>
         <book>TCT</book>
+        <book>SFCC</book>
+        <book>DTR</book>
         <book>TSG</book>
+        <book>SL</book>
+        <book>KC</book>
+        <book>BTB</book>
+        <book>AET</book>
+        <book>NF</book>
+        <book>KK</book>
+        <book>NA</book>
       </books>
       <customdatadirectorynames>
         <customdatadirectoryname>
-          <directoryname>39b1963e-dfb3-4082-8d7f-79f88dab786f&gt;1.0</directoryname>
+          <directoryname>Chrome Flesh Stealth Errata</directoryname>
           <order>0</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>4b3a4c48-d2af-4e46-9d27-9f06eab83c0c&gt;1.7.8</directoryname>
+          <directoryname>39b1963e-dfb3-4082-8d7f-79f88dab786f&gt;1.0</directoryname>
           <order>1</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>4873b11d-347a-4aa5-a41c-5f7d60a6433d&gt;1.7.8</directoryname>
+          <directoryname>4b3a4c48-d2af-4e46-9d27-9f06eab83c0c&gt;2.0.0</directoryname>
           <order>2</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>4873b11d-347a-4aa5-a41c-5f7d60a6433d&gt;2.0.0</directoryname>
+          <order>3</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -5430,6 +5596,7 @@
         <grade>Betaware</grade>
         <grade>Deltaware</grade>
         <grade>Gammaware</grade>
+        <grade>Greyware</grade>
       </bannedwaregrades>
       <redlinerexclusion>
         <limb>skull</limb>
@@ -5441,8 +5608,8 @@
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
-      <nuyenperbpwftm>4000</nuyenperbpwftm>
-      <nuyenperbpwftp>4000</nuyenperbpwftp>
+      <nuyenperbpwftm>3000</nuyenperbpwftm>
+      <nuyenperbpwftp>3000</nuyenperbpwftp>
       <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
       <allowinitiationincreatemode>False</allowinitiationincreatemode>
       <usepointsonbrokengroups>False</usepointsonbrokengroups>
@@ -5455,7 +5622,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspiritexpression>{LOG}</compiledspiritexpression>
+      <compiledspriteexpression>{LOG}</compiledspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -5474,7 +5641,7 @@
       <exceedpositivequalities>False</exceedpositivequalities>
       <exceedpositivequalitiescostdoubled>False</exceedpositivequalitiescostdoubled>
       <mysaddppcareer>False</mysaddppcareer>
-      <mysadeptsecondmagattribute>True</mysadeptsecondmagattribute>
+      <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>True</exceednegativequalities>
       <exceednegativequalitieslimit>True</exceednegativequalitieslimit>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
@@ -5568,57 +5735,62 @@
         <karmaspiritfettering>3</karmaspiritfettering>
       </karmacost>
       <books>
-        <book>SR5</book>
         <book>AP</book>
-        <book>BTB</book>
-        <book>AET</book>
-        <book>BLB</book>
-        <book>BOTL</book>
-        <book>BB</book>
-        <book>CF</book>
-        <book>CA</book>
-        <book>DTR</book>
-        <book>DT</book>
-        <book>FA</book>
         <book>GH3</book>
-        <book>HT</book>
-        <book>HS</book>
-        <book>KC</book>
-        <book>KK</book>
-        <book>LCD</book>
-        <book>NA</book>
-        <book>NF</book>
-        <book>R5</book>
         <book>RG</book>
-        <book>RF</book>
-        <book>SASS</book>
-        <book>SSP</book>
-        <book>SFB</book>
-        <book>SFME</book>
-        <book>SFM</book>
-        <book>SFCC</book>
-        <book>SS</book>
-        <book>SAG</book>
+        <book>SR5</book>
         <book>SG</book>
         <book>SGE</book>
-        <book>SL</book>
+        <book>BB</book>
+        <book>SASS</book>
+        <book>SS</book>
+        <book>RF</book>
+        <book>SSP</book>
+        <book>DT</book>
+        <book>CF</book>
+        <book>HT</book>
+        <book>BLB</book>
+        <book>R5</book>
+        <book>HS</book>
+        <book>SFB</book>
+        <book>LCD</book>
+        <book>SFM</book>
+        <book>SFME</book>
+        <book>CA</book>
+        <book>BOTL</book>
+        <book>FA</book>
+        <book>SAG</book>
         <book>TCT</book>
+        <book>SFCC</book>
+        <book>DTR</book>
         <book>TSG</book>
+        <book>SL</book>
+        <book>KC</book>
+        <book>BTB</book>
+        <book>AET</book>
+        <book>NF</book>
+        <book>KK</book>
+        <book>NA</book>
       </books>
       <customdatadirectorynames>
         <customdatadirectoryname>
-          <directoryname>39b1963e-dfb3-4082-8d7f-79f88dab786f&gt;1.0</directoryname>
+          <directoryname>Chrome Flesh Stealth Errata</directoryname>
           <order>0</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>4b3a4c48-d2af-4e46-9d27-9f06eab83c0c&gt;1.7.8</directoryname>
+          <directoryname>39b1963e-dfb3-4082-8d7f-79f88dab786f&gt;1.0</directoryname>
           <order>1</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>4873b11d-347a-4aa5-a41c-5f7d60a6433d&gt;1.7.8</directoryname>
+          <directoryname>4b3a4c48-d2af-4e46-9d27-9f06eab83c0c&gt;2.0.0</directoryname>
           <order>2</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>4873b11d-347a-4aa5-a41c-5f7d60a6433d&gt;2.0.0</directoryname>
+          <order>3</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -5634,6 +5806,7 @@
         <grade>Betaware</grade>
         <grade>Deltaware</grade>
         <grade>Gammaware</grade>
+        <grade>Greyware</grade>
       </bannedwaregrades>
       <redlinerexclusion>
         <limb>skull</limb>
@@ -5645,8 +5818,8 @@
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
-      <nuyenperbpwftm>4000</nuyenperbpwftm>
-      <nuyenperbpwftp>4000</nuyenperbpwftp>
+      <nuyenperbpwftm>3000</nuyenperbpwftm>
+      <nuyenperbpwftp>3000</nuyenperbpwftp>
       <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
       <allowinitiationincreatemode>False</allowinitiationincreatemode>
       <usepointsonbrokengroups>False</usepointsonbrokengroups>
@@ -5659,7 +5832,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspiritexpression>{LOG}</compiledspiritexpression>
+      <compiledspriteexpression>{LOG}</compiledspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -5678,7 +5851,7 @@
       <exceedpositivequalities>False</exceedpositivequalities>
       <exceedpositivequalitiescostdoubled>False</exceedpositivequalitiescostdoubled>
       <mysaddppcareer>False</mysaddppcareer>
-      <mysadeptsecondmagattribute>True</mysadeptsecondmagattribute>
+      <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>True</exceednegativequalities>
       <exceednegativequalitieslimit>True</exceednegativequalitieslimit>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
@@ -5772,57 +5945,62 @@
         <karmaspiritfettering>3</karmaspiritfettering>
       </karmacost>
       <books>
-        <book>SR5</book>
         <book>AP</book>
-        <book>BTB</book>
-        <book>AET</book>
-        <book>BLB</book>
-        <book>BOTL</book>
-        <book>BB</book>
-        <book>CF</book>
-        <book>CA</book>
-        <book>DTR</book>
-        <book>DT</book>
-        <book>FA</book>
         <book>GH3</book>
-        <book>HT</book>
-        <book>HS</book>
-        <book>KC</book>
-        <book>KK</book>
-        <book>LCD</book>
-        <book>NA</book>
-        <book>NF</book>
-        <book>R5</book>
         <book>RG</book>
-        <book>RF</book>
-        <book>SASS</book>
-        <book>SSP</book>
-        <book>SFB</book>
-        <book>SFME</book>
-        <book>SFM</book>
-        <book>SFCC</book>
-        <book>SS</book>
-        <book>SAG</book>
+        <book>SR5</book>
         <book>SG</book>
         <book>SGE</book>
-        <book>SL</book>
+        <book>BB</book>
+        <book>SASS</book>
+        <book>SS</book>
+        <book>RF</book>
+        <book>SSP</book>
+        <book>DT</book>
+        <book>CF</book>
+        <book>HT</book>
+        <book>BLB</book>
+        <book>R5</book>
+        <book>HS</book>
+        <book>SFB</book>
+        <book>LCD</book>
+        <book>SFM</book>
+        <book>SFME</book>
+        <book>CA</book>
+        <book>BOTL</book>
+        <book>FA</book>
+        <book>SAG</book>
         <book>TCT</book>
+        <book>SFCC</book>
+        <book>DTR</book>
         <book>TSG</book>
+        <book>SL</book>
+        <book>KC</book>
+        <book>BTB</book>
+        <book>AET</book>
+        <book>NF</book>
+        <book>KK</book>
+        <book>NA</book>
       </books>
       <customdatadirectorynames>
         <customdatadirectoryname>
-          <directoryname>39b1963e-dfb3-4082-8d7f-79f88dab786f&gt;1.0</directoryname>
+          <directoryname>Chrome Flesh Stealth Errata</directoryname>
           <order>0</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>4b3a4c48-d2af-4e46-9d27-9f06eab83c0c&gt;1.7.8</directoryname>
+          <directoryname>39b1963e-dfb3-4082-8d7f-79f88dab786f&gt;1.0</directoryname>
           <order>1</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>4873b11d-347a-4aa5-a41c-5f7d60a6433d&gt;1.7.8</directoryname>
+          <directoryname>4b3a4c48-d2af-4e46-9d27-9f06eab83c0c&gt;2.0.0</directoryname>
           <order>2</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>4873b11d-347a-4aa5-a41c-5f7d60a6433d&gt;2.0.0</directoryname>
+          <order>3</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -5838,6 +6016,7 @@
         <grade>Betaware</grade>
         <grade>Deltaware</grade>
         <grade>Gammaware</grade>
+        <grade>Greyware</grade>
       </bannedwaregrades>
       <redlinerexclusion>
         <limb>skull</limb>
@@ -5849,8 +6028,8 @@
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
-      <nuyenperbpwftm>4000</nuyenperbpwftm>
-      <nuyenperbpwftp>4000</nuyenperbpwftp>
+      <nuyenperbpwftm>3000</nuyenperbpwftm>
+      <nuyenperbpwftp>3000</nuyenperbpwftp>
       <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
       <allowinitiationincreatemode>False</allowinitiationincreatemode>
       <usepointsonbrokengroups>False</usepointsonbrokengroups>
@@ -5863,7 +6042,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspiritexpression>{LOG}</compiledspiritexpression>
+      <compiledspriteexpression>{LOG}</compiledspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -5882,7 +6061,7 @@
       <exceedpositivequalities>False</exceedpositivequalities>
       <exceedpositivequalitiescostdoubled>False</exceedpositivequalitiescostdoubled>
       <mysaddppcareer>False</mysaddppcareer>
-      <mysadeptsecondmagattribute>True</mysadeptsecondmagattribute>
+      <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>True</exceednegativequalities>
       <exceednegativequalitieslimit>True</exceednegativequalitieslimit>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
@@ -5976,57 +6155,62 @@
         <karmaspiritfettering>3</karmaspiritfettering>
       </karmacost>
       <books>
-        <book>SR5</book>
         <book>AP</book>
-        <book>BTB</book>
-        <book>AET</book>
-        <book>BLB</book>
-        <book>BOTL</book>
-        <book>BB</book>
-        <book>CF</book>
-        <book>CA</book>
-        <book>DTR</book>
-        <book>DT</book>
-        <book>FA</book>
         <book>GH3</book>
-        <book>HT</book>
-        <book>HS</book>
-        <book>KC</book>
-        <book>KK</book>
-        <book>LCD</book>
-        <book>NA</book>
-        <book>NF</book>
-        <book>R5</book>
         <book>RG</book>
-        <book>RF</book>
-        <book>SASS</book>
-        <book>SSP</book>
-        <book>SFB</book>
-        <book>SFME</book>
-        <book>SFM</book>
-        <book>SFCC</book>
-        <book>SS</book>
-        <book>SAG</book>
+        <book>SR5</book>
         <book>SG</book>
         <book>SGE</book>
-        <book>SL</book>
+        <book>BB</book>
+        <book>SASS</book>
+        <book>SS</book>
+        <book>RF</book>
+        <book>SSP</book>
+        <book>DT</book>
+        <book>CF</book>
+        <book>HT</book>
+        <book>BLB</book>
+        <book>R5</book>
+        <book>HS</book>
+        <book>SFB</book>
+        <book>LCD</book>
+        <book>SFM</book>
+        <book>SFME</book>
+        <book>CA</book>
+        <book>BOTL</book>
+        <book>FA</book>
+        <book>SAG</book>
         <book>TCT</book>
+        <book>SFCC</book>
+        <book>DTR</book>
         <book>TSG</book>
+        <book>SL</book>
+        <book>KC</book>
+        <book>BTB</book>
+        <book>AET</book>
+        <book>NF</book>
+        <book>KK</book>
+        <book>NA</book>
       </books>
       <customdatadirectorynames>
         <customdatadirectoryname>
-          <directoryname>39b1963e-dfb3-4082-8d7f-79f88dab786f&gt;1.0</directoryname>
+          <directoryname>Chrome Flesh Stealth Errata</directoryname>
           <order>0</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>4b3a4c48-d2af-4e46-9d27-9f06eab83c0c&gt;1.7.8</directoryname>
+          <directoryname>39b1963e-dfb3-4082-8d7f-79f88dab786f&gt;1.0</directoryname>
           <order>1</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>4873b11d-347a-4aa5-a41c-5f7d60a6433d&gt;1.7.8</directoryname>
+          <directoryname>4b3a4c48-d2af-4e46-9d27-9f06eab83c0c&gt;2.0.0</directoryname>
           <order>2</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>4873b11d-347a-4aa5-a41c-5f7d60a6433d&gt;2.0.0</directoryname>
+          <order>3</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -6042,6 +6226,7 @@
         <grade>Betaware</grade>
         <grade>Deltaware</grade>
         <grade>Gammaware</grade>
+        <grade>Greyware</grade>
       </bannedwaregrades>
       <redlinerexclusion>
         <limb>skull</limb>
@@ -6053,8 +6238,8 @@
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
-      <nuyenperbpwftm>4000</nuyenperbpwftm>
-      <nuyenperbpwftp>4000</nuyenperbpwftp>
+      <nuyenperbpwftm>3000</nuyenperbpwftm>
+      <nuyenperbpwftp>3000</nuyenperbpwftp>
       <unarmedimprovementsapplytoweapons>False</unarmedimprovementsapplytoweapons>
       <allowinitiationincreatemode>False</allowinitiationincreatemode>
       <usepointsonbrokengroups>False</usepointsonbrokengroups>
@@ -6067,7 +6252,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspiritexpression>{LOG}</compiledspiritexpression>
+      <compiledspriteexpression>{LOG}</compiledspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -6086,7 +6271,7 @@
       <exceedpositivequalities>False</exceedpositivequalities>
       <exceedpositivequalitiescostdoubled>False</exceedpositivequalitiescostdoubled>
       <mysaddppcareer>False</mysaddppcareer>
-      <mysadeptsecondmagattribute>True</mysadeptsecondmagattribute>
+      <mysadeptsecondmagattribute>False</mysadeptsecondmagattribute>
       <exceednegativequalities>True</exceednegativequalities>
       <exceednegativequalitieslimit>True</exceednegativequalitieslimit>
       <multiplyrestrictedcost>False</multiplyrestrictedcost>
@@ -6180,57 +6365,62 @@
         <karmaspiritfettering>3</karmaspiritfettering>
       </karmacost>
       <books>
-        <book>SR5</book>
         <book>AP</book>
-        <book>BTB</book>
-        <book>AET</book>
-        <book>BLB</book>
-        <book>BOTL</book>
-        <book>BB</book>
-        <book>CF</book>
-        <book>CA</book>
-        <book>DTR</book>
-        <book>DT</book>
-        <book>FA</book>
         <book>GH3</book>
-        <book>HT</book>
-        <book>HS</book>
-        <book>KC</book>
-        <book>KK</book>
-        <book>LCD</book>
-        <book>NA</book>
-        <book>NF</book>
-        <book>R5</book>
         <book>RG</book>
-        <book>RF</book>
-        <book>SASS</book>
-        <book>SSP</book>
-        <book>SFB</book>
-        <book>SFME</book>
-        <book>SFM</book>
-        <book>SFCC</book>
-        <book>SS</book>
-        <book>SAG</book>
+        <book>SR5</book>
         <book>SG</book>
         <book>SGE</book>
-        <book>SL</book>
+        <book>BB</book>
+        <book>SASS</book>
+        <book>SS</book>
+        <book>RF</book>
+        <book>SSP</book>
+        <book>DT</book>
+        <book>CF</book>
+        <book>HT</book>
+        <book>BLB</book>
+        <book>R5</book>
+        <book>HS</book>
+        <book>SFB</book>
+        <book>LCD</book>
+        <book>SFM</book>
+        <book>SFME</book>
+        <book>CA</book>
+        <book>BOTL</book>
+        <book>FA</book>
+        <book>SAG</book>
         <book>TCT</book>
+        <book>SFCC</book>
+        <book>DTR</book>
         <book>TSG</book>
+        <book>SL</book>
+        <book>KC</book>
+        <book>BTB</book>
+        <book>AET</book>
+        <book>NF</book>
+        <book>KK</book>
+        <book>NA</book>
       </books>
       <customdatadirectorynames>
         <customdatadirectoryname>
-          <directoryname>39b1963e-dfb3-4082-8d7f-79f88dab786f&gt;1.0</directoryname>
+          <directoryname>Chrome Flesh Stealth Errata</directoryname>
           <order>0</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>4b3a4c48-d2af-4e46-9d27-9f06eab83c0c&gt;1.7.8</directoryname>
+          <directoryname>39b1963e-dfb3-4082-8d7f-79f88dab786f&gt;1.0</directoryname>
           <order>1</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>4873b11d-347a-4aa5-a41c-5f7d60a6433d&gt;1.7.8</directoryname>
+          <directoryname>4b3a4c48-d2af-4e46-9d27-9f06eab83c0c&gt;2.0.0</directoryname>
           <order>2</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>4873b11d-347a-4aa5-a41c-5f7d60a6433d&gt;2.0.0</directoryname>
+          <order>3</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -6246,6 +6436,7 @@
         <grade>Betaware</grade>
         <grade>Deltaware</grade>
         <grade>Gammaware</grade>
+        <grade>Greyware</grade>
       </bannedwaregrades>
       <redlinerexclusion>
         <limb>skull</limb>

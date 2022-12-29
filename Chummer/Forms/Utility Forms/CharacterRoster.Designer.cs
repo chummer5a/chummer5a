@@ -16,13 +16,9 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && (components != null))
             {
-                components?.Dispose();
-                _watcherCharacterRosterFolder?.Dispose();
-                _objMostRecentlyUsedsRefreshCancellationTokenSource?.Dispose();
-                _objWatchFolderRefreshCancellationTokenSource?.Dispose();
-                _dicSavedCharacterCaches.Dispose();
+                components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -64,9 +60,9 @@ namespace Chummer
             this.lblFilePathLabel = new System.Windows.Forms.Label();
             this.lblSettings = new System.Windows.Forms.Label();
             this.lblSettingsLabel = new System.Windows.Forms.Label();
-            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
             this.picMugshot = new System.Windows.Forms.PictureBox();
-            this.tlpCharacterRoster = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpCharacterRoster = new System.Windows.Forms.TableLayoutPanel();
             this.treCharacterList = new System.Windows.Forms.TreeView();
             this.tabCharacterText.SuspendLayout();
             this.panCharacterBio.SuspendLayout();
@@ -498,16 +494,18 @@ namespace Chummer
             this.treCharacterList.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treCharacterList_OnDefaultKeyDown);
             this.treCharacterList.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
-            // frmCharacterRoster
+            // CharacterRoster
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(784, 561);
             this.Controls.Add(this.tlpCharacterRoster);
             this.DoubleBuffered = true;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "frmCharacterRoster";
+            this.Name = "CharacterRoster";
             this.Padding = new System.Windows.Forms.Padding(9);
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "String_CharacterRoster";
             this.Text = "Character Roster";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CharacterRoster_FormClosing);
@@ -555,7 +553,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblFilePathLabel;
         private System.Windows.Forms.TabPage panGameNotes;
       
-        private Chummer.BufferedTableLayoutPanel tlpRight;
+        private System.Windows.Forms.TableLayoutPanel tlpRight;
         private System.Windows.Forms.Label lblSettings;
         private System.Windows.Forms.Label lblSettingsLabel;
         private System.Windows.Forms.PictureBox picMugshot;
@@ -564,7 +562,7 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtCharacterBackground;
         private System.Windows.Forms.TextBox txtCharacterNotes;
         private System.Windows.Forms.TextBox txtGameNotes;
-        private BufferedTableLayoutPanel tlpCharacterRoster;
+        private System.Windows.Forms.TableLayoutPanel tlpCharacterRoster;
         public System.Windows.Forms.TreeView treCharacterList;
     }
 }

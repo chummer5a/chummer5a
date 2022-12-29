@@ -13,12 +13,9 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && (components != null))
             {
-                components?.Dispose();
-                Utils.ListItemListPool.Return(_lstCategory);
-                Utils.StringHashSetPool.Return(_setDealerConnectionMaps);
-                Utils.StringHashSetPool.Return(_setBlackMarketMaps);
+                components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -31,37 +28,36 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle9 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle10 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle11 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle12 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle13 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle14 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle15 = new System.Windows.Forms.DataGridViewCellStyle();
-            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle16 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle1 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle2 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle6 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle7 = new System.Windows.Forms.DataGridViewCellStyle();
+            System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle8 = new System.Windows.Forms.DataGridViewCellStyle();
             this.tabViews = new System.Windows.Forms.TabControl();
             this.tabListView = new System.Windows.Forms.TabPage();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.chkHideOverAvailLimit = new Chummer.ColorableCheckBox(this.components);
-            this.chkShowOnlyAffordItems = new Chummer.ColorableCheckBox(this.components);
-            this.tlpLeft = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.chkHideOverAvailLimit = new Chummer.ColorableCheckBox();
+            this.chkShowOnlyAffordItems = new Chummer.ColorableCheckBox();
+            this.tlpLeft = new System.Windows.Forms.TableLayoutPanel();
             this.lstVehicle = new System.Windows.Forms.ListBox();
-            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
             this.lblSource = new System.Windows.Forms.Label();
             this.lblVehicleHandlingLabel = new System.Windows.Forms.Label();
             this.lblVehicleCost = new System.Windows.Forms.Label();
             this.lblVehicleSeats = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
             this.flpDiscount = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkUsedVehicle = new Chummer.ColorableCheckBox(this.components);
+            this.chkUsedVehicle = new Chummer.ColorableCheckBox();
             this.lblUsedVehicleDiscountLabel = new System.Windows.Forms.Label();
             this.nudUsedVehicleDiscount = new Chummer.NumericUpDownEx();
             this.lblUsedVehicleDiscountPercentLabel = new System.Windows.Forms.Label();
             this.lblVehicleCostLabel = new System.Windows.Forms.Label();
             this.flpCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkFreeItem = new Chummer.ColorableCheckBox(this.components);
-            this.chkBlackMarketDiscount = new Chummer.ColorableCheckBox(this.components);
+            this.chkFreeItem = new Chummer.ColorableCheckBox();
+            this.chkBlackMarketDiscount = new Chummer.ColorableCheckBox();
             this.flpMarkup = new System.Windows.Forms.FlowLayoutPanel();
             this.nudMarkup = new Chummer.NumericUpDownEx();
             this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
@@ -103,11 +99,11 @@ namespace Chummer
             this.Label_Avail = new Chummer.DataGridViewTextBoxColumnTranslated();
             this.Label_Source = new Chummer.DataGridViewTextBoxColumnTranslated();
             this.dgvc_Cost = new Chummer.DataGridViewTextBoxColumnTranslated();
-            this.tlpBase = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpBase = new System.Windows.Forms.TableLayoutPanel();
             this.lblSearchLabel = new System.Windows.Forms.Label();
             this.cboCategory = new Chummer.ElasticComboBox();
             this.txtSearch = new System.Windows.Forms.TextBox();
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
@@ -145,6 +141,7 @@ namespace Chummer
             // 
             // tabListView
             // 
+            this.tabListView.BackColor = System.Drawing.SystemColors.Control;
             this.tabListView.Controls.Add(this.tlpMain);
             this.tabListView.Location = new System.Drawing.Point(4, 22);
             this.tabListView.Name = "tabListView";
@@ -153,7 +150,6 @@ namespace Chummer
             this.tabListView.TabIndex = 0;
             this.tabListView.Tag = "Title_ListView";
             this.tabListView.Text = "List View";
-            this.tabListView.UseVisualStyleBackColor = true;
             // 
             // tlpMain
             // 
@@ -757,6 +753,7 @@ namespace Chummer
             // 
             // tabBrowse
             // 
+            this.tabBrowse.BackColor = System.Drawing.SystemColors.Control;
             this.tabBrowse.Controls.Add(this.dgvVehicles);
             this.tabBrowse.Location = new System.Drawing.Point(4, 22);
             this.tabBrowse.Name = "tabBrowse";
@@ -765,23 +762,22 @@ namespace Chummer
             this.tabBrowse.TabIndex = 1;
             this.tabBrowse.Tag = "Title_Browse";
             this.tabBrowse.Text = "Browse";
-            this.tabBrowse.UseVisualStyleBackColor = true;
             // 
             // dgvVehicles
             // 
             this.dgvVehicles.AllowUserToAddRows = false;
             this.dgvVehicles.AllowUserToDeleteRows = false;
-            dataGridViewCellStyle9.BackColor = System.Drawing.SystemColors.ControlLight;
-            this.dgvVehicles.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle9;
+            dataGridViewCellStyle1.BackColor = System.Drawing.SystemColors.ControlLight;
+            this.dgvVehicles.AlternatingRowsDefaultCellStyle = dataGridViewCellStyle1;
             this.dgvVehicles.AutoSizeColumnsMode = System.Windows.Forms.DataGridViewAutoSizeColumnsMode.Fill;
             this.dgvVehicles.AutoSizeRowsMode = System.Windows.Forms.DataGridViewAutoSizeRowsMode.DisplayedCells;
-            dataGridViewCellStyle10.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
-            dataGridViewCellStyle10.BackColor = System.Drawing.SystemColors.Control;
-            dataGridViewCellStyle10.ForeColor = System.Drawing.SystemColors.ControlText;
-            dataGridViewCellStyle10.SelectionBackColor = System.Drawing.SystemColors.Highlight;
-            dataGridViewCellStyle10.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
-            dataGridViewCellStyle10.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvVehicles.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle10;
+            dataGridViewCellStyle2.Alignment = System.Windows.Forms.DataGridViewContentAlignment.MiddleLeft;
+            dataGridViewCellStyle2.BackColor = System.Drawing.SystemColors.Control;
+            dataGridViewCellStyle2.ForeColor = System.Drawing.SystemColors.ControlText;
+            dataGridViewCellStyle2.SelectionBackColor = System.Drawing.SystemColors.Highlight;
+            dataGridViewCellStyle2.SelectionForeColor = System.Drawing.SystemColors.HighlightText;
+            dataGridViewCellStyle2.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvVehicles.ColumnHeadersDefaultCellStyle = dataGridViewCellStyle2;
             this.dgvVehicles.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
             this.dgvVehicles.Columns.AddRange(new System.Windows.Forms.DataGridViewColumn[] {
             this.dgvc_Guid,
@@ -826,8 +822,8 @@ namespace Chummer
             // 
             this.dgvc_Name.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.dgvc_Name.DataPropertyName = "VehicleName";
-            dataGridViewCellStyle11.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_Name.DefaultCellStyle = dataGridViewCellStyle11;
+            dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_Name.DefaultCellStyle = dataGridViewCellStyle3;
             this.dgvc_Name.HeaderText = "Name";
             this.dgvc_Name.Name = "dgvc_Name";
             this.dgvc_Name.ReadOnly = true;
@@ -935,8 +931,8 @@ namespace Chummer
             // 
             this.dgvc_Gear.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.dgvc_Gear.DataPropertyName = "Gear";
-            dataGridViewCellStyle12.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_Gear.DefaultCellStyle = dataGridViewCellStyle12;
+            dataGridViewCellStyle4.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_Gear.DefaultCellStyle = dataGridViewCellStyle4;
             this.dgvc_Gear.HeaderText = "Gear";
             this.dgvc_Gear.Name = "dgvc_Gear";
             this.dgvc_Gear.ReadOnly = true;
@@ -948,8 +944,8 @@ namespace Chummer
             // 
             this.dgvc_Mods.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.dgvc_Mods.DataPropertyName = "Mods";
-            dataGridViewCellStyle13.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_Mods.DefaultCellStyle = dataGridViewCellStyle13;
+            dataGridViewCellStyle5.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_Mods.DefaultCellStyle = dataGridViewCellStyle5;
             this.dgvc_Mods.HeaderText = "Mods";
             this.dgvc_Mods.Name = "dgvc_Mods";
             this.dgvc_Mods.ReadOnly = true;
@@ -961,8 +957,8 @@ namespace Chummer
             // 
             this.dgvc_Weapons.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.dgvc_Weapons.DataPropertyName = "Weapons";
-            dataGridViewCellStyle14.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_Weapons.DefaultCellStyle = dataGridViewCellStyle14;
+            dataGridViewCellStyle6.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_Weapons.DefaultCellStyle = dataGridViewCellStyle6;
             this.dgvc_Weapons.HeaderText = "Weapons";
             this.dgvc_Weapons.Name = "dgvc_Weapons";
             this.dgvc_Weapons.ReadOnly = true;
@@ -972,8 +968,8 @@ namespace Chummer
             // 
             this.dgvc_WeaponMounts.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.dgvc_WeaponMounts.DataPropertyName = "WeaponMounts";
-            dataGridViewCellStyle15.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
-            this.dgvc_WeaponMounts.DefaultCellStyle = dataGridViewCellStyle15;
+            dataGridViewCellStyle7.WrapMode = System.Windows.Forms.DataGridViewTriState.True;
+            this.dgvc_WeaponMounts.DefaultCellStyle = dataGridViewCellStyle7;
             this.dgvc_WeaponMounts.HeaderText = "Weapon Mounts";
             this.dgvc_WeaponMounts.Name = "dgvc_WeaponMounts";
             this.dgvc_WeaponMounts.ReadOnly = true;
@@ -1006,10 +1002,10 @@ namespace Chummer
             // 
             this.dgvc_Cost.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
             this.dgvc_Cost.DataPropertyName = "Cost";
-            dataGridViewCellStyle16.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
-            dataGridViewCellStyle16.Format = "#,0.##¥";
-            dataGridViewCellStyle16.NullValue = null;
-            this.dgvc_Cost.DefaultCellStyle = dataGridViewCellStyle16;
+            dataGridViewCellStyle8.Alignment = System.Windows.Forms.DataGridViewContentAlignment.TopRight;
+            dataGridViewCellStyle8.Format = "#,0.##¥";
+            dataGridViewCellStyle8.NullValue = null;
+            this.dgvc_Cost.DefaultCellStyle = dataGridViewCellStyle8;
             this.dgvc_Cost.FillWeight = 60F;
             this.dgvc_Cost.HeaderText = "Cost";
             this.dgvc_Cost.Name = "dgvc_Cost";
@@ -1091,12 +1087,12 @@ namespace Chummer
             this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
             this.tlpButtons.Controls.Add(this.cmdOKAdd, 1, 0);
             this.tlpButtons.Controls.Add(this.cmdOK, 2, 0);
-            this.tlpButtons.Location = new System.Drawing.Point(532, 514);
+            this.tlpButtons.Location = new System.Drawing.Point(508, 514);
             this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
             this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpButtons.Size = new System.Drawing.Size(234, 29);
+            this.tlpButtons.Size = new System.Drawing.Size(258, 29);
             this.tlpButtons.TabIndex = 73;
             // 
             // cmdCancel
@@ -1106,8 +1102,9 @@ namespace Chummer
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cmdCancel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdCancel.Location = new System.Drawing.Point(3, 3);
+            this.cmdCancel.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(72, 23);
+            this.cmdCancel.Size = new System.Drawing.Size(80, 23);
             this.cmdCancel.TabIndex = 37;
             this.cmdCancel.Tag = "String_Cancel";
             this.cmdCancel.Text = "Cancel";
@@ -1119,9 +1116,10 @@ namespace Chummer
             this.cmdOKAdd.AutoSize = true;
             this.cmdOKAdd.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdOKAdd.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdOKAdd.Location = new System.Drawing.Point(81, 3);
+            this.cmdOKAdd.Location = new System.Drawing.Point(89, 3);
+            this.cmdOKAdd.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdOKAdd.Name = "cmdOKAdd";
-            this.cmdOKAdd.Size = new System.Drawing.Size(72, 23);
+            this.cmdOKAdd.Size = new System.Drawing.Size(80, 23);
             this.cmdOKAdd.TabIndex = 36;
             this.cmdOKAdd.Tag = "String_AddMore";
             this.cmdOKAdd.Text = "&Add && More";
@@ -1133,9 +1131,10 @@ namespace Chummer
             this.cmdOK.AutoSize = true;
             this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdOK.Location = new System.Drawing.Point(159, 3);
+            this.cmdOK.Location = new System.Drawing.Point(175, 3);
+            this.cmdOK.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdOK.Name = "cmdOK";
-            this.cmdOK.Size = new System.Drawing.Size(72, 23);
+            this.cmdOK.Size = new System.Drawing.Size(80, 23);
             this.cmdOK.TabIndex = 35;
             this.cmdOK.Tag = "String_OK";
             this.cmdOK.Text = "OK";
@@ -1159,7 +1158,6 @@ namespace Chummer
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(784, 561);
             this.Controls.Add(this.tlpBase);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -1201,22 +1199,22 @@ namespace Chummer
         #endregion
 
         private System.Windows.Forms.TabControl tabViews;
-        private BufferedTableLayoutPanel tlpBase;
+        private System.Windows.Forms.TableLayoutPanel tlpBase;
         private System.Windows.Forms.Label lblSearchLabel;
         private ElasticComboBox cboCategory;
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.Label lblCategory;
         private System.Windows.Forms.TabPage tabListView;
-        private BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
         private ColorableCheckBox chkHideOverAvailLimit;
         private ColorableCheckBox chkShowOnlyAffordItems;
-        private BufferedTableLayoutPanel tlpLeft;
+        private System.Windows.Forms.TableLayoutPanel tlpLeft;
         private System.Windows.Forms.ListBox lstVehicle;
-        private BufferedTableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Button cmdOKAdd;
         private System.Windows.Forms.Button cmdOK;
-        private BufferedTableLayoutPanel tlpRight;
+        private System.Windows.Forms.TableLayoutPanel tlpRight;
         private System.Windows.Forms.Label lblSource;
         private System.Windows.Forms.Label lblVehicleHandlingLabel;
         private System.Windows.Forms.Label lblVehicleCost;

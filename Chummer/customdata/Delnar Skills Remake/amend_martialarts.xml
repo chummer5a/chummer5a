@@ -28,9 +28,9 @@
         <addskillspecializationoption xpathfilter="skill = 'Clubs'">
           <skill>Blunt Weapons</skill>
         </addskillspecializationoption>
-        <addskillspecializationoption xpathfilter="skills">
+        <addskillspecializationoption xpathfilter="skills/skill = 'Automatics'">
           <skills xpathfilter="skill = 'Automatics'">
-            <skill>Heavy Weapons</skill>
+            <skill xpathfilter=". = 'Automatics'">Heavy Weapons</skill>
           </skills>
         </addskillspecializationoption>
         <addskillspecializationoption xpathfilter="skill = 'Gymnastics'">

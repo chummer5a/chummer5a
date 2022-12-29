@@ -19,6 +19,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
@@ -29,7 +30,7 @@ namespace Chummer.Backend.Equipment
     /// Grade of Cyberware or Bioware.
     /// </summary>
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public class Grade : IHasName, IHasInternalId, IHasXmlDataNode
+    public class Grade : IHasName, IHasSourceId, IHasInternalId, IHasXmlDataNode
     {
         private readonly Character _objCharacter;
         private Guid _guiSourceID = Guid.Empty;
@@ -98,44 +99,49 @@ namespace Chummer.Backend.Equipment
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage)
+        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage && !GlobalSettings.LiveCustomData)
-                return _objCachedMyXmlNode;
-            _objCachedMyXmlNode = (blnSync
+            XmlNode objReturn = _objCachedMyXmlNode;
+            if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
+                                  && !GlobalSettings.LiveCustomData)
+                return objReturn;
+            objReturn = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
-                    ? _objCharacter.LoadData(GetDataFileNameFromImprovementSource(_eSource), strLanguage)
-                    : await _objCharacter.LoadDataAsync(GetDataFileNameFromImprovementSource(_eSource), strLanguage))
-                .SelectSingleNode(SourceId == Guid.Empty
+                    ? _objCharacter.LoadData(GetDataFileNameFromImprovementSource(_eSource), strLanguage, token: token)
+                    : await _objCharacter.LoadDataAsync(GetDataFileNameFromImprovementSource(_eSource), strLanguage, token: token).ConfigureAwait(false))
+                .SelectSingleNode(SourceID == Guid.Empty
                                       ? "/chummer/grades/grade[name = "
                                         + Name.CleanXPath() + ']'
                                       : "/chummer/grades/grade[id = "
                                         + SourceIDString.CleanXPath() + ']');
 
+            _objCachedMyXmlNode = objReturn;
             _strCachedXmlNodeLanguage = strLanguage;
-            return _objCachedMyXmlNode;
+            return objReturn;
         }
 
         private XPathNavigator _objCachedMyXPathNode;
         private string _strCachedXPathNodeLanguage = string.Empty;
 
-        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage)
+        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
-                                              && !GlobalSettings.LiveCustomData)
-                return _objCachedMyXPathNode;
-            _objCachedMyXPathNode = (blnSync
+            XPathNavigator objReturn = _objCachedMyXPathNode;
+            if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
+                                  && !GlobalSettings.LiveCustomData)
+                return objReturn;
+            objReturn = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
-                    ? _objCharacter.LoadDataXPath(GetDataFileNameFromImprovementSource(_eSource), strLanguage)
+                    ? _objCharacter.LoadDataXPath(GetDataFileNameFromImprovementSource(_eSource), strLanguage, token: token)
                     : await _objCharacter.LoadDataXPathAsync(GetDataFileNameFromImprovementSource(_eSource),
-                                                             strLanguage))
-                .SelectSingleNode(SourceId == Guid.Empty
+                                                             strLanguage, token: token).ConfigureAwait(false))
+                .SelectSingleNode(SourceID == Guid.Empty
                                       ? "/chummer/grades/grade[name = "
                                         + Name.CleanXPath() + ']'
                                       : "/chummer/grades/grade[id = "
                                         + SourceIDString.CleanXPath() + ']');
+            _objCachedMyXPathNode = objReturn;
             _strCachedXPathNodeLanguage = strLanguage;
-            return _objCachedMyXPathNode;
+            return objReturn;
         }
 
         #endregion Constructor and Load Methods
@@ -153,7 +159,7 @@ namespace Chummer.Backend.Equipment
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
             Grade objStandardGrade = null;
-            foreach (Grade objGrade in objCharacter.GetGradeList(objSource, true))
+            foreach (Grade objGrade in objCharacter.GetGrades(objSource, true))
             {
                 if (objGrade.Name == strValue)
                     return objGrade;
@@ -175,10 +181,13 @@ namespace Chummer.Backend.Equipment
             {
                 case Improvement.ImprovementSource.Drug:
                     return "drugcomponents.xml";
+
                 case Improvement.ImprovementSource.Bioware:
                     return "bioware.xml";
+
                 case Improvement.ImprovementSource.Cyberware:
                     return "cyberware.xml";
+
                 default:
                     Utils.BreakIfDebug();
                     return "cyberware.xml";
@@ -197,10 +206,10 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Identifier of the object within data files.
         /// </summary>
-        public Guid SourceId => _guiSourceID;
+        public Guid SourceID => _guiSourceID;
 
         /// <summary>
-        /// String-formatted identifier of the <inheritdoc cref="SourceId"/> from the data files.
+        /// String-formatted identifier of the <inheritdoc cref="SourceID"/> from the data files.
         /// </summary>
         public string SourceIDString => _guiSourceID.ToString("D", GlobalSettings.InvariantCultureInfo);
 
@@ -224,7 +233,23 @@ namespace Chummer.Backend.Equipment
             return this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
         }
 
+        /// <summary>
+        /// The name of the Grade as it should be displayed in lists.
+        /// </summary>
+        public async ValueTask<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Name;
+
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
+            return objNode != null
+                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? Name
+                : Name;
+        }
+
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
+
+        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.Language, token);
 
         /// <summary>
         /// The Grade's Essence cost multiplier.
@@ -260,11 +285,6 @@ namespace Chummer.Backend.Equipment
         /// Whether or not the Grade is for the Burnout's Way.
         /// </summary>
         public bool Burnout => _strName.Contains("Burnout's Way");
-
-        /// <summary>
-        /// Whether or not this is a Second-Hand Grade.
-        /// </summary>
-        public bool SecondHand => _strName.Contains("Used");
 
         /// <summary>
         /// The Grade's Addiction Threshold Modifier. Used for Drugs.

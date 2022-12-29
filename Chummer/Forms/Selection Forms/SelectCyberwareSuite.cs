@@ -21,6 +21,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Equipment;
@@ -65,6 +67,7 @@ namespace Chummer
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private void lstCyberware_DoubleClick(object sender, EventArgs e)
@@ -72,47 +75,63 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void SelectCyberwareSuite_Load(object sender, EventArgs e)
+        private async void SelectCyberwareSuite_Load(object sender, EventArgs e)
         {
             if (_objCharacter.IsAI)
                 return;
 
-            List<Grade> lstGrades = _objCharacter.GetGradeList(_eSource).ToList();
-
-            using (XmlNodeList xmlSuiteList = _objXmlDocument.SelectNodes("/chummer/suites/suite"))
-                if (xmlSuiteList?.Count > 0)
-                    foreach (XmlNode objXmlSuite in xmlSuiteList)
-                    {
-                        string strName = objXmlSuite["name"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strName))
-                        {
-                            string strGrade = objXmlSuite["grade"]?.InnerText ?? string.Empty;
-                            if (string.IsNullOrEmpty(strGrade))
-                            {
-                                if (lstGrades.All(x => x.Name != strGrade))
-                                    continue;
-                                // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
-                                switch (_eSource)
-                                {
-                                    case Improvement.ImprovementSource.Bioware when ImprovementManager
-                                        .GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.DisableBiowareGrade)
-                                        .Any(x => strGrade.Contains(x.ImprovedName)):
-                                    case Improvement.ImprovementSource.Cyberware when ImprovementManager
-                                        .GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.DisableCyberwareGrade)
-                                        .Any(x => strGrade.Contains(x.ImprovedName)):
-                                        continue;
-                                }
-                            }
-                            lstCyberware.Items.Add(new ListItem(objXmlSuite["id"]?.InnerText ?? strName, strName));
-                        }
-                    }
             lstCyberware.ValueMember = nameof(ListItem.Value);
             lstCyberware.DisplayMember = nameof(ListItem.Name);
+
+            using (XmlNodeList xmlSuiteList = _objXmlDocument.SelectNodes("/chummer/suites/suite"))
+            {
+                if (xmlSuiteList?.Count > 0)
+                {
+                    List<Grade> lstGrades = await _objCharacter.GetGradesListAsync(_eSource).ConfigureAwait(false);
+
+                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                               out List<ListItem> lstSuitesToAdd))
+                    {
+                        foreach (XmlNode objXmlSuite in xmlSuiteList)
+                        {
+                            string strName = objXmlSuite["name"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strName))
+                            {
+                                string strGrade = objXmlSuite["grade"]?.InnerText ?? string.Empty;
+                                if (string.IsNullOrEmpty(strGrade))
+                                {
+                                    if (lstGrades.All(x => x.Name != strGrade))
+                                        continue;
+                                    // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
+                                    switch (_eSource)
+                                    {
+                                        case Improvement.ImprovementSource.Bioware when (await ImprovementManager
+                                                .GetCachedImprovementListForValueOfAsync(_objCharacter,
+                                                    Improvement.ImprovementType.DisableBiowareGrade).ConfigureAwait(false))
+                                            .Any(x => strGrade.Contains(x.ImprovedName)):
+                                        case Improvement.ImprovementSource.Cyberware when (await ImprovementManager
+                                                .GetCachedImprovementListForValueOfAsync(_objCharacter,
+                                                    Improvement.ImprovementType.DisableCyberwareGrade).ConfigureAwait(false))
+                                            .Any(x => strGrade.Contains(x.ImprovedName)):
+                                            continue;
+                                    }
+                                }
+
+                                lstSuitesToAdd.Add(new ListItem(objXmlSuite["id"]?.InnerText ?? strName, objXmlSuite["translate"]?.InnerText ?? strName));
+                            }
+                        }
+
+                        lstSuitesToAdd.Sort(CompareListItems.CompareNames);
+
+                        lstCyberware.DataSource = lstSuitesToAdd;
+                    }
+                }
+            }
         }
 
-        private void lstCyberware_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstCyberware_SelectedIndexChanged(object sender, EventArgs e)
         {
-            string strSelectedSuite = lstCyberware.SelectedItem?.ToString();
+            string strSelectedSuite = await lstCyberware.DoThreadSafeFuncAsync(x => x.SelectedItem?.ToString()).ConfigureAwait(false);
             XmlNode xmlSuite = null;
             string strGrade;
             Grade objGrade = null;
@@ -125,17 +144,17 @@ namespace Chummer
                     strGrade = CyberwareGradeName(strSuiteGradeEntry);
                     if (!string.IsNullOrEmpty(strGrade))
                     {
-                        objGrade = _objCharacter.GetGradeList(_eSource).FirstOrDefault(x => x.Name == strGrade);
+                        objGrade = _objCharacter.GetGrades(_eSource).FirstOrDefault(x => x.Name == strGrade);
                     }
                 }
             }
 
             if (objGrade == null)
             {
-                lblCyberware.Text = string.Empty;
-                lblEssence.Text = string.Empty;
-                lblCost.Text = string.Empty;
-                lblGrade.Text = string.Empty;
+                await lblCyberware.DoThreadSafeAsync(x => x.Text = string.Empty).ConfigureAwait(false);
+                await lblEssence.DoThreadSafeAsync(x => x.Text = string.Empty).ConfigureAwait(false);
+                await lblCost.DoThreadSafeAsync(x => x.Text = string.Empty).ConfigureAwait(false);
+                await lblGrade.DoThreadSafeAsync(x => x.Text = string.Empty).ConfigureAwait(false);
                 return;
             }
 
@@ -149,16 +168,18 @@ namespace Chummer
             {
                 foreach (Cyberware objCyberware in lstSuiteCyberwares)
                 {
-                    WriteList(sbdCyberwareLabelString, objCyberware, 0);
+                    await WriteList(sbdCyberwareLabelString, objCyberware, 0).ConfigureAwait(false);
                     decTotalCost += objCyberware.TotalCost;
-                    decTotalESS += objCyberware.CalculatedESS;
+                    decTotalESS += await objCyberware.GetCalculatedESSAsync().ConfigureAwait(false);
                 }
-                lblCyberware.Text = sbdCyberwareLabelString.ToString();
+                await lblCyberware.DoThreadSafeAsync(x => x.Text = sbdCyberwareLabelString.ToString()).ConfigureAwait(false);
             }
 
-            lblEssence.Text = decTotalESS.ToString(_objCharacter.Settings.EssenceFormat, GlobalSettings.CultureInfo);
-            lblCost.Text = decTotalCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-            lblGrade.Text = objGrade.CurrentDisplayName;
+            await lblEssence.DoThreadSafeAsync(x => x.Text = decTotalESS.ToString(_objCharacter.Settings.EssenceFormat, GlobalSettings.CultureInfo)).ConfigureAwait(false);
+            string strNuyen = await LanguageManager.GetStringAsync("String_NuyenSymbol").ConfigureAwait(false);
+            await lblCost.DoThreadSafeAsync(x => x.Text = decTotalCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + strNuyen).ConfigureAwait(false);
+            string strGradeName = await objGrade.GetCurrentDisplayNameAsync().ConfigureAwait(false);
+            await lblGrade.DoThreadSafeAsync(x => x.Text = strGradeName).ConfigureAwait(false);
             _decCost = decTotalCost;
         }
 
@@ -190,6 +211,7 @@ namespace Chummer
             {
                 _strSelectedSuite = strSelectedId;
                 DialogResult = DialogResult.OK;
+                Close();
             }
         }
 
@@ -286,15 +308,16 @@ namespace Chummer
         /// <param name="objCyberwareLabelString">StringBuilder into which the cyberware list is written.</param>
         /// <param name="objCyberware">Cyberware to iterate through.</param>
         /// <param name="intDepth">Current dept in the list to determine how many spaces to print.</param>
-        private static void WriteList(StringBuilder objCyberwareLabelString, Cyberware objCyberware, int intDepth)
+        /// <param name="token">Cancellation token to listen to.</param>
+        private static async ValueTask WriteList(StringBuilder objCyberwareLabelString, Cyberware objCyberware, int intDepth, CancellationToken token = default)
         {
             for (int i = 0; i <= intDepth; ++i)
                 objCyberwareLabelString.Append("   ");
 
-            objCyberwareLabelString.AppendLine(objCyberware.CurrentDisplayName);
+            objCyberwareLabelString.AppendLine(await objCyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
 
             foreach (Cyberware objPlugin in objCyberware.Children)
-                WriteList(objCyberwareLabelString, objPlugin, intDepth + 1);
+                await WriteList(objCyberwareLabelString, objPlugin, intDepth + 1, token).ConfigureAwait(false);
         }
 
         #endregion Methods

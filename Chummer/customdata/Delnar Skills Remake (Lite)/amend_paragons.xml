@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <mentors>
+    <mentor>
+      <bonus>
+        <specificskill xpathfilter="name = 'Computer' and not(condition)">
+          <name>Computers</name>
+          <condition>Matrix</condition>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Cybercombat' and not(condition)">
+          <name>Computers</name>
+          <condition>Cyberwarfare</condition>
+        </specificskill>
+        <specificskill xpathfilter="(name = 'Computer' or name = 'Cybercombat') and condition">
+          <name>Computers</name>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Hardware'">
+          <name>Engineering</name>
+          <condition>Electronics</condition>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Compiling'">
+          <name>Tasking</name>
+          <condition>Compiling</condition>
+        </specificskill>
+        <weaponskillaccuracy xpathfilter="name = 'Automatics' or name = 'Exotic Melee Weapon' or name = 'Exotic Ranged Weapon" amendoperation="remove" />
+        <weaponskillaccuracy xpathfilter="name = 'Blades'">
+          <name>Edged Weapons</name>
+        </weaponskillaccuracy>
+        <weaponskillaccuracy xpathfilter="name = 'Clubs'">
+          <name>Blunt Weapons</name>
+        </weaponskillaccuracy>
+        <weaponskillaccuracy xpathfilter="name = 'Pistols'">
+          <name>Handguns</name>
+        </weaponskillaccuracy>
+      </bonus>
+    </mentor>
+    <mentor>
+      <id>de755412-5cae-4859-880f-75a7bd68d5a4</id> <!-- Shooter (The Soldier) -->
+      <bonus>
+        <weaponskillaccuracy amendoperation="remove" />
+        <weaponskillaccuracy amendoperation="addnode">
+          <name>Close Combat</name>
+          <value>1</value>
+        </weaponskillaccuracy>
+        <weaponskillaccuracy amendoperation="addnode">
+          <name>Firearms</name>
+          <value>1</value>
+        </weaponskillaccuracy>
+        <weaponskillaccuracy amendoperation="addnode">
+          <name>Projectile Weapons</name>
+          <value>1</value>
+        </weaponskillaccuracy>
+      </bonus>
+    </mentor>
+  </mentors>
+</chummer>

@@ -16,9 +16,9 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && (components != null))
             {
-                components?.Dispose();
+                components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -71,7 +71,6 @@ namespace Chummer
             this.tslCarriedWeightLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.tslCarriedWeight = new System.Windows.Forms.ToolStripStatusLabel();
             this.pgbProgress = new System.Windows.Forms.ToolStripProgressBar();
-            this.dlgSaveFile = new System.Windows.Forms.SaveFileDialog();
             this.lblCMStunLabel = new System.Windows.Forms.Label();
             this.lblCMPhysicalLabel = new System.Windows.Forms.Label();
             this.lblRemainingNuyenLabel = new System.Windows.Forms.Label();
@@ -88,8 +87,8 @@ namespace Chummer
             this.lblArmorLabel = new System.Windows.Forms.Label();
             this.lblAstralINILabel = new System.Windows.Forms.Label();
             this.lblINILabel = new System.Windows.Forms.Label();
-            this.cmdEdgeGained = new Chummer.ButtonWithToolTip(this.components);
-            this.cmdEdgeSpent = new Chummer.ButtonWithToolTip(this.components);
+            this.cmdEdgeGained = new Chummer.ButtonWithToolTip();
+            this.cmdEdgeSpent = new Chummer.ButtonWithToolTip();
             this.lblCounterspellingDiceLabel = new System.Windows.Forms.Label();
             this.lblSpellDefenseManipPhysicalLabel = new System.Windows.Forms.Label();
             this.lblSpellDefenseManipMentalLabel = new System.Windows.Forms.Label();
@@ -110,10 +109,10 @@ namespace Chummer
             this.lblSpellDefenseIndirectDodgeLabel = new System.Windows.Forms.Label();
             this.lblStreetCred = new System.Windows.Forms.Label();
             this.lblNotoriety = new System.Windows.Forms.Label();
-            this.cmdBurnStreetCred = new Chummer.ButtonWithToolTip(this.components);
-            this.cmdVehicleGearReduceQty = new Chummer.ButtonWithToolTip(this.components);
-            this.cmdVehicleMoveToInventory = new Chummer.ButtonWithToolTip(this.components);
-            this.chkVehicleWeaponAccessoryInstalled = new Chummer.ColorableCheckBox(this.components);
+            this.cmdBurnStreetCred = new Chummer.ButtonWithToolTip();
+            this.cmdVehicleGearReduceQty = new Chummer.ButtonWithToolTip();
+            this.cmdVehicleMoveToInventory = new Chummer.ButtonWithToolTip();
+            this.chkVehicleWeaponAccessoryInstalled = new Chummer.ColorableCheckBox();
             this.lblAttributesAug = new System.Windows.Forms.Label();
             this.lblAttributesMetatype = new System.Windows.Forms.Label();
             this.lblAttributes = new System.Windows.Forms.Label();
@@ -123,134 +122,139 @@ namespace Chummer
             this.lblMatrixINILabel = new System.Windows.Forms.Label();
             this.lblMovementLabel = new System.Windows.Forms.Label();
             this.cmsMartialArts = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsMartialArtsAddTechnique = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsMartialArtsNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsMartialArtsAddTechnique = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsMartialArtsNotes = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsMartialArtsReapplyImprovements = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsSpellButton = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsCreateSpell = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsCreateSpell = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsComplexForm = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsComplexFormNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsComplexFormNotes = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsComplexFormReapplyImprovements = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsCyberware = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsCyberwareAddAsPlugin = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsCyberwareAddGear = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsCyberwareNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsCyberwareAddAsPlugin = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsCyberwareAddGear = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsCyberwareNotes = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsCyberwareReapplyImprovements = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsVehicleCyberware = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsVehicleCyberwareAddAsPlugin = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsVehicleCyberwareAddGear = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsVehicleCyberwareNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsVehicleCyberwareAddAsPlugin = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsVehicleCyberwareAddGear = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsVehicleCyberwareNotes = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsDeleteCyberware = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsCyberwareSell = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsCyberwareUpgrade = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsCyberwareSell = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsCyberwareUpgrade = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsLifestyle = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsAdvancedLifestyle = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsAdvancedLifestyle = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsArmor = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsAddArmorMod = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsAddArmorGear = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsArmorName = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsArmorNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsAddArmorMod = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsArmorAddGear = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsArmorName = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsArmorNotes = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsArmorReapplyImprovements = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsDeleteArmor = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsArmorSell = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsArmorSell = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsWeapon = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsCreateNaturalWeapon = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsWeaponAddAccessory = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsWeaponAddUnderbarrel = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsWeaponName = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsWeaponNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsCreateNaturalWeapon = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsWeaponAddAccessory = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsWeaponAddUnderbarrel = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsWeaponName = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsWeaponNotes = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsDeleteWeapon = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsWeaponSell = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsWeaponSell = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsAmmoExpense = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.cmsAmmoSingleShot = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.cmsAmmoShortBurst = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.cmsAmmoLongBurst = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.cmsAmmoFullBurst = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.cmsAmmoSuppressiveFire = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.cmsAmmoSingleShot = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.cmsAmmoShortBurst = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.cmsAmmoLongBurst = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.cmsAmmoFullBurst = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.cmsAmmoSuppressiveFire = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsGearButton = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsGearButtonAddAccessory = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsGearButtonAddAccessory = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsGearButtonReapplyImprovements = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsDeleteGear = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsmSellItem = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsmSellItem = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsVehicle = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsVehicleAddWeapon = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsVehicleAddWeaponWeapon = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsVehicleAddWeaponAccessory = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsVehicleAddUnderbarrelWeapon = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsVehicleAddWeaponMount = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsVehicleAddMod = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsVehicleAddCyberware = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsVehicleAddSensor = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsVehicleAddGear = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsVehicleSensorAddAsPlugin = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsVehicleName = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsVehicleNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsVehicleAddWeapon = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsVehicleAddWeaponWeapon = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsVehicleAddWeaponAccessory = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsVehicleAddUnderbarrelWeapon = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsVehicleAddWeaponMount = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsVehicleAddMod = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsVehicleAddCyberware = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsVehicleAddSensor = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsVehicleAddGear = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsVehicleSensorAddAsPlugin = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsVehicleName = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsVehicleNotes = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmdVehicleAmmoExpense = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.cmsVehicleAmmoSingleShot = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.cmsVehicleAmmoShortBurst = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.cmsVehicleAmmoLongBurst = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.cmsVehicleAmmoFullBurst = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.cmsVehicleAmmoSuppressiveFire = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.cmsVehicleAmmoSingleShot = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.cmsVehicleAmmoShortBurst = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.cmsVehicleAmmoLongBurst = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.cmsVehicleAmmoFullBurst = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.cmsVehicleAmmoSuppressiveFire = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsDeleteVehicle = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsVehicleSell = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsVehicleSell = new Chummer.DpiFriendlyToolStripMenuItem();
             this.lblArmor = new Chummer.LabelWithToolTip();
             this.tabInfo = new System.Windows.Forms.TabControl();
             this.tabConditionMonitor = new System.Windows.Forms.TabPage();
-            this.tlpCMTab = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpCMTab = new System.Windows.Forms.TableLayoutPanel();
             this.grpCMStun = new System.Windows.Forms.GroupBox();
-            this.tlpStunCMBoxes = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpStunCMBoxes = new System.Windows.Forms.TableLayoutPanel();
             this.lblCMStunRecoveryPool = new System.Windows.Forms.Label();
             this.lblStunRecoveryText = new System.Windows.Forms.Label();
             this.panStunCM = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkStunCM1 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkStunCM2 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkStunCM3 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkStunCM4 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkStunCM5 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkStunCM6 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkStunCM7 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkStunCM8 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkStunCM9 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkStunCM10 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkStunCM11 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkStunCM12 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkStunCM13 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkStunCM14 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkStunCM15 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkStunCM16 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkStunCM17 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkStunCM18 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkStunCM19 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkStunCM20 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkStunCM21 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkStunCM22 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkStunCM23 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkStunCM24 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
+            this.chkStunCM1 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkStunCM2 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkStunCM3 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkStunCM4 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkStunCM5 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkStunCM6 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkStunCM7 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkStunCM8 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkStunCM9 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkStunCM10 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkStunCM11 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkStunCM12 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkStunCM13 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkStunCM14 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkStunCM15 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkStunCM16 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkStunCM17 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkStunCM18 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkStunCM19 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkStunCM20 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkStunCM21 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkStunCM22 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkStunCM23 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkStunCM24 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
             this.lblCMPenalty = new System.Windows.Forms.Label();
             this.lblCMDamageResistancePool = new Chummer.LabelWithToolTip();
             this.lblCMArmor = new Chummer.LabelWithToolTip();
             this.grpPhysicalCM = new System.Windows.Forms.GroupBox();
-            this.tlpPhysicalCMBoxes = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpPhysicalCMBoxes = new System.Windows.Forms.TableLayoutPanel();
             this.panPhysicalCM = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkPhysicalCM1 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkPhysicalCM2 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkPhysicalCM3 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkPhysicalCM4 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkPhysicalCM5 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkPhysicalCM6 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkPhysicalCM7 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkPhysicalCM8 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkPhysicalCM9 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkPhysicalCM10 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkPhysicalCM11 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkPhysicalCM12 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkPhysicalCM13 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkPhysicalCM14 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkPhysicalCM15 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkPhysicalCM16 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkPhysicalCM17 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkPhysicalCM18 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkPhysicalCM19 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkPhysicalCM20 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkPhysicalCM21 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkPhysicalCM22 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkPhysicalCM23 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkPhysicalCM24 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
+            this.chkPhysicalCM1 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkPhysicalCM2 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkPhysicalCM3 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkPhysicalCM4 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkPhysicalCM5 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkPhysicalCM6 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkPhysicalCM7 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkPhysicalCM8 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkPhysicalCM9 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkPhysicalCM10 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkPhysicalCM11 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkPhysicalCM12 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkPhysicalCM13 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkPhysicalCM14 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkPhysicalCM15 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkPhysicalCM16 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkPhysicalCM17 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkPhysicalCM18 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkPhysicalCM19 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkPhysicalCM20 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkPhysicalCM21 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkPhysicalCM22 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkPhysicalCM23 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkPhysicalCM24 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
             this.lblPhysicalRecoveryText = new System.Windows.Forms.Label();
             this.lblCMPhysicalRecoveryPool = new System.Windows.Forms.Label();
             this.grpCMEdge = new System.Windows.Forms.GroupBox();
@@ -259,7 +263,7 @@ namespace Chummer
             this.lblCMDodgeLabel = new Chummer.LabelWithToolTip();
             this.lblCMDodge = new Chummer.LabelWithToolTip();
             this.tabOtherInfo = new System.Windows.Forms.TabPage();
-            this.tlpInfo = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpInfo = new System.Windows.Forms.TableLayoutPanel();
             this.lblFlyLabel = new System.Windows.Forms.Label();
             this.lblFly = new System.Windows.Forms.Label();
             this.lblSwimLabel = new System.Windows.Forms.Label();
@@ -290,7 +294,7 @@ namespace Chummer
             this.lblLiftCarryHitsLabel = new System.Windows.Forms.Label();
             this.nudLiftCarryHits = new Chummer.NumericUpDownEx();
             this.tabDefenses = new System.Windows.Forms.TabPage();
-            this.tlpSpellDefense = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpSpellDefense = new System.Windows.Forms.TableLayoutPanel();
             this.nudCounterspellingDice = new Chummer.NumericUpDownEx();
             this.lblSpellDefenseIndirectDodge = new Chummer.LabelWithToolTip();
             this.lblSpellDefenseIndirectSoak = new Chummer.LabelWithToolTip();
@@ -311,84 +315,92 @@ namespace Chummer
             this.lblSpellDefenseManipPhysical = new Chummer.LabelWithToolTip();
             this.mnuCreateMenu = new System.Windows.Forms.MenuStrip();
             this.mnuCreateFile = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuFileSave = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuFileSaveAs = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tssFileMenu1 = new System.Windows.Forms.ToolStripSeparator();
-            this.mnuFileClose = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tssFileMenu2 = new System.Windows.Forms.ToolStripSeparator();
-            this.mnuFilePrint = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuFileExport = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.mnuFileSave = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuFileSaveAs = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tssFileMenu1 = new Chummer.ColorableToolStripSeparator();
+            this.mnuFileClose = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tssFileMenu2 = new Chummer.ColorableToolStripSeparator();
+            this.mnuFilePrint = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuFileExport = new Chummer.DpiFriendlyToolStripMenuItem();
             this.mnuCreateEdit = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuEditCopy = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.mnuEditCopy = new Chummer.DpiFriendlyToolStripMenuItem();
             this.mnuCreateSpecial = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuSpecialAddCyberwareSuite = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuSpecialAddBiowareSuite = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuSpecialChangeOptions = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuSpecialCyberzombie = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuSpecialConvertToFreeSprite = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuSpecialReduceAttribute = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuSpecialPossess = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuSpecialPossessInanimate = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuSpecialReapplyImprovements = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuSpecialCloningMachine = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.mnuSpecialAddCyberwareSuite = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuSpecialAddBiowareSuite = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuSpecialChangeOptions = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuSpecialCyberzombie = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuSpecialConvertToFreeSprite = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuSpecialReduceAttribute = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuSpecialPossess = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuSpecialPossessInanimate = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuSpecialReapplyImprovements = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuSpecialCloningMachine = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsMain = new System.Windows.Forms.ToolStrip();
-            this.tsbSave = new Chummer.DpiFriendlyToolStripButton(this.components);
-            this.tsbPrint = new Chummer.DpiFriendlyToolStripButton(this.components);
-            this.tsbSeparator = new System.Windows.Forms.ToolStripSeparator();
-            this.tsbCopy = new Chummer.DpiFriendlyToolStripButton(this.components);
+            this.tsbSave = new Chummer.DpiFriendlyToolStripButton();
+            this.tsbPrint = new Chummer.DpiFriendlyToolStripButton();
+            this.tsbSeparator = new Chummer.ColorableToolStripSeparator();
+            this.tsbCopy = new Chummer.DpiFriendlyToolStripButton();
             this.cmsGear = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsGearAddAsPlugin = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsGearName = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsGearNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsGearAddAsPlugin = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsGearName = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsGearNotes = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsGearReapplyImprovements = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsVehicleWeapon = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsVehicleAddWeaponAccessoryAlt = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsVehicleAddUnderbarrelWeaponAlt = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsVehicleWeaponNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsVehicleAddWeaponAccessoryAlt = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsVehicleAddUnderbarrelWeaponAlt = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsVehicleWeaponNotes = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsVehicleGear = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsVehicleGearAddAsPlugin = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsVehicleGearNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsVehicleGearAddAsPlugin = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsVehicleGearNotes = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsUndoKarmaExpense = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsUndoKarmaExpense = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsEditKarmaExpense = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsUndoKarmaExpense = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsEditKarmaExpense = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsUndoNuyenExpense = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsUndoNuyenExpense = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsEditNuyenExpense = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsUndoNuyenExpense = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsEditNuyenExpense = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsArmorGear = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsArmorGearAddAsPlugin = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsArmorGearNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsArmorGearAddAsPlugin = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsArmorGearNotes = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsArmorGearReapplyImprovements = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsArmorMod = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsArmorModAddAsPlugin = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsArmorModNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsArmorModAddAsPlugin = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsArmorModNotes = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsArmorModReapplyImprovements = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsQuality = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsQualityNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsQualityNotes = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsQualityReapplyImprovements = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsSpell = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsmSpellNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsSpellNotes = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsSpellReapplyImprovements = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsCritterPowers = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsCritterPowersNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsCritterPowersNotes = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsCritterPowersReapplyImprovements = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsMetamagic = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsMetamagicAddArt = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsMetamagicAddEnchantment = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsMetamagicAddEnhancement = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsMetamagicAddMetamagic = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsMetamagicAddRitual = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsMetamagicNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsMetamagicAddArt = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsMetamagicAddEnchantment = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsMetamagicAddEnhancement = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsMetamagicAddMetamagic = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsMetamagicAddRitual = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsMetamagicNotes = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsMetamagicReapplyImprovements = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsLifestyleNotes = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsEditLifestyle = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsLifestyleName = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsLifestyleNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsEditLifestyle = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsLifestyleName = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsLifestyleNotes = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsWeaponAccessory = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsWeaponAccessoryAddGear = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsWeaponAccessoryNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsWeaponAccessoryAddGear = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsWeaponAccessoryNotes = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsGearPlugin = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsGearPluginNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsGearPluginNotes = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsGearPluginReapplyImprovements = new Chummer.DpiFriendlyToolStripMenuItem();
             this.splitMain = new System.Windows.Forms.SplitContainer();
             this.tabCharacterTabs = new System.Windows.Forms.TabControl();
             this.tabCommon = new System.Windows.Forms.TabPage();
-            this.tlpCommon = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpCommonLeftSide = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpCommon = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpCommonLeftSide = new System.Windows.Forms.TableLayoutPanel();
             this.lblQualitySource = new System.Windows.Forms.Label();
             this.treQualities = new System.Windows.Forms.TreeView();
-            this.tlpQualityButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpQualityButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdAddQuality = new System.Windows.Forms.Button();
             this.cmdDeleteQuality = new System.Windows.Forms.Button();
             this.cmdSwapQuality = new System.Windows.Forms.Button();
@@ -398,10 +410,10 @@ namespace Chummer
             this.lblQualitySourceLabel = new System.Windows.Forms.Label();
             this.lblQualityBPLabel = new System.Windows.Forms.Label();
             this.pnlAttributes = new System.Windows.Forms.FlowLayoutPanel();
-            this.tlpAlias = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpAlias = new System.Windows.Forms.TableLayoutPanel();
             this.txtAlias = new System.Windows.Forms.TextBox();
             this.lblAlias = new System.Windows.Forms.Label();
-            this.tlpCommonRightSide = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpCommonRightSide = new System.Windows.Forms.TableLayoutPanel();
             this.cboAttributeCategory = new Chummer.ElasticComboBox();
             this.lblMetatypeLabel = new System.Windows.Forms.Label();
             this.lblMetatypeSourceLabel = new System.Windows.Forms.Label();
@@ -411,26 +423,26 @@ namespace Chummer
             this.lblMetatype = new System.Windows.Forms.Label();
             this.flpMysticAdeptMAGAdept = new System.Windows.Forms.FlowLayoutPanel();
             this.lblMysticAdeptMAGAdept = new System.Windows.Forms.Label();
-            this.cmdIncreasePowerPoints = new Chummer.ButtonWithToolTip(this.components);
+            this.cmdIncreasePowerPoints = new Chummer.ButtonWithToolTip();
             this.tabSkills = new System.Windows.Forms.TabPage();
             this.tabSkillsUc = new Chummer.UI.Skills.SkillsTabUserControl();
             this.tabLimits = new System.Windows.Forms.TabPage();
             this.lmtControl = new Chummer.UI.Shared.LimitTabUserControl();
             this.tabMartialArts = new System.Windows.Forms.TabPage();
-            this.tlpMartialArts = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMartialArts = new System.Windows.Forms.TableLayoutPanel();
             this.treMartialArts = new System.Windows.Forms.TreeView();
-            this.tlpMartialArtsButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMartialArtsButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdAddMartialArt = new Chummer.SplitButton();
             this.cmdDeleteMartialArt = new System.Windows.Forms.Button();
-            this.tlpMartialArtsRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMartialArtsRight = new System.Windows.Forms.TableLayoutPanel();
             this.lblMartialArtSourceLabel = new System.Windows.Forms.Label();
             this.lblMartialArtSource = new System.Windows.Forms.Label();
             this.tabMagician = new System.Windows.Forms.TabPage();
             this.splitMagician = new System.Windows.Forms.SplitContainer();
-            this.tlpMagicianTop = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMagicianTop = new System.Windows.Forms.TableLayoutPanel();
             this.flpMagician = new System.Windows.Forms.FlowLayoutPanel();
             this.gpbMagicianSpell = new System.Windows.Forms.GroupBox();
-            this.tlpMagicianSpell = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMagicianSpell = new System.Windows.Forms.TableLayoutPanel();
             this.lblSpellDescriptors = new System.Windows.Forms.Label();
             this.lblSpellDescriptorsLabel = new System.Windows.Forms.Label();
             this.lblSpellCategoryLabel = new System.Windows.Forms.Label();
@@ -453,7 +465,7 @@ namespace Chummer
             this.lblSpellDV = new System.Windows.Forms.Label();
             this.dpcSpellDicePool = new Chummer.UI.Shared.Components.DicePoolControl();
             this.gpbMagicianTradition = new System.Windows.Forms.GroupBox();
-            this.tlpMagicianTradition = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMagicianTradition = new System.Windows.Forms.TableLayoutPanel();
             this.lblTraditionLabel = new System.Windows.Forms.Label();
             this.cboTradition = new Chummer.ElasticComboBox();
             this.lblDrainAttributesLabel = new System.Windows.Forms.Label();
@@ -469,35 +481,35 @@ namespace Chummer
             this.lblSpiritDetection = new System.Windows.Forms.Label();
             this.cboSpiritDetection = new Chummer.ElasticComboBox();
             this.lblSpiritHealth = new System.Windows.Forms.Label();
-            this.tlpDrainAttributesValue = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpDrainAttributesValue = new System.Windows.Forms.TableLayoutPanel();
             this.dpcDrainAttributes = new Chummer.UI.Shared.Components.DicePoolControl();
             this.lblDrainAttributes = new System.Windows.Forms.Label();
             this.cboDrain = new Chummer.ElasticComboBox();
             this.gpbMagicianMentorSpirit = new System.Windows.Forms.GroupBox();
-            this.tlpMagicianMentorSpirit = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMagicianMentorSpirit = new System.Windows.Forms.TableLayoutPanel();
             this.lblMentorSpiritInformation = new System.Windows.Forms.Label();
-            this.tlpMagicianMentorSpiritHeader = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMagicianMentorSpiritHeader = new System.Windows.Forms.TableLayoutPanel();
             this.lblMentorSpiritLabel = new System.Windows.Forms.Label();
             this.lblMentorSpiritSource = new System.Windows.Forms.Label();
             this.lblMentorSpirit = new System.Windows.Forms.Label();
             this.lblMentorSpiritSourceLabel = new System.Windows.Forms.Label();
-            this.tlpMagicianButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMagicianButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdAddSpell = new Chummer.SplitButton();
             this.cmdDeleteSpell = new System.Windows.Forms.Button();
-            this.tlpSpells = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpSpells = new System.Windows.Forms.TableLayoutPanel();
             this.treSpells = new System.Windows.Forms.TreeView();
             this.flpSustainedSpells = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkPsycheActiveMagician = new Chummer.ColorableCheckBox(this.components);
-            this.tlpMagicianBottom = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.chkPsycheActiveMagician = new Chummer.ColorableCheckBox();
+            this.tlpMagicianBottom = new System.Windows.Forms.TableLayoutPanel();
             this.cmdAddSpirit = new System.Windows.Forms.Button();
             this.panSpirits = new System.Windows.Forms.Panel();
             this.tabAdept = new System.Windows.Forms.TabPage();
             this.tabTechnomancer = new System.Windows.Forms.TabPage();
             this.splitTechnomancer = new System.Windows.Forms.SplitContainer();
-            this.tlpTechnomancerTop = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpTechnomancerTop = new System.Windows.Forms.TableLayoutPanel();
             this.flpTechnomancer = new System.Windows.Forms.FlowLayoutPanel();
             this.gpbTechnomancerComplexForm = new System.Windows.Forms.GroupBox();
-            this.tlpTechnomancerComplexForm = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpTechnomancerComplexForm = new System.Windows.Forms.TableLayoutPanel();
             this.lblTargetLabel = new System.Windows.Forms.Label();
             this.lblTarget = new System.Windows.Forms.Label();
             this.lblComplexFormSourceLabel = new System.Windows.Forms.Label();
@@ -510,7 +522,7 @@ namespace Chummer
             this.lblFVLabel = new System.Windows.Forms.Label();
             this.lblFV = new System.Windows.Forms.Label();
             this.gpbTechnomancerStream = new System.Windows.Forms.GroupBox();
-            this.tlpTechnomancerStream = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpTechnomancerStream = new System.Windows.Forms.TableLayoutPanel();
             this.lblStreamLabel = new System.Windows.Forms.Label();
             this.cboStream = new Chummer.ElasticComboBox();
             this.lblFadingAttributesLabel = new System.Windows.Forms.Label();
@@ -518,43 +530,43 @@ namespace Chummer
             this.lblFadingAttributes = new System.Windows.Forms.Label();
             this.dpcFadingAttributes = new Chummer.UI.Shared.Components.DicePoolControl();
             this.gpbTechnomancerParagon = new System.Windows.Forms.GroupBox();
-            this.tlpTechnomancerParagon = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpTechnomancerParagon = new System.Windows.Forms.TableLayoutPanel();
             this.lblParagonInformation = new System.Windows.Forms.Label();
-            this.tlpTechnomancerParagonHeader = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpTechnomancerParagonHeader = new System.Windows.Forms.TableLayoutPanel();
             this.lblParagonLabel = new System.Windows.Forms.Label();
             this.lblParagonSource = new System.Windows.Forms.Label();
             this.lblParagon = new System.Windows.Forms.Label();
             this.lblParagonSourceLabel = new System.Windows.Forms.Label();
-            this.tlpTechnomancerButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpTechnomancerButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdAddComplexForm = new System.Windows.Forms.Button();
             this.cmdDeleteComplexForm = new System.Windows.Forms.Button();
-            this.tlpComplexForms = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpComplexForms = new System.Windows.Forms.TableLayoutPanel();
             this.treComplexForms = new System.Windows.Forms.TreeView();
             this.flpSustainedComplexForms = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkPsycheActiveTechnomancer = new Chummer.ColorableCheckBox(this.components);
-            this.tlpTechnomancerBottom = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.chkPsycheActiveTechnomancer = new Chummer.ColorableCheckBox();
+            this.tlpTechnomancerBottom = new System.Windows.Forms.TableLayoutPanel();
             this.panSprites = new System.Windows.Forms.Panel();
             this.cmdAddSprite = new System.Windows.Forms.Button();
             this.tabAdvancedPrograms = new System.Windows.Forms.TabPage();
-            this.tlpAdvancedPrograms = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpAdvancedPrograms = new System.Windows.Forms.TableLayoutPanel();
             this.treAIPrograms = new System.Windows.Forms.TreeView();
-            this.tlpAdvancedProgramsButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpAdvancedProgramsButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdAddAIProgram = new System.Windows.Forms.Button();
             this.cmdDeleteAIProgram = new System.Windows.Forms.Button();
-            this.tlpAdvancedProgramsRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpAdvancedProgramsRight = new System.Windows.Forms.TableLayoutPanel();
             this.lblAIProgramsRequiresLabel = new System.Windows.Forms.Label();
             this.lblAIProgramsSource = new System.Windows.Forms.Label();
             this.lblAIProgramsRequires = new System.Windows.Forms.Label();
             this.lblAIProgramsSourceLabel = new System.Windows.Forms.Label();
             this.tabCritter = new System.Windows.Forms.TabPage();
-            this.tlpCritter = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpCritter = new System.Windows.Forms.TableLayoutPanel();
             this.treCritterPowers = new System.Windows.Forms.TreeView();
-            this.tlpCritterButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpCritterButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdAddCritterPower = new System.Windows.Forms.Button();
             this.cmdDeleteCritterPower = new System.Windows.Forms.Button();
-            this.tlpCritterRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpCritterRight = new System.Windows.Forms.TableLayoutPanel();
             this.lblCritterPowerPointsLabel = new System.Windows.Forms.Label();
-            this.chkCritterPowerCount = new Chummer.ColorableCheckBox(this.components);
+            this.chkCritterPowerCount = new Chummer.ColorableCheckBox();
             this.lblCritterPowerPointCost = new System.Windows.Forms.Label();
             this.lblCritterPowerPoints = new System.Windows.Forms.Label();
             this.lblCritterPowerNameLabel = new System.Windows.Forms.Label();
@@ -575,33 +587,33 @@ namespace Chummer
             this.cmdSustainCritterPower = new System.Windows.Forms.Button();
             this.flpSustainedCritterPowers = new System.Windows.Forms.FlowLayoutPanel();
             this.tabInitiation = new System.Windows.Forms.TabPage();
-            this.tlpInitiation = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpInitiation = new System.Windows.Forms.TableLayoutPanel();
             this.treMetamagic = new System.Windows.Forms.TreeView();
-            this.tlpInitiationButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpInitiationButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdAddMetamagic = new Chummer.SplitButton();
             this.cmdDeleteMetamagic = new System.Windows.Forms.Button();
-            this.tlpInitiationRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpInitiationRight = new System.Windows.Forms.TableLayoutPanel();
             this.lblMetamagicSourceLabel = new System.Windows.Forms.Label();
             this.flpInitiation = new System.Windows.Forms.FlowLayoutPanel();
             this.gpbInitiationType = new System.Windows.Forms.GroupBox();
             this.flpInitiationCheckboxes = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkInitiationOrdeal = new Chummer.ColorableCheckBox(this.components);
-            this.chkInitiationSchooling = new Chummer.ColorableCheckBox(this.components);
+            this.chkInitiationOrdeal = new Chummer.ColorableCheckBox();
+            this.chkInitiationSchooling = new Chummer.ColorableCheckBox();
             this.gpbInitiationGroup = new System.Windows.Forms.GroupBox();
-            this.tlpInitiationGroup = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpInitiationGroup = new System.Windows.Forms.TableLayoutPanel();
             this.txtGroupNotes = new System.Windows.Forms.TextBox();
             this.lblGroupName = new System.Windows.Forms.Label();
-            this.chkInitiationGroup = new Chummer.ColorableCheckBox(this.components);
+            this.chkInitiationGroup = new Chummer.ColorableCheckBox();
             this.lblGroupNotes = new System.Windows.Forms.Label();
             this.txtGroupName = new System.Windows.Forms.TextBox();
-            this.chkJoinGroup = new Chummer.ColorableCheckBox(this.components);
+            this.chkJoinGroup = new Chummer.ColorableCheckBox();
             this.lblMetamagicSource = new System.Windows.Forms.Label();
             this.tabCyberware = new System.Windows.Forms.TabPage();
-            this.tlpCyberware = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpCyberware = new System.Windows.Forms.TableLayoutPanel();
             this.treCyberware = new System.Windows.Forms.TreeView();
             this.flpCyberware = new System.Windows.Forms.FlowLayoutPanel();
             this.gpbEssenceConsumption = new System.Windows.Forms.GroupBox();
-            this.tlpCyberwareEssenceConsumption = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpCyberwareEssenceConsumption = new System.Windows.Forms.TableLayoutPanel();
             this.lblCyberwareESSLabel = new System.Windows.Forms.Label();
             this.lblBiowareESSLabel = new System.Windows.Forms.Label();
             this.lblEssenceHoleESSLabel = new System.Windows.Forms.Label();
@@ -609,7 +621,7 @@ namespace Chummer
             this.lblBiowareESS = new System.Windows.Forms.Label();
             this.lblEssenceHoleESS = new System.Windows.Forms.Label();
             this.gpbCyberwareCommon = new System.Windows.Forms.GroupBox();
-            this.tlpCyberwareCommon = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpCyberwareCommon = new System.Windows.Forms.TableLayoutPanel();
             this.lblCyberwareNameLabel = new System.Windows.Forms.Label();
             this.lblCyberwareName = new System.Windows.Forms.Label();
             this.lblCyberlimbSTRLabel = new System.Windows.Forms.Label();
@@ -634,7 +646,7 @@ namespace Chummer
             this.lblCyberwareEssence = new System.Windows.Forms.Label();
             this.cmdCyberwareChangeMount = new System.Windows.Forms.Button();
             this.gpbCyberwareMatrix = new System.Windows.Forms.GroupBox();
-            this.tlpCyberwareMatrix = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpCyberwareMatrix = new System.Windows.Forms.TableLayoutPanel();
             this.lblCyberFirewallLabel = new System.Windows.Forms.Label();
             this.lblCyberDataProcessingLabel = new System.Windows.Forms.Label();
             this.lblCyberDeviceRatingLabel = new System.Windows.Forms.Label();
@@ -648,48 +660,48 @@ namespace Chummer
             this.cboCyberwareOverclocker = new Chummer.ElasticComboBox();
             this.lblCyberwareOverclockerLabel = new System.Windows.Forms.Label();
             this.flpCyberwareMatrixCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkCyberwareHomeNode = new Chummer.ColorableCheckBox(this.components);
-            this.chkCyberwareActiveCommlink = new Chummer.ColorableCheckBox(this.components);
-            this.chkCyberwareWireless = new Chummer.ColorableCheckBox(this.components);
+            this.chkCyberwareHomeNode = new Chummer.ColorableCheckBox();
+            this.chkCyberwareActiveCommlink = new Chummer.ColorableCheckBox();
+            this.chkCyberwareWireless = new Chummer.ColorableCheckBox();
             this.tabCyberwareCM = new System.Windows.Forms.TabControl();
             this.tabCyberwareMatrixCM = new System.Windows.Forms.TabPage();
             this.panCyberwareMatrixCM = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkCyberwareMatrixCM1 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkCyberwareMatrixCM2 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkCyberwareMatrixCM3 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkCyberwareMatrixCM4 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkCyberwareMatrixCM5 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkCyberwareMatrixCM6 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkCyberwareMatrixCM7 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkCyberwareMatrixCM8 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkCyberwareMatrixCM9 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkCyberwareMatrixCM10 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkCyberwareMatrixCM11 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkCyberwareMatrixCM12 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkCyberwareMatrixCM13 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkCyberwareMatrixCM14 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkCyberwareMatrixCM16 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkCyberwareMatrixCM17 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkCyberwareMatrixCM18 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkCyberwareMatrixCM19 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkCyberwareMatrixCM20 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkCyberwareMatrixCM21 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkCyberwareMatrixCM22 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkCyberwareMatrixCM23 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkCyberwareMatrixCM24 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkCyberwareMatrixCM15 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.tlpCyberwareButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.chkCyberwareMatrixCM1 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkCyberwareMatrixCM2 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkCyberwareMatrixCM3 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkCyberwareMatrixCM4 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkCyberwareMatrixCM5 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkCyberwareMatrixCM6 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkCyberwareMatrixCM7 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkCyberwareMatrixCM8 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkCyberwareMatrixCM9 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkCyberwareMatrixCM10 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkCyberwareMatrixCM11 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkCyberwareMatrixCM12 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkCyberwareMatrixCM13 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkCyberwareMatrixCM14 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkCyberwareMatrixCM16 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkCyberwareMatrixCM17 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkCyberwareMatrixCM18 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkCyberwareMatrixCM19 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkCyberwareMatrixCM20 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkCyberwareMatrixCM21 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkCyberwareMatrixCM22 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkCyberwareMatrixCM23 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkCyberwareMatrixCM24 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkCyberwareMatrixCM15 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.tlpCyberwareButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdAddCyberware = new Chummer.SplitButton();
             this.cmdDeleteCyberware = new Chummer.SplitButton();
             this.cmdAddBioware = new System.Windows.Forms.Button();
             this.tabStreetGear = new System.Windows.Forms.TabPage();
             this.tabStreetGearTabs = new System.Windows.Forms.TabControl();
             this.tabGear = new System.Windows.Forms.TabPage();
-            this.tlpGear = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpGear = new System.Windows.Forms.TableLayoutPanel();
             this.treGear = new System.Windows.Forms.TreeView();
             this.flpGear = new System.Windows.Forms.FlowLayoutPanel();
             this.gpbGearCommon = new System.Windows.Forms.GroupBox();
-            this.tlpGearCommon = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpGearCommon = new System.Windows.Forms.TableLayoutPanel();
             this.lblGearNameLabel = new System.Windows.Forms.Label();
             this.lblGearName = new System.Windows.Forms.Label();
             this.lblGearCategoryLabel = new System.Windows.Forms.Label();
@@ -699,14 +711,14 @@ namespace Chummer
             this.lblGearQtyLabel = new System.Windows.Forms.Label();
             this.lblGearSource = new System.Windows.Forms.Label();
             this.lblGearSourceLabel = new System.Windows.Forms.Label();
-            this.chkGearEquipped = new Chummer.ColorableCheckBox(this.components);
+            this.chkGearEquipped = new Chummer.ColorableCheckBox();
             this.flpGearQty = new System.Windows.Forms.FlowLayoutPanel();
             this.lblGearQty = new System.Windows.Forms.Label();
-            this.cmdGearIncreaseQty = new Chummer.ButtonWithToolTip(this.components);
-            this.cmdGearReduceQty = new Chummer.ButtonWithToolTip(this.components);
-            this.cmdGearSplitQty = new Chummer.ButtonWithToolTip(this.components);
-            this.cmdGearMergeQty = new Chummer.ButtonWithToolTip(this.components);
-            this.cmdGearMoveToVehicle = new Chummer.ButtonWithToolTip(this.components);
+            this.cmdGearIncreaseQty = new Chummer.ButtonWithToolTip();
+            this.cmdGearReduceQty = new Chummer.ButtonWithToolTip();
+            this.cmdGearSplitQty = new Chummer.ButtonWithToolTip();
+            this.cmdGearMergeQty = new Chummer.ButtonWithToolTip();
+            this.cmdGearMoveToVehicle = new Chummer.ButtonWithToolTip();
             this.lblGearAvailLabel = new System.Windows.Forms.Label();
             this.lblGearAvail = new System.Windows.Forms.Label();
             this.lblGearCostLabel = new System.Windows.Forms.Label();
@@ -714,7 +726,7 @@ namespace Chummer
             this.lblGearCapacityLabel = new System.Windows.Forms.Label();
             this.lblGearCapacity = new System.Windows.Forms.Label();
             this.gpbGearMatrix = new System.Windows.Forms.GroupBox();
-            this.tlpGearMatrix = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpGearMatrix = new System.Windows.Forms.TableLayoutPanel();
             this.lblGearDeviceRating = new System.Windows.Forms.Label();
             this.lblGearDeviceRatingLabel = new System.Windows.Forms.Label();
             this.cboGearOverclocker = new Chummer.ElasticComboBox();
@@ -728,56 +740,57 @@ namespace Chummer
             this.lblGearDataProcessingLabel = new System.Windows.Forms.Label();
             this.lblGearFirewallLabel = new System.Windows.Forms.Label();
             this.flpGearMatrixCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkGearHomeNode = new Chummer.ColorableCheckBox(this.components);
-            this.chkGearActiveCommlink = new Chummer.ColorableCheckBox(this.components);
-            this.chkGearWireless = new Chummer.ColorableCheckBox(this.components);
+            this.chkGearHomeNode = new Chummer.ColorableCheckBox();
+            this.chkGearActiveCommlink = new Chummer.ColorableCheckBox();
+            this.chkGearWireless = new Chummer.ColorableCheckBox();
             this.tabGearCM = new System.Windows.Forms.TabControl();
             this.tabGearMatrixCM = new System.Windows.Forms.TabPage();
             this.panGearMatrixCM = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkGearMatrixCM1 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkGearMatrixCM2 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkGearMatrixCM3 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkGearMatrixCM4 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkGearMatrixCM5 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkGearMatrixCM6 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkGearMatrixCM7 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkGearMatrixCM8 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkGearMatrixCM9 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkGearMatrixCM10 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkGearMatrixCM11 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkGearMatrixCM12 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkGearMatrixCM13 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkGearMatrixCM14 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkGearMatrixCM15 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkGearMatrixCM16 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkGearMatrixCM17 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkGearMatrixCM18 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkGearMatrixCM19 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkGearMatrixCM20 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkGearMatrixCM21 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkGearMatrixCM22 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkGearMatrixCM23 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkGearMatrixCM24 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
+            this.chkGearMatrixCM1 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkGearMatrixCM2 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkGearMatrixCM3 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkGearMatrixCM4 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkGearMatrixCM5 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkGearMatrixCM6 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkGearMatrixCM7 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkGearMatrixCM8 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkGearMatrixCM9 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkGearMatrixCM10 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkGearMatrixCM11 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkGearMatrixCM12 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkGearMatrixCM13 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkGearMatrixCM14 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkGearMatrixCM15 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkGearMatrixCM16 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkGearMatrixCM17 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkGearMatrixCM18 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkGearMatrixCM19 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkGearMatrixCM20 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkGearMatrixCM21 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkGearMatrixCM22 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkGearMatrixCM23 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkGearMatrixCM24 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
             this.gpbGearBondedFoci = new System.Windows.Forms.GroupBox();
-            this.tlpGearBondedFoci = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpGearBondedFoci = new System.Windows.Forms.TableLayoutPanel();
             this.cmdCreateStackedFocus = new System.Windows.Forms.Button();
             this.treFoci = new System.Windows.Forms.TreeView();
-            this.tlpGearButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpGearButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdAddLocation = new System.Windows.Forms.Button();
             this.cmdDeleteGear = new Chummer.SplitButton();
-            this.chkCommlinks = new Chummer.ColorableCheckBox(this.components);
+            this.chkCommlinks = new Chummer.ColorableCheckBox();
             this.cmdAddGear = new Chummer.SplitButton();
+            this.chkHideLoadedAmmo = new Chummer.ColorableCheckBox();
             this.tabArmor = new System.Windows.Forms.TabPage();
-            this.tlpArmor = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpArmor = new System.Windows.Forms.TableLayoutPanel();
             this.treArmor = new System.Windows.Forms.TreeView();
             this.flpArmor = new System.Windows.Forms.FlowLayoutPanel();
             this.gpbArmorCommon = new System.Windows.Forms.GroupBox();
-            this.tlpArmorCommon = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpArmorCommon = new System.Windows.Forms.TableLayoutPanel();
             this.lblArmorValueLabel = new System.Windows.Forms.Label();
             this.flpArmorValue = new System.Windows.Forms.FlowLayoutPanel();
             this.lblArmorValue = new System.Windows.Forms.Label();
-            this.cmdArmorIncrease = new Chummer.ButtonWithToolTip(this.components);
-            this.cmdArmorDecrease = new Chummer.ButtonWithToolTip(this.components);
+            this.cmdArmorIncrease = new Chummer.ButtonWithToolTip();
+            this.cmdArmorDecrease = new Chummer.ButtonWithToolTip();
             this.lblArmorRatingLabel = new System.Windows.Forms.Label();
             this.lblArmorRating = new System.Windows.Forms.Label();
             this.lblArmorAvailLabel = new System.Windows.Forms.Label();
@@ -789,10 +802,10 @@ namespace Chummer
             this.lblArmorCapacity = new System.Windows.Forms.Label();
             this.lblArmorSourceLabel = new System.Windows.Forms.Label();
             this.flpArmorCommonCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkArmorEquipped = new Chummer.ColorableCheckBox(this.components);
-            this.chkIncludedInArmor = new Chummer.ColorableCheckBox(this.components);
+            this.chkArmorEquipped = new Chummer.ColorableCheckBox();
+            this.chkIncludedInArmor = new Chummer.ColorableCheckBox();
             this.gpbArmorMatrix = new System.Windows.Forms.GroupBox();
-            this.tlpArmorMatrix = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpArmorMatrix = new System.Windows.Forms.TableLayoutPanel();
             this.cboArmorFirewall = new Chummer.ElasticComboBox();
             this.cboArmorOverclocker = new Chummer.ElasticComboBox();
             this.lblArmorOverclockerLabel = new System.Windows.Forms.Label();
@@ -803,55 +816,56 @@ namespace Chummer
             this.lblArmorDeviceRatingLabel = new System.Windows.Forms.Label();
             this.lblArmorDeviceRating = new System.Windows.Forms.Label();
             this.flpArmorMatrixCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkArmorHomeNode = new Chummer.ColorableCheckBox(this.components);
-            this.chkArmorActiveCommlink = new Chummer.ColorableCheckBox(this.components);
-            this.chkArmorWireless = new Chummer.ColorableCheckBox(this.components);
+            this.chkArmorHomeNode = new Chummer.ColorableCheckBox();
+            this.chkArmorActiveCommlink = new Chummer.ColorableCheckBox();
+            this.chkArmorWireless = new Chummer.ColorableCheckBox();
             this.cboArmorAttack = new Chummer.ElasticComboBox();
             this.cboArmorSleaze = new Chummer.ElasticComboBox();
             this.cboArmorDataProcessing = new Chummer.ElasticComboBox();
             this.tabArmorCM = new System.Windows.Forms.TabControl();
             this.tabArmorMatrixCM = new System.Windows.Forms.TabPage();
             this.panArmorMatrixCM = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkArmorMatrixCM1 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkArmorMatrixCM2 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkArmorMatrixCM3 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkArmorMatrixCM4 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkArmorMatrixCM5 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkArmorMatrixCM6 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkArmorMatrixCM7 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkArmorMatrixCM8 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkArmorMatrixCM9 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkArmorMatrixCM10 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkArmorMatrixCM11 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkArmorMatrixCM12 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkArmorMatrixCM13 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkArmorMatrixCM14 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkArmorMatrixCM15 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkArmorMatrixCM16 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkArmorMatrixCM17 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkArmorMatrixCM18 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkArmorMatrixCM19 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkArmorMatrixCM20 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkArmorMatrixCM21 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkArmorMatrixCM22 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkArmorMatrixCM23 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkArmorMatrixCM24 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
+            this.chkArmorMatrixCM1 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkArmorMatrixCM2 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkArmorMatrixCM3 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkArmorMatrixCM4 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkArmorMatrixCM5 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkArmorMatrixCM6 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkArmorMatrixCM7 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkArmorMatrixCM8 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkArmorMatrixCM9 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkArmorMatrixCM10 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkArmorMatrixCM11 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkArmorMatrixCM12 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkArmorMatrixCM13 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkArmorMatrixCM14 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkArmorMatrixCM15 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkArmorMatrixCM16 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkArmorMatrixCM17 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkArmorMatrixCM18 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkArmorMatrixCM19 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkArmorMatrixCM20 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkArmorMatrixCM21 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkArmorMatrixCM22 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkArmorMatrixCM23 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkArmorMatrixCM24 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
             this.gpbArmorLocation = new System.Windows.Forms.GroupBox();
-            this.tlpArmorLocation = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpArmorLocation = new System.Windows.Forms.TableLayoutPanel();
             this.lblArmorEquipped = new System.Windows.Forms.Label();
-            this.cmdArmorUnEquipAll = new System.Windows.Forms.Button();
             this.lblArmorEquippedLabel = new System.Windows.Forms.Label();
+            this.tlpArmorLocationButtons = new System.Windows.Forms.TableLayoutPanel();
+            this.cmdArmorUnEquipAll = new System.Windows.Forms.Button();
             this.cmdArmorEquipAll = new System.Windows.Forms.Button();
-            this.tlpArmorButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpArmorButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdAddArmor = new Chummer.SplitButton();
             this.cmdAddArmorBundle = new System.Windows.Forms.Button();
             this.cmdDeleteArmor = new Chummer.SplitButton();
             this.tabWeapons = new System.Windows.Forms.TabPage();
-            this.tlpWeapons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpWeapons = new System.Windows.Forms.TableLayoutPanel();
             this.treWeapons = new System.Windows.Forms.TreeView();
             this.flpWeapons = new System.Windows.Forms.FlowLayoutPanel();
             this.gpbWeaponsCommon = new System.Windows.Forms.GroupBox();
-            this.tlpWeaponsCommon = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpWeaponsCommon = new System.Windows.Forms.TableLayoutPanel();
             this.lblWeaponCapacity = new System.Windows.Forms.Label();
             this.lblWeaponNameLabel = new System.Windows.Forms.Label();
             this.lblWeaponName = new System.Windows.Forms.Label();
@@ -869,14 +883,14 @@ namespace Chummer
             this.lblWeaponConceal = new System.Windows.Forms.Label();
             this.lblWeaponCost = new System.Windows.Forms.Label();
             this.flpWeaponsCommonCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
-            this.cmdWeaponMoveToVehicle = new Chummer.ButtonWithToolTip(this.components);
-            this.chkWeaponEquipped = new Chummer.ColorableCheckBox(this.components);
-            this.chkIncludedInWeapon = new Chummer.ColorableCheckBox(this.components);
+            this.cmdWeaponMoveToVehicle = new Chummer.ButtonWithToolTip();
+            this.chkWeaponEquipped = new Chummer.ColorableCheckBox();
+            this.chkIncludedInWeapon = new Chummer.ColorableCheckBox();
             this.lblWeaponSource = new System.Windows.Forms.Label();
             this.lblWeaponSourceLabel = new System.Windows.Forms.Label();
             this.gpbWeaponsWeapon = new System.Windows.Forms.GroupBox();
             this.flpWeaponsWeapon = new System.Windows.Forms.FlowLayoutPanel();
-            this.tlpWeaponsWeapon = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpWeaponsWeapon = new System.Windows.Forms.TableLayoutPanel();
             this.lblWeaponDamageLabel = new System.Windows.Forms.Label();
             this.lblWeaponDamage = new System.Windows.Forms.Label();
             this.lblWeaponAmmo = new System.Windows.Forms.Label();
@@ -893,7 +907,7 @@ namespace Chummer
             this.lblWeaponReachLabel = new System.Windows.Forms.Label();
             this.lblWeaponReach = new System.Windows.Forms.Label();
             this.dpcWeaponDicePool = new Chummer.UI.Shared.Components.DicePoolControl();
-            this.tlpWeaponsRanges = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpWeaponsRanges = new System.Windows.Forms.TableLayoutPanel();
             this.lblWeaponRangeLabel = new System.Windows.Forms.Label();
             this.lblWeaponRangeExtremeLabel = new System.Windows.Forms.Label();
             this.lblWeaponAlternateRangeLong = new System.Windows.Forms.Label();
@@ -909,7 +923,7 @@ namespace Chummer
             this.lblWeaponRangeMedium = new System.Windows.Forms.Label();
             this.lblWeaponRangeShort = new System.Windows.Forms.Label();
             this.lblWeaponAlternateRangeExtreme = new System.Windows.Forms.Label();
-            this.tlpWeaponsCareer = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpWeaponsCareer = new System.Windows.Forms.TableLayoutPanel();
             this.cboWeaponAmmo = new Chummer.ElasticComboBox();
             this.lblWeaponAmmoRemainingLabel = new System.Windows.Forms.Label();
             this.lblWeaponAmmoTypeLabel = new System.Windows.Forms.Label();
@@ -917,15 +931,16 @@ namespace Chummer
             this.flpWeaponsCareerButtons = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdFireWeapon = new Chummer.SplitButton();
             this.cmdReloadWeapon = new System.Windows.Forms.Button();
-            this.cmdWeaponBuyAmmo = new Chummer.ButtonWithToolTip(this.components);
+            this.cmdUnloadWeapon = new System.Windows.Forms.Button();
+            this.cmdWeaponBuyAmmo = new Chummer.ButtonWithToolTip();
             this.gpbWeaponsMatrix = new System.Windows.Forms.GroupBox();
-            this.tlpWeaponsMatrix = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpWeaponsMatrix = new System.Windows.Forms.TableLayoutPanel();
             this.cboWeaponOverclocker = new Chummer.ElasticComboBox();
             this.lblWeaponOverclockerLabel = new System.Windows.Forms.Label();
             this.flpWeaponMatrixCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkWeaponHomeNode = new Chummer.ColorableCheckBox(this.components);
-            this.chkWeaponActiveCommlink = new Chummer.ColorableCheckBox(this.components);
-            this.chkWeaponWireless = new Chummer.ColorableCheckBox(this.components);
+            this.chkWeaponHomeNode = new Chummer.ColorableCheckBox();
+            this.chkWeaponActiveCommlink = new Chummer.ColorableCheckBox();
+            this.chkWeaponWireless = new Chummer.ColorableCheckBox();
             this.lblWeaponFirewallLabel = new System.Windows.Forms.Label();
             this.lblWeaponDeviceRating = new System.Windows.Forms.Label();
             this.cboWeaponGearDataProcessing = new Chummer.ElasticComboBox();
@@ -939,40 +954,40 @@ namespace Chummer
             this.tabWeaponCM = new System.Windows.Forms.TabControl();
             this.tabWeaponMatrixCM = new System.Windows.Forms.TabPage();
             this.panWeaponMatrixCM = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkWeaponMatrixCM1 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkWeaponMatrixCM2 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkWeaponMatrixCM3 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkWeaponMatrixCM4 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkWeaponMatrixCM5 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkWeaponMatrixCM6 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkWeaponMatrixCM7 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkWeaponMatrixCM8 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkWeaponMatrixCM9 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkWeaponMatrixCM10 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkWeaponMatrixCM11 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkWeaponMatrixCM12 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkWeaponMatrixCM13 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkWeaponMatrixCM14 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkWeaponMatrixCM15 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkWeaponMatrixCM16 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkWeaponMatrixCM17 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkWeaponMatrixCM18 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkWeaponMatrixCM19 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkWeaponMatrixCM20 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkWeaponMatrixCM21 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkWeaponMatrixCM22 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkWeaponMatrixCM23 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkWeaponMatrixCM24 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.tlpWeaponsButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.chkWeaponMatrixCM1 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkWeaponMatrixCM2 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkWeaponMatrixCM3 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkWeaponMatrixCM4 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkWeaponMatrixCM5 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkWeaponMatrixCM6 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkWeaponMatrixCM7 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkWeaponMatrixCM8 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkWeaponMatrixCM9 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkWeaponMatrixCM10 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkWeaponMatrixCM11 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkWeaponMatrixCM12 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkWeaponMatrixCM13 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkWeaponMatrixCM14 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkWeaponMatrixCM15 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkWeaponMatrixCM16 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkWeaponMatrixCM17 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkWeaponMatrixCM18 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkWeaponMatrixCM19 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkWeaponMatrixCM20 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkWeaponMatrixCM21 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkWeaponMatrixCM22 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkWeaponMatrixCM23 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkWeaponMatrixCM24 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.tlpWeaponsButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdAddWeapon = new Chummer.SplitButton();
             this.cmdAddWeaponLocation = new System.Windows.Forms.Button();
             this.cmdDeleteWeapon = new Chummer.SplitButton();
             this.tabDrugs = new System.Windows.Forms.TabPage();
-            this.tlpDrugDescription = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpDrugDescription = new System.Windows.Forms.TableLayoutPanel();
             this.treCustomDrugs = new System.Windows.Forms.TreeView();
             this.flpDrugs = new System.Windows.Forms.FlowLayoutPanel();
             this.gpbDrugsCommon = new System.Windows.Forms.GroupBox();
-            this.tlpDrugsCommon = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpDrugsCommon = new System.Windows.Forms.TableLayoutPanel();
             this.lblDrugEffectsLabel = new System.Windows.Forms.Label();
             this.lblDrugEffect = new System.Windows.Forms.Label();
             this.lblDrugNameLabel = new System.Windows.Forms.Label();
@@ -993,18 +1008,18 @@ namespace Chummer
             this.lblDrugCategory = new System.Windows.Forms.Label();
             this.flpDrugQty = new System.Windows.Forms.FlowLayoutPanel();
             this.lblDrugQty = new System.Windows.Forms.Label();
-            this.btnIncreaseDrugQty = new Chummer.ButtonWithToolTip(this.components);
-            this.btnDecreaseDrugQty = new Chummer.ButtonWithToolTip(this.components);
+            this.btnIncreaseDrugQty = new Chummer.ButtonWithToolTip();
+            this.btnDecreaseDrugQty = new Chummer.ButtonWithToolTip();
             this.lblDrugCostLabel = new System.Windows.Forms.Label();
-            this.tlpDrugDescriptionButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpDrugDescriptionButtons = new System.Windows.Forms.TableLayoutPanel();
             this.btnCreateCustomDrug = new System.Windows.Forms.Button();
             this.btnDeleteCustomDrug = new System.Windows.Forms.Button();
             this.tabLifestyle = new System.Windows.Forms.TabPage();
-            this.tlpLifestyleDetails = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpLifestyleDetails = new System.Windows.Forms.TableLayoutPanel();
             this.treLifestyles = new System.Windows.Forms.TreeView();
             this.flpLifestyleDetails = new System.Windows.Forms.FlowLayoutPanel();
             this.gpbLifestyleCommon = new System.Windows.Forms.GroupBox();
-            this.tlpLifestyleCommon = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpLifestyleCommon = new System.Windows.Forms.TableLayoutPanel();
             this.lblLifestyleBoroughLabel = new System.Windows.Forms.Label();
             this.lblLifestyleCostLabel = new System.Windows.Forms.Label();
             this.lblLifestyleQualities = new System.Windows.Forms.Label();
@@ -1013,8 +1028,8 @@ namespace Chummer
             this.lblBaseLifestyle = new System.Windows.Forms.Label();
             this.flpLifestyleIntervals = new System.Windows.Forms.FlowLayoutPanel();
             this.lblLifestyleMonths = new System.Windows.Forms.Label();
-            this.cmdDecreaseLifestyleMonths = new Chummer.ButtonWithToolTip(this.components);
-            this.cmdIncreaseLifestyleMonths = new Chummer.ButtonWithToolTip(this.components);
+            this.cmdDecreaseLifestyleMonths = new Chummer.ButtonWithToolTip();
+            this.cmdIncreaseLifestyleMonths = new Chummer.ButtonWithToolTip();
             this.lblLifestyleMonthsLabel = new System.Windows.Forms.Label();
             this.lblLifestyleSourceLabel = new System.Windows.Forms.Label();
             this.lblLifestyleComfortsLabel = new System.Windows.Forms.Label();
@@ -1024,18 +1039,14 @@ namespace Chummer
             this.lblLifestyleCity = new System.Windows.Forms.Label();
             this.lblLifestyleDistrict = new System.Windows.Forms.Label();
             this.lblLifestyleBorough = new System.Windows.Forms.Label();
-            this.tlpLifestyleButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpLifestyleButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdAddLifestyle = new Chummer.SplitButton();
             this.cmdDeleteLifestyle = new System.Windows.Forms.Button();
             this.tabVehicles = new System.Windows.Forms.TabPage();
-            this.tlpVehicles = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.flpVehiclesButtons = new System.Windows.Forms.FlowLayoutPanel();
-            this.cmdAddVehicle = new Chummer.SplitButton();
-            this.cmdDeleteVehicle = new Chummer.SplitButton();
-            this.cmdAddVehicleLocation = new System.Windows.Forms.Button();
+            this.tlpVehicles = new System.Windows.Forms.TableLayoutPanel();
             this.flpVehicles = new System.Windows.Forms.FlowLayoutPanel();
             this.gpbVehiclesCommon = new System.Windows.Forms.GroupBox();
-            this.tlpVehiclesCommon = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpVehiclesCommon = new System.Windows.Forms.TableLayoutPanel();
             this.lblVehicleName = new System.Windows.Forms.Label();
             this.lblVehicleCategoryLabel = new System.Windows.Forms.Label();
             this.lblVehicleCategory = new System.Windows.Forms.Label();
@@ -1048,7 +1059,7 @@ namespace Chummer
             this.lblVehicleSourceLabel = new System.Windows.Forms.Label();
             this.lblVehicleSource = new System.Windows.Forms.Label();
             this.flpVehiclesCommonCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkVehicleIncludedInWeapon = new Chummer.ColorableCheckBox(this.components);
+            this.chkVehicleIncludedInWeapon = new Chummer.ColorableCheckBox();
             this.lblVehicleAvailLabel = new System.Windows.Forms.Label();
             this.lblVehicleAvail = new System.Windows.Forms.Label();
             this.lblVehicleCostLabel = new System.Windows.Forms.Label();
@@ -1058,7 +1069,7 @@ namespace Chummer
             this.flpVehiclesCommonMoveButtons = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdVehicleCyberwareChangeMount = new System.Windows.Forms.Button();
             this.gpbVehiclesVehicle = new System.Windows.Forms.GroupBox();
-            this.tlpVehiclesVehicle = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpVehiclesVehicle = new System.Windows.Forms.TableLayoutPanel();
             this.lblVehicleHandlingLabel = new System.Windows.Forms.Label();
             this.lblVehicleWeaponsmod = new System.Windows.Forms.Label();
             this.lblVehicleElectromagnetic = new System.Windows.Forms.Label();
@@ -1091,7 +1102,8 @@ namespace Chummer
             this.lblVehicleSensor = new System.Windows.Forms.Label();
             this.gpbVehiclesWeapon = new System.Windows.Forms.GroupBox();
             this.flpVehiclesWeapon = new System.Windows.Forms.FlowLayoutPanel();
-            this.tlpVehiclesWeaponCommon = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpVehiclesWeaponCommon = new System.Windows.Forms.TableLayoutPanel();
+            this.lblVehicleWeaponReach = new System.Windows.Forms.Label();
             this.lblVehicleWeaponDamageLabel = new System.Windows.Forms.Label();
             this.lblVehicleWeaponDamage = new System.Windows.Forms.Label();
             this.lblVehicleWeaponAccuracy = new System.Windows.Forms.Label();
@@ -1104,7 +1116,10 @@ namespace Chummer
             this.lblVehicleWeaponAmmoLabel = new System.Windows.Forms.Label();
             this.lblVehicleWeaponAmmo = new System.Windows.Forms.Label();
             this.dpcVehicleWeaponDicePool = new Chummer.UI.Shared.Components.DicePoolControl();
-            this.tlpVehiclesWeaponRanges = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.lblVehicleWeaponRCLabel = new System.Windows.Forms.Label();
+            this.lblVehicleWeaponRC = new System.Windows.Forms.Label();
+            this.lblVehicleWeaponReachLabel = new System.Windows.Forms.Label();
+            this.tlpVehiclesWeaponRanges = new System.Windows.Forms.TableLayoutPanel();
             this.lblVehicleWeaponAlternateRangeExtreme = new System.Windows.Forms.Label();
             this.lblVehicleWeaponRangeLabel = new System.Windows.Forms.Label();
             this.lblVehicleWeaponRangeAlternate = new System.Windows.Forms.Label();
@@ -1120,7 +1135,7 @@ namespace Chummer
             this.lblVehicleWeaponRangeLongLabel = new System.Windows.Forms.Label();
             this.lblVehicleWeaponRangeExtremeLabel = new System.Windows.Forms.Label();
             this.lblVehicleWeaponRangeLong = new System.Windows.Forms.Label();
-            this.tlpVehiclesWeaponCareer = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpVehiclesWeaponCareer = new System.Windows.Forms.TableLayoutPanel();
             this.lblVehicleWeaponAmmoRemainingLabel = new System.Windows.Forms.Label();
             this.lblVehicleWeaponAmmoRemaining = new System.Windows.Forms.Label();
             this.lblVehicleWeaponAmmoTypeLabel = new System.Windows.Forms.Label();
@@ -1130,8 +1145,9 @@ namespace Chummer
             this.flpVehiclesWeaponCareerButtons = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdFireVehicleWeapon = new Chummer.SplitButton();
             this.cmdReloadVehicleWeapon = new System.Windows.Forms.Button();
+            this.cmdUnloadVehicleWeapon = new System.Windows.Forms.Button();
             this.gpbVehiclesMatrix = new System.Windows.Forms.GroupBox();
-            this.tlpVehiclesMatrix = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpVehiclesMatrix = new System.Windows.Forms.TableLayoutPanel();
             this.lblVehicleDataProcessingLabel = new System.Windows.Forms.Label();
             this.cboVehicleDataProcessing = new Chummer.ElasticComboBox();
             this.cboVehicleFirewall = new Chummer.ElasticComboBox();
@@ -1143,64 +1159,68 @@ namespace Chummer
             this.cboVehicleAttack = new Chummer.ElasticComboBox();
             this.lblVehicleAttackLabel = new System.Windows.Forms.Label();
             this.flpVehiclesMatrixCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkVehicleHomeNode = new Chummer.ColorableCheckBox(this.components);
-            this.chkVehicleActiveCommlink = new Chummer.ColorableCheckBox(this.components);
+            this.chkVehicleHomeNode = new Chummer.ColorableCheckBox();
+            this.chkVehicleActiveCommlink = new Chummer.ColorableCheckBox();
             this.panVehicleCM = new System.Windows.Forms.TabControl();
             this.tabVehiclePhysicalCM = new System.Windows.Forms.TabPage();
             this.panVehiclePhysicalCM = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkVehiclePhysicalCM1 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehiclePhysicalCM2 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehiclePhysicalCM3 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehiclePhysicalCM4 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehiclePhysicalCM5 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehiclePhysicalCM6 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehiclePhysicalCM7 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehiclePhysicalCM8 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehiclePhysicalCM9 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehiclePhysicalCM10 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehiclePhysicalCM11 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehiclePhysicalCM12 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehiclePhysicalCM13 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehiclePhysicalCM14 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehiclePhysicalCM15 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehiclePhysicalCM16 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehiclePhysicalCM17 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehiclePhysicalCM18 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehiclePhysicalCM19 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehiclePhysicalCM20 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehiclePhysicalCM21 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehiclePhysicalCM22 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehiclePhysicalCM23 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehiclePhysicalCM24 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
+            this.chkVehiclePhysicalCM1 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehiclePhysicalCM2 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehiclePhysicalCM3 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehiclePhysicalCM4 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehiclePhysicalCM5 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehiclePhysicalCM6 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehiclePhysicalCM7 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehiclePhysicalCM8 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehiclePhysicalCM9 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehiclePhysicalCM10 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehiclePhysicalCM11 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehiclePhysicalCM12 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehiclePhysicalCM13 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehiclePhysicalCM14 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehiclePhysicalCM15 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehiclePhysicalCM16 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehiclePhysicalCM17 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehiclePhysicalCM18 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehiclePhysicalCM19 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehiclePhysicalCM20 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehiclePhysicalCM21 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehiclePhysicalCM22 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehiclePhysicalCM23 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehiclePhysicalCM24 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
             this.tabVehicleMatrixCM = new System.Windows.Forms.TabPage();
             this.panVehicleMatrixCM = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkVehicleMatrixCM1 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehicleMatrixCM2 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehicleMatrixCM3 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehicleMatrixCM4 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehicleMatrixCM5 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehicleMatrixCM6 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehicleMatrixCM7 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehicleMatrixCM8 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehicleMatrixCM9 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehicleMatrixCM10 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehicleMatrixCM11 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehicleMatrixCM12 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehicleMatrixCM13 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehicleMatrixCM14 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehicleMatrixCM15 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehicleMatrixCM16 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehicleMatrixCM17 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehicleMatrixCM18 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehicleMatrixCM19 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehicleMatrixCM20 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehicleMatrixCM21 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehicleMatrixCM22 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehicleMatrixCM23 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
-            this.chkVehicleMatrixCM24 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton(this.components);
+            this.chkVehicleMatrixCM1 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehicleMatrixCM2 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehicleMatrixCM3 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehicleMatrixCM4 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehicleMatrixCM5 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehicleMatrixCM6 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehicleMatrixCM7 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehicleMatrixCM8 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehicleMatrixCM9 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehicleMatrixCM10 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehicleMatrixCM11 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehicleMatrixCM12 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehicleMatrixCM13 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehicleMatrixCM14 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehicleMatrixCM15 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehicleMatrixCM16 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehicleMatrixCM17 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehicleMatrixCM18 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehicleMatrixCM19 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehicleMatrixCM20 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehicleMatrixCM21 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehicleMatrixCM22 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehicleMatrixCM23 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
+            this.chkVehicleMatrixCM24 = new Chummer.DpiFriendlyCheckBoxDisguisedAsButton();
             this.treVehicles = new System.Windows.Forms.TreeView();
+            this.tlpVehiclesButtons = new System.Windows.Forms.TableLayoutPanel();
+            this.cmdAddVehicle = new Chummer.SplitButton();
+            this.cmdDeleteVehicle = new Chummer.SplitButton();
+            this.cmdAddVehicleLocation = new System.Windows.Forms.Button();
             this.tabCharacterInfo = new System.Windows.Forms.TabPage();
-            this.tlpCharacterInfo = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpCharacterInfo = new System.Windows.Forms.TableLayoutPanel();
             this.cboPrimaryArm = new Chummer.ElasticComboBox();
             this.lblGender = new System.Windows.Forms.Label();
             this.lblPublicAwareTotal = new Chummer.LabelWithToolTip();
@@ -1231,7 +1251,7 @@ namespace Chummer
             this.lblHandedness = new System.Windows.Forms.Label();
             this.lblMugshot = new System.Windows.Forms.Label();
             this.picMugshot = new System.Windows.Forms.PictureBox();
-            this.chkIsMainMugshot = new Chummer.ColorableCheckBox(this.components);
+            this.chkIsMainMugshot = new Chummer.ColorableCheckBox();
             this.flpStreetCredTotal = new System.Windows.Forms.FlowLayoutPanel();
             this.lblStreetCredTotal = new Chummer.LabelWithToolTip();
             this.lblAstralReputationTotal = new Chummer.LabelWithToolTip();
@@ -1240,7 +1260,7 @@ namespace Chummer
             this.nudWildReputation = new Chummer.NumericUpDownEx();
             this.lblAstralReputation = new System.Windows.Forms.Label();
             this.lblWildReputation = new System.Windows.Forms.Label();
-            this.tlpMugshotButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMugshotButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdAddMugshot = new System.Windows.Forms.Button();
             this.cmdDeleteMugshot = new System.Windows.Forms.Button();
             this.tabLongTexts = new System.Windows.Forms.TabControl();
@@ -1254,7 +1274,7 @@ namespace Chummer
             this.rtfNotes = new Chummer.UI.Editors.RtfEditor();
             this.tabKarma = new System.Windows.Forms.TabPage();
             this.splitKarmaNuyen = new System.Windows.Forms.SplitContainer();
-            this.tlpKarma = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpKarma = new System.Windows.Forms.TableLayoutPanel();
             this.cmdKarmaSpent = new System.Windows.Forms.Button();
             this.lstKarma = new System.Windows.Forms.ListView();
             this.colKarmaDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
@@ -1262,10 +1282,10 @@ namespace Chummer
             this.colKarmaReason = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.cmdKarmaEdit = new System.Windows.Forms.Button();
             this.chtKarma = new Chummer.UI.Charts.ExpenseChart();
-            this.chkShowFreeKarma = new Chummer.ColorableCheckBox(this.components);
-            this.chkShowKarmaChart = new Chummer.ColorableCheckBox(this.components);
+            this.chkShowFreeKarma = new Chummer.ColorableCheckBox();
+            this.chkShowKarmaChart = new Chummer.ColorableCheckBox();
             this.cmdKarmaGained = new System.Windows.Forms.Button();
-            this.tlpNuyen = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpNuyen = new System.Windows.Forms.TableLayoutPanel();
             this.chtNuyen = new Chummer.UI.Charts.ExpenseChart();
             this.cmdNuyenSpent = new System.Windows.Forms.Button();
             this.lstNuyen = new System.Windows.Forms.ListView();
@@ -1273,15 +1293,15 @@ namespace Chummer
             this.colNuyenAmount = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colNuyenReason = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.cmdNuyenEdit = new System.Windows.Forms.Button();
-            this.chkShowFreeNuyen = new Chummer.ColorableCheckBox(this.components);
-            this.chkShowNuyenChart = new Chummer.ColorableCheckBox(this.components);
+            this.chkShowFreeNuyen = new Chummer.ColorableCheckBox();
+            this.chkShowNuyenChart = new Chummer.ColorableCheckBox();
             this.cmdNuyenGained = new System.Windows.Forms.Button();
             this.tabCalendar = new System.Windows.Forms.TabPage();
-            this.tlpCalendar = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpCalendar = new System.Windows.Forms.TableLayoutPanel();
             this.lstCalendar = new System.Windows.Forms.ListView();
             this.colCalendarDate = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.colCalendarNotes = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.tlpCalendarButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpCalendarButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdAddWeek = new System.Windows.Forms.Button();
             this.cmdChangeStartWeek = new System.Windows.Forms.Button();
             this.cmdEditWeek = new System.Windows.Forms.Button();
@@ -1289,90 +1309,95 @@ namespace Chummer
             this.tabNotes = new System.Windows.Forms.TabPage();
             this.rtfGameNotes = new Chummer.UI.Editors.RtfEditor();
             this.tabImprovements = new System.Windows.Forms.TabPage();
-            this.tlpImprovements = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpImprovements = new System.Windows.Forms.TableLayoutPanel();
             this.treImprovements = new System.Windows.Forms.TreeView();
-            this.tlpImprovementsButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpImprovementsButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdAddImprovement = new System.Windows.Forms.Button();
             this.cmdAddImprovementGroup = new System.Windows.Forms.Button();
             this.cmdEditImprovement = new System.Windows.Forms.Button();
             this.cmdDeleteImprovement = new System.Windows.Forms.Button();
-            this.tlpImprovementsRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpImprovementsRight = new System.Windows.Forms.TableLayoutPanel();
             this.lblImprovementTypeLabel = new System.Windows.Forms.Label();
             this.lblImprovementValue = new System.Windows.Forms.Label();
-            this.tlpImprovementsActive = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.chkImprovementActive = new Chummer.ColorableCheckBox(this.components);
+            this.tlpImprovementsActive = new System.Windows.Forms.TableLayoutPanel();
+            this.chkImprovementActive = new Chummer.ColorableCheckBox();
             this.cmdImprovementsDisableAll = new System.Windows.Forms.Button();
             this.cmdImprovementsEnableAll = new System.Windows.Forms.Button();
             this.lblImprovementType = new System.Windows.Forms.Label();
             this.tabRelationships = new System.Windows.Forms.TabPage();
             this.tabPeople = new System.Windows.Forms.TabControl();
             this.tabContacts = new System.Windows.Forms.TabPage();
-            this.tlpContacts = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpContacts = new System.Windows.Forms.TableLayoutPanel();
             this.panContacts = new System.Windows.Forms.FlowLayoutPanel();
-            this.tlpContactsButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpContactsButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdAddContact = new Chummer.SplitButton();
             this.cmsAddContact = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsAddFromFile = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsAddFromFile = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmdSwapContactOrder = new System.Windows.Forms.Button();
             this.cmdContactsExpansionToggle = new System.Windows.Forms.Button();
             this.tabEnemies = new System.Windows.Forms.TabPage();
-            this.tlpEnemies = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpEnemies = new System.Windows.Forms.TableLayoutPanel();
             this.panEnemies = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdAddEnemy = new Chummer.SplitButton();
             this.tabPets = new System.Windows.Forms.TabPage();
-            this.tlpPets = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpPets = new System.Windows.Forms.TableLayoutPanel();
             this.panPets = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdAddPet = new Chummer.SplitButton();
             this.cmsInitiationNotes = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsInitiationNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsInitiationNotes = new Chummer.DpiFriendlyToolStripMenuItem();
             this.panAttributes = new System.Windows.Forms.Panel();
             this.cmsBioware = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsBiowareNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsBiowareNotes = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsBiowareReapplyImprovements = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsAdvancedLifestyle = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsEditAdvancedLifestyle = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsAdvancedLifestyleNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsEditAdvancedLifestyle = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsAdvancedLifestyleNotes = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsGearLocation = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsGearLocationAddGear = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsGearRenameLocation = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsGearLocationAddGear = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsGearRenameLocation = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsImprovement = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsImprovementNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsImprovementNotes = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsArmorLocation = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsArmorLocationAddArmor = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsArmorRenameLocation = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsArmorLocationAddArmor = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsArmorRenameLocation = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsImprovementLocation = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsImprovementRenameLocation = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsImprovementRenameLocation = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsCyberwareGear = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsCyberwareGearMenuAddAsPlugin = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsCyberwareGearMenuAddAsPlugin = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsCyberwareGearReapplyImprovements = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsVehicleCyberwareGear = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsVehicleCyberwareGearMenuAddAsPlugin = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsVehicleCyberwareGearMenuAddAsPlugin = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsWeaponAccessoryGear = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsWeaponAccessoryGearMenuAddAsPlugin = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsWeaponAccessoryGearMenuAddAsPlugin = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsWeaponAccessoryGearReapplyImprovements = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsVehicleLocation = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsVehicleRenameLocation = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsVehicleLocationAddVehicle = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsVehicleLocationAddWeapon = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsVehicleRenameLocation = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsVehicleLocationAddVehicle = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsVehicleLocationAddWeapon = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsVehicleWeaponAccessory = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsVehicleWeaponAccessoryAddGear = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsVehicleWeaponAccessoryNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsVehicleWeaponAccessoryAddGear = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsVehicleWeaponAccessoryNotes = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsVehicleWeaponAccessoryGear = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsVehicleWeaponAccessoryGearMenuAddAsPlugin = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.cmsVehicleWeaponMod = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsVehicleWeaponModNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsVehicleWeaponAccessoryGearMenuAddAsPlugin = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsWeaponLocation = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsWeaponLocationAddWeapon = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsWeaponRenameLocation = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsWeaponLocationAddWeapon = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsWeaponRenameLocation = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsTechnique = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsAddTechniqueNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsTechniqueAddNotes = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsTechniqueReapplyImprovements = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsAdvancedProgram = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsAddAdvancedProgramOption = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsAIProgramNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsAIProgramAddOption = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsAIProgramNotes = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsAIProgramReapplyImprovements = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsWeaponMount = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsWeaponMountWeapons = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsVehicleWeaponMountAddWeapon = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsVehicleWeaponMountAddAccessory = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsVehicleWeaponMountAddUnderbarrel = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsWeaponMountLocation = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsVehicleWeaponMountNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsWeaponMountWeapons = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsVehicleWeaponMountAddWeapon = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsVehicleWeaponMountAddAccessory = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsVehicleWeaponMountAddUnderbarrel = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsWeaponMountLocation = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsVehicleWeaponMountNotes = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsVehicleWeaponAccessoryGearNotes = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsWeaponAccessoryGearNotes = new Chummer.DpiFriendlyToolStripMenuItem();
             this.StatusStrip.SuspendLayout();
             this.cmsMartialArts.SuspendLayout();
             this.cmsSpellButton.SuspendLayout();
@@ -1544,6 +1569,7 @@ namespace Chummer
             this.panArmorMatrixCM.SuspendLayout();
             this.gpbArmorLocation.SuspendLayout();
             this.tlpArmorLocation.SuspendLayout();
+            this.tlpArmorLocationButtons.SuspendLayout();
             this.tlpArmorButtons.SuspendLayout();
             this.tabWeapons.SuspendLayout();
             this.tlpWeapons.SuspendLayout();
@@ -1580,7 +1606,6 @@ namespace Chummer
             this.tlpLifestyleButtons.SuspendLayout();
             this.tabVehicles.SuspendLayout();
             this.tlpVehicles.SuspendLayout();
-            this.flpVehiclesButtons.SuspendLayout();
             this.flpVehicles.SuspendLayout();
             this.gpbVehiclesCommon.SuspendLayout();
             this.tlpVehiclesCommon.SuspendLayout();
@@ -1603,6 +1628,7 @@ namespace Chummer
             this.panVehiclePhysicalCM.SuspendLayout();
             this.tabVehicleMatrixCM.SuspendLayout();
             this.panVehicleMatrixCM.SuspendLayout();
+            this.tlpVehiclesButtons.SuspendLayout();
             this.tabCharacterInfo.SuspendLayout();
             this.tlpCharacterInfo.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudPublicAware)).BeginInit();
@@ -1658,7 +1684,6 @@ namespace Chummer
             this.cmsVehicleLocation.SuspendLayout();
             this.cmsVehicleWeaponAccessory.SuspendLayout();
             this.cmsVehicleWeaponAccessoryGear.SuspendLayout();
-            this.cmsVehicleWeaponMod.SuspendLayout();
             this.cmsWeaponLocation.SuspendLayout();
             this.cmsTechnique.SuspendLayout();
             this.cmsAdvancedProgram.SuspendLayout();
@@ -1695,6 +1720,7 @@ namespace Chummer
             this.tabPowerUc.AutoSize = true;
             this.tabPowerUc.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tabPowerUc.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPowerUc.CachedCharacter = null;
             this.tabPowerUc.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabPowerUc.ForeColor = System.Drawing.SystemColors.ControlText;
             this.tabPowerUc.Location = new System.Drawing.Point(0, 0);
@@ -1783,12 +1809,6 @@ namespace Chummer
             this.pgbProgress.Name = "pgbProgress";
             this.pgbProgress.Size = new System.Drawing.Size(400, 18);
             this.pgbProgress.Visible = false;
-            // 
-            // dlgSaveFile
-            // 
-            this.dlgSaveFile.DefaultExt = "sr5";
-            this.dlgSaveFile.Filter = "Chummer Character|*.sr5";
-            this.dlgSaveFile.Title = "Save Character";
             // 
             // lblCMStunLabel
             // 
@@ -2465,9 +2485,10 @@ namespace Chummer
             // 
             this.cmsMartialArts.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsMartialArtsAddTechnique,
-            this.tsMartialArtsNotes});
+            this.tsMartialArtsNotes,
+            this.tsMartialArtsReapplyImprovements});
             this.cmsMartialArts.Name = "cmsWeapon";
-            this.cmsMartialArts.Size = new System.Drawing.Size(154, 48);
+            this.cmsMartialArts.Size = new System.Drawing.Size(204, 70);
             // 
             // tsMartialArtsAddTechnique
             // 
@@ -2479,7 +2500,7 @@ namespace Chummer
             this.tsMartialArtsAddTechnique.ImageDpi384 = null;
             this.tsMartialArtsAddTechnique.ImageDpi96 = global::Chummer.Properties.Resources.medal_gold_add;
             this.tsMartialArtsAddTechnique.Name = "tsMartialArtsAddTechnique";
-            this.tsMartialArtsAddTechnique.Size = new System.Drawing.Size(153, 22);
+            this.tsMartialArtsAddTechnique.Size = new System.Drawing.Size(203, 22);
             this.tsMartialArtsAddTechnique.Tag = "Menu_AddTechnique";
             this.tsMartialArtsAddTechnique.Text = "&Add Technique";
             this.tsMartialArtsAddTechnique.Click += new System.EventHandler(this.tsMartialArtsAddTechnique_Click);
@@ -2494,10 +2515,25 @@ namespace Chummer
             this.tsMartialArtsNotes.ImageDpi384 = null;
             this.tsMartialArtsNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
             this.tsMartialArtsNotes.Name = "tsMartialArtsNotes";
-            this.tsMartialArtsNotes.Size = new System.Drawing.Size(153, 22);
+            this.tsMartialArtsNotes.Size = new System.Drawing.Size(203, 22);
             this.tsMartialArtsNotes.Tag = "Menu_Notes";
             this.tsMartialArtsNotes.Text = "&Notes";
             this.tsMartialArtsNotes.Click += new System.EventHandler(this.tsMartialArtsNotes_Click);
+            // 
+            // tsMartialArtsReapplyImprovements
+            // 
+            this.tsMartialArtsReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
+            this.tsMartialArtsReapplyImprovements.ImageDpi120 = null;
+            this.tsMartialArtsReapplyImprovements.ImageDpi144 = null;
+            this.tsMartialArtsReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
+            this.tsMartialArtsReapplyImprovements.ImageDpi288 = null;
+            this.tsMartialArtsReapplyImprovements.ImageDpi384 = null;
+            this.tsMartialArtsReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsMartialArtsReapplyImprovements.Name = "tsMartialArtsReapplyImprovements";
+            this.tsMartialArtsReapplyImprovements.Size = new System.Drawing.Size(203, 22);
+            this.tsMartialArtsReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
+            this.tsMartialArtsReapplyImprovements.Text = "Re-Apply Improvements";
+            this.tsMartialArtsReapplyImprovements.Click += new System.EventHandler(this.tsMartialArtsReapplyImprovements_Click);
             // 
             // cmsSpellButton
             // 
@@ -2508,13 +2544,13 @@ namespace Chummer
             // 
             // tsCreateSpell
             // 
-            this.tsCreateSpell.Image = null;
+            this.tsCreateSpell.Image = global::Chummer.Properties.Resources.wand;
             this.tsCreateSpell.ImageDpi120 = null;
             this.tsCreateSpell.ImageDpi144 = null;
-            this.tsCreateSpell.ImageDpi192 = null;
+            this.tsCreateSpell.ImageDpi192 = global::Chummer.Properties.Resources.wand1;
             this.tsCreateSpell.ImageDpi288 = null;
             this.tsCreateSpell.ImageDpi384 = null;
-            this.tsCreateSpell.ImageDpi96 = null;
+            this.tsCreateSpell.ImageDpi96 = global::Chummer.Properties.Resources.wand;
             this.tsCreateSpell.Name = "tsCreateSpell";
             this.tsCreateSpell.Size = new System.Drawing.Size(136, 22);
             this.tsCreateSpell.Tag = "Menu_CreateSpell";
@@ -2525,9 +2561,10 @@ namespace Chummer
             // cmsComplexForm
             // 
             this.cmsComplexForm.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsComplexFormNotes});
+            this.tsComplexFormNotes,
+            this.tsComplexFormReapplyImprovements});
             this.cmsComplexForm.Name = "cmsComplexForm";
-            this.cmsComplexForm.Size = new System.Drawing.Size(106, 26);
+            this.cmsComplexForm.Size = new System.Drawing.Size(204, 48);
             // 
             // tsComplexFormNotes
             // 
@@ -2539,19 +2576,35 @@ namespace Chummer
             this.tsComplexFormNotes.ImageDpi384 = null;
             this.tsComplexFormNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
             this.tsComplexFormNotes.Name = "tsComplexFormNotes";
-            this.tsComplexFormNotes.Size = new System.Drawing.Size(105, 22);
+            this.tsComplexFormNotes.Size = new System.Drawing.Size(203, 22);
             this.tsComplexFormNotes.Tag = "Menu_Notes";
             this.tsComplexFormNotes.Text = "&Notes";
             this.tsComplexFormNotes.Click += new System.EventHandler(this.tsComplexFormNotes_Click);
+            // 
+            // tsComplexFormReapplyImprovements
+            // 
+            this.tsComplexFormReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
+            this.tsComplexFormReapplyImprovements.ImageDpi120 = null;
+            this.tsComplexFormReapplyImprovements.ImageDpi144 = null;
+            this.tsComplexFormReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
+            this.tsComplexFormReapplyImprovements.ImageDpi288 = null;
+            this.tsComplexFormReapplyImprovements.ImageDpi384 = null;
+            this.tsComplexFormReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsComplexFormReapplyImprovements.Name = "tsComplexFormReapplyImprovements";
+            this.tsComplexFormReapplyImprovements.Size = new System.Drawing.Size(203, 22);
+            this.tsComplexFormReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
+            this.tsComplexFormReapplyImprovements.Text = "Re-Apply Improvements";
+            this.tsComplexFormReapplyImprovements.Click += new System.EventHandler(this.tsComplexFormReapplyImprovements_Click);
             // 
             // cmsCyberware
             // 
             this.cmsCyberware.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsCyberwareAddAsPlugin,
             this.tsCyberwareAddGear,
-            this.tsCyberwareNotes});
+            this.tsCyberwareNotes,
+            this.tsCyberwareReapplyImprovements});
             this.cmsCyberware.Name = "cmsCyberware";
-            this.cmsCyberware.Size = new System.Drawing.Size(148, 70);
+            this.cmsCyberware.Size = new System.Drawing.Size(204, 92);
             // 
             // tsCyberwareAddAsPlugin
             // 
@@ -2563,7 +2616,7 @@ namespace Chummer
             this.tsCyberwareAddAsPlugin.ImageDpi384 = null;
             this.tsCyberwareAddAsPlugin.ImageDpi96 = global::Chummer.Properties.Resources.processor_add;
             this.tsCyberwareAddAsPlugin.Name = "tsCyberwareAddAsPlugin";
-            this.tsCyberwareAddAsPlugin.Size = new System.Drawing.Size(147, 22);
+            this.tsCyberwareAddAsPlugin.Size = new System.Drawing.Size(203, 22);
             this.tsCyberwareAddAsPlugin.Tag = "Menu_AddAsPlugin";
             this.tsCyberwareAddAsPlugin.Text = "&Add as Plugin";
             this.tsCyberwareAddAsPlugin.Click += new System.EventHandler(this.tsCyberwareAddAsPlugin_Click);
@@ -2578,7 +2631,7 @@ namespace Chummer
             this.tsCyberwareAddGear.ImageDpi384 = null;
             this.tsCyberwareAddGear.ImageDpi96 = global::Chummer.Properties.Resources.camera_add;
             this.tsCyberwareAddGear.Name = "tsCyberwareAddGear";
-            this.tsCyberwareAddGear.Size = new System.Drawing.Size(147, 22);
+            this.tsCyberwareAddGear.Size = new System.Drawing.Size(203, 22);
             this.tsCyberwareAddGear.Tag = "Menu_AddGear";
             this.tsCyberwareAddGear.Text = "Add &Gear";
             this.tsCyberwareAddGear.Click += new System.EventHandler(this.tsCyberwareAddGear_Click);
@@ -2593,10 +2646,25 @@ namespace Chummer
             this.tsCyberwareNotes.ImageDpi384 = null;
             this.tsCyberwareNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
             this.tsCyberwareNotes.Name = "tsCyberwareNotes";
-            this.tsCyberwareNotes.Size = new System.Drawing.Size(147, 22);
+            this.tsCyberwareNotes.Size = new System.Drawing.Size(203, 22);
             this.tsCyberwareNotes.Tag = "Menu_Notes";
             this.tsCyberwareNotes.Text = "&Notes";
             this.tsCyberwareNotes.Click += new System.EventHandler(this.tsCyberwareNotes_Click);
+            // 
+            // tsCyberwareReapplyImprovements
+            // 
+            this.tsCyberwareReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
+            this.tsCyberwareReapplyImprovements.ImageDpi120 = null;
+            this.tsCyberwareReapplyImprovements.ImageDpi144 = null;
+            this.tsCyberwareReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
+            this.tsCyberwareReapplyImprovements.ImageDpi288 = null;
+            this.tsCyberwareReapplyImprovements.ImageDpi384 = null;
+            this.tsCyberwareReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsCyberwareReapplyImprovements.Name = "tsCyberwareReapplyImprovements";
+            this.tsCyberwareReapplyImprovements.Size = new System.Drawing.Size(203, 22);
+            this.tsCyberwareReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
+            this.tsCyberwareReapplyImprovements.Text = "Re-Apply Improvements";
+            this.tsCyberwareReapplyImprovements.Click += new System.EventHandler(this.tsCyberwareReapplyImprovements_Click);
             // 
             // cmsVehicleCyberware
             // 
@@ -2715,11 +2783,12 @@ namespace Chummer
             // 
             this.cmsArmor.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsAddArmorMod,
-            this.tsAddArmorGear,
+            this.tsArmorAddGear,
             this.tsArmorName,
-            this.tsArmorNotes});
+            this.tsArmorNotes,
+            this.tsArmorReapplyImprovements});
             this.cmsArmor.Name = "cmsWeapon";
-            this.cmsArmor.Size = new System.Drawing.Size(162, 92);
+            this.cmsArmor.Size = new System.Drawing.Size(204, 114);
             // 
             // tsAddArmorMod
             // 
@@ -2731,25 +2800,25 @@ namespace Chummer
             this.tsAddArmorMod.ImageDpi384 = null;
             this.tsAddArmorMod.ImageDpi96 = global::Chummer.Properties.Resources.shield_add;
             this.tsAddArmorMod.Name = "tsAddArmorMod";
-            this.tsAddArmorMod.Size = new System.Drawing.Size(161, 22);
+            this.tsAddArmorMod.Size = new System.Drawing.Size(203, 22);
             this.tsAddArmorMod.Tag = "Menu_AddArmorMod";
             this.tsAddArmorMod.Text = "&Add Armor Mod";
             this.tsAddArmorMod.Click += new System.EventHandler(this.tsAddArmorMod_Click);
             // 
-            // tsAddArmorGear
+            // tsArmorAddGear
             // 
-            this.tsAddArmorGear.Image = global::Chummer.Properties.Resources.camera_add;
-            this.tsAddArmorGear.ImageDpi120 = null;
-            this.tsAddArmorGear.ImageDpi144 = null;
-            this.tsAddArmorGear.ImageDpi192 = global::Chummer.Properties.Resources.camera_add1;
-            this.tsAddArmorGear.ImageDpi288 = null;
-            this.tsAddArmorGear.ImageDpi384 = null;
-            this.tsAddArmorGear.ImageDpi96 = global::Chummer.Properties.Resources.camera_add;
-            this.tsAddArmorGear.Name = "tsAddArmorGear";
-            this.tsAddArmorGear.Size = new System.Drawing.Size(161, 22);
-            this.tsAddArmorGear.Tag = "Menu_AddGear";
-            this.tsAddArmorGear.Text = "A&dd Gear";
-            this.tsAddArmorGear.Click += new System.EventHandler(this.tsAddArmorGear_Click);
+            this.tsArmorAddGear.Image = global::Chummer.Properties.Resources.camera_add;
+            this.tsArmorAddGear.ImageDpi120 = null;
+            this.tsArmorAddGear.ImageDpi144 = null;
+            this.tsArmorAddGear.ImageDpi192 = global::Chummer.Properties.Resources.camera_add1;
+            this.tsArmorAddGear.ImageDpi288 = null;
+            this.tsArmorAddGear.ImageDpi384 = null;
+            this.tsArmorAddGear.ImageDpi96 = global::Chummer.Properties.Resources.camera_add;
+            this.tsArmorAddGear.Name = "tsArmorAddGear";
+            this.tsArmorAddGear.Size = new System.Drawing.Size(203, 22);
+            this.tsArmorAddGear.Tag = "Menu_AddGear";
+            this.tsArmorAddGear.Text = "A&dd Gear";
+            this.tsArmorAddGear.Click += new System.EventHandler(this.tsAddArmorGear_Click);
             // 
             // tsArmorName
             // 
@@ -2761,7 +2830,7 @@ namespace Chummer
             this.tsArmorName.ImageDpi384 = null;
             this.tsArmorName.ImageDpi96 = global::Chummer.Properties.Resources.tag_red;
             this.tsArmorName.Name = "tsArmorName";
-            this.tsArmorName.Size = new System.Drawing.Size(161, 22);
+            this.tsArmorName.Size = new System.Drawing.Size(203, 22);
             this.tsArmorName.Tag = "Menu_NameArmor";
             this.tsArmorName.Text = "Name Armor";
             this.tsArmorName.Click += new System.EventHandler(this.tsArmorName_Click);
@@ -2776,10 +2845,25 @@ namespace Chummer
             this.tsArmorNotes.ImageDpi384 = null;
             this.tsArmorNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
             this.tsArmorNotes.Name = "tsArmorNotes";
-            this.tsArmorNotes.Size = new System.Drawing.Size(161, 22);
+            this.tsArmorNotes.Size = new System.Drawing.Size(203, 22);
             this.tsArmorNotes.Tag = "Menu_Notes";
             this.tsArmorNotes.Text = "&Notes";
             this.tsArmorNotes.Click += new System.EventHandler(this.tsArmorNotes_Click);
+            // 
+            // tsArmorReapplyImprovements
+            // 
+            this.tsArmorReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
+            this.tsArmorReapplyImprovements.ImageDpi120 = null;
+            this.tsArmorReapplyImprovements.ImageDpi144 = null;
+            this.tsArmorReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
+            this.tsArmorReapplyImprovements.ImageDpi288 = null;
+            this.tsArmorReapplyImprovements.ImageDpi384 = null;
+            this.tsArmorReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsArmorReapplyImprovements.Name = "tsArmorReapplyImprovements";
+            this.tsArmorReapplyImprovements.Size = new System.Drawing.Size(203, 22);
+            this.tsArmorReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
+            this.tsArmorReapplyImprovements.Text = "Re-Apply Improvements";
+            this.tsArmorReapplyImprovements.Click += new System.EventHandler(this.tsArmorReapplyImprovements_Click);
             // 
             // cmsDeleteArmor
             // 
@@ -2998,9 +3082,10 @@ namespace Chummer
             // cmsGearButton
             // 
             this.cmsGearButton.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsGearButtonAddAccessory});
+            this.tsGearButtonAddAccessory,
+            this.tsGearButtonReapplyImprovements});
             this.cmsGearButton.Name = "cmsGearButton";
-            this.cmsGearButton.Size = new System.Drawing.Size(153, 26);
+            this.cmsGearButton.Size = new System.Drawing.Size(204, 48);
             // 
             // tsGearButtonAddAccessory
             // 
@@ -3012,10 +3097,25 @@ namespace Chummer
             this.tsGearButtonAddAccessory.ImageDpi384 = null;
             this.tsGearButtonAddAccessory.ImageDpi96 = global::Chummer.Properties.Resources.camera_add;
             this.tsGearButtonAddAccessory.Name = "tsGearButtonAddAccessory";
-            this.tsGearButtonAddAccessory.Size = new System.Drawing.Size(152, 22);
+            this.tsGearButtonAddAccessory.Size = new System.Drawing.Size(203, 22);
             this.tsGearButtonAddAccessory.Tag = "Menu_AddAccessory";
             this.tsGearButtonAddAccessory.Text = "&Add Accessory";
-            this.tsGearButtonAddAccessory.Click += new System.EventHandler(this.tsGearButtonAddAccessory_Click);
+            this.tsGearButtonAddAccessory.Click += new System.EventHandler(this.tsGearAddAsPlugin_Click);
+            // 
+            // tsGearButtonReapplyImprovements
+            // 
+            this.tsGearButtonReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
+            this.tsGearButtonReapplyImprovements.ImageDpi120 = null;
+            this.tsGearButtonReapplyImprovements.ImageDpi144 = null;
+            this.tsGearButtonReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
+            this.tsGearButtonReapplyImprovements.ImageDpi288 = null;
+            this.tsGearButtonReapplyImprovements.ImageDpi384 = null;
+            this.tsGearButtonReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsGearButtonReapplyImprovements.Name = "tsGearButtonReapplyImprovements";
+            this.tsGearButtonReapplyImprovements.Size = new System.Drawing.Size(203, 22);
+            this.tsGearButtonReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
+            this.tsGearButtonReapplyImprovements.Text = "Re-Apply Improvements";
+            this.tsGearButtonReapplyImprovements.Click += new System.EventHandler(this.tsGearReapplyImprovements_Click);
             // 
             // cmsDeleteGear
             // 
@@ -5649,6 +5749,7 @@ namespace Chummer
             // 
             // tssFileMenu1
             // 
+            this.tssFileMenu1.DefaultColorScheme = true;
             this.tssFileMenu1.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.tssFileMenu1.MergeIndex = 5;
             this.tssFileMenu1.Name = "tssFileMenu1";
@@ -5674,6 +5775,7 @@ namespace Chummer
             // 
             // tssFileMenu2
             // 
+            this.tssFileMenu2.DefaultColorScheme = true;
             this.tssFileMenu2.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.tssFileMenu2.MergeIndex = 7;
             this.tssFileMenu2.Name = "tssFileMenu2";
@@ -5962,6 +6064,7 @@ namespace Chummer
             // 
             // tsbSeparator
             // 
+            this.tsbSeparator.DefaultColorScheme = true;
             this.tsbSeparator.Name = "tsbSeparator";
             this.tsbSeparator.Size = new System.Drawing.Size(6, 25);
             // 
@@ -5981,16 +6084,17 @@ namespace Chummer
             this.tsbCopy.Tag = "Menu_EditCopy";
             this.tsbCopy.Text = "Copy";
             this.tsbCopy.Visible = false;
-            this.tsbCopy.Click += new System.EventHandler(this.tsbCopy_Click);
+            this.tsbCopy.Click += new System.EventHandler(this.mnuEditCopy_Click);
             // 
             // cmsGear
             // 
             this.cmsGear.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsGearAddAsPlugin,
             this.tsGearName,
-            this.tsGearNotes});
+            this.tsGearNotes,
+            this.tsGearReapplyImprovements});
             this.cmsGear.Name = "cmsWeapon";
-            this.cmsGear.Size = new System.Drawing.Size(148, 70);
+            this.cmsGear.Size = new System.Drawing.Size(204, 92);
             // 
             // tsGearAddAsPlugin
             // 
@@ -6002,7 +6106,7 @@ namespace Chummer
             this.tsGearAddAsPlugin.ImageDpi384 = null;
             this.tsGearAddAsPlugin.ImageDpi96 = global::Chummer.Properties.Resources.camera_add;
             this.tsGearAddAsPlugin.Name = "tsGearAddAsPlugin";
-            this.tsGearAddAsPlugin.Size = new System.Drawing.Size(147, 22);
+            this.tsGearAddAsPlugin.Size = new System.Drawing.Size(203, 22);
             this.tsGearAddAsPlugin.Tag = "Menu_AddAsPlugin";
             this.tsGearAddAsPlugin.Text = "&Add as Plugin";
             this.tsGearAddAsPlugin.Click += new System.EventHandler(this.tsGearAddAsPlugin_Click);
@@ -6017,7 +6121,7 @@ namespace Chummer
             this.tsGearName.ImageDpi384 = null;
             this.tsGearName.ImageDpi96 = global::Chummer.Properties.Resources.tag_red;
             this.tsGearName.Name = "tsGearName";
-            this.tsGearName.Size = new System.Drawing.Size(147, 22);
+            this.tsGearName.Size = new System.Drawing.Size(203, 22);
             this.tsGearName.Tag = "Menu_NameGear";
             this.tsGearName.Text = "Name Gear";
             this.tsGearName.Click += new System.EventHandler(this.tsGearName_Click);
@@ -6032,10 +6136,25 @@ namespace Chummer
             this.tsGearNotes.ImageDpi384 = null;
             this.tsGearNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
             this.tsGearNotes.Name = "tsGearNotes";
-            this.tsGearNotes.Size = new System.Drawing.Size(147, 22);
+            this.tsGearNotes.Size = new System.Drawing.Size(203, 22);
             this.tsGearNotes.Tag = "Menu_Notes";
             this.tsGearNotes.Text = "&Notes";
             this.tsGearNotes.Click += new System.EventHandler(this.tsGearNotes_Click);
+            // 
+            // tsGearReapplyImprovements
+            // 
+            this.tsGearReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
+            this.tsGearReapplyImprovements.ImageDpi120 = null;
+            this.tsGearReapplyImprovements.ImageDpi144 = null;
+            this.tsGearReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
+            this.tsGearReapplyImprovements.ImageDpi288 = null;
+            this.tsGearReapplyImprovements.ImageDpi384 = null;
+            this.tsGearReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsGearReapplyImprovements.Name = "tsGearReapplyImprovements";
+            this.tsGearReapplyImprovements.Size = new System.Drawing.Size(203, 22);
+            this.tsGearReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
+            this.tsGearReapplyImprovements.Text = "Re-Apply Improvements";
+            this.tsGearReapplyImprovements.Click += new System.EventHandler(this.tsGearReapplyImprovements_Click);
             // 
             // cmsVehicleWeapon
             // 
@@ -6209,9 +6328,10 @@ namespace Chummer
             // 
             this.cmsArmorGear.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsArmorGearAddAsPlugin,
-            this.tsArmorGearNotes});
+            this.tsArmorGearNotes,
+            this.tsArmorGearReapplyImprovements});
             this.cmsArmorGear.Name = "cmsWeapon";
-            this.cmsArmorGear.Size = new System.Drawing.Size(148, 48);
+            this.cmsArmorGear.Size = new System.Drawing.Size(204, 70);
             // 
             // tsArmorGearAddAsPlugin
             // 
@@ -6223,7 +6343,7 @@ namespace Chummer
             this.tsArmorGearAddAsPlugin.ImageDpi384 = null;
             this.tsArmorGearAddAsPlugin.ImageDpi96 = global::Chummer.Properties.Resources.brick_add;
             this.tsArmorGearAddAsPlugin.Name = "tsArmorGearAddAsPlugin";
-            this.tsArmorGearAddAsPlugin.Size = new System.Drawing.Size(147, 22);
+            this.tsArmorGearAddAsPlugin.Size = new System.Drawing.Size(203, 22);
             this.tsArmorGearAddAsPlugin.Tag = "Menu_AddAsPlugin";
             this.tsArmorGearAddAsPlugin.Text = "&Add as Plugin";
             this.tsArmorGearAddAsPlugin.Click += new System.EventHandler(this.tsArmorGearAddAsPlugin_Click);
@@ -6238,18 +6358,34 @@ namespace Chummer
             this.tsArmorGearNotes.ImageDpi384 = null;
             this.tsArmorGearNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
             this.tsArmorGearNotes.Name = "tsArmorGearNotes";
-            this.tsArmorGearNotes.Size = new System.Drawing.Size(147, 22);
+            this.tsArmorGearNotes.Size = new System.Drawing.Size(203, 22);
             this.tsArmorGearNotes.Tag = "Menu_Notes";
             this.tsArmorGearNotes.Text = "&Notes";
             this.tsArmorGearNotes.Click += new System.EventHandler(this.tsArmorNotes_Click);
+            // 
+            // tsArmorGearReapplyImprovements
+            // 
+            this.tsArmorGearReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
+            this.tsArmorGearReapplyImprovements.ImageDpi120 = null;
+            this.tsArmorGearReapplyImprovements.ImageDpi144 = null;
+            this.tsArmorGearReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
+            this.tsArmorGearReapplyImprovements.ImageDpi288 = null;
+            this.tsArmorGearReapplyImprovements.ImageDpi384 = null;
+            this.tsArmorGearReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsArmorGearReapplyImprovements.Name = "tsArmorGearReapplyImprovements";
+            this.tsArmorGearReapplyImprovements.Size = new System.Drawing.Size(203, 22);
+            this.tsArmorGearReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
+            this.tsArmorGearReapplyImprovements.Text = "Re-Apply Improvements";
+            this.tsArmorGearReapplyImprovements.Click += new System.EventHandler(this.tsArmorReapplyImprovements_Click);
             // 
             // cmsArmorMod
             // 
             this.cmsArmorMod.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsArmorModAddAsPlugin,
-            this.tsArmorModNotes});
+            this.tsArmorModNotes,
+            this.tsArmorModReapplyImprovements});
             this.cmsArmorMod.Name = "cmsArmorMod";
-            this.cmsArmorMod.Size = new System.Drawing.Size(148, 48);
+            this.cmsArmorMod.Size = new System.Drawing.Size(204, 70);
             // 
             // tsArmorModAddAsPlugin
             // 
@@ -6261,7 +6397,7 @@ namespace Chummer
             this.tsArmorModAddAsPlugin.ImageDpi384 = null;
             this.tsArmorModAddAsPlugin.ImageDpi96 = global::Chummer.Properties.Resources.camera_add;
             this.tsArmorModAddAsPlugin.Name = "tsArmorModAddAsPlugin";
-            this.tsArmorModAddAsPlugin.Size = new System.Drawing.Size(147, 22);
+            this.tsArmorModAddAsPlugin.Size = new System.Drawing.Size(203, 22);
             this.tsArmorModAddAsPlugin.Tag = "Menu_AddAsPlugin";
             this.tsArmorModAddAsPlugin.Text = "&Add as Plugin";
             this.tsArmorModAddAsPlugin.Click += new System.EventHandler(this.tsArmorGearAddAsPlugin_Click);
@@ -6276,17 +6412,33 @@ namespace Chummer
             this.tsArmorModNotes.ImageDpi384 = null;
             this.tsArmorModNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
             this.tsArmorModNotes.Name = "tsArmorModNotes";
-            this.tsArmorModNotes.Size = new System.Drawing.Size(147, 22);
+            this.tsArmorModNotes.Size = new System.Drawing.Size(203, 22);
             this.tsArmorModNotes.Tag = "Menu_Notes";
             this.tsArmorModNotes.Text = "&Notes";
             this.tsArmorModNotes.Click += new System.EventHandler(this.tsArmorNotes_Click);
             // 
+            // tsArmorModReapplyImprovements
+            // 
+            this.tsArmorModReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
+            this.tsArmorModReapplyImprovements.ImageDpi120 = null;
+            this.tsArmorModReapplyImprovements.ImageDpi144 = null;
+            this.tsArmorModReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
+            this.tsArmorModReapplyImprovements.ImageDpi288 = null;
+            this.tsArmorModReapplyImprovements.ImageDpi384 = null;
+            this.tsArmorModReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsArmorModReapplyImprovements.Name = "tsArmorModReapplyImprovements";
+            this.tsArmorModReapplyImprovements.Size = new System.Drawing.Size(203, 22);
+            this.tsArmorModReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
+            this.tsArmorModReapplyImprovements.Text = "Re-Apply Improvements";
+            this.tsArmorModReapplyImprovements.Click += new System.EventHandler(this.tsArmorReapplyImprovements_Click);
+            // 
             // cmsQuality
             // 
             this.cmsQuality.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsQualityNotes});
+            this.tsQualityNotes,
+            this.tsQualityReapplyImprovements});
             this.cmsQuality.Name = "cmsQuality";
-            this.cmsQuality.Size = new System.Drawing.Size(106, 26);
+            this.cmsQuality.Size = new System.Drawing.Size(204, 48);
             // 
             // tsQualityNotes
             // 
@@ -6298,39 +6450,71 @@ namespace Chummer
             this.tsQualityNotes.ImageDpi384 = null;
             this.tsQualityNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
             this.tsQualityNotes.Name = "tsQualityNotes";
-            this.tsQualityNotes.Size = new System.Drawing.Size(105, 22);
+            this.tsQualityNotes.Size = new System.Drawing.Size(203, 22);
             this.tsQualityNotes.Tag = "Menu_Notes";
             this.tsQualityNotes.Text = "&Notes";
             this.tsQualityNotes.Click += new System.EventHandler(this.tsQualityNotes_Click);
             // 
+            // tsQualityReapplyImprovements
+            // 
+            this.tsQualityReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
+            this.tsQualityReapplyImprovements.ImageDpi120 = null;
+            this.tsQualityReapplyImprovements.ImageDpi144 = null;
+            this.tsQualityReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
+            this.tsQualityReapplyImprovements.ImageDpi288 = null;
+            this.tsQualityReapplyImprovements.ImageDpi384 = null;
+            this.tsQualityReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsQualityReapplyImprovements.Name = "tsQualityReapplyImprovements";
+            this.tsQualityReapplyImprovements.Size = new System.Drawing.Size(203, 22);
+            this.tsQualityReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
+            this.tsQualityReapplyImprovements.Text = "Re-Apply Improvements";
+            this.tsQualityReapplyImprovements.Click += new System.EventHandler(this.tsQualityReapplyImprovements_Click);
+            // 
             // cmsSpell
             // 
             this.cmsSpell.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsmSpellNotes});
+            this.tsSpellNotes,
+            this.tsSpellReapplyImprovements});
             this.cmsSpell.Name = "cmsSpell";
-            this.cmsSpell.Size = new System.Drawing.Size(106, 26);
+            this.cmsSpell.Size = new System.Drawing.Size(204, 48);
             // 
-            // tsmSpellNotes
+            // tsSpellNotes
             // 
-            this.tsmSpellNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsmSpellNotes.ImageDpi120 = null;
-            this.tsmSpellNotes.ImageDpi144 = null;
-            this.tsmSpellNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
-            this.tsmSpellNotes.ImageDpi288 = null;
-            this.tsmSpellNotes.ImageDpi384 = null;
-            this.tsmSpellNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
-            this.tsmSpellNotes.Name = "tsmSpellNotes";
-            this.tsmSpellNotes.Size = new System.Drawing.Size(105, 22);
-            this.tsmSpellNotes.Tag = "Menu_Notes";
-            this.tsmSpellNotes.Text = "&Notes";
-            this.tsmSpellNotes.Click += new System.EventHandler(this.tsSpellNotes_Click);
+            this.tsSpellNotes.Image = global::Chummer.Properties.Resources.note_edit;
+            this.tsSpellNotes.ImageDpi120 = null;
+            this.tsSpellNotes.ImageDpi144 = null;
+            this.tsSpellNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
+            this.tsSpellNotes.ImageDpi288 = null;
+            this.tsSpellNotes.ImageDpi384 = null;
+            this.tsSpellNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
+            this.tsSpellNotes.Name = "tsSpellNotes";
+            this.tsSpellNotes.Size = new System.Drawing.Size(203, 22);
+            this.tsSpellNotes.Tag = "Menu_Notes";
+            this.tsSpellNotes.Text = "&Notes";
+            this.tsSpellNotes.Click += new System.EventHandler(this.tsSpellNotes_Click);
+            // 
+            // tsSpellReapplyImprovements
+            // 
+            this.tsSpellReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
+            this.tsSpellReapplyImprovements.ImageDpi120 = null;
+            this.tsSpellReapplyImprovements.ImageDpi144 = null;
+            this.tsSpellReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
+            this.tsSpellReapplyImprovements.ImageDpi288 = null;
+            this.tsSpellReapplyImprovements.ImageDpi384 = null;
+            this.tsSpellReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsSpellReapplyImprovements.Name = "tsSpellReapplyImprovements";
+            this.tsSpellReapplyImprovements.Size = new System.Drawing.Size(203, 22);
+            this.tsSpellReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
+            this.tsSpellReapplyImprovements.Text = "Re-Apply Improvements";
+            this.tsSpellReapplyImprovements.Click += new System.EventHandler(this.tsSpellReapplyImprovements_Click);
             // 
             // cmsCritterPowers
             // 
             this.cmsCritterPowers.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsCritterPowersNotes});
+            this.tsCritterPowersNotes,
+            this.tsCritterPowersReapplyImprovements});
             this.cmsCritterPowers.Name = "cmsCritterPowers";
-            this.cmsCritterPowers.Size = new System.Drawing.Size(106, 26);
+            this.cmsCritterPowers.Size = new System.Drawing.Size(204, 48);
             // 
             // tsCritterPowersNotes
             // 
@@ -6342,10 +6526,25 @@ namespace Chummer
             this.tsCritterPowersNotes.ImageDpi384 = null;
             this.tsCritterPowersNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
             this.tsCritterPowersNotes.Name = "tsCritterPowersNotes";
-            this.tsCritterPowersNotes.Size = new System.Drawing.Size(105, 22);
+            this.tsCritterPowersNotes.Size = new System.Drawing.Size(203, 22);
             this.tsCritterPowersNotes.Tag = "Menu_Notes";
             this.tsCritterPowersNotes.Text = "&Notes";
             this.tsCritterPowersNotes.Click += new System.EventHandler(this.tsCritterPowersNotes_Click);
+            // 
+            // tsCritterPowersReapplyImprovements
+            // 
+            this.tsCritterPowersReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
+            this.tsCritterPowersReapplyImprovements.ImageDpi120 = null;
+            this.tsCritterPowersReapplyImprovements.ImageDpi144 = null;
+            this.tsCritterPowersReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
+            this.tsCritterPowersReapplyImprovements.ImageDpi288 = null;
+            this.tsCritterPowersReapplyImprovements.ImageDpi384 = null;
+            this.tsCritterPowersReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsCritterPowersReapplyImprovements.Name = "tsCritterPowersReapplyImprovements";
+            this.tsCritterPowersReapplyImprovements.Size = new System.Drawing.Size(203, 22);
+            this.tsCritterPowersReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
+            this.tsCritterPowersReapplyImprovements.Text = "Re-Apply Improvements";
+            this.tsCritterPowersReapplyImprovements.Click += new System.EventHandler(this.tsCritterPowersReapplyImprovements_Click);
             // 
             // cmsMetamagic
             // 
@@ -6355,78 +6554,79 @@ namespace Chummer
             this.tsMetamagicAddEnhancement,
             this.tsMetamagicAddMetamagic,
             this.tsMetamagicAddRitual,
-            this.tsMetamagicNotes});
+            this.tsMetamagicNotes,
+            this.tsMetamagicReapplyImprovements});
             this.cmsMetamagic.Name = "cmsMetamagic";
-            this.cmsMetamagic.Size = new System.Drawing.Size(173, 136);
+            this.cmsMetamagic.Size = new System.Drawing.Size(204, 158);
             this.cmsMetamagic.Opening += new System.ComponentModel.CancelEventHandler(this.InitiationContextMenu_Opening);
             // 
             // tsMetamagicAddArt
             // 
-            this.tsMetamagicAddArt.Image = null;
+            this.tsMetamagicAddArt.Image = global::Chummer.Properties.Resources.script_add;
             this.tsMetamagicAddArt.ImageDpi120 = null;
             this.tsMetamagicAddArt.ImageDpi144 = null;
-            this.tsMetamagicAddArt.ImageDpi192 = null;
+            this.tsMetamagicAddArt.ImageDpi192 = global::Chummer.Properties.Resources.script_add1;
             this.tsMetamagicAddArt.ImageDpi288 = null;
             this.tsMetamagicAddArt.ImageDpi384 = null;
-            this.tsMetamagicAddArt.ImageDpi96 = null;
+            this.tsMetamagicAddArt.ImageDpi96 = global::Chummer.Properties.Resources.script_add;
             this.tsMetamagicAddArt.Name = "tsMetamagicAddArt";
-            this.tsMetamagicAddArt.Size = new System.Drawing.Size(172, 22);
+            this.tsMetamagicAddArt.Size = new System.Drawing.Size(203, 22);
             this.tsMetamagicAddArt.Text = "Add Art";
             this.tsMetamagicAddArt.Click += new System.EventHandler(this.tsMetamagicAddArt_Click);
             // 
             // tsMetamagicAddEnchantment
             // 
-            this.tsMetamagicAddEnchantment.Image = null;
+            this.tsMetamagicAddEnchantment.Image = global::Chummer.Properties.Resources.lightning_add;
             this.tsMetamagicAddEnchantment.ImageDpi120 = null;
             this.tsMetamagicAddEnchantment.ImageDpi144 = null;
-            this.tsMetamagicAddEnchantment.ImageDpi192 = null;
+            this.tsMetamagicAddEnchantment.ImageDpi192 = global::Chummer.Properties.Resources.lightning_add1;
             this.tsMetamagicAddEnchantment.ImageDpi288 = null;
             this.tsMetamagicAddEnchantment.ImageDpi384 = null;
-            this.tsMetamagicAddEnchantment.ImageDpi96 = null;
+            this.tsMetamagicAddEnchantment.ImageDpi96 = global::Chummer.Properties.Resources.lightning_add;
             this.tsMetamagicAddEnchantment.Name = "tsMetamagicAddEnchantment";
-            this.tsMetamagicAddEnchantment.Size = new System.Drawing.Size(172, 22);
+            this.tsMetamagicAddEnchantment.Size = new System.Drawing.Size(203, 22);
             this.tsMetamagicAddEnchantment.Text = "Add Enchantment";
             this.tsMetamagicAddEnchantment.Click += new System.EventHandler(this.tsMetamagicAddEnchantment_Click);
             // 
             // tsMetamagicAddEnhancement
             // 
-            this.tsMetamagicAddEnhancement.Image = null;
+            this.tsMetamagicAddEnhancement.Image = global::Chummer.Properties.Resources.gift_add;
             this.tsMetamagicAddEnhancement.ImageDpi120 = null;
             this.tsMetamagicAddEnhancement.ImageDpi144 = null;
-            this.tsMetamagicAddEnhancement.ImageDpi192 = null;
+            this.tsMetamagicAddEnhancement.ImageDpi192 = global::Chummer.Properties.Resources.gift_add1;
             this.tsMetamagicAddEnhancement.ImageDpi288 = null;
             this.tsMetamagicAddEnhancement.ImageDpi384 = null;
-            this.tsMetamagicAddEnhancement.ImageDpi96 = null;
+            this.tsMetamagicAddEnhancement.ImageDpi96 = global::Chummer.Properties.Resources.gift_add;
             this.tsMetamagicAddEnhancement.Name = "tsMetamagicAddEnhancement";
-            this.tsMetamagicAddEnhancement.Size = new System.Drawing.Size(172, 22);
+            this.tsMetamagicAddEnhancement.Size = new System.Drawing.Size(203, 22);
             this.tsMetamagicAddEnhancement.Text = "Add Enhancement";
             this.tsMetamagicAddEnhancement.Click += new System.EventHandler(this.tsMetamagicAddEnhancement_Click);
             // 
             // tsMetamagicAddMetamagic
             // 
-            this.tsMetamagicAddMetamagic.Image = null;
+            this.tsMetamagicAddMetamagic.Image = global::Chummer.Properties.Resources.award_star_add;
             this.tsMetamagicAddMetamagic.ImageDpi120 = null;
             this.tsMetamagicAddMetamagic.ImageDpi144 = null;
-            this.tsMetamagicAddMetamagic.ImageDpi192 = null;
+            this.tsMetamagicAddMetamagic.ImageDpi192 = global::Chummer.Properties.Resources.award_star_add1;
             this.tsMetamagicAddMetamagic.ImageDpi288 = null;
             this.tsMetamagicAddMetamagic.ImageDpi384 = null;
-            this.tsMetamagicAddMetamagic.ImageDpi96 = null;
+            this.tsMetamagicAddMetamagic.ImageDpi96 = global::Chummer.Properties.Resources.award_star_add;
             this.tsMetamagicAddMetamagic.Name = "tsMetamagicAddMetamagic";
-            this.tsMetamagicAddMetamagic.Size = new System.Drawing.Size(172, 22);
+            this.tsMetamagicAddMetamagic.Size = new System.Drawing.Size(203, 22);
             this.tsMetamagicAddMetamagic.Text = "Add Metamagic";
             this.tsMetamagicAddMetamagic.Click += new System.EventHandler(this.tsMetamagicAddMetamagic_Click);
             // 
             // tsMetamagicAddRitual
             // 
-            this.tsMetamagicAddRitual.Image = null;
+            this.tsMetamagicAddRitual.Image = global::Chummer.Properties.Resources.chart_organisation_add;
             this.tsMetamagicAddRitual.ImageDpi120 = null;
             this.tsMetamagicAddRitual.ImageDpi144 = null;
-            this.tsMetamagicAddRitual.ImageDpi192 = null;
+            this.tsMetamagicAddRitual.ImageDpi192 = global::Chummer.Properties.Resources.chart_organisation_add1;
             this.tsMetamagicAddRitual.ImageDpi288 = null;
             this.tsMetamagicAddRitual.ImageDpi384 = null;
-            this.tsMetamagicAddRitual.ImageDpi96 = null;
+            this.tsMetamagicAddRitual.ImageDpi96 = global::Chummer.Properties.Resources.chart_organisation_add;
             this.tsMetamagicAddRitual.Name = "tsMetamagicAddRitual";
-            this.tsMetamagicAddRitual.Size = new System.Drawing.Size(172, 22);
+            this.tsMetamagicAddRitual.Size = new System.Drawing.Size(203, 22);
             this.tsMetamagicAddRitual.Text = "Add Ritual";
             this.tsMetamagicAddRitual.Click += new System.EventHandler(this.tsMetamagicAddRitual_Click);
             // 
@@ -6440,10 +6640,25 @@ namespace Chummer
             this.tsMetamagicNotes.ImageDpi384 = null;
             this.tsMetamagicNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
             this.tsMetamagicNotes.Name = "tsMetamagicNotes";
-            this.tsMetamagicNotes.Size = new System.Drawing.Size(172, 22);
+            this.tsMetamagicNotes.Size = new System.Drawing.Size(203, 22);
             this.tsMetamagicNotes.Tag = "Menu_Notes";
             this.tsMetamagicNotes.Text = "&Notes";
             this.tsMetamagicNotes.Click += new System.EventHandler(this.tsMetamagicNotes_Click);
+            // 
+            // tsMetamagicReapplyImprovements
+            // 
+            this.tsMetamagicReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
+            this.tsMetamagicReapplyImprovements.ImageDpi120 = null;
+            this.tsMetamagicReapplyImprovements.ImageDpi144 = null;
+            this.tsMetamagicReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
+            this.tsMetamagicReapplyImprovements.ImageDpi288 = null;
+            this.tsMetamagicReapplyImprovements.ImageDpi384 = null;
+            this.tsMetamagicReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsMetamagicReapplyImprovements.Name = "tsMetamagicReapplyImprovements";
+            this.tsMetamagicReapplyImprovements.Size = new System.Drawing.Size(203, 22);
+            this.tsMetamagicReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
+            this.tsMetamagicReapplyImprovements.Text = "Re-Apply Improvements";
+            this.tsMetamagicReapplyImprovements.Click += new System.EventHandler(this.tsMetamagicReapplyImprovements_Click);
             // 
             // cmsLifestyleNotes
             // 
@@ -6540,9 +6755,10 @@ namespace Chummer
             // cmsGearPlugin
             // 
             this.cmsGearPlugin.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsGearPluginNotes});
+            this.tsGearPluginNotes,
+            this.tsGearPluginReapplyImprovements});
             this.cmsGearPlugin.Name = "cmsGearPlugin";
-            this.cmsGearPlugin.Size = new System.Drawing.Size(106, 26);
+            this.cmsGearPlugin.Size = new System.Drawing.Size(204, 48);
             // 
             // tsGearPluginNotes
             // 
@@ -6554,10 +6770,25 @@ namespace Chummer
             this.tsGearPluginNotes.ImageDpi384 = null;
             this.tsGearPluginNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
             this.tsGearPluginNotes.Name = "tsGearPluginNotes";
-            this.tsGearPluginNotes.Size = new System.Drawing.Size(105, 22);
+            this.tsGearPluginNotes.Size = new System.Drawing.Size(203, 22);
             this.tsGearPluginNotes.Tag = "Menu_Notes";
             this.tsGearPluginNotes.Text = "&Notes";
             this.tsGearPluginNotes.Click += new System.EventHandler(this.tsGearNotes_Click);
+            // 
+            // tsGearPluginReapplyImprovements
+            // 
+            this.tsGearPluginReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
+            this.tsGearPluginReapplyImprovements.ImageDpi120 = null;
+            this.tsGearPluginReapplyImprovements.ImageDpi144 = null;
+            this.tsGearPluginReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
+            this.tsGearPluginReapplyImprovements.ImageDpi288 = null;
+            this.tsGearPluginReapplyImprovements.ImageDpi384 = null;
+            this.tsGearPluginReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsGearPluginReapplyImprovements.Name = "tsGearPluginReapplyImprovements";
+            this.tsGearPluginReapplyImprovements.Size = new System.Drawing.Size(203, 22);
+            this.tsGearPluginReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
+            this.tsGearPluginReapplyImprovements.Text = "Re-Apply Improvements";
+            this.tsGearPluginReapplyImprovements.Click += new System.EventHandler(this.tsGearReapplyImprovements_Click);
             // 
             // splitMain
             // 
@@ -6747,6 +6978,7 @@ namespace Chummer
             this.cmdAddQuality.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdAddQuality.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdAddQuality.Location = new System.Drawing.Point(3, 3);
+            this.cmdAddQuality.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdAddQuality.Name = "cmdAddQuality";
             this.cmdAddQuality.Size = new System.Drawing.Size(94, 23);
             this.cmdAddQuality.TabIndex = 65;
@@ -6761,6 +6993,7 @@ namespace Chummer
             this.cmdDeleteQuality.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDeleteQuality.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdDeleteQuality.Location = new System.Drawing.Point(103, 3);
+            this.cmdDeleteQuality.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdDeleteQuality.Name = "cmdDeleteQuality";
             this.cmdDeleteQuality.Size = new System.Drawing.Size(94, 23);
             this.cmdDeleteQuality.TabIndex = 66;
@@ -6775,6 +7008,7 @@ namespace Chummer
             this.cmdSwapQuality.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdSwapQuality.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdSwapQuality.Location = new System.Drawing.Point(203, 3);
+            this.cmdSwapQuality.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdSwapQuality.Name = "cmdSwapQuality";
             this.cmdSwapQuality.Size = new System.Drawing.Size(95, 23);
             this.cmdSwapQuality.TabIndex = 71;
@@ -7109,6 +7343,7 @@ namespace Chummer
             // tabSkillsUc
             // 
             this.tabSkillsUc.BackColor = System.Drawing.SystemColors.Control;
+            this.tabSkillsUc.CachedCharacter = null;
             this.tabSkillsUc.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabSkillsUc.ForeColor = System.Drawing.SystemColors.ControlText;
             this.tabSkillsUc.Location = new System.Drawing.Point(0, 0);
@@ -7223,7 +7458,9 @@ namespace Chummer
             this.cmdAddMartialArt.ContextMenuStrip = this.cmsMartialArts;
             this.cmdAddMartialArt.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdAddMartialArt.Location = new System.Drawing.Point(3, 3);
+            this.cmdAddMartialArt.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdAddMartialArt.Name = "cmdAddMartialArt";
+            this.cmdAddMartialArt.ShowSplit = true;
             this.cmdAddMartialArt.Size = new System.Drawing.Size(104, 23);
             this.cmdAddMartialArt.SplitMenuStrip = this.cmsMartialArts;
             this.cmdAddMartialArt.TabIndex = 65;
@@ -7238,6 +7475,7 @@ namespace Chummer
             this.cmdDeleteMartialArt.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDeleteMartialArt.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdDeleteMartialArt.Location = new System.Drawing.Point(113, 3);
+            this.cmdDeleteMartialArt.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdDeleteMartialArt.Name = "cmdDeleteMartialArt";
             this.cmdDeleteMartialArt.Size = new System.Drawing.Size(104, 23);
             this.cmdDeleteMartialArt.TabIndex = 1;
@@ -7472,16 +7710,17 @@ namespace Chummer
             this.flpMagicianSpellButtons.Location = new System.Drawing.Point(311, 100);
             this.flpMagicianSpellButtons.Margin = new System.Windows.Forms.Padding(0);
             this.flpMagicianSpellButtons.Name = "flpMagicianSpellButtons";
-            this.flpMagicianSpellButtons.Size = new System.Drawing.Size(147, 29);
+            this.flpMagicianSpellButtons.Size = new System.Drawing.Size(175, 29);
             this.flpMagicianSpellButtons.TabIndex = 174;
             this.flpMagicianSpellButtons.WrapContents = false;
             // 
             // cmdQuickenSpell
             // 
-            this.cmdQuickenSpell.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdQuickenSpell.AutoSize = true;
             this.cmdQuickenSpell.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdQuickenSpell.Dock = System.Windows.Forms.DockStyle.Left;
             this.cmdQuickenSpell.Location = new System.Drawing.Point(3, 3);
+            this.cmdQuickenSpell.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdQuickenSpell.Name = "cmdQuickenSpell";
             this.cmdQuickenSpell.Size = new System.Drawing.Size(83, 23);
             this.cmdQuickenSpell.TabIndex = 108;
@@ -7495,9 +7734,11 @@ namespace Chummer
             // 
             this.cmdAddSustainedSpell.AutoSize = true;
             this.cmdAddSustainedSpell.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdAddSustainedSpell.Dock = System.Windows.Forms.DockStyle.Left;
             this.cmdAddSustainedSpell.Location = new System.Drawing.Point(92, 3);
+            this.cmdAddSustainedSpell.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdAddSustainedSpell.Name = "cmdAddSustainedSpell";
-            this.cmdAddSustainedSpell.Size = new System.Drawing.Size(52, 23);
+            this.cmdAddSustainedSpell.Size = new System.Drawing.Size(80, 23);
             this.cmdAddSustainedSpell.TabIndex = 110;
             this.cmdAddSustainedSpell.Tag = "Button_Sustain";
             this.cmdAddSustainedSpell.Text = "Sustain";
@@ -8097,8 +8338,8 @@ namespace Chummer
             this.tlpMagicianButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpMagicianButtons.Name = "tlpMagicianButtons";
             this.tlpMagicianButtons.RowCount = 1;
-            this.tlpMagicianButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpMagicianButtons.Size = new System.Drawing.Size(136, 29);
+            this.tlpMagicianButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMagicianButtons.Size = new System.Drawing.Size(172, 29);
             this.tlpMagicianButtons.TabIndex = 173;
             // 
             // cmdAddSpell
@@ -8107,8 +8348,9 @@ namespace Chummer
             this.cmdAddSpell.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdAddSpell.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdAddSpell.Location = new System.Drawing.Point(3, 3);
+            this.cmdAddSpell.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdAddSpell.Name = "cmdAddSpell";
-            this.cmdAddSpell.Size = new System.Drawing.Size(62, 23);
+            this.cmdAddSpell.Size = new System.Drawing.Size(80, 23);
             this.cmdAddSpell.TabIndex = 103;
             this.cmdAddSpell.Tag = "Button_AddSpell";
             this.cmdAddSpell.Text = "&Add Spell";
@@ -8120,9 +8362,10 @@ namespace Chummer
             this.cmdDeleteSpell.AutoSize = true;
             this.cmdDeleteSpell.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDeleteSpell.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdDeleteSpell.Location = new System.Drawing.Point(71, 3);
+            this.cmdDeleteSpell.Location = new System.Drawing.Point(89, 3);
+            this.cmdDeleteSpell.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdDeleteSpell.Name = "cmdDeleteSpell";
-            this.cmdDeleteSpell.Size = new System.Drawing.Size(62, 23);
+            this.cmdDeleteSpell.Size = new System.Drawing.Size(80, 23);
             this.cmdDeleteSpell.TabIndex = 69;
             this.cmdDeleteSpell.Tag = "String_Delete";
             this.cmdDeleteSpell.Text = "Delete";
@@ -8239,12 +8482,13 @@ namespace Chummer
             // 
             // cmdAddSpirit
             // 
-            this.cmdAddSpirit.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdAddSpirit.AutoSize = true;
             this.cmdAddSpirit.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdAddSpirit.Dock = System.Windows.Forms.DockStyle.Left;
             this.cmdAddSpirit.Location = new System.Drawing.Point(3, 3);
+            this.cmdAddSpirit.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdAddSpirit.Name = "cmdAddSpirit";
-            this.cmdAddSpirit.Size = new System.Drawing.Size(62, 23);
+            this.cmdAddSpirit.Size = new System.Drawing.Size(80, 23);
             this.cmdAddSpirit.TabIndex = 23;
             this.cmdAddSpirit.Tag = "Button_AddSpirit";
             this.cmdAddSpirit.Text = "A&dd Spirit";
@@ -8484,8 +8728,9 @@ namespace Chummer
             this.cmdAddSustainedForm.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpTechnomancerComplexForm.SetColumnSpan(this.cmdAddSustainedForm, 2);
             this.cmdAddSustainedForm.Location = new System.Drawing.Point(135, 53);
+            this.cmdAddSustainedForm.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdAddSustainedForm.Name = "cmdAddSustainedForm";
-            this.cmdAddSustainedForm.Size = new System.Drawing.Size(52, 23);
+            this.cmdAddSustainedForm.Size = new System.Drawing.Size(80, 23);
             this.cmdAddSustainedForm.TabIndex = 183;
             this.cmdAddSustainedForm.Tag = "Button_Sustain";
             this.cmdAddSustainedForm.Text = "Sustain";
@@ -8775,6 +9020,7 @@ namespace Chummer
             this.cmdAddComplexForm.ContextMenuStrip = this.cmsComplexForm;
             this.cmdAddComplexForm.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdAddComplexForm.Location = new System.Drawing.Point(3, 3);
+            this.cmdAddComplexForm.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdAddComplexForm.Name = "cmdAddComplexForm";
             this.cmdAddComplexForm.Size = new System.Drawing.Size(105, 23);
             this.cmdAddComplexForm.TabIndex = 105;
@@ -8789,6 +9035,7 @@ namespace Chummer
             this.cmdDeleteComplexForm.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDeleteComplexForm.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdDeleteComplexForm.Location = new System.Drawing.Point(114, 3);
+            this.cmdDeleteComplexForm.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdDeleteComplexForm.Name = "cmdDeleteComplexForm";
             this.cmdDeleteComplexForm.Size = new System.Drawing.Size(105, 23);
             this.cmdDeleteComplexForm.TabIndex = 93;
@@ -8893,12 +9140,13 @@ namespace Chummer
             // 
             // cmdAddSprite
             // 
-            this.cmdAddSprite.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdAddSprite.AutoSize = true;
             this.cmdAddSprite.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdAddSprite.Dock = System.Windows.Forms.DockStyle.Left;
             this.cmdAddSprite.Location = new System.Drawing.Point(3, 3);
+            this.cmdAddSprite.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdAddSprite.Name = "cmdAddSprite";
-            this.cmdAddSprite.Size = new System.Drawing.Size(66, 23);
+            this.cmdAddSprite.Size = new System.Drawing.Size(80, 23);
             this.cmdAddSprite.TabIndex = 26;
             this.cmdAddSprite.Tag = "Button_AddSprite";
             this.cmdAddSprite.Text = "&Add Sprite";
@@ -8969,8 +9217,8 @@ namespace Chummer
             this.tlpAdvancedProgramsButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpAdvancedProgramsButtons.Name = "tlpAdvancedProgramsButtons";
             this.tlpAdvancedProgramsButtons.RowCount = 1;
-            this.tlpAdvancedProgramsButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpAdvancedProgramsButtons.Size = new System.Drawing.Size(168, 29);
+            this.tlpAdvancedProgramsButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpAdvancedProgramsButtons.Size = new System.Drawing.Size(172, 29);
             this.tlpAdvancedProgramsButtons.TabIndex = 152;
             // 
             // cmdAddAIProgram
@@ -8979,8 +9227,9 @@ namespace Chummer
             this.cmdAddAIProgram.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdAddAIProgram.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdAddAIProgram.Location = new System.Drawing.Point(3, 3);
+            this.cmdAddAIProgram.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdAddAIProgram.Name = "cmdAddAIProgram";
-            this.cmdAddAIProgram.Size = new System.Drawing.Size(78, 23);
+            this.cmdAddAIProgram.Size = new System.Drawing.Size(80, 23);
             this.cmdAddAIProgram.TabIndex = 150;
             this.cmdAddAIProgram.Tag = "Button_AddProgram";
             this.cmdAddAIProgram.Text = "Add Program";
@@ -8992,9 +9241,10 @@ namespace Chummer
             this.cmdDeleteAIProgram.AutoSize = true;
             this.cmdDeleteAIProgram.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDeleteAIProgram.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdDeleteAIProgram.Location = new System.Drawing.Point(87, 3);
+            this.cmdDeleteAIProgram.Location = new System.Drawing.Point(89, 3);
+            this.cmdDeleteAIProgram.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdDeleteAIProgram.Name = "cmdDeleteAIProgram";
-            this.cmdDeleteAIProgram.Size = new System.Drawing.Size(78, 23);
+            this.cmdDeleteAIProgram.Size = new System.Drawing.Size(80, 23);
             this.cmdDeleteAIProgram.TabIndex = 31;
             this.cmdDeleteAIProgram.Tag = "String_Delete";
             this.cmdDeleteAIProgram.Text = "Delete";
@@ -9145,8 +9395,8 @@ namespace Chummer
             this.tlpCritterButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpCritterButtons.Name = "tlpCritterButtons";
             this.tlpCritterButtons.RowCount = 1;
-            this.tlpCritterButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpCritterButtons.Size = new System.Drawing.Size(150, 29);
+            this.tlpCritterButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpCritterButtons.Size = new System.Drawing.Size(172, 29);
             this.tlpCritterButtons.TabIndex = 38;
             // 
             // cmdAddCritterPower
@@ -9155,8 +9405,9 @@ namespace Chummer
             this.cmdAddCritterPower.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdAddCritterPower.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdAddCritterPower.Location = new System.Drawing.Point(3, 3);
+            this.cmdAddCritterPower.MaximumSize = new System.Drawing.Size(80, 0);
             this.cmdAddCritterPower.Name = "cmdAddCritterPower";
-            this.cmdAddCritterPower.Size = new System.Drawing.Size(69, 23);
+            this.cmdAddCritterPower.Size = new System.Drawing.Size(80, 23);
             this.cmdAddCritterPower.TabIndex = 30;
             this.cmdAddCritterPower.Tag = "Button_AddCritterPower";
             this.cmdAddCritterPower.Text = "&Add Power";
@@ -9168,9 +9419,10 @@ namespace Chummer
             this.cmdDeleteCritterPower.AutoSize = true;
             this.cmdDeleteCritterPower.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDeleteCritterPower.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdDeleteCritterPower.Location = new System.Drawing.Point(78, 3);
+            this.cmdDeleteCritterPower.Location = new System.Drawing.Point(89, 3);
+            this.cmdDeleteCritterPower.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdDeleteCritterPower.Name = "cmdDeleteCritterPower";
-            this.cmdDeleteCritterPower.Size = new System.Drawing.Size(69, 23);
+            this.cmdDeleteCritterPower.Size = new System.Drawing.Size(80, 23);
             this.cmdDeleteCritterPower.TabIndex = 31;
             this.cmdDeleteCritterPower.Tag = "String_Delete";
             this.cmdDeleteCritterPower.Text = "Delete";
@@ -9451,12 +9703,13 @@ namespace Chummer
             // 
             // cmdSustainCritterPower
             // 
-            this.cmdSustainCritterPower.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdSustainCritterPower.AutoSize = true;
             this.cmdSustainCritterPower.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdSustainCritterPower.Dock = System.Windows.Forms.DockStyle.Left;
             this.cmdSustainCritterPower.Location = new System.Drawing.Point(313, 280);
+            this.cmdSustainCritterPower.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdSustainCritterPower.Name = "cmdSustainCritterPower";
-            this.cmdSustainCritterPower.Size = new System.Drawing.Size(52, 23);
+            this.cmdSustainCritterPower.Size = new System.Drawing.Size(80, 23);
             this.cmdSustainCritterPower.TabIndex = 40;
             this.cmdSustainCritterPower.Text = "Sustain";
             this.cmdSustainCritterPower.UseVisualStyleBackColor = true;
@@ -9544,7 +9797,9 @@ namespace Chummer
             this.cmdAddMetamagic.ContextMenuStrip = this.cmsMetamagic;
             this.cmdAddMetamagic.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdAddMetamagic.Location = new System.Drawing.Point(3, 3);
+            this.cmdAddMetamagic.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdAddMetamagic.Name = "cmdAddMetamagic";
+            this.cmdAddMetamagic.ShowSplit = true;
             this.cmdAddMetamagic.Size = new System.Drawing.Size(123, 23);
             this.cmdAddMetamagic.SplitMenuStrip = this.cmsMetamagic;
             this.cmdAddMetamagic.TabIndex = 93;
@@ -9559,6 +9814,7 @@ namespace Chummer
             this.cmdDeleteMetamagic.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDeleteMetamagic.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdDeleteMetamagic.Location = new System.Drawing.Point(132, 3);
+            this.cmdDeleteMetamagic.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdDeleteMetamagic.Name = "cmdDeleteMetamagic";
             this.cmdDeleteMetamagic.Size = new System.Drawing.Size(123, 23);
             this.cmdDeleteMetamagic.TabIndex = 94;
@@ -9655,7 +9911,7 @@ namespace Chummer
             this.chkInitiationOrdeal.Tag = "Checkbox_InitiationOrdeal";
             this.chkInitiationOrdeal.Text = "Initiatory Ordeal (-10%)";
             this.chkInitiationOrdeal.UseVisualStyleBackColor = true;
-            this.chkInitiationOrdeal.CheckedChanged += new System.EventHandler(this.UpdateInitiationCost);
+            this.chkInitiationOrdeal.CheckedChanged += new System.EventHandler(this.UpdateInitiationCostEvent);
             // 
             // chkInitiationSchooling
             // 
@@ -9669,7 +9925,7 @@ namespace Chummer
             this.chkInitiationSchooling.Tag = "Checkbox_InitiationSchooling";
             this.chkInitiationSchooling.Text = "Schooling (-10%)";
             this.chkInitiationSchooling.UseVisualStyleBackColor = true;
-            this.chkInitiationSchooling.CheckedChanged += new System.EventHandler(this.UpdateInitiationCost);
+            this.chkInitiationSchooling.CheckedChanged += new System.EventHandler(this.UpdateInitiationCostEvent);
             this.chkInitiationSchooling.EnabledChanged += new System.EventHandler(this.chkInitiationSchooling_EnabledChanged);
             // 
             // gpbInitiationGroup
@@ -9745,7 +10001,7 @@ namespace Chummer
             this.chkInitiationGroup.Tag = "Checkbox_InitiationGroup";
             this.chkInitiationGroup.Text = "Group Initiation (-10%)";
             this.chkInitiationGroup.UseVisualStyleBackColor = true;
-            this.chkInitiationGroup.CheckedChanged += new System.EventHandler(this.UpdateInitiationCost);
+            this.chkInitiationGroup.CheckedChanged += new System.EventHandler(this.UpdateInitiationCostEvent);
             this.chkInitiationGroup.EnabledChanged += new System.EventHandler(this.chkInitiationGroup_EnabledChanged);
             // 
             // lblGroupNotes
@@ -10304,6 +10560,7 @@ namespace Chummer
             this.cmdCyberwareChangeMount.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpCyberwareCommon.SetColumnSpan(this.cmdCyberwareChangeMount, 4);
             this.cmdCyberwareChangeMount.Location = new System.Drawing.Point(3, 153);
+            this.cmdCyberwareChangeMount.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdCyberwareChangeMount.Name = "cmdCyberwareChangeMount";
             this.cmdCyberwareChangeMount.Size = new System.Drawing.Size(143, 23);
             this.cmdCyberwareChangeMount.TabIndex = 228;
@@ -11198,7 +11455,9 @@ namespace Chummer
             this.cmdAddCyberware.ContextMenuStrip = this.cmsCyberware;
             this.cmdAddCyberware.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdAddCyberware.Location = new System.Drawing.Point(3, 3);
+            this.cmdAddCyberware.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdAddCyberware.Name = "cmdAddCyberware";
+            this.cmdAddCyberware.ShowSplit = true;
             this.cmdAddCyberware.Size = new System.Drawing.Size(107, 23);
             this.cmdAddCyberware.SplitMenuStrip = this.cmsCyberware;
             this.cmdAddCyberware.TabIndex = 52;
@@ -11214,7 +11473,9 @@ namespace Chummer
             this.cmdDeleteCyberware.ContextMenuStrip = this.cmsDeleteCyberware;
             this.cmdDeleteCyberware.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdDeleteCyberware.Location = new System.Drawing.Point(229, 3);
+            this.cmdDeleteCyberware.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdDeleteCyberware.Name = "cmdDeleteCyberware";
+            this.cmdDeleteCyberware.ShowSplit = true;
             this.cmdDeleteCyberware.Size = new System.Drawing.Size(107, 23);
             this.cmdDeleteCyberware.SplitMenuStrip = this.cmsDeleteCyberware;
             this.cmdDeleteCyberware.TabIndex = 51;
@@ -11229,6 +11490,7 @@ namespace Chummer
             this.cmdAddBioware.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdAddBioware.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdAddBioware.Location = new System.Drawing.Point(116, 3);
+            this.cmdAddBioware.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdAddBioware.Name = "cmdAddBioware";
             this.cmdAddBioware.Size = new System.Drawing.Size(107, 23);
             this.cmdAddBioware.TabIndex = 46;
@@ -12597,6 +12859,7 @@ namespace Chummer
             this.cmdCreateStackedFocus.AutoSize = true;
             this.cmdCreateStackedFocus.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdCreateStackedFocus.Location = new System.Drawing.Point(3, 3);
+            this.cmdCreateStackedFocus.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdCreateStackedFocus.Name = "cmdCreateStackedFocus";
             this.cmdCreateStackedFocus.Size = new System.Drawing.Size(123, 23);
             this.cmdCreateStackedFocus.TabIndex = 116;
@@ -12624,22 +12887,24 @@ namespace Chummer
             // 
             this.tlpGearButtons.AutoSize = true;
             this.tlpGearButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpGearButtons.ColumnCount = 4;
+            this.tlpGearButtons.ColumnCount = 5;
             this.tlpGear.SetColumnSpan(this.tlpGearButtons, 2);
             this.tlpGearButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tlpGearButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tlpGearButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
             this.tlpGearButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpGearButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpGearButtons.Controls.Add(this.cmdAddLocation, 2, 0);
             this.tlpGearButtons.Controls.Add(this.cmdDeleteGear, 1, 0);
             this.tlpGearButtons.Controls.Add(this.chkCommlinks, 3, 0);
             this.tlpGearButtons.Controls.Add(this.cmdAddGear, 0, 0);
+            this.tlpGearButtons.Controls.Add(this.chkHideLoadedAmmo, 4, 0);
             this.tlpGearButtons.Location = new System.Drawing.Point(0, 0);
             this.tlpGearButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpGearButtons.Name = "tlpGearButtons";
             this.tlpGearButtons.RowCount = 1;
             this.tlpGearButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpGearButtons.Size = new System.Drawing.Size(392, 29);
+            this.tlpGearButtons.Size = new System.Drawing.Size(512, 29);
             this.tlpGearButtons.TabIndex = 207;
             // 
             // cmdAddLocation
@@ -12648,6 +12913,7 @@ namespace Chummer
             this.cmdAddLocation.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdAddLocation.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdAddLocation.Location = new System.Drawing.Point(175, 3);
+            this.cmdAddLocation.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdAddLocation.Name = "cmdAddLocation";
             this.cmdAddLocation.Size = new System.Drawing.Size(80, 23);
             this.cmdAddLocation.TabIndex = 106;
@@ -12663,7 +12929,9 @@ namespace Chummer
             this.cmdDeleteGear.ContextMenuStrip = this.cmsDeleteGear;
             this.cmdDeleteGear.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdDeleteGear.Location = new System.Drawing.Point(89, 3);
+            this.cmdDeleteGear.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdDeleteGear.Name = "cmdDeleteGear";
+            this.cmdDeleteGear.ShowSplit = true;
             this.cmdDeleteGear.Size = new System.Drawing.Size(80, 23);
             this.cmdDeleteGear.SplitMenuStrip = this.cmsDeleteGear;
             this.cmdDeleteGear.TabIndex = 94;
@@ -12693,7 +12961,9 @@ namespace Chummer
             this.cmdAddGear.ContextMenuStrip = this.cmsGearButton;
             this.cmdAddGear.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdAddGear.Location = new System.Drawing.Point(3, 3);
+            this.cmdAddGear.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdAddGear.Name = "cmdAddGear";
+            this.cmdAddGear.ShowSplit = true;
             this.cmdAddGear.Size = new System.Drawing.Size(80, 23);
             this.cmdAddGear.SplitMenuStrip = this.cmsGearButton;
             this.cmdAddGear.TabIndex = 104;
@@ -12702,6 +12972,22 @@ namespace Chummer
             this.cmdAddGear.UseVisualStyleBackColor = true;
             this.cmdAddGear.Click += new System.EventHandler(this.cmdAddGear_Click);
             // 
+            // chkHideLoadedAmmo
+            // 
+            this.chkHideLoadedAmmo.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkHideLoadedAmmo.AutoSize = true;
+            this.chkHideLoadedAmmo.DefaultColorScheme = true;
+            this.chkHideLoadedAmmo.FlatAppearance.MouseDownBackColor = System.Drawing.SystemColors.ControlDarkDark;
+            this.chkHideLoadedAmmo.FlatAppearance.MouseOverBackColor = System.Drawing.SystemColors.ControlDark;
+            this.chkHideLoadedAmmo.Location = new System.Drawing.Point(395, 6);
+            this.chkHideLoadedAmmo.Name = "chkHideLoadedAmmo";
+            this.chkHideLoadedAmmo.Size = new System.Drawing.Size(114, 17);
+            this.chkHideLoadedAmmo.TabIndex = 118;
+            this.chkHideLoadedAmmo.Tag = "Checkbox_HideAmmo";
+            this.chkHideLoadedAmmo.Text = "Hide loaded ammo";
+            this.chkHideLoadedAmmo.UseVisualStyleBackColor = true;
+            this.chkHideLoadedAmmo.CheckedChanged += new System.EventHandler(this.chkHideLoadedAmmo_CheckedChanged);
+            // 
             // tabArmor
             // 
             this.tabArmor.BackColor = System.Drawing.SystemColors.Control;
@@ -12709,7 +12995,7 @@ namespace Chummer
             this.tabArmor.Location = new System.Drawing.Point(4, 22);
             this.tabArmor.Name = "tabArmor";
             this.tabArmor.Padding = new System.Windows.Forms.Padding(3);
-            this.tabArmor.Size = new System.Drawing.Size(184, 48);
+            this.tabArmor.Size = new System.Drawing.Size(969, 605);
             this.tabArmor.TabIndex = 1;
             this.tabArmor.Tag = "Tab_Armor";
             this.tabArmor.Text = "Clothing & Armor";
@@ -12730,7 +13016,7 @@ namespace Chummer
             this.tlpArmor.RowCount = 2;
             this.tlpArmor.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpArmor.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpArmor.Size = new System.Drawing.Size(178, 42);
+            this.tlpArmor.Size = new System.Drawing.Size(963, 599);
             this.tlpArmor.TabIndex = 186;
             // 
             // treArmor
@@ -12746,7 +13032,7 @@ namespace Chummer
             this.treArmor.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode20});
             this.treArmor.ShowNodeToolTips = true;
-            this.treArmor.Size = new System.Drawing.Size(50, 7);
+            this.treArmor.Size = new System.Drawing.Size(302, 564);
             this.treArmor.TabIndex = 69;
             this.treArmor.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treArmor_AfterSelect);
             this.treArmor.DragOver += new System.Windows.Forms.DragEventHandler(this.treArmor_DragOver);
@@ -12762,10 +13048,10 @@ namespace Chummer
             this.flpArmor.Controls.Add(this.gpbArmorLocation);
             this.flpArmor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpArmor.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpArmor.Location = new System.Drawing.Point(56, 29);
+            this.flpArmor.Location = new System.Drawing.Point(308, 29);
             this.flpArmor.Margin = new System.Windows.Forms.Padding(0);
             this.flpArmor.Name = "flpArmor";
-            this.flpArmor.Size = new System.Drawing.Size(122, 13);
+            this.flpArmor.Size = new System.Drawing.Size(655, 570);
             this.flpArmor.TabIndex = 186;
             this.flpArmor.WrapContents = false;
             // 
@@ -13941,9 +14227,8 @@ namespace Chummer
             this.tlpArmorLocation.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpArmorLocation.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpArmorLocation.Controls.Add(this.lblArmorEquipped, 0, 1);
-            this.tlpArmorLocation.Controls.Add(this.cmdArmorUnEquipAll, 2, 0);
             this.tlpArmorLocation.Controls.Add(this.lblArmorEquippedLabel, 0, 0);
-            this.tlpArmorLocation.Controls.Add(this.cmdArmorEquipAll, 1, 0);
+            this.tlpArmorLocation.Controls.Add(this.tlpArmorLocationButtons, 2, 0);
             this.tlpArmorLocation.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpArmorLocation.Location = new System.Drawing.Point(3, 16);
             this.tlpArmorLocation.Name = "tlpArmorLocation";
@@ -13965,20 +14250,6 @@ namespace Chummer
             this.lblArmorEquipped.TabIndex = 113;
             this.lblArmorEquipped.Text = "[Armor Bundle Equipped Items]";
             // 
-            // cmdArmorUnEquipAll
-            // 
-            this.cmdArmorUnEquipAll.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.cmdArmorUnEquipAll.AutoSize = true;
-            this.cmdArmorUnEquipAll.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdArmorUnEquipAll.Location = new System.Drawing.Point(417, 3);
-            this.cmdArmorUnEquipAll.Name = "cmdArmorUnEquipAll";
-            this.cmdArmorUnEquipAll.Size = new System.Drawing.Size(75, 23);
-            this.cmdArmorUnEquipAll.TabIndex = 107;
-            this.cmdArmorUnEquipAll.Tag = "Button_UnEquipAll";
-            this.cmdArmorUnEquipAll.Text = "Un-Equip All";
-            this.cmdArmorUnEquipAll.UseVisualStyleBackColor = true;
-            this.cmdArmorUnEquipAll.Click += new System.EventHandler(this.cmdArmorUnEquipAll_Click);
-            // 
             // lblArmorEquippedLabel
             // 
             this.lblArmorEquippedLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
@@ -13991,14 +14262,47 @@ namespace Chummer
             this.lblArmorEquippedLabel.Tag = "Checkbox_Equipped";
             this.lblArmorEquippedLabel.Text = "Equipped";
             // 
+            // tlpArmorLocationButtons
+            // 
+            this.tlpArmorLocationButtons.AutoSize = true;
+            this.tlpArmorLocationButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpArmorLocationButtons.ColumnCount = 2;
+            this.tlpArmorLocationButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpArmorLocationButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpArmorLocationButtons.Controls.Add(this.cmdArmorUnEquipAll, 1, 0);
+            this.tlpArmorLocationButtons.Controls.Add(this.cmdArmorEquipAll, 0, 0);
+            this.tlpArmorLocationButtons.Location = new System.Drawing.Point(323, 0);
+            this.tlpArmorLocationButtons.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpArmorLocationButtons.Name = "tlpArmorLocationButtons";
+            this.tlpArmorLocationButtons.RowCount = 1;
+            this.tlpArmorLocationButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpArmorLocationButtons.Size = new System.Drawing.Size(172, 29);
+            this.tlpArmorLocationButtons.TabIndex = 114;
+            // 
+            // cmdArmorUnEquipAll
+            // 
+            this.cmdArmorUnEquipAll.AutoSize = true;
+            this.cmdArmorUnEquipAll.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdArmorUnEquipAll.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdArmorUnEquipAll.Location = new System.Drawing.Point(89, 3);
+            this.cmdArmorUnEquipAll.MinimumSize = new System.Drawing.Size(80, 0);
+            this.cmdArmorUnEquipAll.Name = "cmdArmorUnEquipAll";
+            this.cmdArmorUnEquipAll.Size = new System.Drawing.Size(80, 23);
+            this.cmdArmorUnEquipAll.TabIndex = 107;
+            this.cmdArmorUnEquipAll.Tag = "Button_UnEquipAll";
+            this.cmdArmorUnEquipAll.Text = "Un-Equip All";
+            this.cmdArmorUnEquipAll.UseVisualStyleBackColor = true;
+            this.cmdArmorUnEquipAll.Click += new System.EventHandler(this.cmdArmorUnEquipAll_Click);
+            // 
             // cmdArmorEquipAll
             // 
-            this.cmdArmorEquipAll.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.cmdArmorEquipAll.AutoSize = true;
             this.cmdArmorEquipAll.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdArmorEquipAll.Location = new System.Drawing.Point(353, 3);
+            this.cmdArmorEquipAll.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdArmorEquipAll.Location = new System.Drawing.Point(3, 3);
+            this.cmdArmorEquipAll.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdArmorEquipAll.Name = "cmdArmorEquipAll";
-            this.cmdArmorEquipAll.Size = new System.Drawing.Size(58, 23);
+            this.cmdArmorEquipAll.Size = new System.Drawing.Size(80, 23);
             this.cmdArmorEquipAll.TabIndex = 106;
             this.cmdArmorEquipAll.Tag = "Button_EquipAll";
             this.cmdArmorEquipAll.Text = "Equip All";
@@ -14022,7 +14326,7 @@ namespace Chummer
             this.tlpArmorButtons.Name = "tlpArmorButtons";
             this.tlpArmorButtons.RowCount = 1;
             this.tlpArmorButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpArmorButtons.Size = new System.Drawing.Size(178, 29);
+            this.tlpArmorButtons.Size = new System.Drawing.Size(324, 29);
             this.tlpArmorButtons.TabIndex = 187;
             // 
             // cmdAddArmor
@@ -14032,8 +14336,10 @@ namespace Chummer
             this.cmdAddArmor.ContextMenuStrip = this.cmsArmor;
             this.cmdAddArmor.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdAddArmor.Location = new System.Drawing.Point(3, 3);
+            this.cmdAddArmor.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdAddArmor.Name = "cmdAddArmor";
-            this.cmdAddArmor.Size = new System.Drawing.Size(53, 23);
+            this.cmdAddArmor.ShowSplit = true;
+            this.cmdAddArmor.Size = new System.Drawing.Size(102, 23);
             this.cmdAddArmor.SplitMenuStrip = this.cmsArmor;
             this.cmdAddArmor.TabIndex = 86;
             this.cmdAddArmor.Tag = "Button_AddArmor";
@@ -14046,9 +14352,10 @@ namespace Chummer
             this.cmdAddArmorBundle.AutoSize = true;
             this.cmdAddArmorBundle.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdAddArmorBundle.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdAddArmorBundle.Location = new System.Drawing.Point(121, 3);
+            this.cmdAddArmorBundle.Location = new System.Drawing.Point(219, 3);
+            this.cmdAddArmorBundle.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdAddArmorBundle.Name = "cmdAddArmorBundle";
-            this.cmdAddArmorBundle.Size = new System.Drawing.Size(54, 23);
+            this.cmdAddArmorBundle.Size = new System.Drawing.Size(102, 23);
             this.cmdAddArmorBundle.TabIndex = 105;
             this.cmdAddArmorBundle.Tag = "Button_AddBundle";
             this.cmdAddArmorBundle.Text = "Add Armor Bundle";
@@ -14061,9 +14368,11 @@ namespace Chummer
             this.cmdDeleteArmor.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDeleteArmor.ContextMenuStrip = this.cmsDeleteArmor;
             this.cmdDeleteArmor.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdDeleteArmor.Location = new System.Drawing.Point(62, 3);
+            this.cmdDeleteArmor.Location = new System.Drawing.Point(111, 3);
+            this.cmdDeleteArmor.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdDeleteArmor.Name = "cmdDeleteArmor";
-            this.cmdDeleteArmor.Size = new System.Drawing.Size(53, 23);
+            this.cmdDeleteArmor.ShowSplit = true;
+            this.cmdDeleteArmor.Size = new System.Drawing.Size(102, 23);
             this.cmdDeleteArmor.SplitMenuStrip = this.cmsDeleteArmor;
             this.cmdDeleteArmor.TabIndex = 83;
             this.cmdDeleteArmor.Tag = "String_Delete";
@@ -14953,7 +15262,7 @@ namespace Chummer
             this.tlpWeaponsCareer.Controls.Add(this.lblWeaponAmmoRemainingLabel, 2, 0);
             this.tlpWeaponsCareer.Controls.Add(this.lblWeaponAmmoTypeLabel, 0, 0);
             this.tlpWeaponsCareer.Controls.Add(this.lblWeaponAmmoRemaining, 3, 0);
-            this.tlpWeaponsCareer.Controls.Add(this.flpWeaponsCareerButtons, 2, 1);
+            this.tlpWeaponsCareer.Controls.Add(this.flpWeaponsCareerButtons, 1, 1);
             this.tlpWeaponsCareer.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpWeaponsCareer.Location = new System.Drawing.Point(0, 137);
             this.tlpWeaponsCareer.Margin = new System.Windows.Forms.Padding(0, 3, 0, 0);
@@ -15016,25 +15325,28 @@ namespace Chummer
             // 
             this.flpWeaponsCareerButtons.AutoSize = true;
             this.flpWeaponsCareerButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpWeaponsCareer.SetColumnSpan(this.flpWeaponsCareerButtons, 2);
+            this.tlpWeaponsCareer.SetColumnSpan(this.flpWeaponsCareerButtons, 3);
             this.flpWeaponsCareerButtons.Controls.Add(this.cmdFireWeapon);
             this.flpWeaponsCareerButtons.Controls.Add(this.cmdReloadWeapon);
+            this.flpWeaponsCareerButtons.Controls.Add(this.cmdUnloadWeapon);
             this.flpWeaponsCareerButtons.Controls.Add(this.cmdWeaponBuyAmmo);
-            this.flpWeaponsCareerButtons.Location = new System.Drawing.Point(239, 27);
+            this.flpWeaponsCareerButtons.Location = new System.Drawing.Point(82, 27);
             this.flpWeaponsCareerButtons.Margin = new System.Windows.Forms.Padding(0);
             this.flpWeaponsCareerButtons.Name = "flpWeaponsCareerButtons";
-            this.flpWeaponsCareerButtons.Size = new System.Drawing.Size(155, 30);
+            this.flpWeaponsCareerButtons.Size = new System.Drawing.Size(288, 30);
             this.flpWeaponsCareerButtons.TabIndex = 107;
             // 
             // cmdFireWeapon
             // 
-            this.cmdFireWeapon.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdFireWeapon.AutoSize = true;
             this.cmdFireWeapon.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdFireWeapon.ContextMenuStrip = this.cmsAmmoExpense;
+            this.cmdFireWeapon.Dock = System.Windows.Forms.DockStyle.Left;
             this.cmdFireWeapon.Location = new System.Drawing.Point(3, 3);
+            this.cmdFireWeapon.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdFireWeapon.Name = "cmdFireWeapon";
-            this.cmdFireWeapon.Size = new System.Drawing.Size(62, 23);
+            this.cmdFireWeapon.ShowSplit = true;
+            this.cmdFireWeapon.Size = new System.Drawing.Size(80, 24);
             this.cmdFireWeapon.SplitMenuStrip = this.cmsAmmoExpense;
             this.cmdFireWeapon.TabIndex = 75;
             this.cmdFireWeapon.Tag = "Button_Fire";
@@ -15044,17 +15356,33 @@ namespace Chummer
             // 
             // cmdReloadWeapon
             // 
-            this.cmdReloadWeapon.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdReloadWeapon.AutoSize = true;
             this.cmdReloadWeapon.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdReloadWeapon.Location = new System.Drawing.Point(71, 3);
+            this.cmdReloadWeapon.Dock = System.Windows.Forms.DockStyle.Left;
+            this.cmdReloadWeapon.Location = new System.Drawing.Point(89, 3);
+            this.cmdReloadWeapon.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdReloadWeapon.Name = "cmdReloadWeapon";
-            this.cmdReloadWeapon.Size = new System.Drawing.Size(51, 23);
+            this.cmdReloadWeapon.Size = new System.Drawing.Size(80, 24);
             this.cmdReloadWeapon.TabIndex = 78;
             this.cmdReloadWeapon.Tag = "Button_Reload";
             this.cmdReloadWeapon.Text = "Reload";
             this.cmdReloadWeapon.UseVisualStyleBackColor = true;
             this.cmdReloadWeapon.Click += new System.EventHandler(this.cmdReloadWeapon_Click);
+            // 
+            // cmdUnloadWeapon
+            // 
+            this.cmdUnloadWeapon.AutoSize = true;
+            this.cmdUnloadWeapon.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdUnloadWeapon.Dock = System.Windows.Forms.DockStyle.Left;
+            this.cmdUnloadWeapon.Location = new System.Drawing.Point(175, 3);
+            this.cmdUnloadWeapon.MinimumSize = new System.Drawing.Size(80, 0);
+            this.cmdUnloadWeapon.Name = "cmdUnloadWeapon";
+            this.cmdUnloadWeapon.Size = new System.Drawing.Size(80, 24);
+            this.cmdUnloadWeapon.TabIndex = 108;
+            this.cmdUnloadWeapon.Tag = "Button_Unload";
+            this.cmdUnloadWeapon.Text = "Unload";
+            this.cmdUnloadWeapon.UseVisualStyleBackColor = true;
+            this.cmdUnloadWeapon.Click += new System.EventHandler(this.cmdUnloadWeapon_Click);
             // 
             // cmdWeaponBuyAmmo
             // 
@@ -15068,7 +15396,7 @@ namespace Chummer
             this.cmdWeaponBuyAmmo.ImageDpi288 = null;
             this.cmdWeaponBuyAmmo.ImageDpi384 = null;
             this.cmdWeaponBuyAmmo.ImageDpi96 = global::Chummer.Properties.Resources.basket_add;
-            this.cmdWeaponBuyAmmo.Location = new System.Drawing.Point(128, 3);
+            this.cmdWeaponBuyAmmo.Location = new System.Drawing.Point(261, 3);
             this.cmdWeaponBuyAmmo.Name = "cmdWeaponBuyAmmo";
             this.cmdWeaponBuyAmmo.Padding = new System.Windows.Forms.Padding(1);
             this.cmdWeaponBuyAmmo.Size = new System.Drawing.Size(24, 24);
@@ -15964,7 +16292,9 @@ namespace Chummer
             this.cmdAddWeapon.ContextMenuStrip = this.cmsWeapon;
             this.cmdAddWeapon.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdAddWeapon.Location = new System.Drawing.Point(3, 3);
+            this.cmdAddWeapon.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdAddWeapon.Name = "cmdAddWeapon";
+            this.cmdAddWeapon.ShowSplit = true;
             this.cmdAddWeapon.Size = new System.Drawing.Size(98, 23);
             this.cmdAddWeapon.SplitMenuStrip = this.cmsWeapon;
             this.cmdAddWeapon.TabIndex = 103;
@@ -15979,6 +16309,7 @@ namespace Chummer
             this.cmdAddWeaponLocation.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdAddWeaponLocation.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdAddWeaponLocation.Location = new System.Drawing.Point(211, 3);
+            this.cmdAddWeaponLocation.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdAddWeaponLocation.Name = "cmdAddWeaponLocation";
             this.cmdAddWeaponLocation.Size = new System.Drawing.Size(98, 23);
             this.cmdAddWeaponLocation.TabIndex = 118;
@@ -15994,7 +16325,9 @@ namespace Chummer
             this.cmdDeleteWeapon.ContextMenuStrip = this.cmsDeleteWeapon;
             this.cmdDeleteWeapon.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdDeleteWeapon.Location = new System.Drawing.Point(107, 3);
+            this.cmdDeleteWeapon.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdDeleteWeapon.Name = "cmdDeleteWeapon";
+            this.cmdDeleteWeapon.ShowSplit = true;
             this.cmdDeleteWeapon.Size = new System.Drawing.Size(98, 23);
             this.cmdDeleteWeapon.SplitMenuStrip = this.cmsDeleteWeapon;
             this.cmdDeleteWeapon.TabIndex = 55;
@@ -16010,7 +16343,7 @@ namespace Chummer
             this.tabDrugs.Location = new System.Drawing.Point(4, 22);
             this.tabDrugs.Name = "tabDrugs";
             this.tabDrugs.Padding = new System.Windows.Forms.Padding(3);
-            this.tabDrugs.Size = new System.Drawing.Size(184, 48);
+            this.tabDrugs.Size = new System.Drawing.Size(969, 605);
             this.tabDrugs.TabIndex = 7;
             this.tabDrugs.Tag = "Tab_Drugs";
             this.tabDrugs.Text = "Drugs";
@@ -16031,7 +16364,7 @@ namespace Chummer
             this.tlpDrugDescription.RowCount = 2;
             this.tlpDrugDescription.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpDrugDescription.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpDrugDescription.Size = new System.Drawing.Size(178, 42);
+            this.tlpDrugDescription.Size = new System.Drawing.Size(963, 599);
             this.tlpDrugDescription.TabIndex = 109;
             // 
             // treCustomDrugs
@@ -16044,7 +16377,7 @@ namespace Chummer
             treeNode22.Text = "Selected Drugs";
             this.treCustomDrugs.Nodes.AddRange(new System.Windows.Forms.TreeNode[] {
             treeNode22});
-            this.treCustomDrugs.Size = new System.Drawing.Size(50, 7);
+            this.treCustomDrugs.Size = new System.Drawing.Size(302, 564);
             this.treCustomDrugs.TabIndex = 2;
             this.treCustomDrugs.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCustomDrugs_AfterSelect);
             // 
@@ -16054,10 +16387,10 @@ namespace Chummer
             this.flpDrugs.Controls.Add(this.gpbDrugsCommon);
             this.flpDrugs.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpDrugs.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpDrugs.Location = new System.Drawing.Point(56, 29);
+            this.flpDrugs.Location = new System.Drawing.Point(308, 29);
             this.flpDrugs.Margin = new System.Windows.Forms.Padding(0);
             this.flpDrugs.Name = "flpDrugs";
-            this.flpDrugs.Size = new System.Drawing.Size(122, 13);
+            this.flpDrugs.Size = new System.Drawing.Size(655, 570);
             this.flpDrugs.TabIndex = 100;
             this.flpDrugs.WrapContents = false;
             // 
@@ -16416,7 +16749,7 @@ namespace Chummer
             this.tlpDrugDescriptionButtons.Name = "tlpDrugDescriptionButtons";
             this.tlpDrugDescriptionButtons.RowCount = 1;
             this.tlpDrugDescriptionButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpDrugDescriptionButtons.Size = new System.Drawing.Size(178, 29);
+            this.tlpDrugDescriptionButtons.Size = new System.Drawing.Size(236, 29);
             this.tlpDrugDescriptionButtons.TabIndex = 101;
             // 
             // btnCreateCustomDrug
@@ -16425,8 +16758,9 @@ namespace Chummer
             this.btnCreateCustomDrug.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnCreateCustomDrug.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnCreateCustomDrug.Location = new System.Drawing.Point(3, 3);
+            this.btnCreateCustomDrug.MinimumSize = new System.Drawing.Size(80, 0);
             this.btnCreateCustomDrug.Name = "btnCreateCustomDrug";
-            this.btnCreateCustomDrug.Size = new System.Drawing.Size(83, 23);
+            this.btnCreateCustomDrug.Size = new System.Drawing.Size(112, 23);
             this.btnCreateCustomDrug.TabIndex = 1;
             this.btnCreateCustomDrug.Tag = "Button_CreateCustomDrug";
             this.btnCreateCustomDrug.Text = "Create Custom Drug";
@@ -16438,9 +16772,10 @@ namespace Chummer
             this.btnDeleteCustomDrug.AutoSize = true;
             this.btnDeleteCustomDrug.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnDeleteCustomDrug.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnDeleteCustomDrug.Location = new System.Drawing.Point(92, 3);
+            this.btnDeleteCustomDrug.Location = new System.Drawing.Point(121, 3);
+            this.btnDeleteCustomDrug.MinimumSize = new System.Drawing.Size(80, 0);
             this.btnDeleteCustomDrug.Name = "btnDeleteCustomDrug";
-            this.btnDeleteCustomDrug.Size = new System.Drawing.Size(83, 23);
+            this.btnDeleteCustomDrug.Size = new System.Drawing.Size(112, 23);
             this.btnDeleteCustomDrug.TabIndex = 3;
             this.btnDeleteCustomDrug.Tag = "String_Delete";
             this.btnDeleteCustomDrug.Text = "Delete";
@@ -16454,7 +16789,7 @@ namespace Chummer
             this.tabLifestyle.Location = new System.Drawing.Point(4, 22);
             this.tabLifestyle.Name = "tabLifestyle";
             this.tabLifestyle.Padding = new System.Windows.Forms.Padding(3);
-            this.tabLifestyle.Size = new System.Drawing.Size(184, 48);
+            this.tabLifestyle.Size = new System.Drawing.Size(969, 605);
             this.tabLifestyle.TabIndex = 0;
             this.tabLifestyle.Tag = "Tab_Lifestyle";
             this.tabLifestyle.Text = "Lifestyles";
@@ -16475,7 +16810,7 @@ namespace Chummer
             this.tlpLifestyleDetails.RowCount = 2;
             this.tlpLifestyleDetails.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpLifestyleDetails.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpLifestyleDetails.Size = new System.Drawing.Size(178, 42);
+            this.tlpLifestyleDetails.Size = new System.Drawing.Size(963, 599);
             this.tlpLifestyleDetails.TabIndex = 118;
             // 
             // treLifestyles
@@ -16492,7 +16827,7 @@ namespace Chummer
             treeNode23});
             this.treLifestyles.ShowNodeToolTips = true;
             this.treLifestyles.ShowRootLines = false;
-            this.treLifestyles.Size = new System.Drawing.Size(50, 7);
+            this.treLifestyles.Size = new System.Drawing.Size(302, 564);
             this.treLifestyles.TabIndex = 80;
             this.treLifestyles.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treLifestyles_AfterSelect);
             this.treLifestyles.DragOver += new System.Windows.Forms.DragEventHandler(this.treLifestyles_DragOver);
@@ -16506,10 +16841,10 @@ namespace Chummer
             this.flpLifestyleDetails.Controls.Add(this.gpbLifestyleCommon);
             this.flpLifestyleDetails.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpLifestyleDetails.FlowDirection = System.Windows.Forms.FlowDirection.TopDown;
-            this.flpLifestyleDetails.Location = new System.Drawing.Point(56, 29);
+            this.flpLifestyleDetails.Location = new System.Drawing.Point(308, 29);
             this.flpLifestyleDetails.Margin = new System.Windows.Forms.Padding(0);
             this.flpLifestyleDetails.Name = "flpLifestyleDetails";
-            this.flpLifestyleDetails.Size = new System.Drawing.Size(122, 13);
+            this.flpLifestyleDetails.Size = new System.Drawing.Size(655, 570);
             this.flpLifestyleDetails.TabIndex = 119;
             this.flpLifestyleDetails.WrapContents = false;
             // 
@@ -16823,7 +17158,7 @@ namespace Chummer
             this.tlpLifestyleButtons.Name = "tlpLifestyleButtons";
             this.tlpLifestyleButtons.RowCount = 1;
             this.tlpLifestyleButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpLifestyleButtons.Size = new System.Drawing.Size(178, 29);
+            this.tlpLifestyleButtons.Size = new System.Drawing.Size(202, 29);
             this.tlpLifestyleButtons.TabIndex = 120;
             // 
             // cmdAddLifestyle
@@ -16833,8 +17168,10 @@ namespace Chummer
             this.cmdAddLifestyle.ContextMenuStrip = this.cmsLifestyle;
             this.cmdAddLifestyle.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdAddLifestyle.Location = new System.Drawing.Point(3, 3);
+            this.cmdAddLifestyle.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdAddLifestyle.Name = "cmdAddLifestyle";
-            this.cmdAddLifestyle.Size = new System.Drawing.Size(83, 23);
+            this.cmdAddLifestyle.ShowSplit = true;
+            this.cmdAddLifestyle.Size = new System.Drawing.Size(95, 23);
             this.cmdAddLifestyle.SplitMenuStrip = this.cmsLifestyle;
             this.cmdAddLifestyle.TabIndex = 91;
             this.cmdAddLifestyle.Tag = "Button_AddLifestyle";
@@ -16847,9 +17184,10 @@ namespace Chummer
             this.cmdDeleteLifestyle.AutoSize = true;
             this.cmdDeleteLifestyle.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDeleteLifestyle.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdDeleteLifestyle.Location = new System.Drawing.Point(92, 3);
+            this.cmdDeleteLifestyle.Location = new System.Drawing.Point(104, 3);
+            this.cmdDeleteLifestyle.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdDeleteLifestyle.Name = "cmdDeleteLifestyle";
-            this.cmdDeleteLifestyle.Size = new System.Drawing.Size(83, 23);
+            this.cmdDeleteLifestyle.Size = new System.Drawing.Size(95, 23);
             this.cmdDeleteLifestyle.TabIndex = 81;
             this.cmdDeleteLifestyle.Tag = "String_Delete";
             this.cmdDeleteLifestyle.Text = "Delete";
@@ -16875,9 +17213,9 @@ namespace Chummer
             this.tlpVehicles.ColumnCount = 2;
             this.tlpVehicles.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 32F));
             this.tlpVehicles.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 68F));
-            this.tlpVehicles.Controls.Add(this.flpVehiclesButtons, 0, 0);
             this.tlpVehicles.Controls.Add(this.flpVehicles, 1, 1);
             this.tlpVehicles.Controls.Add(this.treVehicles, 0, 1);
+            this.tlpVehicles.Controls.Add(this.tlpVehiclesButtons, 0, 0);
             this.tlpVehicles.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpVehicles.Location = new System.Drawing.Point(3, 3);
             this.tlpVehicles.Name = "tlpVehicles";
@@ -16886,61 +17224,6 @@ namespace Chummer
             this.tlpVehicles.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpVehicles.Size = new System.Drawing.Size(971, 625);
             this.tlpVehicles.TabIndex = 249;
-            // 
-            // flpVehiclesButtons
-            // 
-            this.flpVehiclesButtons.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.flpVehiclesButtons.AutoSize = true;
-            this.flpVehiclesButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpVehicles.SetColumnSpan(this.flpVehiclesButtons, 2);
-            this.flpVehiclesButtons.Controls.Add(this.cmdAddVehicle);
-            this.flpVehiclesButtons.Controls.Add(this.cmdDeleteVehicle);
-            this.flpVehiclesButtons.Controls.Add(this.cmdAddVehicleLocation);
-            this.flpVehiclesButtons.Location = new System.Drawing.Point(0, 0);
-            this.flpVehiclesButtons.Margin = new System.Windows.Forms.Padding(0);
-            this.flpVehiclesButtons.Name = "flpVehiclesButtons";
-            this.flpVehiclesButtons.Size = new System.Drawing.Size(256, 29);
-            this.flpVehiclesButtons.TabIndex = 53;
-            // 
-            // cmdAddVehicle
-            // 
-            this.cmdAddVehicle.AutoSize = true;
-            this.cmdAddVehicle.ContextMenuStrip = this.cmsVehicle;
-            this.cmdAddVehicle.Location = new System.Drawing.Point(3, 3);
-            this.cmdAddVehicle.Name = "cmdAddVehicle";
-            this.cmdAddVehicle.Size = new System.Drawing.Size(92, 23);
-            this.cmdAddVehicle.SplitMenuStrip = this.cmsVehicle;
-            this.cmdAddVehicle.TabIndex = 113;
-            this.cmdAddVehicle.Tag = "Button_AddVehicle";
-            this.cmdAddVehicle.Text = "&Add Vehicle";
-            this.cmdAddVehicle.UseVisualStyleBackColor = true;
-            this.cmdAddVehicle.Click += new System.EventHandler(this.cmdAddVehicle_Click);
-            // 
-            // cmdDeleteVehicle
-            // 
-            this.cmdDeleteVehicle.AutoSize = true;
-            this.cmdDeleteVehicle.ContextMenuStrip = this.cmsDeleteVehicle;
-            this.cmdDeleteVehicle.Location = new System.Drawing.Point(101, 3);
-            this.cmdDeleteVehicle.Name = "cmdDeleteVehicle";
-            this.cmdDeleteVehicle.Size = new System.Drawing.Size(66, 23);
-            this.cmdDeleteVehicle.SplitMenuStrip = this.cmsDeleteVehicle;
-            this.cmdDeleteVehicle.TabIndex = 62;
-            this.cmdDeleteVehicle.Tag = "String_Delete";
-            this.cmdDeleteVehicle.Text = "Delete";
-            this.cmdDeleteVehicle.UseVisualStyleBackColor = true;
-            this.cmdDeleteVehicle.Click += new System.EventHandler(this.cmdDeleteVehicle_Click);
-            // 
-            // cmdAddVehicleLocation
-            // 
-            this.cmdAddVehicleLocation.AutoSize = true;
-            this.cmdAddVehicleLocation.Location = new System.Drawing.Point(173, 3);
-            this.cmdAddVehicleLocation.Name = "cmdAddVehicleLocation";
-            this.cmdAddVehicleLocation.Size = new System.Drawing.Size(80, 23);
-            this.cmdAddVehicleLocation.TabIndex = 138;
-            this.cmdAddVehicleLocation.Tag = "Button_AddLocation";
-            this.cmdAddVehicleLocation.Text = "Add Location";
-            this.cmdAddVehicleLocation.UseVisualStyleBackColor = true;
-            this.cmdAddVehicleLocation.Click += new System.EventHandler(this.cmdAddVehicleLocation_Click);
             // 
             // flpVehicles
             // 
@@ -17264,6 +17547,7 @@ namespace Chummer
             this.cmdVehicleCyberwareChangeMount.AutoSize = true;
             this.cmdVehicleCyberwareChangeMount.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdVehicleCyberwareChangeMount.Location = new System.Drawing.Point(33, 3);
+            this.cmdVehicleCyberwareChangeMount.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdVehicleCyberwareChangeMount.Name = "cmdVehicleCyberwareChangeMount";
             this.cmdVehicleCyberwareChangeMount.Size = new System.Drawing.Size(143, 23);
             this.cmdVehicleCyberwareChangeMount.TabIndex = 242;
@@ -17697,7 +17981,7 @@ namespace Chummer
             this.gpbVehiclesWeapon.Dock = System.Windows.Forms.DockStyle.Top;
             this.gpbVehiclesWeapon.Location = new System.Drawing.Point(3, 308);
             this.gpbVehiclesWeapon.Name = "gpbVehiclesWeapon";
-            this.gpbVehiclesWeapon.Size = new System.Drawing.Size(516, 212);
+            this.gpbVehiclesWeapon.Size = new System.Drawing.Size(516, 270);
             this.gpbVehiclesWeapon.TabIndex = 0;
             this.gpbVehiclesWeapon.TabStop = false;
             this.gpbVehiclesWeapon.Tag = "String_Weapon";
@@ -17715,7 +17999,7 @@ namespace Chummer
             this.flpVehiclesWeapon.Location = new System.Drawing.Point(3, 16);
             this.flpVehiclesWeapon.Margin = new System.Windows.Forms.Padding(0);
             this.flpVehiclesWeapon.Name = "flpVehiclesWeapon";
-            this.flpVehiclesWeapon.Size = new System.Drawing.Size(510, 193);
+            this.flpVehiclesWeapon.Size = new System.Drawing.Size(510, 251);
             this.flpVehiclesWeapon.TabIndex = 0;
             this.flpVehiclesWeapon.WrapContents = false;
             // 
@@ -17723,13 +18007,16 @@ namespace Chummer
             // 
             this.tlpVehiclesWeaponCommon.AutoSize = true;
             this.tlpVehiclesWeaponCommon.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpVehiclesWeaponCommon.ColumnCount = 6;
+            this.tlpVehiclesWeaponCommon.ColumnCount = 8;
             this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
+            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
+            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
+            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpVehiclesWeaponCommon.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponReach, 6, 1);
             this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponDamageLabel, 0, 0);
             this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponDamage, 1, 0);
             this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponAccuracy, 5, 0);
@@ -17742,6 +18029,9 @@ namespace Chummer
             this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponAmmoLabel, 4, 1);
             this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponAmmo, 5, 1);
             this.tlpVehiclesWeaponCommon.Controls.Add(this.dpcVehicleWeaponDicePool, 1, 1);
+            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponRCLabel, 6, 0);
+            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponRC, 7, 0);
+            this.tlpVehiclesWeaponCommon.Controls.Add(this.lblVehicleWeaponReachLabel, 6, 1);
             this.tlpVehiclesWeaponCommon.Dock = System.Windows.Forms.DockStyle.Top;
             this.tlpVehiclesWeaponCommon.Location = new System.Drawing.Point(0, 0);
             this.tlpVehiclesWeaponCommon.Margin = new System.Windows.Forms.Padding(0, 0, 0, 3);
@@ -17751,6 +18041,17 @@ namespace Chummer
             this.tlpVehiclesWeaponCommon.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpVehiclesWeaponCommon.Size = new System.Drawing.Size(494, 50);
             this.tlpVehiclesWeaponCommon.TabIndex = 0;
+            // 
+            // lblVehicleWeaponReach
+            // 
+            this.lblVehicleWeaponReach.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblVehicleWeaponReach.AutoSize = true;
+            this.lblVehicleWeaponReach.Location = new System.Drawing.Point(427, 31);
+            this.lblVehicleWeaponReach.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponReach.Name = "lblVehicleWeaponReach";
+            this.lblVehicleWeaponReach.Size = new System.Drawing.Size(45, 13);
+            this.lblVehicleWeaponReach.TabIndex = 251;
+            this.lblVehicleWeaponReach.Text = "[Reach]";
             // 
             // lblVehicleWeaponDamageLabel
             // 
@@ -17779,7 +18080,7 @@ namespace Chummer
             // 
             this.lblVehicleWeaponAccuracy.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblVehicleWeaponAccuracy.AutoSize = true;
-            this.lblVehicleWeaponAccuracy.Location = new System.Drawing.Point(387, 6);
+            this.lblVehicleWeaponAccuracy.Location = new System.Drawing.Point(309, 6);
             this.lblVehicleWeaponAccuracy.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponAccuracy.Name = "lblVehicleWeaponAccuracy";
             this.lblVehicleWeaponAccuracy.Size = new System.Drawing.Size(32, 13);
@@ -17790,7 +18091,7 @@ namespace Chummer
             // 
             this.lblVehicleWeaponAPLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblVehicleWeaponAPLabel.AutoSize = true;
-            this.lblVehicleWeaponAPLabel.Location = new System.Drawing.Point(187, 6);
+            this.lblVehicleWeaponAPLabel.Location = new System.Drawing.Point(148, 6);
             this.lblVehicleWeaponAPLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponAPLabel.Name = "lblVehicleWeaponAPLabel";
             this.lblVehicleWeaponAPLabel.Size = new System.Drawing.Size(24, 13);
@@ -17814,7 +18115,7 @@ namespace Chummer
             // 
             this.lblVehicleWeaponAccuracyLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblVehicleWeaponAccuracyLabel.AutoSize = true;
-            this.lblVehicleWeaponAccuracyLabel.Location = new System.Drawing.Point(326, 6);
+            this.lblVehicleWeaponAccuracyLabel.Location = new System.Drawing.Point(248, 6);
             this.lblVehicleWeaponAccuracyLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponAccuracyLabel.Name = "lblVehicleWeaponAccuracyLabel";
             this.lblVehicleWeaponAccuracyLabel.Size = new System.Drawing.Size(55, 13);
@@ -17826,7 +18127,7 @@ namespace Chummer
             // 
             this.lblVehicleWeaponAP.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblVehicleWeaponAP.AutoSize = true;
-            this.lblVehicleWeaponAP.Location = new System.Drawing.Point(217, 6);
+            this.lblVehicleWeaponAP.Location = new System.Drawing.Point(178, 6);
             this.lblVehicleWeaponAP.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponAP.Name = "lblVehicleWeaponAP";
             this.lblVehicleWeaponAP.Size = new System.Drawing.Size(27, 13);
@@ -17837,7 +18138,7 @@ namespace Chummer
             // 
             this.lblVehicleWeaponModeLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblVehicleWeaponModeLabel.AutoSize = true;
-            this.lblVehicleWeaponModeLabel.Location = new System.Drawing.Point(174, 31);
+            this.lblVehicleWeaponModeLabel.Location = new System.Drawing.Point(135, 31);
             this.lblVehicleWeaponModeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponModeLabel.Name = "lblVehicleWeaponModeLabel";
             this.lblVehicleWeaponModeLabel.Size = new System.Drawing.Size(37, 13);
@@ -17849,7 +18150,7 @@ namespace Chummer
             // 
             this.lblVehicleWeaponMode.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblVehicleWeaponMode.AutoSize = true;
-            this.lblVehicleWeaponMode.Location = new System.Drawing.Point(217, 31);
+            this.lblVehicleWeaponMode.Location = new System.Drawing.Point(178, 31);
             this.lblVehicleWeaponMode.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponMode.Name = "lblVehicleWeaponMode";
             this.lblVehicleWeaponMode.Size = new System.Drawing.Size(40, 13);
@@ -17860,7 +18161,7 @@ namespace Chummer
             // 
             this.lblVehicleWeaponAmmoLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblVehicleWeaponAmmoLabel.AutoSize = true;
-            this.lblVehicleWeaponAmmoLabel.Location = new System.Drawing.Point(342, 31);
+            this.lblVehicleWeaponAmmoLabel.Location = new System.Drawing.Point(264, 31);
             this.lblVehicleWeaponAmmoLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponAmmoLabel.Name = "lblVehicleWeaponAmmoLabel";
             this.lblVehicleWeaponAmmoLabel.Size = new System.Drawing.Size(39, 13);
@@ -17872,7 +18173,7 @@ namespace Chummer
             // 
             this.lblVehicleWeaponAmmo.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblVehicleWeaponAmmo.AutoSize = true;
-            this.lblVehicleWeaponAmmo.Location = new System.Drawing.Point(387, 31);
+            this.lblVehicleWeaponAmmo.Location = new System.Drawing.Point(309, 31);
             this.lblVehicleWeaponAmmo.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleWeaponAmmo.Name = "lblVehicleWeaponAmmo";
             this.lblVehicleWeaponAmmo.Size = new System.Drawing.Size(42, 13);
@@ -17895,6 +18196,41 @@ namespace Chummer
             this.dpcVehicleWeaponDicePool.Size = new System.Drawing.Size(64, 24);
             this.dpcVehicleWeaponDicePool.TabIndex = 247;
             this.dpcVehicleWeaponDicePool.ToolTipText = "";
+            // 
+            // lblVehicleWeaponRCLabel
+            // 
+            this.lblVehicleWeaponRCLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblVehicleWeaponRCLabel.AutoSize = true;
+            this.lblVehicleWeaponRCLabel.Location = new System.Drawing.Point(379, 6);
+            this.lblVehicleWeaponRCLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponRCLabel.Name = "lblVehicleWeaponRCLabel";
+            this.lblVehicleWeaponRCLabel.Size = new System.Drawing.Size(25, 13);
+            this.lblVehicleWeaponRCLabel.TabIndex = 248;
+            this.lblVehicleWeaponRCLabel.Tag = "Label_RC";
+            this.lblVehicleWeaponRCLabel.Text = "RC:";
+            // 
+            // lblVehicleWeaponRC
+            // 
+            this.lblVehicleWeaponRC.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblVehicleWeaponRC.AutoSize = true;
+            this.lblVehicleWeaponRC.Location = new System.Drawing.Point(427, 6);
+            this.lblVehicleWeaponRC.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponRC.Name = "lblVehicleWeaponRC";
+            this.lblVehicleWeaponRC.Size = new System.Drawing.Size(28, 13);
+            this.lblVehicleWeaponRC.TabIndex = 249;
+            this.lblVehicleWeaponRC.Text = "[RC]";
+            // 
+            // lblVehicleWeaponReachLabel
+            // 
+            this.lblVehicleWeaponReachLabel.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblVehicleWeaponReachLabel.AutoSize = true;
+            this.lblVehicleWeaponReachLabel.Location = new System.Drawing.Point(379, 31);
+            this.lblVehicleWeaponReachLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleWeaponReachLabel.Name = "lblVehicleWeaponReachLabel";
+            this.lblVehicleWeaponReachLabel.Size = new System.Drawing.Size(42, 13);
+            this.lblVehicleWeaponReachLabel.TabIndex = 250;
+            this.lblVehicleWeaponReachLabel.Tag = "Label_Reach";
+            this.lblVehicleWeaponReachLabel.Text = "Reach:";
             // 
             // tlpVehiclesWeaponRanges
             // 
@@ -18143,7 +18479,7 @@ namespace Chummer
             this.tlpVehiclesWeaponCareer.RowCount = 2;
             this.tlpVehiclesWeaponCareer.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpVehiclesWeaponCareer.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpVehiclesWeaponCareer.Size = new System.Drawing.Size(494, 56);
+            this.tlpVehiclesWeaponCareer.Size = new System.Drawing.Size(494, 114);
             this.tlpVehiclesWeaponCareer.TabIndex = 249;
             // 
             // lblVehicleWeaponAmmoRemainingLabel
@@ -18197,7 +18533,7 @@ namespace Chummer
             // 
             this.lblFiringModeLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblFiringModeLabel.AutoSize = true;
-            this.lblFiringModeLabel.Location = new System.Drawing.Point(14, 35);
+            this.lblFiringModeLabel.Location = new System.Drawing.Point(14, 64);
             this.lblFiringModeLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblFiringModeLabel.Name = "lblFiringModeLabel";
             this.lblFiringModeLabel.Size = new System.Drawing.Size(65, 13);
@@ -18210,7 +18546,7 @@ namespace Chummer
             this.cboVehicleWeaponFiringMode.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboVehicleWeaponFiringMode.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboVehicleWeaponFiringMode.FormattingEnabled = true;
-            this.cboVehicleWeaponFiringMode.Location = new System.Drawing.Point(85, 31);
+            this.cboVehicleWeaponFiringMode.Location = new System.Drawing.Point(85, 60);
             this.cboVehicleWeaponFiringMode.Name = "cboVehicleWeaponFiringMode";
             this.cboVehicleWeaponFiringMode.Size = new System.Drawing.Size(151, 21);
             this.cboVehicleWeaponFiringMode.TabIndex = 248;
@@ -18225,10 +18561,11 @@ namespace Chummer
             this.tlpVehiclesWeaponCareer.SetColumnSpan(this.flpVehiclesWeaponCareerButtons, 2);
             this.flpVehiclesWeaponCareerButtons.Controls.Add(this.cmdFireVehicleWeapon);
             this.flpVehiclesWeaponCareerButtons.Controls.Add(this.cmdReloadVehicleWeapon);
-            this.flpVehiclesWeaponCareerButtons.Location = new System.Drawing.Point(239, 27);
+            this.flpVehiclesWeaponCareerButtons.Controls.Add(this.cmdUnloadVehicleWeapon);
+            this.flpVehiclesWeaponCareerButtons.Location = new System.Drawing.Point(239, 41);
             this.flpVehiclesWeaponCareerButtons.Margin = new System.Windows.Forms.Padding(0);
             this.flpVehiclesWeaponCareerButtons.Name = "flpVehiclesWeaponCareerButtons";
-            this.flpVehiclesWeaponCareerButtons.Size = new System.Drawing.Size(125, 29);
+            this.flpVehiclesWeaponCareerButtons.Size = new System.Drawing.Size(172, 58);
             this.flpVehiclesWeaponCareerButtons.TabIndex = 249;
             // 
             // cmdFireVehicleWeapon
@@ -18236,9 +18573,12 @@ namespace Chummer
             this.cmdFireVehicleWeapon.AutoSize = true;
             this.cmdFireVehicleWeapon.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdFireVehicleWeapon.ContextMenuStrip = this.cmdVehicleAmmoExpense;
+            this.cmdFireVehicleWeapon.Dock = System.Windows.Forms.DockStyle.Left;
             this.cmdFireVehicleWeapon.Location = new System.Drawing.Point(3, 3);
+            this.cmdFireVehicleWeapon.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdFireVehicleWeapon.Name = "cmdFireVehicleWeapon";
-            this.cmdFireVehicleWeapon.Size = new System.Drawing.Size(62, 23);
+            this.cmdFireVehicleWeapon.ShowSplit = true;
+            this.cmdFireVehicleWeapon.Size = new System.Drawing.Size(80, 23);
             this.cmdFireVehicleWeapon.SplitMenuStrip = this.cmdVehicleAmmoExpense;
             this.cmdFireVehicleWeapon.TabIndex = 81;
             this.cmdFireVehicleWeapon.Tag = "Button_Fire";
@@ -18250,14 +18590,31 @@ namespace Chummer
             // 
             this.cmdReloadVehicleWeapon.AutoSize = true;
             this.cmdReloadVehicleWeapon.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdReloadVehicleWeapon.Location = new System.Drawing.Point(71, 3);
+            this.cmdReloadVehicleWeapon.Dock = System.Windows.Forms.DockStyle.Left;
+            this.cmdReloadVehicleWeapon.Location = new System.Drawing.Point(89, 3);
+            this.cmdReloadVehicleWeapon.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdReloadVehicleWeapon.Name = "cmdReloadVehicleWeapon";
-            this.cmdReloadVehicleWeapon.Size = new System.Drawing.Size(51, 23);
+            this.cmdReloadVehicleWeapon.Size = new System.Drawing.Size(80, 23);
             this.cmdReloadVehicleWeapon.TabIndex = 84;
             this.cmdReloadVehicleWeapon.Tag = "Button_Reload";
             this.cmdReloadVehicleWeapon.Text = "Reload";
             this.cmdReloadVehicleWeapon.UseVisualStyleBackColor = true;
             this.cmdReloadVehicleWeapon.Click += new System.EventHandler(this.cmdReloadVehicleWeapon_Click);
+            // 
+            // cmdUnloadVehicleWeapon
+            // 
+            this.cmdUnloadVehicleWeapon.AutoSize = true;
+            this.cmdUnloadVehicleWeapon.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdUnloadVehicleWeapon.Dock = System.Windows.Forms.DockStyle.Left;
+            this.cmdUnloadVehicleWeapon.Location = new System.Drawing.Point(3, 32);
+            this.cmdUnloadVehicleWeapon.MinimumSize = new System.Drawing.Size(80, 0);
+            this.cmdUnloadVehicleWeapon.Name = "cmdUnloadVehicleWeapon";
+            this.cmdUnloadVehicleWeapon.Size = new System.Drawing.Size(80, 23);
+            this.cmdUnloadVehicleWeapon.TabIndex = 85;
+            this.cmdUnloadVehicleWeapon.Tag = "Button_Unload";
+            this.cmdUnloadVehicleWeapon.Text = "Unload";
+            this.cmdUnloadVehicleWeapon.UseVisualStyleBackColor = true;
+            this.cmdUnloadVehicleWeapon.Click += new System.EventHandler(this.cmdUnloadVehicleWeapon_Click);
             // 
             // gpbVehiclesMatrix
             // 
@@ -18265,7 +18622,7 @@ namespace Chummer
             this.gpbVehiclesMatrix.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbVehiclesMatrix.Controls.Add(this.tlpVehiclesMatrix);
             this.gpbVehiclesMatrix.Dock = System.Windows.Forms.DockStyle.Top;
-            this.gpbVehiclesMatrix.Location = new System.Drawing.Point(3, 526);
+            this.gpbVehiclesMatrix.Location = new System.Drawing.Point(3, 584);
             this.gpbVehiclesMatrix.Name = "gpbVehiclesMatrix";
             this.gpbVehiclesMatrix.Size = new System.Drawing.Size(516, 96);
             this.gpbVehiclesMatrix.TabIndex = 251;
@@ -18328,7 +18685,7 @@ namespace Chummer
             this.cboVehicleDataProcessing.TabIndex = 206;
             this.cboVehicleDataProcessing.TooltipText = "";
             this.cboVehicleDataProcessing.Visible = false;
-            this.cboVehicleDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboVehicleGearDataProcessing_SelectedIndexChanged);
+            this.cboVehicleDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboVehicleDataProcessing_SelectedIndexChanged);
             // 
             // cboVehicleFirewall
             // 
@@ -18341,7 +18698,7 @@ namespace Chummer
             this.cboVehicleFirewall.TabIndex = 205;
             this.cboVehicleFirewall.TooltipText = "";
             this.cboVehicleFirewall.Visible = false;
-            this.cboVehicleFirewall.SelectedIndexChanged += new System.EventHandler(this.cboVehicleGearFirewall_SelectedIndexChanged);
+            this.cboVehicleFirewall.SelectedIndexChanged += new System.EventHandler(this.cboVehicleFirewall_SelectedIndexChanged);
             // 
             // lblVehicleFirewallLabel
             // 
@@ -18378,7 +18735,7 @@ namespace Chummer
             this.cboVehicleSleaze.TabIndex = 204;
             this.cboVehicleSleaze.TooltipText = "";
             this.cboVehicleSleaze.Visible = false;
-            this.cboVehicleSleaze.SelectedIndexChanged += new System.EventHandler(this.cboVehicleGearSleaze_SelectedIndexChanged);
+            this.cboVehicleSleaze.SelectedIndexChanged += new System.EventHandler(this.cboVehicleSleaze_SelectedIndexChanged);
             // 
             // lblVehicleDeviceLabel
             // 
@@ -18414,7 +18771,7 @@ namespace Chummer
             this.cboVehicleAttack.TabIndex = 203;
             this.cboVehicleAttack.TooltipText = "";
             this.cboVehicleAttack.Visible = false;
-            this.cboVehicleAttack.SelectedIndexChanged += new System.EventHandler(this.cboVehicleGearAttack_SelectedIndexChanged);
+            this.cboVehicleAttack.SelectedIndexChanged += new System.EventHandler(this.cboVehicleAttack_SelectedIndexChanged);
             // 
             // lblVehicleAttackLabel
             // 
@@ -18479,7 +18836,7 @@ namespace Chummer
             this.panVehicleCM.Controls.Add(this.tabVehiclePhysicalCM);
             this.panVehicleCM.Controls.Add(this.tabVehicleMatrixCM);
             this.panVehicleCM.Dock = System.Windows.Forms.DockStyle.Top;
-            this.panVehicleCM.Location = new System.Drawing.Point(3, 628);
+            this.panVehicleCM.Location = new System.Drawing.Point(3, 686);
             this.panVehicleCM.Name = "panVehicleCM";
             this.panVehicleCM.SelectedIndex = 0;
             this.panVehicleCM.Size = new System.Drawing.Size(516, 113);
@@ -19702,6 +20059,77 @@ namespace Chummer
             this.treVehicles.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treVehicles_KeyDown);
             this.treVehicles.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
+            // tlpVehiclesButtons
+            // 
+            this.tlpVehiclesButtons.AutoSize = true;
+            this.tlpVehiclesButtons.ColumnCount = 3;
+            this.tlpVehicles.SetColumnSpan(this.tlpVehiclesButtons, 2);
+            this.tlpVehiclesButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tlpVehiclesButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tlpVehiclesButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tlpVehiclesButtons.Controls.Add(this.cmdAddVehicle, 0, 0);
+            this.tlpVehiclesButtons.Controls.Add(this.cmdDeleteVehicle, 1, 0);
+            this.tlpVehiclesButtons.Controls.Add(this.cmdAddVehicleLocation, 2, 0);
+            this.tlpVehiclesButtons.Dock = System.Windows.Forms.DockStyle.Left;
+            this.tlpVehiclesButtons.Location = new System.Drawing.Point(0, 0);
+            this.tlpVehiclesButtons.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpVehiclesButtons.Name = "tlpVehiclesButtons";
+            this.tlpVehiclesButtons.RowCount = 1;
+            this.tlpVehiclesButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpVehiclesButtons.Size = new System.Drawing.Size(294, 29);
+            this.tlpVehiclesButtons.TabIndex = 252;
+            // 
+            // cmdAddVehicle
+            // 
+            this.cmdAddVehicle.AutoSize = true;
+            this.cmdAddVehicle.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdAddVehicle.ContextMenuStrip = this.cmsVehicle;
+            this.cmdAddVehicle.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdAddVehicle.Location = new System.Drawing.Point(3, 3);
+            this.cmdAddVehicle.MinimumSize = new System.Drawing.Size(80, 0);
+            this.cmdAddVehicle.Name = "cmdAddVehicle";
+            this.cmdAddVehicle.ShowSplit = true;
+            this.cmdAddVehicle.Size = new System.Drawing.Size(91, 23);
+            this.cmdAddVehicle.SplitMenuStrip = this.cmsVehicle;
+            this.cmdAddVehicle.TabIndex = 113;
+            this.cmdAddVehicle.Tag = "Button_AddVehicle";
+            this.cmdAddVehicle.Text = "&Add Vehicle";
+            this.cmdAddVehicle.UseVisualStyleBackColor = true;
+            this.cmdAddVehicle.Click += new System.EventHandler(this.cmdAddVehicle_Click);
+            // 
+            // cmdDeleteVehicle
+            // 
+            this.cmdDeleteVehicle.AutoSize = true;
+            this.cmdDeleteVehicle.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdDeleteVehicle.ContextMenuStrip = this.cmsDeleteVehicle;
+            this.cmdDeleteVehicle.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdDeleteVehicle.Location = new System.Drawing.Point(100, 3);
+            this.cmdDeleteVehicle.MinimumSize = new System.Drawing.Size(80, 0);
+            this.cmdDeleteVehicle.Name = "cmdDeleteVehicle";
+            this.cmdDeleteVehicle.ShowSplit = true;
+            this.cmdDeleteVehicle.Size = new System.Drawing.Size(91, 23);
+            this.cmdDeleteVehicle.SplitMenuStrip = this.cmsDeleteVehicle;
+            this.cmdDeleteVehicle.TabIndex = 62;
+            this.cmdDeleteVehicle.Tag = "String_Delete";
+            this.cmdDeleteVehicle.Text = "Delete";
+            this.cmdDeleteVehicle.UseVisualStyleBackColor = true;
+            this.cmdDeleteVehicle.Click += new System.EventHandler(this.cmdDeleteVehicle_Click);
+            // 
+            // cmdAddVehicleLocation
+            // 
+            this.cmdAddVehicleLocation.AutoSize = true;
+            this.cmdAddVehicleLocation.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdAddVehicleLocation.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdAddVehicleLocation.Location = new System.Drawing.Point(197, 3);
+            this.cmdAddVehicleLocation.MinimumSize = new System.Drawing.Size(80, 0);
+            this.cmdAddVehicleLocation.Name = "cmdAddVehicleLocation";
+            this.cmdAddVehicleLocation.Size = new System.Drawing.Size(94, 23);
+            this.cmdAddVehicleLocation.TabIndex = 138;
+            this.cmdAddVehicleLocation.Tag = "Button_AddLocation";
+            this.cmdAddVehicleLocation.Text = "Add Location";
+            this.cmdAddVehicleLocation.UseVisualStyleBackColor = true;
+            this.cmdAddVehicleLocation.Click += new System.EventHandler(this.cmdAddVehicleLocation_Click);
+            // 
             // tabCharacterInfo
             // 
             this.tabCharacterInfo.BackColor = System.Drawing.SystemColors.Control;
@@ -20299,12 +20727,12 @@ namespace Chummer
             this.tlpMugshotButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpMugshotButtons.Controls.Add(this.cmdAddMugshot, 0, 0);
             this.tlpMugshotButtons.Controls.Add(this.cmdDeleteMugshot, 1, 0);
-            this.tlpMugshotButtons.Location = new System.Drawing.Point(793, 280);
+            this.tlpMugshotButtons.Location = new System.Drawing.Point(761, 280);
             this.tlpMugshotButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpMugshotButtons.Name = "tlpMugshotButtons";
             this.tlpMugshotButtons.RowCount = 1;
-            this.tlpMugshotButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpMugshotButtons.Size = new System.Drawing.Size(108, 29);
+            this.tlpMugshotButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMugshotButtons.Size = new System.Drawing.Size(172, 29);
             this.tlpMugshotButtons.TabIndex = 110;
             // 
             // cmdAddMugshot
@@ -20313,8 +20741,9 @@ namespace Chummer
             this.cmdAddMugshot.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdAddMugshot.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdAddMugshot.Location = new System.Drawing.Point(3, 3);
+            this.cmdAddMugshot.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdAddMugshot.Name = "cmdAddMugshot";
-            this.cmdAddMugshot.Size = new System.Drawing.Size(48, 23);
+            this.cmdAddMugshot.Size = new System.Drawing.Size(80, 23);
             this.cmdAddMugshot.TabIndex = 22;
             this.cmdAddMugshot.Tag = "Button_AddMugshot";
             this.cmdAddMugshot.Text = "Add";
@@ -20326,9 +20755,10 @@ namespace Chummer
             this.cmdDeleteMugshot.AutoSize = true;
             this.cmdDeleteMugshot.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDeleteMugshot.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdDeleteMugshot.Location = new System.Drawing.Point(57, 3);
+            this.cmdDeleteMugshot.Location = new System.Drawing.Point(89, 3);
+            this.cmdDeleteMugshot.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdDeleteMugshot.Name = "cmdDeleteMugshot";
-            this.cmdDeleteMugshot.Size = new System.Drawing.Size(48, 23);
+            this.cmdDeleteMugshot.Size = new System.Drawing.Size(80, 23);
             this.cmdDeleteMugshot.TabIndex = 23;
             this.cmdDeleteMugshot.Tag = "String_Delete";
             this.cmdDeleteMugshot.Text = "Delete";
@@ -20374,7 +20804,7 @@ namespace Chummer
             this.rtfDescription.MinimumSize = new System.Drawing.Size(0, 60);
             this.rtfDescription.Name = "rtfDescription";
             this.rtfDescription.Rtf = "{\\rtf1\\ansi\\ansicpg1252\\deff0\\nouicompat\\deflang1033{\\fonttbl{\\f0\\fnil\\fcharset0 " +
-    "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.19041}\\viewkind4\\uc1 \r\n\\par" +
+    "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.22000}\\viewkind4\\uc1 \r\n\\par" +
     "d\\f0\\fs17\\par\r\n}\r\n";
             this.rtfDescription.Size = new System.Drawing.Size(704, 535);
             this.rtfDescription.TabIndex = 0;
@@ -20385,7 +20815,7 @@ namespace Chummer
             this.tabBackground.Location = new System.Drawing.Point(4, 22);
             this.tabBackground.Name = "tabBackground";
             this.tabBackground.Padding = new System.Windows.Forms.Padding(3);
-            this.tabBackground.Size = new System.Drawing.Size(601, 529);
+            this.tabBackground.Size = new System.Drawing.Size(710, 541);
             this.tabBackground.TabIndex = 1;
             this.tabBackground.Tag = "Tab_Roster_Background";
             this.tabBackground.Text = "Background";
@@ -20403,9 +20833,9 @@ namespace Chummer
             this.rtfBackground.MinimumSize = new System.Drawing.Size(0, 60);
             this.rtfBackground.Name = "rtfBackground";
             this.rtfBackground.Rtf = "{\\rtf1\\ansi\\ansicpg1252\\deff0\\nouicompat\\deflang1033{\\fonttbl{\\f0\\fnil\\fcharset0 " +
-    "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.19041}\\viewkind4\\uc1 \r\n\\par" +
+    "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.22000}\\viewkind4\\uc1 \r\n\\par" +
     "d\\f0\\fs17\\par\r\n}\r\n";
-            this.rtfBackground.Size = new System.Drawing.Size(595, 523);
+            this.rtfBackground.Size = new System.Drawing.Size(704, 535);
             this.rtfBackground.TabIndex = 0;
             // 
             // tabConcept
@@ -20414,7 +20844,7 @@ namespace Chummer
             this.tabConcept.Location = new System.Drawing.Point(4, 22);
             this.tabConcept.Name = "tabConcept";
             this.tabConcept.Padding = new System.Windows.Forms.Padding(3);
-            this.tabConcept.Size = new System.Drawing.Size(601, 529);
+            this.tabConcept.Size = new System.Drawing.Size(710, 541);
             this.tabConcept.TabIndex = 2;
             this.tabConcept.Tag = "Tab_Roster_Concept";
             this.tabConcept.Text = "Concept";
@@ -20432,9 +20862,9 @@ namespace Chummer
             this.rtfConcept.MinimumSize = new System.Drawing.Size(0, 60);
             this.rtfConcept.Name = "rtfConcept";
             this.rtfConcept.Rtf = "{\\rtf1\\ansi\\ansicpg1252\\deff0\\nouicompat\\deflang1033{\\fonttbl{\\f0\\fnil\\fcharset0 " +
-    "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.19041}\\viewkind4\\uc1 \r\n\\par" +
+    "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.22000}\\viewkind4\\uc1 \r\n\\par" +
     "d\\f0\\fs17\\par\r\n}\r\n";
-            this.rtfConcept.Size = new System.Drawing.Size(595, 523);
+            this.rtfConcept.Size = new System.Drawing.Size(704, 535);
             this.rtfConcept.TabIndex = 0;
             // 
             // tabCharacterNotes
@@ -20443,7 +20873,7 @@ namespace Chummer
             this.tabCharacterNotes.Location = new System.Drawing.Point(4, 22);
             this.tabCharacterNotes.Name = "tabCharacterNotes";
             this.tabCharacterNotes.Padding = new System.Windows.Forms.Padding(3);
-            this.tabCharacterNotes.Size = new System.Drawing.Size(601, 529);
+            this.tabCharacterNotes.Size = new System.Drawing.Size(710, 541);
             this.tabCharacterNotes.TabIndex = 3;
             this.tabCharacterNotes.Tag = "Tab_Roster_CharacterNotes";
             this.tabCharacterNotes.Text = "Character Notes";
@@ -20461,9 +20891,9 @@ namespace Chummer
             this.rtfNotes.MinimumSize = new System.Drawing.Size(0, 60);
             this.rtfNotes.Name = "rtfNotes";
             this.rtfNotes.Rtf = "{\\rtf1\\ansi\\ansicpg1252\\deff0\\nouicompat\\deflang1033{\\fonttbl{\\f0\\fnil\\fcharset0 " +
-    "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.19041}\\viewkind4\\uc1 \r\n\\par" +
+    "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.22000}\\viewkind4\\uc1 \r\n\\par" +
     "d\\f0\\fs17\\par\r\n}\r\n";
-            this.rtfNotes.Size = new System.Drawing.Size(595, 523);
+            this.rtfNotes.Size = new System.Drawing.Size(704, 535);
             this.rtfNotes.TabIndex = 0;
             // 
             // tabKarma
@@ -20532,9 +20962,11 @@ namespace Chummer
             // 
             this.cmdKarmaSpent.AutoSize = true;
             this.cmdKarmaSpent.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdKarmaSpent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdKarmaSpent.Location = new System.Drawing.Point(93, 3);
+            this.cmdKarmaSpent.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdKarmaSpent.Name = "cmdKarmaSpent";
-            this.cmdKarmaSpent.Size = new System.Drawing.Size(78, 23);
+            this.cmdKarmaSpent.Size = new System.Drawing.Size(80, 23);
             this.cmdKarmaSpent.TabIndex = 2;
             this.cmdKarmaSpent.Tag = "Button_KarmaSpent";
             this.cmdKarmaSpent.Text = "Karma Spent";
@@ -20584,9 +21016,11 @@ namespace Chummer
             // 
             this.cmdKarmaEdit.AutoSize = true;
             this.cmdKarmaEdit.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdKarmaEdit.Location = new System.Drawing.Point(177, 3);
+            this.cmdKarmaEdit.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdKarmaEdit.Location = new System.Drawing.Point(179, 3);
+            this.cmdKarmaEdit.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdKarmaEdit.Name = "cmdKarmaEdit";
-            this.cmdKarmaEdit.Size = new System.Drawing.Size(79, 23);
+            this.cmdKarmaEdit.Size = new System.Drawing.Size(80, 23);
             this.cmdKarmaEdit.TabIndex = 3;
             this.cmdKarmaEdit.Tag = "Button_EditExpense";
             this.cmdKarmaEdit.Text = "Edit Expense";
@@ -20613,7 +21047,7 @@ namespace Chummer
             this.chkShowFreeKarma.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkShowFreeKarma.AutoSize = true;
             this.chkShowFreeKarma.DefaultColorScheme = true;
-            this.chkShowFreeKarma.Location = new System.Drawing.Point(262, 6);
+            this.chkShowFreeKarma.Location = new System.Drawing.Point(265, 6);
             this.chkShowFreeKarma.Name = "chkShowFreeKarma";
             this.chkShowFreeKarma.Size = new System.Drawing.Size(112, 17);
             this.chkShowFreeKarma.TabIndex = 5;
@@ -20627,7 +21061,7 @@ namespace Chummer
             this.chkShowKarmaChart.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkShowKarmaChart.AutoSize = true;
             this.chkShowKarmaChart.DefaultColorScheme = true;
-            this.chkShowKarmaChart.Location = new System.Drawing.Point(380, 6);
+            this.chkShowKarmaChart.Location = new System.Drawing.Point(383, 6);
             this.chkShowKarmaChart.Name = "chkShowKarmaChart";
             this.chkShowKarmaChart.Size = new System.Drawing.Size(81, 17);
             this.chkShowKarmaChart.TabIndex = 6;
@@ -20640,7 +21074,9 @@ namespace Chummer
             // 
             this.cmdKarmaGained.AutoSize = true;
             this.cmdKarmaGained.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdKarmaGained.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdKarmaGained.Location = new System.Drawing.Point(3, 3);
+            this.cmdKarmaGained.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdKarmaGained.Name = "cmdKarmaGained";
             this.cmdKarmaGained.Size = new System.Drawing.Size(84, 23);
             this.cmdKarmaGained.TabIndex = 1;
@@ -20694,9 +21130,11 @@ namespace Chummer
             // 
             this.cmdNuyenSpent.AutoSize = true;
             this.cmdNuyenSpent.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdNuyenSpent.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdNuyenSpent.Location = new System.Drawing.Point(94, 3);
+            this.cmdNuyenSpent.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdNuyenSpent.Name = "cmdNuyenSpent";
-            this.cmdNuyenSpent.Size = new System.Drawing.Size(79, 23);
+            this.cmdNuyenSpent.Size = new System.Drawing.Size(80, 23);
             this.cmdNuyenSpent.TabIndex = 5;
             this.cmdNuyenSpent.Tag = "Button_NuyenSpent";
             this.cmdNuyenSpent.Text = "Nuyen Spent";
@@ -20746,9 +21184,11 @@ namespace Chummer
             // 
             this.cmdNuyenEdit.AutoSize = true;
             this.cmdNuyenEdit.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdNuyenEdit.Location = new System.Drawing.Point(179, 3);
+            this.cmdNuyenEdit.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdNuyenEdit.Location = new System.Drawing.Point(180, 3);
+            this.cmdNuyenEdit.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdNuyenEdit.Name = "cmdNuyenEdit";
-            this.cmdNuyenEdit.Size = new System.Drawing.Size(79, 23);
+            this.cmdNuyenEdit.Size = new System.Drawing.Size(80, 23);
             this.cmdNuyenEdit.TabIndex = 6;
             this.cmdNuyenEdit.Tag = "Button_EditExpense";
             this.cmdNuyenEdit.Text = "Edit Expense";
@@ -20760,7 +21200,7 @@ namespace Chummer
             this.chkShowFreeNuyen.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkShowFreeNuyen.AutoSize = true;
             this.chkShowFreeNuyen.DefaultColorScheme = true;
-            this.chkShowFreeNuyen.Location = new System.Drawing.Point(264, 6);
+            this.chkShowFreeNuyen.Location = new System.Drawing.Point(266, 6);
             this.chkShowFreeNuyen.Name = "chkShowFreeNuyen";
             this.chkShowFreeNuyen.Size = new System.Drawing.Size(112, 17);
             this.chkShowFreeNuyen.TabIndex = 6;
@@ -20774,7 +21214,7 @@ namespace Chummer
             this.chkShowNuyenChart.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkShowNuyenChart.AutoSize = true;
             this.chkShowNuyenChart.DefaultColorScheme = true;
-            this.chkShowNuyenChart.Location = new System.Drawing.Point(382, 6);
+            this.chkShowNuyenChart.Location = new System.Drawing.Point(384, 6);
             this.chkShowNuyenChart.Name = "chkShowNuyenChart";
             this.chkShowNuyenChart.Size = new System.Drawing.Size(81, 17);
             this.chkShowNuyenChart.TabIndex = 7;
@@ -20787,7 +21227,9 @@ namespace Chummer
             // 
             this.cmdNuyenGained.AutoSize = true;
             this.cmdNuyenGained.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdNuyenGained.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdNuyenGained.Location = new System.Drawing.Point(3, 3);
+            this.cmdNuyenGained.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdNuyenGained.Name = "cmdNuyenGained";
             this.cmdNuyenGained.Size = new System.Drawing.Size(85, 23);
             this.cmdNuyenGained.TabIndex = 4;
@@ -20840,7 +21282,7 @@ namespace Chummer
             this.lstCalendar.TabIndex = 1;
             this.lstCalendar.UseCompatibleStateImageBehavior = false;
             this.lstCalendar.View = System.Windows.Forms.View.Details;
-            this.lstCalendar.DoubleClick += new System.EventHandler(this.lstCalendar_DoubleClick);
+            this.lstCalendar.DoubleClick += new System.EventHandler(this.cmdEditWeek_Click);
             // 
             // colCalendarDate
             // 
@@ -20881,6 +21323,7 @@ namespace Chummer
             this.cmdAddWeek.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdAddWeek.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdAddWeek.Location = new System.Drawing.Point(3, 3);
+            this.cmdAddWeek.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdAddWeek.Name = "cmdAddWeek";
             this.cmdAddWeek.Size = new System.Drawing.Size(119, 23);
             this.cmdAddWeek.TabIndex = 2;
@@ -20895,6 +21338,7 @@ namespace Chummer
             this.cmdChangeStartWeek.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdChangeStartWeek.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdChangeStartWeek.Location = new System.Drawing.Point(378, 3);
+            this.cmdChangeStartWeek.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdChangeStartWeek.Name = "cmdChangeStartWeek";
             this.cmdChangeStartWeek.Size = new System.Drawing.Size(119, 23);
             this.cmdChangeStartWeek.TabIndex = 4;
@@ -20909,6 +21353,7 @@ namespace Chummer
             this.cmdEditWeek.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdEditWeek.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdEditWeek.Location = new System.Drawing.Point(128, 3);
+            this.cmdEditWeek.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdEditWeek.Name = "cmdEditWeek";
             this.cmdEditWeek.Size = new System.Drawing.Size(119, 23);
             this.cmdEditWeek.TabIndex = 3;
@@ -20923,6 +21368,7 @@ namespace Chummer
             this.cmdDeleteWeek.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDeleteWeek.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdDeleteWeek.Location = new System.Drawing.Point(253, 3);
+            this.cmdDeleteWeek.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdDeleteWeek.Name = "cmdDeleteWeek";
             this.cmdDeleteWeek.Size = new System.Drawing.Size(119, 23);
             this.cmdDeleteWeek.TabIndex = 5;
@@ -20956,7 +21402,7 @@ namespace Chummer
             this.rtfGameNotes.MinimumSize = new System.Drawing.Size(0, 120);
             this.rtfGameNotes.Name = "rtfGameNotes";
             this.rtfGameNotes.Rtf = "{\\rtf1\\ansi\\ansicpg1252\\deff0\\nouicompat\\deflang1033{\\fonttbl{\\f0\\fnil\\fcharset0 " +
-    "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.19041}\\viewkind4\\uc1 \r\n\\par" +
+    "Microsoft Sans Serif;}}\r\n{\\*\\generator Riched20 10.0.22000}\\viewkind4\\uc1 \r\n\\par" +
     "d\\f0\\fs17\\par\r\n}\r\n";
             this.rtfGameNotes.Size = new System.Drawing.Size(971, 625);
             this.rtfGameNotes.TabIndex = 0;
@@ -21041,6 +21487,7 @@ namespace Chummer
             this.cmdAddImprovement.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdAddImprovement.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdAddImprovement.Location = new System.Drawing.Point(3, 3);
+            this.cmdAddImprovement.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdAddImprovement.Name = "cmdAddImprovement";
             this.cmdAddImprovement.Size = new System.Drawing.Size(100, 23);
             this.cmdAddImprovement.TabIndex = 4;
@@ -21055,6 +21502,7 @@ namespace Chummer
             this.cmdAddImprovementGroup.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdAddImprovementGroup.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdAddImprovementGroup.Location = new System.Drawing.Point(321, 3);
+            this.cmdAddImprovementGroup.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdAddImprovementGroup.Name = "cmdAddImprovementGroup";
             this.cmdAddImprovementGroup.Size = new System.Drawing.Size(100, 23);
             this.cmdAddImprovementGroup.TabIndex = 107;
@@ -21069,6 +21517,7 @@ namespace Chummer
             this.cmdEditImprovement.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdEditImprovement.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdEditImprovement.Location = new System.Drawing.Point(109, 3);
+            this.cmdEditImprovement.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdEditImprovement.Name = "cmdEditImprovement";
             this.cmdEditImprovement.Size = new System.Drawing.Size(100, 23);
             this.cmdEditImprovement.TabIndex = 99;
@@ -21083,6 +21532,7 @@ namespace Chummer
             this.cmdDeleteImprovement.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDeleteImprovement.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdDeleteImprovement.Location = new System.Drawing.Point(215, 3);
+            this.cmdDeleteImprovement.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdDeleteImprovement.Name = "cmdDeleteImprovement";
             this.cmdDeleteImprovement.Size = new System.Drawing.Size(100, 23);
             this.cmdDeleteImprovement.TabIndex = 100;
@@ -21153,9 +21603,7 @@ namespace Chummer
             this.tlpImprovementsActive.Name = "tlpImprovementsActive";
             this.tlpImprovementsActive.RowCount = 1;
             this.tlpImprovementsActive.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpImprovementsActive.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 29F));
-            this.tlpImprovementsActive.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 29F));
-            this.tlpImprovementsActive.Size = new System.Drawing.Size(206, 29);
+            this.tlpImprovementsActive.Size = new System.Drawing.Size(234, 29);
             this.tlpImprovementsActive.TabIndex = 88;
             // 
             // chkImprovementActive
@@ -21177,9 +21625,10 @@ namespace Chummer
             this.cmdImprovementsDisableAll.AutoSize = true;
             this.cmdImprovementsDisableAll.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdImprovementsDisableAll.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdImprovementsDisableAll.Location = new System.Drawing.Point(137, 3);
+            this.cmdImprovementsDisableAll.Location = new System.Drawing.Point(151, 3);
+            this.cmdImprovementsDisableAll.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdImprovementsDisableAll.Name = "cmdImprovementsDisableAll";
-            this.cmdImprovementsDisableAll.Size = new System.Drawing.Size(66, 23);
+            this.cmdImprovementsDisableAll.Size = new System.Drawing.Size(80, 23);
             this.cmdImprovementsDisableAll.TabIndex = 109;
             this.cmdImprovementsDisableAll.Tag = "Button_DisableAll";
             this.cmdImprovementsDisableAll.Text = "Disable All";
@@ -21193,8 +21642,9 @@ namespace Chummer
             this.cmdImprovementsEnableAll.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdImprovementsEnableAll.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdImprovementsEnableAll.Location = new System.Drawing.Point(65, 3);
+            this.cmdImprovementsEnableAll.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdImprovementsEnableAll.Name = "cmdImprovementsEnableAll";
-            this.cmdImprovementsEnableAll.Size = new System.Drawing.Size(66, 23);
+            this.cmdImprovementsEnableAll.Size = new System.Drawing.Size(80, 23);
             this.cmdImprovementsEnableAll.TabIndex = 108;
             this.cmdImprovementsEnableAll.Tag = "Button_EnableAll";
             this.cmdImprovementsEnableAll.Text = "Enable All";
@@ -21310,7 +21760,9 @@ namespace Chummer
             this.cmdAddContact.ContextMenuStrip = this.cmsAddContact;
             this.cmdAddContact.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdAddContact.Location = new System.Drawing.Point(3, 3);
+            this.cmdAddContact.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdAddContact.Name = "cmdAddContact";
+            this.cmdAddContact.ShowSplit = true;
             this.cmdAddContact.Size = new System.Drawing.Size(112, 23);
             this.cmdAddContact.SplitMenuStrip = this.cmsAddContact;
             this.cmdAddContact.TabIndex = 24;
@@ -21328,13 +21780,13 @@ namespace Chummer
             // 
             // tsAddFromFile
             // 
-            this.tsAddFromFile.Image = null;
+            this.tsAddFromFile.Image = global::Chummer.Properties.Resources.folder_user;
             this.tsAddFromFile.ImageDpi120 = null;
             this.tsAddFromFile.ImageDpi144 = null;
-            this.tsAddFromFile.ImageDpi192 = null;
+            this.tsAddFromFile.ImageDpi192 = global::Chummer.Properties.Resources.folder_user1;
             this.tsAddFromFile.ImageDpi288 = null;
             this.tsAddFromFile.ImageDpi384 = null;
-            this.tsAddFromFile.ImageDpi96 = null;
+            this.tsAddFromFile.ImageDpi96 = global::Chummer.Properties.Resources.folder_user;
             this.tsAddFromFile.Name = "tsAddFromFile";
             this.tsAddFromFile.Size = new System.Drawing.Size(148, 22);
             this.tsAddFromFile.Tag = "Menu_AddFromFile";
@@ -21347,6 +21799,7 @@ namespace Chummer
             this.cmdSwapContactOrder.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdSwapContactOrder.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdSwapContactOrder.Location = new System.Drawing.Point(239, 3);
+            this.cmdSwapContactOrder.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdSwapContactOrder.Name = "cmdSwapContactOrder";
             this.cmdSwapContactOrder.Size = new System.Drawing.Size(112, 23);
             this.cmdSwapContactOrder.TabIndex = 51;
@@ -21361,6 +21814,7 @@ namespace Chummer
             this.cmdContactsExpansionToggle.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdContactsExpansionToggle.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdContactsExpansionToggle.Location = new System.Drawing.Point(121, 3);
+            this.cmdContactsExpansionToggle.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdContactsExpansionToggle.Name = "cmdContactsExpansionToggle";
             this.cmdContactsExpansionToggle.Size = new System.Drawing.Size(112, 23);
             this.cmdContactsExpansionToggle.TabIndex = 50;
@@ -21376,7 +21830,7 @@ namespace Chummer
             this.tabEnemies.Location = new System.Drawing.Point(4, 22);
             this.tabEnemies.Name = "tabEnemies";
             this.tabEnemies.Padding = new System.Windows.Forms.Padding(3);
-            this.tabEnemies.Size = new System.Drawing.Size(184, 48);
+            this.tabEnemies.Size = new System.Drawing.Size(969, 605);
             this.tabEnemies.TabIndex = 1;
             this.tabEnemies.Tag = "Label_Enemies";
             this.tabEnemies.Text = "Enemies";
@@ -21395,7 +21849,7 @@ namespace Chummer
             this.tlpEnemies.RowCount = 2;
             this.tlpEnemies.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpEnemies.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpEnemies.Size = new System.Drawing.Size(178, 42);
+            this.tlpEnemies.Size = new System.Drawing.Size(963, 599);
             this.tlpEnemies.TabIndex = 50;
             // 
             // panEnemies
@@ -21407,7 +21861,7 @@ namespace Chummer
             this.panEnemies.Location = new System.Drawing.Point(0, 29);
             this.panEnemies.Margin = new System.Windows.Forms.Padding(0);
             this.panEnemies.Name = "panEnemies";
-            this.panEnemies.Size = new System.Drawing.Size(178, 13);
+            this.panEnemies.Size = new System.Drawing.Size(963, 570);
             this.panEnemies.TabIndex = 41;
             this.panEnemies.Click += new System.EventHandler(this.panEnemies_Click);
             // 
@@ -21415,9 +21869,11 @@ namespace Chummer
             // 
             this.cmdAddEnemy.AutoSize = true;
             this.cmdAddEnemy.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdAddEnemy.Dock = System.Windows.Forms.DockStyle.Left;
             this.cmdAddEnemy.Location = new System.Drawing.Point(3, 3);
+            this.cmdAddEnemy.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdAddEnemy.Name = "cmdAddEnemy";
-            this.cmdAddEnemy.Size = new System.Drawing.Size(71, 23);
+            this.cmdAddEnemy.Size = new System.Drawing.Size(80, 23);
             this.cmdAddEnemy.TabIndex = 40;
             this.cmdAddEnemy.Tag = "Button_AddEnemy";
             this.cmdAddEnemy.Text = "A&dd Enemy";
@@ -21431,7 +21887,7 @@ namespace Chummer
             this.tabPets.Location = new System.Drawing.Point(4, 22);
             this.tabPets.Name = "tabPets";
             this.tabPets.Padding = new System.Windows.Forms.Padding(3);
-            this.tabPets.Size = new System.Drawing.Size(184, 48);
+            this.tabPets.Size = new System.Drawing.Size(969, 605);
             this.tabPets.TabIndex = 4;
             this.tabPets.Tag = "Tab_Pets";
             this.tabPets.Text = "Pets & Cohorts";
@@ -21451,7 +21907,7 @@ namespace Chummer
             this.tlpPets.RowCount = 2;
             this.tlpPets.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpPets.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpPets.Size = new System.Drawing.Size(178, 42);
+            this.tlpPets.Size = new System.Drawing.Size(963, 599);
             this.tlpPets.TabIndex = 26;
             // 
             // panPets
@@ -21463,16 +21919,18 @@ namespace Chummer
             this.panPets.Location = new System.Drawing.Point(0, 29);
             this.panPets.Margin = new System.Windows.Forms.Padding(0);
             this.panPets.Name = "panPets";
-            this.panPets.Size = new System.Drawing.Size(178, 13);
+            this.panPets.Size = new System.Drawing.Size(963, 570);
             this.panPets.TabIndex = 25;
             // 
             // cmdAddPet
             // 
             this.cmdAddPet.AutoSize = true;
             this.cmdAddPet.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdAddPet.Dock = System.Windows.Forms.DockStyle.Left;
             this.cmdAddPet.Location = new System.Drawing.Point(3, 3);
+            this.cmdAddPet.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdAddPet.Name = "cmdAddPet";
-            this.cmdAddPet.Size = new System.Drawing.Size(55, 23);
+            this.cmdAddPet.Size = new System.Drawing.Size(80, 23);
             this.cmdAddPet.TabIndex = 24;
             this.cmdAddPet.Tag = "Button_AddPet";
             this.cmdAddPet.Text = "&Add Pet";
@@ -21511,9 +21969,10 @@ namespace Chummer
             // cmsBioware
             // 
             this.cmsBioware.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsBiowareNotes});
+            this.tsBiowareNotes,
+            this.tsBiowareReapplyImprovements});
             this.cmsBioware.Name = "cmsBioware";
-            this.cmsBioware.Size = new System.Drawing.Size(106, 26);
+            this.cmsBioware.Size = new System.Drawing.Size(204, 48);
             // 
             // tsBiowareNotes
             // 
@@ -21525,10 +21984,25 @@ namespace Chummer
             this.tsBiowareNotes.ImageDpi384 = null;
             this.tsBiowareNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
             this.tsBiowareNotes.Name = "tsBiowareNotes";
-            this.tsBiowareNotes.Size = new System.Drawing.Size(105, 22);
+            this.tsBiowareNotes.Size = new System.Drawing.Size(203, 22);
             this.tsBiowareNotes.Tag = "Menu_Notes";
             this.tsBiowareNotes.Text = "&Notes";
             this.tsBiowareNotes.Click += new System.EventHandler(this.tsCyberwareNotes_Click);
+            // 
+            // tsBiowareReapplyImprovements
+            // 
+            this.tsBiowareReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
+            this.tsBiowareReapplyImprovements.ImageDpi120 = null;
+            this.tsBiowareReapplyImprovements.ImageDpi144 = null;
+            this.tsBiowareReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
+            this.tsBiowareReapplyImprovements.ImageDpi288 = null;
+            this.tsBiowareReapplyImprovements.ImageDpi384 = null;
+            this.tsBiowareReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsBiowareReapplyImprovements.Name = "tsBiowareReapplyImprovements";
+            this.tsBiowareReapplyImprovements.Size = new System.Drawing.Size(203, 22);
+            this.tsBiowareReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
+            this.tsBiowareReapplyImprovements.Text = "Re-Apply Improvements";
+            this.tsBiowareReapplyImprovements.Click += new System.EventHandler(this.tsCyberwareReapplyImprovements_Click);
             // 
             // cmsAdvancedLifestyle
             // 
@@ -21692,9 +22166,10 @@ namespace Chummer
             // cmsCyberwareGear
             // 
             this.cmsCyberwareGear.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsCyberwareGearMenuAddAsPlugin});
+            this.tsCyberwareGearMenuAddAsPlugin,
+            this.tsCyberwareGearReapplyImprovements});
             this.cmsCyberwareGear.Name = "cmsCyberwareGear";
-            this.cmsCyberwareGear.Size = new System.Drawing.Size(148, 26);
+            this.cmsCyberwareGear.Size = new System.Drawing.Size(204, 48);
             // 
             // tsCyberwareGearMenuAddAsPlugin
             // 
@@ -21706,10 +22181,25 @@ namespace Chummer
             this.tsCyberwareGearMenuAddAsPlugin.ImageDpi384 = null;
             this.tsCyberwareGearMenuAddAsPlugin.ImageDpi96 = global::Chummer.Properties.Resources.camera_add;
             this.tsCyberwareGearMenuAddAsPlugin.Name = "tsCyberwareGearMenuAddAsPlugin";
-            this.tsCyberwareGearMenuAddAsPlugin.Size = new System.Drawing.Size(147, 22);
+            this.tsCyberwareGearMenuAddAsPlugin.Size = new System.Drawing.Size(203, 22);
             this.tsCyberwareGearMenuAddAsPlugin.Tag = "Menu_AddAsPlugin";
             this.tsCyberwareGearMenuAddAsPlugin.Text = "&Add as Plugin";
             this.tsCyberwareGearMenuAddAsPlugin.Click += new System.EventHandler(this.tsCyberwareGearMenuAddAsPlugin_Click);
+            // 
+            // tsCyberwareGearReapplyImprovements
+            // 
+            this.tsCyberwareGearReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
+            this.tsCyberwareGearReapplyImprovements.ImageDpi120 = null;
+            this.tsCyberwareGearReapplyImprovements.ImageDpi144 = null;
+            this.tsCyberwareGearReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
+            this.tsCyberwareGearReapplyImprovements.ImageDpi288 = null;
+            this.tsCyberwareGearReapplyImprovements.ImageDpi384 = null;
+            this.tsCyberwareGearReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsCyberwareGearReapplyImprovements.Name = "tsCyberwareGearReapplyImprovements";
+            this.tsCyberwareGearReapplyImprovements.Size = new System.Drawing.Size(203, 22);
+            this.tsCyberwareGearReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
+            this.tsCyberwareGearReapplyImprovements.Text = "Re-Apply Improvements";
+            this.tsCyberwareGearReapplyImprovements.Click += new System.EventHandler(this.tsCyberwareReapplyImprovements_Click);
             // 
             // cmsVehicleCyberwareGear
             // 
@@ -21736,9 +22226,11 @@ namespace Chummer
             // cmsWeaponAccessoryGear
             // 
             this.cmsWeaponAccessoryGear.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsWeaponAccessoryGearMenuAddAsPlugin});
+            this.tsWeaponAccessoryGearMenuAddAsPlugin,
+            this.tsWeaponAccessoryGearNotes,
+            this.tsWeaponAccessoryGearReapplyImprovements});
             this.cmsWeaponAccessoryGear.Name = "cmsWeaponAccessoryGear";
-            this.cmsWeaponAccessoryGear.Size = new System.Drawing.Size(148, 26);
+            this.cmsWeaponAccessoryGear.Size = new System.Drawing.Size(204, 70);
             // 
             // tsWeaponAccessoryGearMenuAddAsPlugin
             // 
@@ -21750,10 +22242,25 @@ namespace Chummer
             this.tsWeaponAccessoryGearMenuAddAsPlugin.ImageDpi384 = null;
             this.tsWeaponAccessoryGearMenuAddAsPlugin.ImageDpi96 = global::Chummer.Properties.Resources.camera_add;
             this.tsWeaponAccessoryGearMenuAddAsPlugin.Name = "tsWeaponAccessoryGearMenuAddAsPlugin";
-            this.tsWeaponAccessoryGearMenuAddAsPlugin.Size = new System.Drawing.Size(147, 22);
+            this.tsWeaponAccessoryGearMenuAddAsPlugin.Size = new System.Drawing.Size(203, 22);
             this.tsWeaponAccessoryGearMenuAddAsPlugin.Tag = "Menu_AddAsPlugin";
             this.tsWeaponAccessoryGearMenuAddAsPlugin.Text = "&Add as Plugin";
             this.tsWeaponAccessoryGearMenuAddAsPlugin.Click += new System.EventHandler(this.tsWeaponAccessoryGearMenuAddAsPlugin_Click);
+            // 
+            // tsWeaponAccessoryGearReapplyImprovements
+            // 
+            this.tsWeaponAccessoryGearReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
+            this.tsWeaponAccessoryGearReapplyImprovements.ImageDpi120 = null;
+            this.tsWeaponAccessoryGearReapplyImprovements.ImageDpi144 = null;
+            this.tsWeaponAccessoryGearReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
+            this.tsWeaponAccessoryGearReapplyImprovements.ImageDpi288 = null;
+            this.tsWeaponAccessoryGearReapplyImprovements.ImageDpi384 = null;
+            this.tsWeaponAccessoryGearReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsWeaponAccessoryGearReapplyImprovements.Name = "tsWeaponAccessoryGearReapplyImprovements";
+            this.tsWeaponAccessoryGearReapplyImprovements.Size = new System.Drawing.Size(203, 22);
+            this.tsWeaponAccessoryGearReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
+            this.tsWeaponAccessoryGearReapplyImprovements.Text = "Re-Apply Improvements";
+            this.tsWeaponAccessoryGearReapplyImprovements.Click += new System.EventHandler(this.tsWeaponReapplyImprovements_Click);
             // 
             // cmsVehicleLocation
             // 
@@ -21852,9 +22359,10 @@ namespace Chummer
             // cmsVehicleWeaponAccessoryGear
             // 
             this.cmsVehicleWeaponAccessoryGear.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsVehicleWeaponAccessoryGearMenuAddAsPlugin});
+            this.tsVehicleWeaponAccessoryGearMenuAddAsPlugin,
+            this.tsVehicleWeaponAccessoryGearNotes});
             this.cmsVehicleWeaponAccessoryGear.Name = "cmsVehicleWeaponAccessoryGear";
-            this.cmsVehicleWeaponAccessoryGear.Size = new System.Drawing.Size(148, 26);
+            this.cmsVehicleWeaponAccessoryGear.Size = new System.Drawing.Size(148, 48);
             // 
             // tsVehicleWeaponAccessoryGearMenuAddAsPlugin
             // 
@@ -21870,25 +22378,6 @@ namespace Chummer
             this.tsVehicleWeaponAccessoryGearMenuAddAsPlugin.Tag = "Menu_AddAsPlugin";
             this.tsVehicleWeaponAccessoryGearMenuAddAsPlugin.Text = "&Add as Plugin";
             this.tsVehicleWeaponAccessoryGearMenuAddAsPlugin.Click += new System.EventHandler(this.tsVehicleWeaponAccessoryGearMenuAddAsPlugin_Click);
-            // 
-            // cmsVehicleWeaponMod
-            // 
-            this.cmsVehicleWeaponMod.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsVehicleWeaponModNotes});
-            this.cmsVehicleWeaponMod.Name = "cmsVehicleWeaponMod";
-            this.cmsVehicleWeaponMod.Size = new System.Drawing.Size(68, 26);
-            // 
-            // tsVehicleWeaponModNotes
-            // 
-            this.tsVehicleWeaponModNotes.Image = null;
-            this.tsVehicleWeaponModNotes.ImageDpi120 = null;
-            this.tsVehicleWeaponModNotes.ImageDpi144 = null;
-            this.tsVehicleWeaponModNotes.ImageDpi192 = null;
-            this.tsVehicleWeaponModNotes.ImageDpi288 = null;
-            this.tsVehicleWeaponModNotes.ImageDpi384 = null;
-            this.tsVehicleWeaponModNotes.ImageDpi96 = null;
-            this.tsVehicleWeaponModNotes.Name = "tsVehicleWeaponModNotes";
-            this.tsVehicleWeaponModNotes.Size = new System.Drawing.Size(67, 22);
             // 
             // cmsWeaponLocation
             // 
@@ -21931,46 +22420,63 @@ namespace Chummer
             // cmsTechnique
             // 
             this.cmsTechnique.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsAddTechniqueNotes});
+            this.tsTechniqueAddNotes,
+            this.tsTechniqueReapplyImprovements});
             this.cmsTechnique.Name = "cmsWeapon";
-            this.cmsTechnique.Size = new System.Drawing.Size(106, 26);
+            this.cmsTechnique.Size = new System.Drawing.Size(204, 48);
             // 
-            // tsAddTechniqueNotes
+            // tsTechniqueAddNotes
             // 
-            this.tsAddTechniqueNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsAddTechniqueNotes.ImageDpi120 = null;
-            this.tsAddTechniqueNotes.ImageDpi144 = null;
-            this.tsAddTechniqueNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
-            this.tsAddTechniqueNotes.ImageDpi288 = null;
-            this.tsAddTechniqueNotes.ImageDpi384 = null;
-            this.tsAddTechniqueNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
-            this.tsAddTechniqueNotes.Name = "tsAddTechniqueNotes";
-            this.tsAddTechniqueNotes.Size = new System.Drawing.Size(105, 22);
-            this.tsAddTechniqueNotes.Tag = "Menu_Notes";
-            this.tsAddTechniqueNotes.Text = "&Notes";
-            this.tsAddTechniqueNotes.Click += new System.EventHandler(this.tsMartialArtsNotes_Click);
+            this.tsTechniqueAddNotes.Image = global::Chummer.Properties.Resources.note_edit;
+            this.tsTechniqueAddNotes.ImageDpi120 = null;
+            this.tsTechniqueAddNotes.ImageDpi144 = null;
+            this.tsTechniqueAddNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
+            this.tsTechniqueAddNotes.ImageDpi288 = null;
+            this.tsTechniqueAddNotes.ImageDpi384 = null;
+            this.tsTechniqueAddNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
+            this.tsTechniqueAddNotes.Name = "tsTechniqueAddNotes";
+            this.tsTechniqueAddNotes.Size = new System.Drawing.Size(203, 22);
+            this.tsTechniqueAddNotes.Tag = "Menu_Notes";
+            this.tsTechniqueAddNotes.Text = "&Notes";
+            this.tsTechniqueAddNotes.Click += new System.EventHandler(this.tsMartialArtsNotes_Click);
+            // 
+            // tsTechniqueReapplyImprovements
+            // 
+            this.tsTechniqueReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
+            this.tsTechniqueReapplyImprovements.ImageDpi120 = null;
+            this.tsTechniqueReapplyImprovements.ImageDpi144 = null;
+            this.tsTechniqueReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
+            this.tsTechniqueReapplyImprovements.ImageDpi288 = null;
+            this.tsTechniqueReapplyImprovements.ImageDpi384 = null;
+            this.tsTechniqueReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsTechniqueReapplyImprovements.Name = "tsTechniqueReapplyImprovements";
+            this.tsTechniqueReapplyImprovements.Size = new System.Drawing.Size(203, 22);
+            this.tsTechniqueReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
+            this.tsTechniqueReapplyImprovements.Text = "Re-Apply Improvements";
+            this.tsTechniqueReapplyImprovements.Click += new System.EventHandler(this.tsMartialArtsReapplyImprovements_Click);
             // 
             // cmsAdvancedProgram
             // 
             this.cmsAdvancedProgram.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsAddAdvancedProgramOption,
-            this.tsAIProgramNotes});
+            this.tsAIProgramAddOption,
+            this.tsAIProgramNotes,
+            this.tsAIProgramReapplyImprovements});
             this.cmsAdvancedProgram.Name = "cmsAdvancedProgram";
-            this.cmsAdvancedProgram.Size = new System.Drawing.Size(137, 48);
+            this.cmsAdvancedProgram.Size = new System.Drawing.Size(204, 70);
             // 
-            // tsAddAdvancedProgramOption
+            // tsAIProgramAddOption
             // 
-            this.tsAddAdvancedProgramOption.Image = global::Chummer.Properties.Resources.plugin_add;
-            this.tsAddAdvancedProgramOption.ImageDpi120 = null;
-            this.tsAddAdvancedProgramOption.ImageDpi144 = null;
-            this.tsAddAdvancedProgramOption.ImageDpi192 = global::Chummer.Properties.Resources.plugin_add1;
-            this.tsAddAdvancedProgramOption.ImageDpi288 = null;
-            this.tsAddAdvancedProgramOption.ImageDpi384 = null;
-            this.tsAddAdvancedProgramOption.ImageDpi96 = global::Chummer.Properties.Resources.plugin_add;
-            this.tsAddAdvancedProgramOption.Name = "tsAddAdvancedProgramOption";
-            this.tsAddAdvancedProgramOption.Size = new System.Drawing.Size(136, 22);
-            this.tsAddAdvancedProgramOption.Tag = "Menu_AddOption";
-            this.tsAddAdvancedProgramOption.Text = "&Add Option";
+            this.tsAIProgramAddOption.Image = global::Chummer.Properties.Resources.plugin_add;
+            this.tsAIProgramAddOption.ImageDpi120 = null;
+            this.tsAIProgramAddOption.ImageDpi144 = null;
+            this.tsAIProgramAddOption.ImageDpi192 = global::Chummer.Properties.Resources.plugin_add1;
+            this.tsAIProgramAddOption.ImageDpi288 = null;
+            this.tsAIProgramAddOption.ImageDpi384 = null;
+            this.tsAIProgramAddOption.ImageDpi96 = global::Chummer.Properties.Resources.plugin_add;
+            this.tsAIProgramAddOption.Name = "tsAIProgramAddOption";
+            this.tsAIProgramAddOption.Size = new System.Drawing.Size(203, 22);
+            this.tsAIProgramAddOption.Tag = "Menu_AddOption";
+            this.tsAIProgramAddOption.Text = "&Add Option";
             // 
             // tsAIProgramNotes
             // 
@@ -21982,10 +22488,25 @@ namespace Chummer
             this.tsAIProgramNotes.ImageDpi384 = null;
             this.tsAIProgramNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
             this.tsAIProgramNotes.Name = "tsAIProgramNotes";
-            this.tsAIProgramNotes.Size = new System.Drawing.Size(136, 22);
+            this.tsAIProgramNotes.Size = new System.Drawing.Size(203, 22);
             this.tsAIProgramNotes.Tag = "Menu_Notes";
             this.tsAIProgramNotes.Text = "&Notes";
             this.tsAIProgramNotes.Click += new System.EventHandler(this.tsAIProgramNotes_Click);
+            // 
+            // tsAIProgramReapplyImprovements
+            // 
+            this.tsAIProgramReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
+            this.tsAIProgramReapplyImprovements.ImageDpi120 = null;
+            this.tsAIProgramReapplyImprovements.ImageDpi144 = null;
+            this.tsAIProgramReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
+            this.tsAIProgramReapplyImprovements.ImageDpi288 = null;
+            this.tsAIProgramReapplyImprovements.ImageDpi384 = null;
+            this.tsAIProgramReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsAIProgramReapplyImprovements.Name = "tsAIProgramReapplyImprovements";
+            this.tsAIProgramReapplyImprovements.Size = new System.Drawing.Size(203, 22);
+            this.tsAIProgramReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
+            this.tsAIProgramReapplyImprovements.Text = "Re-Apply Improvements";
+            this.tsAIProgramReapplyImprovements.Click += new System.EventHandler(this.tsAIProgramReapplyImprovements_Click);
             // 
             // cmsWeaponMount
             // 
@@ -22087,6 +22608,36 @@ namespace Chummer
             this.tsVehicleWeaponMountNotes.Tag = "Menu_Notes";
             this.tsVehicleWeaponMountNotes.Text = "&Notes";
             this.tsVehicleWeaponMountNotes.Click += new System.EventHandler(this.tsVehicleNotes_Click);
+            // 
+            // tsVehicleWeaponAccessoryGearNotes
+            // 
+            this.tsVehicleWeaponAccessoryGearNotes.Image = global::Chummer.Properties.Resources.note_edit;
+            this.tsVehicleWeaponAccessoryGearNotes.ImageDpi120 = null;
+            this.tsVehicleWeaponAccessoryGearNotes.ImageDpi144 = null;
+            this.tsVehicleWeaponAccessoryGearNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
+            this.tsVehicleWeaponAccessoryGearNotes.ImageDpi288 = null;
+            this.tsVehicleWeaponAccessoryGearNotes.ImageDpi384 = null;
+            this.tsVehicleWeaponAccessoryGearNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
+            this.tsVehicleWeaponAccessoryGearNotes.Name = "tsVehicleWeaponAccessoryGearNotes";
+            this.tsVehicleWeaponAccessoryGearNotes.Size = new System.Drawing.Size(147, 22);
+            this.tsVehicleWeaponAccessoryGearNotes.Tag = "Menu_Notes";
+            this.tsVehicleWeaponAccessoryGearNotes.Text = "&Notes";
+            this.tsVehicleWeaponAccessoryGearNotes.Click += new System.EventHandler(this.tsVehicleNotes_Click);
+            // 
+            // tsWeaponAccessoryGearNotes
+            // 
+            this.tsWeaponAccessoryGearNotes.Image = global::Chummer.Properties.Resources.note_edit;
+            this.tsWeaponAccessoryGearNotes.ImageDpi120 = null;
+            this.tsWeaponAccessoryGearNotes.ImageDpi144 = null;
+            this.tsWeaponAccessoryGearNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
+            this.tsWeaponAccessoryGearNotes.ImageDpi288 = null;
+            this.tsWeaponAccessoryGearNotes.ImageDpi384 = null;
+            this.tsWeaponAccessoryGearNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
+            this.tsWeaponAccessoryGearNotes.Name = "tsWeaponAccessoryGearNotes";
+            this.tsWeaponAccessoryGearNotes.Size = new System.Drawing.Size(203, 22);
+            this.tsWeaponAccessoryGearNotes.Tag = "Menu_Notes";
+            this.tsWeaponAccessoryGearNotes.Text = "&Notes";
+            this.tsWeaponAccessoryGearNotes.Click += new System.EventHandler(this.tsWeaponNotes_Click);
             // 
             // CharacterCareer
             // 
@@ -22396,6 +22947,8 @@ namespace Chummer
             this.gpbArmorLocation.PerformLayout();
             this.tlpArmorLocation.ResumeLayout(false);
             this.tlpArmorLocation.PerformLayout();
+            this.tlpArmorLocationButtons.ResumeLayout(false);
+            this.tlpArmorLocationButtons.PerformLayout();
             this.tlpArmorButtons.ResumeLayout(false);
             this.tlpArmorButtons.PerformLayout();
             this.tabWeapons.ResumeLayout(false);
@@ -22467,8 +23020,6 @@ namespace Chummer
             this.tabVehicles.PerformLayout();
             this.tlpVehicles.ResumeLayout(false);
             this.tlpVehicles.PerformLayout();
-            this.flpVehiclesButtons.ResumeLayout(false);
-            this.flpVehiclesButtons.PerformLayout();
             this.flpVehicles.ResumeLayout(false);
             this.flpVehicles.PerformLayout();
             this.gpbVehiclesCommon.ResumeLayout(false);
@@ -22512,6 +23063,8 @@ namespace Chummer
             this.tabVehicleMatrixCM.PerformLayout();
             this.panVehicleMatrixCM.ResumeLayout(false);
             this.panVehicleMatrixCM.PerformLayout();
+            this.tlpVehiclesButtons.ResumeLayout(false);
+            this.tlpVehiclesButtons.PerformLayout();
             this.tabCharacterInfo.ResumeLayout(false);
             this.tabCharacterInfo.PerformLayout();
             this.tlpCharacterInfo.ResumeLayout(false);
@@ -22592,7 +23145,6 @@ namespace Chummer
             this.cmsVehicleLocation.ResumeLayout(false);
             this.cmsVehicleWeaponAccessory.ResumeLayout(false);
             this.cmsVehicleWeaponAccessoryGear.ResumeLayout(false);
-            this.cmsVehicleWeaponMod.ResumeLayout(false);
             this.cmsWeaponLocation.ResumeLayout(false);
             this.cmsTechnique.ResumeLayout(false);
             this.cmsAdvancedProgram.ResumeLayout(false);
@@ -22605,7 +23157,6 @@ namespace Chummer
         #endregion
 
         private System.Windows.Forms.StatusStrip StatusStrip;
-        private System.Windows.Forms.SaveFileDialog dlgSaveFile;
         private System.Windows.Forms.TabControl tabInfo;
         private System.Windows.Forms.TabPage tabOtherInfo;
         private System.Windows.Forms.Label lblESSMax;
@@ -22632,7 +23183,7 @@ namespace Chummer
         private System.Windows.Forms.ToolStripStatusLabel tslEssence;
         private System.Windows.Forms.ToolStripStatusLabel tslNuyenLabel;
         private System.Windows.Forms.ToolStripStatusLabel tslNuyen;
-        private System.Windows.Forms.ToolStripSeparator tssFileMenu1;
+        private Chummer.ColorableToolStripSeparator tssFileMenu1;
         private System.Windows.Forms.ContextMenuStrip cmsVehicleGear;
         private System.Windows.Forms.ToolStripProgressBar pgbProgress;
         private System.Windows.Forms.ContextMenuStrip cmsAmmoExpense;
@@ -22687,7 +23238,7 @@ namespace Chummer
         private System.Windows.Forms.SplitContainer splitMain;
         private System.Windows.Forms.ContextMenuStrip cmsBioware;
         private System.Windows.Forms.ContextMenuStrip cmsAdvancedLifestyle;
-        private System.Windows.Forms.ToolStripSeparator tssFileMenu2;
+        private Chummer.ColorableToolStripSeparator tssFileMenu2;
         private System.Windows.Forms.ContextMenuStrip cmsGearLocation;
         private System.Windows.Forms.Label lblCareerNuyen;
         private System.Windows.Forms.Label lblCareerNuyenLabel;
@@ -22700,11 +23251,10 @@ namespace Chummer
         private System.Windows.Forms.ContextMenuStrip cmsVehicleCyberwareGear;
         private System.Windows.Forms.ContextMenuStrip cmsWeaponAccessoryGear;
         private System.Windows.Forms.ContextMenuStrip cmsVehicleLocation;
-        private System.Windows.Forms.ToolStripSeparator tsbSeparator;
+        private Chummer.ColorableToolStripSeparator tsbSeparator;
         private System.Windows.Forms.ToolStripMenuItem mnuCreateEdit;
         private System.Windows.Forms.ContextMenuStrip cmsVehicleWeaponAccessory;
         private System.Windows.Forms.ContextMenuStrip cmsVehicleWeaponAccessoryGear;
-        private System.Windows.Forms.ContextMenuStrip cmsVehicleWeaponMod;
         private System.Windows.Forms.ContextMenuStrip cmsWeaponLocation;
         private System.Windows.Forms.Label lblArmorLabel;
         private LabelWithToolTip lblRiggingINI;
@@ -23438,42 +23988,41 @@ namespace Chummer
         private Label lblParagon;
         private UI.Shared.LimitTabUserControl lmtControl;
         private Label lblParagonInformation;
-        private FlowLayoutPanel flpVehiclesButtons;
         private FlowLayoutPanel flpArmorValue;
         private FlowLayoutPanel flpWeaponsCommonCheckBoxes;
-        private BufferedTableLayoutPanel tlpMartialArts;
-        private BufferedTableLayoutPanel tlpInfo;
-        private BufferedTableLayoutPanel tlpMagicianTop;
-        private BufferedTableLayoutPanel tlpTechnomancerTop;
-        private BufferedTableLayoutPanel tlpAdvancedPrograms;
-        private BufferedTableLayoutPanel tlpCommon;
-        private BufferedTableLayoutPanel tlpCommonLeftSide;
-        private BufferedTableLayoutPanel tlpInitiation;
-        private BufferedTableLayoutPanel tlpSpellDefense;
-        private BufferedTableLayoutPanel tlpCritter;
-        private BufferedTableLayoutPanel tlpCyberware;
-        private BufferedTableLayoutPanel tlpCyberwareMatrix;
-        private BufferedTableLayoutPanel tlpVehicles;
-        private BufferedTableLayoutPanel tlpVehiclesWeaponCareer;
-        private BufferedTableLayoutPanel tlpLifestyleDetails;
-        private BufferedTableLayoutPanel tlpImprovements;
-        private BufferedTableLayoutPanel tlpDrugDescription;
-        private BufferedTableLayoutPanel tlpCharacterInfo;
-        private BufferedTableLayoutPanel tlpCMTab;
-        private BufferedTableLayoutPanel tlpGear;
-        private BufferedTableLayoutPanel tlpArmor;
-        private BufferedTableLayoutPanel tlpWeapons;
-        private BufferedTableLayoutPanel tlpCalendar;
-        private BufferedTableLayoutPanel tlpContacts;
-        private BufferedTableLayoutPanel tlpEnemies;
-        private BufferedTableLayoutPanel tlpPets;
-        private BufferedTableLayoutPanel tlpKarma;
-        private BufferedTableLayoutPanel tlpNuyen;
+        private System.Windows.Forms.TableLayoutPanel tlpMartialArts;
+        private System.Windows.Forms.TableLayoutPanel tlpInfo;
+        private System.Windows.Forms.TableLayoutPanel tlpMagicianTop;
+        private System.Windows.Forms.TableLayoutPanel tlpTechnomancerTop;
+        private System.Windows.Forms.TableLayoutPanel tlpAdvancedPrograms;
+        private System.Windows.Forms.TableLayoutPanel tlpCommon;
+        private System.Windows.Forms.TableLayoutPanel tlpCommonLeftSide;
+        private System.Windows.Forms.TableLayoutPanel tlpInitiation;
+        private System.Windows.Forms.TableLayoutPanel tlpSpellDefense;
+        private System.Windows.Forms.TableLayoutPanel tlpCritter;
+        private System.Windows.Forms.TableLayoutPanel tlpCyberware;
+        private System.Windows.Forms.TableLayoutPanel tlpCyberwareMatrix;
+        private System.Windows.Forms.TableLayoutPanel tlpVehicles;
+        private System.Windows.Forms.TableLayoutPanel tlpVehiclesWeaponCareer;
+        private System.Windows.Forms.TableLayoutPanel tlpLifestyleDetails;
+        private System.Windows.Forms.TableLayoutPanel tlpImprovements;
+        private System.Windows.Forms.TableLayoutPanel tlpDrugDescription;
+        private System.Windows.Forms.TableLayoutPanel tlpCharacterInfo;
+        private System.Windows.Forms.TableLayoutPanel tlpCMTab;
+        private System.Windows.Forms.TableLayoutPanel tlpGear;
+        private System.Windows.Forms.TableLayoutPanel tlpArmor;
+        private System.Windows.Forms.TableLayoutPanel tlpWeapons;
+        private System.Windows.Forms.TableLayoutPanel tlpCalendar;
+        private System.Windows.Forms.TableLayoutPanel tlpContacts;
+        private System.Windows.Forms.TableLayoutPanel tlpEnemies;
+        private System.Windows.Forms.TableLayoutPanel tlpPets;
+        private System.Windows.Forms.TableLayoutPanel tlpKarma;
+        private System.Windows.Forms.TableLayoutPanel tlpNuyen;
         private FlowLayoutPanel flpFadingAttributesValue;
         private FlowLayoutPanel flpInitiationCheckboxes;
         private FlowLayoutPanel flpCyberware;
-        private BufferedTableLayoutPanel tlpCyberwareEssenceConsumption;
-        private BufferedTableLayoutPanel tlpCyberwareCommon;
+        private System.Windows.Forms.TableLayoutPanel tlpCyberwareEssenceConsumption;
+        private System.Windows.Forms.TableLayoutPanel tlpCyberwareCommon;
         private GroupBox gpbEssenceConsumption;
         private Label lblCyberwareOverclockerLabel;
         private FlowLayoutPanel flpStreetCredTotal;
@@ -23482,73 +24031,73 @@ namespace Chummer
         private FlowLayoutPanel flpVehicles;
         private GroupBox gpbVehiclesWeapon;
         private FlowLayoutPanel flpVehiclesWeapon;
-        private BufferedTableLayoutPanel tlpVehiclesWeaponCommon;
-        private BufferedTableLayoutPanel tlpVehiclesWeaponRanges;
+        private System.Windows.Forms.TableLayoutPanel tlpVehiclesWeaponCommon;
+        private System.Windows.Forms.TableLayoutPanel tlpVehiclesWeaponRanges;
         private FlowLayoutPanel flpVehiclesWeaponCareerButtons;
         private GroupBox gpbVehiclesMatrix;
         private SplitButton cmdFireVehicleWeapon;
-        private BufferedTableLayoutPanel tlpVehiclesMatrix;
+        private System.Windows.Forms.TableLayoutPanel tlpVehiclesMatrix;
         private GroupBox gpbVehiclesCommon;
-        private BufferedTableLayoutPanel tlpVehiclesCommon;
+        private System.Windows.Forms.TableLayoutPanel tlpVehiclesCommon;
         private FlowLayoutPanel flpVehiclesCommonQuantity;
         private FlowLayoutPanel flpVehiclesCommonCheckBoxes;
         private FlowLayoutPanel flpVehiclesCommonMoveButtons;
         private GroupBox gpbVehiclesVehicle;
-        private BufferedTableLayoutPanel tlpVehiclesVehicle;
+        private System.Windows.Forms.TableLayoutPanel tlpVehiclesVehicle;
         private FlowLayoutPanel flpLifestyleDetails;
         private GroupBox gpbLifestyleCommon;
-        private BufferedTableLayoutPanel tlpLifestyleCommon;
+        private System.Windows.Forms.TableLayoutPanel tlpLifestyleCommon;
         private FlowLayoutPanel flpDrugs;
         private GroupBox gpbDrugsCommon;
-        private BufferedTableLayoutPanel tlpDrugsCommon;
+        private System.Windows.Forms.TableLayoutPanel tlpDrugsCommon;
         private FlowLayoutPanel flpArmor;
         private GroupBox gpbArmorCommon;
-        private BufferedTableLayoutPanel tlpArmorCommon;
+        private System.Windows.Forms.TableLayoutPanel tlpArmorCommon;
         private FlowLayoutPanel flpArmorCommonCheckBoxes;
         private GroupBox gpbArmorMatrix;
-        private BufferedTableLayoutPanel tlpArmorMatrix;
+        private System.Windows.Forms.TableLayoutPanel tlpArmorMatrix;
         private GroupBox gpbArmorLocation;
-        private BufferedTableLayoutPanel tlpArmorLocation;
+        private System.Windows.Forms.TableLayoutPanel tlpArmorLocation;
         private FlowLayoutPanel flpWeapons;
         private GroupBox gpbWeaponsCommon;
-        private BufferedTableLayoutPanel tlpWeaponsCommon;
+        private System.Windows.Forms.TableLayoutPanel tlpWeaponsCommon;
         private GroupBox gpbWeaponsMatrix;
-        private BufferedTableLayoutPanel tlpWeaponsMatrix;
+        private System.Windows.Forms.TableLayoutPanel tlpWeaponsMatrix;
         private GroupBox gpbWeaponsWeapon;
         private FlowLayoutPanel flpWeaponsWeapon;
-        private BufferedTableLayoutPanel tlpWeaponsWeapon;
-        private BufferedTableLayoutPanel tlpWeaponsRanges;
-        private BufferedTableLayoutPanel tlpWeaponsCareer;
+        private System.Windows.Forms.TableLayoutPanel tlpWeaponsWeapon;
+        private System.Windows.Forms.TableLayoutPanel tlpWeaponsRanges;
+        private System.Windows.Forms.TableLayoutPanel tlpWeaponsCareer;
         private FlowLayoutPanel flpWeaponsCareerButtons;
         private GroupBox gpbInitiationGroup;
-        private BufferedTableLayoutPanel tlpInitiationGroup;
+        private System.Windows.Forms.TableLayoutPanel tlpInitiationGroup;
         private FlowLayoutPanel flpInitiation;
         private GroupBox gpbInitiationType;
         private FlowLayoutPanel flpMagician;
         private GroupBox gpbMagicianSpell;
-        private BufferedTableLayoutPanel tlpMagicianSpell;
+        private System.Windows.Forms.TableLayoutPanel tlpMagicianSpell;
         private GroupBox gpbMagicianTradition;
-        private BufferedTableLayoutPanel tlpMagicianTradition;
+        private System.Windows.Forms.TableLayoutPanel tlpMagicianTradition;
         private GroupBox gpbMagicianMentorSpirit;
-        private BufferedTableLayoutPanel tlpMagicianMentorSpirit;
+        private System.Windows.Forms.TableLayoutPanel tlpMagicianMentorSpirit;
         private Label lblMentorSpiritSource;
         private Label lblMentorSpiritSourceLabel;
         private FlowLayoutPanel flpTechnomancer;
         private GroupBox gpbTechnomancerComplexForm;
-        private BufferedTableLayoutPanel tlpTechnomancerComplexForm;
+        private System.Windows.Forms.TableLayoutPanel tlpTechnomancerComplexForm;
         private Label lblComplexFormDicePoolLabel;
         private GroupBox gpbTechnomancerStream;
-        private BufferedTableLayoutPanel tlpTechnomancerStream;
+        private System.Windows.Forms.TableLayoutPanel tlpTechnomancerStream;
         private GroupBox gpbTechnomancerParagon;
-        private BufferedTableLayoutPanel tlpTechnomancerParagon;
+        private System.Windows.Forms.TableLayoutPanel tlpTechnomancerParagon;
         private Label lblParagonSourceLabel;
         private Label lblParagonSource;
         private UI.Charts.ExpenseChart chtKarma;
         private UI.Charts.ExpenseChart chtNuyen;
-        private BufferedTableLayoutPanel tlpPhysicalCMBoxes;
+        private System.Windows.Forms.TableLayoutPanel tlpPhysicalCMBoxes;
         private Label lblPhysicalRecoveryText;
         private Label lblCMPhysicalRecoveryPool;
-        private BufferedTableLayoutPanel tlpStunCMBoxes;
+        private System.Windows.Forms.TableLayoutPanel tlpStunCMBoxes;
         private Label lblStunRecoveryText;
         private Label lblCMStunRecoveryPool;
         private LabelWithToolTip lblSurpriseLabel;
@@ -23571,29 +24120,29 @@ namespace Chummer
         private UI.Editors.RtfEditor rtfGameNotes;
         private FlowLayoutPanel flpCyberwareMatrixCheckBoxes;
         private FlowLayoutPanel flpVehiclesMatrixCheckBoxes;
-        private BufferedTableLayoutPanel tlpAlias;
-        private BufferedTableLayoutPanel tlpCommonRightSide;
+        private System.Windows.Forms.TableLayoutPanel tlpAlias;
+        private System.Windows.Forms.TableLayoutPanel tlpCommonRightSide;
         private LabelWithToolTip lblAstralReputationTotal;
         private LabelWithToolTip lblWildReputationTotal;
         private NumericUpDownEx nudAstralReputation;
         private NumericUpDownEx nudWildReputation;
         private Label lblAstralReputation;
         private Label lblWildReputation;
-        private BufferedTableLayoutPanel tlpMartialArtsButtons;
-        private BufferedTableLayoutPanel tlpDrainAttributesValue;
-        private BufferedTableLayoutPanel tlpMagicianButtons;
-        private BufferedTableLayoutPanel tlpTechnomancerButtons;
-        private BufferedTableLayoutPanel tlpAdvancedProgramsButtons;
-        private BufferedTableLayoutPanel tlpCritterButtons;
-        private BufferedTableLayoutPanel tlpInitiationButtons;
-        private BufferedTableLayoutPanel tlpCyberwareButtons;
-        private BufferedTableLayoutPanel tlpImprovementsButtons;
-        private BufferedTableLayoutPanel tlpContactsButtons;
-        private BufferedTableLayoutPanel tlpCalendarButtons;
-        private BufferedTableLayoutPanel tlpMugshotButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpMartialArtsButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpDrainAttributesValue;
+        private System.Windows.Forms.TableLayoutPanel tlpMagicianButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpTechnomancerButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpAdvancedProgramsButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpCritterButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpInitiationButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpCyberwareButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpImprovementsButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpContactsButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpCalendarButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpMugshotButtons;
         private FlowLayoutPanel flpGear;
         private GroupBox gpbGearCommon;
-        private BufferedTableLayoutPanel tlpGearCommon;
+        private System.Windows.Forms.TableLayoutPanel tlpGearCommon;
         private Label lblGearNameLabel;
         private Label lblGearName;
         private Label lblGearCategoryLabel;
@@ -23617,7 +24166,7 @@ namespace Chummer
         private Label lblGearCapacityLabel;
         private Label lblGearCapacity;
         private GroupBox gpbGearMatrix;
-        private BufferedTableLayoutPanel tlpGearMatrix;
+        private System.Windows.Forms.TableLayoutPanel tlpGearMatrix;
         private Label lblGearDeviceRating;
         private Label lblGearDeviceRatingLabel;
         private ElasticComboBox cboGearOverclocker;
@@ -23658,16 +24207,16 @@ namespace Chummer
         private DpiFriendlyCheckBoxDisguisedAsButton chkGearMatrixCM23;
         private DpiFriendlyCheckBoxDisguisedAsButton chkGearMatrixCM24;
         private GroupBox gpbGearBondedFoci;
-        private BufferedTableLayoutPanel tlpGearBondedFoci;
+        private System.Windows.Forms.TableLayoutPanel tlpGearBondedFoci;
         private Button cmdCreateStackedFocus;
         private TreeView treFoci;
-        private BufferedTableLayoutPanel tlpGearButtons;
-        private BufferedTableLayoutPanel tlpArmorButtons;
-        private BufferedTableLayoutPanel tlpWeaponsButtons;
-        private BufferedTableLayoutPanel tlpDrugDescriptionButtons;
-        private BufferedTableLayoutPanel tlpLifestyleButtons;
-        private BufferedTableLayoutPanel tlpMagicianMentorSpiritHeader;
-        private BufferedTableLayoutPanel tlpTechnomancerParagonHeader;
+        private System.Windows.Forms.TableLayoutPanel tlpGearButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpArmorButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpWeaponsButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpDrugDescriptionButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpLifestyleButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpMagicianMentorSpiritHeader;
+        private System.Windows.Forms.TableLayoutPanel tlpTechnomancerParagonHeader;
         private FlowLayoutPanel panCyberwareMatrixCM;
         private FlowLayoutPanel panVehiclePhysicalCM;
         private FlowLayoutPanel panVehicleMatrixCM;
@@ -23691,7 +24240,7 @@ namespace Chummer
         private ColorableCheckBox chkShowKarmaChart;
         private ColorableCheckBox chkShowNuyenChart;
         private TreeView treQualities;
-        private BufferedTableLayoutPanel tlpQualityButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpQualityButtons;
         private Button cmdAddQuality;
         private Button cmdDeleteQuality;
         private Button cmdSwapQuality;
@@ -23706,23 +24255,23 @@ namespace Chummer
         private Label lblLifestyleCity;
         private Label lblLifestyleDistrict;
         private Label lblLifestyleBorough;
-        private BufferedTableLayoutPanel tlpMartialArtsRight;
-        private BufferedTableLayoutPanel tlpAdvancedProgramsRight;
-        private BufferedTableLayoutPanel tlpCritterRight;
-        private BufferedTableLayoutPanel tlpInitiationRight;
+        private System.Windows.Forms.TableLayoutPanel tlpMartialArtsRight;
+        private System.Windows.Forms.TableLayoutPanel tlpAdvancedProgramsRight;
+        private System.Windows.Forms.TableLayoutPanel tlpCritterRight;
+        private System.Windows.Forms.TableLayoutPanel tlpInitiationRight;
         private TreeView treImprovements;
-        private BufferedTableLayoutPanel tlpImprovementsRight;
+        private System.Windows.Forms.TableLayoutPanel tlpImprovementsRight;
         private Label lblImprovementTypeLabel;
         private Label lblImprovementValue;
-        private BufferedTableLayoutPanel tlpImprovementsActive;
+        private System.Windows.Forms.TableLayoutPanel tlpImprovementsActive;
         private ColorableCheckBox chkImprovementActive;
         private Button cmdImprovementsDisableAll;
         private Button cmdImprovementsEnableAll;
         private Label lblImprovementType;
-        private BufferedTableLayoutPanel tlpSpells;
+        private System.Windows.Forms.TableLayoutPanel tlpSpells;
         private FlowLayoutPanel flpSustainedSpells;
         private ColorableCheckBox chkPsycheActiveMagician;
-        private BufferedTableLayoutPanel tlpComplexForms;
+        private System.Windows.Forms.TableLayoutPanel tlpComplexForms;
         private FlowLayoutPanel flpSustainedComplexForms;
         private ColorableCheckBox chkPsycheActiveTechnomancer;
         private Button cmdSustainCritterPower;
@@ -23761,7 +24310,7 @@ namespace Chummer
         private DpiFriendlyToolStripMenuItem tsWeaponName;
         private DpiFriendlyToolStripMenuItem tsWeaponNotes;
         private DpiFriendlyToolStripMenuItem tsAddArmorMod;
-        private DpiFriendlyToolStripMenuItem tsAddArmorGear;
+        private DpiFriendlyToolStripMenuItem tsArmorAddGear;
         private DpiFriendlyToolStripMenuItem tsArmorName;
         private DpiFriendlyToolStripMenuItem tsArmorNotes;
         private DpiFriendlyToolStripMenuItem tsVehicleAddSensor;
@@ -23805,7 +24354,7 @@ namespace Chummer
         private DpiFriendlyToolStripMenuItem tsArmorModAddAsPlugin;
         private DpiFriendlyToolStripMenuItem tsArmorModNotes;
         private DpiFriendlyToolStripMenuItem tsQualityNotes;
-        private DpiFriendlyToolStripMenuItem tsmSpellNotes;
+        private DpiFriendlyToolStripMenuItem tsSpellNotes;
         private DpiFriendlyToolStripMenuItem tsCritterPowersNotes;
         private DpiFriendlyToolStripMenuItem tsWeaponAccessoryAddGear;
         private DpiFriendlyToolStripMenuItem tsWeaponAccessoryNotes;
@@ -23848,11 +24397,10 @@ namespace Chummer
         private DpiFriendlyToolStripMenuItem tsVehicleWeaponAccessoryAddGear;
         private DpiFriendlyToolStripMenuItem tsVehicleWeaponAccessoryNotes;
         private DpiFriendlyToolStripMenuItem tsVehicleWeaponAccessoryGearMenuAddAsPlugin;
-        private DpiFriendlyToolStripMenuItem tsVehicleWeaponModNotes;
         private DpiFriendlyToolStripMenuItem tsWeaponLocationAddWeapon;
         private DpiFriendlyToolStripMenuItem tsWeaponRenameLocation;
-        private DpiFriendlyToolStripMenuItem tsAddTechniqueNotes;
-        private DpiFriendlyToolStripMenuItem tsAddAdvancedProgramOption;
+        private DpiFriendlyToolStripMenuItem tsTechniqueAddNotes;
+        private DpiFriendlyToolStripMenuItem tsAIProgramAddOption;
         private DpiFriendlyToolStripMenuItem tsAIProgramNotes;
         private DpiFriendlyToolStripMenuItem tsWeaponMountWeapons;
         private DpiFriendlyToolStripMenuItem tsVehicleWeaponMountAddWeapon;
@@ -23903,9 +24451,9 @@ namespace Chummer
         private ColorableCheckBox chkWeaponHomeNode;
         private ColorableCheckBox chkWeaponActiveCommlink;
         private SplitContainer splitMagician;
-        private BufferedTableLayoutPanel tlpMagicianBottom;
+        private System.Windows.Forms.TableLayoutPanel tlpMagicianBottom;
         private SplitContainer splitTechnomancer;
-        private BufferedTableLayoutPanel tlpTechnomancerBottom;
+        private System.Windows.Forms.TableLayoutPanel tlpTechnomancerBottom;
         private DpiFriendlyCheckBoxDisguisedAsButton chkVehicleMatrixCM24;
         private TabControl tabLongTexts;
         private TabPage tabDescription;
@@ -23919,5 +24467,34 @@ namespace Chummer
         private ToolStripStatusLabel tslCarriedWeight;
         private Label lblLiftCarryHitsLabel;
         private NumericUpDownEx nudLiftCarryHits;
+        private System.Windows.Forms.TableLayoutPanel tlpArmorLocationButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpVehiclesButtons;
+        private Button cmdUnloadWeapon;
+        private Button cmdUnloadVehicleWeapon;
+        private ColorableCheckBox chkHideLoadedAmmo;
+        private Label lblVehicleWeaponReach;
+        private Label lblVehicleWeaponRCLabel;
+        private Label lblVehicleWeaponRC;
+        private Label lblVehicleWeaponReachLabel;
+        private DpiFriendlyToolStripMenuItem tsCyberwareReapplyImprovements;
+        private DpiFriendlyToolStripMenuItem tsArmorReapplyImprovements;
+        private DpiFriendlyToolStripMenuItem tsGearReapplyImprovements;
+        private DpiFriendlyToolStripMenuItem tsComplexFormReapplyImprovements;
+        private DpiFriendlyToolStripMenuItem tsMartialArtsReapplyImprovements;
+        private DpiFriendlyToolStripMenuItem tsGearButtonReapplyImprovements;
+        private DpiFriendlyToolStripMenuItem tsArmorGearReapplyImprovements;
+        private DpiFriendlyToolStripMenuItem tsArmorModReapplyImprovements;
+        private DpiFriendlyToolStripMenuItem tsQualityReapplyImprovements;
+        private DpiFriendlyToolStripMenuItem tsSpellReapplyImprovements;
+        private DpiFriendlyToolStripMenuItem tsCritterPowersReapplyImprovements;
+        private DpiFriendlyToolStripMenuItem tsWeaponAccessoryGearReapplyImprovements;
+        private DpiFriendlyToolStripMenuItem tsMetamagicReapplyImprovements;
+        private DpiFriendlyToolStripMenuItem tsGearPluginReapplyImprovements;
+        private DpiFriendlyToolStripMenuItem tsBiowareReapplyImprovements;
+        private DpiFriendlyToolStripMenuItem tsCyberwareGearReapplyImprovements;
+        private DpiFriendlyToolStripMenuItem tsTechniqueReapplyImprovements;
+        private DpiFriendlyToolStripMenuItem tsAIProgramReapplyImprovements;
+        private DpiFriendlyToolStripMenuItem tsVehicleWeaponAccessoryGearNotes;
+        private DpiFriendlyToolStripMenuItem tsWeaponAccessoryGearNotes;
     }
 }

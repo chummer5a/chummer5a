@@ -365,13 +365,15 @@
   <xsl:variable name="lang.SocialLimit"    select="string('Social Limit')" />
 
   <!-- spell types list -->
-  <xsl:variable name="lang.CombatSpells"    select="string('Combat Spells')" />
-  <xsl:variable name="lang.DetectionSpells"  select="string('Detection Spells')" />
-  <xsl:variable name="lang.Enchantments"    select="string('Enchantments')" />
-  <xsl:variable name="lang.HealthSpells"     select="string('Health Spells')" />
-  <xsl:variable name="lang.IllusionSpells"   select="string('Illusion Spells')" />
+  <xsl:variable name="lang.Alchemical"         select="string('Alchemical')" />
+  <xsl:variable name="lang.CombatSpells"       select="string('Combat Spells')" />
+  <xsl:variable name="lang.DetectionSpells"    select="string('Detection Spells')" />
+  <xsl:variable name="lang.Enchantments"       select="string('Enchantments')" />
+  <xsl:variable name="lang.HealthSpells"       select="string('Health Spells')" />
+  <xsl:variable name="lang.IllusionSpells"     select="string('Illusion Spells')" />
+  <xsl:variable name="lang.Limited"            select="string('Limited')" />
   <xsl:variable name="lang.ManipulationSpells" select="string('Manipulation Spells')" />
-  <xsl:variable name="lang.Rituals"      select="string('Rituals')" />
+  <xsl:variable name="lang.Rituals"            select="string('Rituals')" />
 
   <!-- test values -->
   <xsl:variable name="lang.tstDamage1"  select="string('P')" />
@@ -392,7 +394,7 @@
 
   <!-- miscellaneous signs and symbols -->
     <!-- currency symbol -->
-  <xsl:variable name="lang.NuyenSymbol"  select="string('&#165;')" />
+  <xsl:variable name="lang.NuyenSymbol"  select="string('&#65509;')" />
     <!-- diacrtic marks: decimal mark and grouping separator -->
   <xsl:variable name="lang.marks"      select="string('.,')" />
 </xsl:stylesheet>

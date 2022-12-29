@@ -31,9 +31,9 @@
           <category>Bio-Weapon</category>
           <type>Melee</type>
           <conceal>0</conceal>
-          <accuracy>6</accuracy>
+          <accuracy>4</accuracy>
           <reach>0</reach>
-          <damage>(STR)P</damage>
+          <damage>({STR})P</damage>
           <ap>-1</ap>
           <mode>0</mode>
           <rc>0</rc>

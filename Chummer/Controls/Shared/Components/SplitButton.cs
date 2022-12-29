@@ -20,6 +20,7 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Threading;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
 
@@ -34,9 +35,9 @@ namespace Chummer
         private const int SplitSectionWidth = 18;
 
         private static readonly int BorderSize = SystemInformation.Border3DSize.Width * 2;
-        private bool _skipNextOpen;
+        private int _intSkipNextOpen;
         private Rectangle _dropDownRectangle;
-        private bool _showSplit;
+        private int _intShowSplit;
 
         private bool _isSplitMenuVisible;
 
@@ -68,10 +69,13 @@ namespace Chummer
             get => m_SplitMenu;
             set
             {
+                ContextMenu objOldValue = Interlocked.Exchange(ref m_SplitMenu, value);
+                if (objOldValue == value)
+                    return;
                 //remove the event handlers for the old SplitMenu
-                if (m_SplitMenu != null)
+                if (objOldValue != null)
                 {
-                    m_SplitMenu.Popup -= SplitMenu_Popup;
+                    objOldValue.Popup -= SplitMenu_Popup;
                 }
 
                 //add the event handlers for the new SplitMenu
@@ -82,8 +86,6 @@ namespace Chummer
                 }
                 else
                     ShowSplit = false;
-
-                m_SplitMenu = value;
             }
         }
 
@@ -93,11 +95,14 @@ namespace Chummer
             get => m_SplitMenuStrip;
             set
             {
+                ContextMenuStrip objOldValue = Interlocked.Exchange(ref m_SplitMenuStrip, value);
+                if (objOldValue == value)
+                    return;
                 //remove the event handlers for the old SplitMenuStrip
-                if (m_SplitMenuStrip != null)
+                if (objOldValue != null)
                 {
-                    m_SplitMenuStrip.Closing -= SplitMenuStrip_Closing;
-                    m_SplitMenuStrip.Opening -= SplitMenuStrip_Opening;
+                    objOldValue.Closing -= SplitMenuStrip_Closing;
+                    objOldValue.Opening -= SplitMenuStrip_Opening;
                 }
 
                 //add the event handlers for the new SplitMenuStrip
@@ -109,23 +114,22 @@ namespace Chummer
                 }
                 else
                     ShowSplit = false;
-
-                m_SplitMenuStrip = value;
             }
         }
 
         [DefaultValue(false)]
         public bool ShowSplit
         {
+            get => _intShowSplit > 0;
             set
             {
-                if (value != _showSplit)
-                {
-                    _showSplit = value;
-                    Invalidate();
-
-                    Parent?.PerformLayout();
-                }
+                int intNewValue = value.ToInt32();
+                if (Interlocked.Exchange(ref _intShowSplit, intNewValue) == intNewValue)
+                    return;
+                if (Disposing || IsDisposed)
+                    return;
+                Invalidate();
+                Parent?.PerformLayout();
             }
         }
 
@@ -134,11 +138,11 @@ namespace Chummer
             get => _state;
             set
             {
-                if (!_state.Equals(value))
-                {
-                    _state = value;
-                    Invalidate();
-                }
+                if (InterlockedExtensions.Exchange(ref _state, value) == value)
+                    return;
+                if (Disposing || IsDisposed)
+                    return;
+                Invalidate();
             }
         }
 
@@ -146,7 +150,7 @@ namespace Chummer
 
         protected override bool IsInputKey(Keys keyData)
         {
-            if (keyData.Equals(Keys.Down) && _showSplit)
+            if (keyData.Equals(Keys.Down) && ShowSplit && !Disposing && !IsDisposed)
                 return true;
 
             return base.IsInputKey(keyData);
@@ -154,7 +158,7 @@ namespace Chummer
 
         protected override void OnGotFocus(EventArgs e)
         {
-            if (!_showSplit)
+            if (!ShowSplit || Disposing || IsDisposed)
             {
                 base.OnGotFocus(e);
                 return;
@@ -168,7 +172,7 @@ namespace Chummer
 
         protected override void OnKeyDown(KeyEventArgs kevent)
         {
-            if (_showSplit)
+            if (ShowSplit && !Disposing && !IsDisposed)
             {
                 switch (kevent.KeyCode)
                 {
@@ -187,20 +191,23 @@ namespace Chummer
 
         protected override void OnKeyUp(KeyEventArgs kevent)
         {
-            switch (kevent.KeyCode)
+            if (!Disposing && !IsDisposed)
             {
-                case Keys.Space:
+                switch (kevent.KeyCode)
                 {
-                    if (MouseButtons == MouseButtons.None)
-                    {
-                        State = PushButtonState.Normal;
-                    }
+                    case Keys.Space:
+                        {
+                            if (MouseButtons == MouseButtons.None)
+                            {
+                                State = PushButtonState.Normal;
+                            }
 
-                    break;
+                            break;
+                        }
+                    case Keys.Apps when MouseButtons == MouseButtons.None && !_isSplitMenuVisible:
+                        ShowContextMenuStrip();
+                        break;
                 }
-                case Keys.Apps when MouseButtons == MouseButtons.None && !_isSplitMenuVisible:
-                    ShowContextMenuStrip();
-                    break;
             }
 
             base.OnKeyUp(kevent);
@@ -208,14 +215,15 @@ namespace Chummer
 
         protected override void OnEnabledChanged(EventArgs e)
         {
-            State = Enabled ? PushButtonState.Normal : PushButtonState.Disabled;
+            if (!Disposing && !IsDisposed)
+                State = Enabled ? PushButtonState.Normal : PushButtonState.Disabled;
 
             base.OnEnabledChanged(e);
         }
 
         protected override void OnLostFocus(EventArgs e)
         {
-            if (!_showSplit)
+            if (!ShowSplit || Disposing || IsDisposed)
             {
                 base.OnLostFocus(e);
                 return;
@@ -231,7 +239,7 @@ namespace Chummer
 
         protected override void OnMouseEnter(EventArgs e)
         {
-            if (!_showSplit)
+            if (!ShowSplit || Disposing || IsDisposed)
             {
                 base.OnMouseEnter(e);
                 return;
@@ -247,7 +255,7 @@ namespace Chummer
 
         protected override void OnMouseLeave(EventArgs e)
         {
-            if (!_showSplit)
+            if (!ShowSplit || Disposing || IsDisposed)
             {
                 base.OnMouseLeave(e);
                 return;
@@ -263,7 +271,7 @@ namespace Chummer
 
         protected override void OnMouseDown(MouseEventArgs mevent)
         {
-            if (!_showSplit)
+            if (!ShowSplit || Disposing || IsDisposed)
             {
                 base.OnMouseDown(mevent);
                 return;
@@ -271,7 +279,7 @@ namespace Chummer
 
             //handle ContextMenu re-clicking the drop-down region to close the menu
             if (m_SplitMenu != null && mevent.Button == MouseButtons.Left && !isMouseEntered)
-                _skipNextOpen = true;
+                _intSkipNextOpen = 1;
 
             if (_dropDownRectangle.Contains(mevent.Location) && !_isSplitMenuVisible && mevent.Button == MouseButtons.Left)
             {
@@ -285,7 +293,7 @@ namespace Chummer
 
         protected override void OnMouseUp(MouseEventArgs mevent)
         {
-            if (!_showSplit)
+            if (!ShowSplit || Disposing || IsDisposed)
             {
                 base.OnMouseUp(mevent);
                 return;
@@ -311,7 +319,7 @@ namespace Chummer
         {
             base.OnPaint(pevent);
 
-            if (!_showSplit)
+            if (!ShowSplit || Disposing || IsDisposed)
                 return;
 
             Graphics g = pevent.Graphics;
@@ -429,10 +437,10 @@ namespace Chummer
             Size preferredSize = base.GetPreferredSize(proposedSize);
 
             //autosize correctly for splitbuttons
-            if (_showSplit)
+            if (ShowSplit && !Disposing && !IsDisposed)
             {
                 if (AutoSize)
-                    return CalculateButtonAutoSize();
+                    return CalculateButtonAutoSize(preferredSize);
 
                 if (!string.IsNullOrEmpty(Text) && TextRenderer.MeasureText(Text, Font).Width + SplitSectionWidth > preferredSize.Width)
                     return preferredSize + new Size(SplitSectionWidth + BorderSize * 2, 0);
@@ -441,48 +449,57 @@ namespace Chummer
             return preferredSize;
         }
 
-        private Size CalculateButtonAutoSize()
+        private Size CalculateButtonAutoSize(Size sizeInitial = default)
         {
-            Size ret_size = Size.Empty;
-            Size text_size = TextRenderer.MeasureText(Text, Font);
-            Size image_size = Image?.Size ?? Size.Empty;
+            Size sizeReturn = Size.Empty;
+            Size sizeText = TextRenderer.MeasureText(Text, Font, sizeInitial);
 
             // Pad the text size
-            if (Text.Length != 0)
+            bool blnHasText = Text.Length != 0;
+            if (blnHasText)
             {
-                text_size.Height += 4;
-                text_size.Width += 4;
+                sizeText.Height += 4;
+                sizeText.Width += 4;
             }
-
-            switch (TextImageRelation)
+            if (Image != null)
             {
-                case TextImageRelation.Overlay:
-                    ret_size.Height = Math.Max(Text.Length == 0 ? 0 : text_size.Height, image_size.Height);
-                    ret_size.Width = Math.Max(text_size.Width, image_size.Width);
-                    break;
+                Size sizeImage = Image.Size;
+                switch (TextImageRelation)
+                {
+                    case TextImageRelation.Overlay:
+                        sizeReturn.Height = Math.Max(blnHasText ? sizeText.Height : 0, sizeImage.Height);
+                        sizeReturn.Width = Math.Max(sizeText.Width, sizeImage.Width);
+                        break;
 
-                case TextImageRelation.ImageAboveText:
-                case TextImageRelation.TextAboveImage:
-                    ret_size.Height = text_size.Height + image_size.Height;
-                    ret_size.Width = Math.Max(text_size.Width, image_size.Width);
-                    break;
+                    case TextImageRelation.ImageAboveText:
+                    case TextImageRelation.TextAboveImage:
+                        sizeReturn.Height = sizeText.Height + sizeImage.Height;
+                        sizeReturn.Width = Math.Max(sizeText.Width, sizeImage.Width);
+                        break;
 
-                case TextImageRelation.ImageBeforeText:
-                case TextImageRelation.TextBeforeImage:
-                    ret_size.Height = Math.Max(text_size.Height, image_size.Height);
-                    ret_size.Width = text_size.Width + image_size.Width;
-                    break;
+                    case TextImageRelation.ImageBeforeText:
+                    case TextImageRelation.TextBeforeImage:
+                        sizeReturn.Height = Math.Max(sizeText.Height, sizeImage.Height);
+                        sizeReturn.Width = sizeText.Width + sizeImage.Width;
+                        break;
+                }
             }
+            else
+                sizeReturn = sizeText;
 
             // Pad the result
-            ret_size.Height += (Padding.Vertical + 6);
-            ret_size.Width += (Padding.Horizontal + 6);
+            sizeReturn.Height += 2 * Padding.Vertical + 6;
+            sizeReturn.Width += 2 * Padding.Horizontal + 6;
 
             //pad the splitButton arrow region
-            if (_showSplit)
-                ret_size.Width += SplitSectionWidth;
+            if (ShowSplit)
+                sizeReturn.Width += SplitSectionWidth;
 
-            return ret_size;
+            // Make sure we are not smaller than the base class' preferred size
+            sizeReturn.Height = Math.Max(sizeInitial.Height, sizeReturn.Height);
+            sizeReturn.Width = Math.Max(sizeInitial.Width, sizeReturn.Width);
+
+            return sizeReturn;
         }
 
         #region Button Layout Calculations
@@ -811,11 +828,10 @@ namespace Chummer
 
         private void ShowContextMenuStrip()
         {
-            if (_skipNextOpen)
+            if (Interlocked.CompareExchange(ref _intSkipNextOpen, 0, 1) == 1)
             {
                 // we were called because we're closing the context menu strip
                 // when clicking the dropdown button.
-                _skipNextOpen = false;
                 return;
             }
 
@@ -844,7 +860,8 @@ namespace Chummer
 
             if (e.CloseReason == ToolStripDropDownCloseReason.AppClicked)
             {
-                _skipNextOpen = (_dropDownRectangle.Contains(PointToClient(Cursor.Position))) && MouseButtons == MouseButtons.Left;
+                _intSkipNextOpen = (_dropDownRectangle.Contains(PointToClient(Cursor.Position))
+                                    && MouseButtons == MouseButtons.Left).ToInt32();
             }
         }
 
@@ -856,7 +873,7 @@ namespace Chummer
         protected override void WndProc(ref Message m)
         {
             //0x0212 == WM_EXITMENULOOP
-            if (m.Msg == 0x0212)
+            if (m.Msg == 0x0212 && !Disposing && !IsDisposed)
             {
                 //this message is only sent when a ContextMenu is closed (not a ContextMenuStrip)
                 _isSplitMenuVisible = false;

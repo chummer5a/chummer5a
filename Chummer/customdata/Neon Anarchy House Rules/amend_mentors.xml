@@ -24,7 +24,56 @@
 -->
 <chummer>
 	<mentors>
+    <!---banned -->
+        <mentor>
+            <name>Doom</name>
+            <hide />
+        </mentor>
+        <mentor>
+            <name>Disease</name>
+            <hide />
+        </mentor>
+        <mentor>
+            <name>Pollution</name>
+            <hide />
+        </mentor>
+        <mentor>
+            <name>Mutation</name>
+            <hide />
+        </mentor>
+        <mentor>
+            <name>Planar Entity</name>
+            <hide />
+        </mentor>
+        <mentor>
+            <name>Tohu Wa-Bohu</name>
+            <hide />
+        </mentor>
+    <!--- adjusted -->
 		<mentor>
+            <name>Fox</name>
+            <choices amendoperation="replace">
+            <choice>
+            <name>Magician: +2 dice pool modifier when casting Illusion spells, preparations, and rituals</name>
+                <bonus>
+                <spellcategory>
+                    <name>Illusion</name>
+                    <val>2</val>
+                </spellcategory>
+                </bonus>
+            </choice>
+            <choice>
+                <name>Adept: Gain 1 free level of Combat Sense.</name>
+            <bonus>
+                <specificpower>
+                <name>Combat Sense</name>
+                <val>1</val>
+                </specificpower>
+            </bonus>
+                </choice>
+        </choices>
+    </mentor>
+        <mentor>
 			<name>Goddess</name>
 			<advantage>All: +2 dice pool modifier for Leadership Tests.</advantage>
 			<bonus amendoperation="replace">

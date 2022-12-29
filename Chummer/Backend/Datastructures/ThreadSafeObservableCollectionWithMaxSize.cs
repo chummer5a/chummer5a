@@ -17,8 +17,10 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Chummer
 {
@@ -34,74 +36,107 @@ namespace Chummer
         public ThreadSafeObservableCollectionWithMaxSize(List<T> list, int intMaxSize) : base(list)
         {
             _intMaxSize = intMaxSize;
-            _blnSkipCollectionChanged = true;
-            using (new EnterWriteLock(LockObject))
+            for (int intCount = Count; intCount >= _intMaxSize; --intCount)
             {
-                while (Count > _intMaxSize)
-                    RemoveAt(Count - 1);
+                RemoveAt(intCount - 1);
             }
-            _blnSkipCollectionChanged = false;
         }
 
         public ThreadSafeObservableCollectionWithMaxSize(IEnumerable<T> collection, int intMaxSize) : base(collection)
         {
             _intMaxSize = intMaxSize;
-            _blnSkipCollectionChanged = true;
-            using (new EnterWriteLock(LockObject))
+            for (int intCount = Count; intCount >= _intMaxSize; --intCount)
             {
-                while (Count > _intMaxSize)
-                    RemoveAt(Count - 1);
+                RemoveAt(intCount - 1);
             }
-            _blnSkipCollectionChanged = false;
         }
 
-        private bool _blnSkipCollectionChanged;
-
-        /// <inheritdoc />
-        protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+        /// <inheritdoc cref="List{T}.Insert" />
+        public override void Insert(int index, T item)
         {
-            using (new EnterUpgradeableReadLock(LockObject))
-            {
-                if (_blnSkipCollectionChanged)
-                    return;
-                if (e.Action == NotifyCollectionChangedAction.Reset)
-                {
-                    _blnSkipCollectionChanged = true;
-                    using (new EnterWriteLock(LockObject))
-                    {
-                        // Remove all entries greater than the allowed size
-                        while (Count > _intMaxSize)
-                            RemoveItem(Count - 1);
-                    }
-                    _blnSkipCollectionChanged = false;
-                }
-            }
-            base.OnCollectionChanged(e);
-        }
-
-        /// <inheritdoc />
-        protected override void InsertItem(int index, T item)
-        {
-            // Immediately enter a write lock to prevent attempted reads until we have either inserted the item we want to insert or failed to do so
-            using (new EnterWriteLock(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 if (index >= _intMaxSize)
                     return;
-                while (Count >= _intMaxSize)
-                    RemoveItem(Count - 1);
-                base.InsertItem(index, item);
+                for (int intCount = Count; intCount >= _intMaxSize; --intCount)
+                {
+                    RemoveAt(intCount - 1);
+                }
+                base.Insert(index, item);
+            }
+        }
+
+        /// <inheritdoc cref="List{T}.Insert" />
+        public override async ValueTask InsertAsync(int index, T item, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                if (index >= _intMaxSize)
+                    return;
+                for (int intCount = await GetCountAsync(token).ConfigureAwait(false); intCount >= _intMaxSize; --intCount)
+                {
+                    await RemoveAtAsync(intCount - 1, token).ConfigureAwait(false);
+                }
+                await base.InsertAsync(index, item, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public override int Add(object value)
+        {
+            using (EnterReadLock.Enter(LockObject))
+            {
+                if (Count >= _intMaxSize)
+                    return -1;
+                return base.Add(value);
+            }
+        }
+
+        /// <inheritdoc />
+        public override void Add(T item)
+        {
+            using (EnterReadLock.Enter(LockObject))
+            {
+                if (Count >= _intMaxSize)
+                    return;
+                base.Add(item);
+            }
+        }
+
+        public override async ValueTask AddAsync(T item, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (await GetCountAsync(token).ConfigureAwait(false) >= _intMaxSize)
+                    return;
+                await base.AddAsync(item, token).ConfigureAwait(false);
             }
         }
 
         /// <inheritdoc />
         public override bool TryAdd(T item)
         {
-            // Immediately enter a write lock to prevent attempted reads until we have either added the item we want to add or failed to do so
-            using (new EnterWriteLock(LockObject))
+            using (EnterReadLock.Enter(LockObject))
             {
                 if (Count >= _intMaxSize)
                     return false;
-                Add(item);
+                base.Add(item);
+                return true;
+            }
+        }
+
+        /// <inheritdoc />
+        public override async ValueTask<bool> TryAddAsync(T item, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (await GetCountAsync(token).ConfigureAwait(false) >= _intMaxSize)
+                    return false;
+                await base.AddAsync(item, token).ConfigureAwait(false);
                 return true;
             }
         }

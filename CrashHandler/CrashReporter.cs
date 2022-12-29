@@ -1,35 +1,59 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
+
 using System;
 using System.Diagnostics;
 using System.IO;
 using System.Text;
 using System.Windows.Forms;
+using Chummer;
+using NLog;
 
 namespace CrashHandler
 {
     public sealed partial class CrashReporter : Form
     {
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
+
         private delegate void ChangeDesc(CrashDumperProgress progress, string desc);
 
-        private readonly CrashDumper _dumper;
+        private readonly CrashDumper _objDumper;
 
-        public CrashReporter(CrashDumper dumper)
+        public CrashReporter(CrashDumper objDumper)
         {
-            _dumper = dumper ?? throw new ArgumentNullException(nameof(dumper));
+            _objDumper = objDumper ?? throw new ArgumentNullException(nameof(objDumper));
             InitializeComponent();
-            lblDesc.Text = _dumper.Attributes["visible-error-friendly"];
-            txtIdSelectable.Text = "Crash followup Id = " + _dumper.Attributes["visible-crash-id"];
-            txtIdSelectable2.Text = "Installation Id = " + _dumper.Attributes["installation-id"];
-            _dumper.CrashDumperProgressChanged += DumperOnCrashDumperProgressChanged;
+            lblDesc.Text = _objDumper.Attributes["visible-error-friendly"];
+            txtIdSelectable.Text = "Crash followup Id = " + _objDumper.Attributes["visible-crash-id"];
+            txtIdSelectable2.Text = "Installation Id = " + _objDumper.Attributes["installation-id"];
+            _objDumper.CrashDumperProgressChanged += DumperOnCrashDumperProgressChanged;
         }
 
         private void frmCrashReporter_Load(object sender, EventArgs e)
         {
-            _dumper.StartCollecting();
+            _objDumper.StartCollecting();
         }
 
         private void frmCrashReporter_FormClosing(object sender, FormClosingEventArgs e)
         {
-            _dumper.CrashDumperProgressChanged -= DumperOnCrashDumperProgressChanged;
+            _objDumper.CrashDumperProgressChanged -= DumperOnCrashDumperProgressChanged;
         }
 
         private void DumperOnCrashDumperProgressChanged(object sender, CrashDumperProgressChangedEventArgs args)
@@ -39,68 +63,95 @@ namespace CrashHandler
 
         private void ChangeProgress(CrashDumperProgress progress, string desc)
         {
-            statusCollectionProgess.Text = desc;
-            if (progress == CrashDumperProgress.FinishedSending)
-            {
-                Close();
-            }
+            tslStatusCollectionProgess.Text = desc;
+            if (progress == CrashDumperProgress.Finished)
+                lblContents.Enabled = true;
         }
 
         private void lblContents_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
-            _dumper.DoCleanUp = false;
-            Process.Start("explorer.exe", _dumper.WorkingDirectory);
+            Process.Start("explorer.exe", Utils.GetStartupPath);
         }
 
-        private void txtDesc_TextChanged(object sender, EventArgs e)
+        private void rtbUserStory_TextChanged(object sender, EventArgs e)
         {
-            btnSend.Enabled = cmdSubmitIssue.Enabled = lblDescriptionWarning.Visible =
-                txtUserStory.TextLength > 0 && !txtUserStory.Text.Contains("(Enter text here)");
+            cmdSubmitIssue.Enabled = lblDescriptionWarning.Visible
+                = rtbUserStory.TextLength > 0 && !rtbUserStory.Text.Contains("(Enter text here)");
         }
 
-        private void btnNo_Click(object sender, EventArgs e)
+        private void cmdClose_Click(object sender, EventArgs e)
         {
-            //TODO: Convert to restart, collect previously loaded character files from application and relaunch?
             DialogResult = DialogResult.Cancel;
-            _dumper.CrashDumperProgressChanged -= DumperOnCrashDumperProgressChanged;
-            Environment.Exit(-1);
-            // Close();
+            Application.Exit();
         }
 
-        private async void btnSend_Click(object sender, EventArgs e)
+        private void cmdRestart_Click(object sender, EventArgs e)
         {
-            using (FileStream fs = File.OpenWrite(Path.Combine(_dumper.WorkingDirectory, "userstory.txt")))
+            DialogResult = DialogResult.Cancel;
+            Application.UseWaitCursor = true;
+            string strArguments = string.Empty;
+            // Get the parameters/arguments passed to program if any
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdArguments))
             {
-                fs.Seek(0, SeekOrigin.Begin);
-                byte[] bytes = Encoding.UTF8.GetBytes(txtUserStory.Text);
-                await fs.WriteAsync(bytes, 0, bytes.Length);
-                fs.Flush(true);
-            }
+                try
+                {
+                    foreach (CharacterShared objOpenCharacterForm in Chummer.Program.MainForm
+                                                                            .OpenCharacterEditorForms)
+                    {
+                        try
+                        {
+                            sbdArguments.Append('\"').Append(objOpenCharacterForm.CharacterObject.FileName)
+                                    .Append("\" ");
+                        }
+                        catch (Exception ex)
+                        {
+                            // Swallow any exceptions
+                            Log.Info(ex);
+                            Utils.BreakIfDebug();
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    // Swallow any exceptions
+                    Log.Info(ex);
+                    Utils.BreakIfDebug();
+                }
 
-            _dumper.AllowSending();
-            DialogResult = DialogResult.OK;
-            Close();
+                if (sbdArguments.Length > 0)
+                {
+                    --sbdArguments.Length;
+                    strArguments = sbdArguments.ToString();
+                }
+            }
+            ProcessStartInfo objStartInfo = new ProcessStartInfo
+            {
+                FileName = Utils.GetStartupPath + Path.DirectorySeparatorChar + AppDomain.CurrentDomain.FriendlyName,
+                Arguments = strArguments
+            };
+            Application.Exit();
+            objStartInfo.Start();
         }
 
         private void cmdSubmitIssue_Click(object sender, EventArgs e)
         {
-            string strTitle = HtmlWrap("Auto-Generated Issue from Crash: ID " + _dumper.Attributes["visible-crash-id"]);
+            string strTitle = HtmlWrap("Auto-Generated Issue from Crash: ID " + _objDumper.Attributes["visible-crash-id"]);
             string strBody = HtmlWrap("### Environment"
-                                      + Environment.NewLine + "Crash ID: " + _dumper.Attributes["visible-crash-id"]
+                                      + Environment.NewLine + "Crash ID: " + _objDumper.Attributes["visible-crash-id"]
                                       + Environment.NewLine + "Chummer Version: " +
-                                      _dumper.Attributes["visible-version"]
-                                      + Environment.NewLine + "Environment: " + _dumper.Attributes["os-name"]
+                                      _objDumper.Attributes["visible-version"]
+                                      + Environment.NewLine + "Environment: " + _objDumper.Attributes["os-name"]
                                       + Environment.NewLine + "Runtime: " + Environment.Version
                                       + Environment.NewLine + "Option upload logs set: " +
-                                      _dumper.Attributes["option-upload-logs-set"]
+                                      _objDumper.Attributes["option-upload-logs-set"]
                                       + Environment.NewLine + "Installation ID: " +
-                                      _dumper.Attributes["installation-id"]
-                                      + Environment.NewLine + Environment.NewLine + txtUserStory.Text
+                                      _objDumper.Attributes["installation-id"]
+                                      + Environment.NewLine + Environment.NewLine + rtbUserStory.Text
                                       + Environment.NewLine + Environment.NewLine + "### Crash Description"
-                                      + Environment.NewLine + _dumper.Attributes["visible-error-friendly"]
-                                      + Environment.NewLine + _dumper.Attributes["visible-stacktrace"]);
-            string strSend =
-                $"https://github.com/chummer5a/chummer5a/issues/new?labels=new&title={strTitle}&body={strBody}";
+                                      + Environment.NewLine + _objDumper.Attributes["visible-error-friendly"]
+                                      + Environment.NewLine + _objDumper.Attributes["visible-stacktrace"]);
+            string strSend = "https://github.com/chummer5a/chummer5a/issues/new?labels=new&title=" + strTitle + "&body="
+                             + strBody;
 
             string HtmlWrap(string strInput)
             {

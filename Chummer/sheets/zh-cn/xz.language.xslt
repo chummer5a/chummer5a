@@ -365,11 +365,13 @@
   <xsl:variable name="lang.SocialLimit"    select="string('社交界限')" />
 
   <!-- spell types list -->
+  <xsl:variable name="lang.Alchemical"         select="string('Alchemical')" />
   <xsl:variable name="lang.CombatSpells"    select="string('战斗法术')" />
   <xsl:variable name="lang.DetectionSpells"  select="string('侦测法术')" />
   <xsl:variable name="lang.Enchantments"    select="string('附魔')" />
   <xsl:variable name="lang.HealthSpells"     select="string('生命法术')" />
   <xsl:variable name="lang.IllusionSpells"   select="string('幻象法术')" />
+  <xsl:variable name="lang.Limited"            select="string('Limited')" />
   <xsl:variable name="lang.ManipulationSpells" select="string('操纵法术')" />
   <xsl:variable name="lang.Rituals"      select="string('仪式')" />
 
@@ -392,7 +394,7 @@
 
   <!-- miscellaneous signs and symbols -->
     <!-- currency symbol -->
-  <xsl:variable name="lang.NuyenSymbol"  select="string('&#165;')" />
+  <xsl:variable name="lang.NuyenSymbol"  select="string('&#65509;')" />
     <!-- diacrtic marks: decimal mark and grouping separator -->
   <xsl:variable name="lang.marks"      select="string('.,')" />
 </xsl:stylesheet>

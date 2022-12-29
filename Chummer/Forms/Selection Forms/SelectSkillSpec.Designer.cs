@@ -28,15 +28,14 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cboSpec = new Chummer.ElasticComboBox();
             this.lblAmmoLabel = new System.Windows.Forms.Label();
             this.lblDescription = new System.Windows.Forms.Label();
-            this.chkKarma = new Chummer.ColorableCheckBox(this.components);
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.chkKarma = new Chummer.ColorableCheckBox();
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.tlpMain.SuspendLayout();
             this.tlpButtons.SuspendLayout();
             this.SuspendLayout();
@@ -46,9 +45,10 @@ namespace Chummer
             this.cmdOK.AutoSize = true;
             this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdOK.Location = new System.Drawing.Point(59, 3);
+            this.cmdOK.Location = new System.Drawing.Point(89, 3);
+            this.cmdOK.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdOK.Name = "cmdOK";
-            this.cmdOK.Size = new System.Drawing.Size(50, 23);
+            this.cmdOK.Size = new System.Drawing.Size(80, 23);
             this.cmdOK.TabIndex = 3;
             this.cmdOK.Tag = "String_OK";
             this.cmdOK.Text = "OK";
@@ -62,8 +62,9 @@ namespace Chummer
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cmdCancel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdCancel.Location = new System.Drawing.Point(3, 3);
+            this.cmdCancel.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(50, 23);
+            this.cmdCancel.Size = new System.Drawing.Size(80, 23);
             this.cmdCancel.TabIndex = 4;
             this.cmdCancel.Tag = "String_Cancel";
             this.cmdCancel.Text = "Cancel";
@@ -77,9 +78,9 @@ namespace Chummer
             this.cboSpec.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSpec.DropDownWidth = 252;
             this.cboSpec.FormattingEnabled = true;
-            this.cboSpec.Location = new System.Drawing.Point(47, 30);
+            this.cboSpec.Location = new System.Drawing.Point(47, 50);
             this.cboSpec.Name = "cboSpec";
-            this.cboSpec.Size = new System.Drawing.Size(276, 21);
+            this.cboSpec.Size = new System.Drawing.Size(236, 21);
             this.cboSpec.TabIndex = 2;
             this.cboSpec.TooltipText = "";
             this.cboSpec.SelectedIndexChanged += new System.EventHandler(this.cboSpec_SelectedIndexChanged);
@@ -88,7 +89,7 @@ namespace Chummer
             // 
             this.lblAmmoLabel.AutoSize = true;
             this.lblAmmoLabel.Dock = System.Windows.Forms.DockStyle.Right;
-            this.lblAmmoLabel.Location = new System.Drawing.Point(3, 33);
+            this.lblAmmoLabel.Location = new System.Drawing.Point(3, 53);
             this.lblAmmoLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblAmmoLabel.Name = "lblAmmoLabel";
             this.lblAmmoLabel.Size = new System.Drawing.Size(38, 15);
@@ -104,7 +105,7 @@ namespace Chummer
             this.lblDescription.Location = new System.Drawing.Point(3, 6);
             this.lblDescription.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDescription.Name = "lblDescription";
-            this.lblDescription.Size = new System.Drawing.Size(320, 15);
+            this.lblDescription.Size = new System.Drawing.Size(280, 35);
             this.lblDescription.TabIndex = 0;
             this.lblDescription.Tag = "Label_SelectSkillSpecialization_Description";
             this.lblDescription.Text = "Select a Skill Specialization to add to your character.";
@@ -115,7 +116,7 @@ namespace Chummer
             this.tlpMain.SetColumnSpan(this.chkKarma, 2);
             this.chkKarma.DefaultColorScheme = true;
             this.chkKarma.Dock = System.Windows.Forms.DockStyle.Right;
-            this.chkKarma.Location = new System.Drawing.Point(36, 57);
+            this.chkKarma.Location = new System.Drawing.Point(3, 77);
             this.chkKarma.Name = "chkKarma";
             this.chkKarma.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
             this.chkKarma.Size = new System.Drawing.Size(99, 17);
@@ -130,8 +131,8 @@ namespace Chummer
             this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpMain.ColumnCount = 3;
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 66.66666F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.Controls.Add(this.lblDescription, 0, 0);
             this.tlpMain.Controls.Add(this.cboSpec, 1, 1);
             this.tlpMain.Controls.Add(this.lblAmmoLabel, 0, 1);
@@ -145,7 +146,7 @@ namespace Chummer
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.Size = new System.Drawing.Size(326, 83);
+            this.tlpMain.Size = new System.Drawing.Size(286, 103);
             this.tlpMain.TabIndex = 16;
             // 
             // tlpButtons
@@ -158,24 +159,23 @@ namespace Chummer
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
             this.tlpButtons.Controls.Add(this.cmdOK, 1, 0);
-            this.tlpButtons.Location = new System.Drawing.Point(214, 54);
+            this.tlpButtons.Location = new System.Drawing.Point(114, 74);
             this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
             this.tlpMain.SetRowSpan(this.tlpButtons, 2);
-            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpButtons.Size = new System.Drawing.Size(112, 29);
+            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpButtons.Size = new System.Drawing.Size(172, 29);
             this.tlpButtons.TabIndex = 17;
             // 
-            // frmSelectSpec
+            // SelectSpec
             // 
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(344, 101);
+            this.ClientSize = new System.Drawing.Size(304, 121);
             this.ControlBox = false;
             this.Controls.Add(this.tlpMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -205,7 +205,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblAmmoLabel;
         private System.Windows.Forms.Label lblDescription;
         private Chummer.ColorableCheckBox chkKarma;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
-        private BufferedTableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
     }
 }

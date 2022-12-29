@@ -332,8 +332,7 @@
       <useskill>Edged Weapons</useskill>
       <spec>Monofilament Flexible Weapons</spec>
     </weapon>
-    <weapon>
-      <name>Chakram</name>
+    <weapon xpathfilter="name = 'Chakram' and category = 'Exotic Melee Weapons'">
       <category>Blades</category>
       <useskill>Edged Weapons</useskill>
       <spec>Small Blades</spec>
@@ -397,8 +396,7 @@
       <spec>Small Blades</spec>
       <useskill>Throwing Weapons</useskill>
     </weapon>
-    <weapon>
-      <name>Chakram</name>
+    <weapon xpathfilter="name = 'Chakram' and category = 'Gear'">
       <spec>Small Blades</spec>
       <useskill>Throwing Weapons</useskill>
     </weapon>

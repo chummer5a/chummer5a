@@ -36,11 +36,13 @@ namespace Chummer
         private void cmdOK_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.OK;
+            Close();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         #endregion Control Events
@@ -50,7 +52,7 @@ namespace Chummer
         /// <summary>
         /// The percentage the item will be sold at.
         /// </summary>
-        public decimal SellPercent => nudPercent.Value / 100.0m;
+        public decimal SellPercent => nudPercent.DoThreadSafeFunc(x => x.Value) / 100.0m;
 
         #endregion Properties
     }

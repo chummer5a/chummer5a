@@ -22,7 +22,7 @@
 -->
 <chummer>
     <version>-350</version>
-    <name>汉语 (zh-CN)</name>
+    <name>汉语（zh-CN）</name>
   <righttoleft>False</righttoleft>
     <strings>
         <!-- Meta Strings -->
@@ -62,6 +62,10 @@
         <string>
             <key>String_Colon</key>
             <text>：</text>
+        </string>
+        <string>
+          <key>String_NuyenSymbol</key>
+          <text>￥</text>
         </string>
         <string>
             <key>String_Remaining</key>
@@ -7310,7 +7314,7 @@
         </string>
         <string>
             <key>Message_KarmaNuyenExchange</key>
-            <text>只能以2,000¥的整数倍来兑换新円。</text>
+            <text>只能以{0}的整数倍来兑换新円。</text>
         </string>
         <string>
             <key>Message_NoExtraKarma</key>
@@ -8109,8 +8113,8 @@
             <text>HTML 文件 (*.htm;*.html)|*.htm;*.html</text>
         </string>
         <string>
-            <key>DialogFilter_Chum5</key>
-            <text>Chummer5 文件 (*.chum5)|*.chum5</text>
+            <key>DialogFilter_Chummer</key>
+            <text>Chummer5 文件 (*.chum5;*.chum5lz)|*.chum5;*.chum5lz</text>
         </string>
         <string>
             <key>DialogFilter_Pdf</key>

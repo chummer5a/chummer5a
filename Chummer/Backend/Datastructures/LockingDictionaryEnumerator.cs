@@ -19,6 +19,8 @@
 
 using System;
 using System.Collections;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Chummer
 {
@@ -28,10 +30,21 @@ namespace Chummer
 
         private IDictionaryEnumerator _objInternalEnumerator;
 
-        public LockingDictionaryEnumerator(IHasLockObject objMyParent)
+        public static LockingDictionaryEnumerator Get(IHasLockObject objMyParent)
+        {
+            objMyParent.LockObject.EnterReadLock();
+            return new LockingDictionaryEnumerator(objMyParent);
+        }
+
+        public static async ValueTask<LockingDictionaryEnumerator> GetAsync(IHasLockObject objMyParent, CancellationToken token = default)
+        {
+            await objMyParent.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            return new LockingDictionaryEnumerator(objMyParent);
+        }
+
+        private LockingDictionaryEnumerator(IHasLockObject objMyParent)
         {
             _objMyParent = objMyParent;
-            _objMyParent.LockObject.EnterReadLock();
         }
 
         public void SetEnumerator(IDictionaryEnumerator objInternalEnumerator)

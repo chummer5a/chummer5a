@@ -15,14 +15,9 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && (components != null))
             {
-                components?.Dispose();
-                _frmRoller?.Dispose();
-                _frmUpdate?.Dispose();
-                _frmProgressBar?.Dispose();
-                _mascotChummy?.Dispose();
-                _lstCharacters.Dispose();
+                components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -38,69 +33,77 @@ namespace Chummer
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ChummerMainForm));
             this.menuStrip = new System.Windows.Forms.MenuStrip();
             this.fileMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.newToolStripMenuItem = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuNewCritter = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.openToolStripMenuItem = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.toolStripSeparator3 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator4 = new System.Windows.Forms.ToolStripSeparator();
-            this.printToolStripMenuItem = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuFilePrintMultiple = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.printSetupToolStripMenuItem = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuClearUnpinnedItems = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuMURSep = new System.Windows.Forms.ToolStripSeparator();
-            this.mnuStickyMRU0 = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuStickyMRU1 = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuStickyMRU2 = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuStickyMRU3 = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuStickyMRU4 = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuStickyMRU5 = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuStickyMRU6 = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuStickyMRU7 = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuStickyMRU8 = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuStickyMRU9 = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuMRU0 = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuMRU1 = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuMRU2 = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuMRU3 = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuMRU4 = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuMRU5 = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuMRU6 = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuMRU7 = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuMRU8 = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuMRU9 = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuFileMRUSeparator = new System.Windows.Forms.ToolStripSeparator();
-            this.exitToolStripMenuItem = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.newToolStripMenuItem = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuNewCritter = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.openToolStripMenuItem = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuOpenForPrinting = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuOpenForExport = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.toolStripSeparator3 = new Chummer.ColorableToolStripSeparator();
+            this.toolStripSeparator4 = new Chummer.ColorableToolStripSeparator();
+            this.printToolStripMenuItem = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuFilePrintMultiple = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.printSetupToolStripMenuItem = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuClearUnpinnedItems = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuMURSep = new Chummer.ColorableToolStripSeparator();
+            this.mnuStickyMRU0 = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuStickyMRU1 = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuStickyMRU2 = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuStickyMRU3 = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuStickyMRU4 = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuStickyMRU5 = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuStickyMRU6 = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuStickyMRU7 = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuStickyMRU8 = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuStickyMRU9 = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuMRU0 = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuMRU1 = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuMRU2 = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuMRU3 = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuMRU4 = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuMRU5 = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuMRU6 = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuMRU7 = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuMRU8 = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuMRU9 = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuFileMRUSeparator = new Chummer.ColorableToolStripSeparator();
+            this.exitToolStripMenuItem = new Chummer.DpiFriendlyToolStripMenuItem();
             this.toolsMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuToolsDiceRoller = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.toolStripSeparator5 = new System.Windows.Forms.ToolStripSeparator();
-            this.mnuGlobalSettings = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuCharacterSettings = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuToolsUpdate = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuRestart = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.toolStripSeparator6 = new System.Windows.Forms.ToolStripSeparator();
-            this.mnuToolsTranslator = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuHeroLabImporter = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.mnuToolsDiceRoller = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.toolStripSeparator5 = new Chummer.ColorableToolStripSeparator();
+            this.mnuGlobalSettings = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuCharacterSettings = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuToolsUpdate = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuRestart = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.toolStripSeparator6 = new Chummer.ColorableToolStripSeparator();
+            this.mnuToolsTranslator = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuHeroLabImporter = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuMasterIndex = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuCharacterRoster = new Chummer.DpiFriendlyToolStripMenuItem();
             this.windowsMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.newWindowToolStripMenuItem = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.closeAllToolStripMenuItem = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.newWindowToolStripMenuItem = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.closeWindowToolStripMenuItem = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.closeAllToolStripMenuItem = new Chummer.DpiFriendlyToolStripMenuItem();
             this.helpMenu = new System.Windows.Forms.ToolStripMenuItem();
-            this.mnuChummerWiki = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuChummerDiscord = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.toolStripSeparator8 = new System.Windows.Forms.ToolStripSeparator();
-            this.mnuHelpRevisionHistory = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.mnuHelpDumpshock = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.aboutToolStripMenuItem = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.mnuChummerWiki = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuChummerDiscord = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.toolStripSeparator8 = new Chummer.ColorableToolStripSeparator();
+            this.mnuHelpRevisionHistory = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuHelpDumpshock = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.aboutToolStripMenuItem = new Chummer.DpiFriendlyToolStripMenuItem();
             this.toolStrip = new System.Windows.Forms.ToolStrip();
-            this.tsbNewCharacter = new Chummer.DpiFriendlyToolStripButton(this.components);
-            this.tsbOpen = new Chummer.DpiFriendlyToolStripButton(this.components);
-            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
-            this.toolStripSeparator2 = new System.Windows.Forms.ToolStripSeparator();
+            this.tsbNewCharacter = new Chummer.DpiFriendlyToolStripButton();
+            this.tsbOpen = new Chummer.DpiFriendlyToolStripButton();
+            this.tsbOpenForPrinting = new Chummer.DpiFriendlyToolStripButton();
+            this.tsbOpenForExport = new Chummer.DpiFriendlyToolStripButton();
+            this.toolStripSeparator1 = new Chummer.ColorableToolStripSeparator();
+            this.toolStripSeparator2 = new Chummer.ColorableToolStripSeparator();
             this.tabForms = new System.Windows.Forms.TabControl();
             this.mnuProcessFile = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsSave = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsSaveAs = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsClose = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsPrint = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsSave = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsSaveAs = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsClose = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsPrint = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.dlgOpenFile = new System.Windows.Forms.OpenFileDialog();
             this.menuStrip.SuspendLayout();
             this.toolStrip.SuspendLayout();
             this.mnuProcessFile.SuspendLayout();
@@ -127,6 +130,8 @@ namespace Chummer
             this.newToolStripMenuItem,
             this.mnuNewCritter,
             this.openToolStripMenuItem,
+            this.mnuOpenForPrinting,
+            this.mnuOpenForExport,
             this.toolStripSeparator3,
             this.toolStripSeparator4,
             this.printToolStripMenuItem,
@@ -212,13 +217,45 @@ namespace Chummer
             this.openToolStripMenuItem.Text = "&Open";
             this.openToolStripMenuItem.Click += new System.EventHandler(this.OpenFile);
             // 
+            // mnuOpenForPrinting
+            // 
+            this.mnuOpenForPrinting.Image = global::Chummer.Properties.Resources.folder_print;
+            this.mnuOpenForPrinting.ImageDpi120 = null;
+            this.mnuOpenForPrinting.ImageDpi144 = null;
+            this.mnuOpenForPrinting.ImageDpi192 = global::Chummer.Properties.Resources.folder_print1;
+            this.mnuOpenForPrinting.ImageDpi288 = null;
+            this.mnuOpenForPrinting.ImageDpi384 = null;
+            this.mnuOpenForPrinting.ImageDpi96 = global::Chummer.Properties.Resources.folder_print;
+            this.mnuOpenForPrinting.Name = "mnuOpenForPrinting";
+            this.mnuOpenForPrinting.Size = new System.Drawing.Size(195, 22);
+            this.mnuOpenForPrinting.Tag = "Menu_Main_OpenForPrinting";
+            this.mnuOpenForPrinting.Text = "Open for P&rinting";
+            this.mnuOpenForPrinting.Click += new System.EventHandler(this.OpenFileForPrinting);
+            // 
+            // mnuOpenForExport
+            // 
+            this.mnuOpenForExport.Image = global::Chummer.Properties.Resources.folder_script_go;
+            this.mnuOpenForExport.ImageDpi120 = null;
+            this.mnuOpenForExport.ImageDpi144 = null;
+            this.mnuOpenForExport.ImageDpi192 = global::Chummer.Properties.Resources.folder_script_go1;
+            this.mnuOpenForExport.ImageDpi288 = null;
+            this.mnuOpenForExport.ImageDpi384 = null;
+            this.mnuOpenForExport.ImageDpi96 = global::Chummer.Properties.Resources.folder_script_go;
+            this.mnuOpenForExport.Name = "mnuOpenForExport";
+            this.mnuOpenForExport.Size = new System.Drawing.Size(195, 22);
+            this.mnuOpenForExport.Tag = "Menu_Main_OpenForExport";
+            this.mnuOpenForExport.Text = "Open for E&xport";
+            this.mnuOpenForExport.Click += new System.EventHandler(this.OpenFileForExport);
+            // 
             // toolStripSeparator3
             // 
+            this.toolStripSeparator3.DefaultColorScheme = true;
             this.toolStripSeparator3.Name = "toolStripSeparator3";
             this.toolStripSeparator3.Size = new System.Drawing.Size(192, 6);
             // 
             // toolStripSeparator4
             // 
+            this.toolStripSeparator4.DefaultColorScheme = true;
             this.toolStripSeparator4.Name = "toolStripSeparator4";
             this.toolStripSeparator4.Size = new System.Drawing.Size(192, 6);
             this.toolStripSeparator4.Visible = false;
@@ -286,6 +323,7 @@ namespace Chummer
             // 
             // mnuMURSep
             // 
+            this.mnuMURSep.DefaultColorScheme = true;
             this.mnuMURSep.Name = "mnuMURSep";
             this.mnuMURSep.Size = new System.Drawing.Size(192, 6);
             // 
@@ -611,6 +649,7 @@ namespace Chummer
             // 
             // mnuFileMRUSeparator
             // 
+            this.mnuFileMRUSeparator.DefaultColorScheme = true;
             this.mnuFileMRUSeparator.Name = "mnuFileMRUSeparator";
             this.mnuFileMRUSeparator.Size = new System.Drawing.Size(192, 6);
             this.mnuFileMRUSeparator.Visible = false;
@@ -641,7 +680,9 @@ namespace Chummer
             this.mnuRestart,
             this.toolStripSeparator6,
             this.mnuToolsTranslator,
-            this.mnuHeroLabImporter});
+            this.mnuHeroLabImporter,
+            this.mnuMasterIndex,
+            this.mnuCharacterRoster});
             this.toolsMenu.Name = "toolsMenu";
             this.toolsMenu.Size = new System.Drawing.Size(46, 20);
             this.toolsMenu.Tag = "Menu_Main_Tools";
@@ -664,6 +705,7 @@ namespace Chummer
             // 
             // toolStripSeparator5
             // 
+            this.toolStripSeparator5.DefaultColorScheme = true;
             this.toolStripSeparator5.Name = "toolStripSeparator5";
             this.toolStripSeparator5.Size = new System.Drawing.Size(168, 6);
             // 
@@ -729,6 +771,7 @@ namespace Chummer
             // 
             // toolStripSeparator6
             // 
+            this.toolStripSeparator6.DefaultColorScheme = true;
             this.toolStripSeparator6.Name = "toolStripSeparator6";
             this.toolStripSeparator6.Size = new System.Drawing.Size(168, 6);
             // 
@@ -762,10 +805,41 @@ namespace Chummer
             this.mnuHeroLabImporter.Text = "&Hero Lab Importer";
             this.mnuHeroLabImporter.Click += new System.EventHandler(this.mnuHeroLabImporter_Click);
             // 
+            // mnuMasterIndex
+            // 
+            this.mnuMasterIndex.Image = global::Chummer.Properties.Resources.books;
+            this.mnuMasterIndex.ImageDpi120 = null;
+            this.mnuMasterIndex.ImageDpi144 = null;
+            this.mnuMasterIndex.ImageDpi192 = global::Chummer.Properties.Resources.books1;
+            this.mnuMasterIndex.ImageDpi288 = null;
+            this.mnuMasterIndex.ImageDpi384 = null;
+            this.mnuMasterIndex.ImageDpi96 = global::Chummer.Properties.Resources.books;
+            this.mnuMasterIndex.Name = "mnuMasterIndex";
+            this.mnuMasterIndex.Size = new System.Drawing.Size(171, 22);
+            this.mnuMasterIndex.Tag = "Menu_Main_MasterIndex";
+            this.mnuMasterIndex.Text = "&Master Index";
+            this.mnuMasterIndex.Click += new System.EventHandler(this.mnuMasterIndex_Click);
+            // 
+            // mnuCharacterRoster
+            // 
+            this.mnuCharacterRoster.Image = global::Chummer.Properties.Resources.group;
+            this.mnuCharacterRoster.ImageDpi120 = null;
+            this.mnuCharacterRoster.ImageDpi144 = null;
+            this.mnuCharacterRoster.ImageDpi192 = global::Chummer.Properties.Resources.group1;
+            this.mnuCharacterRoster.ImageDpi288 = null;
+            this.mnuCharacterRoster.ImageDpi384 = null;
+            this.mnuCharacterRoster.ImageDpi96 = global::Chummer.Properties.Resources.group;
+            this.mnuCharacterRoster.Name = "mnuCharacterRoster";
+            this.mnuCharacterRoster.Size = new System.Drawing.Size(171, 22);
+            this.mnuCharacterRoster.Tag = "Menu_Main_CharacterRoster";
+            this.mnuCharacterRoster.Text = "Ch&aracter Roster";
+            this.mnuCharacterRoster.Click += new System.EventHandler(this.mnuCharacterRoster_Click);
+            // 
             // windowsMenu
             // 
             this.windowsMenu.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.newWindowToolStripMenuItem,
+            this.closeWindowToolStripMenuItem,
             this.closeAllToolStripMenuItem});
             this.windowsMenu.Name = "windowsMenu";
             this.windowsMenu.Size = new System.Drawing.Size(68, 20);
@@ -782,22 +856,37 @@ namespace Chummer
             this.newWindowToolStripMenuItem.ImageDpi384 = null;
             this.newWindowToolStripMenuItem.ImageDpi96 = global::Chummer.Properties.Resources.application_add;
             this.newWindowToolStripMenuItem.Name = "newWindowToolStripMenuItem";
-            this.newWindowToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.newWindowToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.newWindowToolStripMenuItem.Tag = "Menu_Main_NewWindow";
             this.newWindowToolStripMenuItem.Text = "&New Window";
             this.newWindowToolStripMenuItem.Click += new System.EventHandler(this.ShowNewForm);
             // 
+            // closeWindowToolStripMenuItem
+            // 
+            this.closeWindowToolStripMenuItem.Image = global::Chummer.Properties.Resources.application_delete;
+            this.closeWindowToolStripMenuItem.ImageDpi120 = null;
+            this.closeWindowToolStripMenuItem.ImageDpi144 = null;
+            this.closeWindowToolStripMenuItem.ImageDpi192 = global::Chummer.Properties.Resources.application_delete1;
+            this.closeWindowToolStripMenuItem.ImageDpi288 = null;
+            this.closeWindowToolStripMenuItem.ImageDpi384 = null;
+            this.closeWindowToolStripMenuItem.ImageDpi96 = global::Chummer.Properties.Resources.application_delete;
+            this.closeWindowToolStripMenuItem.Name = "closeWindowToolStripMenuItem";
+            this.closeWindowToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
+            this.closeWindowToolStripMenuItem.Tag = "Menu_Main_CloseWindow";
+            this.closeWindowToolStripMenuItem.Text = "&Close Window";
+            this.closeWindowToolStripMenuItem.Click += new System.EventHandler(this.closeWindowToolStripMenuItem_Click);
+            // 
             // closeAllToolStripMenuItem
             // 
-            this.closeAllToolStripMenuItem.Image = global::Chummer.Properties.Resources.application_delete;
+            this.closeAllToolStripMenuItem.Image = global::Chummer.Properties.Resources.application_cascade_delete;
             this.closeAllToolStripMenuItem.ImageDpi120 = null;
             this.closeAllToolStripMenuItem.ImageDpi144 = null;
-            this.closeAllToolStripMenuItem.ImageDpi192 = global::Chummer.Properties.Resources.application_delete1;
+            this.closeAllToolStripMenuItem.ImageDpi192 = global::Chummer.Properties.Resources.application_cascade_delete1;
             this.closeAllToolStripMenuItem.ImageDpi288 = null;
             this.closeAllToolStripMenuItem.ImageDpi384 = null;
-            this.closeAllToolStripMenuItem.ImageDpi96 = global::Chummer.Properties.Resources.application_delete;
+            this.closeAllToolStripMenuItem.ImageDpi96 = global::Chummer.Properties.Resources.application_cascade_delete;
             this.closeAllToolStripMenuItem.Name = "closeAllToolStripMenuItem";
-            this.closeAllToolStripMenuItem.Size = new System.Drawing.Size(145, 22);
+            this.closeAllToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.closeAllToolStripMenuItem.Tag = "Menu_Main_CloseAll";
             this.closeAllToolStripMenuItem.Text = "C&lose All";
             this.closeAllToolStripMenuItem.Click += new System.EventHandler(this.CloseAllToolStripMenuItem_Click);
@@ -850,6 +939,7 @@ namespace Chummer
             // 
             // toolStripSeparator8
             // 
+            this.toolStripSeparator8.DefaultColorScheme = true;
             this.toolStripSeparator8.Name = "toolStripSeparator8";
             this.toolStripSeparator8.Size = new System.Drawing.Size(214, 6);
             // 
@@ -873,10 +963,10 @@ namespace Chummer
             this.mnuHelpDumpshock.Image = global::Chummer.Properties.Resources.bug;
             this.mnuHelpDumpshock.ImageDpi120 = null;
             this.mnuHelpDumpshock.ImageDpi144 = null;
-            this.mnuHelpDumpshock.ImageDpi192 = null;
+            this.mnuHelpDumpshock.ImageDpi192 = global::Chummer.Properties.Resources.bug1;
             this.mnuHelpDumpshock.ImageDpi288 = null;
             this.mnuHelpDumpshock.ImageDpi384 = null;
-            this.mnuHelpDumpshock.ImageDpi96 = global::Chummer.Properties.Resources.bug1;
+            this.mnuHelpDumpshock.ImageDpi96 = global::Chummer.Properties.Resources.bug;
             this.mnuHelpDumpshock.Name = "mnuHelpDumpshock";
             this.mnuHelpDumpshock.Size = new System.Drawing.Size(217, 22);
             this.mnuHelpDumpshock.Tag = "Menu_Main_IssueTracker";
@@ -903,7 +993,9 @@ namespace Chummer
             this.toolStrip.GripStyle = System.Windows.Forms.ToolStripGripStyle.Hidden;
             this.toolStrip.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsbNewCharacter,
-            this.tsbOpen});
+            this.tsbOpen,
+            this.tsbOpenForPrinting,
+            this.tsbOpenForExport});
             this.toolStrip.Location = new System.Drawing.Point(0, 24);
             this.toolStrip.Name = "toolStrip";
             this.toolStrip.Size = new System.Drawing.Size(1264, 25);
@@ -946,8 +1038,43 @@ namespace Chummer
             this.tsbOpen.Text = "Open";
             this.tsbOpen.Click += new System.EventHandler(this.OpenFile);
             // 
+            // tsbOpenForPrinting
+            // 
+            this.tsbOpenForPrinting.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbOpenForPrinting.Image = global::Chummer.Properties.Resources.folder_print;
+            this.tsbOpenForPrinting.ImageDpi120 = null;
+            this.tsbOpenForPrinting.ImageDpi144 = null;
+            this.tsbOpenForPrinting.ImageDpi192 = global::Chummer.Properties.Resources.folder_print1;
+            this.tsbOpenForPrinting.ImageDpi288 = null;
+            this.tsbOpenForPrinting.ImageDpi384 = null;
+            this.tsbOpenForPrinting.ImageDpi96 = global::Chummer.Properties.Resources.folder_print;
+            this.tsbOpenForPrinting.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbOpenForPrinting.Name = "tsbOpenForPrinting";
+            this.tsbOpenForPrinting.Size = new System.Drawing.Size(23, 22);
+            this.tsbOpenForPrinting.Tag = "Menu_Main_OpenForPrinting";
+            this.tsbOpenForPrinting.Text = "Open for P&rinting";
+            this.tsbOpenForPrinting.Click += new System.EventHandler(this.OpenFileForPrinting);
+            // 
+            // tsbOpenForExport
+            // 
+            this.tsbOpenForExport.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
+            this.tsbOpenForExport.Image = global::Chummer.Properties.Resources.folder_script_go;
+            this.tsbOpenForExport.ImageDpi120 = null;
+            this.tsbOpenForExport.ImageDpi144 = null;
+            this.tsbOpenForExport.ImageDpi192 = global::Chummer.Properties.Resources.folder_script_go1;
+            this.tsbOpenForExport.ImageDpi288 = null;
+            this.tsbOpenForExport.ImageDpi384 = null;
+            this.tsbOpenForExport.ImageDpi96 = global::Chummer.Properties.Resources.folder_script_go;
+            this.tsbOpenForExport.ImageTransparentColor = System.Drawing.Color.Magenta;
+            this.tsbOpenForExport.Name = "tsbOpenForExport";
+            this.tsbOpenForExport.Size = new System.Drawing.Size(23, 22);
+            this.tsbOpenForExport.Tag = "Menu_Main_OpenForExport";
+            this.tsbOpenForExport.Text = "Open for E&xport";
+            this.tsbOpenForExport.Click += new System.EventHandler(this.OpenFileForExport);
+            // 
             // toolStripSeparator1
             // 
+            this.toolStripSeparator1.DefaultColorScheme = true;
             this.toolStripSeparator1.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.toolStripSeparator1.MergeIndex = 5;
             this.toolStripSeparator1.Name = "toolStripSeparator1";
@@ -956,6 +1083,7 @@ namespace Chummer
             // 
             // toolStripSeparator2
             // 
+            this.toolStripSeparator2.DefaultColorScheme = true;
             this.toolStripSeparator2.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.toolStripSeparator2.MergeIndex = 7;
             this.toolStripSeparator2.Name = "toolStripSeparator2";
@@ -1057,11 +1185,16 @@ namespace Chummer
             this.tsPrint.Text = "&Print";
             this.tsPrint.Click += new System.EventHandler(this.tsPrint_Click);
             // 
-            // frmChummerMain
+            // dlgOpenFile
+            // 
+            this.dlgOpenFile.Multiselect = true;
+            // 
+            // ChummerMainForm
             // 
             this.AllowDrop = true;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(1264, 681);
             this.Controls.Add(this.tabForms);
             this.Controls.Add(this.toolStrip);
@@ -1070,7 +1203,7 @@ namespace Chummer
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.IsMdiContainer = true;
             this.MainMenuStrip = this.menuStrip;
-            this.Name = "frmChummerMain";
+            this.Name = "ChummerMainForm";
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Chummer5";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ChummerMainForm_Closing);
@@ -1093,20 +1226,20 @@ namespace Chummer
 
         private System.Windows.Forms.MenuStrip menuStrip;
         private System.Windows.Forms.ToolStrip toolStrip;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator2;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator3;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator4;
-        private System.Windows.Forms.ToolStripSeparator mnuMURSep;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator8;
+        private Chummer.ColorableToolStripSeparator toolStripSeparator1;
+        private Chummer.ColorableToolStripSeparator toolStripSeparator2;
+        private Chummer.ColorableToolStripSeparator toolStripSeparator3;
+        private Chummer.ColorableToolStripSeparator toolStripSeparator4;
+        private Chummer.ColorableToolStripSeparator mnuMURSep;
+        private Chummer.ColorableToolStripSeparator toolStripSeparator8;
         private System.Windows.Forms.ToolStripMenuItem fileMenu;
         private System.Windows.Forms.ToolStripMenuItem toolsMenu;
         private System.Windows.Forms.ToolStripMenuItem windowsMenu;
         private System.Windows.Forms.ToolStripMenuItem helpMenu;
-        private System.Windows.Forms.ToolStripSeparator mnuFileMRUSeparator;
+        private Chummer.ColorableToolStripSeparator mnuFileMRUSeparator;
         private System.Windows.Forms.TabControl tabForms;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator5;
-        private System.Windows.Forms.ToolStripSeparator toolStripSeparator6;
+        private Chummer.ColorableToolStripSeparator toolStripSeparator5;
+        private Chummer.ColorableToolStripSeparator toolStripSeparator6;
         private System.Windows.Forms.ContextMenuStrip mnuProcessFile;
         private DpiFriendlyToolStripButton tsbNewCharacter;
         private DpiFriendlyToolStripButton tsbOpen;
@@ -1156,6 +1289,14 @@ namespace Chummer
         private DpiFriendlyToolStripMenuItem tsSaveAs;
         private DpiFriendlyToolStripMenuItem tsClose;
         private DpiFriendlyToolStripMenuItem tsPrint;
+        private DpiFriendlyToolStripMenuItem mnuOpenForPrinting;
+        private DpiFriendlyToolStripMenuItem mnuOpenForExport;
+        private DpiFriendlyToolStripMenuItem mnuMasterIndex;
+        private DpiFriendlyToolStripMenuItem mnuCharacterRoster;
+        private OpenFileDialog dlgOpenFile;
+        private DpiFriendlyToolStripMenuItem closeWindowToolStripMenuItem;
+        private DpiFriendlyToolStripButton tsbOpenForPrinting;
+        private DpiFriendlyToolStripButton tsbOpenForExport;
     }
 }
 

@@ -29,35 +29,35 @@ namespace Chummer
 
         public NuyenString(string strNuyenString)
         {
-            BaseString = strNuyenString.FastEscape('¥');
+            BaseString = strNuyenString.FastEscape(LanguageManager.GetString("String_NuyenSymbol").ToCharArray());
             UseDecimal = decimal.TryParse(BaseString, out decimal decValue);
             Value = decValue;
         }
 
         public override string ToString()
         {
-            return BaseString + '¥';
+            return BaseString + LanguageManager.GetString("String_NuyenSymbol");
         }
 
         public string ToString(string format)
         {
             if (UseDecimal)
-                return Value.ToString(format, GlobalSettings.InvariantCultureInfo) + '¥';
-            return BaseString + '¥';
+                return Value.ToString(format, GlobalSettings.InvariantCultureInfo) + LanguageManager.GetString("String_NuyenSymbol");
+            return BaseString + LanguageManager.GetString("String_NuyenSymbol");
         }
 
         public string ToString(IFormatProvider formatProvider)
         {
             if (UseDecimal)
-                return Value.ToString(formatProvider) + '¥';
-            return BaseString + '¥';
+                return Value.ToString(formatProvider) + LanguageManager.GetString("String_NuyenSymbol");
+            return BaseString + LanguageManager.GetString("String_NuyenSymbol");
         }
 
         public string ToString(string format, IFormatProvider formatProvider)
         {
             if (UseDecimal)
-                return Value.ToString(format, formatProvider) + '¥';
-            return BaseString + '¥';
+                return Value.ToString(format, formatProvider) + LanguageManager.GetString("String_NuyenSymbol");
+            return BaseString + LanguageManager.GetString("String_NuyenSymbol");
         }
 
         public bool Equals(NuyenString other)

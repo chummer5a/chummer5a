@@ -19,12 +19,13 @@
 
 using System;
 using System.ComponentModel;
+using System.Threading;
 
 namespace Chummer.UI.Table
 {
     public partial class SpinnerTableCell<T> : TableCell where T : class, INotifyPropertyChanged
     {
-        private bool _blnUpdating;
+        private int _intUpdating;
 
         public SpinnerTableCell(TableView<T> table)
         {
@@ -56,13 +57,17 @@ namespace Chummer.UI.Table
                 _spinner.Enabled = EnabledExtractor(tValue);
             }
 
-            if (!_blnUpdating && ValueGetter != null)
+            if (ValueUpdater == null)
+                return;
+            if (Interlocked.CompareExchange(ref _intUpdating, 1, 0) != 0)
+                return;
+            try
             {
-                decimal value = ValueGetter(tValue);
-
-                _blnUpdating = true;
-                _spinner.Value = value;
-                _blnUpdating = false;
+                _spinner.Value = ValueGetter(tValue);
+            }
+            finally
+            {
+                Interlocked.CompareExchange(ref _intUpdating, 0, 1);
             }
         }
 
@@ -97,15 +102,17 @@ namespace Chummer.UI.Table
         /// <param name="e"></param>
         private void value_changed(object sender, EventArgs e)
         {
-            if (_blnUpdating || ValueUpdater == null) return;
-            _blnUpdating = true;
+            if (ValueUpdater == null)
+                return;
+            if (Interlocked.CompareExchange(ref _intUpdating, 1, 0) != 0)
+                return;
             try
             {
                 ValueUpdater(Value as T, _spinner.Value);
             }
             finally
             {
-                _blnUpdating = false;
+                Interlocked.CompareExchange(ref _intUpdating, 0, 1);
             }
         }
     }

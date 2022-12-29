@@ -19,18 +19,24 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Chummer
 {
     public partial class PetControl : UserControl
     {
         private readonly Contact _objContact;
-        private bool _blnLoading = true;
+        private int _intLoading = 1;
+
+        private int _intUpdatingMetatype = 1;
+        private readonly Timer _tmrMetatypeChangeTimer;
 
         // Events.
         public event EventHandler<TextEventArgs> ContactDetailChanged;
@@ -43,6 +49,12 @@ namespace Chummer
         {
             _objContact = objContact;
             InitializeComponent();
+
+            _tmrMetatypeChangeTimer = new Timer { Interval = 1000 };
+            _tmrMetatypeChangeTimer.Tick += UpdateMetatype;
+
+            Disposed += (sender, args) => UnbindPetControl();
+
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
             foreach (ToolStripItem tssItem in cmsContact.Items)
@@ -54,15 +66,17 @@ namespace Chummer
 
         private async void PetControl_Load(object sender, EventArgs e)
         {
-            await LoadContactList();
+            await LoadContactList().ConfigureAwait(false);
 
-            DoDataBindings();
+            await DoDataBindings().ConfigureAwait(false);
 
-            _blnLoading = false;
+            Interlocked.Decrement(ref _intUpdatingMetatype);
+            Interlocked.Decrement(ref _intLoading);
         }
 
         public void UnbindPetControl()
         {
+            _tmrMetatypeChangeTimer.Dispose();
             foreach (Control objControl in Controls)
             {
                 objControl.DataBindings.Clear();
@@ -71,21 +85,45 @@ namespace Chummer
 
         private void txtContactName_TextChanged(object sender, EventArgs e)
         {
-            if (!_blnLoading)
+            if (_intLoading == 0)
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("Name"));
         }
 
-        private void UpdateMetatype(object sender, EventArgs e)
+        private void cboMetatype_TextChanged(object sender, EventArgs e)
         {
-            if (_blnLoading || _objContact.DisplayMetatype == cboMetatype.Text)
+            if (_tmrMetatypeChangeTimer == null)
                 return;
-            _objContact.DisplayMetatype = cboMetatype.Text;
-            if (_objContact.DisplayMetatype != cboMetatype.Text)
+            if (_tmrMetatypeChangeTimer.Enabled)
+                _tmrMetatypeChangeTimer.Stop();
+            if (_intUpdatingMetatype > 0)
+                return;
+            _tmrMetatypeChangeTimer.Start();
+        }
+
+        private async void UpdateMetatype(object sender, EventArgs e)
+        {
+            if (_intLoading > 0 || _intUpdatingMetatype > 0)
+                return;
+            _tmrMetatypeChangeTimer.Stop();
+            string strNew = await cboMetatype.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
+            string strOld = await _objContact.GetDisplayMetatypeAsync().ConfigureAwait(false);
+            if (strOld == strNew)
+                return;
+            await _objContact.SetDisplayMetatypeAsync(strNew).ConfigureAwait(false);
+            strOld = await _objContact.GetDisplayMetatypeAsync().ConfigureAwait(false);
+            if (strOld != strNew)
             {
-                _blnLoading = true;
-                cboMetatype.Text = _objContact.DisplayMetatype;
-                _blnLoading = false;
+                Interlocked.Increment(ref _intUpdatingMetatype);
+                try
+                {
+                    await cboMetatype.DoThreadSafeAsync(x => x.Text = strOld).ConfigureAwait(false);
+                }
+                finally
+                {
+                    Interlocked.Decrement(ref _intUpdatingMetatype);
+                }
             }
+
             ContactDetailChanged?.Invoke(this, new TextEventArgs("Metatype"));
         }
 
@@ -118,16 +156,27 @@ namespace Chummer
         {
             if (_objContact.LinkedCharacter != null)
             {
-                Character objOpenCharacter = Program.MainForm.OpenCharacters.Contains(_objContact.LinkedCharacter)
+                Character objOpenCharacter = await Program.OpenCharacters.ContainsAsync(_objContact.LinkedCharacter).ConfigureAwait(false)
                     ? _objContact.LinkedCharacter
                     : null;
-                using (new CursorWait(this))
+                CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm).ConfigureAwait(false);
+                try
                 {
-                    if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
+                    if (objOpenCharacter == null)
                     {
-                        objOpenCharacter = await Program.MainForm.LoadCharacterAsync(_objContact.LinkedCharacter.FileName);
-                        Program.MainForm.OpenCharacter(objOpenCharacter);
+                        using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                               = await Program.CreateAndShowProgressBarAsync(
+                                   _objContact.LinkedCharacter.FileName, Character.NumLoadingSections).ConfigureAwait(false))
+                            objOpenCharacter = await Program.LoadCharacterAsync(
+                                _objContact.LinkedCharacter.FileName, frmLoadingBar: frmLoadingBar.MyForm).ConfigureAwait(false);
                     }
+
+                    if (!await Program.SwitchToOpenCharacter(objOpenCharacter).ConfigureAwait(false))
+                        await Program.OpenCharacter(objOpenCharacter).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             else
@@ -148,73 +197,101 @@ namespace Chummer
 
                     if (blnError)
                     {
-                        Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_FileNotFound"), _objContact.FileName), await LanguageManager.GetStringAsync("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Program.ShowScrollableMessageBox(
+                            string.Format(GlobalSettings.CultureInfo,
+                                          await LanguageManager.GetStringAsync("Message_FileNotFound")
+                                                               .ConfigureAwait(false), _objContact.FileName),
+                            await LanguageManager.GetStringAsync("MessageTitle_FileNotFound").ConfigureAwait(false),
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                 }
                 string strFile = blnUseRelative ? Path.GetFullPath(_objContact.RelativeFileName) : _objContact.FileName;
-                System.Diagnostics.Process.Start(strFile);
+                Process.Start(strFile);
             }
         }
 
         private async void tsAttachCharacter_Click(object sender, EventArgs e)
         {
+            string strFileName = string.Empty;
+            string strFilter = await LanguageManager.GetStringAsync("DialogFilter_Chummer").ConfigureAwait(false) + '|'
+                +
+                await LanguageManager.GetStringAsync("DialogFilter_Chum5").ConfigureAwait(false) + '|' +
+                await LanguageManager.GetStringAsync("DialogFilter_Chum5lz").ConfigureAwait(false) + '|' +
+                await LanguageManager.GetStringAsync("DialogFilter_All").ConfigureAwait(false);
             // Prompt the user to select a save file to associate with this Contact.
-            using (OpenFileDialog openFileDialog = new OpenFileDialog
+            DialogResult eResult = await this.DoThreadSafeFuncAsync(x =>
             {
-                Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' + await LanguageManager.GetStringAsync("DialogFilter_All")
-            })
+                using (OpenFileDialog dlgOpenFile = new OpenFileDialog())
+                {
+                    dlgOpenFile.Filter = strFilter;
+                    if (!string.IsNullOrEmpty(_objContact.FileName) && File.Exists(_objContact.FileName))
+                    {
+                        dlgOpenFile.InitialDirectory = Path.GetDirectoryName(_objContact.FileName);
+                        dlgOpenFile.FileName = Path.GetFileName(_objContact.FileName);
+                    }
+
+                    DialogResult eReturn = dlgOpenFile.ShowDialog(x);
+                    strFileName = dlgOpenFile.FileName;
+                    return eReturn;
+                }
+            }).ConfigureAwait(false);
+
+            if (eResult != DialogResult.OK)
+                return;
+
+            CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm).ConfigureAwait(false);
+            try
             {
-                if (!string.IsNullOrEmpty(_objContact.FileName) && File.Exists(_objContact.FileName))
-                {
-                    openFileDialog.InitialDirectory = Path.GetDirectoryName(_objContact.FileName);
-                    openFileDialog.FileName = Path.GetFileName(_objContact.FileName);
-                }
+                _objContact.FileName = strFileName;
+                string strText = await LanguageManager.GetStringAsync("Tip_Contact_OpenFile").ConfigureAwait(false);
+                await cmdLink.SetToolTipTextAsync(strText).ConfigureAwait(false);
 
-                if (openFileDialog.ShowDialog(this) != DialogResult.OK)
-                    return;
-                using (new CursorWait(this))
-                {
-                    _objContact.FileName = openFileDialog.FileName;
-                    cmdLink.ToolTipText = await LanguageManager.GetStringAsync("Tip_Contact_OpenFile");
+                // Set the relative path.
+                Uri uriApplication = new Uri(Utils.GetStartupPath);
+                Uri uriFile = new Uri(_objContact.FileName);
+                Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
+                _objContact.RelativeFileName = "../" + uriRelative;
 
-                    // Set the relative path.
-                    Uri uriApplication = new Uri(Utils.GetStartupPath);
-                    Uri uriFile = new Uri(_objContact.FileName);
-                    Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
-                    _objContact.RelativeFileName = "../" + uriRelative;
-
-                    ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
-                }
+                ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         private async void tsRemoveCharacter_Click(object sender, EventArgs e)
         {
             // Remove the file association from the Contact.
-            if (Program.MainForm.ShowMessageBox(await LanguageManager.GetStringAsync("Message_RemoveCharacterAssociation"), await LanguageManager.GetStringAsync("MessageTitle_RemoveCharacterAssociation"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (Program.ShowScrollableMessageBox(
+                    await LanguageManager.GetStringAsync("Message_RemoveCharacterAssociation").ConfigureAwait(false),
+                    await LanguageManager.GetStringAsync("MessageTitle_RemoveCharacterAssociation")
+                                         .ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                == DialogResult.Yes)
             {
                 _objContact.FileName = string.Empty;
                 _objContact.RelativeFileName = string.Empty;
-                cmdLink.ToolTipText = await LanguageManager.GetStringAsync("Tip_Contact_LinkFile");
+                string strText = await LanguageManager.GetStringAsync("Tip_Contact_LinkFile").ConfigureAwait(false);
+                await cmdLink.SetToolTipTextAsync(strText).ConfigureAwait(false);
                 ContactDetailChanged?.Invoke(this, new TextEventArgs("File"));
             }
         }
 
         private async void cmdNotes_Click(object sender, EventArgs e)
         {
-            using (EditNotes frmContactNotes = new EditNotes(_objContact.Notes, _objContact.NotesColor))
+            using (ThreadSafeForm<EditNotes> frmContactNotes = await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(_objContact.Notes, _objContact.NotesColor)).ConfigureAwait(false))
             {
-                await frmContactNotes.ShowDialogSafeAsync(this);
-                if (frmContactNotes.DialogResult != DialogResult.OK)
+                if (await frmContactNotes.ShowDialogSafeAsync(_objContact.CharacterObject).ConfigureAwait(false) != DialogResult.OK)
                     return;
-                _objContact.Notes = frmContactNotes.Notes;
+                _objContact.Notes = frmContactNotes.MyForm.Notes;
             }
 
-            string strTooltip = await LanguageManager.GetStringAsync("Tip_Contact_EditNotes");
+            string strTooltip = await LanguageManager.GetStringAsync("Tip_Contact_EditNotes").ConfigureAwait(false);
             if (!string.IsNullOrEmpty(_objContact.Notes))
                 strTooltip += Environment.NewLine + Environment.NewLine + _objContact.Notes;
-            cmdNotes.ToolTipText = strTooltip.WordWrap();
+            strTooltip = strTooltip.WordWrap();
+            await cmdNotes.SetToolTipTextAsync(strTooltip).ConfigureAwait(false);
             ContactDetailChanged?.Invoke(this, new TextEventArgs("Notes"));
         }
 
@@ -222,29 +299,29 @@ namespace Chummer
 
         #region Methods
 
-        private async ValueTask LoadContactList()
+        private async ValueTask LoadContactList(CancellationToken token = default)
         {
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMetatypes))
             {
                 lstMetatypes.Add(ListItem.Blank);
-                string strSpace = await LanguageManager.GetStringAsync("String_Space");
-                foreach (XPathNavigator xmlMetatypeNode in (await _objContact.CharacterObject.LoadDataXPathAsync("critters.xml"))
-                                                                      .SelectAndCacheExpression(
-                                                                          "/chummer/metatypes/metatype"))
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                foreach (XPathNavigator xmlMetatypeNode in await (await _objContact.CharacterObject.LoadDataXPathAsync("critters.xml", token: token).ConfigureAwait(false))
+                                                                 .SelectAndCacheExpressionAsync(
+                                                                     "/chummer/metatypes/metatype", token: token).ConfigureAwait(false))
                 {
-                    string strName = xmlMetatypeNode.SelectSingleNodeAndCacheExpression("name")?.Value;
-                    string strMetatypeDisplay = xmlMetatypeNode.SelectSingleNodeAndCacheExpression("translate")?.Value
+                    string strName = (await xmlMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value;
+                    string strMetatypeDisplay = (await xmlMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
                                                 ?? strName;
                     lstMetatypes.Add(new ListItem(strName, strMetatypeDisplay));
                     XPathNodeIterator xmlMetavariantsList
-                        = xmlMetatypeNode.SelectAndCacheExpression("metavariants/metavariant");
+                        = await xmlMetatypeNode.SelectAndCacheExpressionAsync("metavariants/metavariant", token: token).ConfigureAwait(false);
                     if (xmlMetavariantsList.Count > 0)
                     {
                         string strMetavariantFormat = strMetatypeDisplay + strSpace + "({0})";
                         foreach (XPathNavigator objXmlMetavariantNode in xmlMetavariantsList)
                         {
                             string strMetavariantName
-                                = objXmlMetavariantNode.SelectSingleNodeAndCacheExpression("name")?.Value
+                                = (await objXmlMetavariantNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value
                                   ?? string.Empty;
                             if (lstMetatypes.All(
                                     x => strMetavariantName.Equals(x.Value.ToString(),
@@ -252,32 +329,34 @@ namespace Chummer
                                 lstMetatypes.Add(new ListItem(strMetavariantName,
                                                               string.Format(
                                                                   GlobalSettings.CultureInfo, strMetavariantFormat,
-                                                                  objXmlMetavariantNode
-                                                                      .SelectSingleNodeAndCacheExpression("translate")
+                                                                  (await objXmlMetavariantNode
+                                                                         .SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))
                                                                       ?.Value ?? strMetavariantName)));
                         }
                     }
                 }
 
                 lstMetatypes.Sort(CompareListItems.CompareNames);
-
-                cboMetatype.BeginUpdate();
-                cboMetatype.PopulateWithListItems(lstMetatypes);
-                cboMetatype.EndUpdate();
+                await cboMetatype.PopulateWithListItemsAsync(lstMetatypes, token: token).ConfigureAwait(false);
             }
         }
 
-        private void DoDataBindings()
+        private async ValueTask DoDataBindings(CancellationToken token = default)
         {
-            cboMetatype.SelectedValue = _objContact.Metatype;
-            if (cboMetatype.SelectedIndex < 0)
-                cboMetatype.Text = _objContact.DisplayMetatype;
-            txtContactName.DoDataBinding("Text", _objContact, nameof(_objContact.Name));
-            this.DoOneWayDataBinding("BackColor", _objContact, nameof(_objContact.PreferredColor));
+            string strMetatype = await _objContact.GetMetatypeAsync(token).ConfigureAwait(false);
+            await cboMetatype.DoThreadSafeAsync(x => x.SelectedValue = strMetatype, token: token).ConfigureAwait(false);
+            if (await cboMetatype.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token).ConfigureAwait(false) < 0)
+            {
+                string strText = await _objContact.GetDisplayMetatypeAsync(token).ConfigureAwait(false);
+                await cboMetatype.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
+            }
+
+            await txtContactName.DoDataBindingAsync("Text", _objContact, nameof(Contact.Name), token).ConfigureAwait(false);
+            await this.DoOneWayDataBindingAsync("BackColor", _objContact, nameof(Contact.PreferredColor), token).ConfigureAwait(false);
 
             // Properties controllable by the character themselves
-            txtContactName.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
-            cboMetatype.DoOneWayDataBinding("Enabled", _objContact, nameof(_objContact.NoLinkedCharacter));
+            await txtContactName.DoOneWayDataBindingAsync("Enabled", _objContact, nameof(Contact.NoLinkedCharacter), token).ConfigureAwait(false);
+            await cboMetatype.DoOneWayDataBindingAsync("Enabled", _objContact, nameof(Contact.NoLinkedCharacter), token).ConfigureAwait(false);
         }
 
         #endregion Methods

@@ -50,7 +50,7 @@
   <modcategories>
     <category blackmarket="Armor">Customized Ballistic Mask</category>
     <category blackmarket="Armor">Full Body Armor Mods</category>
-    <category blackmarket="Armor">General</category>
+    <category blackmarket="Armor,Electronics,Magic,Software">General</category>
     <category blackmarket="Armor">Globetrotter Clothing Liners</category>
     <category blackmarket="Armor">Globetrotter Jacket Liners</category>
     <category blackmarket="Armor">Globetrotter Vest Liners</category>
@@ -74,7 +74,7 @@
     </armor>
     <armor>
       <id>5a650844-8f24-48e7-829f-0443d9ff5cf7</id>
-      <name>Auctioneer Business Clothes</name>
+      <name>Actioneer Business Clothes</name>
       <category>Armor</category>
       <armor>8</armor>
       <armorcapacity>8</armorcapacity>
@@ -2656,8 +2656,18 @@
       <avail>2</avail>
       <cost>200</cost>
       <gears>
-        <usegear>Camera</usegear>
-        <usegear>Microphone, Omni-Directional</usegear>
+        <usegear>
+          <name>Camera</name>
+          <category>Vision Devices</category>
+          <rating>2</rating>
+          <capacity>2/[0]</capacity>
+        </usegear>
+        <usegear>
+          <name>Microphone, Omni-Directional</name>
+          <category>Audio Devices</category>
+          <rating>2</rating>
+          <capacity>2/[0]</capacity>
+        </usegear>
       </gears>
       <source>HS</source>
       <page>185</page>
@@ -3233,7 +3243,7 @@
     </armor>
     <armor>
       <id>8136ccfb-d5ce-4e18-bc4a-21d33bb6b089</id>
-      <name>EVO/Yamatetsu Naval Technologies Rampart</name>
+      <name>Yamatetsu Naval Technologies Rampart</name>
       <category>Armor</category>
       <armor>+10</armor>
       <armorcapacity>10</armorcapacity>

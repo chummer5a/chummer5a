@@ -38,7 +38,7 @@ namespace Chummer.UI.Table
 
         private async void lblText_Click(object sender, EventArgs e)
         {
-            await CommonFunctions.OpenPdfFromControl(sender, e);
+            await CommonFunctions.OpenPdfFromControl(sender).ConfigureAwait(false);
         }
 
         private void OnLoad(object sender, EventArgs eventArgs)

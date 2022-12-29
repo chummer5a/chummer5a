@@ -20,6 +20,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -33,7 +35,7 @@ namespace Chummer
         private readonly Character _objCharacter;
         private readonly Lifestyle _objLifestyle;
         private readonly XmlDocument _xmlDocument;
-        private bool _blnSkipRefresh = true;
+        private int _intSkipRefresh = 1;
 
         #region Control Events
 
@@ -51,26 +53,27 @@ namespace Chummer
         private void SelectLifestyleAdvanced_FormClosing(object sender, FormClosingEventArgs e)
         {
             _objLifestyle.LifestyleQualities.CollectionChanged -= LifestyleQualitiesOnCollectionChanged;
-            _objLifestyle.FreeGrids.CollectionChanged -= FreeGridsOnCollectionChanged;
         }
 
-        private void LifestyleQualitiesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async void LifestyleQualitiesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Move:
                     return;
                 case NotifyCollectionChangedAction.Reset:
-                    ResetLifestyleQualitiesTree();
+                    await ResetLifestyleQualitiesTree().ConfigureAwait(false);
                     return;
                 default:
                 {
                     TreeNode nodPositiveQualityRoot
-                        = treLifestyleQualities.FindNode("Node_SelectAdvancedLifestyle_PositiveQualities", false);
+                        = await treLifestyleQualities.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectAdvancedLifestyle_PositiveQualities", false)).ConfigureAwait(false);
                     TreeNode nodNegativeQualityRoot
-                        = treLifestyleQualities.FindNode("Node_SelectAdvancedLifestyle_NegativeQualities", false);
+                        = await treLifestyleQualities.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectAdvancedLifestyle_NegativeQualities", false)).ConfigureAwait(false);
                     TreeNode nodEntertainmentsRoot
-                        = treLifestyleQualities.FindNode("Node_SelectAdvancedLifestyle_Entertainments", false);
+                        = await treLifestyleQualities.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectAdvancedLifestyle_Entertainments", false)).ConfigureAwait(false);
+                    TreeNode nodFreeGridsRoot =
+                        await treLifestyleQualities.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectAdvancedLifestyle_FreeMatrixGrids", false)).ConfigureAwait(false);
 
                     switch (e.Action)
                     {
@@ -78,7 +81,7 @@ namespace Chummer
                         {
                             foreach (LifestyleQuality objQuality in e.NewItems)
                             {
-                                AddToTree(objQuality);
+                                await AddToTree(objQuality).ConfigureAwait(false);
                             }
 
                             break;
@@ -87,14 +90,17 @@ namespace Chummer
                         {
                             foreach (LifestyleQuality objQuality in e.OldItems)
                             {
-                                TreeNode objNode = treLifestyleQualities.FindNodeByTag(objQuality);
-                                if (objNode != null)
+                                await treLifestyleQualities.DoThreadSafeAsync(x =>
                                 {
-                                    TreeNode objParent = objNode.Parent;
-                                    objNode.Remove();
-                                    if (objParent.Level == 0 && objParent.Nodes.Count == 0)
-                                        objParent.Remove();
-                                }
+                                    TreeNode objNode = x.FindNodeByTag(objQuality);
+                                    if (objNode != null)
+                                    {
+                                        TreeNode objParent = objNode.Parent;
+                                        objNode.Remove();
+                                        if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                            objParent.Remove();
+                                    }
+                                }).ConfigureAwait(false);
                             }
 
                             break;
@@ -104,308 +110,291 @@ namespace Chummer
                             List<TreeNode> lstOldParents = new List<TreeNode>(e.OldItems.Count);
                             foreach (LifestyleQuality objQuality in e.OldItems)
                             {
-                                TreeNode objNode = treLifestyleQualities.FindNodeByTag(objQuality);
-                                if (objNode != null)
+                                await treLifestyleQualities.DoThreadSafeAsync(x =>
                                 {
-                                    if (objNode.Parent != null)
-                                        lstOldParents.Add(objNode.Parent);
-                                    objNode.Remove();
-                                }
-                            }
-
-                            foreach (LifestyleQuality objQuality in e.NewItems)
-                            {
-                                AddToTree(objQuality);
-                            }
-
-                            foreach (TreeNode objOldParent in lstOldParents)
-                            {
-                                if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
-                                    objOldParent.Remove();
-                            }
-
-                            break;
-                        }
-                    }
-
-                    break;
-
-                    void AddToTree(LifestyleQuality objQuality)
-                    {
-                        TreeNode objNode = objQuality.CreateTreeNode();
-                        if (objNode == null)
-                            return;
-                        TreeNode objParentNode;
-                        switch (objQuality.Type)
-                        {
-                            case QualityType.Positive:
-                                if (nodPositiveQualityRoot == null)
-                                {
-                                    nodPositiveQualityRoot = new TreeNode
-                                    {
-                                        Tag = "Node_SelectAdvancedLifestyle_PositiveQualities",
-                                        Text = LanguageManager.GetString(
-                                            "Node_SelectAdvancedLifestyle_PositiveQualities")
-                                    };
-                                    treLifestyleQualities.Nodes.Insert(0, nodPositiveQualityRoot);
-                                    nodPositiveQualityRoot.Expand();
-                                }
-
-                                objParentNode = nodPositiveQualityRoot;
-                                break;
-
-                            case QualityType.Negative:
-                                if (nodNegativeQualityRoot == null)
-                                {
-                                    nodNegativeQualityRoot = new TreeNode
-                                    {
-                                        Tag = "Node_SelectAdvancedLifestyle_NegativeQualities",
-                                        Text = LanguageManager.GetString(
-                                            "Node_SelectAdvancedLifestyle_NegativeQualities")
-                                    };
-                                    treLifestyleQualities.Nodes.Insert(nodPositiveQualityRoot == null ? 0 : 1,
-                                                                       nodNegativeQualityRoot);
-                                    nodNegativeQualityRoot.Expand();
-                                }
-
-                                objParentNode = nodNegativeQualityRoot;
-                                break;
-
-                            default:
-                                if (nodEntertainmentsRoot == null)
-                                {
-                                    nodEntertainmentsRoot = new TreeNode
-                                    {
-                                        Tag = "Node_SelectAdvancedLifestyle_Entertainments",
-                                        Text = LanguageManager.GetString("Node_SelectAdvancedLifestyle_Entertainments")
-                                    };
-                                    treLifestyleQualities.Nodes.Insert(
-                                        (nodPositiveQualityRoot == null ? 0 : 1)
-                                        + (nodNegativeQualityRoot == null ? 0 : 1), nodEntertainmentsRoot);
-                                    nodEntertainmentsRoot.Expand();
-                                }
-
-                                objParentNode = nodEntertainmentsRoot;
-                                break;
-                        }
-
-                        TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
-                        int intNodesCount = lstParentNodeChildren.Count;
-                        int intTargetIndex = 0;
-                        for (; intTargetIndex < intNodesCount; ++intTargetIndex)
-                        {
-                            if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
-                            {
-                                break;
-                            }
-                        }
-
-                        lstParentNodeChildren.Insert(intTargetIndex, objNode);
-                        treLifestyleQualities.SelectedNode = objNode;
-                    }
-                }
-            }
-        }
-
-        private void FreeGridsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
-        {
-            switch (e.Action)
-            {
-                case NotifyCollectionChangedAction.Move:
-                    return;
-                case NotifyCollectionChangedAction.Reset:
-                    ResetLifestyleQualitiesTree();
-                    return;
-                default:
-                    TreeNode nodFreeGridsRoot = treLifestyleQualities.FindNode("Node_SelectAdvancedLifestyle_FreeMatrixGrids", false);
-                    switch (e.Action)
-                    {
-                        case NotifyCollectionChangedAction.Add:
-                            {
-                                foreach (LifestyleQuality objFreeGrid in e.NewItems)
-                                {
-                                    TreeNode objNode = objFreeGrid.CreateTreeNode();
-                                    if (objNode == null)
-                                        return;
-                                    if (nodFreeGridsRoot == null)
-                                    {
-                                        nodFreeGridsRoot = new TreeNode
-                                        {
-                                            Tag = "Node_SelectAdvancedLifestyle_FreeMatrixGrids",
-                                            Text = LanguageManager.GetString("Node_SelectAdvancedLifestyle_FreeMatrixGrids")
-                                        };
-                                        treLifestyleQualities.Nodes.Add(nodFreeGridsRoot);
-                                        nodFreeGridsRoot.Expand();
-                                    }
-
-                                    TreeNodeCollection lstParentNodeChildren = nodFreeGridsRoot.Nodes;
-                                    int intNodesCount = lstParentNodeChildren.Count;
-                                    int intTargetIndex = 0;
-                                    for (; intTargetIndex < intNodesCount; ++intTargetIndex)
-                                    {
-                                        if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
-                                        {
-                                            break;
-                                        }
-                                    }
-
-                                    lstParentNodeChildren.Insert(intTargetIndex, objNode);
-                                    treLifestyleQualities.SelectedNode = objNode;
-                                }
-                                break;
-                            }
-                        case NotifyCollectionChangedAction.Remove:
-                        {
-                            foreach (LifestyleQuality objFreeGrid in e.OldItems)
-                            {
-                                TreeNode objNode = treLifestyleQualities.FindNodeByTag(objFreeGrid);
-                                if (objNode != null)
-                                {
-                                    TreeNode objParent = objNode.Parent;
-                                    objNode.Remove();
-                                    if (objParent.Level == 0 && objParent.Nodes.Count == 0)
-                                        objParent.Remove();
-                                }
-                            }
-                            break;
-                        }
-                        case NotifyCollectionChangedAction.Replace:
-                            {
-                                List<TreeNode> lstOldParents = new List<TreeNode>(e.OldItems.Count);
-                                foreach (LifestyleQuality objFreeGrid in e.OldItems)
-                                {
-                                    TreeNode objNode = treLifestyleQualities.FindNodeByTag(objFreeGrid);
+                                    TreeNode objNode = x.FindNodeByTag(objQuality);
                                     if (objNode != null)
                                     {
                                         if (objNode.Parent != null)
                                             lstOldParents.Add(objNode.Parent);
                                         objNode.Remove();
                                     }
-                                }
-                                foreach (LifestyleQuality objFreeGrid in e.NewItems)
-                                {
-                                    TreeNode objNode = objFreeGrid.CreateTreeNode();
-                                    if (objNode == null)
-                                        return;
-                                    if (nodFreeGridsRoot == null)
-                                    {
-                                        nodFreeGridsRoot = new TreeNode
-                                        {
-                                            Tag = "Node_SelectAdvancedLifestyle_FreeMatrixGrids",
-                                            Text = LanguageManager.GetString("Node_SelectAdvancedLifestyle_FreeMatrixGrids")
-                                        };
-                                        treLifestyleQualities.Nodes.Add(nodFreeGridsRoot);
-                                        nodFreeGridsRoot.Expand();
-                                    }
-
-                                    TreeNodeCollection lstParentNodeChildren = nodFreeGridsRoot.Nodes;
-                                    int intNodesCount = lstParentNodeChildren.Count;
-                                    int intTargetIndex = 0;
-                                    for (; intTargetIndex < intNodesCount; ++intTargetIndex)
-                                    {
-                                        if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
-                                        {
-                                            break;
-                                        }
-                                    }
-
-                                    lstParentNodeChildren.Insert(intTargetIndex, objNode);
-                                    treLifestyleQualities.SelectedNode = objNode;
-                                }
-                                foreach (TreeNode objOldParent in lstOldParents)
-                                {
-                                    if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
-                                        objOldParent.Remove();
-                                }
-                                break;
+                                }).ConfigureAwait(false);
                             }
+
+                            foreach (LifestyleQuality objQuality in e.NewItems)
+                            {
+                                await AddToTree(objQuality).ConfigureAwait(false);
+                            }
+
+                            if (lstOldParents.Count > 0)
+                            {
+                                await treLifestyleQualities.DoThreadSafeAsync(() =>
+                                {
+                                    foreach (TreeNode objOldParent in lstOldParents)
+                                    {
+                                        if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                            objOldParent.Remove();
+                                    }
+                                }).ConfigureAwait(false);
+                            }
+
+                            break;
+                        }
                     }
 
                     break;
+
+                    async ValueTask AddToTree(LifestyleQuality objQuality)
+                    {
+                        TreeNode objNode = objQuality.CreateTreeNode();
+                        if (objNode == null)
+                            return;
+                        TreeNode objParentNode;
+                        if (objQuality.IsFreeGrid)
+                        {
+                            if (nodFreeGridsRoot == null)
+                            {
+                                nodFreeGridsRoot = new TreeNode
+                                {
+                                    Tag = "Node_SelectAdvancedLifestyle_FreeMatrixGrids",
+                                    Text = await LanguageManager.GetStringAsync("Node_SelectAdvancedLifestyle_FreeMatrixGrids").ConfigureAwait(false)
+                                };
+                                // ReSharper disable once AssignNullToNotNullAttribute
+                                await treLifestyleQualities.DoThreadSafeAsync(x =>
+                                {
+                                    x.Nodes.Insert(
+                                        (nodPositiveQualityRoot == null ? 0 : 1)
+                                        + (nodNegativeQualityRoot == null ? 0 : 1)
+                                        // ReSharper disable once AssignNullToNotNullAttribute
+                                        + (nodEntertainmentsRoot == null ? 0 : 1), nodFreeGridsRoot);
+                                    nodFreeGridsRoot.Expand();
+                                }).ConfigureAwait(false);
+                            }
+                            objParentNode = nodFreeGridsRoot;
+                        }
+                        else
+                        {
+                            switch (objQuality.Type)
+                            {
+                                case QualityType.Positive:
+                                    if (nodPositiveQualityRoot == null)
+                                    {
+                                        nodPositiveQualityRoot = new TreeNode
+                                        {
+                                            Tag = "Node_SelectAdvancedLifestyle_PositiveQualities",
+                                            Text = await LanguageManager.GetStringAsync(
+                                                "Node_SelectAdvancedLifestyle_PositiveQualities").ConfigureAwait(false)
+                                        };
+                                        // ReSharper disable once AssignNullToNotNullAttribute
+                                        await treLifestyleQualities.DoThreadSafeAsync(x =>
+                                        {
+                                            x.Nodes.Insert(0,
+                                                           nodPositiveQualityRoot);
+                                            nodPositiveQualityRoot.Expand();
+                                        }).ConfigureAwait(false);
+                                    }
+
+                                    objParentNode = nodPositiveQualityRoot;
+                                    break;
+
+                                case QualityType.Negative:
+                                    if (nodNegativeQualityRoot == null)
+                                    {
+                                        nodNegativeQualityRoot = new TreeNode
+                                        {
+                                            Tag = "Node_SelectAdvancedLifestyle_NegativeQualities",
+                                            Text = await LanguageManager.GetStringAsync(
+                                                "Node_SelectAdvancedLifestyle_NegativeQualities").ConfigureAwait(false)
+                                        };
+                                        // ReSharper disable once AssignNullToNotNullAttribute
+                                        await treLifestyleQualities.DoThreadSafeAsync(x =>
+                                        {
+                                            x.Nodes.Insert(nodPositiveQualityRoot == null ? 0 : 1,
+                                                           nodNegativeQualityRoot);
+                                            nodNegativeQualityRoot.Expand();
+                                        }).ConfigureAwait(false);
+                                    }
+
+                                    objParentNode = nodNegativeQualityRoot;
+                                    break;
+
+                                default:
+                                    if (nodEntertainmentsRoot == null)
+                                    {
+                                        nodEntertainmentsRoot = new TreeNode
+                                        {
+                                            Tag = "Node_SelectAdvancedLifestyle_Entertainments",
+                                            Text = await LanguageManager.GetStringAsync(
+                                                "Node_SelectAdvancedLifestyle_Entertainments").ConfigureAwait(false)
+                                        };
+                                        await treLifestyleQualities.DoThreadSafeAsync(x =>
+                                        {
+                                            x.Nodes.Insert(
+                                                (nodPositiveQualityRoot == null ? 0 : 1)
+                                                // ReSharper disable once AssignNullToNotNullAttribute
+                                                + (nodNegativeQualityRoot == null ? 0 : 1), nodEntertainmentsRoot);
+                                            nodEntertainmentsRoot.Expand();
+                                        }).ConfigureAwait(false);
+                                    }
+
+                                    objParentNode = nodEntertainmentsRoot;
+                                    break;
+                            }
+                        }
+
+                        await treLifestyleQualities.DoThreadSafeAsync(x =>
+                        {
+                            if (objParentNode == null)
+                                return;
+                            TreeNodeCollection lstParentNodeChildren = objParentNode.Nodes;
+                            int intNodesCount = lstParentNodeChildren.Count;
+                            int intTargetIndex = 0;
+                            for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                            {
+                                if (CompareTreeNodes.CompareText(lstParentNodeChildren[intTargetIndex], objNode) >= 0)
+                                {
+                                    break;
+                                }
+                            }
+
+                            lstParentNodeChildren.Insert(intTargetIndex, objNode);
+                            x.SelectedNode = objNode;
+                        }).ConfigureAwait(false);
+                    }
+                }
             }
         }
 
-        private void ResetLifestyleQualitiesTree()
+        private async ValueTask ResetLifestyleQualitiesTree(CancellationToken token = default)
         {
             TreeNode nodPositiveQualityRoot = null;
             TreeNode nodNegativeQualityRoot = null;
             TreeNode nodEntertainmentsRoot = null;
             TreeNode nodFreeGridsRoot = null;
 
-            string strSelectedNode = treLifestyleQualities.SelectedNode?.Tag.ToString();
+            string strSelectedNode = await treLifestyleQualities.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag.ToString(), token: token).ConfigureAwait(false);
 
-            treLifestyleQualities.Nodes.Clear();
+            await treLifestyleQualities.DoThreadSafeAsync(x => x.Nodes.Clear(), token: token).ConfigureAwait(false);
 
             foreach (LifestyleQuality objQuality in _objLifestyle.LifestyleQualities)
             {
                 TreeNode objNode = objQuality.CreateTreeNode();
                 if (objNode == null)
                     continue;
-                switch (objQuality.Type)
+                if (objQuality.IsFreeGrid)
                 {
-                    case QualityType.Positive:
-                        if (nodPositiveQualityRoot == null)
-                        {
-                            nodPositiveQualityRoot = new TreeNode
-                            {
-                                Tag = "Node_SelectAdvancedLifestyle_PositiveQualities",
-                                Text = LanguageManager.GetString("Node_SelectAdvancedLifestyle_PositiveQualities")
-                            };
-                            treLifestyleQualities.Nodes.Insert(0, nodPositiveQualityRoot);
-                            nodPositiveQualityRoot.Expand();
-                        }
-                        nodPositiveQualityRoot.Nodes.Add(objNode);
-                        break;
-
-                    case QualityType.Negative:
-                        if (nodNegativeQualityRoot == null)
-                        {
-                            nodNegativeQualityRoot = new TreeNode
-                            {
-                                Tag = "Node_SelectAdvancedLifestyle_NegativeQualities",
-                                Text = LanguageManager.GetString("Node_SelectAdvancedLifestyle_NegativeQualities")
-                            };
-                            treLifestyleQualities.Nodes.Insert(nodPositiveQualityRoot == null ? 0 : 1, nodNegativeQualityRoot);
-                            nodNegativeQualityRoot.Expand();
-                        }
-                        nodNegativeQualityRoot.Nodes.Add(objNode);
-                        break;
-
-                    default:
-                        if (nodEntertainmentsRoot == null)
-                        {
-                            nodEntertainmentsRoot = new TreeNode
-                            {
-                                Tag = "Node_SelectAdvancedLifestyle_Entertainments",
-                                Text = LanguageManager.GetString("Node_SelectAdvancedLifestyle_Entertainments")
-                            };
-                            treLifestyleQualities.Nodes.Insert((nodPositiveQualityRoot == null ? 0 : 1) + (nodNegativeQualityRoot == null ? 0 : 1), nodEntertainmentsRoot);
-                            nodEntertainmentsRoot.Expand();
-                        }
-                        nodEntertainmentsRoot.Nodes.Add(objNode);
-                        break;
-                }
-            }
-
-            foreach (LifestyleQuality objFreeGrid in _objLifestyle.FreeGrids)
-            {
-                TreeNode objNode = objFreeGrid.CreateTreeNode();
-                if (objNode == null)
-                    return;
-                if (nodFreeGridsRoot == null)
-                {
-                    nodFreeGridsRoot = new TreeNode
+                    if (nodFreeGridsRoot == null)
                     {
-                        Tag = "Node_SelectAdvancedLifestyle_FreeMatrixGrids",
-                        Text = LanguageManager.GetString("Node_SelectAdvancedLifestyle_FreeMatrixGrids")
-                    };
-                    treLifestyleQualities.Nodes.Add(nodFreeGridsRoot);
-                    nodFreeGridsRoot.Expand();
+                        TreeNode objNewNode = new TreeNode
+                        {
+                            Tag = "Node_SelectAdvancedLifestyle_PositiveQualities",
+                            Text = await LanguageManager
+                                         .GetStringAsync("Node_SelectAdvancedLifestyle_PositiveQualities", token: token)
+                                         .ConfigureAwait(false)
+                        };
+                        nodFreeGridsRoot = objNewNode;
+                        int intOffset = (nodPositiveQualityRoot == null ? 0 : 1)
+                                        + (nodNegativeQualityRoot == null ? 0 : 1)
+                                        + (nodEntertainmentsRoot == null ? 0 : 1);
+                        await treLifestyleQualities.DoThreadSafeAsync(x =>
+                        {
+                            x.Nodes.Insert(intOffset, objNewNode);
+                            objNewNode.Expand();
+                        }, token: token).ConfigureAwait(false);
+                    }
+
+                    TreeNode root = nodFreeGridsRoot;
+                    await treLifestyleQualities.DoThreadSafeAsync(() => root.Nodes.Add(objNode), token: token).ConfigureAwait(false);
                 }
-                nodFreeGridsRoot.Nodes.Add(objNode);
+                else
+                {
+                    switch (objQuality.Type)
+                    {
+                        case QualityType.Positive:
+                        {
+                            if (nodPositiveQualityRoot == null)
+                            {
+                                TreeNode objNewNode = new TreeNode
+                                {
+                                    Tag = "Node_SelectAdvancedLifestyle_PositiveQualities",
+                                    Text = await LanguageManager.GetStringAsync(
+                                                                    "Node_SelectAdvancedLifestyle_PositiveQualities",
+                                                                    token: token)
+                                                                .ConfigureAwait(false)
+                                };
+                                nodPositiveQualityRoot = objNewNode;
+                                await treLifestyleQualities.DoThreadSafeAsync(x =>
+                                {
+                                    x.Nodes.Insert(0, objNewNode);
+                                    objNewNode.Expand();
+                                }, token: token).ConfigureAwait(false);
+                            }
+
+                            TreeNode root = nodPositiveQualityRoot;
+                            await treLifestyleQualities.DoThreadSafeAsync(() => root.Nodes.Add(objNode), token: token)
+                                                       .ConfigureAwait(false);
+                            break;
+                        }
+                        case QualityType.Negative:
+                        {
+                            if (nodNegativeQualityRoot == null)
+                            {
+                                TreeNode objNewNode = new TreeNode
+                                {
+                                    Tag = "Node_SelectAdvancedLifestyle_NegativeQualities",
+                                    Text = await LanguageManager.GetStringAsync(
+                                                                    "Node_SelectAdvancedLifestyle_NegativeQualities",
+                                                                    token: token)
+                                                                .ConfigureAwait(false)
+                                };
+                                nodNegativeQualityRoot = objNewNode;
+                                int intOffset = nodPositiveQualityRoot == null ? 0 : 1;
+                                await treLifestyleQualities.DoThreadSafeAsync(x =>
+                                {
+                                    x.Nodes.Insert(intOffset, objNewNode);
+                                    objNewNode.Expand();
+                                }, token: token).ConfigureAwait(false);
+                            }
+
+                            TreeNode root = nodNegativeQualityRoot;
+                            await treLifestyleQualities.DoThreadSafeAsync(() => root.Nodes.Add(objNode), token: token)
+                                                       .ConfigureAwait(false);
+                            break;
+                        }
+                        default:
+                        {
+                            if (nodEntertainmentsRoot == null)
+                            {
+                                TreeNode objNewNode = new TreeNode
+                                {
+                                    Tag = "Node_SelectAdvancedLifestyle_Entertainments",
+                                    Text = await LanguageManager.GetStringAsync(
+                                                                    "Node_SelectAdvancedLifestyle_Entertainments",
+                                                                    token: token)
+                                                                .ConfigureAwait(false)
+                                };
+                                nodEntertainmentsRoot = objNewNode;
+                                int intOffset = (nodPositiveQualityRoot == null ? 0 : 1)
+                                                + (nodNegativeQualityRoot == null ? 0 : 1);
+                                await treLifestyleQualities.DoThreadSafeAsync(x =>
+                                {
+                                    x.Nodes.Insert(intOffset, objNewNode);
+                                    objNewNode.Expand();
+                                }, token: token).ConfigureAwait(false);
+                            }
+
+                            TreeNode root = nodEntertainmentsRoot;
+                            await treLifestyleQualities
+                                  .DoThreadSafeAsync(() => root.Nodes.Add(objNode), token: token)
+                                  .ConfigureAwait(false);
+                            break;
+                        }
+                    }
+                }
             }
 
-            treLifestyleQualities.SortCustomAlphabetically(strSelectedNode);
+            await treLifestyleQualities.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedNode), token: token).ConfigureAwait(false);
         }
 
         private async void SelectAdvancedLifestyle_Load(object sender, EventArgs e)
@@ -416,7 +405,7 @@ namespace Chummer
                                                            out List<ListItem> lstLifestyles))
             {
                 using (XmlNodeList xmlLifestyleList
-                       = _xmlDocument.SelectNodes("/chummer/lifestyles/lifestyle[" + _objCharacter.Settings.BookXPath()
+                       = _xmlDocument.SelectNodes("/chummer/lifestyles/lifestyle[" + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false)
                                                   + ']'))
                 {
                     if (xmlLifestyleList?.Count > 0)
@@ -430,7 +419,7 @@ namespace Chummer
                                 (StyleType == LifestyleType.Advanced || objXmlLifestyle["slp"]?.InnerText == "remove")
                                 &&
                                 !strLifestyleName.Contains("Hospitalized") &&
-                                _objCharacter.Settings.BookEnabled(objXmlLifestyle["source"]?.InnerText))
+                                await _objCharacter.Settings.BookEnabledAsync(objXmlLifestyle["source"]?.InnerText).ConfigureAwait(false))
                             {
                                 lstLifestyles.Add(new ListItem(strLifestyleName,
                                                                objXmlLifestyle["translate"]?.InnerText
@@ -440,41 +429,75 @@ namespace Chummer
                     }
                 }
 
-                chkBonusLPRandomize.DoNegatableDataBinding("Checked", _objLifestyle, nameof(Lifestyle.AllowBonusLP));
-                nudBonusLP.DoDataBinding("Value", _objLifestyle, nameof(Lifestyle.BonusLP));
-                ResetLifestyleQualitiesTree();
-                cboBaseLifestyle.BeginUpdate();
-                cboBaseLifestyle.PopulateWithListItems(lstLifestyles);
-                cboBaseLifestyle.EndUpdate();
+                await chkBonusLPRandomize.DoNegatableDataBindingAsync("Checked", _objLifestyle, nameof(Lifestyle.AllowBonusLP)).ConfigureAwait(false);
+                await nudBonusLP.DoDataBindingAsync("Value", _objLifestyle, nameof(Lifestyle.BonusLP)).ConfigureAwait(false);
+                await ResetLifestyleQualitiesTree().ConfigureAwait(false);
+                await cboBaseLifestyle.PopulateWithListItemsAsync(lstLifestyles).ConfigureAwait(false);
             }
 
-            txtLifestyleName.DoDataBinding("Text", _objLifestyle, nameof(Lifestyle.Name));
-            nudRoommates.DoDataBinding("Value", _objLifestyle, nameof(Lifestyle.Roommates));
-            nudPercentage.DoDataBinding("Value", _objLifestyle, nameof(Lifestyle.Percentage));
-            nudArea.DoDataBinding("Value", _objLifestyle, nameof(Lifestyle.BindableArea));
-            nudComforts.DoDataBinding("Value", _objLifestyle, nameof(Lifestyle.BindableComforts));
-            nudSecurity.DoDataBinding("Value", _objLifestyle, nameof(Lifestyle.BindableSecurity));
-            nudArea.DoOneWayDataBinding("Maximum", _objLifestyle, nameof(Lifestyle.AreaDelta));
-            nudComforts.DoOneWayDataBinding("Maximum", _objLifestyle, nameof(Lifestyle.ComfortsDelta));
-            nudSecurity.DoOneWayDataBinding("Maximum", _objLifestyle, nameof(Lifestyle.SecurityDelta));
-            cboBaseLifestyle.DoDataBinding("SelectedValue", _objLifestyle, nameof(Lifestyle.BaseLifestyle));
-            chkTrustFund.DoDataBinding("Checked", _objLifestyle, nameof(Lifestyle.TrustFund));
-            chkTrustFund.DoOneWayDataBinding("Enabled", _objLifestyle, nameof(Lifestyle.IsTrustFundEligible));
-            chkPrimaryTenant.DoDataBinding("Checked", _objLifestyle, nameof(Lifestyle.PrimaryTenant));
-            lblCost.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.DisplayTotalMonthlyCost));
-            lblArea.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.FormattedArea));
-            lblComforts.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.FormattedComforts));
-            lblSecurity.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.FormattedSecurity));
-            lblAreaTotal.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.TotalArea));
-            lblComfortTotal.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.TotalComforts));
-            lblSecurityTotal.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.TotalSecurity));
-            lblTotalLP.DoOneWayDataBinding("Text", _objLifestyle, nameof(Lifestyle.TotalLP));
+            await txtLifestyleName.DoDataBindingAsync("Text", _objLifestyle, nameof(Lifestyle.Name)).ConfigureAwait(false);
+            await nudRoommates.DoDataBindingAsync("Value", _objLifestyle, nameof(Lifestyle.Roommates)).ConfigureAwait(false);
+            await nudPercentage.DoDataBindingAsync("Value", _objLifestyle, nameof(Lifestyle.Percentage)).ConfigureAwait(false);
+            await nudArea.DoDataBindingAsync("Value", _objLifestyle, nameof(Lifestyle.BindableArea)).ConfigureAwait(false);
+            await nudComforts.DoDataBindingAsync("Value", _objLifestyle, nameof(Lifestyle.BindableComforts)).ConfigureAwait(false);
+            await nudSecurity.DoDataBindingAsync("Value", _objLifestyle, nameof(Lifestyle.BindableSecurity)).ConfigureAwait(false);
+            await nudArea.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Maximum = y, _objLifestyle,
+                                                         nameof(Lifestyle.AreaDelta),
+                                                         x => x.GetAreaDeltaAsync().AsTask())
+                         .ConfigureAwait(false);
+            await nudComforts.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Maximum = y, _objLifestyle,
+                                                             nameof(Lifestyle.ComfortsDelta),
+                                                             x => x.GetComfortsDeltaAsync().AsTask())
+                             .ConfigureAwait(false);
+            await nudSecurity.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Maximum = y, _objLifestyle,
+                                                             nameof(Lifestyle.SecurityDelta),
+                                                             x => x.GetSecurityDeltaAsync().AsTask())
+                             .ConfigureAwait(false);
+            await cboBaseLifestyle.DoDataBindingAsync("SelectedValue", _objLifestyle, nameof(Lifestyle.BaseLifestyle)).ConfigureAwait(false);
+            await chkTrustFund.DoDataBindingAsync("Checked", _objLifestyle, nameof(Lifestyle.TrustFund)).ConfigureAwait(false);
+            await chkTrustFund.DoOneWayDataBindingAsync("Enabled", _objLifestyle, nameof(Lifestyle.IsTrustFundEligible)).ConfigureAwait(false);
+            await chkPrimaryTenant.DoDataBindingAsync("Checked", _objLifestyle, nameof(Lifestyle.PrimaryTenant)).ConfigureAwait(false);
+            await lblCost.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objLifestyle,
+                                                         nameof(Lifestyle.DisplayTotalMonthlyCost),
+                                                         x => x.GetDisplayTotalMonthlyCostAsync().AsTask())
+                         .ConfigureAwait(false);
+            await lblArea.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objLifestyle,
+                                                              nameof(Lifestyle.FormattedArea),
+                                                              x => x.GetFormattedAreaAsync().AsTask())
+                              .ConfigureAwait(false);
+            await lblComforts.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objLifestyle,
+                                                                 nameof(Lifestyle.FormattedComforts),
+                                                                 x => x.GetFormattedComfortsAsync().AsTask())
+                                 .ConfigureAwait(false);
+            await lblSecurity.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y,
+                                                             _objLifestyle,
+                                                             nameof(Lifestyle.FormattedSecurity),
+                                                             x => x.GetFormattedSecurityAsync().AsTask())
+                             .ConfigureAwait(false);
+            await lblAreaTotal.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objLifestyle,
+                                                              nameof(Lifestyle.TotalArea),
+                                                              x => x.GetTotalAreaAsync().AsTask())
+                              .ConfigureAwait(false);
+            await lblComfortTotal.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objLifestyle,
+                                                                 nameof(Lifestyle.TotalComforts),
+                                                                 x => x.GetTotalComfortsAsync().AsTask())
+                                 .ConfigureAwait(false);
+            await lblSecurityTotal.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objLifestyle,
+                                                                  nameof(Lifestyle.TotalSecurity),
+                                                                  x => x.GetTotalSecurityAsync().AsTask())
+                                  .ConfigureAwait(false);
+            await lblTotalLP.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objLifestyle,
+                                                            nameof(Lifestyle.TotalLP),
+                                                            x => x.GetTotalLPAsync().AsTask())
+                            .ConfigureAwait(false);
 
-            if (cboBaseLifestyle.SelectedIndex == -1)
-                cboBaseLifestyle.SelectedIndex = 0;
+            await cboBaseLifestyle.DoThreadSafeAsync(x =>
+            {
+                if (x.SelectedIndex == -1)
+                    x.SelectedIndex = 0;
+            }).ConfigureAwait(false);
 
             _objLifestyle.LifestyleQualities.CollectionChanged += LifestyleQualitiesOnCollectionChanged;
-            _objLifestyle.FreeGrids.CollectionChanged += FreeGridsOnCollectionChanged;
 
             // Populate the City ComboBox
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCity))
@@ -486,40 +509,40 @@ namespace Chummer
                         foreach (XmlNode objXmlCity in xmlCityList)
                         {
                             string strName = objXmlCity["name"]?.InnerText
-                                             ?? await LanguageManager.GetStringAsync("String_Unknown");
+                                             ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
                             lstCity.Add(new ListItem(strName, objXmlCity["translate"]?.InnerText ?? strName));
                         }
                     }
                 }
 
-                cboCity.BeginUpdate();
-                cboCity.PopulateWithListItems(lstCity);
-                cboCity.DoDataBinding("SelectedValue", _objLifestyle, nameof(Lifestyle.City));
-                cboCity.EndUpdate();
+                lstCity.Sort();
+                await cboCity.PopulateWithListItemsAsync(lstCity).ConfigureAwait(false);
+                await cboCity.DoDataBindingAsync("SelectedValue", _objLifestyle, nameof(Lifestyle.City)).ConfigureAwait(false);
             }
 
             //Populate District and Borough ComboBox for the first time
-            RefreshDistrictList();
-            RefreshBoroughList();
+            await RefreshDistrictList().ConfigureAwait(false);
+            await RefreshBoroughList().ConfigureAwait(false);
 
-            _blnSkipRefresh = false;
-            RefreshSelectedLifestyle();
+            Interlocked.Decrement(ref _intSkipRefresh);
+            await RefreshSelectedLifestyle().ConfigureAwait(false);
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object sender, EventArgs e)
         {
             AddAgain = false;
-            AcceptForm();
+            await AcceptForm().ConfigureAwait(false);
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private void chkTrustFund_Changed(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (_intSkipRefresh > 0)
                 return;
 
             if (chkTrustFund.Checked)
@@ -530,44 +553,44 @@ namespace Chummer
             nudRoommates.Enabled = !chkTrustFund.Checked;
         }
 
-        private void cmdOKAdd_Click(object sender, EventArgs e)
+        private async void cmdOKAdd_Click(object sender, EventArgs e)
         {
             AddAgain = true;
-            AcceptForm();
+            await AcceptForm().ConfigureAwait(false);
         }
 
-        private void cboBaseLifestyle_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboBaseLifestyle_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (_intSkipRefresh > 0)
                 return;
-            RefreshSelectedLifestyle();
+            await RefreshSelectedLifestyle().ConfigureAwait(false);
         }
 
-        private void cboCity_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboCity_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (_intSkipRefresh > 0)
                 return;
-            RefreshDistrictList();
+            await RefreshDistrictList().ConfigureAwait(false);
         }
 
-        private void cboDistrict_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboDistrict_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (_intSkipRefresh > 0)
                 return;
-            RefreshBoroughList();
-            _objLifestyle.District = cboDistrict.SelectedValue?.ToString() ?? string.Empty;
+            await RefreshBoroughList().ConfigureAwait(false);
+            _objLifestyle.District = await cboDistrict.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false) ?? string.Empty;
         }
 
         private void cboBorough_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (_intSkipRefresh > 0)
                 return;
             _objLifestyle.Borough = cboBorough.SelectedValue?.ToString() ?? string.Empty;
         }
 
         private void nudRoommates_ValueChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (_intSkipRefresh > 0)
                 return;
 
             if (nudRoommates.Value == 0 && !chkPrimaryTenant.Checked)
@@ -581,45 +604,59 @@ namespace Chummer
             bool blnAddAgain;
             do
             {
-                using (SelectLifestyleQuality frmSelectLifestyleQuality = new SelectLifestyleQuality(_objCharacter, cboBaseLifestyle.SelectedValue.ToString(), _objLifestyle.LifestyleQualities))
+                using (ThreadSafeForm<SelectLifestyleQuality> frmSelectLifestyleQuality =
+                       await ThreadSafeForm<SelectLifestyleQuality>.GetAsync(() => new SelectLifestyleQuality(_objCharacter, _objLifestyle)).ConfigureAwait(false))
                 {
-                    await frmSelectLifestyleQuality.ShowDialogSafeAsync(this);
-
                     // Don't do anything else if the form was canceled.
-                    if (frmSelectLifestyleQuality.DialogResult == DialogResult.Cancel)
+                    if (await frmSelectLifestyleQuality.ShowDialogSafeAsync(this).ConfigureAwait(false) == DialogResult.Cancel)
                         return;
-                    blnAddAgain = frmSelectLifestyleQuality.AddAgain;
+                    blnAddAgain = frmSelectLifestyleQuality.MyForm.AddAgain;
 
-                    XmlNode objXmlQuality = _xmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + frmSelectLifestyleQuality.SelectedQuality.CleanXPath() + ']');
+                    XmlNode objXmlQuality = _xmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + frmSelectLifestyleQuality.MyForm.SelectedQuality.CleanXPath() + ']');
 
                     LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-
-                    objQuality.Create(objXmlQuality, _objLifestyle, _objCharacter, QualitySource.Selected);
-                    //objNode.ContextMenuStrip = cmsQuality;
-                    if (objQuality.InternalId.IsEmptyGuid())
+                    try
                     {
-                        objQuality.Dispose();
-                        continue;
-                    }
-                    objQuality.Free = frmSelectLifestyleQuality.FreeCost;
+                        objQuality.Create(objXmlQuality, _objLifestyle, _objCharacter, QualitySource.Selected);
+                        //objNode.ContextMenuStrip = cmsQuality;
+                        if (objQuality.InternalId.IsEmptyGuid())
+                        {
+                            await objQuality.RemoveAsync(false).ConfigureAwait(false);
+                            continue;
+                        }
 
-                    _objLifestyle.LifestyleQualities.Add(objQuality);
+                        objQuality.Free = frmSelectLifestyleQuality.MyForm.FreeCost;
+
+                        await _objLifestyle.LifestyleQualities.AddAsync(objQuality).ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        try
+                        {
+                            await objQuality.RemoveAsync(false).ConfigureAwait(false);
+                        }
+                        catch
+                        {
+                            await objQuality.DisposeAsync().ConfigureAwait(false);
+                            // Swallow removal exceptions here because we already want to throw an exception
+                        }
+
+                        throw;
+                    }
                 }
             }
             while (blnAddAgain);
         }
 
-        private void cmdDeleteQuality_Click(object sender, EventArgs e)
+        private async void cmdDeleteQuality_Click(object sender, EventArgs e)
         {
             // Locate the selected Quality.
-            if (treLifestyleQualities.SelectedNode == null || treLifestyleQualities.SelectedNode.Level == 0 || treLifestyleQualities.SelectedNode.Parent.Name == "nodFreeMatrixGrids")
+            TreeNode objNode = await treLifestyleQualities.DoThreadSafeFuncAsync(x => x.SelectedNode).ConfigureAwait(false);
+            if (objNode == null || objNode.Level == 0 || objNode.Parent.Name == "nodFreeMatrixGrids")
                 return;
-
-            if (!(treLifestyleQualities.SelectedNode.Tag is LifestyleQuality objQuality))
+            if (!(objNode.Tag is LifestyleQuality objQuality) || objQuality.OriginSource == QualitySource.BuiltIn)
                 return;
-            if (objQuality.OriginSource == QualitySource.BuiltIn)
-                return;
-            _objLifestyle.LifestyleQualities.Remove(objQuality);
+            await objQuality.RemoveAsync().ConfigureAwait(false);
         }
 
         private void treLifestyleQualities_AfterSelect(object sender, TreeViewEventArgs e)
@@ -627,14 +664,22 @@ namespace Chummer
             if (treLifestyleQualities.SelectedNode?.Tag is LifestyleQuality objQuality)
             {
                 tlpLifestyleQuality.Visible = true;
-                chkQualityContributesLP.Enabled = !(objQuality.Free || objQuality.OriginSource == QualitySource.BuiltIn);
+                chkQualityUseLPCost.Enabled = !objQuality.Free && objQuality.CanBeFreeByLifestyle;
 
-                _blnSkipRefresh = true;
-                chkQualityContributesLP.Checked = objQuality.ContributesLP;
-                _blnSkipRefresh = false;
+                Interlocked.Increment(ref _intSkipRefresh);
+                try
+                {
+                    chkQualityUseLPCost.Checked = chkQualityUseLPCost.Enabled
+                        ? objQuality.UseLPCost
+                        : !objQuality.Free && !objQuality.CanBeFreeByLifestyle;
+                }
+                finally
+                {
+                    Interlocked.Decrement(ref _intSkipRefresh);
+                }
 
                 lblQualityLp.Text = objQuality.LP.ToString(GlobalSettings.CultureInfo);
-                lblQualityCost.Text = objQuality.Cost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
+                lblQualityCost.Text = objQuality.Cost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol");
                 objQuality.SetSourceDetail(lblQualitySource);
                 cmdDeleteQuality.Enabled = objQuality.OriginSource != QualitySource.BuiltIn;
             }
@@ -647,24 +692,28 @@ namespace Chummer
 
         private void chkQualityContributesLP_CheckedChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (_intSkipRefresh > 0)
                 return;
             if (!(treLifestyleQualities.SelectedNode?.Tag is LifestyleQuality objQuality))
                 return;
-            objQuality.ContributesLP = chkQualityContributesLP.Checked;
+            objQuality.UseLPCost = !chkQualityUseLPCost.Enabled || chkQualityUseLPCost.Checked;
             lblQualityLp.Text = objQuality.LP.ToString(GlobalSettings.CultureInfo);
         }
 
-        private void chkTravelerBonusLPRandomize_CheckedChanged(object sender, EventArgs e)
+        private async void chkTravelerBonusLPRandomize_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkBonusLPRandomize.Checked)
+            if (await chkBonusLPRandomize.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
             {
-                nudBonusLP.Enabled = false;
-                nudBonusLP.Value = GlobalSettings.RandomGenerator.NextD6ModuloBiasRemoved();
+                int intRandom = await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync().ConfigureAwait(false);
+                await nudBonusLP.DoThreadSafeAsync(x =>
+                {
+                    x.Enabled = false;
+                    x.Value = intRandom;
+                }).ConfigureAwait(false);
             }
             else
             {
-                nudBonusLP.Enabled = true;
+                await nudBonusLP.DoThreadSafeAsync(x => x.Enabled = true).ConfigureAwait(false);
             }
         }
 
@@ -694,128 +743,146 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private void AcceptForm()
+        private async ValueTask AcceptForm(CancellationToken token = default)
         {
-            if (string.IsNullOrEmpty(txtLifestyleName.Text))
+            string strLifestyleName = await txtLifestyleName.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(strLifestyleName))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectAdvancedLifestyle_LifestyleName"), LanguageManager.GetString("MessageTitle_SelectAdvancedLifestyle_LifestyleName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectAdvancedLifestyle_LifestyleName", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_SelectAdvancedLifestyle_LifestyleName", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
             if (_objLifestyle.TotalLP < 0)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_SelectAdvancedLifestyle_OverLPLimit"), LanguageManager.GetString("MessageTitle_SelectAdvancedLifestyle_OverLPLimit"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectAdvancedLifestyle_OverLPLimit", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_SelectAdvancedLifestyle_OverLPLimit", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            string strBaseLifestyle = cboBaseLifestyle.SelectedValue.ToString();
+            string strBaseLifestyle = await cboBaseLifestyle.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token).ConfigureAwait(false);
             XmlNode objXmlLifestyle = _xmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = " + strBaseLifestyle.CleanXPath() + ']');
             if (objXmlLifestyle == null)
                 return;
             _objLifestyle.Source = objXmlLifestyle["source"]?.InnerText;
             _objLifestyle.Page = objXmlLifestyle["page"]?.InnerText;
-            _objLifestyle.Name = txtLifestyleName.Text;
+            _objLifestyle.Name = strLifestyleName;
             _objLifestyle.Cost = Convert.ToInt32(objXmlLifestyle["cost"]?.InnerText, GlobalSettings.InvariantCultureInfo);
-            _objLifestyle.Percentage = nudPercentage.Value;
+            _objLifestyle.Percentage = await nudPercentage.DoThreadSafeFuncAsync(x => x.Value, token).ConfigureAwait(false);
             _objLifestyle.BaseLifestyle = strBaseLifestyle;
-            _objLifestyle.Area = nudArea.ValueAsInt;
-            _objLifestyle.Comforts = nudComforts.ValueAsInt;
-            _objLifestyle.Security = nudSecurity.ValueAsInt;
+            _objLifestyle.Area = await nudArea.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false);
+            _objLifestyle.Comforts = await nudComforts.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false);
+            _objLifestyle.Security = await nudSecurity.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false);
             _objLifestyle.TrustFund = chkTrustFund.Checked;
-            _objLifestyle.Roommates = _objLifestyle.TrustFund ? 0 : nudRoommates.ValueAsInt;
-            _objLifestyle.PrimaryTenant = chkPrimaryTenant.Checked;
-            _objLifestyle.BonusLP = nudBonusLP.ValueAsInt;
+            _objLifestyle.Roommates = _objLifestyle.TrustFund ? 0 : await nudRoommates.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false);
+            _objLifestyle.PrimaryTenant = await chkPrimaryTenant.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false);
+            _objLifestyle.BonusLP = await nudBonusLP.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false);
 
             // Get the starting Nuyen information.
             _objLifestyle.Dice = Convert.ToInt32(objXmlLifestyle["dice"]?.InnerText, GlobalSettings.InvariantCultureInfo);
             _objLifestyle.Multiplier = Convert.ToDecimal(objXmlLifestyle["multiplier"]?.InnerText, GlobalSettings.InvariantCultureInfo);
             _objLifestyle.StyleType = StyleType;
             SelectedLifestyle = _objLifestyle;
-            DialogResult = DialogResult.OK;
+            await this.DoThreadSafeAsync(x =>
+            {
+                x.DialogResult = DialogResult.OK;
+                x.Close();
+            }, token).ConfigureAwait(false);
         }
 
-        private void RefreshSelectedLifestyle()
+        private async ValueTask RefreshSelectedLifestyle(CancellationToken token = default)
         {
-            if (_blnSkipRefresh)
+            if (_intSkipRefresh > 0)
                 return;
 
-            string strBaseLifestyle = cboBaseLifestyle.SelectedValue?.ToString() ?? string.Empty;
-            _objLifestyle.BaseLifestyle = strBaseLifestyle;
-            XPathNavigator xmlAspect = _objLifestyle.GetNodeXPath();
+            _objLifestyle.BaseLifestyle = await cboBaseLifestyle.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false) ?? string.Empty;
+            XPathNavigator xmlAspect = await _objLifestyle.GetNodeXPathAsync(token: token).ConfigureAwait(false);
             if (xmlAspect != null)
             {
-                string strSource = xmlAspect.SelectSingleNode("source")?.Value ?? string.Empty;
-                string strPage = xmlAspect.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? xmlAspect.SelectSingleNode("page")?.Value ?? string.Empty;
+                string strSource = (await xmlAspect.SelectSingleNodeAndCacheExpressionAsync("source", token).ConfigureAwait(false))?.Value ?? string.Empty;
+                string strPage = (await xmlAspect.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token).ConfigureAwait(false))?.Value ?? (await xmlAspect.SelectSingleNodeAndCacheExpressionAsync("page", token).ConfigureAwait(false))?.Value ?? string.Empty;
                 if (!string.IsNullOrEmpty(strSource) && !string.IsNullOrEmpty(strPage))
                 {
-                    SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
-                        GlobalSettings.CultureInfo, _objCharacter);
-                    lblSource.Text = objSource.ToString();
-                    lblSource.SetToolTip(objSource.LanguageBookTooltip);
+                    SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
+                        GlobalSettings.CultureInfo, _objCharacter, token).ConfigureAwait(false);
+                    await objSource.SetControlAsync(lblSource, token).ConfigureAwait(false);
+                    await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
                 }
                 else
                 {
-                    lblSource.Text = string.Empty;
-                    lblSource.SetToolTip(string.Empty);
+                    await SourceString.Blank.SetControlAsync(lblSource, token).ConfigureAwait(false);
+                    await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                 }
             }
             else
             {
-                lblSource.Text = string.Empty;
-                lblSource.SetToolTip(string.Empty);
+                await SourceString.Blank.SetControlAsync(lblSource, token).ConfigureAwait(false);
+                await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
             }
-
-            lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
 
             // Characters with the Trust Fund Quality can have the lifestyle discounted.
             if (_objLifestyle.IsTrustFundEligible)
             {
-                chkTrustFund.Visible = true;
-                chkTrustFund.Checked = _objLifestyle.TrustFund;
+                await chkTrustFund.DoThreadSafeAsync(x =>
+                {
+                    x.Visible = true;
+                    x.Checked = _objLifestyle.TrustFund;
+                }, token).ConfigureAwait(false);
             }
             else
             {
-                chkTrustFund.Checked = false;
-                chkTrustFund.Visible = false;
+                await chkTrustFund.DoThreadSafeAsync(x =>
+                {
+                    x.Checked = false;
+                    x.Visible = false;
+                }, token).ConfigureAwait(false);
             }
 
             if (_objLifestyle.AllowBonusLP)
             {
-                lblBonusLP.Visible = true;
-                nudBonusLP.Visible = true;
-                chkBonusLPRandomize.Visible = true;
+                await lblBonusLP.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                await nudBonusLP.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                await chkBonusLPRandomize.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
 
-                if (chkBonusLPRandomize.Checked)
+                if (await chkBonusLPRandomize.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
                 {
-                    nudBonusLP.Enabled = false;
-                    _blnSkipRefresh = true;
-                    nudBonusLP.Value = GlobalSettings.RandomGenerator.NextD6ModuloBiasRemoved();
-                    _blnSkipRefresh = false;
+                    int intValue = await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync(token).ConfigureAwait(false);
+                    await nudBonusLP.DoThreadSafeAsync(x =>
+                    {
+                        x.Enabled = false;
+                        Interlocked.Increment(ref _intSkipRefresh);
+                        try
+                        {
+                            x.Value = intValue;
+                        }
+                        finally
+                        {
+                            Interlocked.Decrement(ref _intSkipRefresh);
+                        }
+                    }, token).ConfigureAwait(false);
                 }
                 else
                 {
-                    nudBonusLP.Enabled = true;
+                    await nudBonusLP.DoThreadSafeAsync(x => x.Enabled = true, token: token).ConfigureAwait(false);
                 }
             }
             else
             {
-                lblBonusLP.Visible = false;
-                nudBonusLP.Visible = false;
-                nudBonusLP.Value = 0;
-                chkBonusLPRandomize.Visible = false;
+                await lblBonusLP.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                await nudBonusLP.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                await nudBonusLP.DoThreadSafeAsync(x => x.Value = 0, token).ConfigureAwait(false);
+                await chkBonusLPRandomize.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
             }
         }
 
         private async void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            await CommonFunctions.OpenPdfFromControl(sender, e);
+            await CommonFunctions.OpenPdfFromControl(sender).ConfigureAwait(false);
         }
 
         /// <summary>
         /// Populates The District list after a City was selected
         /// </summary>
-        private void RefreshDistrictList()
+        private async ValueTask RefreshDistrictList(CancellationToken token = default)
         {
-            string strSelectedCityRefresh = cboCity.SelectedValue?.ToString() ?? string.Empty;
+            string strSelectedCityRefresh = await cboCity.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false) ?? string.Empty;
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstDistrict))
             {
                 using (XmlNodeList xmlDistrictList
@@ -827,25 +894,24 @@ namespace Chummer
                         foreach (XmlNode objXmlDistrict in xmlDistrictList)
                         {
                             string strName = objXmlDistrict["name"]?.InnerText
-                                             ?? LanguageManager.GetString("String_Unknown");
+                                             ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                             lstDistrict.Add(new ListItem(strName, objXmlDistrict["translate"]?.InnerText ?? strName));
                         }
                     }
                 }
 
-                cboDistrict.BeginUpdate();
-                cboDistrict.PopulateWithListItems(lstDistrict);
-                cboDistrict.EndUpdate();
+                lstDistrict.Sort();
+                await cboDistrict.PopulateWithListItemsAsync(lstDistrict, token: token).ConfigureAwait(false);
             }
         }
 
         /// <summary>
         /// Refreshes the BoroughList based on the selected District to generate a cascading dropdown menu
         /// </summary>
-        private void RefreshBoroughList()
+        private async ValueTask RefreshBoroughList(CancellationToken token = default)
         {
-            string strSelectedCityRefresh = cboCity.SelectedValue?.ToString() ?? string.Empty;
-            string strSelectedDistrictRefresh = cboDistrict.SelectedValue?.ToString() ?? string.Empty;
+            string strSelectedCityRefresh = await cboCity.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false) ?? string.Empty;
+            string strSelectedDistrictRefresh = await cboDistrict.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false) ?? string.Empty;
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstBorough))
             {
                 using (XmlNodeList xmlBoroughList = _xmlDocument.SelectNodes(
@@ -857,15 +923,14 @@ namespace Chummer
                         foreach (XmlNode objXmlDistrict in xmlBoroughList)
                         {
                             string strName = objXmlDistrict["name"]?.InnerText
-                                             ?? LanguageManager.GetString("String_Unknown");
+                                             ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                             lstBorough.Add(new ListItem(strName, objXmlDistrict["translate"]?.InnerText ?? strName));
                         }
                     }
                 }
 
-                cboBorough.BeginUpdate();
-                cboBorough.PopulateWithListItems(lstBorough);
-                cboBorough.EndUpdate();
+                lstBorough.Sort();
+                await cboBorough.PopulateWithListItemsAsync(lstBorough, token: token).ConfigureAwait(false);
             }
         }
 

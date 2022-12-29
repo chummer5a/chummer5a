@@ -40,5 +40,9 @@
       <name>Remove Automatics as a Skill</name>
       <guid>1D72E8C0-8FBA-4B85-B2FF-EBD68153BCF5</guid>
     </incompatibility>
+    <incompatibility>
+      <name>Delnar Skills Remake (Lite)</name>
+      <guid>c0660d50-328f-4b98-969f-1374752a1588</guid>
+    </incompatibility>
   </incompatibilities>
 </manifest>

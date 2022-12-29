@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <martialarts>
+    <martialart>
+      <bonus>
+        <addskillspecializationoption xpathfilter="skill = 'Blades' or skill = 'Clubs' or skill = 'Unarmed Combat'">
+          <skill>Close Combat</skill>
+        </addskillspecializationoption>
+        <addskillspecializationoption xpathfilter="skill = 'Automatics' or skill = 'Pistols' or skill = 'Longarms' or skill = 'Heavy Weapons' or skills/skill = 'Automatics' or skills/skill = 'Pistols' or skills/skill = 'Longarms' or skills/skill = 'Heavy Weapons'">
+          <skill>Firearms</skill>
+          <skills amendoperation="remove" />
+        </addskillspecializationoption>
+        <addskillspecializationoption xpathfilter="skill = 'Archery' or skill = 'Throwing Weapons'">
+          <skill>Projectile Weapons</skill>
+        </addskillspecializationoption>
+        <addskillspecializationoption xpathfilter="skill = 'Gymnastics'">
+          <skill>Prowess</skill>
+        </addskillspecializationoption>
+      </bonus>
+    </martialart>
+  </martialarts>
+</chummer>

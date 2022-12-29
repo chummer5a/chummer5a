@@ -30,9 +30,5 @@
       <avail>Rating * 2</avail>
       <cost>Rating * 1000</cost>
     </cyberware>
-    <cyberware> <!-- Skillwires -->
-      <id>60485c4e-042f-44f6-ad89-324003223f73</id>
-      <ess>Rating * 0.1</ess>
-    </cyberware>
   </cyberwares>
 </chummer>

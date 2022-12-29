@@ -22,14 +22,22 @@
   <biowares>
     <bioware>
       <bonus>
-        <specificskill xpathfilter="name = 'Escape Artist' or name = 'Navigation' or name = 'Perception'" amendoperation="remove" />
+        <specificskill xpathfilter="name = 'Navigation'">
+          <name>Query</name>
+          <condition>Navigation</condition>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Escape Artist'">
+          <name>Acrobatics</name>
+          <condition>Contortion</condition>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Gymnastics'">
+          <name>Acrobatics</name>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Perception'" amendoperation="remove" />
         <skilllinkedattribute amendoperation="remove" />
         <skillgroup xpathfilter="name = 'Athletics'">
           <name>Prowess</name>
         </skillgroup>
-        <specificskill xpathfilter="name = 'Gymnastics'">
-          <name>Acrobatics</name>
-        </specificskill>
       </bonus>
     </bioware>
     <bioware xpathfilter="name = 'Enhanced Articulation (2050)' or name = 'Enhanced Articulation'">

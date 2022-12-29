@@ -21,13 +21,16 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using NLog;
 
 namespace Chummer
 {
     public static class Timekeeper
     {
-        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
         private static readonly Stopwatch s_Time = new Stopwatch();
         private static readonly LockingDictionary<string, TimeSpan> s_DictionaryStarts = new LockingDictionary<string, TimeSpan>();
         private static readonly LockingDictionary<string, Tuple<TimeSpan, int>> s_DictionaryStatistics = new LockingDictionary<string, Tuple<TimeSpan, int>>();
@@ -53,9 +56,36 @@ namespace Chummer
             return dependencyActivity;
         }
 
+        [CLSCompliant(false)]
+        public static async ValueTask<CustomActivity> StartSyncronAsync(string taskname, CustomActivity parentActivity, CustomActivity.OperationType operationType, string target, CancellationToken token = default)
+        {
+            CustomActivity dependencyActivity = new CustomActivity(taskname, parentActivity, operationType, target);
+            await s_DictionaryStarts.TryAddAsync(taskname, s_Time.Elapsed, token).ConfigureAwait(false);
+            return dependencyActivity;
+        }
+
+        [CLSCompliant(false)]
+        public static async ValueTask<CustomActivity> StartSyncronAsync(string taskname, CustomActivity parentActivity, CancellationToken token = default)
+        {
+            CustomActivity dependencyActivity = new CustomActivity(taskname, parentActivity);
+            await s_DictionaryStarts.TryAddAsync(taskname, s_Time.Elapsed, token).ConfigureAwait(false);
+            return dependencyActivity;
+        }
+
         public static TimeSpan Elapsed(string taskname)
         {
             if (s_DictionaryStarts.TryGetValue(taskname, out TimeSpan objStartTimeSpan))
+            {
+                return s_Time.Elapsed - objStartTimeSpan;
+            }
+
+            return TimeSpan.Zero;
+        }
+
+        public static async ValueTask<TimeSpan> ElapsedAsync(string taskname, CancellationToken token = default)
+        {
+            (bool blnSuccess, TimeSpan objStartTimeSpan) = await s_DictionaryStarts.TryGetValueAsync(taskname, token).ConfigureAwait(false);
+            if (blnSuccess)
             {
                 return s_Time.Elapsed - objStartTimeSpan;
             }
@@ -78,14 +108,36 @@ namespace Chummer
                 Debug.WriteLine(strLogEntry);
 #endif
 
-                if (s_DictionaryStatistics.TryGetValue(taskname, out Tuple<TimeSpan, int> existing))
-                {
-                    s_DictionaryStatistics[taskname] = new Tuple<TimeSpan, int>(existing.Item1 + final, existing.Item2 + 1);
-                }
-                else
-                {
-                    s_DictionaryStatistics.TryAdd(taskname, new Tuple<TimeSpan, int>(final, 1));
-                }
+                s_DictionaryStatistics.AddOrUpdate(taskname, x => new Tuple<TimeSpan, int>(final, 1),
+                                                   (x, y) => new Tuple<TimeSpan, int>(
+                                                       y.Item1 + final, y.Item2 + 1));
+            }
+            else
+            {
+                Debug.WriteLine("Non started task \"" + taskname + "\" finished");
+            }
+            return final;
+        }
+
+        public static async ValueTask<TimeSpan> FinishAsync(string taskname, CancellationToken token = default)
+        {
+            TimeSpan final = TimeSpan.Zero;
+            (bool blnSuccess, TimeSpan objStartTimeSpan) = await s_DictionaryStarts.TryRemoveAsync(taskname, token).ConfigureAwait(false);
+            if (blnSuccess)
+            {
+                final = s_Time.Elapsed - objStartTimeSpan;
+
+#if DEBUG
+                string strLogEntry = string.Format(GlobalSettings.InvariantCultureInfo, "Task \"{0}\" finished in {1}",
+                                                   taskname, final);
+                //Log.Trace(strLogEntry);
+
+                Debug.WriteLine(strLogEntry);
+#endif
+
+                await s_DictionaryStatistics.AddOrUpdateAsync(taskname, x => new Tuple<TimeSpan, int>(final, 1),
+                                                              (x, y) => new Tuple<TimeSpan, int>(
+                                                                  y.Item1 + final, y.Item2 + 1), token).ConfigureAwait(false);
             }
             else
             {

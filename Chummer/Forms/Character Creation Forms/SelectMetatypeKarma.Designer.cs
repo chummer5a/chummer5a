@@ -17,9 +17,9 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && (components != null))
             {
-                components?.Dispose();
+                components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -32,9 +32,10 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SelectMetatypeKarma));
-            this.tlpMetatypes = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMetatypes = new System.Windows.Forms.TableLayoutPanel();
+            this.txtSearch = new System.Windows.Forms.TextBox();
+            this.lblSearchLabel = new System.Windows.Forms.Label();
             this.lstMetatypes = new System.Windows.Forms.ListBox();
             this.cboCategory = new Chummer.ElasticComboBox();
             this.lblQualitiesLabel = new System.Windows.Forms.Label();
@@ -58,21 +59,19 @@ namespace Chummer
             this.lblKarmaLabel = new System.Windows.Forms.Label();
             this.lblKarma = new System.Windows.Forms.Label();
             this.lblBODLabel = new System.Windows.Forms.Label();
-            this.tlpSpirits = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.chkPossessionBased = new Chummer.ColorableCheckBox(this.components);
+            this.tlpSpirits = new System.Windows.Forms.TableLayoutPanel();
+            this.chkPossessionBased = new Chummer.ColorableCheckBox();
             this.cboPossessionMethod = new Chummer.ElasticComboBox();
             this.lblForceLabel = new System.Windows.Forms.Label();
             this.nudForce = new Chummer.NumericUpDownEx();
-            this.tlpMetavariant = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMetavariant = new System.Windows.Forms.TableLayoutPanel();
             this.lblMetavariantLabel = new System.Windows.Forms.Label();
             this.cboMetavariant = new Chummer.ElasticComboBox();
             this.lblSourceLabel = new System.Windows.Forms.Label();
             this.lblSource = new System.Windows.Forms.Label();
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
-            this.lblSearchLabel = new System.Windows.Forms.Label();
-            this.txtSearch = new System.Windows.Forms.TextBox();
             this.tlpMetatypes.SuspendLayout();
             this.pnlQualities.SuspendLayout();
             this.tlpSpirits.SuspendLayout();
@@ -136,6 +135,29 @@ namespace Chummer
             this.tlpMetatypes.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpMetatypes.Size = new System.Drawing.Size(766, 543);
             this.tlpMetatypes.TabIndex = 70;
+            // 
+            // txtSearch
+            // 
+            this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.tlpMetatypes.SetColumnSpan(this.txtSearch, 5);
+            this.txtSearch.Location = new System.Drawing.Point(404, 3);
+            this.txtSearch.Name = "txtSearch";
+            this.txtSearch.Size = new System.Drawing.Size(359, 20);
+            this.txtSearch.TabIndex = 114;
+            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
+            // 
+            // lblSearchLabel
+            // 
+            this.lblSearchLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.lblSearchLabel.AutoSize = true;
+            this.lblSearchLabel.Location = new System.Drawing.Point(354, 7);
+            this.lblSearchLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSearchLabel.Name = "lblSearchLabel";
+            this.lblSearchLabel.Size = new System.Drawing.Size(44, 13);
+            this.lblSearchLabel.TabIndex = 113;
+            this.lblSearchLabel.Tag = "Label_Search";
+            this.lblSearchLabel.Text = "&Search:";
+            this.lblSearchLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // lstMetatypes
             // 
@@ -584,12 +606,12 @@ namespace Chummer
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
             this.tlpButtons.Controls.Add(this.cmdOK, 1, 0);
-            this.tlpButtons.Location = new System.Drawing.Point(654, 514);
+            this.tlpButtons.Location = new System.Drawing.Point(594, 514);
             this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
-            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpButtons.Size = new System.Drawing.Size(112, 29);
+            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpButtons.Size = new System.Drawing.Size(172, 29);
             this.tlpButtons.TabIndex = 112;
             // 
             // cmdCancel
@@ -599,8 +621,9 @@ namespace Chummer
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cmdCancel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdCancel.Location = new System.Drawing.Point(3, 3);
+            this.cmdCancel.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(50, 23);
+            this.cmdCancel.Size = new System.Drawing.Size(80, 23);
             this.cmdCancel.TabIndex = 12;
             this.cmdCancel.Tag = "String_Cancel";
             this.cmdCancel.Text = "Cancel";
@@ -612,45 +635,22 @@ namespace Chummer
             this.cmdOK.AutoSize = true;
             this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdOK.Location = new System.Drawing.Point(59, 3);
+            this.cmdOK.Location = new System.Drawing.Point(89, 3);
+            this.cmdOK.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdOK.Name = "cmdOK";
-            this.cmdOK.Size = new System.Drawing.Size(50, 23);
+            this.cmdOK.Size = new System.Drawing.Size(80, 23);
             this.cmdOK.TabIndex = 11;
             this.cmdOK.Tag = "String_OK";
             this.cmdOK.Text = "OK";
             this.cmdOK.UseVisualStyleBackColor = true;
             this.cmdOK.Click += new System.EventHandler(this.cmdOK_Click);
             // 
-            // lblSearchLabel
-            // 
-            this.lblSearchLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblSearchLabel.AutoSize = true;
-            this.lblSearchLabel.Location = new System.Drawing.Point(354, 7);
-            this.lblSearchLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSearchLabel.Name = "lblSearchLabel";
-            this.lblSearchLabel.Size = new System.Drawing.Size(44, 13);
-            this.lblSearchLabel.TabIndex = 113;
-            this.lblSearchLabel.Tag = "Label_Search";
-            this.lblSearchLabel.Text = "&Search:";
-            this.lblSearchLabel.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            // 
-            // txtSearch
-            // 
-            this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.tlpMetatypes.SetColumnSpan(this.txtSearch, 5);
-            this.txtSearch.Location = new System.Drawing.Point(404, 3);
-            this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(359, 20);
-            this.txtSearch.TabIndex = 114;
-            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
-            // 
-            // frmKarmaMetatype
+            // SelectMetatypeKarma
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(784, 561);
-            this.ControlBox = false;
             this.Controls.Add(this.tlpMetatypes);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
@@ -704,16 +704,16 @@ namespace Chummer
         internal System.Windows.Forms.Label lblBOD;
         internal System.Windows.Forms.Label lblBODLabel;
         internal System.Windows.Forms.ListBox lstMetatypes;
-        private BufferedTableLayoutPanel tlpMetatypes;
-        private BufferedTableLayoutPanel tlpSpirits;
+        private System.Windows.Forms.TableLayoutPanel tlpMetatypes;
+        private System.Windows.Forms.TableLayoutPanel tlpSpirits;
         private Label lblMetavariantLabel;
         internal Label lblKarmaLabel;
         private Label lblQualitiesLabel;
         private Panel pnlQualities;
-        private BufferedTableLayoutPanel tlpMetavariant;
+        private System.Windows.Forms.TableLayoutPanel tlpMetavariant;
         internal Label lblSourceLabel;
         internal Label lblSource;
-        private BufferedTableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
         internal Button cmdCancel;
         internal Button cmdOK;
         private Label lblSearchLabel;

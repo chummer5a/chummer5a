@@ -19,6 +19,7 @@
 
 using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -29,9 +30,10 @@ namespace Chummer
 {
     [HubClassTag("SourceID", true, "Name", "Extra")]
     [DebuggerDisplay("{DisplayNameShort(GlobalSettings.DefaultLanguage)}")]
-    public class MentorSpirit : IHasInternalId, IHasName, IHasXmlDataNode, IHasSource
+    public class MentorSpirit : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasSource
     {
-        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
         private Guid _guiID;
         private string _strName = string.Empty;
         private string _strAdvantage = string.Empty;
@@ -70,9 +72,9 @@ namespace Chummer
         /// </summary>
         /// <param name="xmlMentor">XmlNode to create the object from.</param>
         /// <param name="eMentorType">Whether this is a Mentor or a Paragon.</param>
+        /// <param name="strForceValue">Force a value to be selected for the Mentor Spirit.</param>
         /// <param name="strForceValueChoice1">Name/Text for Choice 1.</param>
         /// <param name="strForceValueChoice2">Name/Text for Choice 2.</param>
-        /// <param name="strForceValue">Force a value to be selected for the Mentor Spirit.</param>
         public void Create(XmlNode xmlMentor, Improvement.ImprovementType eMentorType, string strForceValue = "", string strForceValueChoice1 = "", string strForceValueChoice2 = "")
         {
             _eMentorType = eMentorType;
@@ -86,7 +88,7 @@ namespace Chummer
 
             if (string.IsNullOrEmpty(_strNotes))
             {
-                _strNotes = CommonFunctions.GetBookNotes(xmlMentor, Name, DisplayNameShort(GlobalSettings.Language), Source, Page,
+                _strNotes = CommonFunctions.GetBookNotes(xmlMentor, Name, CurrentDisplayNameShort, Source, Page,
                     DisplayPage(GlobalSettings.Language), _objCharacter);
             }
 
@@ -106,7 +108,7 @@ namespace Chummer
                 string strOldForce = ImprovementManager.ForcedValue;
                 string strOldSelected = ImprovementManager.SelectedValue;
                 ImprovementManager.ForcedValue = strForceValue;
-                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MentorSpirit, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), _nodBonus, 1, DisplayNameShort(GlobalSettings.Language)))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MentorSpirit, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), _nodBonus, 1, CurrentDisplayNameShort))
                 {
                     _guiID = Guid.Empty;
                     return;
@@ -125,7 +127,7 @@ namespace Chummer
                 string strOldForce = ImprovementManager.ForcedValue;
                 string strOldSelected = ImprovementManager.SelectedValue;
                 //ImprovementManager.ForcedValue = strForceValueChoice1;
-                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MentorSpirit, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), _nodChoice1, 1, DisplayNameShort(GlobalSettings.Language)))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MentorSpirit, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), _nodChoice1, 1, CurrentDisplayNameShort))
                 {
                     _guiID = Guid.Empty;
                     return;
@@ -147,7 +149,7 @@ namespace Chummer
                 string strOldForce = ImprovementManager.ForcedValue;
                 string strOldSelected = ImprovementManager.SelectedValue;
                 //ImprovementManager.ForcedValue = strForceValueChoice2;
-                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MentorSpirit, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), _nodChoice2, 1, DisplayNameShort(GlobalSettings.Language)))
+                if (!ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.MentorSpirit, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), _nodChoice2, 1, CurrentDisplayNameShort))
                 {
                     _guiID = Guid.Empty;
                     return;
@@ -183,7 +185,7 @@ namespace Chummer
             get
             {
                 if (_objCachedSourceDetail == default)
-                    _objCachedSourceDetail = new SourceString(Source,
+                    _objCachedSourceDetail = SourceString.GetSourceString(Source,
                         DisplayPage(GlobalSettings.Language), GlobalSettings.Language, GlobalSettings.CultureInfo,
                         _objCharacter);
                 return _objCachedSourceDetail;
@@ -194,7 +196,7 @@ namespace Chummer
         /// Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Save(XmlTextWriter objWriter)
+        public void Save(XmlWriter objWriter)
         {
             if (objWriter == null)
                 return;
@@ -221,7 +223,7 @@ namespace Chummer
                 objWriter.WriteRaw("<choice2>" + _nodChoice2.InnerXml + "</choice2>");
             else
                 objWriter.WriteElementString("choice2", string.Empty);
-            objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
 
             if (SourceID != Guid.Empty && !string.IsNullOrEmpty(SourceIDString))
             {
@@ -255,7 +257,7 @@ namespace Chummer
                 _objCachedMyXmlNode = null;
                 _objCachedMyXPathNode = null;
             }
-            Lazy<XPathNavigator> objMyNode = new Lazy<XPathNavigator>(this.GetNodeXPath);
+            Lazy<XPathNavigator> objMyNode = new Lazy<XPathNavigator>(() => this.GetNodeXPath());
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID) && objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID) == false)
             {
                 _objCharacter.LoadDataXPath("qualities.xml")
@@ -299,27 +301,36 @@ namespace Chummer
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public void Print(XmlTextWriter objWriter, string strLanguageToPrint)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async ValueTask Print(XmlWriter objWriter, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
-            objWriter.WriteStartElement("mentorspirit");
-            objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("sourceid", SourceIDString);
-            objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
-            objWriter.WriteElementString("mentortype", _eMentorType.ToString());
-            objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("advantage", DisplayAdvantage(strLanguageToPrint));
-            objWriter.WriteElementString("disadvantage", DisplayDisadvantage(strLanguageToPrint));
-            objWriter.WriteElementString("advantage_english", Advantage);
-            objWriter.WriteElementString("disadvantage_english", Disadvantage);
-            objWriter.WriteElementString("extra", _objCharacter.TranslateExtra(Extra, strLanguageToPrint));
-            objWriter.WriteElementString("source", _objCharacter.LanguageBookShort(Source, strLanguageToPrint));
-            objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
-            objWriter.WriteElementString("mentormask", MentorMask.ToString(GlobalSettings.InvariantCultureInfo));
-            if (GlobalSettings.PrintNotes)
-                objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
-            objWriter.WriteEndElement();
+            // <mentorspirit>
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("mentorspirit", token).ConfigureAwait(false);
+            try
+            {
+                await objWriter.WriteElementStringAsync("guid", InternalId, token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("sourceid", SourceIDString, token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("mentortype", _eMentorType.ToString(), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("name_english", Name, token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("advantage", await DisplayAdvantageAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("disadvantage", await DisplayDisadvantageAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("advantage_english", Advantage, token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("disadvantage_english", Disadvantage, token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("extra", await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("mentormask", MentorMask.ToString(GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
+                if (GlobalSettings.PrintNotes)
+                    await objWriter.WriteElementStringAsync("notes", _strNotes.CleanOfInvalidUnicodeChars(), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                // </mentorspirit>
+                await objBaseElement.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         #endregion Constructor
@@ -351,14 +362,13 @@ namespace Chummer
             }
             set
             {
-                if (_strName != value)
+                if (Interlocked.Exchange(ref _strName, value) != value)
                 {
                     if (SourceID == Guid.Empty)
                     {
                         _objCachedMyXmlNode = null;
                         _objCachedMyXPathNode = null;
                     }
-                    _strName = value;
                     if (_objCharacter.MentorSpirits.Count > 0 && _objCharacter.MentorSpirits[0] == this)
                         _objCharacter.OnPropertyChanged(nameof(Character.FirstMentorSpiritDisplayName));
                 }
@@ -373,12 +383,9 @@ namespace Chummer
             get => _strExtra;
             set
             {
-                if (_strExtra != value)
-                {
-                    _strExtra = value;
-                    if (_objCharacter.MentorSpirits.Count > 0 && _objCharacter.MentorSpirits[0] == this)
-                        _objCharacter.OnPropertyChanged(nameof(Character.FirstMentorSpiritDisplayName));
-                }
+                if (Interlocked.Exchange(ref _strExtra, value) != value && _objCharacter.MentorSpirits.Count > 0
+                                                                        && _objCharacter.MentorSpirits[0] == this)
+                    _objCharacter.OnPropertyChanged(nameof(Character.FirstMentorSpiritDisplayName));
             }
         }
 
@@ -419,6 +426,28 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Advantage of the mentor as it should be displayed in the UI. Advantage (Extra).
+        /// </summary>
+        public async ValueTask<string> DisplayAdvantageAsync(string strLanguage, CancellationToken token = default)
+        {
+            string strReturn = Advantage;
+            if (strLanguage != GlobalSettings.DefaultLanguage)
+            {
+                string strTemp = string.Empty;
+                if ((await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false))?.TryGetMultiLineStringFieldQuickly("altadvantage", ref strTemp) == true)
+                    strReturn = strTemp;
+            }
+
+            if (!string.IsNullOrEmpty(Extra))
+            {
+                // Attempt to retrieve the CharacterAttribute name.
+                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false) + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false) + ')';
+            }
+
+            return strReturn;
+        }
+
+        /// <summary>
         /// Disadvantage of the Mentor Spirit or Paragon (in English).
         /// </summary>
         public string Disadvantage => _strDisadvantage;
@@ -446,6 +475,28 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Disadvantage of the mentor as it should be displayed in the UI. Disadvantage (Extra).
+        /// </summary>
+        public async ValueTask<string> DisplayDisadvantageAsync(string strLanguage, CancellationToken token = default)
+        {
+            string strReturn = Disadvantage;
+            if (strLanguage != GlobalSettings.DefaultLanguage)
+            {
+                string strTemp = string.Empty;
+                if ((await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false))?.TryGetMultiLineStringFieldQuickly("altdisadvantage", ref strTemp) == true)
+                    strReturn = strTemp;
+            }
+
+            if (!string.IsNullOrEmpty(Extra))
+            {
+                // Attempt to retrieve the CharacterAttribute name.
+                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false) + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false) + ')';
+            }
+
+            return strReturn;
+        }
+
+        /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
         public string DisplayNameShort(string strLanguage)
@@ -455,6 +506,26 @@ namespace Chummer
 
             return this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
         }
+
+        /// <summary>
+        /// The name of the object as it should be displayed on printouts (translated name only).
+        /// </summary>
+        public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Name;
+
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
+            return objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? Name : Name;
+        }
+
+        public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
+
+        public string CurrentDisplayName => CurrentDisplayNameShort;
+
+        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) => DisplayNameShortAsync(GlobalSettings.Language, token);
+
+        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => GetCurrentDisplayNameShortAsync(token);
 
         /// <summary>
         /// Sourcebook.
@@ -488,24 +559,43 @@ namespace Chummer
             return !string.IsNullOrWhiteSpace(s) ? s : Page;
         }
 
+        /// <summary>
+        /// Sourcebook Page Number using a given language file.
+        /// Returns Page if not found or the string is empty.
+        /// </summary>
+        /// <param name="strLanguage">Language file keyword to use.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns></returns>
+        public async ValueTask<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
+        {
+            if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                return Page;
+            XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
+            string s = objNode != null
+                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token).ConfigureAwait(false))?.Value ?? Page
+                : Page;
+            return !string.IsNullOrWhiteSpace(s) ? s : Page;
+        }
+
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage)
+        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            if (_objCachedMyXmlNode != null && strLanguage == _strCachedXmlNodeLanguage
-                                            && !GlobalSettings.LiveCustomData)
-                return _objCachedMyXmlNode;
-            _objCachedMyXmlNode = (blnSync
+            XmlNode objReturn = _objCachedMyXmlNode;
+            if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
+                                  && !GlobalSettings.LiveCustomData)
+                return objReturn;
+            objReturn = (blnSync
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadData(
                         _eMentorType == Improvement.ImprovementType.MentorSpirit
                             ? "mentors.xml"
-                            : "paragons.xml", strLanguage)
+                            : "paragons.xml", strLanguage, token: token)
                     : await _objCharacter.LoadDataAsync(
                         _eMentorType == Improvement.ImprovementType.MentorSpirit
                             ? "mentors.xml"
-                            : "paragons.xml", strLanguage))
+                            : "paragons.xml", strLanguage, token: token).ConfigureAwait(false))
                 .SelectSingleNode(SourceID == Guid.Empty
                                       ? "/chummer/mentors/mentor[name = " + Name.CleanXPath()
                                                                           + ']'
@@ -514,30 +604,32 @@ namespace Chummer
                                         + " or id = " + SourceIDString.ToUpperInvariant()
                                                                       .CleanXPath()
                                         + ']');
+            _objCachedMyXmlNode = objReturn;
             _strCachedXmlNodeLanguage = strLanguage;
-            return _objCachedMyXmlNode;
+            return objReturn;
         }
 
         private XPathNavigator _objCachedMyXPathNode;
         private string _strCachedXPathNodeLanguage = string.Empty;
 
-        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage)
+        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
-            if (_objCachedMyXPathNode != null && strLanguage == _strCachedXPathNodeLanguage
-                                              && !GlobalSettings.LiveCustomData)
-                return _objCachedMyXPathNode;
-            _objCachedMyXPathNode = (blnSync
+            XPathNavigator objReturn = _objCachedMyXPathNode;
+            if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
+                                  && !GlobalSettings.LiveCustomData)
+                return objReturn;
+            objReturn = (blnSync
                     ? _objCharacter
                         // ReSharper disable once MethodHasAsyncOverload
                         .LoadDataXPath(
                             _eMentorType == Improvement.ImprovementType.MentorSpirit
                                 ? "mentors.xml"
-                                : "paragons.xml", strLanguage)
+                                : "paragons.xml", strLanguage, token: token)
                     : await _objCharacter
-                        .LoadDataXPathAsync(
-                            _eMentorType == Improvement.ImprovementType.MentorSpirit
-                                ? "mentors.xml"
-                                : "paragons.xml", strLanguage))
+                            .LoadDataXPathAsync(
+                                _eMentorType == Improvement.ImprovementType.MentorSpirit
+                                    ? "mentors.xml"
+                                    : "paragons.xml", strLanguage, token: token).ConfigureAwait(false))
                 .SelectSingleNode(SourceID == Guid.Empty
                                       ? "/chummer/mentors/mentor[name = " + Name.CleanXPath()
                                                                           + ']'
@@ -546,8 +638,9 @@ namespace Chummer
                                         + " or id = " + SourceIDString.ToUpperInvariant()
                                                                       .CleanXPath()
                                         + ']');
+            _objCachedMyXPathNode = objReturn;
             _strCachedXPathNodeLanguage = strLanguage;
-            return _objCachedMyXPathNode;
+            return objReturn;
         }
 
         public string InternalId => _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
@@ -559,6 +652,13 @@ namespace Chummer
             if (_objCachedSourceDetail.Language != GlobalSettings.Language)
                 _objCachedSourceDetail = default;
             SourceDetail.SetControl(sourceControl);
+        }
+
+        public Task SetSourceDetailAsync(Control sourceControl, CancellationToken token = default)
+        {
+            if (_objCachedSourceDetail.Language != GlobalSettings.Language)
+                _objCachedSourceDetail = default;
+            return SourceDetail.SetControlAsync(sourceControl, token);
         }
     }
 }

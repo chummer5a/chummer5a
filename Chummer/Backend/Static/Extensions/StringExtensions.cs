@@ -20,12 +20,16 @@
 using System;
 using System.Buffers;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Text.RegularExpressions;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using ExternalUtils.RegularExpressions;
 using RtfPipe;
 
 namespace Chummer
@@ -39,6 +43,28 @@ namespace Chummer
             return strInput == EmptyGuid;
         }
 
+        public static async Task<string> JoinAsync(string strSeparator, IEnumerable<Task<string>> lstStringTasks,
+                                                   CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            bool blnAddSeparator = false;
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            {
+                foreach (Task<string> tskString in lstStringTasks)
+                {
+                    token.ThrowIfCancellationRequested();
+                    sbdReturn.Append(await tskString.ConfigureAwait(false));
+                    token.ThrowIfCancellationRequested();
+                    if (blnAddSeparator)
+                        sbdReturn.Append(strSeparator);
+                    else
+                        blnAddSeparator = true;
+                }
+
+                return sbdReturn.ToString();
+            }
+        }
+
         /// <summary>
         /// Identical to string::Replace(), but the comparison for equality is custom-defined instead of always being case-sensitive Ordinal
         /// </summary>
@@ -47,7 +73,8 @@ namespace Chummer
         /// <param name="strNewValue">Substring with which <paramref name="strOldValue"/> gets replaced</param>
         /// <param name="eStringComparison">String Comparison to use when checking for identity</param>
         /// <returns>New string with all instances of <paramref name="strOldValue"/> replaced with <paramref name="strNewValue"/>, but where the equality check was custom-defined by <paramref name="eStringComparison"/></returns>
-        public static string Replace(this string strInput, string strOldValue, string strNewValue, StringComparison eStringComparison)
+        public static string Replace(this string strInput, string strOldValue, string strNewValue,
+                                     StringComparison eStringComparison)
         {
             if (string.IsNullOrEmpty(strInput) || string.IsNullOrEmpty(strOldValue))
                 return strInput;
@@ -97,21 +124,30 @@ namespace Chummer
                 return strInput;
             if (intLength > GlobalSettings.MaxStackLimit)
             {
+                string strReturn;
                 char[] achrNewChars = ArrayPool<char>.Shared.Rent(intLength);
-                // What we're doing here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chrToDelete...
-                int intCurrent = 0;
-                for (int i = 0; i < intLength; ++i)
+                try
                 {
-                    char chrLoop = strInput[i];
-                    if (chrLoop != chrToDelete)
-                        achrNewChars[intCurrent++] = chrLoop;
+                    // What we're doing here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chrToDelete...
+                    int intCurrent = 0;
+                    for (int i = 0; i < intLength; ++i)
+                    {
+                        char chrLoop = strInput[i];
+                        if (chrLoop != chrToDelete)
+                            achrNewChars[intCurrent++] = chrLoop;
+                    }
+
+                    // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
+                    strReturn = new string(achrNewChars, 0, intCurrent);
+                }
+                finally
+                {
+                    ArrayPool<char>.Shared.Return(achrNewChars);
                 }
 
-                // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
-                string strReturn = new string(achrNewChars, 0, intCurrent);
-                ArrayPool<char>.Shared.Return(achrNewChars);
                 return strReturn;
             }
+
             // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
             unsafe
             {
@@ -148,31 +184,40 @@ namespace Chummer
                 return strInput;
             if (intLength > GlobalSettings.MaxStackLimit)
             {
+                string strReturn;
                 char[] achrNewChars = ArrayPool<char>.Shared.Rent(intLength);
-                // What we're doing here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chars in achrToDelete...
-                int intCurrent = 0;
-                for (int i = 0; i < intLength; ++i)
+                try
                 {
-                    bool blnDoChar = true;
-                    char chrLoop = strInput[i];
-                    for (int j = 0; j < intDeleteLength; ++j)
+                    // What we're doing here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chars in achrToDelete...
+                    int intCurrent = 0;
+                    for (int i = 0; i < intLength; ++i)
                     {
-                        if (chrLoop == achrToDelete[j])
+                        bool blnDoChar = true;
+                        char chrLoop = strInput[i];
+                        for (int j = 0; j < intDeleteLength; ++j)
                         {
-                            blnDoChar = false;
-                            break;
+                            if (chrLoop == achrToDelete[j])
+                            {
+                                blnDoChar = false;
+                                break;
+                            }
                         }
+
+                        if (blnDoChar)
+                            achrNewChars[intCurrent++] = chrLoop;
                     }
 
-                    if (blnDoChar)
-                        achrNewChars[intCurrent++] = chrLoop;
+                    // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
+                    strReturn = new string(achrNewChars, 0, intCurrent);
+                }
+                finally
+                {
+                    ArrayPool<char>.Shared.Return(achrNewChars);
                 }
 
-                // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
-                string strReturn = new string(achrNewChars, 0, intCurrent);
-                ArrayPool<char>.Shared.Return(achrNewChars);
                 return strReturn;
             }
+
             // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
             unsafe
             {
@@ -208,7 +253,8 @@ namespace Chummer
         /// <param name="strSubstringToDelete">Substring to remove</param>
         /// <param name="eComparison">Comparison rules by which to find instances of the substring to remove. Useful for when case-insensitive removal is required.</param>
         /// <returns>New string with <paramref name="strSubstringToDelete"/> removed</returns>
-        public static string FastEscape(this string strInput, string strSubstringToDelete, StringComparison eComparison = StringComparison.Ordinal)
+        public static string FastEscape(this string strInput, string strSubstringToDelete,
+                                        StringComparison eComparison = StringComparison.Ordinal)
         {
             // It's actually faster to just run Replace(), albeit with our special comparison override, than to make our own fancy function
             return strInput.Replace(strSubstringToDelete, string.Empty, eComparison);
@@ -222,7 +268,9 @@ namespace Chummer
         /// <param name="strSubstringToDelete">Substring to remove.</param>
         /// <param name="eComparison">Comparison rules by which to find the substring to remove. Useful for when case-insensitive removal is required.</param>
         /// <returns>New string with the first instance of <paramref name="strSubstringToDelete"/> removed starting from <paramref name="intStartIndex"/>.</returns>
-        public static string FastEscapeOnceFromStart(this string strInput, string strSubstringToDelete, int intStartIndex = 0, StringComparison eComparison = StringComparison.Ordinal)
+        public static string FastEscapeOnceFromStart(this string strInput, string strSubstringToDelete,
+                                                     int intStartIndex = 0,
+                                                     StringComparison eComparison = StringComparison.Ordinal)
         {
             if (strSubstringToDelete == null)
                 return strInput;
@@ -246,7 +294,9 @@ namespace Chummer
         /// <param name="strSubstringToDelete">Substring to remove.</param>
         /// <param name="eComparison">Comparison rules by which to find the substring to remove. Useful for when case-insensitive removal is required.</param>
         /// <returns>New string with the last instance of <paramref name="strSubstringToDelete"/> removed starting from <paramref name="intStartIndex"/>.</returns>
-        public static string FastEscapeOnceFromEnd(this string strInput, string strSubstringToDelete, int intStartIndex = -1, StringComparison eComparison = StringComparison.Ordinal)
+        public static string FastEscapeOnceFromEnd(this string strInput, string strSubstringToDelete,
+                                                   int intStartIndex = -1,
+                                                   StringComparison eComparison = StringComparison.Ordinal)
         {
             if (string.IsNullOrEmpty(strInput) || strSubstringToDelete == null)
                 return strInput;
@@ -288,7 +338,7 @@ namespace Chummer
         {
             if (strInput == null)
                 throw new ArgumentNullException(nameof(strInput));
-            return strInput.Split(new[] { chrSeparator }, eSplitOptions);
+            return strInput.Split(new[] {chrSeparator}, eSplitOptions);
         }
 
         /// <summary>
@@ -303,7 +353,7 @@ namespace Chummer
         {
             if (strInput == null)
                 throw new ArgumentNullException(nameof(strInput));
-            return strInput.Split(new[] { strSeparator }, eSplitOptions);
+            return strInput.Split(new[] {strSeparator}, eSplitOptions);
         }
 
         /// <summary>
@@ -342,7 +392,8 @@ namespace Chummer
         /// <param name="chrSplit">Character to use for splitting.</param>
         /// <param name="eSplitOptions">Optional argument that can be used to skip over empty entries.</param>
         /// <returns>Enumerable containing substrings of <paramref name="strInput"/> split based on <paramref name="chrSplit"/></returns>
-        public static IEnumerable<string> SplitNoAlloc(this string strInput, char chrSplit, StringSplitOptions eSplitOptions = StringSplitOptions.None)
+        public static IEnumerable<string> SplitNoAlloc(this string strInput, char chrSplit,
+                                                       StringSplitOptions eSplitOptions = StringSplitOptions.None)
         {
             if (string.IsNullOrEmpty(strInput))
                 yield break;
@@ -367,7 +418,8 @@ namespace Chummer
         /// <param name="strSplit">String to use for splitting.</param>
         /// <param name="eSplitOptions">Optional argument that can be used to skip over empty entries.</param>
         /// <returns>Enumerable containing substrings of <paramref name="strInput"/> split based on <paramref name="strSplit"/></returns>
-        public static IEnumerable<string> SplitNoAlloc(this string strInput, string strSplit, StringSplitOptions eSplitOptions = StringSplitOptions.None)
+        public static IEnumerable<string> SplitNoAlloc(this string strInput, string strSplit,
+                                                       StringSplitOptions eSplitOptions = StringSplitOptions.None)
         {
             if (string.IsNullOrEmpty(strInput))
                 yield break;
@@ -376,6 +428,7 @@ namespace Chummer
                 yield return strInput;
                 yield break;
             }
+
             int intLoopLength;
             for (int intStart = 0; intStart < strInput.Length; intStart += intLoopLength + strSplit.Length)
             {
@@ -428,47 +481,55 @@ namespace Chummer
                 funcIsWhiteSpace = x => char.IsWhiteSpace(x) && !char.IsControl(x);
             if (intLength > GlobalSettings.MaxStackLimit)
             {
+                string strReturn;
                 char[] achrNewChars = ArrayPool<char>.Shared.Rent(intLength);
-                // What we're going here is copying the string-as-CharArray char-by-char into a new CharArray, but processing whitespace characters differently...
-                int intCurrent = 0;
-                int intLoopWhitespaceCount = 0;
-                bool blnTrimMode = true;
-                char chrLastAddedCharacter = ' ';
-                for (int i = 0; i < intLength; ++i)
+                try
                 {
-                    char chrLoop = strInput[i];
-                    // If we encounter a block of identical whitespace chars, we replace the first instance with chrWhiteSpace, then skip over the rest until we encounter a char that isn't whitespace
-                    if (funcIsWhiteSpace(chrLoop))
+                    // What we're going here is copying the string-as-CharArray char-by-char into a new CharArray, but processing whitespace characters differently...
+                    int intCurrent = 0;
+                    int intLoopWhitespaceCount = 0;
+                    bool blnTrimMode = true;
+                    char chrLastAddedCharacter = ' ';
+                    for (int i = 0; i < intLength; ++i)
                     {
-                        ++intLoopWhitespaceCount;
-                        if (chrLastAddedCharacter != chrLoop && !blnTrimMode)
+                        char chrLoop = strInput[i];
+                        // If we encounter a block of identical whitespace chars, we replace the first instance with chrWhiteSpace, then skip over the rest until we encounter a char that isn't whitespace
+                        if (funcIsWhiteSpace(chrLoop))
                         {
+                            ++intLoopWhitespaceCount;
+                            if (chrLastAddedCharacter != chrLoop && !blnTrimMode)
+                            {
+                                achrNewChars[intCurrent++] = chrLoop;
+                                chrLastAddedCharacter = chrLoop;
+                            }
+                        }
+                        else
+                        {
+                            intLoopWhitespaceCount = 0;
+                            blnTrimMode = false;
                             achrNewChars[intCurrent++] = chrLoop;
                             chrLastAddedCharacter = chrLoop;
                         }
                     }
-                    else
-                    {
-                        intLoopWhitespaceCount = 0;
-                        blnTrimMode = false;
-                        achrNewChars[intCurrent++] = chrLoop;
-                        chrLastAddedCharacter = chrLoop;
-                    }
-                }
 
-                // If all we had was whitespace, return a string with just a single space character
-                if (intLoopWhitespaceCount >= intCurrent)
+                    // If all we had was whitespace, return a string with just a single space character
+                    if (intLoopWhitespaceCount >= intCurrent)
+                    {
+                        return " ";
+                    }
+
+                    // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied.
+                    // If the last char is whitespace, we don't copy that, either.
+                    strReturn = new string(achrNewChars, 0, intCurrent - intLoopWhitespaceCount);
+                }
+                finally
                 {
                     ArrayPool<char>.Shared.Return(achrNewChars);
-                    return " ";
                 }
 
-                // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied.
-                // If the last char is whitespace, we don't copy that, either.
-                string strReturn = new string(achrNewChars, 0, intCurrent - intLoopWhitespaceCount);
-                ArrayPool<char>.Shared.Return(achrNewChars);
                 return strReturn;
             }
+
             // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
             unsafe
             {
@@ -518,12 +579,24 @@ namespace Chummer
         /// <returns>True if the string contains only legal characters, false if the string contains at least one illegal character.</returns>
         public static bool IsLegalCharsOnly(this string strInput, bool blnWhitelist, params char[] achrChars)
         {
+            return IsLegalCharsOnly(strInput, blnWhitelist, Array.AsReadOnly(achrChars));
+        }
+
+        /// <summary>
+        /// Returns whether a string contains only legal characters.
+        /// </summary>
+        /// <param name="strInput">String to check.</param>
+        /// <param name="blnWhitelist">Whether the list of chars is a whitelist and the string can only contain characters in the list (true) or a blacklist and the string cannot contain any characts in the list (false).</param>
+        /// <param name="achrChars">List of chars against which to check the string.</param>
+        /// <returns>True if the string contains only legal characters, false if the string contains at least one illegal character.</returns>
+        public static bool IsLegalCharsOnly(this string strInput, bool blnWhitelist, IReadOnlyList<char> achrChars)
+        {
             if (strInput == null)
                 return false;
             int intLength = strInput.Length;
             if (intLength == 0)
                 return true;
-            int intLegalCharsLength = achrChars.Length;
+            int intLegalCharsLength = achrChars.Count;
             if (intLegalCharsLength == 0)
                 return true;
             for (int i = 0; i < intLength; ++i)
@@ -542,6 +615,7 @@ namespace Chummer
                 if (blnCharIsInList != blnWhitelist)
                     return false;
             }
+
             return true;
         }
 
@@ -553,7 +627,8 @@ namespace Chummer
         /// <param name="eComparison">Comparison rules by which to find the substring to remove. Useful for when case-insensitive removal is required.</param>
         /// <returns>Trimmed String</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string TrimStart(this string strInput, string strToTrim, StringComparison eComparison = StringComparison.Ordinal)
+        public static string TrimStart(this string strInput, string strToTrim,
+                                       StringComparison eComparison = StringComparison.Ordinal)
         {
             if (string.IsNullOrEmpty(strInput) || string.IsNullOrEmpty(strToTrim))
                 return strInput;
@@ -570,8 +645,8 @@ namespace Chummer
             {
                 intAmountToTrim += intTrimLength;
                 i = strInput.IndexOf(strToTrim, intAmountToTrim, eComparison);
-            }
-            while (i != -1);
+            } while (i != -1);
+
             return strInput.Substring(intAmountToTrim);
         }
 
@@ -583,7 +658,8 @@ namespace Chummer
         /// <param name="eComparison">Comparison rules by which to find the substring to remove. Useful for when case-insensitive removal is required.</param>
         /// <returns>Trimmed String</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string TrimEnd(this string strInput, string strToTrim, StringComparison eComparison = StringComparison.Ordinal)
+        public static string TrimEnd(this string strInput, string strToTrim,
+                                     StringComparison eComparison = StringComparison.Ordinal)
         {
             if (string.IsNullOrEmpty(strInput) || string.IsNullOrEmpty(strToTrim))
                 return strInput;
@@ -601,8 +677,8 @@ namespace Chummer
             {
                 intAmountToTrim += intTrimLength;
                 i = strInput.LastIndexOf(strToTrim, intInputLastIndex - intAmountToTrim, eComparison);
-            }
-            while (i != -1);
+            } while (i != -1);
+
             return strInput.Substring(0, intInputLastIndex - intTrimLength);
         }
 
@@ -618,11 +694,13 @@ namespace Chummer
         {
             if (!string.IsNullOrEmpty(strInput) && !string.IsNullOrEmpty(strToTrim)
                                                 // Need to make sure string actually starts with the substring, otherwise we don't want to be cutting out the beginning of the string
-                                                && (blnOmitCheck || strInput.StartsWith(strToTrim, StringComparison.Ordinal)))
+                                                && (blnOmitCheck
+                                                    || strInput.StartsWith(strToTrim, StringComparison.Ordinal)))
             {
                 int intTrimLength = strToTrim.Length;
                 return strInput.Substring(intTrimLength, strInput.Length - intTrimLength);
             }
+
             return strInput;
         }
 
@@ -645,7 +723,8 @@ namespace Chummer
                 {
                     string strStringToTrim = astrToTrim[i];
                     // Need to make sure string actually starts with the substring, otherwise we don't want to be cutting out the beginning of the string
-                    if (strStringToTrim.Length > intHowMuchToTrim && strInput.StartsWith(strStringToTrim, StringComparison.Ordinal))
+                    if (strStringToTrim.Length > intHowMuchToTrim
+                        && strInput.StartsWith(strStringToTrim, StringComparison.Ordinal))
                     {
                         intHowMuchToTrim = strStringToTrim.Length;
                     }
@@ -654,6 +733,7 @@ namespace Chummer
                 if (intHowMuchToTrim > 0)
                     return strInput.Substring(intHowMuchToTrim);
             }
+
             return strInput;
         }
 
@@ -670,6 +750,7 @@ namespace Chummer
             {
                 return strInput.Substring(1, strInput.Length - 1);
             }
+
             return strInput;
         }
 
@@ -699,10 +780,12 @@ namespace Chummer
         {
             if (!string.IsNullOrEmpty(strInput) && !string.IsNullOrEmpty(strToTrim)
                                                 // Need to make sure string actually ends with the substring, otherwise we don't want to be cutting out the end of the string
-                                                && (blnOmitCheck || strInput.EndsWith(strToTrim, StringComparison.Ordinal)))
+                                                && (blnOmitCheck
+                                                    || strInput.EndsWith(strToTrim, StringComparison.Ordinal)))
             {
                 return strInput.Substring(0, strInput.Length - strToTrim.Length);
             }
+
             return strInput;
         }
 
@@ -725,7 +808,8 @@ namespace Chummer
                 {
                     string strStringToTrim = astrToTrim[i];
                     // Need to make sure string actually ends with the substring, otherwise we don't want to be cutting out the end of the string
-                    if (strStringToTrim.Length > intHowMuchToTrim && strInput.EndsWith(strStringToTrim, StringComparison.Ordinal))
+                    if (strStringToTrim.Length > intHowMuchToTrim
+                        && strInput.EndsWith(strStringToTrim, StringComparison.Ordinal))
                     {
                         intHowMuchToTrim = strStringToTrim.Length;
                     }
@@ -734,6 +818,7 @@ namespace Chummer
                 if (intHowMuchToTrim > 0)
                     return strInput.Substring(0, strInput.Length - intHowMuchToTrim);
             }
+
             return strInput;
         }
 
@@ -752,6 +837,7 @@ namespace Chummer
                 if (strInput[intLength - 1] == chrToTrim)
                     return strInput.Substring(0, intLength - 1);
             }
+
             return strInput;
         }
 
@@ -799,6 +885,7 @@ namespace Chummer
                 if (chrCharToCheck == achrToCheck[i])
                     return true;
             }
+
             return false;
         }
 
@@ -822,6 +909,7 @@ namespace Chummer
                     }
                 }
             }
+
             return false;
         }
 
@@ -861,6 +949,7 @@ namespace Chummer
                 if (chrCharToCheck == achrToCheck[i])
                     return true;
             }
+
             return false;
         }
 
@@ -884,6 +973,7 @@ namespace Chummer
                     }
                 }
             }
+
             return false;
         }
 
@@ -897,7 +987,8 @@ namespace Chummer
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
         /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static string CheapReplace(this string strInput, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
+        public static string CheapReplace(this string strInput, string strOldValue, Func<string> funcNewValueFactory,
+                                          StringComparison eStringComparison = StringComparison.Ordinal)
         {
             if (!string.IsNullOrEmpty(strInput) && funcNewValueFactory != null)
             {
@@ -922,30 +1013,191 @@ namespace Chummer
         /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async ValueTask<string> CheapReplaceAsync(this string strInput, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
+        public static async Task<string> CheapReplaceAsync(this string strInput, string strOldValue,
+                                                           Func<string> funcNewValueFactory,
+                                                           StringComparison eStringComparison
+                                                               = StringComparison.Ordinal,
+                                                           CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (!string.IsNullOrEmpty(strInput) && funcNewValueFactory != null)
             {
                 if (eStringComparison == StringComparison.Ordinal)
                 {
                     if (strInput.Contains(strOldValue))
                     {
+                        token.ThrowIfCancellationRequested();
                         string strFactoryResult = string.Empty;
-                        await Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke, x => strFactoryResult = funcNewValueFactory.EndInvoke(x), null);
+                        using (CancellationTokenTaskSource<string> objCancelTaskSource
+                               = new CancellationTokenTaskSource<string>(token))
+                        {
+                            await Task.WhenAny(Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke,
+                                                                      x => strFactoryResult
+                                                                          = funcNewValueFactory.EndInvoke(x), null),
+                                               objCancelTaskSource.Task).ConfigureAwait(false);
+                        }
+
+                        token.ThrowIfCancellationRequested();
                         return strInput.Replace(strOldValue, strFactoryResult);
                     }
                 }
                 else if (strInput.IndexOf(strOldValue, eStringComparison) != -1)
                 {
+                    token.ThrowIfCancellationRequested();
                     string strFactoryResult = string.Empty;
-                    await Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke, x => strFactoryResult = funcNewValueFactory.EndInvoke(x), null);
+                    using (CancellationTokenTaskSource<string> objCancelTaskSource
+                           = new CancellationTokenTaskSource<string>(token))
+                    {
+                        await Task.WhenAny(Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke,
+                                                                  x => strFactoryResult
+                                                                      = funcNewValueFactory.EndInvoke(x), null),
+                                           objCancelTaskSource.Task).ConfigureAwait(false);
+                    }
+
+                    token.ThrowIfCancellationRequested();
                     return strInput.Replace(strOldValue, strFactoryResult, eStringComparison);
                 }
             }
 
             return strInput;
+        }
+
+        /// <summary>
+        /// Like string::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// This is the async version that can be run in case a value is really expensive to get.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
+        /// </summary>
+        /// <param name="strInputTask">Task returning the base string in which the replacing takes place.</param>
+        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
+        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<string> CheapReplaceAsync(this ValueTask<string> strInputTask, string strOldValue,
+                                                           Func<string> funcNewValueFactory,
+                                                           StringComparison eStringComparison
+                                                               = StringComparison.Ordinal,
+                                                           CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return await CheapReplaceAsync(await strInputTask.ConfigureAwait(false), strOldValue, funcNewValueFactory,
+                                           eStringComparison, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Like string::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// This is the async version that can be run in case a value is really expensive to get.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
+        /// </summary>
+        /// <param name="strInputTask">Task returning the base string in which the replacing takes place.</param>
+        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
+        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<string> CheapReplaceAsync(this Task<string> strInputTask, string strOldValue,
+                                                           Func<string> funcNewValueFactory,
+                                                           StringComparison eStringComparison
+                                                               = StringComparison.Ordinal,
+                                                           CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return await CheapReplaceAsync(await strInputTask.ConfigureAwait(false), strOldValue, funcNewValueFactory,
+                                           eStringComparison, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Like string::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// This is the async version that can be run in case a value is really expensive to get.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
+        /// </summary>
+        /// <param name="strInput">Base string in which the replacing takes place.</param>
+        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
+        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<string> CheapReplaceAsync(this string strInput, string strOldValue,
+                                                           Func<Task<string>> funcNewValueFactory,
+                                                           StringComparison eStringComparison
+                                                               = StringComparison.Ordinal,
+                                                           CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!string.IsNullOrEmpty(strInput) && funcNewValueFactory != null)
+            {
+                if (eStringComparison == StringComparison.Ordinal)
+                {
+                    if (strInput.Contains(strOldValue))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        string strNewValue = await funcNewValueFactory.Invoke().ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        return strInput.Replace(strOldValue, strNewValue);
+                    }
+                }
+                else if (strInput.IndexOf(strOldValue, eStringComparison) != -1)
+                {
+                    token.ThrowIfCancellationRequested();
+                    string strNewValue = await funcNewValueFactory.Invoke().ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+                    return strInput.Replace(strOldValue, strNewValue, eStringComparison);
+                }
+            }
+
+            return strInput;
+        }
+
+        /// <summary>
+        /// Like string::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// This is the async version that can be run in case a value is really expensive to get.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
+        /// </summary>
+        /// <param name="strInputTask">Task returning the base string in which the replacing takes place.</param>
+        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
+        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<string> CheapReplaceAsync(this ValueTask<string> strInputTask, string strOldValue,
+                                                           Func<Task<string>> funcNewValueFactory,
+                                                           StringComparison eStringComparison
+                                                               = StringComparison.Ordinal,
+                                                           CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return await CheapReplaceAsync(await strInputTask.ConfigureAwait(false), strOldValue, funcNewValueFactory,
+                                           eStringComparison, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Like string::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// This is the async version that can be run in case a value is really expensive to get.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
+        /// </summary>
+        /// <param name="strInputTask">Task returning the base string in which the replacing takes place.</param>
+        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
+        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<string> CheapReplaceAsync(this Task<string> strInputTask, string strOldValue,
+                                                           Func<Task<string>> funcNewValueFactory,
+                                                           StringComparison eStringComparison
+                                                               = StringComparison.Ordinal,
+                                                           CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return await CheapReplaceAsync(await strInputTask.ConfigureAwait(false), strOldValue, funcNewValueFactory,
+                                           eStringComparison, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1158,37 +1410,111 @@ namespace Chummer
         /// Escapes characters in a string that would cause confusion if the string were placed as HTML content
         /// </summary>
         /// <param name="strToClean">String to clean.</param>
-        /// <returns>Copy of input string with the characters "&", the greater than sign, and the lesser than sign escaped for HTML.</returns>
+        /// <returns>Copy of <paramref name="strToClean"/> with the characters "&", the greater than sign, and the lesser than sign escaped for HTML.</returns>
         public static string CleanForHtml(this string strToClean)
         {
             if (string.IsNullOrEmpty(strToClean))
                 return string.Empty;
             string strReturn = strToClean
-                .Replace("&", "&amp;")
-                .Replace("&amp;amp;", "&amp;")
-                .Replace("<", "&lt;")
-                .Replace(">", "&gt;");
+                               .Replace("&", "&amp;")
+                               .Replace("&amp;amp;", "&amp;")
+                               .Replace("<", "&lt;")
+                               .Replace(">", "&gt;");
             return s_RgxLineEndingsExpression.Replace(strReturn, "<br />");
+        }
+
+        private static readonly ReadOnlyCollection<char> s_achrPathInvalidPathChars
+            = Array.AsReadOnly(Path.GetInvalidPathChars());
+
+        private static readonly ReadOnlyCollection<char> s_achrPathInvalidFileNameChars
+            = Array.AsReadOnly(Path.GetInvalidFileNameChars());
+
+        /// <summary>
+        /// Replaces all the characters in a string that are invalid for file names with underscores.
+        /// </summary>
+        /// <param name="strToClean">String to clean.</param>
+        /// <param name="blnEscapeOnlyPathInvalidChars">If true, only characters that are invalid in path names will be replaced with underscores.</param>
+        /// <returns>Copy of <paramref name="strToClean"/> with all characters that are not valid for file names replaced with underscores.</returns>
+        public static string CleanForFileName(this string strToClean, bool blnEscapeOnlyPathInvalidChars = false)
+        {
+            if (string.IsNullOrEmpty(strToClean))
+                return string.Empty;
+            foreach (char invalidChar in blnEscapeOnlyPathInvalidChars
+                         ? s_achrPathInvalidPathChars
+                         : s_achrPathInvalidFileNameChars)
+                strToClean = strToClean.Replace(invalidChar, '_');
+            return strToClean;
         }
 
         /// <summary>
         /// Surrounds a plaintext string with basic RTF formatting so that it can be processed as an RTF string
         /// </summary>
         /// <param name="strInput">String to process</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Version of <paramref name="strInput"/> surrounded with RTF formatting codes</returns>
-        public static string PlainTextToRtf(this string strInput)
+        public static string PlainTextToRtf(this string strInput, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
             if (strInput.IsRtf())
                 return strInput;
             strInput = strInput.NormalizeWhiteSpace();
-            lock (s_RtbRtfManipulatorLock)
+            s_RtbRtfManipulatorLock.SafeWait(token);
+            try
             {
-                if (!s_RtbRtfManipulator.IsHandleCreated)
-                    s_RtbRtfManipulator.CreateControl();
-                s_RtbRtfManipulator.DoThreadSafe(() => s_RtbRtfManipulator.Text = strInput);
-                return s_RtbRtfManipulator.Rtf;
+                if (!s_RtbRtfManipulator.Value.IsHandleCreated)
+                {
+                    Utils.RunOnMainThread(() => s_RtbRtfManipulator.Value.CreateControl(), token);
+                }
+
+                return s_RtbRtfManipulator.Value.DoThreadSafeFunc(x =>
+                {
+                    x.Text = strInput;
+                    return x.Rtf;
+                });
+            }
+            finally
+            {
+                s_RtbRtfManipulatorLock.Release();
+            }
+        }
+
+        /// <summary>
+        /// Surrounds a plaintext string with basic RTF formatting so that it can be processed as an RTF string
+        /// </summary>
+        /// <param name="strInput">String to process</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>Version of <paramref name="strInput"/> surrounded with RTF formatting codes</returns>
+        public static Task<string> PlainTextToRtfAsync(this string strInput, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return string.IsNullOrEmpty(strInput) ? Task.FromResult(string.Empty) : InnerDo();
+
+            async Task<string> InnerDo()
+            {
+                if (strInput.IsRtf())
+                    return strInput;
+                strInput = strInput.NormalizeWhiteSpace();
+                await s_RtbRtfManipulatorLock.WaitAsync(token).ConfigureAwait(false);
+                try
+                {
+                    if (!s_RtbRtfManipulator.Value.IsHandleCreated)
+                    {
+                        await Utils.RunOnMainThreadAsync(() => s_RtbRtfManipulator.Value.CreateControl(), token)
+                                   .ConfigureAwait(false);
+                    }
+
+                    return await s_RtbRtfManipulator.Value.DoThreadSafeFuncAsync(x =>
+                    {
+                        x.Text = strInput;
+                        return x.Rtf;
+                    }, token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    s_RtbRtfManipulatorLock.Release();
+                }
             }
         }
 
@@ -1196,39 +1522,68 @@ namespace Chummer
         /// Strips RTF formatting from a string
         /// </summary>
         /// <param name="strInput">String to process</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>Version of <paramref name="strInput"/> without RTF formatting codes</returns>
-        public static string RtfToPlainText(this string strInput)
+        public static string RtfToPlainText(this string strInput, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
             string strInputTrimmed = strInput.TrimStart();
-            if (strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal)
-                || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
-            {
-                lock (s_RtbRtfManipulatorLock)
-                {
-                    if (!s_RtbRtfManipulator.IsHandleCreated)
-                        s_RtbRtfManipulator.CreateControl();
-                    try
-                    {
-                        s_RtbRtfManipulator.DoThreadSafe(() => s_RtbRtfManipulator.Rtf = strInput);
-                    }
-                    catch (ArgumentException)
-                    {
-                        return strInput.NormalizeWhiteSpace();
-                    }
+            string strReturn = strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal)
+                               || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal)
+                ? strInput.StripRichTextFormat(token)
+                : strInput;
 
-                    return s_RtbRtfManipulator.Text.NormalizeWhiteSpace();
-                }
-            }
-            return strInput.NormalizeWhiteSpace();
+            return strReturn.NormalizeWhiteSpace();
         }
 
-        public static string RtfToHtml(this string strInput)
+        /// <summary>
+        /// Strips RTF formatting from a string
+        /// </summary>
+        /// <param name="strInput">String to process</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>Version of <paramref name="strInput"/> without RTF formatting codes</returns>
+        public static Task<string> RtfToPlainTextAsync(this string strInput, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
+            if (string.IsNullOrEmpty(strInput))
+                return Task.FromResult(string.Empty);
+            return Task.Run(() =>
+            {
+                string strInputTrimmed = strInput.TrimStart();
+                string strReturn = strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal)
+                                   || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal)
+                    ? strInput.StripRichTextFormat(token)
+                    : strInput;
+
+                return strReturn.NormalizeWhiteSpace();
+            }, token);
+        }
+
+        public static string RtfToHtml(this string strInput, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
-            return strInput.IsRtf() ? Rtf.ToHtml(strInput) : strInput.CleanForHtml();
+            string strReturn = strInput.IsRtf() ? Rtf.ToHtml(strInput) : strInput.CleanForHtml();
+            return strReturn.CleanStylisticLigatures().NormalizeWhiteSpace().CleanOfInvalidUnicodeChars();
+        }
+
+        public static Task<string> RtfToHtmlAsync(this string strInput, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
+            if (string.IsNullOrEmpty(strInput))
+                return Task.FromResult(string.Empty);
+            return Task.Run(() =>
+            {
+                string strReturn = strInput.IsRtf()
+                    ? Rtf.ToHtml(strInput)
+                    : strInput.CleanForHtml();
+                return strReturn.CleanStylisticLigatures().NormalizeWhiteSpace().CleanOfInvalidUnicodeChars();
+            }, token);
         }
 
         /// <summary>
@@ -1238,29 +1593,15 @@ namespace Chummer
         /// <returns>True if <paramref name="strInput"/> is an RTF document, False otherwise.</returns>
         public static bool IsRtf(this string strInput)
         {
-            if (!string.IsNullOrEmpty(strInput))
+            if (string.IsNullOrEmpty(strInput))
+                return false;
+            string strInputTrimmed = strInput.TrimStart();
+            if (strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal)
+                || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
             {
-                string strInputTrimmed = strInput.TrimStart();
-                if (strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal)
-                    || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
-                {
-                    lock (s_RtbRtfManipulatorLock)
-                    {
-                        if (!s_RtbRtfManipulator.IsHandleCreated)
-                            s_RtbRtfManipulator.CreateControl();
-                        try
-                        {
-                            s_RtbRtfManipulator.DoThreadSafe(() => s_RtbRtfManipulator.Rtf = strInput);
-                        }
-                        catch (ArgumentException)
-                        {
-                            return false;
-                        }
-                    }
-
-                    return true;
-                }
+                return s_RtfStripperRegex.IsMatch(strInputTrimmed);
             }
+
             return false;
         }
 
@@ -1274,16 +1615,784 @@ namespace Chummer
             return !string.IsNullOrEmpty(strInput) && s_RgxHtmlTagExpression.IsMatch(strInput);
         }
 
-        private static readonly Regex s_RgxHtmlTagExpression = new Regex(@"/<\/?[a-z][\s\S]*>/i",
-            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
+        /// <summary>
+        /// Cleans a string of characters that could cause issues when saved in an xml file and then loaded back in
+        /// </summary>
+        /// <param name="strInput"></param>
+        /// <returns></returns>
+        public static string CleanOfInvalidUnicodeChars(this string strInput)
+        {
+            return string.IsNullOrEmpty(strInput)
+                ? string.Empty
+                : GlobalSettings.InvalidUnicodeCharsExpression.Replace(strInput, string.Empty);
+        }
 
-        private static readonly Regex s_RgxLineEndingsExpression = new Regex(@"\r\n|\n\r|\n|\r",
-            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
+        private static readonly HtmlTagsPattern s_RgxHtmlTagExpression = new HtmlTagsPattern();
 
-        private static readonly Regex s_RgxEscapedLineEndingsExpression = new Regex(@"\\r\\n|\\n\\r|\\n|\\r",
-            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.Compiled | RegexOptions.CultureInvariant);
+        private static readonly LineEndingsPattern s_RgxLineEndingsExpression = new LineEndingsPattern();
 
-        private static readonly object s_RtbRtfManipulatorLock = new object();
-        private static readonly RichTextBox s_RtbRtfManipulator = new RichTextBox();
+        private static readonly EscapedLineEndingsPattern s_RgxEscapedLineEndingsExpression = new EscapedLineEndingsPattern();
+
+        private static readonly DebuggableSemaphoreSlim s_RtbRtfManipulatorLock = new DebuggableSemaphoreSlim();
+        private static readonly Lazy<RichTextBox> s_RtbRtfManipulator = new Lazy<RichTextBox>(() => Utils.RunOnMainThread(() => new RichTextBox()));
+
+        /// <summary>
+        /// Strip RTF Tags from RTF Text.
+        /// Translated by Chris Benard (with some modifications from Delnar_Ersike) from Python located at:
+        /// http://stackoverflow.com/a/188877/448
+        /// </summary>
+        /// <param name="inputRtf">RTF formatted text</param>
+        /// <param name="token">Cancellation token to use (if any).</param>
+        /// <returns>Plain text from RTF</returns>
+        public static string StripRichTextFormat(this string inputRtf, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(inputRtf))
+            {
+                return string.Empty;
+            }
+
+            Match objMatch = s_RtfStripperRegex.Match(inputRtf);
+
+            if (!objMatch.Success)
+            {
+                // Didn't match the regex
+                return inputRtf;
+            }
+
+            Stack<StackEntry> stkGroups = new Stack<StackEntry>();
+            bool blnIgnorable = false; // Whether this group (and all inside it) are "ignorable".
+            int intUCSkip = 1; // Number of ASCII characters to skip after a unicode character.
+            int intCurSkip = 0; // Number of ASCII characters left to skip
+
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            {
+                for (; objMatch.Success; objMatch = objMatch.NextMatch())
+                {
+                    token.ThrowIfCancellationRequested();
+                    string strBrace = objMatch.Groups[5].Value;
+
+                    if (!string.IsNullOrEmpty(strBrace))
+                    {
+                        intCurSkip = 0;
+                        switch (strBrace[0])
+                        {
+                            case '{':
+                                // Push state
+                                stkGroups.Push(new StackEntry(intUCSkip, blnIgnorable));
+                                break;
+                            case '}':
+                            {
+                                // Pop state
+                                StackEntry entry = stkGroups.Pop();
+                                intUCSkip = entry.NumberOfCharactersToSkip;
+                                blnIgnorable = entry.Ignorable;
+                                break;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        string strCharacter = objMatch.Groups[4].Value;
+                        if (!string.IsNullOrEmpty(strCharacter)) // \x (not a letter)
+                        {
+                            intCurSkip = 0;
+                            char chrLoop = strCharacter[0];
+                            if (chrLoop == '~')
+                            {
+                                if (!blnIgnorable)
+                                {
+                                    sbdReturn.Append('\xA0');
+                                }
+                            }
+                            else if ("{}\\".Contains(chrLoop))
+                            {
+                                if (!blnIgnorable)
+                                {
+                                    sbdReturn.Append(strCharacter);
+                                }
+                            }
+                            else if (chrLoop == '*')
+                            {
+                                blnIgnorable = true;
+                            }
+                        }
+                        else
+                        {
+                            string strWord = objMatch.Groups[1].Value;
+                            if (!string.IsNullOrEmpty(strWord)) // \foo
+                            {
+                                intCurSkip = 0;
+                                if (s_SetRtfDestinations.Contains(strWord))
+                                {
+                                    blnIgnorable = true;
+                                }
+                                else if (!blnIgnorable)
+                                {
+                                    if (s_DicSpecialRtfCharacters.TryGetValue(strWord, out string strValue))
+                                    {
+                                        sbdReturn.Append(strValue);
+                                    }
+                                    else
+                                    {
+                                        string strArg = objMatch.Groups[2].Value;
+                                        switch (strWord)
+                                        {
+                                            case "uc":
+                                                intUCSkip = int.Parse(strArg);
+                                                break;
+                                            case "u":
+                                            {
+                                                int c = int.Parse(strArg);
+                                                if (c < 0)
+                                                {
+                                                    c += 0x10000;
+                                                }
+
+                                                sbdReturn.Append(char.ConvertFromUtf32(c));
+                                                intCurSkip = intUCSkip;
+                                                break;
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                string strHex = objMatch.Groups[3].Value;
+                                if (!string.IsNullOrEmpty(strHex)) // \'xx
+                                {
+                                    if (intCurSkip > 0)
+                                    {
+                                        --intCurSkip;
+                                    }
+                                    else if (!blnIgnorable)
+                                    {
+                                        int c = int.Parse(strHex, System.Globalization.NumberStyles.HexNumber);
+                                        sbdReturn.Append(char.ConvertFromUtf32(c));
+                                    }
+                                }
+                                else
+                                {
+                                    string strTChar = objMatch.Groups[6].Value;
+                                    if (!string.IsNullOrEmpty(strTChar))
+                                    {
+                                        if (intCurSkip > 0)
+                                        {
+                                            --intCurSkip;
+                                        }
+                                        else if (!blnIgnorable)
+                                        {
+                                            sbdReturn.Append(strTChar);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+
+                return sbdReturn.ToString();
+            }
+        }
+
+        private readonly struct StackEntry
+        {
+            public int NumberOfCharactersToSkip { get; }
+            public bool Ignorable { get; }
+
+            public StackEntry(int numberOfCharactersToSkip, bool ignorable)
+            {
+                NumberOfCharactersToSkip = numberOfCharactersToSkip;
+                Ignorable = ignorable;
+            }
+        }
+
+        private static readonly RtfStripperPattern s_RtfStripperRegex = new RtfStripperPattern();
+
+        private static readonly IReadOnlyCollection<string> s_SetRtfDestinations = new HashSet<string>
+        {
+            "aftncn", "aftnsep", "aftnsepc", "annotation", "atnauthor", "atndate", "atnicn", "atnid",
+            "atnparent", "atnref", "atntime", "atrfend", "atrfstart", "author", "background",
+            "bkmkend", "bkmkstart", "blipuid", "buptim", "category", "colorschememapping",
+            "colortbl", "comment", "company", "creatim", "datafield", "datastore", "defchp", "defpap",
+            "do", "doccomm", "docvar", "dptxbxtext", "ebcend", "ebcstart", "factoidname", "falt",
+            "fchars", "ffdeftext", "ffentrymcr", "ffexitmcr", "ffformat", "ffhelptext", "ffl",
+            "ffname", "ffstattext", "field", "file", "filetbl", "fldinst", "fldrslt", "fldtype",
+            "fname", "fontemb", "fontfile", "fonttbl", "footer", "footerf", "footerl", "footerr",
+            "footnote", "formfield", "ftncn", "ftnsep", "ftnsepc", "g", "generator", "gridtbl",
+            "header", "headerf", "headerl", "headerr", "hl", "hlfr", "hlinkbase", "hlloc", "hlsrc",
+            "hsv", "htmltag", "info", "keycode", "keywords", "latentstyles", "lchars", "levelnumbers",
+            "leveltext", "lfolevel", "linkval", "list", "listlevel", "listname", "listoverride",
+            "listoverridetable", "listpicture", "liststylename", "listtable", "listtext",
+            "lsdlockedexcept", "macc", "maccPr", "mailmerge", "maln", "malnScr", "manager", "margPr",
+            "mbar", "mbarPr", "mbaseJc", "mbegChr", "mborderBox", "mborderBoxPr", "mbox", "mboxPr",
+            "mchr", "mcount", "mctrlPr", "md", "mdeg", "mdegHide", "mden", "mdiff", "mdPr", "me",
+            "mendChr", "meqArr", "meqArrPr", "mf", "mfName", "mfPr", "mfunc", "mfuncPr", "mgroupChr",
+            "mgroupChrPr", "mgrow", "mhideBot", "mhideLeft", "mhideRight", "mhideTop", "mhtmltag",
+            "mlim", "mlimloc", "mlimlow", "mlimlowPr", "mlimupp", "mlimuppPr", "mm", "mmaddfieldname",
+            "mmath", "mmathPict", "mmathPr", "mmaxdist", "mmc", "mmcJc", "mmconnectstr",
+            "mmconnectstrdata", "mmcPr", "mmcs", "mmdatasource", "mmheadersource", "mmmailsubject",
+            "mmodso", "mmodsofilter", "mmodsofldmpdata", "mmodsomappedname", "mmodsoname",
+            "mmodsorecipdata", "mmodsosort", "mmodsosrc", "mmodsotable", "mmodsoudl",
+            "mmodsoudldata", "mmodsouniquetag", "mmPr", "mmquery", "mmr", "mnary", "mnaryPr",
+            "mnoBreak", "mnum", "mobjDist", "moMath", "moMathPara", "moMathParaPr", "mopEmu",
+            "mphant", "mphantPr", "mplcHide", "mpos", "mr", "mrad", "mradPr", "mrPr", "msepChr",
+            "mshow", "mshp", "msPre", "msPrePr", "msSub", "msSubPr", "msSubSup", "msSubSupPr", "msSup",
+            "msSupPr", "mstrikeBLTR", "mstrikeH", "mstrikeTLBR", "mstrikeV", "msub", "msubHide",
+            "msup", "msupHide", "mtransp", "mtype", "mvertJc", "mvfmf", "mvfml", "mvtof", "mvtol",
+            "mzeroAsc", "mzeroDesc", "mzeroWid", "nesttableprops", "nextfile", "nonesttables",
+            "objalias", "objclass", "objdata", "object", "objname", "objsect", "objtime", "oldcprops",
+            "oldpprops", "oldsprops", "oldtprops", "oleclsid", "operator", "panose", "password",
+            "passwordhash", "pgp", "pgptbl", "picprop", "pict", "pn", "pnseclvl", "pntext", "pntxta",
+            "pntxtb", "printim", "private", "propname", "protend", "protstart", "protusertbl", "pxe",
+            "result", "revtbl", "revtim", "rsidtbl", "rxe", "shp", "shpgrp", "shpinst",
+            "shppict", "shprslt", "shptxt", "sn", "sp", "staticval", "stylesheet", "subject", "sv",
+            "svb", "tc", "template", "themedata", "title", "txe", "ud", "upr", "userprops",
+            "wgrffmtfilter", "windowcaption", "writereservation", "writereservhash", "xe", "xform",
+            "xmlattrname", "xmlattrvalue", "xmlclose", "xmlname", "xmlnstbl",
+            "xmlopen"
+        };
+
+        private static readonly IReadOnlyDictionary<string, string> s_DicSpecialRtfCharacters = new Dictionary<string, string>
+        {
+            {"par", "\n"},
+            {"sect", "\n\n"},
+            {"page", "\n\n"},
+            {"line", "\n"},
+            {"tab", "\t"},
+            {"emdash", "\u2014"},
+            {"endash", "\u2013"},
+            {"emspace", "\u2003"},
+            {"enspace", "\u2002"},
+            {"qmspace", "\u2005"},
+            {"bullet", "\u2022"},
+            {"lquote", "\u2018"},
+            {"rquote", "\u2019"},
+            {"ldblquote", "\u201C"},
+            {"rdblquote", "\u201D"},
+        };
+
+        /// <summary>
+        /// Converts the specified string, which encodes binary data as base-64 digits, to an equivalent 8-bit unsigned integer array.
+        /// Nearly identical to Convert.FromBase64String(), but the byte array that's returned is from a shared ArrayPool instead of newly allocated.
+        /// </summary>
+        /// <param name="s">The string to convert.</param>
+        /// <param name="arrayLength">Actual length of the array used. Important because ArrayPool array can be larger than the lengths requested</param>
+        /// <param name="token">Cancellation token to listen to, if any.</param>
+        /// <returns>A rented array (from ArrayPool.Shared) of 8-bit unsigned integers that is equivalent to s.</returns>
+        /// <exception cref="ArgumentNullException">s is null.</exception>
+        /// <exception cref="FormatException">The length of s, ignoring white-space characters, is not zero or a multiple of 4. -or-The format of s is invalid. s contains a non-base-64 character, more than two padding characters, or a non-white space-character among the padding characters.</exception>
+        public static byte[] ToBase64PooledByteArray(this string s, out int arrayLength, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (s == null)
+            {
+                throw new ArgumentNullException(nameof(s));
+            }
+
+            arrayLength = 0;
+
+            unchecked
+            {
+                unsafe
+                {
+                    fixed (char* inputPtr = s)
+                    {
+                        int inputLength = s.Length;
+                        while (inputLength > 0)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            int num = inputPtr[inputLength - 1];
+                            if (num != 32 && num != 10 && num != 13 && num != 9)
+                            {
+                                break;
+                            }
+
+                            inputLength--;
+                        }
+
+                        arrayLength = FromBase64_ComputeResultLength(inputPtr, inputLength);
+                        byte[] array = ArrayPool<byte>.Shared.Rent(arrayLength);
+                        try
+                        {
+                            Array.Clear(array, 0, arrayLength);
+                            fixed (byte* startDestPtr = array)
+                            {
+                                _ = FromBase64_Decode(inputPtr, inputLength, startDestPtr, arrayLength);
+                            }
+
+                            return array;
+                        }
+                        catch
+                        {
+                            ArrayPool<byte>.Shared.Return(array);
+                            throw;
+                        }
+                    }
+
+                    int FromBase64_ComputeResultLength(char* inputPtr, int inputLength)
+                    {
+                        char* ptr = inputPtr + inputLength;
+                        int num = inputLength;
+                        int num2 = 0;
+                        while (inputPtr < ptr)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            uint num3 = *inputPtr;
+                            inputPtr++;
+                            switch (num3)
+                            {
+                                case 0u:
+                                case 1u:
+                                case 2u:
+                                case 3u:
+                                case 4u:
+                                case 5u:
+                                case 6u:
+                                case 7u:
+                                case 8u:
+                                case 9u:
+                                case 10u:
+                                case 11u:
+                                case 12u:
+                                case 13u:
+                                case 14u:
+                                case 15u:
+                                case 16u:
+                                case 17u:
+                                case 18u:
+                                case 19u:
+                                case 20u:
+                                case 21u:
+                                case 22u:
+                                case 23u:
+                                case 24u:
+                                case 25u:
+                                case 26u:
+                                case 27u:
+                                case 28u:
+                                case 29u:
+                                case 30u:
+                                case 31u:
+                                case 32u:
+                                    num--;
+                                    break;
+
+                                case 61u:
+                                    num--;
+                                    num2++;
+                                    break;
+                            }
+                        }
+
+                        switch (num2)
+                        {
+                            case 1:
+                                num2 = 2;
+                                break;
+
+                            case 2:
+                                num2 = 1;
+                                break;
+
+                            case 0:
+                                break;
+
+                            default:
+                                throw new FormatException(
+                                    "The input is not a valid Base-64 string as it contains a non-base 64 character, more than two padding characters, or an illegal character among the padding characters.");
+                        }
+
+                        return num / 4 * 3 + num2;
+                    }
+
+                    int FromBase64_Decode(char* startInputPtr, int inputLength, byte* startDestPtr, int destLength)
+                    {
+                        char* ptr = startInputPtr;
+                        byte* ptr2 = startDestPtr;
+                        char* ptr3 = ptr + inputLength;
+                        byte* ptr4 = ptr2 + destLength;
+                        uint num = 255u;
+                        while (ptr < ptr3)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            uint num2 = *ptr;
+                            ptr++;
+                            if (num2 - 65 <= 25)
+                            {
+                                num2 -= 65;
+                            }
+                            else if (num2 - 97 <= 25)
+                            {
+                                num2 -= 71;
+                            }
+                            else if (num2 - 48 <= 9)
+                            {
+                                num2 -= 4294967292u;
+                            }
+                            else
+                            {
+                                if (num2 <= 32)
+                                {
+                                    if (num2 - 9 <= 1 || num2 == 13 || num2 == 32)
+                                    {
+                                        continue;
+                                    }
+
+                                    goto IL_0097;
+                                }
+
+                                if (num2 != 43)
+                                {
+                                    if (num2 != 47)
+                                    {
+                                        if (num2 != 61)
+                                        {
+                                            goto IL_0097;
+                                        }
+
+                                        if (ptr == ptr3)
+                                        {
+                                            num <<= 6;
+                                            if ((num & 0x80000000u) == 0)
+                                            {
+                                                throw new FormatException(
+                                                    "Invalid length for a Base-64 char array or string.");
+                                            }
+
+                                            if ((int)(ptr4 - ptr2) < 2)
+                                            {
+                                                return -1;
+                                            }
+
+                                            *(ptr2++) = (byte)(num >> 16);
+                                            *(ptr2++) = (byte)(num >> 8);
+                                            num = 255u;
+                                            break;
+                                        }
+
+                                        for (; ptr < ptr3 - 1; ptr++)
+                                        {
+                                            int num3 = *ptr;
+                                            if (num3 != 32 && num3 != 10 && num3 != 13 && num3 != 9)
+                                            {
+                                                break;
+                                            }
+                                        }
+
+                                        if (ptr == ptr3 - 1 && *ptr == '=')
+                                        {
+                                            num <<= 12;
+                                            if ((num & 0x80000000u) == 0)
+                                            {
+                                                throw new FormatException(
+                                                    "Invalid length for a Base-64 char array or string.");
+                                            }
+
+                                            if ((int)(ptr4 - ptr2) < 1)
+                                            {
+                                                return -1;
+                                            }
+
+                                            *(ptr2++) = (byte)(num >> 16);
+                                            num = 255u;
+                                            break;
+                                        }
+
+                                        throw new FormatException(
+                                            "The input is not a valid Base-64 string as it contains a non-base 64 character, more than two padding characters, or an illegal character among the padding characters.");
+                                    }
+
+                                    num2 = 63u;
+                                }
+                                else
+                                {
+                                    num2 = 62u;
+                                }
+                            }
+
+                            num = (num << 6) | num2;
+                            if ((num & 0x80000000u) != 0)
+                            {
+                                if ((int)(ptr4 - ptr2) < 3)
+                                {
+                                    return -1;
+                                }
+
+                                *ptr2 = (byte)(num >> 16);
+                                ptr2[1] = (byte)(num >> 8);
+                                ptr2[2] = (byte)num;
+                                ptr2 += 3;
+                                num = 255u;
+                            }
+
+                            continue;
+                        IL_0097:
+                            throw new FormatException(
+                                "The input is not a valid Base-64 string as it contains a non-base 64 character, more than two padding characters, or an illegal character among the padding characters.");
+                        }
+
+                        if (num != 255)
+                        {
+                            throw new FormatException("Invalid length for a Base-64 char array or string.");
+                        }
+
+                        return (int)(ptr2 - startDestPtr);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Reads the specified string that encodes binary data as base-64 digits into a stream directly.
+        /// Much more memory-efficient version of Convert.FromBase64String() if the byte array would just be immediately fed into a stream anyway.
+        /// However, much slower than using Convert.FromBase64String() or ToBase64PooledByteArray() because of unusable optimizations around writing to streams in unsafe code.
+        /// </summary>
+        /// <param name="s">The string to convert and feed into <paramref name="stream"/>.</param>
+        /// <param name="stream">Stream to hold the byte array of the base-64 decoded version of <paramref name="s"/>.</param>
+        /// <param name="token">Cancellation token to listen to, if any.</param>
+        /// <exception cref="ArgumentNullException">s is null.</exception>
+        /// <exception cref="FormatException">The length of s, ignoring white-space characters, is not zero or a multiple of 4. -or-The format of s is invalid. s contains a non-base-64 character, more than two padding characters, or a non-white space-character among the padding characters.</exception>
+        public static void ToBase64Stream(this string s, Stream stream, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (s == null)
+            {
+                throw new ArgumentNullException(nameof(s));
+            }
+
+            unchecked
+            {
+                unsafe
+                {
+                    fixed (char* inputPtr = s)
+                    {
+                        int inputLength = s.Length;
+                        while (inputLength > 0)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            int num = inputPtr[inputLength - 1];
+                            if (num != 32 && num != 10 && num != 13 && num != 9)
+                            {
+                                break;
+                            }
+
+                            inputLength--;
+                        }
+
+                        int num2 = FromBase64_ComputeResultLength(inputPtr, inputLength);
+                        stream.Position = 0;
+                        stream.SetLength(num2);
+                        _ = FromBase64_Decode(inputPtr, inputLength, 0, num2);
+                    }
+
+                    int FromBase64_ComputeResultLength(char* inputPtr, int inputLength)
+                    {
+                        char* ptr = inputPtr + inputLength;
+                        int num = inputLength;
+                        int num2 = 0;
+                        while (inputPtr < ptr)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            uint num3 = *inputPtr;
+                            inputPtr++;
+                            switch (num3)
+                            {
+                                case 0u:
+                                case 1u:
+                                case 2u:
+                                case 3u:
+                                case 4u:
+                                case 5u:
+                                case 6u:
+                                case 7u:
+                                case 8u:
+                                case 9u:
+                                case 10u:
+                                case 11u:
+                                case 12u:
+                                case 13u:
+                                case 14u:
+                                case 15u:
+                                case 16u:
+                                case 17u:
+                                case 18u:
+                                case 19u:
+                                case 20u:
+                                case 21u:
+                                case 22u:
+                                case 23u:
+                                case 24u:
+                                case 25u:
+                                case 26u:
+                                case 27u:
+                                case 28u:
+                                case 29u:
+                                case 30u:
+                                case 31u:
+                                case 32u:
+                                    num--;
+                                    break;
+
+                                case 61u:
+                                    num--;
+                                    num2++;
+                                    break;
+                            }
+                        }
+
+                        switch (num2)
+                        {
+                            case 1:
+                                num2 = 2;
+                                break;
+
+                            case 2:
+                                num2 = 1;
+                                break;
+
+                            case 0:
+                                break;
+
+                            default:
+                                throw new FormatException(
+                                    "The input is not a valid Base-64 string as it contains a non-base 64 character, more than two padding characters, or an illegal character among the padding characters.");
+                        }
+
+                        return num / 4 * 3 + num2;
+                    }
+
+                    int FromBase64_Decode(char* startInputPtr, int inputLength, int startPosition, int destLength)
+                    {
+                        char* ptr = startInputPtr;
+                        char* ptr3 = ptr + inputLength;
+                        int endPosition = startPosition + destLength;
+                        uint num = 255u;
+                        while (ptr < ptr3)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            uint num2 = *ptr;
+                            ptr++;
+                            if (num2 - 65 <= 25)
+                            {
+                                num2 -= 65;
+                            }
+                            else if (num2 - 97 <= 25)
+                            {
+                                num2 -= 71;
+                            }
+                            else if (num2 - 48 <= 9)
+                            {
+                                num2 -= 4294967292u;
+                            }
+                            else
+                            {
+                                if (num2 <= 32)
+                                {
+                                    if (num2 - 9 <= 1 || num2 == 13 || num2 == 32)
+                                    {
+                                        continue;
+                                    }
+
+                                    goto IL_0097;
+                                }
+
+                                if (num2 != 43)
+                                {
+                                    if (num2 != 47)
+                                    {
+                                        if (num2 != 61)
+                                        {
+                                            goto IL_0097;
+                                        }
+
+                                        if (ptr == ptr3)
+                                        {
+                                            num <<= 6;
+                                            if ((num & 0x80000000u) == 0)
+                                            {
+                                                throw new FormatException(
+                                                    "Invalid length for a Base-64 char array or string.");
+                                            }
+
+                                            if ((int)(endPosition - stream.Position) < 2)
+                                            {
+                                                return -1;
+                                            }
+
+                                            stream.Write(new[] {(byte) (num >> 16), (byte) (num >> 8)}, 0, 2);
+                                            num = 255u;
+                                            break;
+                                        }
+
+                                        for (; ptr < ptr3 - 1; ptr++)
+                                        {
+                                            int num3 = *ptr;
+                                            if (num3 != 32 && num3 != 10 && num3 != 13 && num3 != 9)
+                                            {
+                                                break;
+                                            }
+                                        }
+
+                                        if (ptr == ptr3 - 1 && *ptr == '=')
+                                        {
+                                            num <<= 12;
+                                            if ((num & 0x80000000u) == 0)
+                                            {
+                                                throw new FormatException(
+                                                    "Invalid length for a Base-64 char array or string.");
+                                            }
+
+                                            if ((int)(endPosition - stream.Position) < 1)
+                                            {
+                                                return -1;
+                                            }
+
+                                            stream.WriteByte((byte)(num >> 16));
+                                            num = 255u;
+                                            break;
+                                        }
+
+                                        throw new FormatException(
+                                            "The input is not a valid Base-64 string as it contains a non-base 64 character, more than two padding characters, or an illegal character among the padding characters.");
+                                    }
+
+                                    num2 = 63u;
+                                }
+                                else
+                                {
+                                    num2 = 62u;
+                                }
+                            }
+
+                            num = (num << 6) | num2;
+                            if ((num & 0x80000000u) != 0)
+                            {
+                                if ((int)(endPosition - stream.Position) < 3)
+                                {
+                                    return -1;
+                                }
+
+                                stream.Write(new[] {(byte) (num >> 16), (byte) (num >> 8), (byte) num}, 0, 3);
+                                num = 255u;
+                            }
+
+                            continue;
+                        IL_0097:
+                            throw new FormatException(
+                                "The input is not a valid Base-64 string as it contains a non-base 64 character, more than two padding characters, or an illegal character among the padding characters.");
+                        }
+
+                        if (num != 255)
+                        {
+                            throw new FormatException("Invalid length for a Base-64 char array or string.");
+                        }
+
+                        return (int)(stream.Position - startPosition);
+                    }
+                }
+            }
+        }
     }
 }

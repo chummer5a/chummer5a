@@ -21,9 +21,8 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
-using System.Drawing;
 using System.Globalization;
-using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -37,50 +36,100 @@ namespace Chummer.UI.Powers
 {
     public partial class PowersTabUserControl : UserControl
     {
-        private bool _blnDisposeCharacterOnDispose;
         private TableView<Power> _table;
 
-        public PowersTabUserControl()
+        public PowersTabUserControl() : this(default)
         {
-            InitializeComponent();
-            this.UpdateLightDarkMode();
-            this.TranslateWinForm();
+            // Need to set up constructors like this so that the WinForms designer doesn't freak out
+        }
 
-            _dropDownList = GenerateDropdownFilter();
+        public PowersTabUserControl(CancellationToken objMyToken)
+        {
+            _objMyToken = objMyToken;
+            InitializeComponent();
+
+            Disposed += (sender, args) => UnbindPowersTabUserControl();
+
+            this.UpdateLightDarkMode(token: objMyToken);
+            this.TranslateWinForm(token: objMyToken);
+
+            _dropDownList = GenerateDropdownFilter(objMyToken);
 
             SuspendLayout();
-            InitializeTable();
-            ResumeLayout();
+            try
+            {
+                InitializeTable();
+            }
+            finally
+            {
+                ResumeLayout();
+            }
         }
 
         private Character _objCharacter;
-        private readonly List<Tuple<string, Predicate<Power>>> _dropDownList;
+        private List<Tuple<string, Func<Power, Task<bool>>>> _dropDownList;
         private bool _blnSearchMode;
 
-        private void PowersTabUserControl_Load(object sender, EventArgs e)
+        private CancellationToken _objMyToken;
+
+        public CancellationToken MyToken
+        {
+            get => _objMyToken;
+            set
+            {
+                if (_objMyToken == value)
+                    return;
+                _objMyToken = value;
+                _dropDownList = GenerateDropdownFilter(value);
+            }
+        }
+
+        public Character CachedCharacter { get; set; }
+
+        private async void PowersTabUserControl_Load(object sender, EventArgs e)
         {
             if (_objCharacter != null)
                 return;
-            using (new CursorWait(this))
-                RealLoad();
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
+            try
+            {
+                await RealLoad(MyToken, MyToken).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
-        public void RealLoad()
+        public async ValueTask RealLoad(CancellationToken objMyToken = default, CancellationToken token = default)
         {
-            if (ParentForm is CharacterShared frmParent)
-                _objCharacter = frmParent.CharacterObject;
+            if (CachedCharacter != null)
+            {
+                if (Interlocked.CompareExchange(ref _objCharacter, CachedCharacter, null) != null)
+                    return;
+            }
+            else if (ParentForm is CharacterShared frmParent && frmParent.CharacterObject != null)
+            {
+                if (Interlocked.CompareExchange(ref _objCharacter, frmParent.CharacterObject, null) != null)
+                    return;
+            }
             else
             {
-                _blnDisposeCharacterOnDispose = true;
-                _objCharacter = new Character();
+                Character objCharacter = new Character();
+                if (Interlocked.CompareExchange(ref _objCharacter, objCharacter, null) != null)
+                {
+                    await objCharacter.DisposeAsync().ConfigureAwait(false);
+                    return;
+                }
+                await this.DoThreadSafeAsync(x => x.Disposed += (sender, args) => objCharacter.Dispose(), token).ConfigureAwait(false);
                 Utils.BreakIfDebug();
             }
+            MyToken = objMyToken;
 
             if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                 return;
 
             Stopwatch sw = Stopwatch.StartNew();  //Benchmark, should probably remove in release
-            Stopwatch parts = Stopwatch.StartNew();
             //Keep everything visible until ready to display everything. This
             //seems to prevent redrawing everything each time anything is added
             //Not benched, but should be faster
@@ -88,91 +137,152 @@ namespace Chummer.UI.Powers
             //Might also be useless horseshit, 2 lines
 
             //Visible = false;
-            SuspendLayout();
+            await this.DoThreadSafeAsync(x =>
+            {
+                x.SuspendLayout();
+                try
+                {
+                    Stopwatch parts = Stopwatch.StartNew();
 
-            lblPowerPoints.DoOneWayDataBinding("Text", _objCharacter, nameof(Character.DisplayPowerPointsRemaining));
+                    parts.TaskEnd("MakePowerDisplay()");
 
-            parts.TaskEnd("MakePowerDisplay()");
+                    cboDisplayFilter.BeginUpdate();
+                    try
+                    {
+                        cboDisplayFilter.DataSource = null;
+                        cboDisplayFilter.ValueMember = "Item2";
+                        cboDisplayFilter.DisplayMember = "Item1";
+                        cboDisplayFilter.DataSource = _dropDownList;
+                        cboDisplayFilter.SelectedIndex = 1;
+                        cboDisplayFilter.MaxDropDownItems = _dropDownList.Count;
+                    }
+                    finally
+                    {
+                        cboDisplayFilter.EndUpdate();
+                    }
 
-            cboDisplayFilter.BeginUpdate();
-            cboDisplayFilter.DataSource = null;
-            cboDisplayFilter.ValueMember = "Item2";
-            cboDisplayFilter.DisplayMember = "Item1";
-            cboDisplayFilter.DataSource = _dropDownList;
-            cboDisplayFilter.SelectedIndex = 1;
-            cboDisplayFilter.MaxDropDownItems = _dropDownList.Count;
-            cboDisplayFilter.EndUpdate();
+                    parts.TaskEnd("_ddl databind");
 
-            parts.TaskEnd("_ddl databind");
+                    //Visible = true;
+                    //this.ResumeLayout(false);
+                    //this.PerformLayout();
+                    parts.TaskEnd("visible");
 
-            //Visible = true;
-            //this.ResumeLayout(false);
-            //this.PerformLayout();
-            parts.TaskEnd("visible");
+                    _table.Items = _objCharacter.Powers;
 
-            _table.Items = _objCharacter.Powers;
-
-            parts.TaskEnd("resize");
-            //this.Update();
-            ResumeLayout(true);
-            //this.PerformLayout();
-
-            _objCharacter.Powers.ListChanged += OnPowersListChanged;
-            _objCharacter.PropertyChanged += OnCharacterPropertyChanged;
-
+                    parts.TaskEnd("resize");
+                }
+                finally
+                {
+                    x.ResumeLayout(true);
+                }
+            }, token: token).ConfigureAwait(false);
+            await lblPowerPoints.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objCharacter,
+                                                                     nameof(Character.DisplayPowerPointsRemaining),
+                                                                     x => x.GetDisplayPowerPointsRemainingAsync(MyToken).AsTask(),
+                                                                     MyToken, MyToken).ConfigureAwait(false);
             sw.Stop();
             Debug.WriteLine("RealLoad() in {0} ms", sw.Elapsed.TotalMilliseconds);
+
+            _objCharacter.Powers.ListChanged += OnPowersListChanged;
+            IAsyncDisposable objLocker
+                = await _objCharacter.LockObject.EnterWriteLockAsync(MyToken).ConfigureAwait(false);
+            try
+            {
+                _objCharacter.PropertyChanged += OnCharacterPropertyChanged;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         private void UnbindPowersTabUserControl()
         {
-            if (_objCharacter != null)
+            if (_objCharacter?.IsDisposed == false)
             {
                 _objCharacter.Powers.ListChanged -= OnPowersListChanged;
-                _objCharacter.PropertyChanged -= OnCharacterPropertyChanged;
+                using (_objCharacter.LockObject.EnterWriteLock())
+                    _objCharacter.PropertyChanged -= OnCharacterPropertyChanged;
             }
         }
 
-        private void OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async void OnCharacterPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == nameof(Character.PowerPointsTotal) || e.PropertyName == nameof(Character.PowerPointsUsed))
-                CalculatePowerPoints();
+            try
+            {
+                if (e.PropertyName == nameof(Character.PowerPointsTotal)
+                    || e.PropertyName == nameof(Character.PowerPointsUsed))
+                    await CalculatePowerPoints(MyToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
-        private void OnPowersListChanged(object sender, ListChangedEventArgs e)
+        private async void OnPowersListChanged(object sender, ListChangedEventArgs e)
         {
-            switch (e.ListChangedType)
+            try
             {
-                case ListChangedType.ItemChanged:
+                switch (e.ListChangedType)
+                {
+                    case ListChangedType.ItemChanged:
                     {
                         string propertyName = e.PropertyDescriptor?.Name;
                         if (propertyName == nameof(Power.FreeLevels) || propertyName == nameof(Power.TotalRating))
                         {
                             // recalculation of power points on rating/free levels change
-                            CalculatePowerPoints();
+                            await CalculatePowerPoints(MyToken).ConfigureAwait(false);
                         }
+
                         break;
                     }
-                case ListChangedType.Reset:
-                case ListChangedType.ItemAdded:
-                case ListChangedType.ItemDeleted:
-                    CalculatePowerPoints();
-                    break;
+                    case ListChangedType.Reset:
+                    case ListChangedType.ItemAdded:
+                    case ListChangedType.ItemDeleted:
+                        await CalculatePowerPoints(MyToken).ConfigureAwait(false);
+                        break;
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
-        private static List<Tuple<string, Predicate<Power>>> GenerateDropdownFilter()
+        private static List<Tuple<string, Func<Power, Task<bool>>>> GenerateDropdownFilter(CancellationToken objMyToken = default)
         {
-            List<Tuple<string, Predicate<Power>>> ret = new List<Tuple<string, Predicate<Power>>>(4)
+            List<Tuple<string, Func<Power, Task<bool>>>> ret = new List<Tuple<string, Func<Power, Task<bool>>>>(4)
             {
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_Search"),
-                    null),
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterAll"),
-                    power => true),
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingAboveZero"),
-                    power => power.Rating > 0),
-                new Tuple<string, Predicate<Power>>(LanguageManager.GetString("String_PowerFilterRatingZero"),
-                    power => power.Rating == 0)
+                new Tuple<string, Func<Power, Task<bool>>>(LanguageManager.GetString("String_Search", token: objMyToken),
+                                                           null),
+                new Tuple<string, Func<Power, Task<bool>>>(LanguageManager.GetString("String_PowerFilterAll", token: objMyToken),
+                                                           power => Task.FromResult(true)),
+                new Tuple<string, Func<Power, Task<bool>>>(LanguageManager.GetString("String_PowerFilterRatingAboveZero", token: objMyToken),
+                                                           async power =>
+                                                           {
+                                                               try
+                                                               {
+                                                                   return await power.GetRatingAsync(objMyToken).ConfigureAwait(false) > 0;
+                                                               }
+                                                               catch (OperationCanceledException)
+                                                               {
+                                                                   return true;
+                                                               }
+                                                           }),
+                new Tuple<string, Func<Power, Task<bool>>>(LanguageManager.GetString("String_PowerFilterRatingZero", token: objMyToken),
+                                                           async power =>
+                                                           {
+                                                               try
+                                                               {
+                                                                   return await power.GetRatingAsync(objMyToken).ConfigureAwait(false) == 0;
+                                                               }
+                                                               catch (OperationCanceledException)
+                                                               {
+                                                                   return true;
+                                                               }
+                                                           })
             };
 
             /*
@@ -190,10 +300,12 @@ namespace Chummer.UI.Powers
             return ret;
         }
 
-        private void cboDisplayFilter_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboDisplayFilter_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (cboDisplayFilter.SelectedItem is Tuple<string, Predicate<Power>> selectedItem)
+            try
             {
+                if (!(cboDisplayFilter.SelectedItem is Tuple<string, Func<Power, Task<bool>>> selectedItem))
+                    return;
                 if (selectedItem.Item2 == null)
                 {
                     cboDisplayFilter.DropDownStyle = ComboBoxStyle.DropDown;
@@ -204,170 +316,317 @@ namespace Chummer.UI.Powers
                 {
                     cboDisplayFilter.DropDownStyle = ComboBoxStyle.DropDownList;
                     _blnSearchMode = false;
-                    _table.Filter = selectedItem.Item2;
+                    await _table.SetFilterAsync(selectedItem.Item2, MyToken).ConfigureAwait(false);
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
-        private void cboDisplayFilter_TextUpdate(object sender, EventArgs e)
+        private async void cboDisplayFilter_TextUpdate(object sender, EventArgs e)
         {
             if (_blnSearchMode)
             {
-                _table.Filter = (power => GlobalSettings.InvariantCultureInfo.CompareInfo.IndexOf(power.CurrentDisplayName, cboDisplayFilter.Text, CompareOptions.IgnoreCase) >= 0);
+                await _table.SetFilterAsync(
+                    async power =>
+                    {
+                        try
+                        {
+                            return GlobalSettings.InvariantCultureInfo.CompareInfo.IndexOf(
+                                await power.GetCurrentDisplayNameAsync(token: MyToken).ConfigureAwait(false),
+                                await cboDisplayFilter.DoThreadSafeFuncAsync(x => x.Text, token: MyToken).ConfigureAwait(false),
+                                CompareOptions.IgnoreCase) >= 0;
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            return true;
+                        }
+                    }, MyToken).ConfigureAwait(false);
             }
         }
 
         private async void cmdAddPower_Click(object sender, EventArgs e)
         {
-            // Open the Cyberware XML file and locate the selected piece.
-            XmlDocument objXmlDocument = await _objCharacter.LoadDataAsync("powers.xml");
-            bool blnAddAgain;
-
-            do
+            try
             {
-                using (SelectPower frmPickPower = new SelectPower(_objCharacter))
+                // Open the Cyberware XML file and locate the selected piece.
+                XmlDocument objXmlDocument = await _objCharacter.LoadDataAsync("powers.xml", token: MyToken)
+                                                                .ConfigureAwait(false);
+                bool blnAddAgain;
+
+                do
                 {
-                    await frmPickPower.ShowDialogSafeAsync(this);
-
-                    // Make sure the dialogue window was not canceled.
-                    if (frmPickPower.DialogResult == DialogResult.Cancel)
-                        break;
-
-                    blnAddAgain = frmPickPower.AddAgain;
-
-                    Power objPower = new Power(_objCharacter);
-
-                    XmlNode objXmlPower = objXmlDocument.SelectSingleNode("/chummer/powers/power[id = " + frmPickPower.SelectedPower.CleanXPath() + ']');
-                    if (objPower.Create(objXmlPower))
+                    using (ThreadSafeForm<SelectPower> frmPickPower = await ThreadSafeForm<SelectPower>
+                                                                            .GetAsync(
+                                                                                () => new SelectPower(_objCharacter),
+                                                                                MyToken).ConfigureAwait(false))
                     {
-                        _objCharacter.Powers.Add(objPower);
+                        // Make sure the dialogue window was not canceled.
+                        if (await frmPickPower.ShowDialogSafeAsync(_objCharacter, MyToken).ConfigureAwait(false)
+                            == DialogResult.Cancel)
+                            break;
+
+                        blnAddAgain = frmPickPower.MyForm.AddAgain;
+
+                        Power objPower = new Power(_objCharacter);
+
+                        XmlNode objXmlPower = objXmlDocument.SelectSingleNode(
+                            "/chummer/powers/power[id = " + frmPickPower.MyForm.SelectedPower.CleanXPath() + ']');
+                        if (objPower.Create(objXmlPower))
+                        {
+                            await _objCharacter.Powers.AddAsync(objPower, MyToken).ConfigureAwait(false);
+                        }
+                        else
+                            await objPower.DeletePowerAsync(MyToken).ConfigureAwait(false);
                     }
-                }
+                } while (blnAddAgain);
             }
-            while (blnAddAgain);
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         /// <summary>
         /// Calculate the number of Adept Power Points used.
         /// </summary>
-        public void CalculatePowerPoints()
+        public async ValueTask CalculatePowerPoints(CancellationToken token = default)
         {
-            decimal decPowerPointsTotal = _objCharacter.PowerPointsTotal;
-            decimal decPowerPointsRemaining = decPowerPointsTotal - _objCharacter.PowerPointsUsed;
-            lblPowerPoints.Text = string.Format(GlobalSettings.CultureInfo, "{1}{0}({2}{0}{3})",
-                LanguageManager.GetString("String_Space"), decPowerPointsTotal, decPowerPointsRemaining, LanguageManager.GetString("String_Remaining"));
+            decimal decPowerPointsTotal = await _objCharacter.GetPowerPointsTotalAsync(token).ConfigureAwait(false);
+            decimal decPowerPointsRemaining = decPowerPointsTotal - await _objCharacter.GetPowerPointsUsedAsync(token).ConfigureAwait(false);
+            string strText = string.Format(GlobalSettings.CultureInfo, "{1}{0}({2}{0}{3})",
+                                           await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false), decPowerPointsTotal,
+                                           decPowerPointsRemaining,
+                                           await LanguageManager.GetStringAsync("String_Remaining", token: token).ConfigureAwait(false));
+            await lblPowerPoints.DoThreadSafeAsync(x => x.Text = strText, token: token).ConfigureAwait(false);
         }
 
         private void InitializeTable()
         {
-            _table = new TableView<Power>
+            _table = this.DoThreadSafeFunc(() => new TableView<Power>
             {
-                Dock = DockStyle.Top,
-                ToolTip = _tipTooltip
-            };
+                Dock = DockStyle.Top
+            });
+            Disposed += (sender, args) => _table.Dispose();
             // create columns
-            TableColumn<Power> nameColumn = new TableColumn<Power>(() => new TextTableCell())
-            {
-                Text = "Power",
-                Extractor = (power => power.CurrentDisplayName),
-                Tag = "String_Power",
-                Sorter = (name1, name2) => string.Compare((string)name1, (string)name2, GlobalSettings.CultureInfo, CompareOptions.Ordinal)
-            };
+            TableColumn<Power> nameColumn = this.DoThreadSafeFunc(
+                () => new TableColumn<Power>(() => new TextTableCell())
+                {
+                    Text = "Power",
+                    Extractor = (async power =>
+                    {
+                        try
+                        {
+                            return await power.GetCurrentDisplayNameAsync(MyToken).ConfigureAwait(false);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            return default;
+                        }
+                    }),
+                    Tag = "String_Power",
+                    Sorter = async (name1, name2) =>
+                        string.Compare((await name1.ConfigureAwait(false)).ToString(), (await name2.ConfigureAwait(false)).ToString(), GlobalSettings.CultureInfo,
+                                       CompareOptions.Ordinal)
+                });
             nameColumn.AddDependency(nameof(Power.CurrentDisplayName));
 
-            TableColumn<Power> actionColumn = new TableColumn<Power>(() => new TextTableCell())
-            {
-                Text = "Action",
-                Extractor = (power => power.DisplayAction),
-                Tag = "ColumnHeader_Action",
-                Sorter = (action1, action2) => string.Compare((string)action1, (string)action2, GlobalSettings.CultureInfo, CompareOptions.Ordinal)
-            };
+            TableColumn<Power> actionColumn = this.DoThreadSafeFunc(
+                () => new TableColumn<Power>(() => new TextTableCell())
+                {
+                    Text = "Action",
+                    Extractor = (async power =>
+                    {
+                        try
+                        {
+                            return await power.GetDisplayActionAsync(MyToken).ConfigureAwait(false);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            return default;
+                        }
+                    }),
+                    Tag = "ColumnHeader_Action",
+                    Sorter = async (action1, action2) =>
+                        string.Compare((await action1.ConfigureAwait(false)).ToString(), (await action2.ConfigureAwait(false)).ToString(), GlobalSettings.CultureInfo,
+                                       CompareOptions.Ordinal)
+                });
             actionColumn.AddDependency(nameof(Power.DisplayAction));
 
-            TableColumn<Power> ratingColumn = new TableColumn<Power>(() => new SpinnerTableCell<Power>(_table)
-            {
-                EnabledExtractor = (p => p.LevelsEnabled),
-                MaxExtractor = (p => Math.Max(p.TotalMaximumLevels - p.FreeLevels, 0)),
-                ValueUpdater = (p, newRating) =>
-                {
-                    int delta = ((int)newRating) - p.Rating;
-                    if (delta != 0)
-                    {
-                        p.Rating += delta;
-                    }
-                },
-                MinExtractor = (p => 0),
-                ValueGetter = (p => p.Rating)
-            })
+            TableColumn<Power> ratingColumn = this.DoThreadSafeFunc(() => new TableColumn<Power>(
+                                                                        () => new SpinnerTableCell<Power>(_table)
+                                                                        {
+                                                                            EnabledExtractor = (p => p.LevelsEnabled),
+                                                                            MaxExtractor = (p =>
+                                                                                Math.Max(
+                                                                                    p.TotalMaximumLevels - p.FreeLevels,
+                                                                                    0)),
+                                                                            ValueUpdater = (p, newRating) =>
+                                                                            {
+                                                                                int delta = ((int)newRating)
+                                                                                    - p.Rating;
+                                                                                if (delta != 0)
+                                                                                {
+                                                                                    p.Rating += delta;
+                                                                                }
+                                                                            },
+                                                                            MinExtractor = (p => 0),
+                                                                            ValueGetter = (p => p.Rating)
+                                                                        })
             {
                 Text = "Rating",
                 Tag = "String_Rating",
-                Sorter = (o1, o2) =>
+                Sorter = async (o1, o2) =>
                 {
-                    if (o1 is Power objPower1 && o2 is Power objPower2)
-                        return objPower1.Rating - objPower2.Rating;
-                    string strMessage = "Can't sort an Object of Type " + o1.GetType() +
-                                        " against another one of Type " + o2.GetType() + " in the ratingColumn." +
-                                        Environment.NewLine + "Both objects SHOULD be of the type \"Power\".";
-                    throw new ArgumentException(strMessage, nameof(o1));
+                    try
+                    {
+                        if (await o1.ConfigureAwait(false) is Power objPower1 && await o2.ConfigureAwait(false) is Power objPower2)
+                            return await objPower1.GetRatingAsync(MyToken).ConfigureAwait(false)
+                                   - await objPower2.GetRatingAsync(MyToken).ConfigureAwait(false);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        return 0;
+                    }
+
+                    string strMessage
+                        = "Can't sort an Object of Type "
+                        + o1.GetType() +
+                        " against another one of Type "
+                        + o2.GetType() + " in the ratingColumn."
+                        +
+                        Environment.NewLine
+                        + "Both objects SHOULD be of the type \"Power\".";
+                    throw new ArgumentException(
+                        strMessage, nameof(o1));
                 }
-            };
+            });
 
             ratingColumn.AddDependency(nameof(Power.LevelsEnabled));
             ratingColumn.AddDependency(nameof(Power.FreeLevels));
             ratingColumn.AddDependency(nameof(Power.TotalMaximumLevels));
             ratingColumn.AddDependency(nameof(Power.TotalRating));
-            TableColumn<Power> totalRatingColumn = new TableColumn<Power>(() => new TextTableCell())
-            {
-                Text = "Total Rating",
-                Extractor = (power => power.TotalRating),
-                Tag = "String_TotalRating",
-                Sorter = (o1, o2) =>
+            TableColumn<Power> totalRatingColumn = this.DoThreadSafeFunc(
+                () => new TableColumn<Power>(() => new TextTableCell())
                 {
-                    if (o1 is Power objPower1 && o2 is Power objPower2)
-                        return objPower1.TotalRating - objPower2.TotalRating;
-                    string strMessage = "Can't sort an Object of Type " + o1.GetType() +
-                                        " against another one of Type " + o2.GetType() + " in the totalRatingColumn." +
-                                        Environment.NewLine + "Both objects SHOULD be of the type \"Power\".";
-                    throw new ArgumentException(strMessage, nameof(o1));
-                }
-            };
+                    Text = "Total Rating",
+                    Extractor = (async power =>
+                    {
+                        try
+                        {
+                            return await power.GetTotalRatingAsync(MyToken).ConfigureAwait(false);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            return default;
+                        }
+                    }),
+                    Tag = "String_TotalRating",
+                    Sorter = async (o1, o2) =>
+                    {
+                        try
+                        {
+                            if (await o1.ConfigureAwait(false) is Power objPower1 && await o2.ConfigureAwait(false) is Power objPower2)
+                                return await objPower1.GetTotalRatingAsync(MyToken).ConfigureAwait(false)
+                                       - await objPower2.GetTotalRatingAsync(MyToken).ConfigureAwait(false);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            return 0;
+                        }
+
+                        string strMessage = "Can't sort an Object of Type " + o1.GetType() +
+                                            " against another one of Type " + o2.GetType()
+                                            + " in the totalRatingColumn." +
+                                            Environment.NewLine + "Both objects SHOULD be of the type \"Power\".";
+                        throw new ArgumentException(strMessage, nameof(o1));
+                    }
+                });
             totalRatingColumn.AddDependency(nameof(Power.TotalRating));
 
-            TableColumn<Power> powerPointsColumn = new TableColumn<Power>(() => new TextTableCell())
-            {
-                Text = "Power Points",
-                Extractor = (power => power.DisplayPoints),
-                Tag = "ColumnHeader_Power_Points",
-                ToolTipExtractor = (item => item.ToolTip)
-            };
+            TableColumn<Power> powerPointsColumn = this.DoThreadSafeFunc(
+                () => new TableColumn<Power>(() => new TextTableCell())
+                {
+                    Text = "Power Points",
+                    Extractor = (async power =>
+                    {
+                        try
+                        {
+                            return await power.GetDisplayPointsAsync(MyToken).ConfigureAwait(false);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            return default;
+                        }
+                    }),
+                    Tag = "ColumnHeader_Power_Points",
+                    ToolTipExtractor = async item =>
+                    {
+                        try
+                        {
+                            return await item.GetToolTipAsync(MyToken).ConfigureAwait(false);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            return string.Empty;
+                        }
+                    }
+                });
             powerPointsColumn.AddDependency(nameof(Power.DisplayPoints));
             powerPointsColumn.AddDependency(nameof(Power.ToolTip));
 
-            TableColumn<Power> sourceColumn = new TableColumn<Power>(() => new TextTableCell
+            TableColumn<Power> sourceColumn = this.DoThreadSafeFunc(() => new TableColumn<Power>(() => new TextTableCell
             {
                 Cursor = Cursors.Hand
             })
             {
                 Text = "Source",
-                Extractor = (power => power.SourceDetail),
+                Extractor = (async power =>
+                {
+                    try
+                    {
+                        return await power.GetSourceDetailAsync(MyToken).ConfigureAwait(false);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        return default;
+                    }
+                }),
                 Tag = "Label_Source",
-                ToolTipExtractor = (item => item.SourceDetail.LanguageBookTooltip)
-            };
+                ToolTipExtractor = async item =>
+                {
+                    try
+                    {
+                        return (await item.GetSourceDetailAsync(MyToken).ConfigureAwait(false)).LanguageBookTooltip;
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        return string.Empty;
+                    }
+                }
+            });
             powerPointsColumn.AddDependency(nameof(Power.Source));
 
-            TableColumn<Power> adeptWayColumn = new TableColumn<Power>(() => new CheckBoxTableCell<Power>
-            {
-                ValueGetter = p => p.DiscountedAdeptWay,
-                ValueUpdater = (p, check) => p.DiscountedAdeptWay = check,
-                VisibleExtractor = p => p.AdeptWayDiscountEnabled,
-                EnabledExtractor = p => (p.CharacterObject.AllowAdeptWayPowerDiscount || p.DiscountedAdeptWay),
-                Alignment = Alignment.Center
-            })
+            TableColumn<Power> adeptWayColumn = this.DoThreadSafeFunc(() => new TableColumn<Power>(
+                                                                          () => new CheckBoxTableCell<Power>
+                                                                          {
+                                                                              ValueGetter = p => p.DiscountedAdeptWay,
+                                                                              ValueUpdater = (p, check) =>
+                                                                                  p.DiscountedAdeptWay = check,
+                                                                              VisibleExtractor = p =>
+                                                                                  p.AdeptWayDiscountEnabled,
+                                                                              EnabledExtractor = p =>
+                                                                                  p.CharacterObject
+                                                                                      .AllowAdeptWayPowerDiscount
+                                                                                  || p.DiscountedAdeptWay,
+                                                                              Alignment = Alignment.Center
+                                                                          })
             {
                 Text = "Adept Way",
                 Tag = "Checkbox_Power_AdeptWay"
-            };
+            });
             adeptWayColumn.AddDependency(nameof(Power.DiscountedAdeptWay));
             adeptWayColumn.AddDependency(nameof(Power.AdeptWayDiscountEnabled));
             adeptWayColumn.AddDependency(nameof(Character.AllowAdeptWayPowerDiscount));
@@ -387,91 +646,226 @@ namespace Chummer.UI.Powers
             geasColumn.AddDependency(nameof(Power.DiscountedGeas));
             */
 
-            TableColumn<Power> noteColumn = new TableColumn<Power>(() => new ButtonTableCell<Power>(new PictureBox
-            {
-                Image = Resources.note_edit,
-                Size = GetImageSize(Resources.note_edit)
-            })
-            {
-                ClickHandler = async p =>
+            TableColumn<Power> noteColumn = this.DoThreadSafeFunc(() => new TableColumn<Power>(
+                () =>
                 {
-                    using (EditNotes frmPowerNotes = new EditNotes(p.Notes, p.NotesColor))
+                    DpiFriendlyImagedButton cmdReturn
+                        = new DpiFriendlyImagedButton
+                        {
+                            ImageDpi96 = Resources.note_edit,
+                            ImageDpi192 = Resources.note_edit1,
+                            Dock = DockStyle.Fill,
+                            AutoSize = true,
+                            FlatStyle = FlatStyle.Flat
+                        };
+                    cmdReturn.FlatAppearance.BorderSize = 0;
+                    return new ButtonTableCell<Power>(cmdReturn)
                     {
-                        await frmPowerNotes.ShowDialogSafeAsync(this);
-                        if (frmPowerNotes.DialogResult == DialogResult.OK)
-                            p.Notes = frmPowerNotes.Notes;
-                    }
-                },
-                Alignment = Alignment.Center
-            })
+                        ClickHandler = async p =>
+                        {
+                            try
+                            {
+                                using (ThreadSafeForm<EditNotes> frmPowerNotes = await ThreadSafeForm<EditNotes>
+                                           .GetAsync(() => new EditNotes(p.Notes, p.NotesColor, MyToken), MyToken)
+                                           .ConfigureAwait(false))
+                                {
+                                    if (await frmPowerNotes.ShowDialogSafeAsync(_objCharacter, MyToken)
+                                                           .ConfigureAwait(false) == DialogResult.OK)
+                                        p.Notes = frmPowerNotes.MyForm.Notes;
+                                }
+                            }
+                            catch (OperationCanceledException)
+                            {
+                                //swallow this
+                            }
+                        },
+                        Alignment = Alignment.Center
+
+                    };
+                })
             {
                 Text = "Notes",
                 Tag = "ColumnHeader_Notes",
-                ToolTipExtractor = (p =>
+                ToolTipExtractor = async p =>
                 {
-                    string strTooltip = LanguageManager.GetString("Tip_Power_EditNotes");
-                    if (!string.IsNullOrEmpty(p.Notes))
-                        strTooltip += Environment.NewLine + Environment.NewLine + p.Notes.RtfToPlainText();
-                    return strTooltip.WordWrap();
-                })
-            };
+                    try
+                    {
+                        string strTooltip
+                            = await LanguageManager.GetStringAsync(
+                                "Tip_Power_EditNotes", token: MyToken).ConfigureAwait(false);
+                        if (!string.IsNullOrEmpty(p.Notes))
+                            strTooltip += Environment.NewLine
+                                          + Environment.NewLine
+                                          + await p.Notes.RtfToPlainTextAsync(token: MyToken).ConfigureAwait(false);
+                        return strTooltip.WordWrap();
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        return string.Empty;
+                    }
+                }
+            });
             noteColumn.AddDependency(nameof(Power.Notes));
 
-            TableColumn<Power> deleteColumn = new TableColumn<Power>(() => new ButtonTableCell<Power>(new Button
-            {
-                Text = LanguageManager.GetString("String_Delete"),
-                Tag = "String_Delete",
-                Dock = DockStyle.Fill
-            })
-            {
-                ClickHandler = p =>
+            TableColumn<Power> deleteColumn = this.DoThreadSafeFunc(() => new TableColumn<Power>(
+                () =>
                 {
-                    //Cache the parentform prior to deletion, otherwise the relationship is broken.
-                    Form frmParent = ParentForm;
-                    if (p.FreeLevels > 0)
-                    {
-                        string strExtra = p.Extra;
-                        string strImprovementSourceName = ImprovementManager.GetCachedImprovementListForValueOf(p.CharacterObject, Improvement.ImprovementType.AdeptPowerFreePoints, p.Name)
-                                                           .FirstOrDefault(x => x.UniqueName == strExtra)?.SourceName;
-                        if (!string.IsNullOrWhiteSpace(strImprovementSourceName))
+                    DpiFriendlyImagedButton cmdReturn
+                        = new DpiFriendlyImagedButton
                         {
-                            Gear objGear = p.CharacterObject.Gear.FindById(strImprovementSourceName);
-                            if (objGear != null && objGear.Bonded)
+                            ImageDpi96 = Resources.delete,
+                            ImageDpi192 = Resources.delete1,
+                            Dock = DockStyle.Fill,
+                            AutoSize = true,
+                            FlatStyle = FlatStyle.Flat
+                        };
+                    cmdReturn.FlatAppearance.BorderSize = 0;
+                    return new ButtonTableCell<Power>(cmdReturn)
+                    {
+                        ClickHandler = async p =>
+                        {
+                            try
                             {
-                                objGear.Equipped = false;
-                                objGear.Extra = string.Empty;
-                            }
-                        }
-                    }
-                    p.DeletePower();
-                    p.UnbindPower();
+                                //Cache the parentform prior to deletion, otherwise the relationship is broken.
+                                Form frmParent = await this.DoThreadSafeFuncAsync(x => x.ParentForm, token: MyToken)
+                                                           .ConfigureAwait(false);
+                                if (p.FreeLevels > 0)
+                                {
+                                    string strExtra = p.Extra;
+                                    string strImprovementSourceName
+                                        = (await ImprovementManager
+                                                 .GetCachedImprovementListForValueOfAsync(
+                                                     p.CharacterObject,
+                                                     Improvement.ImprovementType.AdeptPowerFreePoints, p.Name,
+                                                     token: MyToken).ConfigureAwait(false))
+                                          .Find(x => x.UniqueName == strExtra)?.SourceName;
+                                    if (!string.IsNullOrWhiteSpace(strImprovementSourceName))
+                                    {
+                                        Gear objGear = p.CharacterObject.Gear.FindById(strImprovementSourceName);
+                                        if (objGear?.Bonded == true)
+                                        {
+                                            objGear.Equipped = false;
+                                            objGear.Extra = string.Empty;
+                                        }
+                                    }
+                                }
 
-                    if (frmParent is CharacterShared objParent)
-                        objParent.IsCharacterUpdateRequested = true;
-                    return Task.CompletedTask;
-                },
-                EnabledExtractor = (p => p.FreeLevels == 0)
+                                await p.DeletePowerAsync(MyToken).ConfigureAwait(false);
+
+                                if (frmParent is CharacterShared objParent)
+                                    await objParent.RequestCharacterUpdate(MyToken).ConfigureAwait(false);
+                            }
+                            catch (OperationCanceledException)
+                            {
+                                //swallow this
+                            }
+                        },
+                        EnabledExtractor = (p => p.FreeLevels == 0)
+                    };
+                })
+            {
+                Text = string.Empty,
+                ToolTipExtractor = async p =>
+                {
+                    try
+                    {
+                        return (await LanguageManager.GetStringAsync("String_Delete", token: MyToken).ConfigureAwait(false))
+                            .WordWrap();
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        return string.Empty;
+                    }
+                }
             });
             deleteColumn.AddDependency(nameof(Power.FreeLevels));
 
-            _table.Columns.Add(nameColumn);
-            _table.Columns.Add(actionColumn);
-            _table.Columns.Add(ratingColumn);
-            _table.Columns.Add(totalRatingColumn);
-            _table.Columns.Add(powerPointsColumn);
-            _table.Columns.Add(adeptWayColumn);
-            //_table.Columns.Add(geasColumn);
-            _table.Columns.Add(noteColumn);
-            _table.Columns.Add(sourceColumn);
-            _table.Columns.Add(deleteColumn);
-            _table.UpdateLightDarkMode();
-            _table.TranslateWinForm();
-            pnlPowers.Controls.Add(_table);
-        }
+            TableColumn<Power> reapplyImprovementsColumn = this.DoThreadSafeFunc(() => new TableColumn<Power>(
+                () =>
+                {
+                    DpiFriendlyImagedButton cmdReturn
+                        = new DpiFriendlyImagedButton
+                        {
+                            ImageDpi96 = Resources.page_refresh,
+                            ImageDpi192 = Resources.page_refresh1,
+                            Dock = DockStyle.Fill,
+                            AutoSize = true,
+                            FlatStyle = FlatStyle.Flat
+                        };
+                    cmdReturn.FlatAppearance.BorderSize = 0;
+                    return new ButtonTableCell<Power>(cmdReturn)
+                    {
+                        ClickHandler = async p =>
+                        {
+                            try
+                            {
+                                switch (ParentForm)
+                                {
+                                    case CharacterCreate
+                                        frmCreate:
+                                        await frmCreate
+                                              .ReapplySpecificImprovements(
+                                                  p.InternalId,
+                                                  await p.GetCurrentDisplayNameAsync(MyToken).ConfigureAwait(false),
+                                                  MyToken)
+                                              .ConfigureAwait(false);
+                                        break;
+                                    case CharacterCareer
+                                        frmCareer:
+                                        await frmCareer
+                                              .ReapplySpecificImprovements(
+                                                  p.InternalId,
+                                                  await p.GetCurrentDisplayNameAsync(MyToken).ConfigureAwait(false),
+                                                  MyToken)
+                                              .ConfigureAwait(false);
+                                        break;
+                                }
+                            }
+                            catch (OperationCanceledException)
+                            {
+                                //swallow this
+                            }
+                        },
+                        Alignment = Alignment.Center
+                    };
+                })
+            {
+                Text = string.Empty,
+                ToolTipExtractor = async p =>
+                {
+                    try
+                    {
+                        return (await LanguageManager.GetStringAsync("Menu_SpecialReapplyImprovements", token: MyToken).ConfigureAwait(false))
+                            .WordWrap();
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        return string.Empty;
+                    }
+                }
+            });
 
-        private static Size GetImageSize(Image image)
-        {
-            return new Size(image.Width, image.Height);
+            try
+            {
+                _table.Columns.Add(nameColumn, MyToken);
+                _table.Columns.Add(actionColumn, MyToken);
+                _table.Columns.Add(ratingColumn, MyToken);
+                _table.Columns.Add(totalRatingColumn, MyToken);
+                _table.Columns.Add(powerPointsColumn, MyToken);
+                _table.Columns.Add(adeptWayColumn, MyToken);
+                //_table.Columns.Add(geasColumn, MyToken);
+                _table.Columns.Add(noteColumn, MyToken);
+                _table.Columns.Add(sourceColumn, MyToken);
+                _table.Columns.Add(deleteColumn, MyToken);
+                _table.Columns.Add(reapplyImprovementsColumn, MyToken);
+                _table.UpdateLightDarkMode(token: MyToken);
+                _table.TranslateWinForm(token: MyToken);
+            }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
+            pnlPowers.Controls.Add(_table);
         }
     }
 }

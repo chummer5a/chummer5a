@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading.Tasks;
 
 namespace Chummer.UI.Table
 {
@@ -31,15 +32,15 @@ namespace Chummer.UI.Table
     public class TableColumn<T> : IDisposable where T : INotifyPropertyChanged
     {
         private readonly Func<TableCell> _cellFactory;
-        private Comparison<object> _sorter;
+        private Func<Task<object>, Task<object>, Task<int>> _sorter;
         private bool _blnLive;
         private string _strText;
         private string _strTag;
         private int _intMinWidth;
         private int _intPrefWidth;
-        private Func<T, object> _funcExtractor;
-        private Comparison<T> _itemSorter;
-        private readonly HashSet<string> _setDependencies = Utils.StringHashSetPool.Get();
+        private Func<T, Task<object>> _funcExtractor;
+        private Func<T, T, Task<int>> _itemSorter;
+        private HashSet<string> _setDependencies = Utils.StringHashSetPool.Get();
 
         public TableColumn(Func<TableCell> cellFactory)
         {
@@ -48,9 +49,9 @@ namespace Chummer.UI.Table
 
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && _setDependencies != null)
             {
-                Utils.StringHashSetPool.Return(_setDependencies);
+                Utils.StringHashSetPool.Return(ref _setDependencies);
             }
         }
 
@@ -90,13 +91,13 @@ namespace Chummer.UI.Table
         /// <returns>a new instance of the cell</returns>
         internal TableCell CreateCell() => _cellFactory();
 
-        internal Comparison<T> CreateSorter()
+        internal Func<T, T, Task<int>> CreateSorter()
         {
             if (_itemSorter == null && _sorter != null)
             {
                 if (_funcExtractor == null)
                 {
-                    _itemSorter = (i1, i2) => _sorter(i1, i2);
+                    _itemSorter = (i1, i2) => _sorter(Task.FromResult<object>(i1), Task.FromResult<object>(i2));
                 }
                 else
                 {
@@ -111,13 +112,13 @@ namespace Chummer.UI.Table
         /// <summary>
         /// The dependencies as enumerable.
         /// </summary>
-        internal IEnumerable<string> Dependencies => _setDependencies;
+        internal IReadOnlyCollection<string> Dependencies => _setDependencies;
 
         /// <summary>
         /// Method for extracting the value for the cell from
         /// the item
         /// </summary>
-        public Func<T, object> Extractor
+        public Func<T, Task<object>> Extractor
         {
             get => _funcExtractor;
             set
@@ -152,7 +153,7 @@ namespace Chummer.UI.Table
         /// <summary>
         /// sorter for this column
         /// </summary>
-        public Comparison<object> Sorter
+        public Func<Task<object>, Task<object>, Task<int>> Sorter
         {
             get => _sorter;
             set
@@ -206,7 +207,7 @@ namespace Chummer.UI.Table
         /// <summary>
         /// Extractor for tooltip text on cell
         /// </summary>
-        public Func<T, string> ToolTipExtractor { get; set; }
+        public Func<T, Task<string>> ToolTipExtractor { get; set; }
 
         /// <summary>
         /// transfer the column to the live state

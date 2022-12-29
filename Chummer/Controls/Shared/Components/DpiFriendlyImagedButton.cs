@@ -19,27 +19,15 @@
 
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Chummer
 {
-    public partial class DpiFriendlyImagedButton : Button
+    public class DpiFriendlyImagedButton : Button
     {
-        public DpiFriendlyImagedButton()
-        {
-            InitializeComponent();
-        }
-
-        public DpiFriendlyImagedButton(IContainer container)
-        {
-            container.Add(this);
-
-            InitializeComponent();
-        }
-
         public void RefreshImage()
         {
             if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
@@ -50,6 +38,7 @@ namespace Chummer
                 case 0:
                     Image = null;
                     return;
+
                 case 1:
                     Image = lstImages[0];
                     return;
@@ -152,19 +141,13 @@ namespace Chummer
             get => _objImageDpi96;
             set
             {
-                if (_objImageDpi96 == value)
+                Image objOldImage = Interlocked.Exchange(ref _objImageDpi96, value);
+                if (objOldImage == value)
                     return;
                 if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
-                {
-                    _objImageDpi96 = value;
                     base.Image = value;
-                }
                 else
-                {
-                    Image objOldImage = _objImageDpi96;
-                    _objImageDpi96 = value;
                     UpdateImageIfBetterMatch(value, objOldImage, 1.0f);
-                }
             }
         }
 
@@ -173,10 +156,9 @@ namespace Chummer
             get => _objImageDpi120;
             set
             {
-                if (_objImageDpi120 == value)
+                Image objOldImage = Interlocked.Exchange(ref _objImageDpi120, value);
+                if (objOldImage == value)
                     return;
-                Image objOldImage = _objImageDpi120;
-                _objImageDpi120 = value;
                 UpdateImageIfBetterMatch(value, objOldImage, 1.25f);
             }
         }
@@ -186,10 +168,9 @@ namespace Chummer
             get => _objImageDpi144;
             set
             {
-                if (_objImageDpi144 == value)
+                Image objOldImage = Interlocked.Exchange(ref _objImageDpi144, value);
+                if (objOldImage == value)
                     return;
-                Image objOldImage = _objImageDpi144;
-                _objImageDpi144 = value;
                 UpdateImageIfBetterMatch(value, objOldImage, 1.5f);
             }
         }
@@ -199,10 +180,9 @@ namespace Chummer
             get => _objImageDpi192;
             set
             {
-                if (_objImageDpi192 == value)
+                Image objOldImage = Interlocked.Exchange(ref _objImageDpi192, value);
+                if (objOldImage == value)
                     return;
-                Image objOldImage = _objImageDpi192;
-                _objImageDpi192 = value;
                 UpdateImageIfBetterMatch(value, objOldImage, 2.0f);
             }
         }
@@ -212,10 +192,9 @@ namespace Chummer
             get => _objImageDpi288;
             set
             {
-                if (_objImageDpi288 == value)
+                Image objOldImage = Interlocked.Exchange(ref _objImageDpi288, value);
+                if (objOldImage == value)
                     return;
-                Image objOldImage = _objImageDpi288;
-                _objImageDpi288 = value;
                 UpdateImageIfBetterMatch(value, objOldImage, 3.0f);
             }
         }
@@ -225,10 +204,9 @@ namespace Chummer
             get => _objImageDpi384;
             set
             {
-                if (_objImageDpi384 == value)
+                Image objOldImage = Interlocked.Exchange(ref _objImageDpi384, value);
+                if (objOldImage == value)
                     return;
-                Image objOldImage = _objImageDpi384;
-                _objImageDpi384 = value;
                 UpdateImageIfBetterMatch(value, objOldImage, 4.0f);
             }
         }

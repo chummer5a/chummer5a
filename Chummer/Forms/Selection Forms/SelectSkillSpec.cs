@@ -44,7 +44,7 @@ namespace Chummer
             _objXmlDocument = XmlManager.LoadXPath("skills.xml", _objCharacter?.Settings.EnabledCustomDataDirectoryPaths);
         }
 
-        private void SelectSpec_Load(object sender, EventArgs e)
+        private async void SelectSpec_Load(object sender, EventArgs e)
         {
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstItems))
             {
@@ -52,8 +52,11 @@ namespace Chummer
 
                 if (_objCharacter.Created || !_objCharacter.EffectiveBuildMethodUsesPriorityTables)
                 {
-                    chkKarma.Checked = true;
-                    chkKarma.Visible = false;
+                    await chkKarma.DoThreadSafeAsync(x =>
+                    {
+                        x.Checked = true;
+                        x.Visible = false;
+                    }).ConfigureAwait(false);
                 }
 
                 XPathNavigator xmlParentSkill;
@@ -66,66 +69,63 @@ namespace Chummer
                 else
                     xmlParentSkill = _objXmlDocument.SelectSingleNode(
                         "/chummer/skills/skill[name = " + _objSkill.Name.CleanXPath() + " and ("
-                        + _objCharacter.Settings.BookXPath() + ")]");
+                        + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false) + ")]");
                 // Populate the Skill's Specializations (if any).
-                XPathNodeIterator xmlSpecList = xmlParentSkill?.SelectAndCacheExpression("specs/spec");
+                XPathNodeIterator xmlSpecList = xmlParentSkill != null ? await xmlParentSkill.SelectAndCacheExpressionAsync("specs/spec").ConfigureAwait(false) : null;
                 if (xmlSpecList?.Count > 0)
                 {
                     foreach (XPathNavigator objXmlSpecialization in xmlSpecList)
                     {
                         string strInnerText = objXmlSpecialization.Value;
                         lstItems.Add(new ListItem(strInnerText,
-                                                  objXmlSpecialization.SelectSingleNodeAndCacheExpression("@translate")
+                                                  (await objXmlSpecialization.SelectSingleNodeAndCacheExpressionAsync("@translate").ConfigureAwait(false))
                                                                       ?.Value ?? strInnerText));
 
                         if (_objSkill.SkillCategory != "Combat Active")
                             continue;
                         // Look through the Weapons file and grab the names of items that are part of the appropriate Category or use the matching Skill.
-                        XPathNavigator objXmlWeaponDocument = _objCharacter.LoadDataXPath("weapons.xml");
+                        XPathNavigator objXmlWeaponDocument = await _objCharacter.LoadDataXPathAsync("weapons.xml").ConfigureAwait(false);
                         //Might need to include skill name or might miss some values?
                         foreach (XPathNavigator objXmlWeapon in objXmlWeaponDocument.Select(
                                      "/chummer/weapons/weapon[(spec = " + strInnerText.CleanXPath() + " or spec2 = "
-                                     + strInnerText.CleanXPath() + ") and (" + _objCharacter.Settings.BookXPath()
+                                     + strInnerText.CleanXPath() + ") and (" + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false)
                                      + ")]"))
                         {
-                            string strName = objXmlWeapon.SelectSingleNodeAndCacheExpression("name")?.Value;
+                            string strName = (await objXmlWeapon.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false))?.Value;
                             if (!string.IsNullOrEmpty(strName))
                                 lstItems.Add(new ListItem(
                                                  strName,
-                                                 objXmlWeapon.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                                 (await objXmlWeapon.SelectSingleNodeAndCacheExpressionAsync("translate").ConfigureAwait(false))?.Value
                                                  ?? strName));
                         }
                     }
                 }
 
                 // Populate the lists.
-                cboSpec.BeginUpdate();
-                cboSpec.PopulateWithListItems(lstItems);
+                await cboSpec.PopulateWithListItemsAsync(lstItems).ConfigureAwait(false);
 
                 // If there's only 1 value in the list, the character doesn't have a choice, so just accept it.
-                if (cboSpec.Items.Count == 1 && cboSpec.DropDownStyle == ComboBoxStyle.DropDownList && AllowAutoSelect)
-                    AcceptForm();
+                if (await cboSpec.DoThreadSafeFuncAsync(x => x.Items.Count == 1 && x.DropDownStyle == ComboBoxStyle.DropDownList).ConfigureAwait(false) && AllowAutoSelect)
+                    await this.DoThreadSafeAsync(x => x.AcceptForm()).ConfigureAwait(false);
 
                 if (!string.IsNullOrEmpty(_strForceItem))
                 {
-                    cboSpec.SelectedIndex = cboSpec.FindStringExact(_strForceItem);
-                    if (cboSpec.SelectedIndex != -1)
-                        AcceptForm();
-                    else
+                    await cboSpec.DoThreadSafeAsync(x => x.SelectedIndex = x.FindStringExact(_strForceItem)).ConfigureAwait(false);
+                    if (await cboSpec.DoThreadSafeFuncAsync(x => x.SelectedIndex).ConfigureAwait(false) == -1)
                     {
-                        cboSpec.PopulateWithListItems((new ListItem(_strForceItem, _strForceItem)).Yield());
-                        cboSpec.SelectedIndex = 0;
-                        AcceptForm();
+                        await cboSpec.PopulateWithListItemsAsync((new ListItem(_strForceItem, _strForceItem)).Yield()).ConfigureAwait(false);
+                        await cboSpec.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);
                     }
-                }
 
-                cboSpec.EndUpdate();
+                    await this.DoThreadSafeAsync(x => x.AcceptForm()).ConfigureAwait(false);
+                }
             }
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -187,7 +187,10 @@ namespace Chummer
         private void AcceptForm()
         {
             if (!string.IsNullOrEmpty(SelectedItem))
+            {
                 DialogResult = DialogResult.OK;
+                Close();
+            }
         }
 
         #endregion Methods

@@ -1,7 +1,26 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer;
@@ -14,7 +33,8 @@ namespace ChummerHub.Client.UI
 {
     public partial class ucSINnersBasic : UserControl
     {
-        private readonly Logger Log = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
         private ucSINnersUserControl myUC { get; set; }
 
         public ucSINnersBasic()
@@ -35,7 +55,7 @@ namespace ChummerHub.Client.UI
             _inConstructor = true;
             InitializeComponent();
 
-            TagValueArchetype.DataSource = Contact.ContactArchetypes(parent.CharacterObject);
+            TagValueArchetype.DataSource = parent.CharacterObject.ContactArchetypes();
             Name = "SINnersBasic";
             bGroupSearch.Enabled = false;
             AutoSize = true;
@@ -77,23 +97,23 @@ namespace ChummerHub.Client.UI
             _inConstructor = false;
         }
 
-        public async Task<bool> CheckSINnerStatus()
+        public async Task<bool> CheckSINnerStatus(CancellationToken token = default)
         {
             try
             {
                 if (myUC?.MyCE?.MySINnerFile?.Id == null || myUC.MyCE.MySINnerFile.Id == Guid.Empty)
                 {
-                    await bUpload.DoThreadSafeAsync(() => bUpload.Text = "SINless Character/Error" );
+                    await bUpload.DoThreadSafeAsync(x => x.Text = "SINless Character/Error", token: token);
                     return false;
                 }
 
-                using (new CursorWait(this, true))
+                using (await CursorWait.NewAsync(this, true, token))
                 {
                     SinnersClient client = StaticUtils.GetClient();
-                    ResultSinnerGetSINnerGroupFromSINerById response = await client.GetSINnerGroupFromSINerByIdAsync(myUC.MyCE.MySINnerFile.Id.Value);
-                    
+                    ResultSinnerGetSINnerGroupFromSINerById response = await client.GetSINnerGroupFromSINerByIdAsync(myUC.MyCE.MySINnerFile.Id.Value, token);
+
                     SINnerGroup objMySiNnerGroup = response.MySINnerGroup;
-                    
+
                     await PluginHandler.MainForm.DoThreadSafeAsync(() =>
                     {
                         if (objMySiNnerGroup != null)
@@ -127,14 +147,14 @@ namespace ChummerHub.Client.UI
                         //}
                         cbTagCustom.Enabled = false;
                         TagValueCustomName.Enabled = false;
-                    });
-                    await this.DoThreadSafeAsync(UpdateTags);
+                    }, token: token);
+                    await this.DoThreadSafeAsync(UpdateTags, token: token);
                 }
             }
             catch (Exception ex)
             {
                 Log.Error(ex);
-                await bUpload.DoThreadSafeAsync(() => bUpload.Text = "Unknown Status");
+                await bUpload.DoThreadSafeAsync(x => x.Text = "Unknown Status", token: token);
                 return false;
             }
             return true;
@@ -159,7 +179,7 @@ namespace ChummerHub.Client.UI
                     cbTag.CheckState = CheckState.Unchecked;
             }
 
-            if (myUC.MyCE?.MySINnerFile != null)
+            if (myUC?.MyCE?.MySINnerFile != null)
             {
                 foreach (Tag tag in myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags)
                 {
@@ -167,7 +187,7 @@ namespace ChummerHub.Client.UI
                         continue;
                     //search for a CheckBox that is named like the tag
                     string checkBoxKey = "cbTag" + tag.TagName;
-                    Control objMatchingCheckBox = gpControlSeq.FirstOrDefault(x => x.Name == checkBoxKey);
+                    Control objMatchingCheckBox = gpControlSeq.Find(x => x.Name == checkBoxKey);
                     if (objMatchingCheckBox == null)
                         continue;
                     if (!(objMatchingCheckBox is CheckBox cbTag))
@@ -175,7 +195,7 @@ namespace ChummerHub.Client.UI
 
                     cbTag.Checked = bool.TryParse(tag.TagValue, out bool value) && value;
                     //search for the value-control (whatever that may be)
-                    Control objMatchingControl = gpControlValueSeq.FirstOrDefault(x => x.Name == "TagValue" + tag.TagName);
+                    Control objMatchingControl = gpControlValueSeq.Find(x => x.Name == "TagValue" + tag.TagName);
                     if (objMatchingControl == null)
                         continue;
 
@@ -211,7 +231,7 @@ namespace ChummerHub.Client.UI
             SaveTagsToSinner();
         }
 
-        private IEnumerable<Control> GetAllControls(Control container)
+        private static IEnumerable<Control> GetAllControls(Control container)
         {
             foreach (Control objLoopChild in container.Controls)
             {
@@ -260,7 +280,7 @@ namespace ChummerHub.Client.UI
                     tag.TagValue = bool.TrueString;
                 myUC.MyCE.MySINnerFile.SiNnerMetaData.Tags.Add(tag);
                 //search for the value
-                Control objMatchingControl = gpControlValueSeq.FirstOrDefault(x => x.Name == "TagValue" + tag.TagName);
+                Control objMatchingControl = gpControlValueSeq.Find(x => x.Name == "TagValue" + tag.TagName);
                 switch (objMatchingControl)
                 {
                     case TextBox tbTagValue:
@@ -279,7 +299,7 @@ namespace ChummerHub.Client.UI
 
         private async void bUpload_Click(object sender, EventArgs e)
         {
-            using (new CursorWait(this, true))
+            using (await CursorWait.NewAsync(this, true))
             {
                 try
                 {
@@ -297,7 +317,7 @@ namespace ChummerHub.Client.UI
                 }
                 catch (Exception exception)
                 {
-                    Program.MainForm.ShowMessageBox(exception.Message);
+                    Program.ShowMessageBox(exception.Message);
                 }
             }
             await CheckSINnerStatus();
@@ -309,7 +329,7 @@ namespace ChummerHub.Client.UI
             {
                 async void OnGroupJoinCallback(object o, SINnerGroup group)
                 {
-                    await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodes(PluginHandler.MyPluginHandlerInstance);
+                    await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodesAsync(PluginHandler.MyPluginHandlerInstance);
                 }
 
                 gs.MySINnerGroupSearch.OnGroupJoinCallback += OnGroupJoinCallback;
@@ -321,7 +341,7 @@ namespace ChummerHub.Client.UI
         {
             using (frmSINnerVisibility visfrm = new frmSINnerVisibility())
             {
-                using (new CursorWait(this, true))
+                using (await CursorWait.NewAsync(this, true))
                 {
                     if (myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility.UserRights.Count == 0)
                     {
@@ -337,7 +357,7 @@ namespace ChummerHub.Client.UI
                                 myUC.MyCE.MySINnerFile.SiNnerMetaData.Visibility.UserRights = res.UserRights;
                             }
 
-                            
+
                         }
                     }
                 }
@@ -351,7 +371,7 @@ namespace ChummerHub.Client.UI
             }
         }
 
-        private void BGenerateNewId_Click(object sender, EventArgs e)
+        private async void BGenerateNewId_Click(object sender, EventArgs e)
         {
             Guid? oldId = myUC.MyCE.MySINnerFile.Id;
             myUC.MyCE.MySINnerFile.Id = Guid.NewGuid();
@@ -367,7 +387,7 @@ namespace ChummerHub.Client.UI
             {
                 myUC.CharacterObject.FileName =  myUC.CharacterObject.FileName.Replace(oldId.ToString(), myUC.MyCE.MySINnerFile.Id.ToString());
             }
-            myUC.CharacterObject.Save(myUC.MyCE.MySINnerFile.Id + ".chum5", false);
+            await myUC.CharacterObject.SaveAsync(myUC.MyCE.MySINnerFile.Id + ".chum5", false);
             tbID.Text = myUC.MyCE.MySINnerFile.Id.ToString();
         }
 

@@ -45,11 +45,13 @@ namespace Chummer
         {
             _decReturnValue = nudNumber.Value;
             DialogResult = DialogResult.OK;
+            Close();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         #endregion Control Events

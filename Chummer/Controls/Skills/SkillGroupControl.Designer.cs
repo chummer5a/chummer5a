@@ -13,10 +13,9 @@ namespace Chummer.UI.Skills
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && (components != null))
             {
-                components?.Dispose();
-                UnbindSkillGroupControl();
+                components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -29,9 +28,8 @@ namespace Chummer.UI.Skills
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.lblName = new Chummer.LabelWithToolTip();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.tlpMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -77,6 +75,7 @@ namespace Chummer.UI.Skills
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "SkillGroupControl";
             this.Size = new System.Drawing.Size(72, 25);
+            this.Load += new System.EventHandler(this.SkillGroupControl_Load);
             this.MouseLeave += new System.EventHandler(this.OnMouseLeave);
             this.DpiChangedAfterParent += new System.EventHandler(this.SkillGroupControl_DpiChangedAfterParent);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnMouseMove);
@@ -90,6 +89,6 @@ namespace Chummer.UI.Skills
         #endregion
 
         private LabelWithToolTip lblName;
-        private BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
     }
 }

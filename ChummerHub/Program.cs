@@ -1,3 +1,21 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
@@ -14,6 +32,7 @@ namespace ChummerHub
 {
     public class Program
     {
+        public static Microsoft.Extensions.Logging.ILogger logger;
         public static IWebHost MyHost;
         public static void Main(string[] args)
         {
@@ -35,7 +54,12 @@ namespace ChummerHub
 #endif
 
             MyHost = CreateWebHostBuilder(args);
-          
+            var loggerFactory = LoggerFactory
+            .Create(builder =>
+            {
+                builder.AddConsole();
+            });
+            logger = loggerFactory.CreateLogger<Program>();
             MyHost.Run();
         }
 
@@ -82,19 +106,19 @@ namespace ChummerHub
 
         public static IWebHost CreateWebHostBuilder(string[] args) =>
             WebHost.CreateDefaultBuilder(args)
-            //.ConfigureAppConfiguration((hostingContext, config) =>
-            //{
-            //    var settings = config.Build();
-            //    config.AddAzureAppConfiguration(options =>
-            //    {
-                    
-            //        //options.Connect(settings["ConnectionStrings.AppConfig"])
-            //        //        .ConfigureKeyVault(kv =>
-            //        //        {
-            //        //            kv.SetCredential(new DefaultAzureCredential());
-            //        //        });
-            //    });
-            //})
+                //.ConfigureAppConfiguration((hostingContext, config) =>
+                //{
+                //    var settings = config.Build();
+                //    config.AddAzureAppConfiguration(options =>
+                //    {
+
+                //        //options.Connect(settings["ConnectionStrings.AppConfig"])
+                //        //        .ConfigureKeyVault(kv =>
+                //        //        {
+                //        //            kv.SetCredential(new DefaultAzureCredential());
+                //        //        });
+                //    });
+                //})
                 //.UseKestrel(options =>
                 //{
                 //    options.Limits.MinResponseDataRate = null;
@@ -114,6 +138,7 @@ namespace ChummerHub
                     logging.AddConfiguration(hostingContext.Configuration.GetSection("Logging"));
                     logging.AddConsole();
                     logging.AddDebug();
+                    
                     logging.AddApplicationInsights("95c486ab-aeb7-4361-8667-409b7bf62713");
                     logging.AddFilter<ApplicationInsightsLoggerProvider>("", LogLevel.Trace);
                     // Additional filtering For category starting in "Microsoft",

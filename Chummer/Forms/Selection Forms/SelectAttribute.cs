@@ -27,51 +27,59 @@ namespace Chummer
     {
         private string _strReturnValue = string.Empty;
 
-        private readonly List<ListItem> _lstAttributes = Utils.ListItemListPool.Get();
+        private readonly string[] _lstAttributeAbbrevs;
 
         #region Control Events
 
         public SelectAttribute(params string[] lstAttributeAbbrevs)
         {
+            _lstAttributeAbbrevs = lstAttributeAbbrevs;
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-
-            // Build the list of Attributes.
-            foreach (string strAbbrev in lstAttributeAbbrevs)
-            {
-                string strAttributeDisplayName = strAbbrev == "MAGAdept"
-                    ? LanguageManager.GetString("String_AttributeMAGShort") + " (" + LanguageManager.GetString("String_DescAdept") + ')'
-                    : LanguageManager.GetString("String_Attribute" + strAbbrev + "Short");
-                _lstAttributes.Add(new ListItem(strAbbrev, strAttributeDisplayName));
-            }
-
-            cboAttribute.BeginUpdate();
-            cboAttribute.PopulateWithListItems(_lstAttributes);
-            if (_lstAttributes.Count >= 1)
-                cboAttribute.SelectedIndex = 0;
-            else
-                cmdOK.Enabled = false;
-            cboAttribute.EndUpdate();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
             _strReturnValue = cboAttribute.SelectedValue.ToString();
             DialogResult = DialogResult.OK;
+            Close();
         }
 
-        private void SelectAttribute_Load(object sender, EventArgs e)
+        private async void SelectAttribute_Load(object sender, EventArgs e)
         {
-            if (_lstAttributes.Count == 1)
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstAttributes))
             {
-                cmdOK_Click(sender, e);
+                // Build the list of Attributes.
+                foreach (string strAbbrev in _lstAttributeAbbrevs)
+                {
+                    string strAttributeDisplayName = strAbbrev == "MAGAdept"
+                        ? await LanguageManager.MAGAdeptStringAsync().ConfigureAwait(false)
+                        : await LanguageManager.GetStringAsync("String_Attribute" + strAbbrev + "Short").ConfigureAwait(false);
+                    lstAttributes.Add(new ListItem(strAbbrev, strAttributeDisplayName));
+                }
+
+                await cboAttribute.PopulateWithListItemsAsync(lstAttributes).ConfigureAwait(false);
+                if (lstAttributes.Count >= 1)
+                    await cboAttribute.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);
+                else if (lstAttributes.Count == 0)
+                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = false).ConfigureAwait(false);
+                else
+                {
+                    _strReturnValue = await cboAttribute.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString()).ConfigureAwait(false);
+                    await this.DoThreadSafeAsync(x =>
+                    {
+                        x.DialogResult = DialogResult.OK;
+                        x.Close();
+                    }).ConfigureAwait(false);
+                }
             }
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         #endregion Control Events

@@ -188,11 +188,11 @@ namespace Chummer
     public class ListViewColumnSorter : IComparer
     {
         private int _intColumnToSort;
-        private SortOrder _objOrderOfSort;
+        private SortOrder _eOrderOfSort;
 
         public int Compare(object x, object y)
         {
-            if (_objOrderOfSort == SortOrder.None)
+            if (_eOrderOfSort == SortOrder.None)
                 return 0;
 
             int intCompareResult;
@@ -233,8 +233,8 @@ namespace Chummer
                 }
                 else
                 {
-                    string strX = objListViewX?.SubItems[_intColumnToSort].Text.FastEscape('¥');
-                    string strY = objListViewY?.SubItems[_intColumnToSort].Text.FastEscape('¥');
+                    string strX = objListViewX?.SubItems[_intColumnToSort].Text.FastEscape(LanguageManager.GetString("String_NuyenSymbol").ToCharArray());
+                    string strY = objListViewY?.SubItems[_intColumnToSort].Text.FastEscape(LanguageManager.GetString("String_NuyenSymbol").ToCharArray());
                     if (decimal.TryParse(strX, System.Globalization.NumberStyles.Any, GlobalSettings.CultureInfo,
                             out decimal decX) &&
                         decimal.TryParse(strY, System.Globalization.NumberStyles.Any, GlobalSettings.CultureInfo,
@@ -246,7 +246,7 @@ namespace Chummer
             }
 
             // Calculate correct return value based on object comparison
-            if (_objOrderOfSort == SortOrder.Ascending)
+            if (_eOrderOfSort == SortOrder.Ascending)
                 return intCompareResult;
             return -intCompareResult;
         }
@@ -265,8 +265,8 @@ namespace Chummer
         /// </summary>
         public SortOrder Order
         {
-            get => _objOrderOfSort;
-            set => _objOrderOfSort = value;
+            get => _eOrderOfSort;
+            set => _eOrderOfSort = value;
         }
     }
 
@@ -292,10 +292,12 @@ namespace Chummer
             // Compare the two items
             string strX = datagridviewrowX?.Cells[_intColumnToSort].Value.ToString();
             string strY = datagridviewrowY?.Cells[_intColumnToSort].Value.ToString();
-            string strNumberX = strX?.TrimEnd('¥', '+')
+            string strNumberX = strX?.TrimEnd(LanguageManager.GetString("String_NuyenSymbol").ToCharArray())
+                                    .TrimEnd('+')
                                     .TrimEndOnce(LanguageManager.GetString("String_AvailRestricted"))
                                     .TrimEndOnce(LanguageManager.GetString("String_AvailForbidden"));
-            string strNumberY = strY?.TrimEnd('¥', '+')
+            string strNumberY = strY?.TrimEnd(LanguageManager.GetString("String_NuyenSymbol").ToCharArray())
+                                    .TrimEnd('+')
                                     .TrimEndOnce(LanguageManager.GetString("String_AvailRestricted"))
                                     .TrimEndOnce(LanguageManager.GetString("String_AvailForbidden"));
             if (decimal.TryParse(strNumberX, System.Globalization.NumberStyles.Any, GlobalSettings.CultureInfo, out decimal decX))

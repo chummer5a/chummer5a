@@ -1,3 +1,21 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using ChummerHub.API;
 using ChummerHub.Data;
 using ChummerHub.Models.V1;
@@ -20,6 +38,8 @@ using System.Threading.Tasks;
 using System.Transactions;
 using Newtonsoft.Json;
 using SINnerGroup = ChummerHub.Models.V1.SINnerGroup;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 //using Swashbuckle.AspNetCore.Filters;
 
@@ -31,10 +51,8 @@ namespace ChummerHub.Controllers.V1
     [EnableCors("AllowOrigin")]
     [ApiVersion("1.0")]
     [ControllerName("SINGroup")]
-    [Authorize]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroupController'
+    [Authorize(Roles = API.Authorization.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
     public class SINnerGroupController : ControllerBase
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroupController'
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger _logger;
@@ -42,9 +60,7 @@ namespace ChummerHub.Controllers.V1
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly TelemetryClient tc;
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroupController.SINnerGroupController(ApplicationDbContext, ILogger<SINnerController>, SignInManager<ApplicationUser>, UserManager<ApplicationUser>, TelemetryClient)'
         public SINnerGroupController(ApplicationDbContext context,
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroupController.SINnerGroupController(ApplicationDbContext, ILogger<SINnerController>, SignInManager<ApplicationUser>, UserManager<ApplicationUser>, TelemetryClient)'
             ILogger<SINnerController> logger,
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager, TelemetryClient telemetry)
@@ -57,9 +73,7 @@ namespace ChummerHub.Controllers.V1
         }
 
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroupController.~SINnerGroupController()'
         ~SINnerGroupController()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroupController.~SINnerGroupController()'
         {
 
         }
@@ -75,14 +89,8 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GroupPutGroupInGroup")]
-        [Authorize(Roles = "Administrator,GroupAdmin")]
-#pragma warning disable CS1573 // Parameter 'isPublicVisible' has no matching param tag in the XML comment for 'SINnerGroupController.PutGroupInGroup(Guid, string, Guid?, string, bool)' (but other parameters do)
-#pragma warning disable CS1573 // Parameter 'adminIdentityRole' has no matching param tag in the XML comment for 'SINnerGroupController.PutGroupInGroup(Guid, string, Guid?, string, bool)' (but other parameters do)
-#pragma warning disable CS1573 // Parameter 'parentGroupId' has no matching param tag in the XML comment for 'SINnerGroupController.PutGroupInGroup(Guid, string, Guid?, string, bool)' (but other parameters do)
+        [Authorize(Roles = API.Authorization.Constants.UserRoleAdmin + "," + API.Authorization.Constants.UserRoleArchetypeAdmin, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<ResultGroupPutGroupInGroup>> PutGroupInGroup(Guid GroupId, string groupname, Guid? parentGroupId, string adminIdentityRole, bool isPublicVisible)
-#pragma warning restore CS1573 // Parameter 'parentGroupId' has no matching param tag in the XML comment for 'SINnerGroupController.PutGroupInGroup(Guid, string, Guid?, string, bool)' (but other parameters do)
-#pragma warning restore CS1573 // Parameter 'adminIdentityRole' has no matching param tag in the XML comment for 'SINnerGroupController.PutGroupInGroup(Guid, string, Guid?, string, bool)' (but other parameters do)
-#pragma warning restore CS1573 // Parameter 'isPublicVisible' has no matching param tag in the XML comment for 'SINnerGroupController.PutGroupInGroup(Guid, string, Guid?, string, bool)' (but other parameters do)
         {
             ResultGroupPutGroupInGroup res;
             _logger.LogTrace("PutGroupInGroup called with GroupId: " + GroupId + " and ParentGroupId: " + parentGroupId + " - adminIdentityRole: " + adminIdentityRole + ".");
@@ -238,7 +246,8 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Conflict)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("PutGroupSetting")]
-        [Authorize]
+        [Authorize(Roles = API.Authorization.Constants.UserRoleAdmin + "," + API.Authorization.Constants.UserRoleArchetypeAdmin,
+            AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<ResultGroupPutSetting>> PutGroupSetting([FromRoute] Guid id, IFormFile uploadedFile)
         {
             ResultGroupPutSetting res;
@@ -330,7 +339,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse(statusCode: (int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse(statusCode: (int)HttpStatusCode.Conflict)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation(summary: "GroupPostGroup")]
-        [Authorize]
+        [Authorize(Roles = API.Authorization.Constants.UserRoleConfirmed, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<ResultGroupPostGroup>> PostGroup([FromBody] SINnerGroup mygroup, Guid? SinnerId)
         {
             _logger.LogTrace(message: "Post SINnerGroupInternal: " + mygroup?.Groupname + " (" + SinnerId + ").");
@@ -558,7 +567,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK, "SINner joined the group", typeof(SINner))]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest, "an error occured", typeof(HubException))]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GroupPutSINerInGroup")]
-        [Authorize]
+        [Authorize(Roles = API.Authorization.Constants.UserRoleConfirmed, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<ResultGroupPutSINerInGroup>> PutSINerInGroup(Guid? GroupId, Guid? SinnerId, string pwhash)
         {
             ResultGroupPutSINerInGroup res;
@@ -736,7 +745,8 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GroupGetGroupById")]
-        [Authorize]
+        [Authorize(Roles = API.Authorization.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
+        
         public async Task<ActionResult<ResultGroupGetGroupById>> GetGroupById(Guid groupid)
         {
             ResultGroupGetGroupById res;
@@ -817,7 +827,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GroupGetPublicGroup")]
-        [AllowAnonymous]
+        [Authorize(Roles = API.Authorization.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<ResultGroupGetSearchGroups>> GetPublicGroup(string Groupname, string Language)
         {
             Stopwatch sw = new Stopwatch();
@@ -859,8 +869,6 @@ namespace ChummerHub.Controllers.V1
             }
         }
 
-#pragma warning disable CS1572 // XML comment has a param tag for 'UsernameOrEmail', but there is no parameter by that name
-#pragma warning disable CS1572 // XML comment has a param tag for 'SINnerName', but there is no parameter by that name
         /// <summary>
         /// Search for Groups
         /// </summary>
@@ -869,20 +877,12 @@ namespace ChummerHub.Controllers.V1
         /// <param name="SINnerName"></param>
         /// <returns></returns>
         [HttpGet()]
-#pragma warning restore CS1572 // XML comment has a param tag for 'SINnerName', but there is no parameter by that name
-#pragma warning restore CS1572 // XML comment has a param tag for 'UsernameOrEmail', but there is no parameter by that name
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GroupGetGroupmembers")]
-        [AllowAnonymous]
-#pragma warning disable CS1573 // Parameter 'email' has no matching param tag in the XML comment for 'SINnerGroupController.GetGroupmembers(string, string, string, string)' (but other parameters do)
-#pragma warning disable CS1573 // Parameter 'Language' has no matching param tag in the XML comment for 'SINnerGroupController.GetGroupmembers(string, string, string, string)' (but other parameters do)
-#pragma warning disable CS1573 // Parameter 'password' has no matching param tag in the XML comment for 'SINnerGroupController.GetGroupmembers(string, string, string, string)' (but other parameters do)
+        [Authorize(Roles = API.Authorization.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<ResultGroupGetSearchGroups>> GetGroupmembers(string Groupname, string Language, string email, string password)
-#pragma warning restore CS1573 // Parameter 'password' has no matching param tag in the XML comment for 'SINnerGroupController.GetGroupmembers(string, string, string, string)' (but other parameters do)
-#pragma warning restore CS1573 // Parameter 'Language' has no matching param tag in the XML comment for 'SINnerGroupController.GetGroupmembers(string, string, string, string)' (but other parameters do)
-#pragma warning restore CS1573 // Parameter 'email' has no matching param tag in the XML comment for 'SINnerGroupController.GetGroupmembers(string, string, string, string)' (but other parameters do)
         {
             ResultGroupGetSearchGroups res;
             _logger.LogTrace("GetGroupmembers: " + Groupname + "/" + Language + "/" + email + ".");
@@ -911,17 +911,13 @@ namespace ChummerHub.Controllers.V1
             }
         }
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroupController.GetHash(string)'
         public static byte[] GetHash(string inputString)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroupController.GetHash(string)'
         {
             HashAlgorithm algorithm = SHA256.Create();
             return algorithm.ComputeHash(Encoding.UTF8.GetBytes(inputString));
         }
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroupController.GetHashString(string)'
         public static string GetHashString(string inputString)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerGroupController.GetHashString(string)'
         {
             StringBuilder sb = new StringBuilder();
             foreach (byte b in GetHash(inputString))
@@ -1006,10 +1002,8 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GroupGetSearchGroups")]
-        [Authorize]
-#pragma warning disable CS1573 // Parameter 'Language' has no matching param tag in the XML comment for 'SINnerGroupController.GetSearchGroups(string, string, string, string)' (but other parameters do)
+        [Authorize(Roles = API.Authorization.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<ResultGroupGetSearchGroups>> GetSearchGroups(string Groupname, string UsernameOrEmail, string SINnerName, string Language)
-#pragma warning restore CS1573 // Parameter 'Language' has no matching param tag in the XML comment for 'SINnerGroupController.GetSearchGroups(string, string, string, string)' (but other parameters do)
         {
             Stopwatch sw = new Stopwatch();
             sw.Start();
@@ -1072,7 +1066,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("DeleteLeaveGroup")]
-        [Authorize]
+        [Authorize(Roles = API.Authorization.Constants.UserRoleConfirmed, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<bool>> DeleteLeaveGroup(Guid groupid, Guid sinnerid)
         {
             _logger.LogTrace("DeleteLeaveGroup: " + groupid + "/" + sinnerid + ".");
@@ -1110,7 +1104,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("DeleteGroup")]
-        [Authorize]
+        [Authorize(Roles = API.Authorization.Constants.UserRoleConfirmed, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<bool>> DeleteGroup(Guid groupid)
         {
             _logger.LogTrace("DeleteLeaveGroup: " + groupid + ".");
@@ -1447,7 +1441,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetGroupmembersById")]
-        [Authorize]
+        [Authorize(Roles = API.Authorization.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<ResultGroupGetSearchGroups>> GetGroupmembersById(Guid groupid)
         {
             ResultGroupGetSearchGroups res;

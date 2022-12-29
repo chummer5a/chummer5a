@@ -51,9 +51,10 @@
         <field>val</field>
         <field>min</field>
         <field>max</field>
+        <field>aug</field>
       </fields>
-      <xml><![CDATA[<name>{select}</name><val>{val}</val><min>{min}</min><max>{max}</max><aug>0</aug>]]></xml>
-      <page>Adjusts the values for one of the character's Attributes. Positive numbers increase an Attribute. Negative numbers decrease an Attribute. Select an Attribute to affect by clicking the Select Value button. Value adjusts the Attribute's current value. Minimum adjusts the Metatype's minimum value for the Attribute. Maximum adjusts the Metatype's maximum value for the Attribute. Metatype augmented maximum values are automatically adjusted based on the new Metatype maximum. Fields may be left at 0 if you do not want to affect that particular aspect of the Attribute.</page>
+      <xml><![CDATA[<name>{select}</name><val>{val}</val><min>{min}</min><max>{max}</max><aug>{aug}</aug>]]></xml>
+      <page>Adjusts the values for one of the character's Attributes. Positive numbers increase an Attribute. Negative numbers decrease an Attribute. Select an Attribute to affect by clicking the Select Value button. Value adjusts the Attribute's current value. Minimum adjusts the Metatype's minimum value for the Attribute. Maximum adjusts the Metatype's maximum value for the Attribute. Augmented Maximum Maximum adjusts the Metatype's augmented maximum value for the Attribute. Fields may be left at 0 if you do not want to affect that particular aspect of the Attribute.</page>
     </improvement>
     <improvement>
       <name>Replace Attribute</name>
@@ -63,9 +64,10 @@
         <field>SelectAttribute</field>
         <field>min</field>
         <field>max</field>
+        <field>aug</field>
       </fields>
-      <xml><![CDATA[<replaceattribute><name>{select}</name><min>{min}</min><max>{max}</max></replaceattribute>]]></xml>
-      <page>Overrides the Metatype limitations for an attribute. Minimum adjusts the Metatype's minimum value for the Attribute. Maximum adjusts the Metatype's maximum value for the Attribute. Metatype augmented maximum values are automatically adjusted based on the new Metatype maximum.</page>
+      <xml><![CDATA[<replaceattribute><name>{select}</name><min>{min}</min><max>{max}</max><aug>{aug}</aug></replaceattribute>]]></xml>
+      <page>Overrides the Metatype limitations for an attribute. Minimum adjusts the Metatype's minimum value for the Attribute. Maximum adjusts the Metatype's maximum value for the Attribute. Augmented Maximum Maximum adjusts the Metatype's augmented maximum value for the Attribute. Fields may be left at 0 if you do not want to affect that particular aspect of the Attribute.</page>
     </improvement>
     <improvement>
       <name>Enable Spells and Spirits Tab</name>

@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <metatypes>
+    <metatype xpathfilter="skills/skill[. = 'Perception' and not(@rating)] and (powers[power = 'Search'] or optionalpowers[power = 'Search'])">
+      <skills>
+        <skill amendoperation="addnode" spec="Query">Outdoors</skill>
+      </skills>
+    </metatype>
+    <metatype>
+      <skills xpathfilter="group = 'Athletics'">
+        <skill amendoperation="addnode">Prowess</skill>
+      </skills>
+      <skills xpathfilter="group = 'Close Combat'">
+        <skill amendoperation="addnode">Close Combat</skill>
+      </skills>
+      <skills xpathfilter="group = 'Sorcery'">
+        <skill amendoperation="addnode">Sorcery</skill>
+      </skills>
+      <skills xpathfilter="group = 'Conjuring'">
+        <skill amendoperation="addnode">Conjuring</skill>
+      </skills>
+      <skills xpathfilter="group = 'Outdoors'">
+        <skill amendoperation="addnode">Outdoors</skill>
+      </skills>
+      <skills xpathfilter="group = 'Influence'">
+        <skill amendoperation="addnode">Influence</skill>
+      </skills>
+      <skills xpathfilter="group = 'Stealth'">
+        <skill amendoperation="addnode">Stealth</skill>
+      </skills>
+      <skills>
+        <group amendoperation="remove" />
+        <skill xpathfilter=". = 'Assensing' or . = 'Astral Combat'" spec="Astral">Aetherology</skill>
+        <skill xpathfilter=". = 'Arcana' or . = 'Artificing' or . = 'Disenchanting'" spec="Arcana">Aetherology</skill>
+        <skill xpathfilter=". = 'Ritual Spellcasting'" spec="Ceremony">Aetherology</skill>
+        <skill xpathfilter=". = 'Spellcasting'" spec="Spellcasting">Sorcery</skill>
+        <skill xpathfilter=". = 'Counterspelling'" spec="Counterspelling">Sorcery</skill>
+        <skill xpathfilter=". = 'Alchemy'" spec="Alchemy">Sorcery</skill>
+        <skill xpathfilter=". = 'Summoning'" spec="Summoning">Conjuring</skill>
+        <skill xpathfilter=". = 'Binding'" spec="Binding">Conjuring</skill>
+        <skill xpathfilter=". = 'Banishing'" spec="Banishing">Conjuring</skill>
+        <skill xpathfilter=". = 'Automatics' or . = 'Longarms'" spec="Longarms">Firearms</skill>
+        <skill xpathfilter=". = 'Pistols'" spec="Handguns">Firearms</skill>
+        <skill xpathfilter=". = 'Heavy Weapons'" spec="Heavy Weapons">Firearms</skill>
+        <skill xpathfilter=". = 'First Aid'" spec="First Aid">Biotechnology</skill>
+        <skill xpathfilter=". = 'Chemistry'" spec="Chemistry">Biotechnology</skill>
+        <skill xpathfilter=". = 'Medicine' or . = 'Biotechnology'" spec="Medicine">Biotechnology</skill>
+        <skill xpathfilter=". = 'Blades'" spec="Edged Weapons">Close Combat</skill>
+        <skill xpathfilter=". = 'Clubs'" spec="Blunt Weapons">Close Combat</skill>
+        <skill xpathfilter=". = 'Unarmed Combat'" spec="Unarmed">Close Combat</skill>
+        <skill xpathfilter=". = 'Disguise' or . = 'Sneaking'" spec="Sneaking">Stealth</skill>
+        <skill xpathfilter=". = 'Palming'" spec="Sleight of Hand">Stealth</skill>
+        <skill xpathfilter=". = 'Locksmith'" spec="Locksmith">Stealth</skill>
+        <skill xpathfilter=". = 'Gymnastics'" spec="Acrobatics">Prowess</skill>
+        <skill xpathfilter=". = 'Flight' or . = 'Running'" spec="Athletics">Prowess</skill>
+        <skill xpathfilter=". = 'Swimming' or . = 'Diving'" spec="Aquatics">Prowess</skill>
+        <skill xpathfilter=". = 'Impersonation'" spec="Acting">Stagecraft</skill>
+        <skill xpathfilter=". = 'Negotiation'" spec="Persuade">Influence</skill>
+        <skill xpathfilter=". = 'Con' or . = 'Etiquette'" spec="Socialize">Influence</skill>
+        <skill xpathfilter=". = 'Intimidation' or . = 'Leadership' or . = 'Instruction'" spec="Command">Influence</skill>
+        <skill xpathfilter=". = 'Pilot Ground Craft'" spec="Pilot Groundcraft">Driving</skill>
+        <skill xpathfilter=". = 'Pilot Aircraft' or . = 'Pilot Aerospace'" spec="Pilot Aerospace">Driving</skill>
+        <skill xpathfilter=". = 'Pilot Watercraft'" spec="Pilot Watercraft">Driving</skill>
+        <skill xpathfilter=". = 'Tracking' or . = 'Navigation'" spec="Query">Outdoors</skill>
+        <skill xpathfilter=". = 'Survival'" spec="Survival">Outdoors</skill>
+        <skill xpathfilter=". = 'Animal Handling'" spec="Animal Handling">Outdoors</skill>
+        <skill xpathfilter=". = 'Computer'" spec="Matrix">Computers</skill>
+        <skill xpathfilter=". = 'Cybercombat' or . = 'Hacking' or . = 'Electronic Warfare'" spec="Cyberwarfare">Computers</skill>
+        <skill xpathfilter=". = 'Software'" spec="Software">Computers</skill>
+        <skill xpathfilter=". = 'Armorer'" spec="Armorer">Engineering</skill>
+        <skill xpathfilter=". = 'Hardware' or . = 'Cybertechnology'" spec="Electronics">Engineering</skill>
+        <skill xpathfilter=". = 'Automotive Mechanic' or . = 'Aeronautics Mechanic' or . = 'Industrial Mechanic' or . = 'Nautical Mechanic'" spec="Mechanics">Engineering</skill>
+        <skill xpathfilter=". = 'Demolitions'" spec="Demolitions">Military Science</skill>
+        <skill xpathfilter=". = 'Gunnery'" spec="Gunnery">Military Science</skill>
+        <skill xpathfilter=". = 'Throwing Weapons'" spec="Throwing Weapons">Projectile Weapons</skill>
+        <skill xpathfilter=". = 'Archery'" spec="Archery">Projectile Weapons</skill>
+        <skill xpathfilter=". = 'Perception' or . = 'Artisan' or . = 'Forgery' or . = 'Exotic Ranged Weapon'" amendoperation="remove" />
+      </skills>
+    </metatype>
+  </metatypes>
+</chummer>

@@ -18,6 +18,9 @@
  */
 
 using System;
+using System.Drawing;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Chummer.UI.Table
@@ -33,9 +36,9 @@ namespace Chummer.UI.Table
             Layout += (sender, evt) => DoLayout();
         }
 
-        private void OnLoad(object sender, EventArgs eventArgs)
+        private async void OnLoad(object sender, EventArgs eventArgs)
         {
-            Update(Index, Selected);
+            await UpdateAsync(Index, Selected).ConfigureAwait(false);
         }
 
         protected virtual void DoLayout()
@@ -46,11 +49,28 @@ namespace Chummer.UI.Table
         {
             if (blnSelected)
             {
-                BackColor = ColorManager.Highlight;
+                this.DoThreadSafe(x => x.BackColor = ColorManager.Highlight);
             }
             else
             {
-                BackColor = (intIndex & 1) == 0 ? ColorManager.ControlLightest : ColorManager.Control;
+                this.DoThreadSafe(x => x.BackColor
+                                      = (intIndex & 1) == 0 ? ColorManager.ControlLightest : ColorManager.Control);
+            }
+        }
+
+        protected virtual async ValueTask UpdateAsync(int intIndex, bool blnSelected, CancellationToken token = default)
+        {
+            if (blnSelected)
+            {
+                Color objHighlightColor = await ColorManager.GetHighlightAsync(token).ConfigureAwait(false);
+                await this.DoThreadSafeAsync(x => x.BackColor = objHighlightColor, token: token).ConfigureAwait(false);
+            }
+            else
+            {
+                Color objColor = (intIndex & 1) == 0
+                    ? await ColorManager.GetControlLightestAsync(token).ConfigureAwait(false)
+                    : await ColorManager.GetControlAsync(token).ConfigureAwait(false);
+                await this.DoThreadSafeAsync(x => x.BackColor = objColor, token: token).ConfigureAwait(false);
             }
         }
 
@@ -59,11 +79,8 @@ namespace Chummer.UI.Table
             get => _intIndex;
             set
             {
-                if (_intIndex != value)
-                {
-                    _intIndex = value;
+                if (Interlocked.Exchange(ref _intIndex, value) != value)
                     Update(Index, Selected);
-                }
             }
         }
 
@@ -72,11 +89,10 @@ namespace Chummer.UI.Table
             get => _blnSelected;
             set
             {
-                if (_blnSelected != value)
-                {
-                    _blnSelected = value;
-                    Update(Index, Selected);
-                }
+                if (_blnSelected == value)
+                    return;
+                _blnSelected = value;
+                Update(Index, Selected);
             }
         }
     }

@@ -332,8 +332,8 @@
     </security>
     <security>
       <name>Commercial</name>
-      <minimum>4</minimum>
-      <limit>6</limit>
+      <minimum>3</minimum>
+      <limit>7</limit>
     </security>
     <security>
       <name>Traveler</name>
@@ -823,7 +823,7 @@
       <allowed>Commercial</allowed>
 	  <allowmultiple />
       <bonus>
-        <selectskill />
+        <selecttext xml="skills.xml" xpath="/chummer/skills/skill/name | /chummer/knowledgeskills/skill/name" allowedit="True" />
       </bonus>
       <source>RF</source>
       <cost>2500</cost>
@@ -835,7 +835,7 @@
       <category>Entertainment - Asset</category>
       <lp>2</lp>
       <bonus>
-        <selectskill />
+        <selecttext xml="skills.xml" xpath="/chummer/skills/skill/name | /chummer/knowledgeskills/skill/name" allowedit="True" />
       </bonus>
       <allowed>Commercial</allowed>
 	  <allowmultiple />
@@ -881,8 +881,8 @@
       <lp>-1</lp>
       <forbidden>
         <oneof>
-          <quality>Local Bar Patron</quality>
-          <quality>Patron of the Arts (Private Club)</quality>
+          <lifestylequality>Local Bar Patron</lifestylequality>
+          <lifestylequality>Patron of the Arts (Private Club)</lifestylequality>
         </oneof>
       </forbidden>
       <source>RF</source>
@@ -948,7 +948,7 @@
       <lp>-1</lp>
       <forbidden>
         <oneof>
-          <quality>Cleaning Service</quality>
+          <lifestylequality>Cleaning Service</lifestylequality>
         </oneof>
       </forbidden>
       <source>RF</source>
@@ -971,8 +971,8 @@
       <multiplier>10</multiplier>
       <forbidden>
         <oneof>
-          <quality>Discreet Deliveryman</quality>
-          <quality>Discreet Candyman</quality>
+          <lifestylequality>Discreet Deliveryman</lifestylequality>
+          <lifestylequality>Discreet Candyman</lifestylequality>
         </oneof>
       </forbidden>
       <source>SR5</source>
@@ -1006,18 +1006,18 @@
       <lp>-1</lp>
       <required>
         <oneof>
-          <quality>Garage (Airplane)</quality>
-          <quality>Garage (Boat)</quality>
-          <quality>Garage (Car (Body 4 or Less))</quality>
-          <quality>Garage (Car (Body 5 or More))</quality>
-          <quality>Garage (Helicopter)</quality>
-          <quality>Cramped Garage (Airplane)</quality>
-          <quality>Cramped Garage (Boat)</quality>
-          <quality>Cramped Garage (Car (Body 4 or Less))</quality>
-          <quality>Cramped Garage (Car (Body 5 or More))</quality>
-          <quality>Cramped Garage (Helicopter)</quality>
-          <quality>Workshop/Facility</quality>
-          <quality>Cramped Workshop/Facility</quality>
+          <lifestylequality>Garage (Airplane)</lifestylequality>
+          <lifestylequality>Garage (Boat)</lifestylequality>
+          <lifestylequality>Garage (Car (Body 4 or Less))</lifestylequality>
+          <lifestylequality>Garage (Car (Body 5 or More))</lifestylequality>
+          <lifestylequality>Garage (Helicopter)</lifestylequality>
+          <lifestylequality>Cramped Garage (Airplane)</lifestylequality>
+          <lifestylequality>Cramped Garage (Boat)</lifestylequality>
+          <lifestylequality>Cramped Garage (Car (Body 4 or Less))</lifestylequality>
+          <lifestylequality>Cramped Garage (Car (Body 5 or More))</lifestylequality>
+          <lifestylequality>Cramped Garage (Helicopter)</lifestylequality>
+          <lifestylequality>Workshop/Facility</lifestylequality>
+          <lifestylequality>Cramped Workshop/Facility</lifestylequality>
         </oneof>
       </required>
       <source>RF</source>
@@ -1345,7 +1345,6 @@
       <id>23dcd584-9650-44b0-9273-896873ba6f61</id>
     </quality>
     <!-- Region Shadows in Focus: Butte-->
-
     <quality>
       <id>79de178b-6064-468f-bb8d-72b510dc0239</id>
       <name>Escape Tunnel, 100 Meters</name>
@@ -1594,7 +1593,6 @@
           <secRating>AA</secRating>
         </borough>
       </district>
-
       <district>
         <name>Bellevue</name>
         <borough>
@@ -1916,6 +1914,650 @@
       </district>
       <district>
         <name>CAS Sector</name>
+      </district>
+    </city>
+    <city>
+      <name>FDC</name>
+      <district>
+        <name>Arlington</name>
+      </district>
+      <district>
+        <name>Alexandria</name>
+      </district>
+      <district>
+        <name>Fairfax</name>
+      </district>
+      <district>
+        <name>Howard County</name>
+      </district>
+      <district>
+        <name>Montgomery County</name>
+      </district>
+      <district>
+        <name>Prince George's County</name>
+      </district>
+      <district>
+        <name>Washington</name>
+      </district>
+      <district>
+        <name>Anacostia Barrens</name>
+      </district>
+    </city>
+    <city>
+      <name>Portland</name>
+      <district>
+        <name>Rivergate</name>
+      </district>
+      <district>
+        <name>Faloma</name>
+      </district>
+      <district>
+        <name>North Portland</name>
+      </district>
+      <district>
+        <name>St. Johns</name>
+      </district>
+      <district>
+        <name>East St. Johns</name>
+      </district>
+      <district>
+        <name>Swan Island</name>
+      </district>
+      <district>
+        <name>Downtown</name>
+      </district>
+      <district>
+        <name>Maywood Park</name>
+      </district>
+      <district>
+        <name>Fairview</name>
+      </district>
+      <district>
+        <name>Gresham</name>
+      </district>
+      <district>
+        <name>Guilds Lake</name>
+      </district>
+      <district>
+        <name>Willamette Heights</name>
+      </district>
+      <district>
+        <name>Progress</name>
+      </district>
+      <district>
+        <name>Tigard</name>
+      </district>
+      <district>
+        <name>Elk Rock</name>
+      </district>
+      <district>
+        <name>Milwaukee</name>
+      </district>
+      <district>
+        <name>Westmoreland</name>
+      </district>
+      <district>
+        <name>Gladstone</name>
+      </district>
+    </city>
+    <city>
+      <name>Chicago</name>
+      <district>
+        <name>Containment Zone</name>
+        <borough>
+          <name>The Core</name>
+        </borough>
+        <borough>
+          <name>The Noose</name>
+        </borough>
+      </district>
+      <district>
+        <name>Corridor</name>
+        <borough>
+          <name>Northside</name>
+        </borough>
+        <borough>
+          <name>Southside</name>
+        </borough>
+        <borough>
+          <name>Westside</name>
+        </borough>
+      </district>
+      <district>
+        <name>Gary</name>
+      </district>
+      <district>
+        <name>Joliet</name>
+      </district>
+      <district>
+        <name>Naperville-Bolingbrook</name>
+      </district>
+      <district>
+        <name>O'Hare Sub-Sprawl</name>
+      </district>
+      <district>
+        <name>South Milwaukee</name>
+      </district>
+    </city>
+    <city>
+      <name>Los Angeles</name>
+      <district>
+        <name>LA Central</name>
+        <borough>
+          <name>Downtown</name>
+        </borough>
+        <borough>
+          <name>Hollywood</name>
+        </borough>
+        <borough>
+          <name>East LA</name>
+        </borough>
+        <borough>
+          <name>South Central</name>
+        </borough>
+        <borough>
+          <name>Santa Monica</name>
+        </borough>
+        <borough>
+          <name>Westside</name>
+        </borough>
+        <borough>
+          <name>Long Beach</name>
+        </borough>
+        <borough>
+          <name>South Bay</name>
+        </borough>
+        <borough>
+          <name>San Fernando Valley</name>
+        </borough>
+      </district>
+      <district>
+        <name>Inland Empire</name>
+        <borough>
+          <name>Pomona</name>
+        </borough>
+        <borough>
+          <name>Covina Floodwall</name>
+        </borough>
+        <borough>
+          <name>Ontario Air Center</name>
+        </borough>
+        <borough>
+          <name>Pasadena</name>
+        </borough>
+        <borough>
+          <name>Riverside</name>
+        </borough>
+        <borough>
+          <name>San Bernardino</name>
+        </borough>
+      </district>
+      <district>
+        <name>Orange County (Fun City)</name>
+        <borough>
+          <name>Tustin</name>
+        </borough>
+        <borough>
+          <name>Irvine</name>
+        </borough>
+      </district>
+      <district>
+        <name>San Onofre Irradiated Zone</name>
+      </district>
+      <district>
+        <name>Barstow</name>
+      </district>
+    </city>
+    <city>
+      <name>Cheyenne</name>
+      <district>
+        <name>Anglo Town</name>
+      </district>
+      <district>
+        <name>No Boundaries Neighborhood</name>
+      </district>
+      <district>
+        <name>The Corporate Zone</name>
+      </district>
+    </city>
+    <city>
+      <name>New York City</name>
+      <district>
+        <name>The Bronx</name>
+      </district>
+      <district>
+        <name>Manhattan</name>
+        <borough>
+          <name>Inwood</name>
+        </borough>
+        <borough>
+          <name>Washington Heights</name>
+        </borough>
+        <borough>
+          <name>Newtown</name>
+        </borough>
+        <borough>
+          <name>Riverside</name>
+        </borough>
+        <borough>
+          <name>Westside</name>
+        </borough>
+        <borough>
+          <name>Eastside</name>
+        </borough>
+        <borough>
+          <name>Central Park</name>
+          <secRating>AAA</secRating>
+        </borough>
+        <borough>
+          <name>Midtown</name>
+        </borough>
+        <borough>
+          <name>Times Square</name>
+        </borough>
+        <borough>
+          <name>Downtown</name>
+        </borough>
+        <borough>
+          <name>Stuyvesant</name>
+          <secRating>AAA</secRating>
+        </borough>
+        <borough>
+          <name>Terminal</name>
+        </borough>
+        <borough>
+          <name>Southside</name>
+        </borough>
+        <borough>
+          <name>The Village</name>
+        </borough>
+        <borough>
+          <name>The Pit</name>
+        </borough>
+        <borough>
+          <name>Soho</name>
+        </borough>
+        <borough>
+          <name>The Towers</name>
+        </borough>
+        <borough>
+          <name>City Center</name>
+        </borough>
+        <borough>
+          <name>Chinatown</name>
+        </borough>
+        <borough>
+          <name>Battery City</name>
+        </borough>
+        <borough>
+          <name>The Underground</name>
+        </borough>
+      </district>
+      <district>
+        <name>Queens</name>
+      </district>
+      <district>
+        <name>Brooklyn</name>
+      </district>
+      <district>
+        <name>Staten Island</name>
+      </district>
+      <district>
+        <name>Long Island</name>
+      </district>
+    </city>
+    <city>
+      <name>Atlanta</name>
+      <district>
+        <name>Downtown</name>
+      </district>
+      <district>
+        <name>Southtown</name>
+      </district>
+      <district>
+        <name>Norcross</name>
+      </district>
+      <district>
+        <name>Marietta</name>
+      </district>
+      <district>
+        <name>Douglasville</name>
+      </district>
+      <district>
+        <name>Decatur</name>
+      </district>
+      <district>
+        <name>Buckhead</name>
+      </district>
+    </city>
+    <city>
+      <name>Berlin</name>
+      <district>
+        <name>AGC Siemensstadt</name>
+      </district>
+      <district>
+        <name>Aztech-Schönwalde</name>
+      </district>
+      <district>
+        <name>Charlottenburg-Wilmersdorf</name>
+      </district>
+      <district>
+        <name>Falkensee</name>
+      </district>
+      <district>
+        <name>Gropiusstadt</name>
+      </district>
+      <district>
+        <name>Köpenick</name>
+      </district>
+      <district>
+        <name>Kreuzhain</name>
+      </district>
+      <district>
+        <name>Lichtenberg</name>
+      </district>
+      <district>
+        <name>Marzahn</name>
+      </district>
+      <district>
+        <name>Mitte</name>
+        <borough>
+          <name>Berliner Bankenviertel</name>
+        </borough>
+        <borough>
+          <name>Drakequartier</name>
+        </borough>
+        <borough>
+          <name>Moabit</name>
+        </borough>
+        <borough>
+          <name>Wedding</name>
+        </borough>
+      </district>
+      <district>
+        <name>Oranienburg</name>
+      </district>
+      <district>
+        <name>Pankow</name>
+      </district>
+      <district>
+        <name>Potsdam</name>
+      </district>
+      <district>
+        <name>Reinickendorf</name>
+      </district>
+      <district>
+        <name>Renrakusan</name>
+      </district>
+      <district>
+        <name>S-K Tempelhof</name>
+        <borough>
+          <name>S-K Arcology</name>
+        </borough>
+        <borough>
+          <name>Rixdorf</name>
+        </borough>
+      </district>
+      <district>
+        <name>Schönefeld</name>
+      </district>
+      <district>
+        <name>Spandau</name>
+      </district>
+      <district>
+        <name>Strausberg-Fredersdorf</name>
+      </district>
+      <district>
+        <name>Zehlendorf</name>
+      </district>
+      <district>
+        <name>Z-IC Tegel</name>
+      </district>
+    </city>
+    <city>
+      <name>Hong Kong</name>
+      <district>
+        <name>Northern Reaches</name>
+      </district>
+      <district>
+        <name>Tolo Harbor</name>
+      </district>
+      <district>
+        <name>Lantau Island</name>
+      </district>
+      <district>
+        <name>Kwai Tsing</name>
+      </district>
+      <district>
+        <name>Yau Tsim Mong</name>
+      </district>
+      <district>
+        <name>Kowloon Walled City</name>
+      </district>
+      <district>
+        <name>Kwun Tong</name>
+      </district>
+      <district>
+        <name>Sai Kung</name>
+      </district>
+      <district>
+        <name>Downtown</name>
+      </district>
+      <district>
+        <name>Eastern Hong Kong</name>
+      </district>
+      <district>
+        <name>Southern Coast</name>
+      </district>
+    </city>
+    <city>
+      <name>Dubai</name>
+      <district>
+        <name>Jebel Ali</name>
+      </district>
+      <district>
+        <name>Jumeirah</name>
+      </district>
+      <district>
+        <name>World Archipelago</name>
+      </district>
+    </city>
+    <city>
+      <name>Europort</name>
+      <district>
+        <name>Portoplex</name>
+      </district>
+      <district>
+        <name>Oude Centraal</name>
+      </district>
+      <district>
+        <name>De Kop van Zuid</name>
+      </district>
+      <district>
+        <name>Vlaardingen</name>
+      </district>
+      <district>
+        <name>Schiedam</name>
+      </district>
+    </city>
+    <city>
+      <name>Nairobi</name>
+      <district>
+        <name>Downtown</name>
+      </district>
+      <district>
+        <name>Corporate Court Complex</name>
+      </district>
+      <district>
+        <name>River Road</name>
+      </district>
+      <district>
+        <name>Kibera</name>
+      </district>
+      <district>
+        <name>Uplands</name>
+      </district>
+      <district>
+        <name>Westlands</name>
+      </district>
+      <district>
+        <name>Southern Naibori</name>
+      </district>
+    </city>
+    <city>
+      <name>Tenochtitlán</name>
+      <district>
+        <name>Ciudad Satélite</name>
+      </district>
+      <district>
+        <name>Distrito Federal</name>
+      </district>
+      <district>
+        <name>Zócalo</name>
+      </district>
+    </city>
+    <city>
+      <name>Neo-Tokyo</name>
+      <district>
+        <name>Adachi</name>
+      </district>
+      <district>
+        <name>Arakawa</name>
+      </district>
+      <district>
+        <name>Bunkyo</name>
+        <borough>
+          <name>Koishikawa</name>
+        </borough>
+        <borough>
+          <name>Pachinko Street</name>
+        </borough>
+        <borough>
+          <name>Shirow Row</name>
+        </borough>
+      </district>
+      <district>
+        <name>Chiyoda</name>
+        <borough>
+          <name>Ginza</name>
+        </borough>
+        <borough>
+          <name>Kasumigaseki</name>
+        </borough>
+        <borough>
+          <name>Kojimachi</name>
+        </borough>
+        <borough>
+          <name>Kudan</name>
+        </borough>
+        <borough>
+          <name>Nagatacho</name>
+        </borough>
+        <borough>
+          <name>Nihonbashi</name>
+        </borough>
+      </district>
+      <district>
+        <name>Edogawa</name>
+      </district>
+      <district>
+        <name>Itabashi</name>
+      </district>
+      <district>
+        <name>Kanda</name>
+        <borough>
+          <name>Akihabara</name>
+        </borough>
+        <borough>
+          <name>Jinbocho</name>
+        </borough>
+        <borough>
+          <name>Ochanomizu</name>
+        </borough>
+        <borough>
+          <name>Ogawamachi</name>
+        </borough>
+        <borough>
+          <name>Ningyocho</name>
+        </borough>
+      </district>
+      <district>
+        <name>Katsushika</name>
+      </district>
+      <district>
+        <name>Kita</name>
+      </district>
+      <district>
+        <name>Koto</name>
+      </district>
+      <district>
+        <name>Meguro</name>
+      </district>
+      <district>
+        <name>Minato</name>
+        <borough>
+          <name>Aoyama</name>
+        </borough>
+        <borough>
+          <name>Akasaka</name>
+        </borough>
+        <borough>
+          <name>Azabu</name>
+        </borough>
+        <borough>
+          <name>Roppongi</name>
+        </borough>
+      </district>
+      <district>
+        <name>Nakano</name>
+      </district>
+      <district>
+        <name>Nerima</name>
+      </district>
+      <district>
+        <name>Odaiba</name>
+      </district>
+      <district>
+        <name>Ota</name>
+      </district>
+      <district>
+        <name>Setagaya</name>
+      </district>
+      <district>
+        <name>Shibuya</name>
+        <borough>
+          <name>Harajuku</name>
+        </borough>
+      </district>
+      <district>
+        <name>Shinagawa</name>
+      </district>
+      <district>
+        <name>Shinjuku</name>
+        <borough>
+          <name>Kabukicho</name>
+        </borough>
+        <borough>
+          <name>Nishi-Shinjuku</name>
+        </borough>
+      </district>
+      <district>
+        <name>Suginami</name>
+      </district>
+      <district>
+        <name>Sumida</name>
+      </district>
+      <district>
+        <name>Taito</name>
+      </district>
+      <district>
+        <name>Toshima</name>
+        <borough>
+          <name>Ikebukuro</name>
+        </borough>
+      </district>
+      <district>
+        <name>Urayasu</name>
       </district>
     </city>
   </cities>

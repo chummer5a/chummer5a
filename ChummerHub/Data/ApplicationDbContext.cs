@@ -1,3 +1,21 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using ChummerHub.API;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity;
@@ -9,37 +27,30 @@ using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.Extensions.Hosting;
+using Duende.IdentityServer.EntityFramework.Interfaces;
+using System.Threading.Tasks;
+using Duende.IdentityServer.EntityFramework.Entities;
+using Microsoft.EntityFrameworkCore.Design;
+using System.Security.Claims;
 
 namespace ChummerHub.Data
 {
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext'
-    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext'
+    public class ApplicationDbContext : IdentityDbContext<ApplicationUser, ApplicationRole, Guid>//, IPersistedGrantDbContext
     {
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.HostingEnvironment'
         public IHostEnvironment HostingEnvironment { get; set; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.HostingEnvironment'
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.Configuration'
         public IConfiguration Configuration { get; set; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.Configuration'
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.ApplicationDbContext(DbContextOptions<ApplicationDbContext>, IHostingEnvironment)'
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options, IHostEnvironment env)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.ApplicationDbContext(DbContextOptions<ApplicationDbContext>, IHostingEnvironment)'
             : base(options)
         {
             HostingEnvironment = env;
         }
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.ApplicationDbContext()'
         public ApplicationDbContext()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.ApplicationDbContext()'
         {
 
         }
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.SaveChanges()'
         public override int SaveChanges()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.SaveChanges()'
         {
             bool error = false;
             Collection<ValidationResult> validationResults = new Collection<ValidationResult>();
@@ -77,9 +88,7 @@ namespace ChummerHub.Data
             return base.SaveChanges();
         }
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.OnConfiguring(DbContextOptionsBuilder)'
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.OnConfiguring(DbContextOptionsBuilder)'
         {
 
             if (!optionsBuilder.IsConfigured)
@@ -107,9 +116,7 @@ namespace ChummerHub.Data
 
 
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.OnModelCreating(ModelBuilder)'
         protected override void OnModelCreating(ModelBuilder builder)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.OnModelCreating(ModelBuilder)'
         {
             base.OnModelCreating(builder);
             builder.Entity<Models.V1.Tag>()
@@ -138,62 +145,51 @@ namespace ChummerHub.Data
                 .HasIndex(b => b.TagValueFloat);
             builder.Entity<ApplicationUserFavoriteGroup>()
                 .HasIndex(b => b.FavoriteGuid);
-            try
-            {
-                using (var dbContextTransaction = Database.BeginTransaction())
-                {
-                    Database.ExecuteSqlRaw(
-                        @"CREATE VIEW View_SINnerUserRights AS 
-        SELECT        dbo.SINners.Alias, dbo.UserRights.EMail, dbo.SINners.Id, dbo.UserRights.CanEdit, dbo.SINners.GoogleDriveFileId, dbo.SINners.MyGroupId, dbo.SINners.LastChange
-                         
-FROM            dbo.SINners INNER JOIN
-                         dbo.SINnerMetaData ON dbo.SINners.SINnerMetaDataId = dbo.SINnerMetaData.Id INNER JOIN
-                         dbo.SINnerVisibility ON dbo.SINnerMetaData.VisibilityId = dbo.SINnerVisibility.Id INNER JOIN
-                         dbo.UserRights ON dbo.SINnerVisibility.Id = dbo.UserRights.SINnerVisibilityId"
-                    );
-                    dbContextTransaction.Commit();
-                }
-            }
-            catch (Exception e)
-            {
-                System.Diagnostics.Trace.TraceInformation(e.Message);
-            }
+            
         }
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.SINners'
+        //public Task<int> SaveChangesAsync()
+        //{
+        //    base.SaveChangesAsync()
+        //    throw new NotImplementedException();
+        //}
+
+        #region models
         public DbSet<Models.V1.SINner> SINners { get; set; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.SINners'
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.SINnerGroups'
         public DbSet<Models.V1.SINnerGroup> SINnerGroups { get; set; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.SINnerGroups'
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.Tags'
         public DbSet<Models.V1.Tag> Tags { get; set; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.Tags'
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.UserRights'
         public DbSet<Models.V1.SINnerUserRight> UserRights { get; set; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.UserRights'
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.UploadClients'
         public DbSet<Models.V1.UploadClient> UploadClients { get; set; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.UploadClients'
 
         //public DbSet<ChummerHub.Models.V1.SINnerExtended> SINnerExtendedMetaData { get; set; }
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.SINnerComments'
         public DbSet<Models.V1.SINnerComment> SINnerComments { get; set; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.SINnerComments'
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.SINnerVisibility'
         public DbSet<Models.V1.SINnerVisibility> SINnerVisibility { get; set; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.SINnerVisibility'
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.SINnerMetaData'
         public DbSet<Models.V1.SINnerMetaData> SINnerMetaData { get; set; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.SINnerMetaData'
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.SINnerGroupSettings'
         public DbSet<Models.V1.SINnerGroupSetting> SINnerGroupSettings { get; set; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ApplicationDbContext.SINnerGroupSettings'
+
+
+        #endregion
+
+        //public DbSet<PersistedGrant> PersistedGrants { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        //public DbSet<DeviceFlowCodes> DeviceFlowCodes { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+        //public DbSet<Key> Keys { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
+    }
+
+    public class ApplicationDbContextFactory : IDesignTimeDbContextFactory<ApplicationDbContext>
+    {
+        public ApplicationDbContext CreateDbContext(string[] args)
+        {
+            var optionsBuilder = new DbContextOptionsBuilder<ApplicationDbContext>();
+            string constring = "Server=(localdb)\\mssqllocaldb;Database=SINners_DB;Trusted_Connection=True;MultipleActiveResultSets=true";
+            optionsBuilder.UseSqlServer(constring);
+            
+            return new ApplicationDbContext();
+        }
     }
 }

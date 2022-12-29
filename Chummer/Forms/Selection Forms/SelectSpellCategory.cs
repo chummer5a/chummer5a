@@ -28,7 +28,7 @@ namespace Chummer
     {
         private string _strSelectedCategory = string.Empty;
         private string _strForceCategory    = string.Empty;
-        private readonly HashSet<string> _setExcludeCategories = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setExcludeCategories = Utils.StringHashSetPool.Get();
 
         private readonly XPathNavigator _objXmlDocument;
 
@@ -36,13 +36,14 @@ namespace Chummer
 
         public SelectSpellCategory(Character objCharacter)
         {
+            Disposed += (sender, args) => Utils.StringHashSetPool.Return(ref _setExcludeCategories);
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
             _objXmlDocument = XmlManager.LoadXPath("spells.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths);
         }
 
-        private void SelectSpellCategory_Load(object sender, EventArgs e)
+        private async void SelectSpellCategory_Load(object sender, EventArgs e)
         {
             // Build the list of Spell Categories from the Spells file.
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCategory))
@@ -50,31 +51,37 @@ namespace Chummer
                 foreach (XPathNavigator objXmlCategory in !string.IsNullOrEmpty(_strForceCategory)
                              ? _objXmlDocument.Select("/chummer/categories/category[. = "
                                                       + _strForceCategory.CleanXPath() + ']')
-                             : _objXmlDocument.SelectAndCacheExpression("/chummer/categories/category"))
+                             : await _objXmlDocument.SelectAndCacheExpressionAsync("/chummer/categories/category").ConfigureAwait(false))
                 {
                     string strInnerText = objXmlCategory.Value;
                     if (_setExcludeCategories.Contains(strInnerText))
                         continue;
                     lstCategory.Add(new ListItem(strInnerText,
-                                                 objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value
+                                                 (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate").ConfigureAwait(false))?.Value
                                                  ?? strInnerText));
                 }
 
-                cboCategory.BeginUpdate();
-                cboCategory.PopulateWithListItems(lstCategory);
+                await cboCategory.PopulateWithListItemsAsync(lstCategory).ConfigureAwait(false);
                 // Select the first Skill in the list.
-                cboCategory.SelectedIndex = 0;
-                cboCategory.EndUpdate();
+                await cboCategory.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);
             }
 
-            if (cboCategory.Items.Count == 1)
-                cmdOK_Click(sender, e);
+            if (await cboCategory.DoThreadSafeFuncAsync(x => x.Items.Count).ConfigureAwait(false) == 1)
+            {
+                _strSelectedCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString()).ConfigureAwait(false);
+                await this.DoThreadSafeAsync(x =>
+                {
+                    x.DialogResult = DialogResult.OK;
+                    x.Close();
+                }).ConfigureAwait(false);
+            }
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
             _strSelectedCategory = cboCategory.SelectedValue.ToString();
             DialogResult = DialogResult.OK;
+            Close();
         }
 
         #endregion Control Events
@@ -119,6 +126,7 @@ namespace Chummer
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
     }
 }

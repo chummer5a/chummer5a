@@ -13,9 +13,9 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && (components != null))
             {
-                components?.Dispose();
+                components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -28,17 +28,17 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.chkIgnoreRules = new Chummer.ColorableCheckBox(this.components);
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SelectBuildMethod));
+            this.chkIgnoreRules = new Chummer.ColorableCheckBox();
             this.lblMaxAvailLabel = new System.Windows.Forms.Label();
             this.cboCharacterSetting = new Chummer.ElasticComboBox();
             this.lblKarmaLabel = new System.Windows.Forms.Label();
             this.lblDescription = new System.Windows.Forms.Label();
             this.lblMaxNuyenLabel = new System.Windows.Forms.Label();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.cmdEditCharacterSetting = new Chummer.ButtonWithToolTip(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.cmdEditCharacterSetting = new Chummer.ButtonWithToolTip();
             this.lblCharacterSetting = new System.Windows.Forms.Label();
-            this.tlpSummary = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpSummary = new System.Windows.Forms.TableLayoutPanel();
             this.lblBuildMethodLabel = new System.Windows.Forms.Label();
             this.lblBuildMethod = new System.Windows.Forms.Label();
             this.lblBuildMethodParamLabel = new System.Windows.Forms.Label();
@@ -54,7 +54,7 @@ namespace Chummer
             this.gpbCustomData = new System.Windows.Forms.GroupBox();
             this.pnlCustomData = new System.Windows.Forms.Panel();
             this.lblCustomData = new System.Windows.Forms.Label();
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
             this.cboBuildMethod = new Chummer.ElasticComboBox();
@@ -107,10 +107,10 @@ namespace Chummer
             this.cboCharacterSetting.FormattingEnabled = true;
             this.cboCharacterSetting.Location = new System.Drawing.Point(74, 4);
             this.cboCharacterSetting.Name = "cboCharacterSetting";
-            this.cboCharacterSetting.Size = new System.Drawing.Size(466, 21);
+            this.cboCharacterSetting.Size = new System.Drawing.Size(443, 21);
             this.cboCharacterSetting.TabIndex = 8;
             this.cboCharacterSetting.TooltipText = "";
-            this.cboCharacterSetting.SelectedIndexChanged += new System.EventHandler(this.cboGamePlay_SelectedIndexChanged);
+            this.cboCharacterSetting.SelectedIndexChanged += new System.EventHandler(this.cboCharacterSetting_SelectedIndexChanged);
             // 
             // lblKarmaLabel
             // 
@@ -193,9 +193,10 @@ namespace Chummer
             this.cmdEditCharacterSetting.ImageDpi288 = null;
             this.cmdEditCharacterSetting.ImageDpi384 = null;
             this.cmdEditCharacterSetting.ImageDpi96 = null;
-            this.cmdEditCharacterSetting.Location = new System.Drawing.Point(546, 3);
+            this.cmdEditCharacterSetting.Location = new System.Drawing.Point(523, 3);
+            this.cmdEditCharacterSetting.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdEditCharacterSetting.Name = "cmdEditCharacterSetting";
-            this.cmdEditCharacterSetting.Size = new System.Drawing.Size(57, 23);
+            this.cmdEditCharacterSetting.Size = new System.Drawing.Size(80, 23);
             this.cmdEditCharacterSetting.TabIndex = 17;
             this.cmdEditCharacterSetting.Text = "Modify...";
             this.cmdEditCharacterSetting.ToolTipText = "";
@@ -445,12 +446,12 @@ namespace Chummer
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
             this.tlpButtons.Controls.Add(this.cmdOK, 1, 0);
-            this.tlpButtons.Location = new System.Drawing.Point(494, 394);
+            this.tlpButtons.Location = new System.Drawing.Point(434, 394);
             this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
-            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpButtons.Size = new System.Drawing.Size(112, 29);
+            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpButtons.Size = new System.Drawing.Size(172, 29);
             this.tlpButtons.TabIndex = 20;
             // 
             // cmdCancel
@@ -460,8 +461,9 @@ namespace Chummer
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cmdCancel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdCancel.Location = new System.Drawing.Point(3, 3);
+            this.cmdCancel.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(50, 23);
+            this.cmdCancel.Size = new System.Drawing.Size(80, 23);
             this.cmdCancel.TabIndex = 7;
             this.cmdCancel.Tag = "String_Cancel";
             this.cmdCancel.Text = "Cancel";
@@ -473,9 +475,10 @@ namespace Chummer
             this.cmdOK.AutoSize = true;
             this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdOK.Location = new System.Drawing.Point(59, 3);
+            this.cmdOK.Location = new System.Drawing.Point(89, 3);
+            this.cmdOK.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdOK.Name = "cmdOK";
-            this.cmdOK.Size = new System.Drawing.Size(50, 23);
+            this.cmdOK.Size = new System.Drawing.Size(80, 23);
             this.cmdOK.TabIndex = 6;
             this.cmdOK.Tag = "String_OK";
             this.cmdOK.Text = "OK";
@@ -527,11 +530,12 @@ namespace Chummer
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(624, 441);
-            this.ControlBox = false;
             this.Controls.Add(this.tlpMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
             this.Name = "SelectBuildMethod";
@@ -566,14 +570,14 @@ namespace Chummer
         private System.Windows.Forms.Label lblKarmaLabel;
         private System.Windows.Forms.Label lblDescription;
         private System.Windows.Forms.Label lblMaxNuyenLabel;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
         private System.Windows.Forms.Label lblBuildMethodParamLabel;
         private ButtonWithToolTip cmdEditCharacterSetting;
         private System.Windows.Forms.Label lblCharacterSetting;
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.Button cmdCancel;
         private ElasticComboBox cboBuildMethod;
-        private BufferedTableLayoutPanel tlpSummary;
+        private System.Windows.Forms.TableLayoutPanel tlpSummary;
         private System.Windows.Forms.Label lblBuildMethodLabel;
         private System.Windows.Forms.Label lblBuildMethod;
         private System.Windows.Forms.Label lblBuildMethodParam;
@@ -587,7 +591,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblQualityKarma;
         private System.Windows.Forms.Label lblBooks;
         private System.Windows.Forms.Label lblCustomData;
-        private BufferedTableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
         private System.Windows.Forms.Panel pnlBooks;
         private System.Windows.Forms.Panel pnlCustomData;
         private System.Windows.Forms.GroupBox gpbBooks;

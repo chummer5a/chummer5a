@@ -13,13 +13,9 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && (components != null))
             {
-                components?.Dispose();
-                _lstCharacterCache?.Dispose();
-                foreach (var imgImage in _dicImages.Values)
-                    imgImage.Dispose();
-                _dicImages?.Dispose();
+                components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -32,7 +28,6 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(HeroLabImporter));
             this.treCharacterList = new System.Windows.Forms.TreeView();
             this.cmdSelectFile = new System.Windows.Forms.Button();
@@ -62,9 +57,10 @@ namespace Chummer
             this.txtCharacterNotes = new System.Windows.Forms.TextBox();
             this.panGameNotes = new System.Windows.Forms.TabPage();
             this.txtGameNotes = new System.Windows.Forms.TextBox();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
+            this.dlgOpenFile = new System.Windows.Forms.OpenFileDialog();
             ((System.ComponentModel.ISupportInitialize)(this.picMugshot)).BeginInit();
             this.tabCharacterText.SuspendLayout();
             this.panCharacterBio.SuspendLayout();
@@ -86,7 +82,7 @@ namespace Chummer
             this.treCharacterList.Size = new System.Drawing.Size(300, 508);
             this.treCharacterList.TabIndex = 0;
             this.treCharacterList.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCharacterList_AfterSelect);
-            this.treCharacterList.DoubleClick += new System.EventHandler(this.treCharacterList_DoubleClick);
+            this.treCharacterList.DoubleClick += new System.EventHandler(this.cmdImport_Click);
             // 
             // cmdSelectFile
             // 
@@ -94,6 +90,7 @@ namespace Chummer
             this.cmdSelectFile.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdSelectFile.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdSelectFile.Location = new System.Drawing.Point(3, 3);
+            this.cmdSelectFile.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdSelectFile.Name = "cmdSelectFile";
             this.cmdSelectFile.Size = new System.Drawing.Size(95, 23);
             this.cmdSelectFile.TabIndex = 1;
@@ -109,6 +106,7 @@ namespace Chummer
             this.cmdImport.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdImport.Enabled = false;
             this.cmdImport.Location = new System.Drawing.Point(104, 3);
+            this.cmdImport.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdImport.Name = "cmdImport";
             this.cmdImport.Size = new System.Drawing.Size(95, 23);
             this.cmdImport.TabIndex = 2;
@@ -514,7 +512,7 @@ namespace Chummer
             this.tlpRight.Size = new System.Drawing.Size(460, 514);
             this.tlpRight.TabIndex = 56;
             // 
-            // frmHeroLabImporter
+            // HeroLabImporter
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -525,8 +523,10 @@ namespace Chummer
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "HeroLabImporter";
             this.Padding = new System.Windows.Forms.Padding(9);
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_HeroLabImporter";
             this.Text = "Hero Lab Importer";
+            this.Load += new System.EventHandler(this.HeroLabImporter_Load);
             ((System.ComponentModel.ISupportInitialize)(this.picMugshot)).EndInit();
             this.tabCharacterText.ResumeLayout(false);
             this.panCharacterBio.ResumeLayout(false);
@@ -580,8 +580,9 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtCharacterNotes;
         private System.Windows.Forms.TabPage panGameNotes;
         private System.Windows.Forms.TextBox txtGameNotes;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
-        private BufferedTableLayoutPanel tlpButtons;
-        private BufferedTableLayoutPanel tlpRight;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpRight;
+        private System.Windows.Forms.OpenFileDialog dlgOpenFile;
     }
 }

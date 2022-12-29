@@ -1,3 +1,21 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
 using System.IO;
 using System.IO.Pipes;
@@ -13,7 +31,8 @@ namespace ChummerHub.Client.Backend
     /// </summary>
     public class NamedPipeManager : IDisposable
     {
-        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
         public string NamedPipeName { get; }
         public event Action<string> ReceiveString;
 
@@ -31,7 +50,16 @@ namespace ChummerHub.Client.Backend
         /// </summary>
         public async Task StartServer()
         {
-            StopServer();
+            CancellationTokenSource objNewSource = new CancellationTokenSource();
+            CancellationTokenSource objTemp = Interlocked.Exchange(ref _objCancellationTokenSource, objNewSource);
+            if (objTemp?.IsCancellationRequested == false)
+            {
+                Log.Trace("Sending Exit to PipeServer...");
+                Write(EXIT_STRING);
+                objTemp.Cancel(false);
+                objTemp.Dispose();
+            }
+
             try
             {
                 if (_objRunningTask?.IsCompleted == false) // Wait for existing thread to shut down
@@ -41,8 +69,15 @@ namespace ChummerHub.Client.Backend
             {
                 // Swallow and continue
             }
-            _objCancellationTokenSource = new CancellationTokenSource();
-            _objRunningTask = Task.Run(RunChummerFilePipeThread, _objCancellationTokenSource.Token);
+            catch
+            {
+                Interlocked.CompareExchange(ref _objCancellationTokenSource, null, objNewSource);
+                objNewSource.Dispose();
+                throw;
+            }
+
+            CancellationToken objToken = objNewSource.Token;
+            _objRunningTask = Task.Run(() => RunChummerFilePipeThread(objToken), objToken);
         }
 
         /// <summary>
@@ -54,11 +89,19 @@ namespace ChummerHub.Client.Backend
         /// <summary>
         /// Shuts down the pipe server
         /// </summary>
-        public void StopServer()
+        public void StopServer(bool blnSendExitToPipeServer)
         {
-            _objCancellationTokenSource?.Cancel(false);
-            Log.Trace("Sending Exit to PipeServer...");
-            Write(EXIT_STRING);
+            CancellationTokenSource objTemp = Interlocked.Exchange(ref _objCancellationTokenSource, null);
+            if (objTemp?.IsCancellationRequested == false)
+            {
+                if (blnSendExitToPipeServer)
+                {
+                    Log.Trace("Sending Exit to PipeServer...");
+                    Write(EXIT_STRING);
+                }
+                objTemp.Cancel(false);
+                objTemp.Dispose();
+            }
         }
 
         /// <summary>
@@ -112,7 +155,7 @@ namespace ChummerHub.Client.Backend
             return true;
         }
 
-        private async Task RunChummerFilePipeThread()
+        private async Task RunChummerFilePipeThread(CancellationToken token = default)
         {
             if (!(NamedPipeName is string pipeNameString))
                 throw new ArgumentNullException(nameof(NamedPipeName));
@@ -121,8 +164,9 @@ namespace ChummerHub.Client.Backend
             PipeAccessRule par = new PipeAccessRule(sid, PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow);
             //PipeAccessRule psRule = new PipeAccessRule(@"Everyone", PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow);
             ps.AddAccessRule(par);
-            while (!_objCancellationTokenSource.IsCancellationRequested)
+            while (true)
             {
+                token.ThrowIfCancellationRequested();
                 try
                 {
                     string text;
@@ -131,7 +175,9 @@ namespace ChummerHub.Client.Backend
                         PipeTransmissionMode.Message, PipeOptions.None,
                         4028, 4028, ps))
                     {
-                        await server.WaitForConnectionAsync();
+                        await server.WaitForConnectionAsync(token);
+
+                        token.ThrowIfCancellationRequested();
 
                         using (StreamReader reader = new StreamReader(server))
                         {
@@ -140,19 +186,21 @@ namespace ChummerHub.Client.Backend
                     }
 
                     if (text == EXIT_STRING)
-                        break;
+                        return;
+
+                    token.ThrowIfCancellationRequested();
 
                     OnReceiveString(text);
                 }
                 catch (IOException e)
                 {
                     Log.Warn(e);
-                    await Chummer.Utils.SafeSleepAsync();
+                    await Chummer.Utils.SafeSleepAsync(token);
                 }
                 catch (Exception e)
                 {
                     Log.Error(e);
-                    await Chummer.Utils.SafeSleepAsync();
+                    await Chummer.Utils.SafeSleepAsync(token);
                 }
             }
         }
@@ -161,7 +209,7 @@ namespace ChummerHub.Client.Backend
         {
             if (disposing)
             {
-                _objCancellationTokenSource?.Dispose();
+                StopServer(false);
             }
         }
 

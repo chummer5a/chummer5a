@@ -1,3 +1,21 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using ChummerHub.Data;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
@@ -15,6 +33,9 @@ using System.Threading.Tasks;
 using System.Text;
 using ChummerHub.Models.V1;
 using Newtonsoft.Json;
+using ChummerHub.API;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authentication.Cookies;
 
 namespace ChummerHub.Controllers.V1
 {
@@ -23,22 +44,16 @@ namespace ChummerHub.Controllers.V1
     [EnableCors("AllowOrigin")]
     [ApiVersion("1.0")]
     [ControllerName("Chummer")]
-    [AllowAnonymous]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ChummerController'
+    [Authorize(Roles = API.Authorization.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
     public class ChummerController : Controller
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ChummerController'
     {
         private readonly ILogger _logger;
         private readonly TelemetryClient tc;
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ChummerController._context'
         public ApplicationDbContext _context;
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ChummerController._context'
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ChummerController.ChummerController(ApplicationDbContext, ILogger<ChummerController>, SignInManager<ApplicationUser>, UserManager<ApplicationUser>, TelemetryClient)'
         public ChummerController(ApplicationDbContext context,
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ChummerController.ChummerController(ApplicationDbContext, ILogger<ChummerController>, SignInManager<ApplicationUser>, UserManager<ApplicationUser>, TelemetryClient)'
             ILogger<ChummerController> logger,
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
@@ -59,9 +74,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)(HttpStatusCode.PermanentRedirect))]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("ChummerO")]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ChummerController.O(string)'
         public IActionResult O([FromRoute] string Hash, string open)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ChummerController.O(string)'
         {
             try
             {
@@ -145,9 +158,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)(HttpStatusCode.PermanentRedirect))]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GroupO")]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ChummerController.O(string)'
         public IActionResult G([FromRoute] string Hash, string open)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ChummerController.O(string)'
         {
             try
             {
@@ -237,9 +248,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Redirect)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("ChummerOpen")]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ChummerController.Open(string)'
         public async Task<ActionResult> Open([FromRoute] string Hash)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ChummerController.Open(string)'
         {
             try
             {

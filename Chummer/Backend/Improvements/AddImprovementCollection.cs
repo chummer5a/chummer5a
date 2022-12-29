@@ -35,7 +35,8 @@ namespace Chummer
 {
     public class AddImprovementCollection
     {
-        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
         private readonly Character _objCharacter;
 
         public AddImprovementCollection(Character character, Improvement.ImprovementSource objImprovementSource, string sourceName, string strUnique, string forcedValue, string limitSelection, string selectedValue, string strFriendlyName, int intRating)
@@ -62,28 +63,68 @@ namespace Chummer
         private readonly string _strFriendlyName;
         private readonly int _intRating;
 
-        private void CreateImprovement(string strImprovedName, Improvement.ImprovementSource objImprovementSource,
+        /// <summary>
+        /// Create a new Improvement and add it to the Character.
+        /// </summary>
+        /// <param name="strImprovedName">Specific name of the Improved object - typically the name of an CharacterAttribute being improved.</param>
+        /// <param name="objImprovementSource">Type of object that grants this Improvement.</param>
+        /// <param name="strSourceName">Name of the item that grants this Improvement.</param>
+        /// <param name="objImprovementType">Type of object the Improvement applies to.</param>
+        /// <param name="strUnique">Name of the pool this Improvement should be added to - only the single highest value in the pool will be applied to the character.</param>
+        /// <param name="decValue">Set a Value for the Improvement.</param>
+        /// <param name="intRating">Set a Rating for the Improvement - typically used for Adept Powers.</param>
+        /// <param name="intMinimum">Improve the Minimum for an CharacterAttribute by the given amount.</param>
+        /// <param name="intMaximum">Improve the Maximum for an CharacterAttribute by the given amount.</param>
+        /// <param name="decAugmented">Improve the Augmented value for an CharacterAttribute by the given amount.</param>
+        /// <param name="intAugmentedMaximum">Improve the Augmented Maximum value for an CharacterAttribute by the given amount.</param>
+        /// <param name="strExclude">A list of child items that should not receive the Improvement's benefit (typically for Skill Groups).</param>
+        /// <param name="blnAddToRating">Whether or not the bonus applies to a Skill's Rating instead of the dice pool in general.</param>
+        /// <param name="strTarget">What target the Improvement has, if any (e.g. a target skill whose attribute to replace).</param>
+        /// <param name="strCondition">Condition for when the bonus is applied.</param>
+        private Improvement CreateImprovement(string strImprovedName, Improvement.ImprovementSource objImprovementSource,
             string strSourceName, Improvement.ImprovementType objImprovementType, string strUnique,
             decimal decValue = 0, int intRating = 1, int intMinimum = 0, int intMaximum = 0, decimal decAugmented = 0,
             int intAugmentedMaximum = 0, string strExclude = "", bool blnAddToRating = false, string strTarget = "", string strCondition = "")
         {
-            ImprovementManager.CreateImprovement(_objCharacter, strImprovedName, objImprovementSource,
+            return ImprovementManager.CreateImprovement(_objCharacter, strImprovedName, objImprovementSource,
                 strSourceName, objImprovementType, strUnique,
                 decValue, intRating, intMinimum, intMaximum, decAugmented,
                 intAugmentedMaximum, strExclude, blnAddToRating, strTarget, strCondition);
         }
 
-        private void CreateImprovement(string selectedValue, Improvement.ImprovementType improvementType)
+        /// <summary>
+        /// CreateImprovement overload method that takes only ImprovedName and ImprovementType, using default properties otherwise.
+        /// </summary>
+        /// <param name="selectedValue">Specific name of the Improved object - typically the name of an CharacterAttribute being improved.</param>
+        /// <param name="improvementType">Type of object the Improvement applies to.</param>
+        /// <returns></returns>
+        private Improvement CreateImprovement(string selectedValue, Improvement.ImprovementType improvementType)
         {
             if (string.IsNullOrEmpty(SelectedValue))
                 SelectedValue = selectedValue;
             else
                 SelectedValue += ", " + selectedValue;
-            CreateImprovement(selectedValue, _objImprovementSource, SourceName, improvementType, _strUnique);
+            return CreateImprovement(selectedValue, _objImprovementSource, SourceName, improvementType, _strUnique);
+        }
+
+        /// <summary>
+        /// CreateImprovement overload method that takes only ImprovedName, Target and ImprovementType, using default properties otherwise.
+        /// </summary>
+        /// <param name="strImprovementName">Specific name of the Improved object - typically the name of an CharacterAttribute being improved.</param>
+        /// <param name="strTarget">What target the Improvement has, if any (e.g. a target skill whose attribute to replace).</param>
+        /// <param name="improvementType">Type of object the Improvement applies to.</param>
+        /// <returns></returns>
+        private Improvement CreateImprovement(string strImprovementName, string strTarget,
+            Improvement.ImprovementType improvementType)
+        {
+            return CreateImprovement(strImprovementName, _objImprovementSource, SourceName, improvementType, _strUnique,
+                0, 1, 0, 0, 0, 0, string.Empty, false, strTarget);
         }
 
         #region Improvement Methods
+
 #pragma warning disable IDE1006 // Naming Styles
+
         public void qualitylevel(XmlNode bonusNode)
         {
             if (bonusNode == null)
@@ -284,11 +325,13 @@ namespace Chummer
                         "enableattribute", 0, 0);
                     _objCharacter.MAGEnabled = true;
                     break;
+
                 case "RES":
                     CreateImprovement("RES", _objImprovementSource, SourceName, Improvement.ImprovementType.Attribute,
                         "enableattribute", 0, 0);
                     _objCharacter.RESEnabled = true;
                     break;
+
                 case "DEP":
                     CreateImprovement("DEP", _objImprovementSource, SourceName, Improvement.ImprovementType.Attribute,
                         "enableattribute", 0, 0);
@@ -318,16 +361,14 @@ namespace Chummer
                         // Extract the modifiers.
                         int intMin = 0;
                         int intMax = 0;
-                        int intAug = 0;
                         int intAugMax = 0;
                         objXmlAttribute.TryGetInt32FieldQuickly("min", ref intMin);
                         objXmlAttribute.TryGetInt32FieldQuickly("max", ref intMax);
-                        objXmlAttribute.TryGetInt32FieldQuickly("val", ref intAug);
                         objXmlAttribute.TryGetInt32FieldQuickly("aug", ref intAugMax);
-                        
+
                         CreateImprovement(strAttribute, _objImprovementSource, SourceName,
                             Improvement.ImprovementType.ReplaceAttribute,
-                            _strUnique, 0, 1, intMin, intMax, intAug, intAugMax);
+                            _strUnique, 0, 1, intMin, intMax, 0, intAugMax);
                     }
                     else
                     {
@@ -342,7 +383,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            
+
             using (XmlNodeList xmlEnableList = bonusNode.SelectNodes("name"))
             {
                 if (xmlEnableList?.Count > 0)
@@ -353,32 +394,36 @@ namespace Chummer
                         {
                             case "magician":
                                 _objCharacter.MagicianEnabled = true;
-                                Log.Trace("enabletab " + " magician");
+                                Log.Trace("enabletab magician");
                                 CreateImprovement("Magician", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "enabletab", 0, 0);
                                 break;
+
                             case "adept":
                                 _objCharacter.AdeptEnabled = true;
-                                Log.Trace("enabletab " + " adept");
+                                Log.Trace("enabletab adept");
                                 CreateImprovement("Adept", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "enabletab",
                                     0, 0);
                                 break;
+
                             case "technomancer":
                                 _objCharacter.TechnomancerEnabled = true;
-                                Log.Trace("enabletab " + " technomancer");
+                                Log.Trace("enabletab technomancer");
                                 CreateImprovement("Technomancer", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "enabletab", 0, 0);
                                 break;
+
                             case "advanced programs":
                                 _objCharacter.AdvancedProgramsEnabled = true;
-                                Log.Trace("enabletab " + " advanced programs");
+                                Log.Trace("enabletab advanced programs");
                                 CreateImprovement("Advanced Programs", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "enabletab", 0, 0);
                                 break;
+
                             case "critter":
                                 _objCharacter.CritterEnabled = true;
-                                Log.Trace("enabletab " + " critter");
+                                Log.Trace("enabletab critter");
                                 CreateImprovement("Critter", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "enabletab", 0, 0);
                                 break;
@@ -403,13 +448,14 @@ namespace Chummer
                         {
                             case "cyberware":
                                 _objCharacter.CyberwareDisabled = true;
-                                Log.Trace("disabletab" + " cyberware");
+                                Log.Trace("disabletab cyberware");
                                 CreateImprovement("Cyberware", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "disabletab", 0, 0);
                                 break;
+
                             case "initiation":
                                 _objCharacter.InitiationForceDisabled = true;
-                                Log.Trace("disabletab" + " initiation");
+                                Log.Trace("disabletab initiation");
                                 CreateImprovement("Initiation", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "disabletab", 0, 0);
                                 break;
@@ -431,22 +477,21 @@ namespace Chummer
             }
             else
             {
-                using (SelectItem frmPickItem = new SelectItem())
+                using (ThreadSafeForm<SelectItem> frmPickItem = ThreadSafeForm<SelectItem>.Get(() => new SelectItem()))
                 {
-                    frmPickItem.SetRestrictedMode(_objCharacter);
+                    frmPickItem.MyForm.SetRestrictedMode(_objCharacter);
                     if (!string.IsNullOrEmpty(ForcedValue))
-                        frmPickItem.ForceItem(ForcedValue);
+                        frmPickItem.MyForm.ForceItem(ForcedValue);
 
-                    frmPickItem.AllowAutoSelect = !string.IsNullOrEmpty(ForcedValue);
-                    frmPickItem.ShowDialogSafe(_objCharacter);
+                    frmPickItem.MyForm.AllowAutoSelect = !string.IsNullOrEmpty(ForcedValue);
 
                     // Make sure the dialogue window was not canceled.
-                    if (frmPickItem.DialogResult == DialogResult.Cancel)
+                    if (frmPickItem.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                     {
                         throw new AbortedException();
                     }
 
-                    SelectedValue = frmPickItem.SelectedName;
+                    SelectedValue = frmPickItem.MyForm.SelectedName;
                 }
             }
 
@@ -492,26 +537,25 @@ namespace Chummer
                         lstTraditions.Sort(CompareListItems.CompareNames);
                     }
 
-                    using (SelectItem frmPickItem = new SelectItem
-                           {
-                               SelectedItem = _objCharacter.MagicTradition.SourceIDString,
-                               AllowAutoSelect = false
-                           })
+                    using (ThreadSafeForm<SelectItem> frmPickItem = ThreadSafeForm<SelectItem>.Get(() => new SelectItem
                     {
-                        frmPickItem.SetDropdownItemsMode(lstTraditions);
-                        frmPickItem.ShowDialogSafe(_objCharacter);
+                        SelectedItem = _objCharacter.MagicTradition.SourceIDString,
+                        AllowAutoSelect = false
+                    }))
+                    {
+                        frmPickItem.MyForm.SetDropdownItemsMode(lstTraditions);
 
                         // Make sure the dialogue window was not canceled.
-                        if (frmPickItem.DialogResult == DialogResult.Cancel)
+                        if (frmPickItem.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                         {
                             throw new AbortedException();
                         }
 
-                        SelectedValue = frmPickItem.SelectedName;
+                        SelectedValue = frmPickItem.MyForm.SelectedName;
                     }
                 }
             }
-            
+
             // Create the Improvement.
             CreateImprovement(SelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.Tradition,
                 _strUnique);
@@ -533,6 +577,16 @@ namespace Chummer
             }
         }
 
+        public void blockskillcategorydefaulting(XmlNode bonusNode)
+        {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+            Log.Trace("blockskillcategorydefaulting");
+            // Expected values are either a Skill Name or an empty string.
+            CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName,
+                              Improvement.ImprovementType.BlockSkillCategoryDefault, _strUnique);
+        }
+
         public void blockskillgroupdefaulting(XmlNode bonusNode)
         {
             if (bonusNode == null)
@@ -543,41 +597,62 @@ namespace Chummer
                 + "_strLimitSelection = " + LimitSelection + Environment.NewLine
                 );
 
-            string strExclude = string.Empty;
-            if (bonusNode.Attributes?["excludecategory"] != null)
-                strExclude = bonusNode.Attributes["excludecategory"].InnerText;
-
-            using (SelectSkillGroup frmPickSkillGroup = new SelectSkillGroup(_objCharacter)
+            string strExclude = bonusNode.Attributes?["excludecategory"]?.InnerText ?? string.Empty;
+            string strSelect = bonusNode.InnerText;
+            if (string.IsNullOrEmpty(strSelect))
             {
-                Description = !string.IsNullOrEmpty(_strFriendlyName)
-                    ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectSkillGroupName"), _strFriendlyName)
-                    : LanguageManager.GetString("String_Improvement_SelectSkillGroup")
-            })
-            {
-               
-
-                if (!string.IsNullOrEmpty(ForcedValue))
+                using (ThreadSafeForm<SelectSkillGroup> frmPickSkillGroup = ThreadSafeForm<SelectSkillGroup>.Get(
+                           () => new SelectSkillGroup(_objCharacter)
+                           {
+                               Description = !string.IsNullOrEmpty(_strFriendlyName)
+                                   ? string.Format(GlobalSettings.CultureInfo,
+                                                   LanguageManager.GetString("String_Improvement_SelectSkillGroupName"),
+                                                   _strFriendlyName)
+                                   : LanguageManager.GetString("String_Improvement_SelectSkillGroup")
+                           }))
                 {
-                    frmPickSkillGroup.OnlyGroup = ForcedValue;
-                    frmPickSkillGroup.Opacity = 0;
+                    if (!string.IsNullOrEmpty(ForcedValue))
+                    {
+                        frmPickSkillGroup.MyForm.OnlyGroup = ForcedValue;
+                        frmPickSkillGroup.MyForm.Opacity = 0;
+                    }
+
+                    if (!string.IsNullOrEmpty(strExclude))
+                        frmPickSkillGroup.MyForm.ExcludeCategory = strExclude;
+
+                    // Make sure the dialogue window was not canceled.
+                    if (frmPickSkillGroup.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
+                    {
+                        throw new AbortedException();
+                    }
+
+                    strSelect = frmPickSkillGroup.MyForm.SelectedSkillGroup;
                 }
-
-                if (!string.IsNullOrEmpty(strExclude))
-                    frmPickSkillGroup.ExcludeCategory = strExclude;
-
-                frmPickSkillGroup.ShowDialogSafe(_objCharacter);
-
-                // Make sure the dialogue window was not canceled.
-                if (frmPickSkillGroup.DialogResult == DialogResult.Cancel)
-                {
-                    throw new AbortedException();
-                }
-
-                SelectedValue = frmPickSkillGroup.SelectedSkillGroup;
             }
-            
-            CreateImprovement(SelectedValue, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.BlockSkillDefault, _strUnique, 0, 0, 0, 1, 0, 0, strExclude);
+
+            SelectedValue = strSelect;
+
+            CreateImprovement(strSelect, _objImprovementSource, SourceName,
+                              Improvement.ImprovementType.BlockSkillGroupDefault, _strUnique, 0, 0, 0, 1, 0, 0, strExclude);
+        }
+
+        public void blockskilldefaulting(XmlNode bonusNode)
+        {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+            Log.Trace("blockskilldefaulting");
+            string strSelectedSkill = bonusNode.InnerText;
+            if (string.IsNullOrEmpty(strSelectedSkill))
+            {
+                string strForcedValue = ForcedValue;
+                bool blnDummy = false;
+                strSelectedSkill = string.IsNullOrEmpty(strForcedValue)
+                    ? ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, _strFriendlyName, ref blnDummy)
+                    : strForcedValue;
+            }
+            // Expected values are either a Skill Name or an empty string.
+            CreateImprovement(strSelectedSkill, _objImprovementSource, SourceName,
+                              Improvement.ImprovementType.BlockSkillDefault, _strUnique);
         }
 
         public void allowskilldefaulting(XmlNode bonusNode)
@@ -595,7 +670,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            
+
             if (ForcedValue == "+2 to a Combat Skill")
                 ForcedValue = string.Empty;
 
@@ -603,7 +678,7 @@ namespace Chummer
             Log.Trace("selectskill" + Environment.NewLine
                 + "SelectedValue = " + SelectedValue + Environment.NewLine + "ForcedValue = " + ForcedValue
                 );
-        
+
             bool blnIsKnowledgeSkill = false;
             string strSelectedSkill = ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, _strFriendlyName, ref blnIsKnowledgeSkill);
 
@@ -617,9 +692,9 @@ namespace Chummer
             // Find the selected Skill.
             if (blnIsKnowledgeSkill)
             {
-                if (_objCharacter.SkillsSection.KnowledgeSkills.Any(k => k.Name == strSelectedSkill))
+                if (_objCharacter.SkillsSection.KnowledgeSkills.Any(k => k.DictionaryKey == strSelectedSkill))
                 {
-                    foreach (string strName in _objCharacter.SkillsSection.KnowledgeSkills.Select(x => x.Name))
+                    foreach (string strName in _objCharacter.SkillsSection.KnowledgeSkills.Select(x => x.DictionaryKey))
                     {
                         if (strName != strSelectedSkill)
                             continue;
@@ -658,7 +733,7 @@ namespace Chummer
                     // We've found the selected Skill.
                     if (!string.IsNullOrEmpty(strVal))
                     {
-                        CreateImprovement(objKnowledgeSkill.Name, _objImprovementSource, SourceName,
+                        CreateImprovement(objKnowledgeSkill.DictionaryKey, _objImprovementSource, SourceName,
                             Improvement.ImprovementType.Skill,
                             _strUnique,
                             ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating), 1, 0, 0, 0, 0, string.Empty,
@@ -667,14 +742,14 @@ namespace Chummer
 
                     if (blnDisableSpec)
                     {
-                        CreateImprovement(objKnowledgeSkill.Name, _objImprovementSource, SourceName,
+                        CreateImprovement(objKnowledgeSkill.DictionaryKey, _objImprovementSource, SourceName,
                             Improvement.ImprovementType.DisableSpecializationEffects,
                             _strUnique);
                     }
 
                     if (!string.IsNullOrEmpty(strMax))
                     {
-                        CreateImprovement(objKnowledgeSkill.Name, _objImprovementSource, SourceName,
+                        CreateImprovement(objKnowledgeSkill.DictionaryKey, _objImprovementSource, SourceName,
                             Improvement.ImprovementType.Skill,
                             _strUnique,
                             0, 1, 0, ImprovementManager.ValueToInt(_objCharacter, strMax, _intRating), 0, 0, string.Empty,
@@ -682,12 +757,13 @@ namespace Chummer
                     }
                 }
             }
-            else if (ExoticSkill.IsExoticSkillName(strSelectedSkill))
+            else if (ExoticSkill.IsExoticSkillName(_objCharacter, strSelectedSkill))
             {
                 if (!string.IsNullOrEmpty(strVal))
                 {
                     // Make sure we have the exotic skill in the list if we're altering any values
-                    if (_objCharacter.SkillsSection.Skills.All(s => s.DictionaryKey != strSelectedSkill || !s.IsExoticSkill))
+                    Skill objExistingSkill = _objCharacter.SkillsSection.GetActiveSkill(strSelectedSkill);
+                    if (objExistingSkill?.IsExoticSkill != true)
                     {
                         string strSkillName = strSelectedSkill;
                         int intParenthesesIndex = strSkillName.IndexOf(" (", StringComparison.OrdinalIgnoreCase);
@@ -724,36 +800,31 @@ namespace Chummer
             }
             else
             {
-                foreach (string strName in _objCharacter.SkillsSection.Skills.Select(x => x.Name))
+                // Add in improvements even if we have matching skill in case the matching skill gets added later.
+                if (!string.IsNullOrEmpty(strVal))
                 {
-                    if (strName != strSelectedSkill)
-                        continue;
-                    // We've found the selected Skill.
-                    if (!string.IsNullOrEmpty(strVal))
-                    {
-                        CreateImprovement(strName, _objImprovementSource, SourceName,
-                                          Improvement.ImprovementType.Skill,
-                                          _strUnique,
-                                          ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating), 1, 0, 0, 0, 0,
-                                          string.Empty,
-                                          blnAddToRating);
-                    }
+                    CreateImprovement(strSelectedSkill, _objImprovementSource, SourceName,
+                                      Improvement.ImprovementType.Skill,
+                                      _strUnique,
+                                      ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating), 1, 0, 0, 0, 0,
+                                      string.Empty,
+                                      blnAddToRating);
+                }
 
-                    if (blnDisableSpec)
-                    {
-                        CreateImprovement(strName, _objImprovementSource, SourceName,
-                                          Improvement.ImprovementType.DisableSpecializationEffects,
-                                          _strUnique);
-                    }
+                if (blnDisableSpec)
+                {
+                    CreateImprovement(strSelectedSkill, _objImprovementSource, SourceName,
+                                      Improvement.ImprovementType.DisableSpecializationEffects,
+                                      _strUnique);
+                }
 
-                    if (!string.IsNullOrEmpty(strMax))
-                    {
-                        CreateImprovement(strName, _objImprovementSource, SourceName,
-                                          Improvement.ImprovementType.Skill,
-                                          _strUnique,
-                                          0, 1, 0, ImprovementManager.ValueToInt(_objCharacter, strMax, _intRating), 0, 0, string.Empty,
-                                          blnAddToRating);
-                    }
+                if (!string.IsNullOrEmpty(strMax))
+                {
+                    CreateImprovement(strSelectedSkill, _objImprovementSource, SourceName,
+                                      Improvement.ImprovementType.Skill,
+                                      _strUnique,
+                                      0, 1, 0, ImprovementManager.ValueToInt(_objCharacter, strMax, _intRating), 0, 0, string.Empty,
+                                      blnAddToRating);
                 }
             }
         }
@@ -768,39 +839,38 @@ namespace Chummer
                 + "ForcedValue = " + ForcedValue + Environment.NewLine
                 + "LimitSelection = " + LimitSelection
                 );
-           
+
             string strExclude = string.Empty;
             if (bonusNode.Attributes?["excludecategory"] != null)
                 strExclude = bonusNode.Attributes["excludecategory"].InnerText;
 
-            SelectSkillGroup frmPickSkillGroup = new SelectSkillGroup(_objCharacter)
+            using (ThreadSafeForm<SelectSkillGroup> frmPickSkillGroup = ThreadSafeForm<SelectSkillGroup>.Get(() => new SelectSkillGroup(_objCharacter)
             {
                 Description = !string.IsNullOrEmpty(_strFriendlyName)
-                    ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectSkillGroupName"), _strFriendlyName)
-                    : LanguageManager.GetString("String_Improvement_SelectSkillGroup")
-            };
-            
-
-            if (!string.IsNullOrEmpty(ForcedValue))
+                           ? string.Format(GlobalSettings.CultureInfo,
+                               LanguageManager.GetString("String_Improvement_SelectSkillGroupName"), _strFriendlyName)
+                           : LanguageManager.GetString("String_Improvement_SelectSkillGroup")
+            }))
             {
-                frmPickSkillGroup.OnlyGroup = ForcedValue;
-                frmPickSkillGroup.Opacity = 0;
-            }
+                if (!string.IsNullOrEmpty(ForcedValue))
+                {
+                    frmPickSkillGroup.MyForm.OnlyGroup = ForcedValue;
+                    frmPickSkillGroup.MyForm.Opacity = 0;
+                }
 
-            if (!string.IsNullOrEmpty(strExclude))
-                frmPickSkillGroup.ExcludeCategory = strExclude;
+                if (!string.IsNullOrEmpty(strExclude))
+                    frmPickSkillGroup.MyForm.ExcludeCategory = strExclude;
 
-            frmPickSkillGroup.ShowDialogSafe(_objCharacter);
+                // Make sure the dialogue window was not canceled.
+                if (frmPickSkillGroup.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
+                {
+                    throw new AbortedException();
+                }
 
-            // Make sure the dialogue window was not canceled.
-            if (frmPickSkillGroup.DialogResult == DialogResult.Cancel)
-            {
-                throw new AbortedException();
+                SelectedValue = frmPickSkillGroup.MyForm.SelectedSkillGroup;
             }
 
             bool blnAddToRating = bonusNode["applytorating"]?.InnerText == bool.TrueString;
-
-            SelectedValue = frmPickSkillGroup.SelectedSkillGroup;
 
             string strBonus = bonusNode["bonus"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
@@ -831,22 +901,26 @@ namespace Chummer
                     {
                         string trace = "selectattribute" + Environment.NewLine
                             + "selectattribute = " + objXmlAttribute.OuterXml + Environment.NewLine;
-                       
+
                         List<string> lstAbbrevs = new List<string>(xmlSelectAttributeList.Count);
-                        XmlNodeList xmlAttributeList = objXmlAttribute.SelectNodes("attribute");
-                        if (xmlAttributeList?.Count > 0)
+                        using (XmlNodeList xmlAttributeList = objXmlAttribute.SelectNodes("attribute"))
                         {
-                            foreach (XmlNode objSubNode in xmlAttributeList)
-                                lstAbbrevs.Add(objSubNode.InnerText);
-                        }
-                        else
-                        {
-                            lstAbbrevs.AddRange(AttributeSection.AttributeStrings);
-                            xmlAttributeList = objXmlAttribute.SelectNodes("excludeattribute");
                             if (xmlAttributeList?.Count > 0)
                             {
                                 foreach (XmlNode objSubNode in xmlAttributeList)
-                                    lstAbbrevs.Remove(objSubNode.InnerText);
+                                    lstAbbrevs.Add(objSubNode.InnerText);
+                            }
+                            else
+                            {
+                                lstAbbrevs.AddRange(AttributeSection.AttributeStrings);
+                                using (XmlNodeList xmlAttributeList2 = objXmlAttribute.SelectNodes("excludeattribute"))
+                                {
+                                    if (xmlAttributeList2?.Count > 0)
+                                    {
+                                        foreach (XmlNode objSubNode in xmlAttributeList2)
+                                            lstAbbrevs.Remove(objSubNode.InnerText);
+                                    }
+                                }
                             }
                         }
 
@@ -878,54 +952,79 @@ namespace Chummer
                         }
 
                         // Display the Select Attribute window and record which Skill was selected.
-                        using (SelectAttribute frmPickAttribute = new SelectAttribute(lstAbbrevs.ToArray())
+                        string strSelected;
+                        switch (lstAbbrevs.Count)
                         {
-                            Description = !string.IsNullOrEmpty(_strFriendlyName)
-                                ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectAttributeNamed"), _strFriendlyName)
-                                : LanguageManager.GetString("String_Improvement_SelectAttribute")
-                        })
-                        {
-                            frmPickAttribute.ShowDialogSafe(_objCharacter);
-
-                            // Make sure the dialogue window was not canceled.
-                            if (frmPickAttribute.DialogResult == DialogResult.Cancel)
-                            {
+                            case 0:
                                 throw new AbortedException();
+                            case 1:
+                                strSelected = lstAbbrevs[0];
+                                break;
+
+                            default:
+                            {
+                                using (ThreadSafeForm<SelectAttribute> frmPickAttribute
+                                       = ThreadSafeForm<SelectAttribute>.Get(
+                                           () => new SelectAttribute(lstAbbrevs.ToArray())
+                                           {
+                                               Description = !string.IsNullOrEmpty(_strFriendlyName)
+                                                   ? string.Format(GlobalSettings.CultureInfo,
+                                                                   LanguageManager.GetString(
+                                                                       "String_Improvement_SelectAttributeNamed"),
+                                                                   _strFriendlyName)
+                                                   : LanguageManager.GetString("String_Improvement_SelectAttribute")
+                                           }))
+                                {
+                                    // Make sure the dialogue window was not canceled.
+                                    if (frmPickAttribute.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
+                                    {
+                                        throw new AbortedException();
+                                    }
+
+                                    strSelected = frmPickAttribute.MyForm.SelectedAttribute;
+
+                                    break;
+                                }
                             }
-
-                            if (blnSingleSelected && selectedValues.Count > 0 && !selectedValues.Contains(frmPickAttribute.SelectedAttribute))
-                                blnSingleSelected = false;
-                            selectedValues.Add(frmPickAttribute.SelectedAttribute);
-
-                            // Record the improvement.
-                            int intMin = 0;
-                            int intAug = 0;
-                            int intMax = 0;
-                            int intAugMax = 0;
-
-                            // Extract the modifiers.
-                            string strTemp = objXmlAttribute["min"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strTemp))
-                                int.TryParse(strTemp, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intMin);
-                            strTemp = objXmlAttribute["val"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strTemp))
-                                int.TryParse(strTemp, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intAug);
-                            strTemp = objXmlAttribute["max"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strTemp))
-                                int.TryParse(strTemp, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intMax);
-                            strTemp = objXmlAttribute["aug"]?.InnerText;
-                            if (!string.IsNullOrEmpty(strTemp))
-                                int.TryParse(strTemp, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intAugMax);
-
-                            string strAttribute = frmPickAttribute.SelectedAttribute;
-
-                            if (objXmlAttribute["affectbase"] != null)
-                                strAttribute += "Base";
-                            
-                            CreateImprovement(strAttribute, _objImprovementSource, SourceName, Improvement.ImprovementType.Attribute,
-                                _strUnique,
-                                0, 1, intMin, intMax, intAug, intAugMax);
                         }
+
+                        if (blnSingleSelected && selectedValues.Count > 0 && !selectedValues.Contains(strSelected))
+                            blnSingleSelected = false;
+                        selectedValues.Add(strSelected);
+
+                        // Record the improvement.
+                        int intMin = 0;
+                        int intAug = 0;
+                        int intMax = 0;
+                        int intAugMax = 0;
+
+                        // Extract the modifiers.
+                        string strTemp = objXmlAttribute["min"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strTemp))
+                            int.TryParse(strTemp, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                                         out intMin);
+                        strTemp = objXmlAttribute["val"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strTemp))
+                            int.TryParse(strTemp, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                                         out intAug);
+                        strTemp = objXmlAttribute["max"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strTemp))
+                            int.TryParse(strTemp, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                                         out intMax);
+                        strTemp = objXmlAttribute["aug"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strTemp))
+                            int.TryParse(strTemp, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                                         out intAugMax);
+
+                        string strAttribute = strSelected;
+
+                        if (objXmlAttribute["affectbase"] != null)
+                            strAttribute += "Base";
+
+                        CreateImprovement(strAttribute, _objImprovementSource, SourceName,
+                                          Improvement.ImprovementType.Attribute,
+                                          _strUnique,
+                                          0, 1, intMin, intMax, intAug, intAugMax);
                     }
                 }
             }
@@ -963,22 +1062,26 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-           
+
             List<string> lstAbbrevs = new List<string>(AttributeSection.AttributeStrings.Count);
-            XmlNodeList xmlAttributeList = bonusNode.SelectNodes("attribute");
-            if (xmlAttributeList?.Count > 0)
+            using (XmlNodeList xmlAttributeList = bonusNode.SelectNodes("attribute"))
             {
-                foreach (XmlNode objSubNode in xmlAttributeList)
-                    lstAbbrevs.Add(objSubNode.InnerText);
-            }
-            else
-            {
-                lstAbbrevs.AddRange(AttributeSection.AttributeStrings);
-                xmlAttributeList = bonusNode.SelectNodes("excludeattribute");
                 if (xmlAttributeList?.Count > 0)
                 {
                     foreach (XmlNode objSubNode in xmlAttributeList)
-                        lstAbbrevs.Remove(objSubNode.InnerText);
+                        lstAbbrevs.Add(objSubNode.InnerText);
+                }
+                else
+                {
+                    lstAbbrevs.AddRange(AttributeSection.AttributeStrings);
+                    using (XmlNodeList xmlAttributeList2 = bonusNode.SelectNodes("excludeattribute"))
+                    {
+                        if (xmlAttributeList2?.Count > 0)
+                        {
+                            foreach (XmlNode objSubNode in xmlAttributeList2)
+                                lstAbbrevs.Remove(objSubNode.InnerText);
+                        }
+                    }
                 }
             }
 
@@ -1011,56 +1114,74 @@ namespace Chummer
                 lstAbbrevs.RemoveAll(x => x != LimitSelection);
             }
 
-            // Display the Select Attribute window and record which Skill was selected.
-            using (SelectAttribute frmPickAttribute = new SelectAttribute(lstAbbrevs.ToArray())
+            string strSelected;
+            switch (lstAbbrevs.Count)
             {
-                Description = !string.IsNullOrEmpty(_strFriendlyName)
-                    ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectAttributeNamed"), _strFriendlyName)
-                    : LanguageManager.GetString("String_Improvement_SelectAttribute")
-            })
-            {
-                trace += Environment.NewLine + "selectattribute = " + bonusNode.OuterXml;
-                Log.Trace(trace);
-
-                frmPickAttribute.ShowDialogSafe(_objCharacter);
-
-                // Make sure the dialogue window was not canceled.
-                if (frmPickAttribute.DialogResult == DialogResult.Cancel)
-                {
+                case 0:
                     throw new AbortedException();
+                case 1:
+                    strSelected = lstAbbrevs[0];
+                    break;
+
+                default:
+                {
+                    // Display the Select Attribute window and record which Skill was selected.
+                    using (ThreadSafeForm<SelectAttribute> frmPickAttribute = ThreadSafeForm<SelectAttribute>.Get(
+                               () => new SelectAttribute(lstAbbrevs.ToArray())
+                               {
+                                   Description = !string.IsNullOrEmpty(_strFriendlyName)
+                                       ? string.Format(GlobalSettings.CultureInfo,
+                                                       LanguageManager.GetString("String_Improvement_SelectAttributeNamed"),
+                                                       _strFriendlyName)
+                                       : LanguageManager.GetString("String_Improvement_SelectAttribute")
+                               }))
+                    {
+                        trace += Environment.NewLine + "selectattribute = " + bonusNode.OuterXml;
+                        Log.Trace(trace);
+
+                        // Make sure the dialogue window was not canceled.
+                        if (frmPickAttribute.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
+                        {
+                            throw new AbortedException();
+                        }
+
+                        strSelected = frmPickAttribute.MyForm.SelectedAttribute;
+                    }
+
+                    break;
                 }
-
-                SelectedValue = frmPickAttribute.SelectedAttribute;
-
-                // Record the improvement.
-                int intMin = 0;
-                decimal decAug = 0;
-                int intMax = 0;
-                int intAugMax = 0;
-
-                // Extract the modifiers.
-                string strTemp = bonusNode["min"]?.InnerXml;
-                if (!string.IsNullOrEmpty(strTemp))
-                    intMin = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
-                strTemp = bonusNode["val"]?.InnerXml;
-                if (!string.IsNullOrEmpty(strTemp))
-                    decAug = ImprovementManager.ValueToDec(_objCharacter, strTemp, _intRating);
-                strTemp = bonusNode["max"]?.InnerXml;
-                if (!string.IsNullOrEmpty(strTemp))
-                    intMax = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
-                strTemp = bonusNode["aug"]?.InnerXml;
-                if (!string.IsNullOrEmpty(strTemp))
-                    intAugMax = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
-
-                string strAttribute = frmPickAttribute.SelectedAttribute;
-
-                if (bonusNode["affectbase"] != null)
-                    strAttribute += "Base";
-                
-                CreateImprovement(strAttribute, _objImprovementSource, SourceName, Improvement.ImprovementType.Attribute,
-                    _strUnique,
-                    0, 1, intMin, intMax, decAug, intAugMax);
             }
+
+            SelectedValue = strSelected;
+
+            // Record the improvement.
+            int intMin = 0;
+            decimal decAug = 0;
+            int intMax = 0;
+            int intAugMax = 0;
+
+            // Extract the modifiers.
+            string strTemp = bonusNode["min"]?.InnerXml;
+            if (!string.IsNullOrEmpty(strTemp))
+                intMin = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
+            strTemp = bonusNode["val"]?.InnerXml;
+            if (!string.IsNullOrEmpty(strTemp))
+                decAug = ImprovementManager.ValueToDec(_objCharacter, strTemp, _intRating);
+            strTemp = bonusNode["max"]?.InnerXml;
+            if (!string.IsNullOrEmpty(strTemp))
+                intMax = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
+            strTemp = bonusNode["aug"]?.InnerXml;
+            if (!string.IsNullOrEmpty(strTemp))
+                intAugMax = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
+
+            string strAttribute = strSelected;
+
+            if (bonusNode["affectbase"] != null)
+                strAttribute += "Base";
+
+            CreateImprovement(strAttribute, _objImprovementSource, SourceName, Improvement.ImprovementType.Attribute,
+                _strUnique,
+                0, 1, intMin, intMax, decAug, intAugMax);
         }
 
         // Select a Limit.
@@ -1068,7 +1189,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-          
+
             List<string> strLimits = new List<string>(4);
             using (XmlNodeList xmlDefinedLimits = bonusNode.SelectNodes("limit"))
             {
@@ -1106,24 +1227,21 @@ namespace Chummer
                 + "_strLimitSelection = " + LimitSelection + Environment.NewLine
                 );
 
-         
             if (!string.IsNullOrEmpty(LimitSelection))
             {
                 strLimits.RemoveAll(x => x != LimitSelection);
             }
 
             // Display the Select Limit window and record which Limit was selected.
-            using (SelectLimit frmPickLimit = new SelectLimit(strLimits.ToArray())
+            using (ThreadSafeForm<SelectLimit> frmPickLimit = ThreadSafeForm<SelectLimit>.Get(() => new SelectLimit(strLimits.ToArray())
             {
                 Description = !string.IsNullOrEmpty(_strFriendlyName)
                     ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectLimitNamed"), _strFriendlyName)
                     : LanguageManager.GetString("String_Improvement_SelectLimit")
-            })
+            }))
             {
-                frmPickLimit.ShowDialogSafe(_objCharacter);
-
                 // Make sure the dialogue window was not canceled.
-                if (frmPickLimit.DialogResult == DialogResult.Cancel)
+                if (frmPickLimit.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                 {
                     throw new AbortedException();
                 }
@@ -1148,7 +1266,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strTemp))
                     intAugMax = ImprovementManager.ValueToInt(_objCharacter, strTemp, _intRating);
 
-                string strLimit = frmPickLimit.SelectedLimit;
+                string strLimit = frmPickLimit.MyForm.SelectedLimit;
 
                 // string strBonus = bonusNode["value"].InnerText;
                 Improvement.ImprovementType eType;
@@ -1156,29 +1274,29 @@ namespace Chummer
                 switch (strLimit)
                 {
                     case "Mental":
-                    {
-                        eType = Improvement.ImprovementType.MentalLimit;
-                        break;
-                    }
+                        {
+                            eType = Improvement.ImprovementType.MentalLimit;
+                            break;
+                        }
                     case "Social":
-                    {
-                        eType = Improvement.ImprovementType.SocialLimit;
-                        break;
-                    }
+                        {
+                            eType = Improvement.ImprovementType.SocialLimit;
+                            break;
+                        }
                     case "Physical":
-                    {
-                        eType = Improvement.ImprovementType.SocialLimit;
-                        break;
-                    }
+                        {
+                            eType = Improvement.ImprovementType.SocialLimit;
+                            break;
+                        }
                     default:
                         throw new AbortedException();
                 }
 
-                SelectedValue = frmPickLimit.SelectedDisplayLimit;
+                SelectedValue = frmPickLimit.MyForm.SelectedDisplayLimit;
 
                 if (bonusNode["affectbase"] != null)
                     strLimit += "Base";
-                
+
                 CreateImprovement(strLimit, _objImprovementSource, SourceName, eType, _strUnique, decAug, 0, intMin,
                     intMax,
                     decAug, intAugMax);
@@ -1190,23 +1308,26 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-           
 
             List<string> lstAbbrevs = new List<string>(AttributeSection.AttributeStrings.Count);
-            XmlNodeList xmlAttributeList = bonusNode.SelectNodes("attribute");
-            if (xmlAttributeList?.Count > 0)
+            using (XmlNodeList xmlAttributeList = bonusNode.SelectNodes("attribute"))
             {
-                foreach (XmlNode objSubNode in xmlAttributeList)
-                    lstAbbrevs.Add(objSubNode.InnerText);
-            }
-            else
-            {
-                lstAbbrevs.AddRange(AttributeSection.AttributeStrings);
-                xmlAttributeList = bonusNode.SelectNodes("excludeattribute");
                 if (xmlAttributeList?.Count > 0)
                 {
                     foreach (XmlNode objSubNode in xmlAttributeList)
-                        lstAbbrevs.Remove(objSubNode.InnerText);
+                        lstAbbrevs.Add(objSubNode.InnerText);
+                }
+                else
+                {
+                    lstAbbrevs.AddRange(AttributeSection.AttributeStrings);
+                    using (XmlNodeList xmlAttributeList2 = bonusNode.SelectNodes("excludeattribute"))
+                    {
+                        if (xmlAttributeList2?.Count > 0)
+                        {
+                            foreach (XmlNode objSubNode in xmlAttributeList2)
+                                lstAbbrevs.Remove(objSubNode.InnerText);
+                        }
+                    }
                 }
             }
 
@@ -1244,22 +1365,20 @@ namespace Chummer
             else
             {
                 // Display the Select Attribute window and record which Skill was selected.
-                using (SelectAttribute frmPickAttribute = new SelectAttribute(lstAbbrevs.ToArray())
+                using (ThreadSafeForm<SelectAttribute> frmPickAttribute = ThreadSafeForm<SelectAttribute>.Get(() => new SelectAttribute(lstAbbrevs.ToArray())
                 {
                     Description = !string.IsNullOrEmpty(_strFriendlyName)
                         ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectAttributeNamed"), _strFriendlyName)
                         : LanguageManager.GetString("String_Improvement_SelectAttribute")
-                })
+                }))
                 {
-                    frmPickAttribute.ShowDialogSafe(_objCharacter);
-
                     // Make sure the dialogue window was not canceled.
-                    if (frmPickAttribute.DialogResult == DialogResult.Cancel)
+                    if (frmPickAttribute.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                     {
                         throw new AbortedException();
                     }
 
-                    SelectedValue = frmPickAttribute.SelectedAttribute;
+                    SelectedValue = frmPickAttribute.MyForm.SelectedAttribute;
                 }
             }
 
@@ -1271,52 +1390,54 @@ namespace Chummer
             else
             {
                 // Display the Select Attribute window and record which Skill was selected.
-                using (SelectSkill frmPickSkill = new SelectSkill(_objCharacter))
+                using (ThreadSafeForm<SelectSkill> frmPickSkill = ThreadSafeForm<SelectSkill>.Get(() =>
+                           new SelectSkill(_objCharacter)
+                           {
+                               Description = !string.IsNullOrEmpty(_strFriendlyName)
+                                   ? string.Format(GlobalSettings.CultureInfo,
+                                       LanguageManager.GetString("String_Improvement_SelectSkillNamed"),
+                                       _strFriendlyName)
+                                   : LanguageManager.GetString("String_Improvement_SelectSkill")
+                           }))
                 {
-                    frmPickSkill.Description = !string.IsNullOrEmpty(_strFriendlyName)
-                        ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectSkillNamed"), _strFriendlyName)
-                        : LanguageManager.GetString("String_Improvement_SelectSkill");
-
                     string strTemp = bonusNode.SelectSingleNode("skillgroup")?.InnerText;
                     if (!string.IsNullOrEmpty(strTemp))
-                        frmPickSkill.OnlySkillGroup = strTemp;
+                        frmPickSkill.MyForm.OnlySkillGroup = strTemp;
                     else
                     {
                         XmlNode xmlSkillCategories = bonusNode.SelectSingleNode("skillcategories");
                         if (xmlSkillCategories != null)
-                            frmPickSkill.LimitToCategories = xmlSkillCategories;
+                            frmPickSkill.MyForm.LimitToCategories = xmlSkillCategories;
                         else
                         {
                             strTemp = bonusNode.SelectSingleNode("skillcategory")?.InnerText;
                             if (!string.IsNullOrEmpty(strTemp))
-                                frmPickSkill.OnlyCategory = strTemp;
+                                frmPickSkill.MyForm.OnlyCategory = strTemp;
                             else
                             {
                                 strTemp = bonusNode.SelectSingleNode("excludecategory")?.InnerText;
                                 if (!string.IsNullOrEmpty(strTemp))
-                                    frmPickSkill.ExcludeCategory = strTemp;
+                                    frmPickSkill.MyForm.ExcludeCategory = strTemp;
                                 else
                                 {
                                     strTemp = bonusNode.SelectSingleNode("limittoattribute")?.InnerText;
                                     if (!string.IsNullOrEmpty(strTemp))
-                                        frmPickSkill.LinkedAttribute = strTemp;
+                                        frmPickSkill.MyForm.LinkedAttribute = strTemp;
                                 }
                             }
                         }
                     }
 
-                    frmPickSkill.ShowDialogSafe(_objCharacter);
-
                     // Make sure the dialogue window was not canceled.
-                    if (frmPickSkill.DialogResult == DialogResult.Cancel)
+                    if (frmPickSkill.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                     {
                         throw new AbortedException();
                     }
 
-                    SelectedTarget = frmPickSkill.SelectedSkill;
+                    SelectedTarget = frmPickSkill.MyForm.SelectedSkill;
                 }
             }
-            
+
             CreateImprovement(SelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.SwapSkillAttribute, _strUnique,
                 0, 1, 0, 0, 0, 0, string.Empty, false, SelectedTarget);
         }
@@ -1327,23 +1448,25 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
 
-          
-
             List<string> lstAbbrevs = new List<string>(AttributeSection.AttributeStrings.Count);
-            XmlNodeList xmlAttributeList = bonusNode.SelectNodes("attribute");
-            if (xmlAttributeList?.Count > 0)
+            using (XmlNodeList xmlAttributeList = bonusNode.SelectNodes("attribute"))
             {
-                foreach (XmlNode objSubNode in xmlAttributeList)
-                    lstAbbrevs.Add(objSubNode.InnerText);
-            }
-            else
-            {
-                lstAbbrevs.AddRange(AttributeSection.AttributeStrings);
-                xmlAttributeList = bonusNode.SelectNodes("excludeattribute");
                 if (xmlAttributeList?.Count > 0)
                 {
                     foreach (XmlNode objSubNode in xmlAttributeList)
-                        lstAbbrevs.Remove(objSubNode.InnerText);
+                        lstAbbrevs.Add(objSubNode.InnerText);
+                }
+                else
+                {
+                    lstAbbrevs.AddRange(AttributeSection.AttributeStrings);
+                    using (XmlNodeList xmlAttributeList2 = bonusNode.SelectNodes("excludeattribute"))
+                    {
+                        if (xmlAttributeList2?.Count > 0)
+                        {
+                            foreach (XmlNode objSubNode in xmlAttributeList2)
+                                lstAbbrevs.Remove(objSubNode.InnerText);
+                        }
+                    }
                 }
             }
 
@@ -1381,22 +1504,23 @@ namespace Chummer
             else
             {
                 // Display the Select Attribute window and record which Skill was selected.
-                using (SelectAttribute frmPickAttribute = new SelectAttribute(lstAbbrevs.ToArray())
+                using (ThreadSafeForm<SelectAttribute> frmPickAttribute = ThreadSafeForm<SelectAttribute>.Get(() =>
+                           new SelectAttribute(lstAbbrevs.ToArray())
+                           {
+                               Description = !string.IsNullOrEmpty(_strFriendlyName)
+                                   ? string.Format(GlobalSettings.CultureInfo,
+                                       LanguageManager.GetString("String_Improvement_SelectAttributeNamed"),
+                                       _strFriendlyName)
+                                   : LanguageManager.GetString("String_Improvement_SelectAttribute")
+                           }))
                 {
-                    Description = !string.IsNullOrEmpty(_strFriendlyName)
-                        ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectAttributeNamed"), _strFriendlyName)
-                        : LanguageManager.GetString("String_Improvement_SelectAttribute")
-                })
-                {
-                    frmPickAttribute.ShowDialogSafe(_objCharacter);
-
                     // Make sure the dialogue window was not canceled.
-                    if (frmPickAttribute.DialogResult == DialogResult.Cancel)
+                    if (frmPickAttribute.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                     {
                         throw new AbortedException();
                     }
 
-                    SelectedValue = frmPickAttribute.SelectedAttribute;
+                    SelectedValue = frmPickAttribute.MyForm.SelectedAttribute;
                 }
             }
 
@@ -1408,55 +1532,57 @@ namespace Chummer
             else
             {
                 // Display the Select Attribute window and record which Skill was selected.
-                using (SelectSkill frmPickSkill = new SelectSkill(_objCharacter))
+                using (ThreadSafeForm<SelectSkill> frmPickSkill = ThreadSafeForm<SelectSkill>.Get(() =>
+                           new SelectSkill(_objCharacter)
+                           {
+                               Description = !string.IsNullOrEmpty(_strFriendlyName)
+                                   ? string.Format(GlobalSettings.CultureInfo,
+                                       LanguageManager.GetString("String_Improvement_SelectSkillNamed"),
+                                       _strFriendlyName)
+                                   : LanguageManager.GetString("String_Improvement_SelectSkill")
+                           }))
                 {
-                    frmPickSkill.Description = !string.IsNullOrEmpty(_strFriendlyName)
-                        ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectSkillNamed"), _strFriendlyName)
-                        : LanguageManager.GetString("String_Improvement_SelectSkill");
-
                     string strTemp = bonusNode.SelectSingleNode("skillgroup")?.InnerText;
                     if (!string.IsNullOrEmpty(strTemp))
-                        frmPickSkill.OnlySkillGroup = strTemp;
+                        frmPickSkill.MyForm.OnlySkillGroup = strTemp;
                     else
                     {
                         XmlNode xmlSkillCategories = bonusNode.SelectSingleNode("skillcategories");
                         if (xmlSkillCategories != null)
-                            frmPickSkill.LimitToCategories = xmlSkillCategories;
+                            frmPickSkill.MyForm.LimitToCategories = xmlSkillCategories;
                         else
                         {
                             strTemp = bonusNode.SelectSingleNode("skillcategory")?.InnerText;
                             if (!string.IsNullOrEmpty(strTemp))
-                                frmPickSkill.OnlyCategory = strTemp;
+                                frmPickSkill.MyForm.OnlyCategory = strTemp;
                             else
                             {
                                 strTemp = bonusNode.SelectSingleNode("excludecategory")?.InnerText;
                                 if (!string.IsNullOrEmpty(strTemp))
-                                    frmPickSkill.ExcludeCategory = strTemp;
+                                    frmPickSkill.MyForm.ExcludeCategory = strTemp;
                                 else
                                 {
                                     strTemp = bonusNode.SelectSingleNode("limittoattribute")?.InnerText;
                                     if (!string.IsNullOrEmpty(strTemp))
-                                        frmPickSkill.LinkedAttribute = strTemp;
+                                        frmPickSkill.MyForm.LinkedAttribute = strTemp;
                                 }
                             }
                         }
                     }
 
-                    frmPickSkill.ShowDialogSafe(_objCharacter);
-
                     // Make sure the dialogue window was not canceled.
-                    if (frmPickSkill.DialogResult == DialogResult.Cancel)
+                    if (frmPickSkill.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                     {
                         throw new AbortedException();
                     }
 
-                    SelectedTarget = frmPickSkill.SelectedSkill;
+                    SelectedTarget = frmPickSkill.MyForm.SelectedSkill;
                 }
             }
 
             // TODO: Allow selection of specializations through frmSelectSkillSpec
             string strSpec = bonusNode["spec"]?.InnerText ?? string.Empty;
-            
+
             CreateImprovement(SelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.SwapSkillSpecAttribute, _strUnique,
                 0, 1, 0, 0, 0, 0, strSpec, false, SelectedTarget);
         }
@@ -1466,33 +1592,31 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            
+
             XmlNode node;
             // Display the Select Spell window.
-            using (SelectSpell frmPickSpell = new SelectSpell(_objCharacter))
+            using (ThreadSafeForm<SelectSpell> frmPickSpell = ThreadSafeForm<SelectSpell>.Get(() => new SelectSpell(_objCharacter)))
             {
                 string strCategory = bonusNode.Attributes?["category"]?.InnerText;
                 if (!string.IsNullOrEmpty(strCategory))
-                    frmPickSpell.LimitCategory = strCategory;
+                    frmPickSpell.MyForm.LimitCategory = strCategory;
 
                 Log.Trace("selectspell" + Environment.NewLine
                     + "selectspell = " + bonusNode.OuterXml + Environment.NewLine
                     + "_strForcedValue = " + ForcedValue + Environment.NewLine
                     + "_strLimitSelection = " + LimitSelection + Environment.NewLine
                     );
-             
+
                 if (!string.IsNullOrEmpty(ForcedValue))
                 {
-                    frmPickSpell.ForceSpellName = ForcedValue;
-                    frmPickSpell.Opacity = 0;
+                    frmPickSpell.MyForm.ForceSpellName = ForcedValue;
+                    frmPickSpell.MyForm.Opacity = 0;
                 }
 
-                frmPickSpell.IgnoreRequirements = bonusNode.Attributes?["ignorerequirements"]?.InnerText == bool.TrueString;
-
-                frmPickSpell.ShowDialogSafe(_objCharacter);
+                frmPickSpell.MyForm.IgnoreRequirements = bonusNode.Attributes?["ignorerequirements"]?.InnerText == bool.TrueString;
 
                 // Make sure the dialogue window was not canceled.
-                if (frmPickSpell.DialogResult == DialogResult.Cancel)
+                if (frmPickSpell.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                 {
                     throw new AbortedException();
                 }
@@ -1500,8 +1624,8 @@ namespace Chummer
                 // Open the Spells XML file and locate the selected piece.
                 XmlDocument objXmlDocument = _objCharacter.LoadData("spells.xml");
 
-                node = objXmlDocument.SelectSingleNode("/chummer/spells/spell[id = " + frmPickSpell.SelectedSpell.CleanXPath() + ']') ??
-                       objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = " + frmPickSpell.SelectedSpell.CleanXPath() + ']');
+                node = objXmlDocument.SelectSingleNode("/chummer/spells/spell[id = " + frmPickSpell.MyForm.SelectedSpell.CleanXPath() + ']') ??
+                       objXmlDocument.SelectSingleNode("/chummer/spells/spell[name = " + frmPickSpell.MyForm.SelectedSpell.CleanXPath() + ']');
             }
 
             if (node == null)
@@ -1514,17 +1638,18 @@ namespace Chummer
             XmlNode xmlSelectText = node.SelectSingleNode("bonus/selecttext");
             if (xmlSelectText != null)
             {
-                using (SelectText frmPickText = new SelectText
+                using (ThreadSafeForm<SelectText> frmPickText = ThreadSafeForm<SelectText>.Get(() => new SelectText
+                       {
+                           Description = string.Format(GlobalSettings.CultureInfo,
+                               LanguageManager.GetString("String_Improvement_SelectText"),
+                               node["translate"]?.InnerText ?? node["name"]?.InnerText)
+                       }))
                 {
-                    Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), node["translate"]?.InnerText ?? node["name"]?.InnerText)
-                })
-                {
-                    frmPickText.ShowDialogSafe(_objCharacter);
                     // Make sure the dialogue window was not canceled.
-                    if (frmPickText.DialogResult == DialogResult.Cancel)
+                    if (frmPickText.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                         throw new AbortedException();
 
-                    strExtra = frmPickText.SelectedValue;
+                    strExtra = frmPickText.MyForm.SelectedValue;
                 }
             }
 
@@ -1537,7 +1662,7 @@ namespace Chummer
             }
             spell.Grade = -1;
             _objCharacter.Spells.Add(spell);
-            
+
             CreateImprovement(spell.InternalId, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.Spell,
                 _strUnique);
@@ -1553,7 +1678,7 @@ namespace Chummer
                 + "_strForcedValue = " + ForcedValue + Environment.NewLine
                 + "_strLimitSelection = " + LimitSelection + Environment.NewLine
                 );
-            
+
             XmlDocument objXmlSpellDocument = _objCharacter.LoadData("spells.xml");
 
             XmlNode node = objXmlSpellDocument.SelectSingleNode("/chummer/spells/spell[name = " + bonusNode.InnerText.CleanXPath() + ']');
@@ -1565,19 +1690,20 @@ namespace Chummer
             XmlNode xmlSelectText = node.SelectSingleNode("bonus/selecttext");
             if (xmlSelectText != null)
             {
-                using (SelectText frmPickText = new SelectText
+                using (ThreadSafeForm<SelectText> frmPickText = ThreadSafeForm<SelectText>.Get(() => new SelectText
+                       {
+                           Description = string.Format(GlobalSettings.CultureInfo,
+                               LanguageManager.GetString("String_Improvement_SelectText"),
+                               node["translate"]?.InnerText ?? node["name"]?.InnerText)
+                       }))
                 {
-                    Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), node["translate"]?.InnerText ?? node["name"]?.InnerText)
-                })
-                {
-                    frmPickText.ShowDialogSafe(_objCharacter);
                     // Make sure the dialogue window was not canceled.
-                    if (frmPickText.DialogResult == DialogResult.Cancel)
+                    if (frmPickText.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                     {
                         throw new AbortedException();
                     }
 
-                    strExtra = frmPickText.SelectedValue;
+                    strExtra = frmPickText.MyForm.SelectedValue;
                 }
             }
 
@@ -1588,13 +1714,13 @@ namespace Chummer
                 spell.Dispose();
                 throw new AbortedException();
             }
-            spell.Alchemical      = bonusNode.Attributes?["alchemical"     ]?.InnerText == bool.TrueString;
-            spell.Extended        = bonusNode.Attributes?["extended"       ]?.InnerText == bool.TrueString;
-            spell.Limited         = bonusNode.Attributes?["limited"        ]?.InnerText == bool.TrueString;
+            spell.Alchemical = bonusNode.Attributes?["alchemical"]?.InnerText == bool.TrueString;
+            spell.Extended = bonusNode.Attributes?["extended"]?.InnerText == bool.TrueString;
+            spell.Limited = bonusNode.Attributes?["limited"]?.InnerText == bool.TrueString;
             spell.BarehandedAdept = bonusNode.Attributes?["barehandedadept"]?.InnerText == bool.TrueString || bonusNode.Attributes?["usesunarmed"]?.InnerText == bool.TrueString;
             spell.Grade = -1;
             _objCharacter.Spells.Add(spell);
-            
+
             CreateImprovement(spell.InternalId, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.Spell,
                 _strUnique);
@@ -1611,23 +1737,20 @@ namespace Chummer
                 + "_strLimitSelection = " + LimitSelection + Environment.NewLine
                 );
 
-          
             string strSelectedComplexForm = ForcedValue;
 
             if (string.IsNullOrEmpty(strSelectedComplexForm))
             {
                 // Display the Select ComplexForm window.
-                using (SelectComplexForm frmPickComplexForm = new SelectComplexForm(_objCharacter))
+                using (ThreadSafeForm<SelectComplexForm> frmPickComplexForm = ThreadSafeForm<SelectComplexForm>.Get(() => new SelectComplexForm(_objCharacter)))
                 {
-                    frmPickComplexForm.ShowDialogSafe(_objCharacter);
-
                     // Make sure the dialogue window was not canceled.
-                    if (frmPickComplexForm.DialogResult == DialogResult.Cancel)
+                    if (frmPickComplexForm.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                     {
                         throw new AbortedException();
                     }
 
-                    strSelectedComplexForm = frmPickComplexForm.SelectedComplexForm;
+                    strSelectedComplexForm = frmPickComplexForm.MyForm.SelectedComplexForm;
                 }
             }
 
@@ -1648,7 +1771,7 @@ namespace Chummer
             objComplexform.Grade = -1;
 
             _objCharacter.ComplexForms.Add(objComplexform);
-            
+
             CreateImprovement(objComplexform.InternalId, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.ComplexForm,
                 _strUnique);
@@ -1665,7 +1788,6 @@ namespace Chummer
                 + "_strLimitSelection = " + LimitSelection + Environment.NewLine
                 );
 
-            
             XmlDocument objXmlComplexFormDocument = _objCharacter.LoadData("complexforms.xml");
 
             XmlNode node = objXmlComplexFormDocument.SelectSingleNode("/chummer/complexforms/complexform[name = " + bonusNode.InnerText.CleanXPath() + ']');
@@ -1680,7 +1802,7 @@ namespace Chummer
             objComplexform.Grade = -1;
 
             _objCharacter.ComplexForms.Add(objComplexform);
-            
+
             CreateImprovement(objComplexform.InternalId, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.ComplexForm,
                 _strUnique);
@@ -1699,11 +1821,14 @@ namespace Chummer
                 );
 
             Gear objNewGear = Purchase(bonusNode);
-            if (bonusNode["children"]?.ChildNodes.Count > 0)
+            using (XmlNodeList xmlChildren = bonusNode["children"]?.ChildNodes)
             {
-                foreach (XmlNode xmlChildNode in bonusNode["children"]?.ChildNodes)
+                if (xmlChildren?.Count > 0)
                 {
-                    Purchase(xmlChildNode, objNewGear);
+                    foreach (XmlNode xmlChildNode in xmlChildren)
+                    {
+                        Purchase(xmlChildNode, objNewGear);
+                    }
                 }
             }
 
@@ -1771,7 +1896,7 @@ namespace Chummer
                 {
                     _objCharacter.Gear.Add(objNewGearToCreate);
                 }
-                
+
                 CreateImprovement(objNewGearToCreate.InternalId, _objImprovementSource, SourceName,
                     Improvement.ImprovementType.Gear,
                     _strUnique);
@@ -1819,7 +1944,7 @@ namespace Chummer
             objNewWeapon.ParentID = SourceName;
 
             _objCharacter.Weapons.Add(objNewWeapon);
-            
+
             CreateImprovement(objNewWeapon.InternalId, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.Weapon,
                 _strUnique);
@@ -1839,26 +1964,28 @@ namespace Chummer
 
             Weapon objWeapon = new Weapon(_objCharacter)
             {
-                Name = bonusNode["name"]?.InnerText,
-                Category = LanguageManager.GetString("Tab_Critter"),
+                Name = bonusNode["name"]?.InnerText ?? _strFriendlyName,
+                Category = LanguageManager.GetString("Tab_Critter", GlobalSettings.DefaultLanguage),
                 RangeType = "Melee",
-                Reach = Convert.ToInt32(bonusNode["reach"]?.InnerText, GlobalSettings.InvariantCultureInfo),
-                Accuracy = bonusNode["accuracy"]?.InnerText,
-                Damage = bonusNode["damage"]?.InnerText,
-                AP = bonusNode["ap"]?.InnerText,
+                Reach = Convert.ToInt32(bonusNode["reach"]?.InnerText ?? "0", GlobalSettings.InvariantCultureInfo),
+                Accuracy = bonusNode["accuracy"]?.InnerText ?? "Physical",
+                Damage = bonusNode["damage"]?.InnerText ?? "({STR})S",
+                AP = bonusNode["ap"]?.InnerText ?? "0",
                 Mode = "0",
                 RC = "0",
                 Concealability = 0,
                 Avail = "0",
                 Cost = "0",
+                Ammo = "0",
                 UseSkill = bonusNode["useskill"]?.InnerText ?? string.Empty,
                 Source = bonusNode["source"]?.InnerText ?? "SR5",
                 Page = bonusNode["page"]?.InnerText ?? "0",
                 ParentID = SourceName
             };
+            objWeapon.CreateClips();
 
             _objCharacter.Weapons.Add(objWeapon);
-            
+
             CreateImprovement(objWeapon.InternalId, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.Weapon,
                 _strUnique);
@@ -1870,7 +1997,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             Log.Trace("selectaiprogram" + Environment.NewLine + "selectaiprogram = " + bonusNode.OuterXml + Environment.NewLine + "_strForcedValue = " + ForcedValue);
-           
+
             XmlNode xmlProgram = null;
             XmlDocument xmlDocument = _objCharacter.LoadData("programs.xml");
             if (!string.IsNullOrEmpty(ForcedValue))
@@ -1882,17 +2009,15 @@ namespace Chummer
             if (xmlProgram == null)
             {
                 // Display the Select Program window.
-                using (SelectAIProgram frmPickProgram = new SelectAIProgram(_objCharacter))
+                using (ThreadSafeForm<SelectAIProgram> frmPickProgram = ThreadSafeForm<SelectAIProgram>.Get(() => new SelectAIProgram(_objCharacter)))
                 {
-                    frmPickProgram.ShowDialogSafe(_objCharacter);
-
                     // Make sure the dialogue window was not canceled.
-                    if (frmPickProgram.DialogResult == DialogResult.Cancel)
+                    if (frmPickProgram.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                     {
                         throw new AbortedException();
                     }
 
-                    xmlProgram = xmlDocument.SelectSingleNode("/chummer/programs/program[id = " + frmPickProgram.SelectedProgram.CleanXPath() + ']');
+                    xmlProgram = xmlDocument.SelectSingleNode("/chummer/programs/program[id = " + frmPickProgram.MyForm.SelectedProgram.CleanXPath() + ']');
                 }
             }
 
@@ -1903,19 +2028,20 @@ namespace Chummer
                 XmlNode xmlSelectText = xmlProgram.SelectSingleNode("bonus/selecttext");
                 if (xmlSelectText != null)
                 {
-                    using (SelectText frmPickText = new SelectText
+                    using (ThreadSafeForm<SelectText> frmPickText = ThreadSafeForm<SelectText>.Get(() => new SelectText
+                           {
+                               Description = string.Format(GlobalSettings.CultureInfo,
+                                   LanguageManager.GetString("String_Improvement_SelectText"),
+                                   xmlProgram["translate"]?.InnerText ?? xmlProgram["name"]?.InnerText)
+                           }))
                     {
-                        Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), xmlProgram["translate"]?.InnerText ?? xmlProgram["name"]?.InnerText)
-                    })
-                    {
-                        frmPickText.ShowDialogSafe(_objCharacter);
                         // Make sure the dialogue window was not canceled.
-                        if (frmPickText.DialogResult == DialogResult.Cancel)
+                        if (frmPickText.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                         {
                             throw new AbortedException();
                         }
 
-                        strExtra = frmPickText.SelectedValue;
+                        strExtra = frmPickText.MyForm.SelectedValue;
                     }
                 }
 
@@ -1926,8 +2052,8 @@ namespace Chummer
 
                 _objCharacter.AIPrograms.Add(objProgram);
 
-                SelectedValue = objProgram.DisplayNameShort(GlobalSettings.Language);
-                
+                SelectedValue = objProgram.CurrentDisplayNameShort;
+
                 CreateImprovement(objProgram.InternalId, _objImprovementSource, SourceName,
                     Improvement.ImprovementType.AIProgram,
                     _strUnique);
@@ -1941,8 +2067,8 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            Log.Trace("selectaiprogram" +  Environment.NewLine + "selectaiprogram = " + bonusNode.OuterXml + Environment.NewLine + "_strForcedValue = " + ForcedValue);
-            
+            Log.Trace("selectaiprogram" + Environment.NewLine + "selectaiprogram = " + bonusNode.OuterXml + Environment.NewLine + "_strForcedValue = " + ForcedValue);
+
             XmlNode xmlProgram = null;
             XmlDocument xmlDocument = _objCharacter.LoadData("programs.xml");
             if (!string.IsNullOrEmpty(ForcedValue))
@@ -1954,17 +2080,15 @@ namespace Chummer
             if (xmlProgram == null)
             {
                 // Display the Select Spell window.
-                using (SelectAIProgram frmPickProgram = new SelectAIProgram(_objCharacter, false, true))
+                using (ThreadSafeForm<SelectAIProgram> frmPickProgram = ThreadSafeForm<SelectAIProgram>.Get(() => new SelectAIProgram(_objCharacter, false, true)))
                 {
-                    frmPickProgram.ShowDialogSafe(_objCharacter);
-
                     // Make sure the dialogue window was not canceled.
-                    if (frmPickProgram.DialogResult == DialogResult.Cancel)
+                    if (frmPickProgram.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                     {
                         throw new AbortedException();
                     }
 
-                    xmlProgram = xmlDocument.SelectSingleNode("/chummer/programs/program[id = " + frmPickProgram.SelectedProgram.CleanXPath() + ']');
+                    xmlProgram = xmlDocument.SelectSingleNode("/chummer/programs/program[id = " + frmPickProgram.MyForm.SelectedProgram.CleanXPath() + ']');
                 }
             }
 
@@ -1975,19 +2099,20 @@ namespace Chummer
                 XmlNode xmlSelectText = xmlProgram.SelectSingleNode("bonus/selecttext");
                 if (xmlSelectText != null)
                 {
-                    using (SelectText frmPickText = new SelectText
+                    using (ThreadSafeForm<SelectText> frmPickText = ThreadSafeForm<SelectText>.Get(() => new SelectText
+                           {
+                               Description = string.Format(GlobalSettings.CultureInfo,
+                                   LanguageManager.GetString("String_Improvement_SelectText"),
+                                   xmlProgram["translate"]?.InnerText ?? xmlProgram["name"]?.InnerText)
+                           }))
                     {
-                        Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), xmlProgram["translate"]?.InnerText ?? xmlProgram["name"]?.InnerText)
-                    })
-                    {
-                        frmPickText.ShowDialogSafe(_objCharacter);
                         // Make sure the dialogue window was not canceled.
-                        if (frmPickText.DialogResult == DialogResult.Cancel)
+                        if (frmPickText.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                         {
                             throw new AbortedException();
                         }
 
-                        strExtra = frmPickText.SelectedValue;
+                        strExtra = frmPickText.MyForm.SelectedValue;
                     }
                 }
 
@@ -1996,10 +2121,10 @@ namespace Chummer
                 if (objProgram.InternalId.IsEmptyGuid())
                     throw new AbortedException();
 
-                SelectedValue = objProgram.DisplayNameShort(GlobalSettings.Language);
-                
+                SelectedValue = objProgram.CurrentDisplayNameShort;
+
                 _objCharacter.AIPrograms.Add(objProgram);
-                
+
                 CreateImprovement(objProgram.InternalId, _objImprovementSource, SourceName,
                     Improvement.ImprovementType.AIProgram,
                     _strUnique);
@@ -2015,45 +2140,45 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(bonusNode));
             Log.Trace("selectcontact");
 
-            using (SelectItem frmSelect = new SelectItem())
+            string strMode = bonusNode["type"]?.InnerText ?? "all";
+
+            IList<Contact> lstSelectedContacts;
+            switch (strMode)
             {
-                string strMode = bonusNode["type"]?.InnerText ?? "all";
+                case "all":
+                    lstSelectedContacts = _objCharacter.Contacts;
+                    break;
 
-                IList<Contact> lstSelectedContacts;
-                switch (strMode)
+                case "group":
+                case "nongroup":
                 {
-                    case "all":
-                        lstSelectedContacts = _objCharacter.Contacts;
-                        break;
-                    case "group":
-                    case "nongroup":
-                    {
-                        bool blnGroup = strMode == "group";
-                        //Select any contact where IsGroup equals blnGroup
-                        //and add to a list
-                        lstSelectedContacts = _objCharacter.Contacts.Where(x => x.IsGroup == blnGroup).ToList();
-                        break;
-                    }
-                    default:
-                        throw new AbortedException();
+                    bool blnGroup = strMode == "group";
+                    //Select any contact where IsGroup equals blnGroup
+                    //and add to a list
+                    lstSelectedContacts = _objCharacter.Contacts.Where(x => x.IsGroup == blnGroup).ToList();
+                    break;
                 }
-
-                if (lstSelectedContacts.Count == 0)
-                {
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NoContactFound"),
-                        LanguageManager.GetString("MessageTitle_NoContactFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                default:
                     throw new AbortedException();
-                }
+            }
 
+            if (lstSelectedContacts.Count == 0)
+            {
+                Program.ShowScrollableMessageBox(LanguageManager.GetString("Message_NoContactFound"),
+                    LanguageManager.GetString("MessageTitle_NoContactFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                throw new AbortedException();
+            }
+
+            using (ThreadSafeForm<SelectItem> frmSelect = ThreadSafeForm<SelectItem>.Get(() => new SelectItem()))
+            {
                 int count = 0;
                 //Black magic LINQ to cast content of list to another type
-                frmSelect.SetGeneralItemsMode(lstSelectedContacts.Select(x => new ListItem(count++.ToString(GlobalSettings.InvariantCultureInfo), x.Name)));
-                frmSelect.ShowDialogSafe(_objCharacter);
+                frmSelect.MyForm.SetGeneralItemsMode(lstSelectedContacts.Select(x => new ListItem(count++.ToString(GlobalSettings.InvariantCultureInfo), x.Name)));
 
-                if (frmSelect.DialogResult == DialogResult.Cancel)
+                if (frmSelect.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                     throw new AbortedException();
 
-                Contact objSelectedContact = int.TryParse(frmSelect.SelectedItem, out int intIndex)
+                Contact objSelectedContact = int.TryParse(frmSelect.MyForm.SelectedItem, out int intIndex)
                     ? lstSelectedContacts[intIndex]
                     : throw new AbortedException();
 
@@ -2210,8 +2335,8 @@ namespace Chummer
                     lstAbbrevs.Remove("DEP");
 
                 Log.Trace("_strForcedValue = " + ForcedValue + Environment.NewLine
-                     + "_strLimitSelection = " + LimitSelection 
-                    );
+                          + "_strLimitSelection = " + LimitSelection
+                );
 
                 // Check to see if there is only one possible selection because of _strLimitSelection.
                 if (!string.IsNullOrEmpty(ForcedValue))
@@ -2222,26 +2347,48 @@ namespace Chummer
                     lstAbbrevs.RemoveAll(x => x != LimitSelection);
                 }
 
-                SelectAttribute frmPickAttribute = new SelectAttribute(lstAbbrevs.ToArray())
+                string strSelected;
+                switch (lstAbbrevs.Count)
                 {
-                    Description = !string.IsNullOrEmpty(_strFriendlyName)
-                        ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectAttributeNamed"), _strFriendlyName)
-                        : LanguageManager.GetString("String_Improvement_SelectAttribute")
-                };
+                    case 0:
+                        throw new AbortedException();
+                    case 1:
+                        strSelected = lstAbbrevs[0];
+                        break;
 
-                Log.Trace("attributelevel = " + bonusNode.OuterXml);
+                    default:
+                    {
+                        using (ThreadSafeForm<SelectAttribute> frmPickAttribute = ThreadSafeForm<SelectAttribute>.Get(
+                                   () =>
+                                       new SelectAttribute(lstAbbrevs.ToArray())
+                                       {
+                                           Description = !string.IsNullOrEmpty(_strFriendlyName)
+                                               ? string.Format(GlobalSettings.CultureInfo,
+                                                               LanguageManager.GetString(
+                                                                   "String_Improvement_SelectAttributeNamed"),
+                                                               _strFriendlyName)
+                                               : LanguageManager.GetString("String_Improvement_SelectAttribute")
+                                       }))
+                        {
+                            Log.Trace("attributelevel = " + bonusNode.OuterXml);
 
-                frmPickAttribute.ShowDialogSafe(_objCharacter);
+                            // Make sure the dialogue window was not canceled.
+                            if (frmPickAttribute.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
+                            {
+                                throw new AbortedException();
+                            }
 
-                // Make sure the dialogue window was not canceled.
-                if (frmPickAttribute.DialogResult == DialogResult.Cancel)
-                {
-                    throw new AbortedException();
+                            strSelected = frmPickAttribute.MyForm.SelectedAttribute;
+                        }
+
+                        break;
+                    }
                 }
 
-                SelectedValue = frmPickAttribute.SelectedAttribute;
-                
-                CreateImprovement(frmPickAttribute.SelectedAttribute, _objImprovementSource, SourceName, Improvement.ImprovementType.Attributelevel, _strUnique, value);
+                SelectedValue = strSelected;
+
+                CreateImprovement(SelectedValue, _objImprovementSource, SourceName,
+                                  Improvement.ImprovementType.Attributelevel, _strUnique, value);
             }
             else
             {
@@ -2274,7 +2421,7 @@ namespace Chummer
             string strPush = bonusNode.InnerText;
             if (!string.IsNullOrWhiteSpace(strPush))
             {
-                _objCharacter.Pushtext.Push(strPush);
+                _objCharacter.PushText.Push(strPush);
             }
         }
 
@@ -2282,7 +2429,7 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            
+
             string strNodeOuterXml = bonusNode.OuterXml;
             string strForcedValue = ForcedValue;
 
@@ -2290,7 +2437,7 @@ namespace Chummer
                 + "activesoft = " + strNodeOuterXml + Environment.NewLine
                 + "_strForcedValue = " + strForcedValue + Environment.NewLine
                 );
-         
+
             bool blnDummy = false;
             SelectedValue = string.IsNullOrEmpty(strForcedValue)
                 ? ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, _strFriendlyName, ref blnDummy)
@@ -2300,12 +2447,13 @@ namespace Chummer
 
             string strVal = bonusNode["val"]?.InnerText;
 
-            if (ExoticSkill.IsExoticSkillName(SelectedValue))
+            if (ExoticSkill.IsExoticSkillName(_objCharacter, SelectedValue))
             {
                 if (!string.IsNullOrEmpty(strVal))
                 {
                     // Make sure we have the exotic skill in the list if we're adding an activesoft
-                    if (_objCharacter.SkillsSection.Skills.All(s => s.DictionaryKey != SelectedValue || !s.IsExoticSkill))
+                    Skill objExistingSkill = _objCharacter.SkillsSection.GetActiveSkill(SelectedValue);
+                    if (objExistingSkill?.IsExoticSkill != true)
                     {
                         string strSkillName = SelectedValue;
                         int intParenthesesIndex = strSkillName.IndexOf(" (", StringComparison.OrdinalIgnoreCase);
@@ -2322,21 +2470,12 @@ namespace Chummer
                         ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating));
                 }
             }
-            else
+            else if (!string.IsNullOrEmpty(strVal))
             {
-                foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
-                {
-                    if (objSkill.Name != SelectedValue)
-                        continue;
-                    // We've found the selected Skill.
-                    if (!string.IsNullOrEmpty(strVal))
-                    {
-                        CreateImprovement(SelectedValue, _objImprovementSource, SourceName,
-                            Improvement.ImprovementType.Activesoft,
-                            _strUnique,
-                            ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating));
-                    }
-                }
+                CreateImprovement(SelectedValue, _objImprovementSource, SourceName,
+                                  Improvement.ImprovementType.Activesoft,
+                                  _strUnique,
+                                  ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating));
             }
 
             if (bonusNode["addknowledge"] != null)
@@ -2348,7 +2487,7 @@ namespace Chummer
                 {
                     _objCharacter.SkillsSection.KnowledgeSkills.Add(objKnowledgeSkill);
                 }
-                
+
                 CreateImprovement(objKnowledgeSkill.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.Skillsoft, _strUnique, ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating));
             }
         }
@@ -2363,13 +2502,12 @@ namespace Chummer
             Log.Trace("skillsoft = " + strNodeOuterXml + Environment.NewLine
                 + "_strForcedValue = " + strForcedValue
                 );
-           
 
             bool blnIsKnowledgeSkill = true;
             SelectedValue = string.IsNullOrEmpty(strForcedValue) ? ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, _strFriendlyName, ref blnIsKnowledgeSkill) : strForcedValue;
 
             string strVal = bonusNode["val"]?.InnerText;
-            
+
             KnowledgeSkill objSkill = new KnowledgeSkill(_objCharacter, SelectedValue, false);
 
             _objCharacter.SkillsSection.KnowsoftSkills.Add(objSkill);
@@ -2377,7 +2515,7 @@ namespace Chummer
             {
                 _objCharacter.SkillsSection.KnowledgeSkills.Add(objSkill);
             }
-            
+
             CreateImprovement(objSkill.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.Skillsoft, _strUnique, ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating));
         }
 
@@ -2465,7 +2603,7 @@ namespace Chummer
             Log.Trace("sociallimit" + Environment.NewLine
                 + "sociallimit = " + bonusNode.OuterXml
                 );
-           
+
             CreateImprovement("Social", _objImprovementSource, SourceName, Improvement.ImprovementType.SocialLimit,
                 _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
@@ -2479,7 +2617,7 @@ namespace Chummer
             Log.Trace("nuyenamt" + Environment.NewLine
                 + "nuyenamt = " + bonusNode.OuterXml
                 );
-           
+
             string strCondition = bonusNode.Attributes?["condition"]?.InnerText ?? string.Empty;
             CreateImprovement(strCondition, _objImprovementSource, SourceName, Improvement.ImprovementType.Nuyen, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
@@ -2516,7 +2654,7 @@ namespace Chummer
                 string strPrecendenceString = objNode.Attributes?["precedence"]?.InnerText;
                 if (!string.IsNullOrEmpty(strPrecendenceString))
                     strUseUnique = "precedence" + strPrecendenceString;
-                
+
                 CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CMThreshold, strUseUnique,
                     ImprovementManager.ValueToDec(_objCharacter, objNode.InnerText, _intRating));
             }
@@ -2529,7 +2667,7 @@ namespace Chummer
                 string strPrecendenceString = objNode.Attributes?["precedence"]?.InnerText;
                 if (!string.IsNullOrEmpty(strPrecendenceString))
                     strUseUnique = "precedence" + strPrecendenceString;
-                
+
                 CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CMThresholdOffset,
                     strUseUnique, ImprovementManager.ValueToDec(_objCharacter, objNode.InnerText, _intRating));
             }
@@ -2541,7 +2679,7 @@ namespace Chummer
                 string strPrecendenceString = objNode.Attributes?["precedence"]?.InnerText;
                 if (!string.IsNullOrEmpty(strPrecendenceString))
                     strUseUnique = "precedence" + strPrecendenceString;
-                
+
                 CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CMSharedThresholdOffset,
                     strUseUnique, ImprovementManager.ValueToDec(_objCharacter, objNode.InnerText, _intRating));
             }
@@ -2563,7 +2701,7 @@ namespace Chummer
             Log.Trace("livingpersona" + Environment.NewLine
                 + "livingpersona = " + bonusNode.OuterXml
                 );
-          
+
             // Device Rating.
             string strBonus = bonusNode["devicerating"]?.InnerText;
             if (!string.IsNullOrEmpty(strBonus))
@@ -2740,7 +2878,7 @@ namespace Chummer
             objMartialArt.Create(objXmlArt);
             objMartialArt.IsQuality = true;
             _objCharacter.MartialArts.Add(objMartialArt);
-            
+
             CreateImprovement(objMartialArt.InternalId, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.MartialArt,
                 _strUnique);
@@ -2754,7 +2892,7 @@ namespace Chummer
             Log.Trace("limitmodifier" + Environment.NewLine
                 + "limitmodifier = " + bonusNode.OuterXml
                 );
-           
+
             string strLimit = bonusNode["limit"]?.InnerText;
             decimal decBonus = ImprovementManager.ValueToDec(_objCharacter, bonusNode["value"]?.InnerXml, _intRating);
             string strCondition = bonusNode["condition"]?.InnerText ?? string.Empty;
@@ -2762,9 +2900,9 @@ namespace Chummer
             LimitModifier objLimitModifier = new LimitModifier(_objCharacter);
             objLimitModifier.Create(_strFriendlyName, decBonus.StandardRound(), strLimit, strCondition, false);
             _objCharacter.LimitModifiers.Add(objLimitModifier);
-            
+
             CreateImprovement(objLimitModifier.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.LimitModifier,
-                _strUnique, decBonus, 0, 0, 0, 0, 0, string.Empty, false, string.Empty, strCondition);
+                _strUnique, decBonus, 0, 0, 0, 0, 0, string.Empty, false, strCondition: strCondition);
         }
 
         // The Improvement adjusts a Skill Category.
@@ -2775,18 +2913,19 @@ namespace Chummer
             Log.Trace("skillcategory" + Environment.NewLine
                 + "skillcategory = " + bonusNode.OuterXml
                 );
-          
+
             string strName = bonusNode["name"]?.InnerText;
             if (!string.IsNullOrEmpty(strName))
             {
                 bool blnAddToRating = bonusNode["applytorating"]?.InnerText == bool.TrueString;
-                string strExclude = bonusNode["exclude"]?.InnerText;
+                string strExclude = bonusNode["exclude"]?.InnerText ?? string.Empty;
+                string strCondition = bonusNode["condition"]?.InnerText ?? string.Empty;
                 CreateImprovement(strName, _objImprovementSource, SourceName,
                                   Improvement.ImprovementType.SkillCategory, _strUnique,
                                   ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerXml,
                                                                 _intRating), 1, 0,
                                   0,
-                                  0, 0, !string.IsNullOrEmpty(strExclude) ? strExclude : string.Empty, blnAddToRating);
+                                  0, 0, !string.IsNullOrEmpty(strExclude) ? strExclude : string.Empty, blnAddToRating, strCondition: strCondition);
             }
         }
 
@@ -2798,17 +2937,18 @@ namespace Chummer
             Log.Trace("skillgroup" + Environment.NewLine
                 + "skillgroup = " + bonusNode.OuterXml
                 );
-          
+
             string strName = bonusNode["name"]?.InnerText;
             if (!string.IsNullOrEmpty(strName))
             {
                 bool blnAddToRating = bonusNode["applytorating"]?.InnerText == bool.TrueString;
-                string strExclude = bonusNode["exclude"]?.InnerText;
+                string strExclude = bonusNode["exclude"]?.InnerText ?? string.Empty;
+                string strCondition = bonusNode["condition"]?.InnerText ?? string.Empty;
                 CreateImprovement(strName, _objImprovementSource, SourceName,
                                   Improvement.ImprovementType.SkillGroup, _strUnique,
                                   ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerXml,
                                                                 _intRating), 1, 0, 0, 0,
-                                  0, !string.IsNullOrEmpty(strExclude) ? strExclude : string.Empty, blnAddToRating);
+                                  0, !string.IsNullOrEmpty(strExclude) ? strExclude : string.Empty, blnAddToRating, strCondition: strCondition);
             }
         }
 
@@ -2820,7 +2960,7 @@ namespace Chummer
             Log.Trace("skillattribute" + Environment.NewLine
                 + "skillattribute = " + bonusNode.OuterXml
                 );
-          
+
             string strUseUnique = _strUnique;
             XmlNode xmlPrecedenceNode = bonusNode.SelectSingleNode("@precedence") ?? bonusNode.SelectSingleNode("name/@precedence");
             if (xmlPrecedenceNode != null)
@@ -2830,13 +2970,14 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strName))
             {
                 bool blnAddToRating = bonusNode["applytorating"]?.InnerText == bool.TrueString;
-                string strExclude = bonusNode["exclude"]?.InnerText;
+                string strExclude = bonusNode["exclude"]?.InnerText ?? string.Empty;
+                string strCondition = bonusNode["condition"]?.InnerText ?? string.Empty;
                 CreateImprovement(strName, _objImprovementSource, SourceName,
                                   Improvement.ImprovementType.SkillAttribute, strUseUnique,
                                   ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerXml,
                                                                 _intRating), 1,
-                                  0, 0, 0, 0, !string.IsNullOrEmpty(strExclude) ? strExclude : string.Empty,
-                                  blnAddToRating);
+                                  0, 0, 0, 0, strExclude,
+                                  blnAddToRating, strCondition: strCondition);
             }
         }
 
@@ -2848,7 +2989,7 @@ namespace Chummer
             Log.Trace("skilllinkedattribute" + Environment.NewLine
                 + "skilllinkedattribute = " + bonusNode.OuterXml
                 );
-            
+
             string strUseUnique = _strUnique;
             XmlNode xmlPrecedenceNode = bonusNode.SelectSingleNode("@precedence") ?? bonusNode.SelectSingleNode("name/@precedence");
             if (xmlPrecedenceNode != null)
@@ -2858,13 +2999,14 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strName))
             {
                 bool blnAddToRating = bonusNode["applytorating"]?.InnerText == bool.TrueString;
-                string strExclude = bonusNode["exclude"]?.InnerText;
+                string strExclude = bonusNode["exclude"]?.InnerText ?? string.Empty;
+                string strCondition = bonusNode["condition"]?.InnerText ?? string.Empty;
                 CreateImprovement(strName, _objImprovementSource, SourceName,
                                   Improvement.ImprovementType.SkillLinkedAttribute, strUseUnique,
                                   ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerXml,
                                                                 _intRating), 1,
-                                  0, 0, 0, 0, !string.IsNullOrEmpty(strExclude) ? strExclude : string.Empty,
-                                  blnAddToRating);
+                                  0, 0, 0, 0, strExclude,
+                                  blnAddToRating, strCondition: strCondition);
             }
         }
 
@@ -2876,7 +3018,7 @@ namespace Chummer
             Log.Trace("skillarticulation" + Environment.NewLine
                 + "skillarticulation = " + bonusNode.OuterXml
                 );
-        
+
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.EnhancedArticulation,
                 _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode["bonus"]?.InnerText, _intRating));
@@ -2890,7 +3032,7 @@ namespace Chummer
             Log.Trace("armor" + Environment.NewLine
                 + "armor = " + bonusNode.OuterXml
                 );
-          
+
             string strUseUnique = _strUnique;
             string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerText;
             if (!string.IsNullOrEmpty(strPrecedence))
@@ -2917,7 +3059,7 @@ namespace Chummer
             Log.Trace("firearmor" + Environment.NewLine
                 + "firearmor = " + bonusNode.OuterXml
                 );
-           
+
             string strUseUnique = _strUnique;
             string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerText;
             if (!string.IsNullOrEmpty(strPrecedence))
@@ -2944,7 +3086,7 @@ namespace Chummer
             Log.Trace("coldarmor" + Environment.NewLine
                 + "coldarmor = " + bonusNode.OuterXml
                 );
-         
+
             string strUseUnique = _strUnique;
             string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerText;
             if (!string.IsNullOrEmpty(strPrecedence))
@@ -2971,7 +3113,7 @@ namespace Chummer
             Log.Trace("electricityarmor" + Environment.NewLine
                 + "electricityarmor = " + bonusNode.OuterXml
                 );
-          
+
             string strUseUnique = _strUnique;
             string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerText;
             if (!string.IsNullOrEmpty(strPrecedence))
@@ -2998,7 +3140,7 @@ namespace Chummer
             Log.Trace("acidarmor" + Environment.NewLine
                 + "acidarmor = " + bonusNode.OuterXml
                 );
-         
+
             string strUseUnique = _strUnique;
             string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerText;
             if (!string.IsNullOrEmpty(strPrecedence))
@@ -3025,7 +3167,7 @@ namespace Chummer
             Log.Trace("fallingarmor" + Environment.NewLine
                 + "fallingarmor = " + bonusNode.OuterXml
                 );
-           
+
             string strUseUnique = _strUnique;
             string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerText;
             if (!string.IsNullOrEmpty(strPrecedence))
@@ -3052,7 +3194,7 @@ namespace Chummer
             Log.Trace("dodge" + Environment.NewLine
                 + "dodge = " + bonusNode.OuterXml
                 );
-           
+
             string strUseUnique = _strUnique;
             string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerText;
             if (!string.IsNullOrEmpty(strPrecedence))
@@ -3079,7 +3221,7 @@ namespace Chummer
             Log.Trace("reach" + Environment.NewLine
                 + "reach = " + bonusNode.OuterXml
                 );
-          
+
             string strWeapon = bonusNode.Attributes?["name"]?.InnerText ?? string.Empty;
             CreateImprovement(strWeapon, _objImprovementSource, SourceName, Improvement.ImprovementType.Reach,
                 _strUnique, ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
@@ -3093,7 +3235,7 @@ namespace Chummer
             Log.Trace("unarmeddv" + Environment.NewLine
                 + "unarmeddv = " + bonusNode.OuterXml
                 );
-          
+
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.UnarmedDV, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -3117,7 +3259,7 @@ namespace Chummer
             Log.Trace("unarmedap" + Environment.NewLine
                 + "unarmedap = " + bonusNode.OuterXml
                 );
-           
+
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.UnarmedAP, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -3130,7 +3272,7 @@ namespace Chummer
             Log.Trace("unarmedreach" + Environment.NewLine
                 + "unarmedreach = " + bonusNode.OuterXml
                 );
-           
+
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.UnarmedReach, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -3164,7 +3306,7 @@ namespace Chummer
             Log.Trace("initiativedice" + Environment.NewLine
                 + "initiativedice = " + bonusNode.OuterXml
                 );
-            
+
             string strUseUnique = bonusNode.Name;
             string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerText;
             if (!string.IsNullOrEmpty(strPrecedence))
@@ -3202,7 +3344,7 @@ namespace Chummer
             Log.Trace("matrixinitiative" + Environment.NewLine
                 + "matrixinitiative = " + bonusNode.OuterXml
                 );
-          
+
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.MatrixInitiative, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -3223,7 +3365,7 @@ namespace Chummer
             Log.Trace("matrixinitiativedice" + Environment.NewLine
                 + "matrixinitiativedice = " + bonusNode.OuterXml
                 );
-          
+
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.MatrixInitiativeDice,
                 "matrixinitiativepass", ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -3244,7 +3386,7 @@ namespace Chummer
             Log.Trace("matrixinitiativediceadd" + Environment.NewLine
                 + "matrixinitiativediceadd = " + bonusNode.OuterXml
                 );
-         
+
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.MatrixInitiativeDice,
                 _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
@@ -3258,7 +3400,6 @@ namespace Chummer
             Log.Trace("lifestylecost" + Environment.NewLine
                 + "lifestylecost = " + bonusNode.OuterXml
                 );
-           
 
             // If the Lifestyle node is present, we restrict to a specific lifestyle type.
             string baseLifestyle = bonusNode.Attributes?["lifestyle"]?.InnerText ?? string.Empty;
@@ -3274,7 +3415,7 @@ namespace Chummer
             Log.Trace("basiclifestylecost" + Environment.NewLine
                 + "basiclifestylecost = " + bonusNode.OuterXml
                 );
-            
+
             // If the Lifestyle node is present, we restrict to a specific lifestyle type.
             string baseLifestyle = bonusNode.Attributes?["lifestyle"]?.InnerText ?? string.Empty;
             CreateImprovement(baseLifestyle, _objImprovementSource, SourceName, Improvement.ImprovementType.BasicLifestyleCost, _strUnique,
@@ -3301,7 +3442,7 @@ namespace Chummer
             Log.Trace("genetechcostmultiplier" + Environment.MachineName
                 + "genetechcostmultiplier = " + bonusNode.OuterXml
                 );
-         
+
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.GenetechEssMultiplier,
                 _strUnique, ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -3327,7 +3468,7 @@ namespace Chummer
             Log.Trace("biowareessmultiplier" + Environment.NewLine
                 + "biowareessmultiplier = " + bonusNode.OuterXml
                 );
-          
+
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.BiowareEssCost, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -3340,7 +3481,7 @@ namespace Chummer
             Log.Trace("biowaretotalessmultiplier" + Environment.NewLine
                 + "biowaretotalessmultiplier = " + bonusNode.OuterXml
                 );
-          
+
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.BiowareTotalEssMultiplier, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -3353,7 +3494,7 @@ namespace Chummer
             Log.Trace("cyberwareessmultiplier" + Environment.NewLine
                 + "cyberwareessmultiplier = " + bonusNode.OuterXml
                 );
-          
+
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CyberwareEssCost, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -3366,7 +3507,7 @@ namespace Chummer
             Log.Trace("cyberwaretotalessmultiplier" + Environment.NewLine
                 + "cyberwaretotalessmultiplier = " + bonusNode.OuterXml
                 );
-            
+
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CyberwareTotalEssMultiplier, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -3379,7 +3520,7 @@ namespace Chummer
             Log.Trace("biowareessmultiplier" + Environment.NewLine
                 + "biowareessmultiplier = " + bonusNode.OuterXml
                 );
-         
+
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.BiowareEssCostNonRetroactive, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -3392,7 +3533,7 @@ namespace Chummer
             Log.Trace("biowaretotalessmultiplier" + Environment.NewLine
                 + "biowaretotalessmultiplier = " + bonusNode.OuterXml
                 );
-           
+
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -3417,7 +3558,7 @@ namespace Chummer
             Log.Trace("cyberwaretotalessmultiplier" + Environment.NewLine
                 + "cyberwaretotalessmultiplier = " + bonusNode.OuterXml
                 );
-           
+
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
@@ -3430,7 +3571,7 @@ namespace Chummer
             Log.Trace("prototypetranshuman" + Environment.NewLine
                 + "prototypetranshuman = " + bonusNode.OuterXml
                 );
-           
+
             _objCharacter.PrototypeTranshuman += Convert.ToDecimal(bonusNode.InnerText, GlobalSettings.InvariantCultureInfo);
             CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.PrototypeTranshuman, _strUnique);
         }
@@ -3443,7 +3584,7 @@ namespace Chummer
             Log.Trace("friendsinhighplaces" + Environment.NewLine
                 + "friendsinhighplaces = " + bonusNode.OuterXml
                 );
-           
+
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FriendsInHighPlaces,
                 _strUnique);
         }
@@ -3456,7 +3597,7 @@ namespace Chummer
             Log.Trace("ExCon" + Environment.NewLine
                 + "ExCon = " + bonusNode.OuterXml
                 );
-           
+
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ExCon, _strUnique);
         }
 
@@ -3468,7 +3609,7 @@ namespace Chummer
             Log.Trace("TrustFund" + Environment.NewLine
                 + "TrustFund = " + bonusNode.OuterXml
                 );
-           
+
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.TrustFund,
                 _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
@@ -3482,7 +3623,7 @@ namespace Chummer
             Log.Trace("MadeMan" + Environment.NewLine
                 + "MadeMan = " + bonusNode.OuterXml
                 );
-          
+
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.MadeMan, _strUnique);
         }
 
@@ -3524,7 +3665,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(bonusNode));
             Log.Trace("restrictedgear" + Environment.NewLine
                 + "restrictedgear = " + bonusNode.OuterXml);
-            
+
             string strValue = bonusNode["availability"]?.InnerText;
             string strCount = bonusNode["amount"]?.InnerText;
             if (string.IsNullOrEmpty(strCount))
@@ -3534,7 +3675,7 @@ namespace Chummer
                 if (string.IsNullOrEmpty(strValue))
                     strValue = bonusNode.InnerText;
             }
-            
+
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.RestrictedGear, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, strValue, _intRating), ImprovementManager.ValueToInt(_objCharacter, strCount, _intRating));
         }
@@ -3568,37 +3709,37 @@ namespace Chummer
             //TODO: FIX THIS
             /*
              * I feel like talking a little bit about improvementmanager at
-             * this point. It is an interesting class. First of all, it 
+             * this point. It is an interesting class. First of all, it
              * manages to throw out everything we ever learned about OOP
              * and create a class based on functional programming.
-             * 
+             *
              * That is true, it is a class, based on manipulating a single
              * list on another class.
-             * 
+             *
              * But at least there is a reference to it somewhere right?
-             * 
+             *
              * No, you create one wherever you need it, meaning there are
-             * tens of instances of this class, all operating on the same 
+             * tens of instances of this class, all operating on the same
              * list
-             * 
+             *
              * After that, it is just plain stupid.
              * If you have an list of xmlNodes and some might be the same
              * it checks if a specific node exists (sometimes even by text
-             * comparison on .OuterXml) and then runs specific code for 
+             * comparison on .OuterXml) and then runs specific code for
              * each. If it is there multiple times either of those 2 things
              * happen.
-             * 
+             *
              * 1. Sad, nothing we can do, guess you have to survive
              * 2. Lets create a foreach in that specific part of the code
-             * 
+             *
              * Fuck ImprovementManager, kill it with fire, burn the ashes
-             * and feed what remains to a dragon that eats unholy 
+             * and feed what remains to a dragon that eats unholy
              * abominations
              */
 
             Log.Trace("weaponcategorydv" + Environment.NewLine
                 + "weaponcategorydv = " + bonusNode.OuterXml);
-            
+
             if (bonusNode["selectskill"] != null)
             {
                 bool blnDummy = false;
@@ -3608,7 +3749,7 @@ namespace Chummer
                 {
                     throw new AbortedException();
                 }
-                
+
                 Power objPower = _objCharacter.Powers.FirstOrDefault(p => p.InternalId == SourceName);
                 if (objPower != null)
                     objPower.Extra = SelectedValue;
@@ -3656,16 +3797,17 @@ namespace Chummer
                                 }
                             }
 
-                            using (SelectItem frmPickCategory = new SelectItem
-                                   {
-                                       Description = !string.IsNullOrEmpty(_strFriendlyName)
-                                           ? string.Format(GlobalSettings.CultureInfo,
-                                                           LanguageManager.GetString(
-                                                               "String_Improvement_SelectSkillNamed"), _strFriendlyName)
-                                           : LanguageManager.GetString("Title_SelectWeaponCategory")
-                                   })
+                            using (ThreadSafeForm<SelectItem> frmPickCategory = ThreadSafeForm<SelectItem>.Get(() =>
+                                       new SelectItem
+                                       {
+                                           Description = !string.IsNullOrEmpty(_strFriendlyName)
+                                               ? string.Format(GlobalSettings.CultureInfo,
+                                                   LanguageManager.GetString(
+                                                       "String_Improvement_SelectSkillNamed"), _strFriendlyName)
+                                               : LanguageManager.GetString("Title_SelectWeaponCategory")
+                                       }))
                             {
-                                frmPickCategory.SetGeneralItemsMode(lstGeneralItems);
+                                frmPickCategory.MyForm.SetGeneralItemsMode(lstGeneralItems);
 
                                 Log.Trace("_strForcedValue = " + ForcedValue);
 
@@ -3675,19 +3817,17 @@ namespace Chummer
 
                                 if (!string.IsNullOrEmpty(ForcedValue))
                                 {
-                                    frmPickCategory.Opacity = 0;
-                                    frmPickCategory.ForceItem(ForcedValue);
+                                    frmPickCategory.MyForm.Opacity = 0;
+                                    frmPickCategory.MyForm.ForceItem(ForcedValue);
                                 }
 
-                                frmPickCategory.ShowDialogSafe(_objCharacter);
-
                                 // Make sure the dialogue window was not canceled.
-                                if (frmPickCategory.DialogResult == DialogResult.Cancel)
+                                if (frmPickCategory.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                                 {
                                     throw new AbortedException();
                                 }
 
-                                SelectedValue = frmPickCategory.SelectedItem;
+                                SelectedValue = frmPickCategory.MyForm.SelectedItem;
                             }
                         }
 
@@ -3698,7 +3838,7 @@ namespace Chummer
                                 objPower.Extra = SelectedValue;
                             }
                         }
-                        
+
                         CreateImprovement(SelectedValue, _objImprovementSource, SourceName,
                             Improvement.ImprovementType.WeaponCategoryDice, _strUnique, ImprovementManager.ValueToDec(_objCharacter, xmlSelectCategory["value"]?.InnerText, _intRating));
                     }
@@ -3743,32 +3883,31 @@ namespace Chummer
                 }
 
                 Weapon objSelectedWeapon;
-                using (SelectItem frmPickWeapon = new SelectItem
+                using (ThreadSafeForm<SelectItem> frmPickWeapon = ThreadSafeForm<SelectItem>.Get(() => new SelectItem
                        {
                            Description = !string.IsNullOrEmpty(_strFriendlyName)
                                ? string.Format(GlobalSettings.CultureInfo,
-                                               LanguageManager.GetString("String_Improvement_SelectSkillNamed"),
-                                               _strFriendlyName)
+                                   LanguageManager.GetString("String_Improvement_SelectSkillNamed"),
+                                   _strFriendlyName)
                                : LanguageManager.GetString("Title_SelectWeapon")
-                       })
+                       }))
                 {
-                    frmPickWeapon.SetGeneralItemsMode(lstGeneralItems);
+                    frmPickWeapon.MyForm.SetGeneralItemsMode(lstGeneralItems);
                     Log.Trace("_strForcedValue = " + ForcedValue);
                     if (!string.IsNullOrEmpty(ForcedValue))
                     {
-                        frmPickWeapon.Opacity = 0;
+                        frmPickWeapon.MyForm.Opacity = 0;
                     }
 
-                    frmPickWeapon.ForceItem(ForcedValue);
-                    frmPickWeapon.ShowDialogSafe(_objCharacter);
+                    frmPickWeapon.MyForm.ForceItem(ForcedValue);
 
                     // Make sure the dialogue window was not canceled.
-                    if (frmPickWeapon.DialogResult == DialogResult.Cancel)
+                    if (frmPickWeapon.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                     {
                         throw new AbortedException();
                     }
 
-                    string strSelected = frmPickWeapon.SelectedItem;
+                    string strSelected = frmPickWeapon.MyForm.SelectedItem;
 
                     objSelectedWeapon = _objCharacter.Weapons.FirstOrDefault(x => x.InternalId == strSelected);
                     if (objSelectedWeapon == null)
@@ -3791,27 +3930,25 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(bonusNode));
             Log.Trace("selectmentorspirit" + Environment.NewLine
                 + "selectmentorspirit = " + bonusNode.OuterXml);
-            using (SelectMentorSpirit frmPickMentorSpirit = new SelectMentorSpirit(_objCharacter)
+            using (ThreadSafeForm<SelectMentorSpirit> frmPickMentorSpirit = ThreadSafeForm<SelectMentorSpirit>.Get(() => new SelectMentorSpirit(_objCharacter)
             {
                 ForcedMentor = ForcedValue
-            })
+            }))
             {
-                frmPickMentorSpirit.ShowDialogSafe(_objCharacter);
-
                 // Make sure the dialogue window was not canceled.
-                if (frmPickMentorSpirit.DialogResult == DialogResult.Cancel)
+                if (frmPickMentorSpirit.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                 {
                     throw new AbortedException();
                 }
 
-                XmlNode xmlMentor = _objCharacter.LoadData("mentors.xml").SelectSingleNode("/chummer/mentors/mentor[id = " + frmPickMentorSpirit.SelectedMentor.CleanXPath() + ']');
+                XmlNode xmlMentor = _objCharacter.LoadData("mentors.xml").SelectSingleNode("/chummer/mentors/mentor[id = " + frmPickMentorSpirit.MyForm.SelectedMentor.CleanXPath() + ']');
                 SelectedValue = xmlMentor?["name"]?.InnerText ?? string.Empty;
 
                 string strHoldValue = SelectedValue;
 
                 string strForce = ForcedValue;
                 MentorSpirit objMentor = new MentorSpirit(_objCharacter);
-                objMentor.Create(xmlMentor, Improvement.ImprovementType.MentorSpirit, ForcedValue, frmPickMentorSpirit.Choice1, frmPickMentorSpirit.Choice2);
+                objMentor.Create(xmlMentor, Improvement.ImprovementType.MentorSpirit, ForcedValue, frmPickMentorSpirit.MyForm.Choice1, frmPickMentorSpirit.MyForm.Choice2);
                 if (objMentor.InternalId == Guid.Empty.ToString())
                 {
                     throw new AbortedException();
@@ -3821,7 +3958,7 @@ namespace Chummer
                 ForcedValue = strForce;
                 SelectedValue = strHoldValue;
                 Log.Trace("_strForcedValue = " + ForcedValue);
-                CreateImprovement(objMentor.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.MentorSpirit, frmPickMentorSpirit.SelectedMentor);
+                CreateImprovement(objMentor.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.MentorSpirit, frmPickMentorSpirit.MyForm.SelectedMentor);
             }
         }
 
@@ -3832,27 +3969,25 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(bonusNode));
             Log.Trace("selectparagon" + Environment.NewLine
                 + "selectparagon = " + bonusNode.OuterXml);
-            using (SelectMentorSpirit frmPickMentorSpirit = new SelectMentorSpirit(_objCharacter, "paragons.xml")
+            using (ThreadSafeForm<SelectMentorSpirit> frmPickMentorSpirit = ThreadSafeForm<SelectMentorSpirit>.Get(() => new SelectMentorSpirit(_objCharacter, "paragons.xml")
             {
                 ForcedMentor = ForcedValue
-            })
+            }))
             {
-                frmPickMentorSpirit.ShowDialogSafe(_objCharacter);
-
                 // Make sure the dialogue window was not canceled.
-                if (frmPickMentorSpirit.DialogResult == DialogResult.Cancel)
+                if (frmPickMentorSpirit.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                 {
                     throw new AbortedException();
                 }
 
-                XmlNode xmlMentor = _objCharacter.LoadData("paragons.xml").SelectSingleNode("/chummer/mentors/mentor[id = " + frmPickMentorSpirit.SelectedMentor.CleanXPath() + ']');
+                XmlNode xmlMentor = _objCharacter.LoadData("paragons.xml").SelectSingleNode("/chummer/mentors/mentor[id = " + frmPickMentorSpirit.MyForm.SelectedMentor.CleanXPath() + ']');
                 SelectedValue = xmlMentor?["name"]?.InnerText ?? string.Empty;
 
                 string strHoldValue = SelectedValue;
 
                 string strForce = ForcedValue;
                 MentorSpirit objMentor = new MentorSpirit(_objCharacter);
-                objMentor.Create(xmlMentor, Improvement.ImprovementType.Paragon, ForcedValue, frmPickMentorSpirit.Choice1, frmPickMentorSpirit.Choice2);
+                objMentor.Create(xmlMentor, Improvement.ImprovementType.Paragon, ForcedValue, frmPickMentorSpirit.MyForm.Choice1, frmPickMentorSpirit.MyForm.Choice2);
                 if (objMentor.InternalId == Guid.Empty.ToString())
                 {
                     throw new AbortedException();
@@ -3862,7 +3997,7 @@ namespace Chummer
                 ForcedValue = strForce;
                 SelectedValue = strHoldValue;
                 Log.Trace("_strForcedValue = " + ForcedValue);
-                CreateImprovement(objMentor.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.Paragon, frmPickMentorSpirit.SelectedMentor);
+                CreateImprovement(objMentor.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.Paragon, frmPickMentorSpirit.MyForm.SelectedMentor);
             }
         }
 
@@ -3904,7 +4039,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(bonusNode));
             Log.Trace("disablebioware" + Environment.NewLine
                 + "disablebioware = " + bonusNode.OuterXml);
-            
+
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DisableBioware,
                 "disablebioware");
         }
@@ -3951,7 +4086,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(bonusNode));
             Log.Trace("walkmultiplier" + Environment.NewLine
                 + "walkmultiplier = " + bonusNode.OuterXml);
-            
+
             string strCategory = bonusNode["category"]?.InnerText;
             if (!string.IsNullOrEmpty(strCategory))
             {
@@ -4037,23 +4172,20 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(bonusNode));
             Log.Trace("selectside" + Environment.NewLine
                 + "selectside = " + bonusNode.OuterXml);
-            using (SelectSide frmPickSide = new SelectSide
+            using (ThreadSafeForm<SelectSide> frmPickSide = ThreadSafeForm<SelectSide>.Get(() => new SelectSide
             {
                 Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Label_SelectSide"), _strFriendlyName)
-            })
+            }))
             {
                 if (!string.IsNullOrEmpty(ForcedValue))
-                    frmPickSide.ForceValue(ForcedValue);
-                else
-                    frmPickSide.ShowDialogSafe(_objCharacter);
-
+                    frmPickSide.MyForm.ForceValue(ForcedValue);
                 // Make sure the dialogue window was not canceled.
-                if (frmPickSide.DialogResult == DialogResult.Cancel)
+                else if (frmPickSide.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                 {
                     throw new AbortedException();
                 }
 
-                SelectedValue = frmPickSide.SelectedSide;
+                SelectedValue = frmPickSide.MyForm.SelectedSide;
             }
 
             Log.Trace("_strSelectedValue = " + SelectedValue);
@@ -4103,7 +4235,10 @@ namespace Chummer
                     Power objNewPower = new Power(_objCharacter);
                     XmlNode objXmlPower = _objCharacter.LoadData("powers.xml").SelectSingleNode("/chummer/powers/power[name = " + strPowerName.CleanXPath() + ']');
                     if (!objNewPower.Create(objXmlPower, 0, bonusNode["bonusoverride"]))
+                    {
+                        objNewPower.DeletePower();
                         throw new AbortedException();
+                    }
 
                     Power objBoostedPower = _objCharacter.Powers.FirstOrDefault(objPower => objPower.Name == objNewPower.Name && objPower.Extra == objNewPower.Extra);
                     if (objBoostedPower == null)
@@ -4114,7 +4249,7 @@ namespace Chummer
                     }
                     else
                         Log.Trace("blnHasPower = true");
-                    
+
                     int intLevels = 0;
                     if (bonusNode["val"] != null)
                         intLevels = Convert.ToInt32(bonusNode["val"].InnerText, GlobalSettings.InvariantCultureInfo);
@@ -4160,35 +4295,37 @@ namespace Chummer
                             int intLevels = Convert.ToInt32(objNode["val"]?.InnerText.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo)), GlobalSettings.InvariantCultureInfo);
                             string strPointsPerLevel = objNode["pointsperlevel"]?.InnerText;
                             // Display the Select Power window and record which Power was selected.
-                            using (SelectPower frmPickPower = new SelectPower(_objCharacter))
+                            using (ThreadSafeForm<SelectPower> frmPickPower = ThreadSafeForm<SelectPower>.Get(() => new SelectPower(_objCharacter)))
                             {
                                 Log.Trace("selectpower = " + objNode.OuterXml);
 
-                                frmPickPower.IgnoreLimits = objNode["ignorerating"]?.InnerText == bool.TrueString;
+                                frmPickPower.MyForm.IgnoreLimits = objNode["ignorerating"]?.InnerText == bool.TrueString;
 
                                 if (!string.IsNullOrEmpty(strPointsPerLevel))
-                                    frmPickPower.PointsPerLevel = Convert.ToDecimal(strPointsPerLevel, GlobalSettings.InvariantCultureInfo);
+                                    frmPickPower.MyForm.PointsPerLevel = Convert.ToDecimal(strPointsPerLevel, GlobalSettings.InvariantCultureInfo);
                                 string strLimit = objNode["limit"]?.InnerText.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                                 if (!string.IsNullOrEmpty(strLimit))
-                                    frmPickPower.LimitToRating = Convert.ToInt32(strLimit, GlobalSettings.InvariantCultureInfo);
+                                    frmPickPower.MyForm.LimitToRating = Convert.ToInt32(strLimit, GlobalSettings.InvariantCultureInfo);
                                 string strLimitToPowers = objNode.Attributes?["limittopowers"]?.InnerText;
                                 if (!string.IsNullOrEmpty(strLimitToPowers))
-                                    frmPickPower.LimitToPowers = strLimitToPowers;
-                                frmPickPower.ShowDialogSafe(_objCharacter);
+                                    frmPickPower.MyForm.LimitToPowers = strLimitToPowers;
 
                                 // Make sure the dialogue window was not canceled.
-                                if (frmPickPower.DialogResult == DialogResult.Cancel)
+                                if (frmPickPower.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                                 {
                                     throw new AbortedException();
                                 }
 
-                                objXmlPower = xmlDocument.SelectSingleNode("/chummer/powers/power[id = " + frmPickPower.SelectedPower.CleanXPath() + ']');
+                                objXmlPower = xmlDocument.SelectSingleNode("/chummer/powers/power[id = " + frmPickPower.MyForm.SelectedPower.CleanXPath() + ']');
                             }
 
                             // If no, add the power and mark it free or give it free levels
                             Power objNewPower = new Power(_objCharacter);
                             if (!objNewPower.Create(objXmlPower))
+                            {
+                                objNewPower.DeletePower();
                                 throw new AbortedException();
+                            }
 
                             SelectedValue = objNewPower.CurrentDisplayName;
 
@@ -4206,7 +4343,7 @@ namespace Chummer
                                 // Another copy of the power already exists, so we ensure that we remove any improvements created by the power because we're discarding it.
                                 objNewPower.DeletePower();
                             }
-                            
+
                             CreateImprovement(objNewPower.Name, _objImprovementSource, SourceName,
                                 !string.IsNullOrWhiteSpace(strPointsPerLevel)
                                     ? Improvement.ImprovementType.AdeptPowerFreePoints
@@ -4267,43 +4404,42 @@ namespace Chummer
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstArts))
                     {
-                        using (SelectItem frmPickItem = new SelectItem())
+                        foreach (XmlNode objXmlAddArt in xmlArtList)
                         {
-                            foreach (XmlNode objXmlAddArt in xmlArtList)
+                            string strLoopName = objXmlAddArt.InnerText;
+                            XmlNode objXmlArt
+                                = objXmlDocument.SelectSingleNode(
+                                    "/chummer/arts/art[name = " + strLoopName.CleanXPath() + ']');
+                            // Makes sure we aren't over our limits for this particular metamagic from this overall source
+                            if (objXmlArt != null && objXmlAddArt.CreateNavigator()
+                                    .RequirementsMet(
+                                        _objCharacter, string.Empty, string.Empty,
+                                        _strFriendlyName))
                             {
-                                string strLoopName = objXmlAddArt.InnerText;
-                                XmlNode objXmlArt
-                                    = objXmlDocument.SelectSingleNode(
-                                        "/chummer/arts/art[name = " + strLoopName.CleanXPath() + ']');
-                                // Makes sure we aren't over our limits for this particular metamagic from this overall source
-                                if (objXmlArt != null && objXmlAddArt.CreateNavigator()
-                                                                     .RequirementsMet(
-                                                                         _objCharacter, string.Empty, string.Empty,
-                                                                         _strFriendlyName))
-                                {
-                                    lstArts.Add(new ListItem(objXmlArt["id"]?.InnerText,
-                                                             objXmlArt["translate"]?.InnerText ?? strLoopName));
-                                }
+                                lstArts.Add(new ListItem(objXmlArt["id"]?.InnerText,
+                                    objXmlArt["translate"]?.InnerText ?? strLoopName));
                             }
+                        }
 
-                            if (lstArts.Count == 0)
-                            {
-                                Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
-                                                                              LanguageManager.GetString(
-                                                                                  "Message_Improvement_EmptySelectionListNamed"),
-                                                                              SourceName));
-                                throw new AbortedException();
-                            }
+                        if (lstArts.Count == 0)
+                        {
+                            Program.ShowScrollableMessageBox(string.Format(GlobalSettings.CultureInfo,
+                                LanguageManager.GetString(
+                                    "Message_Improvement_EmptySelectionListNamed"),
+                                SourceName));
+                            throw new AbortedException();
+                        }
 
-                            frmPickItem.SetGeneralItemsMode(lstArts);
-                            frmPickItem.ShowDialogSafe(_objCharacter);
+                        using (ThreadSafeForm<SelectItem> frmPickItem = ThreadSafeForm<SelectItem>.Get(() => new SelectItem()))
+                        {
+                            frmPickItem.MyForm.SetGeneralItemsMode(lstArts);
                             // Don't do anything else if the form was canceled.
-                            if (frmPickItem.DialogResult == DialogResult.Cancel)
+                            if (frmPickItem.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                                 throw new AbortedException();
 
                             objXmlSelectedArt
                                 = objXmlDocument.SelectSingleNode(
-                                    "/chummer/arts/art[id = " + frmPickItem.SelectedItem.CleanXPath() + ']');
+                                    "/chummer/arts/art[id = " + frmPickItem.MyForm.SelectedItem.CleanXPath() + ']');
                         }
                     }
 
@@ -4313,16 +4449,15 @@ namespace Chummer
                 }
                 else
                 {
-                    using (SelectArt frmPickArt = new SelectArt(_objCharacter, SelectArt.Mode.Art))
+                    using (ThreadSafeForm<SelectArt> frmPickArt = ThreadSafeForm<SelectArt>.Get(() => new SelectArt(_objCharacter, SelectArt.Mode.Art)))
                     {
-                        frmPickArt.ShowDialogSafe(_objCharacter);
                         // Don't do anything else if the form was canceled.
-                        if (frmPickArt.DialogResult == DialogResult.Cancel)
+                        if (frmPickArt.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                             throw new AbortedException();
 
                         objXmlSelectedArt
                             = objXmlDocument.SelectSingleNode(
-                                "/chummer/arts/art[id = " + frmPickArt.SelectedItem.CleanXPath() + ']');
+                                "/chummer/arts/art[id = " + frmPickArt.MyForm.SelectedItem.CleanXPath() + ']');
                     }
                 }
             }
@@ -4378,42 +4513,41 @@ namespace Chummer
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstMetamagics))
                     {
-                        using (SelectItem frmPickItem = new SelectItem())
+                        foreach (XmlNode objXmlAddMetamagic in xmlMetamagicList)
                         {
-                            foreach (XmlNode objXmlAddMetamagic in xmlMetamagicList)
+                            string strLoopName = objXmlAddMetamagic.InnerText;
+                            XmlNode objXmlMetamagic = objXmlDocument.SelectSingleNode(
+                                "/chummer/metamagics/metamagic[name = " + strLoopName.CleanXPath() + ']');
+                            // Makes sure we aren't over our limits for this particular metamagic from this overall source
+                            if (objXmlMetamagic != null && objXmlAddMetamagic.CreateNavigator()
+                                    .RequirementsMet(
+                                        _objCharacter, string.Empty,
+                                        string.Empty, _strFriendlyName))
                             {
-                                string strLoopName = objXmlAddMetamagic.InnerText;
-                                XmlNode objXmlMetamagic = objXmlDocument.SelectSingleNode(
-                                    "/chummer/metamagics/metamagic[name = " + strLoopName.CleanXPath() + ']');
-                                // Makes sure we aren't over our limits for this particular metamagic from this overall source
-                                if (objXmlMetamagic != null && objXmlAddMetamagic.CreateNavigator()
-                                        .RequirementsMet(
-                                            _objCharacter, string.Empty,
-                                            string.Empty, _strFriendlyName))
-                                {
-                                    lstMetamagics.Add(new ListItem(objXmlMetamagic["id"]?.InnerText,
-                                                                   objXmlMetamagic["translate"]?.InnerText
-                                                                   ?? strLoopName));
-                                }
+                                lstMetamagics.Add(new ListItem(objXmlMetamagic["id"]?.InnerText,
+                                    objXmlMetamagic["translate"]?.InnerText
+                                    ?? strLoopName));
                             }
+                        }
 
-                            if (lstMetamagics.Count == 0)
-                            {
-                                Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
-                                                                              LanguageManager.GetString(
-                                                                                  "Message_Improvement_EmptySelectionListNamed"),
-                                                                              SourceName));
-                                throw new AbortedException();
-                            }
+                        if (lstMetamagics.Count == 0)
+                        {
+                            Program.ShowScrollableMessageBox(string.Format(GlobalSettings.CultureInfo,
+                                LanguageManager.GetString(
+                                    "Message_Improvement_EmptySelectionListNamed"),
+                                SourceName));
+                            throw new AbortedException();
+                        }
 
-                            frmPickItem.SetGeneralItemsMode(lstMetamagics);
-                            frmPickItem.ShowDialogSafe(_objCharacter);
+                        using (ThreadSafeForm<SelectItem> frmPickItem = ThreadSafeForm<SelectItem>.Get(() => new SelectItem()))
+                        {
+                            frmPickItem.MyForm.SetGeneralItemsMode(lstMetamagics);
                             // Don't do anything else if the form was canceled.
-                            if (frmPickItem.DialogResult == DialogResult.Cancel)
+                            if (frmPickItem.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                                 throw new AbortedException();
 
                             objXmlSelectedMetamagic = objXmlDocument.SelectSingleNode(
-                                "/chummer/metamagics/metamagic[id = " + frmPickItem.SelectedItem.CleanXPath() + ']');
+                                "/chummer/metamagics/metamagic[id = " + frmPickItem.MyForm.SelectedItem.CleanXPath() + ']');
                         }
                     }
 
@@ -4431,16 +4565,15 @@ namespace Chummer
                 }
                 else
                 {
-                    InitiationGrade objGrade = new InitiationGrade(_objCharacter) {Grade = -1};
-                    using (SelectMetamagic frmPickMetamagic = new SelectMetamagic(_objCharacter, objGrade))
+                    InitiationGrade objGrade = new InitiationGrade(_objCharacter) { Grade = -1 };
+                    using (ThreadSafeForm<SelectMetamagic> frmPickMetamagic = ThreadSafeForm<SelectMetamagic>.Get(() => new SelectMetamagic(_objCharacter, objGrade)))
                     {
-                        frmPickMetamagic.ShowDialogSafe(_objCharacter);
                         // Don't do anything else if the form was canceled.
-                        if (frmPickMetamagic.DialogResult == DialogResult.Cancel)
+                        if (frmPickMetamagic.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                             throw new AbortedException();
 
                         objXmlSelectedMetamagic = objXmlDocument.SelectSingleNode(
-                            "/chummer/metamagics/metamagic[id = " + frmPickMetamagic.SelectedMetamagic.CleanXPath()
+                            "/chummer/metamagics/metamagic[id = " + frmPickMetamagic.MyForm.SelectedMetamagic.CleanXPath()
                                                                   + ']');
                     }
                 }
@@ -4499,42 +4632,41 @@ namespace Chummer
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstEchoes))
                     {
-                        using (SelectItem frmPickItem = new SelectItem())
+                        foreach (XmlNode objXmlAddEcho in xmlEchoList)
                         {
-                            foreach (XmlNode objXmlAddEcho in xmlEchoList)
+                            string strLoopName = objXmlAddEcho.InnerText;
+                            XmlNode objXmlEcho = objXmlDocument.SelectSingleNode(
+                                "/chummer/metamagics/metamagic[name = " + strLoopName.CleanXPath() + ']');
+                            // Makes sure we aren't over our limits for this particular metamagic from this overall source
+                            if (objXmlEcho != null && objXmlAddEcho.CreateNavigator()
+                                    .RequirementsMet(
+                                        _objCharacter, string.Empty, string.Empty,
+                                        _strFriendlyName))
                             {
-                                string strLoopName = objXmlAddEcho.InnerText;
-                                XmlNode objXmlEcho = objXmlDocument.SelectSingleNode(
-                                    "/chummer/metamagics/metamagic[name = " + strLoopName.CleanXPath() + ']');
-                                // Makes sure we aren't over our limits for this particular metamagic from this overall source
-                                if (objXmlEcho != null && objXmlAddEcho.CreateNavigator()
-                                                                       .RequirementsMet(
-                                                                           _objCharacter, string.Empty, string.Empty,
-                                                                           _strFriendlyName))
-                                {
-                                    lstEchoes.Add(new ListItem(objXmlEcho["id"]?.InnerText,
-                                                               objXmlEcho["translate"]?.InnerText ?? strLoopName));
-                                }
+                                lstEchoes.Add(new ListItem(objXmlEcho["id"]?.InnerText,
+                                    objXmlEcho["translate"]?.InnerText ?? strLoopName));
                             }
+                        }
 
-                            if (lstEchoes.Count == 0)
-                            {
-                                Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
-                                                                              LanguageManager.GetString(
-                                                                                  "Message_Improvement_EmptySelectionListNamed"),
-                                                                              SourceName));
-                                throw new AbortedException();
-                            }
+                        if (lstEchoes.Count == 0)
+                        {
+                            Program.ShowScrollableMessageBox(string.Format(GlobalSettings.CultureInfo,
+                                LanguageManager.GetString(
+                                    "Message_Improvement_EmptySelectionListNamed"),
+                                SourceName));
+                            throw new AbortedException();
+                        }
 
-                            frmPickItem.SetGeneralItemsMode(lstEchoes);
-                            frmPickItem.ShowDialogSafe(_objCharacter);
+                        using (ThreadSafeForm<SelectItem> frmPickItem = ThreadSafeForm<SelectItem>.Get(() => new SelectItem()))
+                        {
+                            frmPickItem.MyForm.SetGeneralItemsMode(lstEchoes);
                             // Don't do anything else if the form was canceled.
-                            if (frmPickItem.DialogResult == DialogResult.Cancel)
+                            if (frmPickItem.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                                 throw new AbortedException();
 
                             xmlSelectedEcho
                                 = objXmlDocument.SelectSingleNode(
-                                    "/chummer/echoes/echo[id = " + frmPickItem.SelectedItem.CleanXPath() + ']');
+                                    "/chummer/echoes/echo[id = " + frmPickItem.MyForm.SelectedItem.CleanXPath() + ']');
                         }
                     }
 
@@ -4552,16 +4684,15 @@ namespace Chummer
                 }
                 else
                 {
-                    InitiationGrade objGrade = new InitiationGrade(_objCharacter) {Grade = -1, Technomancer = true};
-                    using (SelectMetamagic frmPickMetamagic = new SelectMetamagic(_objCharacter, objGrade))
+                    InitiationGrade objGrade = new InitiationGrade(_objCharacter) { Grade = -1, Technomancer = true };
+                    using (ThreadSafeForm<SelectMetamagic> frmPickMetamagic = ThreadSafeForm<SelectMetamagic>.Get(() => new SelectMetamagic(_objCharacter, objGrade)))
                     {
-                        frmPickMetamagic.ShowDialogSafe(_objCharacter);
                         // Don't do anything else if the form was canceled.
-                        if (frmPickMetamagic.DialogResult == DialogResult.Cancel)
+                        if (frmPickMetamagic.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                             throw new AbortedException();
 
                         xmlSelectedEcho = objXmlDocument.SelectSingleNode(
-                            "/chummer/echoes/echo[id = " + frmPickMetamagic.SelectedMetamagic.CleanXPath() + ']');
+                            "/chummer/echoes/echo[id = " + frmPickMetamagic.MyForm.SelectedMetamagic.CleanXPath() + ']');
                     }
                 }
             }
@@ -4598,18 +4729,18 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            
+
             string strNodeOuterXml = bonusNode.OuterXml;
-            
+
             string strForcedValue = ForcedValue;
             Log.Trace("hardwire" + Environment.NewLine
                 + "hardwire = " + strNodeOuterXml + Environment.NewLine
                 + "_strForcedValue = " + strForcedValue + Environment.NewLine
                 );
-           
+
             bool blnDummy = false;
             SelectedValue = string.IsNullOrEmpty(strForcedValue) ? ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, _strFriendlyName, ref blnDummy) : strForcedValue;
-            
+
             CreateImprovement(SelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.Hardwire,
                 SelectedValue,
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
@@ -5113,12 +5244,8 @@ namespace Chummer
                 {
                     Log.Trace("skill");
                     string strKey = objNodeAttributes["skill"].InnerText;
-                    Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(strKey);
                     Log.Trace(strKey);
-                    if (objSkill != null)
-                    {
-                        CreateImprovement(objSkill.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeSpellsSkill, strSpellTypeLimit);
-                    }
+                    CreateImprovement(strKey, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeSpellsSkill, strSpellTypeLimit);
                 }
                 else
                 {
@@ -5140,13 +5267,14 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(bonusNode));
             spellcategorydicepool(bonusNode);
         }
+
         public void spellcategorydicepool(XmlNode bonusNode)
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             Log.Trace("spellcategory" + Environment.NewLine
                 + "spellcategory = " + bonusNode.OuterXml);
-            
+
             CreateImprovement(bonusNode["name"]?.InnerText, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.SpellCategory, _strUnique, ImprovementManager.ValueToDec(_objCharacter, bonusNode["val"]?.InnerText, _intRating));
         }
@@ -5158,7 +5286,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(bonusNode));
             Log.Trace("spelldicepool" + Environment.NewLine
                 + "spelldicepool = " + bonusNode.OuterXml);
-            
+
             CreateImprovement(bonusNode["id"]?.InnerText ?? bonusNode["name"]?.InnerText, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.SpellDicePool, _strUnique, ImprovementManager.ValueToDec(_objCharacter, bonusNode["val"]?.InnerText, _intRating));
         }
@@ -5184,7 +5312,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(bonusNode));
             Log.Trace("spellcategorydamage" + Environment.NewLine
                 + "spellcategorydamage = " + bonusNode.OuterXml);
-            
+
             CreateImprovement(bonusNode["category"]?.InnerText, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.SpellCategoryDamage, _strUnique, ImprovementManager.ValueToDec(_objCharacter, bonusNode["val"]?.InnerText, _intRating));
         }
@@ -5196,7 +5324,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(bonusNode));
             Log.Trace("spelldescriptordamage" + Environment.NewLine
                 + "spelldescriptordamage = " + bonusNode.OuterXml);
-            
+
             CreateImprovement(bonusNode["descriptor"]?.InnerText, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.SpellDescriptorDamage, _strUnique, ImprovementManager.ValueToDec(_objCharacter, bonusNode["val"]?.InnerText, _intRating));
         }
@@ -5208,7 +5336,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(bonusNode));
             Log.Trace("spelldescriptordrain" + Environment.NewLine
                 + "spelldescriptordrain = " + bonusNode.OuterXml);
-            
+
             CreateImprovement(bonusNode["descriptor"]?.InnerText, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.SpellDescriptorDrain, _strUnique, ImprovementManager.ValueToDec(_objCharacter, bonusNode["val"]?.InnerText, _intRating));
         }
@@ -5334,6 +5462,54 @@ namespace Chummer
                 ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
+        // Check for Maximum Essence which will permanently modify the character's Maximum Essence value for the purposes of affecting RES rating (input value is 100x the actual value, so essence penalty of -0.25 would be input as "25").
+        public void essencepenaltyresonlyt100(XmlNode bonusNode)
+        {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+            Log.Trace("essencepenaltyresonlyt100" + Environment.NewLine
+                                                  + "essencepenaltyresonlyt100 = " + bonusNode.OuterXml);
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.EssencePenaltyRESOnlyT100, _strUnique,
+                              ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        // Check for Maximum Essence which will permanently modify the character's Maximum Essence value for the purposes of affecting DEP rating (input value is 100x the actual value, so essence penalty of -0.25 would be input as "25").
+        public void essencepenaltydeponlyt100(XmlNode bonusNode)
+        {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+            Log.Trace("essencepenaltydeponlyt100" + Environment.NewLine
+                                                  + "essencepenaltydeponlyt100 = " + bonusNode.OuterXml);
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.EssencePenaltyDEPOnlyT100, _strUnique,
+                              ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        // Check for special attribute burn modifiers that stack additively.
+        public void specialattburnmultiplier(XmlNode bonusNode)
+        {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+            Log.Trace("specialattburnmultiplier" + Environment.NewLine
+                                             + "specialattburnmultiplier = " + bonusNode.OuterXml
+            );
+
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialAttBurn, _strUnique,
+                              ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
+        // Check for special attribute burn modifiers that stack multiplicatively.
+        public void specialatttotalburnmultiplier(XmlNode bonusNode)
+        {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+            Log.Trace("specialatttotalburnmultiplier" + Environment.NewLine
+                                                  + "specialatttotalburnmultiplier = " + bonusNode.OuterXml
+            );
+
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialAttTotalBurnMultiplier, _strUnique,
+                              ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
+        }
+
         // Check for Maximum Essence which will permanently modify the character's Maximum Essence value.
         public void essencemax(XmlNode bonusNode)
         {
@@ -5368,22 +5544,21 @@ namespace Chummer
                     }
                 }
 
-                using (SelectItem frmPickItem = new SelectItem())
+                using (ThreadSafeForm<SelectItem> frmPickItem = ThreadSafeForm<SelectItem>.Get(() => new SelectItem()))
                 {
-                    frmPickItem.SetGeneralItemsMode(lstCritters);
-                    frmPickItem.ShowDialogSafe(_objCharacter);
+                    frmPickItem.MyForm.SetGeneralItemsMode(lstCritters);
 
-                    if (frmPickItem.DialogResult == DialogResult.Cancel)
+                    if (frmPickItem.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                     {
                         throw new AbortedException();
                     }
 
-                    SelectedValue = frmPickItem.SelectedItem;
-                    
-                    CreateImprovement(frmPickItem.SelectedItem, _objImprovementSource, SourceName,
-                                      Improvement.ImprovementType.AddSprite,
-                                      _strUnique);
+                    SelectedValue = frmPickItem.MyForm.SelectedItem;
                 }
+
+                CreateImprovement(SelectedValue, _objImprovementSource, SourceName,
+                    Improvement.ImprovementType.AddSprite,
+                    _strUnique);
             }
         }
 
@@ -5398,12 +5573,12 @@ namespace Chummer
             SelectedValue = string.Empty;
             if (nodeList.Count > 0)
             {
-                using (SelectItem frmPickItem = new SelectItem
+                using (ThreadSafeForm<SelectItem> frmPickItem = ThreadSafeForm<SelectItem>.Get(() => new SelectItem
                 {
                     Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), _strFriendlyName)
-                })
+                }))
                 {
-                    frmPickItem.SetGeneralItemsMode(nodeList.OfType<XPathNavigator>().Select(objNode =>
+                    frmPickItem.MyForm.SetGeneralItemsMode(nodeList.OfType<XPathNavigator>().Select(objNode =>
                         new ListItem(objNode.Value, objNode.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? objNode.Value)));
 
                     Log.Trace("_strLimitSelection = " + LimitSelection + Environment.NewLine
@@ -5411,19 +5586,17 @@ namespace Chummer
 
                     if (!string.IsNullOrEmpty(LimitSelection))
                     {
-                        frmPickItem.ForceItem(LimitSelection);
-                        frmPickItem.Opacity = 0;
+                        frmPickItem.MyForm.ForceItem(LimitSelection);
+                        frmPickItem.MyForm.Opacity = 0;
                     }
 
-                    frmPickItem.ShowDialogSafe(_objCharacter);
-
                     // Make sure the dialogue window was not canceled.
-                    if (frmPickItem.DialogResult == DialogResult.Cancel)
+                    if (frmPickItem.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                     {
                         throw new AbortedException();
                     }
 
-                    SelectedValue = frmPickItem.SelectedName;
+                    SelectedValue = frmPickItem.MyForm.SelectedName;
                 }
             }
 
@@ -5458,7 +5631,7 @@ namespace Chummer
                     objXmlDocument.Select("/chummer/armors/armor[(" + _objCharacter.Settings.BookXPath() + ") and mods[name = 'Custom Fit']]");
             }
 
-            //.SelectNodes("/chummer/skills/skill[not(exotic) and (" + _objCharacter.Settings.BookXPath() + ')' + SkillFilter(filter) + ']');
+            //.SelectNodes("/chummer/skills/skill[not(exotic = 'True') and (" + _objCharacter.Settings.BookXPath() + ')' + SkillFilter(filter) + ']');
 
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstArmors))
             {
@@ -5477,33 +5650,31 @@ namespace Chummer
 
                 if (lstArmors.Count > 0)
                 {
-                    using (SelectItem frmPickItem = new SelectItem
-                           {
-                               Description = string.Format(GlobalSettings.CultureInfo,
+                    using (ThreadSafeForm<SelectItem> frmPickItem = ThreadSafeForm<SelectItem>.Get(() => new SelectItem
+                    {
+                        Description = string.Format(GlobalSettings.CultureInfo,
                                                            LanguageManager.GetString("String_Improvement_SelectText"),
                                                            _strFriendlyName)
-                           })
+                    }))
                     {
-                        frmPickItem.SetGeneralItemsMode(lstArmors);
+                        frmPickItem.MyForm.SetGeneralItemsMode(lstArmors);
 
                         Log.Trace("_strLimitSelection = " + LimitSelection + Environment.NewLine
                                 + "_strForcedValue = " + ForcedValue);
 
                         if (!string.IsNullOrEmpty(LimitSelection))
                         {
-                            frmPickItem.ForceItem(LimitSelection);
-                            frmPickItem.Opacity = 0;
+                            frmPickItem.MyForm.ForceItem(LimitSelection);
+                            frmPickItem.MyForm.Opacity = 0;
                         }
 
-                        frmPickItem.ShowDialogSafe(_objCharacter);
-
                         // Make sure the dialogue window was not canceled.
-                        if (frmPickItem.DialogResult == DialogResult.Cancel)
+                        if (frmPickItem.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                         {
                             throw new AbortedException();
                         }
 
-                        SelectedValue = frmPickItem.SelectedItem;
+                        SelectedValue = frmPickItem.MyForm.SelectedItem;
                     }
                 }
             }
@@ -5544,33 +5715,31 @@ namespace Chummer
 
                 if (list.Count == 0)
                     throw new AbortedException();
-                using (SelectItem frmPickItem = new SelectItem
-                       {
-                           Description = string.Format(GlobalSettings.CultureInfo,
+                using (ThreadSafeForm<SelectItem> frmPickItem = ThreadSafeForm<SelectItem>.Get(() => new SelectItem
+                {
+                    Description = string.Format(GlobalSettings.CultureInfo,
                                                        LanguageManager.GetString("String_Improvement_SelectText"),
                                                        _strFriendlyName)
-                       })
+                }))
                 {
-                    frmPickItem.SetGeneralItemsMode(list);
+                    frmPickItem.MyForm.SetGeneralItemsMode(list);
 
                     Log.Trace("_strLimitSelection = " + LimitSelection + Environment.NewLine
                             + "_strForcedValue = " + ForcedValue);
 
                     if (!string.IsNullOrEmpty(LimitSelection))
                     {
-                        frmPickItem.ForceItem(LimitSelection);
-                        frmPickItem.Opacity = 0;
+                        frmPickItem.MyForm.ForceItem(LimitSelection);
+                        frmPickItem.MyForm.Opacity = 0;
                     }
 
-                    frmPickItem.ShowDialogSafe(_objCharacter);
-
                     // Make sure the dialogue window was not canceled.
-                    if (frmPickItem.DialogResult == DialogResult.Cancel)
+                    if (frmPickItem.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                     {
                         throw new AbortedException();
                     }
 
-                    SelectedValue = frmPickItem.SelectedItem;
+                    SelectedValue = frmPickItem.MyForm.SelectedItem;
                 }
             }
 
@@ -5592,29 +5761,27 @@ namespace Chummer
             {
                 // If the character is null (this is a Vehicle), the user must enter their own string.
                 // Display the Select Item window and record the value that was entered.
-                using (SelectText frmPickText = new SelectText
+                using (ThreadSafeForm<SelectText> frmPickText = ThreadSafeForm<SelectText>.Get(() => new SelectText
                 {
                     Description = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_Improvement_SelectText"), _strFriendlyName)
-                })
+                }))
                 {
                     Log.Trace("_strLimitSelection = " + LimitSelection + Environment.NewLine
                         + "_strForcedValue = " + ForcedValue);
 
                     if (!string.IsNullOrEmpty(LimitSelection))
                     {
-                        frmPickText.SelectedValue = LimitSelection;
-                        frmPickText.Opacity = 0;
+                        frmPickText.MyForm.SelectedValue = LimitSelection;
+                        frmPickText.MyForm.Opacity = 0;
                     }
 
-                    frmPickText.ShowDialogSafe(_objCharacter);
-
                     // Make sure the dialogue window was not canceled.
-                    if (frmPickText.DialogResult == DialogResult.Cancel)
+                    if (frmPickText.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                     {
                         throw new AbortedException();
                     }
 
-                    SelectedValue = frmPickText.SelectedValue;
+                    SelectedValue = frmPickText.MyForm.SelectedValue;
                 }
             }
             else
@@ -5623,46 +5790,57 @@ namespace Chummer
                 {
                     bool blnIncludeUnarmed = bonusNode.Attributes?["includeunarmed"]?.InnerText == bool.TrueString;
                     string strExclude = bonusNode.Attributes?["excludecategory"]?.InnerText ?? string.Empty;
+                    string strWeaponDetails = bonusNode.Attributes?["weapondetails"]?.InnerText ?? string.Empty;
                     foreach (Weapon objWeapon in _objCharacter.Weapons.GetAllDescendants(x => x.Children))
                     {
-                        if ((string.IsNullOrEmpty(strExclude) || objWeapon.RangeType != strExclude)
-                            && (blnIncludeUnarmed || objWeapon.Name != "Unarmed Attack"))
-                        {
-                            lstWeapons.Add(new ListItem(objWeapon.InternalId,
-                                                        objWeapon.DisplayNameShort(GlobalSettings.Language)));
-                        }
+                        if (!string.IsNullOrEmpty(strExclude) && objWeapon.RangeType == strExclude)
+                            continue;
+                        if (!blnIncludeUnarmed && objWeapon.Name == "Unarmed Attack")
+                            continue;
+                        if (!string.IsNullOrEmpty(strWeaponDetails)
+                            && objWeapon.GetNodeXPath()?.SelectSingleNode("self::node()[" + strWeaponDetails + ']') == null)
+                            continue;
+                        lstWeapons.Add(new ListItem(objWeapon.InternalId,
+                                                    objWeapon.CurrentDisplayNameShort));
                     }
 
                     if (string.IsNullOrWhiteSpace(LimitSelection)
                         || lstWeapons.Any(item => item.Name == LimitSelection))
                     {
-                        using (SelectItem frmPickItem = new SelectItem
-                               {
-                                   Description = string.Format(GlobalSettings.CultureInfo,
+                        if (lstWeapons.Count == 0)
+                        {
+                            Program.ShowScrollableMessageBox(string.Format(GlobalSettings.CultureInfo,
+                                                                 LanguageManager.GetString(
+                                                                     "Message_Improvement_EmptySelectionListNamed"),
+                                                                 SourceName));
+                            throw new AbortedException();
+                        }
+
+                        using (ThreadSafeForm<SelectItem> frmPickItem = ThreadSafeForm<SelectItem>.Get(() => new SelectItem
+                        {
+                            Description = string.Format(GlobalSettings.CultureInfo,
                                                                LanguageManager.GetString(
                                                                    "String_Improvement_SelectText"), _strFriendlyName)
-                               })
+                        }))
                         {
-                            frmPickItem.SetGeneralItemsMode(lstWeapons);
+                            frmPickItem.MyForm.SetGeneralItemsMode(lstWeapons);
 
                             Log.Trace("_strLimitSelection = " + LimitSelection + Environment.NewLine
                                     + "_strForcedValue = " + ForcedValue);
 
                             if (!string.IsNullOrEmpty(LimitSelection))
                             {
-                                frmPickItem.ForceItem(LimitSelection);
-                                frmPickItem.Opacity = 0;
+                                frmPickItem.MyForm.ForceItem(LimitSelection);
+                                frmPickItem.MyForm.Opacity = 0;
                             }
 
-                            frmPickItem.ShowDialogSafe(_objCharacter);
-
                             // Make sure the dialogue window was not canceled.
-                            if (frmPickItem.DialogResult == DialogResult.Cancel)
+                            if (frmPickItem.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                             {
                                 throw new AbortedException();
                             }
 
-                            SelectedValue = frmPickItem.SelectedName;
+                            SelectedValue = frmPickItem.MyForm.SelectedName;
                         }
                     }
                     else
@@ -5681,7 +5859,6 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-           
 
             // Check to see if there is only one possible selection because of _strLimitSelection.
             if (!string.IsNullOrEmpty(ForcedValue))
@@ -5698,7 +5875,7 @@ namespace Chummer
                 string strCount = bonusNode.Attributes?["count"]?.InnerText;
                 strCount = _objCharacter.AttributeSection.ProcessAttributesInXPath(strCount);
 
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(strCount, out bool blnIsSuccess);
+                (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strCount);
                 powerCount = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
             }
 
@@ -5723,25 +5900,22 @@ namespace Chummer
                 }
 
                 // Display the Select Critter Power window and record which power was selected.
-                using (SelectOptionalPower frmPickPower = new SelectOptionalPower(_objCharacter, lstPowerExtraPairs.ToArray())
+                using (ThreadSafeForm<SelectOptionalPower> frmPickPower = ThreadSafeForm<SelectOptionalPower>.Get(() => new SelectOptionalPower(_objCharacter, lstPowerExtraPairs.ToArray())
                 {
-                    Description = LanguageManager.GetString("String_Improvement_SelectOptionalPower",
-                        GlobalSettings.Language)
-                })
+                    Description = LanguageManager.GetString("String_Improvement_SelectOptionalPower")
+                }))
                 {
-                    frmPickPower.ShowDialogSafe(_objCharacter);
-
                     // Make sure the dialogue window was not canceled.
-                    if (frmPickPower.DialogResult == DialogResult.Cancel)
+                    if (frmPickPower.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                     {
                         throw new AbortedException();
                     }
 
                     // Record the improvement.
                     XmlNode objXmlPowerNode = _objCharacter.LoadData("critterpowers.xml")
-                        .SelectSingleNode("/chummer/powers/power[name = " + frmPickPower.SelectedPower.CleanXPath() + ']');
+                        .SelectSingleNode("/chummer/powers/power[name = " + frmPickPower.MyForm.SelectedPower.CleanXPath() + ']');
                     CritterPower objPower = new CritterPower(_objCharacter);
-                    objPower.Create(objXmlPowerNode, 0, frmPickPower.SelectedPowerExtra);
+                    objPower.Create(objXmlPowerNode, 0, frmPickPower.MyForm.SelectedPowerExtra);
                     if (objPower.InternalId.IsEmptyGuid())
                         throw new AbortedException();
 
@@ -5843,32 +6017,31 @@ namespace Chummer
 
                 if (lstItems.Count == 0)
                 {
-                    Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
+                    Program.ShowScrollableMessageBox(string.Format(GlobalSettings.CultureInfo,
                                                                   LanguageManager.GetString(
                                                                       "Message_Improvement_EmptySelectionListNamed"),
                                                                   SourceName));
                     throw new AbortedException();
                 }
 
-                using (SelectItem frmPickItem = new SelectItem
-                       {
-                           AllowAutoSelect = false
-                       })
+                using (ThreadSafeForm<SelectItem> frmPickItem = ThreadSafeForm<SelectItem>.Get(() => new SelectItem
                 {
-                    frmPickItem.SetGeneralItemsMode(lstItems);
-                    frmPickItem.ShowDialogSafe(_objCharacter);
+                    AllowAutoSelect = false
+                }))
+                {
+                    frmPickItem.MyForm.SetGeneralItemsMode(lstItems);
                     // Make sure the dialogue window was not canceled.
-                    if (frmPickItem.DialogResult == DialogResult.Cancel)
+                    if (frmPickItem.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                     {
                         throw new AbortedException();
                     }
 
-                    SelectedValue = LanguageManager.GetString("String_DealerConnection_" + frmPickItem.SelectedItem);
-                    
-                    // Create the Improvement.
-                    CreateImprovement(SelectedValue, _objImprovementSource, SourceName,
-                                      Improvement.ImprovementType.DealerConnection, frmPickItem.SelectedItem);
+                    SelectedValue = LanguageManager.GetString("String_DealerConnection_" + frmPickItem.MyForm.SelectedItem);
                 }
+
+                // Create the Improvement.
+                CreateImprovement(SelectedValue, _objImprovementSource, SourceName,
+                    Improvement.ImprovementType.DealerConnection, SelectedValue);
             }
         }
 
@@ -5886,18 +6059,19 @@ namespace Chummer
                 case 1:
                     final = options[0];
                     break;
+
                 default:
                 {
-                    using (SelectItem frmSelect = new SelectItem
+                    using (ThreadSafeForm<SelectItem> frmSelect = ThreadSafeForm<SelectItem>.Get(() => new SelectItem
                     {
                         AllowAutoSelect = true
-                    })
+                    }))
                     {
-                        frmSelect.SetGeneralItemsMode(options.Select(x => new ListItem(x, x)));
+                        frmSelect.MyForm.SetGeneralItemsMode(options.Select(x => new ListItem(x, x)));
 
-                        if (_objCharacter.Pushtext.Count > 0)
+                        if (_objCharacter.PushText.TryTake(out string strText))
                         {
-                            frmSelect.ForceItem(_objCharacter.Pushtext.Pop());
+                            frmSelect.MyForm.ForceItem(strText);
                         }
 
                         if (frmSelect.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
@@ -5905,7 +6079,7 @@ namespace Chummer
                             throw new AbortedException();
                         }
 
-                        final = frmSelect.SelectedItem;
+                        final = frmSelect.MyForm.SelectedItem;
                     }
 
                     break;
@@ -5938,7 +6112,8 @@ namespace Chummer
                     {
                         if (objXmlAddQuality.NodeType == XmlNodeType.Comment) continue;
                         XmlNode objXmlSelectedQuality = objXmlDocument.SelectSingleNode("/chummer/qualities/quality[name = " + objXmlAddQuality.InnerText.CleanXPath() + ']');
-                        if (objXmlSelectedQuality == null){
+                        if (objXmlSelectedQuality == null)
+                        {
                             Utils.BreakIfDebug();
                         }
                         string strForceValue = objXmlAddQuality.Attributes?["select"]?.InnerText ?? string.Empty;
@@ -5955,18 +6130,28 @@ namespace Chummer
                             {
                                 List<Weapon> lstWeapons = new List<Weapon>(1);
                                 Quality objAddQuality = new Quality(_objCharacter);
-                                objAddQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, strForceValue, _strFriendlyName);
-
-                                if (blnDoesNotContributeToBP)
+                                try
                                 {
-                                    objAddQuality.BP = 0;
-                                    objAddQuality.ContributeToLimit = false;
-                                }
+                                    objAddQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons,
+                                                         strForceValue, _strFriendlyName);
 
-                                _objCharacter.Qualities.Add(objAddQuality);
-                                foreach (Weapon objWeapon in lstWeapons)
-                                    _objCharacter.Weapons.Add(objWeapon);
-                                CreateImprovement(objAddQuality.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.SpecificQuality, _strUnique);
+                                    if (blnDoesNotContributeToBP)
+                                    {
+                                        objAddQuality.BP = 0;
+                                        objAddQuality.ContributeToLimit = false;
+                                    }
+
+                                    _objCharacter.Qualities.Add(objAddQuality);
+                                    foreach (Weapon objWeapon in lstWeapons)
+                                        _objCharacter.Weapons.Add(objWeapon);
+                                    CreateImprovement(objAddQuality.InternalId, _objImprovementSource, SourceName,
+                                                      Improvement.ImprovementType.SpecificQuality, _strUnique);
+                                }
+                                catch
+                                {
+                                    objAddQuality.Dispose();
+                                    throw;
+                                }
                             }
                             else
                             {
@@ -6009,7 +6194,7 @@ namespace Chummer
 
                 if (lstQualities.Count == 0)
                 {
-                    Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
+                    Program.ShowScrollableMessageBox(string.Format(GlobalSettings.CultureInfo,
                                                                   LanguageManager.GetString(
                                                                       "Message_Improvement_EmptySelectionListNamed"),
                                                                   SourceName));
@@ -6018,106 +6203,124 @@ namespace Chummer
 
                 XmlNode objXmlSelectedQuality;
                 XmlNode objXmlBonusQuality;
-                using (SelectItem frmPickItem = new SelectItem())
+                using (ThreadSafeForm<SelectItem> frmPickItem = ThreadSafeForm<SelectItem>.Get(() => new SelectItem()))
                 {
-                    frmPickItem.SetGeneralItemsMode(lstQualities);
-                    frmPickItem.ShowDialogSafe(_objCharacter);
+                    frmPickItem.MyForm.SetGeneralItemsMode(lstQualities);
 
                     // Don't do anything else if the form was canceled.
-                    if (frmPickItem.DialogResult == DialogResult.Cancel)
+                    if (frmPickItem.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                         throw new AbortedException();
                     objXmlSelectedQuality = objXmlDocument.SelectSingleNode(
-                        "/chummer/qualities/quality[name = " + frmPickItem.SelectedItem.CleanXPath() + ']');
+                        "/chummer/qualities/quality[name = " + frmPickItem.MyForm.SelectedItem.CleanXPath() + ']');
                     objXmlBonusQuality
-                        = bonusNode.SelectSingleNode("quality[" + frmPickItem.SelectedItem.CleanXPath() + ']');
+                        = bonusNode.SelectSingleNode("quality[" + frmPickItem.MyForm.SelectedItem.CleanXPath() + ']');
                 }
 
-                Quality objAddQuality = new Quality(_objCharacter);
                 List<Weapon> lstWeapons = new List<Weapon>(1);
-
-                string strForceValue = objXmlBonusQuality?.SelectSingleNode("@select")?.Value;
-                objAddQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, strForceValue,
-                                     _strFriendlyName);
-                if (objXmlBonusQuality?.SelectSingleNode("@contributetobp")?.Value != bool.TrueString)
+                Quality objAddQuality = new Quality(_objCharacter);
+                try
                 {
-                    objAddQuality.BP = 0;
-                    objAddQuality.ContributeToLimit = false;
-                }
-
-                if (bonusNode["discountqualities"] != null)
-                {
-                    lstQualities.Clear();
-                    lstQualities.Add(new ListItem("None", LanguageManager.GetString("String_None")));
-                    using (XmlNodeList xmlQualityNodeList = bonusNode.SelectNodes("discountqualities/quality"))
+                    string strForceValue = objXmlBonusQuality?.SelectSingleNode("@select")?.Value;
+                    objAddQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, strForceValue,
+                                         _strFriendlyName);
+                    if (objXmlBonusQuality?.SelectSingleNode("@contributetobp")?.Value != bool.TrueString)
                     {
-                        if (xmlQualityNodeList?.Count > 0)
-                        {
-                            foreach (XmlNode objXmlAddQuality in xmlQualityNodeList)
-                            {
-                                strForceValue = objXmlAddQuality.Attributes?["select"]?.InnerText ?? string.Empty;
-                                string strName = objXmlAddQuality.InnerText;
+                        objAddQuality.BP = 0;
+                        objAddQuality.ContributeToLimit = false;
+                    }
 
-                                XmlNode objXmlQuality
-                                    = objXmlDocument.SelectSingleNode(
-                                        "/chummer/qualities/quality[name = " + strName.CleanXPath() + ']');
-                                if (objXmlQuality != null)
+                    if (bonusNode["discountqualities"] != null)
+                    {
+                        lstQualities.Clear();
+                        lstQualities.Add(new ListItem("None", LanguageManager.GetString("String_None")));
+                        using (XmlNodeList xmlQualityNodeList = bonusNode.SelectNodes("discountqualities/quality"))
+                        {
+                            if (xmlQualityNodeList?.Count > 0)
+                            {
+                                foreach (XmlNode objXmlAddQuality in xmlQualityNodeList)
                                 {
-                                    string strDisplayName = objXmlQuality["translate"]?.InnerText ?? strName;
-                                    if (!string.IsNullOrWhiteSpace(strForceValue))
-                                        strDisplayName += " (" + strForceValue + ')';
-                                    lstQualities.Add(new ListItem(strName, strDisplayName));
+                                    strForceValue = objXmlAddQuality.Attributes?["select"]?.InnerText ?? string.Empty;
+                                    string strName = objXmlAddQuality.InnerText;
+
+                                    XmlNode objXmlQuality
+                                        = objXmlDocument.SelectSingleNode(
+                                            "/chummer/qualities/quality[name = " + strName.CleanXPath() + ']');
+                                    if (objXmlQuality != null)
+                                    {
+                                        string strDisplayName = objXmlQuality["translate"]?.InnerText ?? strName;
+                                        if (!string.IsNullOrWhiteSpace(strForceValue))
+                                            strDisplayName += " (" + strForceValue + ')';
+                                        lstQualities.Add(new ListItem(strName, strDisplayName));
+                                    }
                                 }
+                            }
+                        }
+
+                        if (lstQualities.Count == 0)
+                        {
+                            Program.ShowScrollableMessageBox(string.Format(GlobalSettings.CultureInfo,
+                                                                 LanguageManager.GetString(
+                                                                     "Message_Improvement_EmptySelectionListNamed"),
+                                                                 SourceName));
+                            throw new AbortedException();
+                        }
+
+                        using (ThreadSafeForm<SelectItem> frmPickItem
+                               = ThreadSafeForm<SelectItem>.Get(() => new SelectItem()))
+                        {
+                            frmPickItem.MyForm.SetGeneralItemsMode(lstQualities);
+
+                            // Don't do anything else if the form was canceled.
+                            if (frmPickItem.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
+                                throw new AbortedException();
+                            if (frmPickItem.MyForm.SelectedItem != "None")
+                            {
+                                objXmlSelectedQuality = objXmlDocument.SelectSingleNode(
+                                    "/chummer/qualities/quality[name = " + frmPickItem.MyForm.SelectedItem.CleanXPath()
+                                                                         + ']');
+                                objXmlBonusQuality
+                                    = bonusNode.SelectSingleNode(
+                                        "discountqualities/quality[" + frmPickItem.MyForm.SelectedItem.CleanXPath()
+                                                                     + ']');
+                                int qualityDiscount
+                                    = Convert.ToInt32(objXmlBonusQuality?.SelectSingleNode("@discount")?.Value,
+                                                      GlobalSettings.InvariantCultureInfo);
+                                Quality discountQuality = new Quality(_objCharacter)
+                                {
+                                    BP = 0
+                                };
+                                try
+                                {
+                                    strForceValue = objXmlBonusQuality?.SelectSingleNode("@select")?.Value;
+                                    discountQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons,
+                                                           strForceValue, _strFriendlyName);
+                                    objAddQuality.BP = Math.Max(objAddQuality.BP + qualityDiscount, 1);
+                                    CreateImprovement(discountQuality.InternalId, _objImprovementSource, SourceName,
+                                                      Improvement.ImprovementType.SpecificQuality, _strUnique);
+                                }
+                                catch
+                                {
+                                    discountQuality.Dispose();
+                                    throw;
+                                }
+
+                                _objCharacter.Qualities.Add(discountQuality);
                             }
                         }
                     }
 
-                    if (lstQualities.Count == 0)
-                    {
-                        Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo,
-                                                                      LanguageManager.GetString(
-                                                                          "Message_Improvement_EmptySelectionListNamed"),
-                                                                      SourceName));
-                        throw new AbortedException();
-                    }
-
-                    using (SelectItem frmPickItem = new SelectItem())
-                    {
-                        frmPickItem.SetGeneralItemsMode(lstQualities);
-                        frmPickItem.ShowDialogSafe(_objCharacter);
-
-                        // Don't do anything else if the form was canceled.
-                        if (frmPickItem.DialogResult == DialogResult.Cancel)
-                            throw new AbortedException();
-                        if (frmPickItem.SelectedItem != "None")
-                        {
-                            objXmlSelectedQuality = objXmlDocument.SelectSingleNode(
-                                "/chummer/qualities/quality[name = " + frmPickItem.SelectedItem.CleanXPath() + ']');
-                            objXmlBonusQuality
-                                = bonusNode.SelectSingleNode(
-                                    "discountqualities/quality[" + frmPickItem.SelectedItem.CleanXPath() + ']');
-                            int qualityDiscount
-                                = Convert.ToInt32(objXmlBonusQuality?.SelectSingleNode("@discount")?.Value,
-                                                  GlobalSettings.InvariantCultureInfo);
-                            Quality discountQuality = new Quality(_objCharacter)
-                            {
-                                BP = 0
-                            };
-                            strForceValue = objXmlBonusQuality?.SelectSingleNode("@select")?.Value;
-                            discountQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons,
-                                                   strForceValue, _strFriendlyName);
-                            _objCharacter.Qualities.Add(discountQuality);
-                            objAddQuality.BP = Math.Max(objAddQuality.BP + qualityDiscount, 1);
-                            CreateImprovement(discountQuality.InternalId, _objImprovementSource, SourceName,
-                                              Improvement.ImprovementType.SpecificQuality, _strUnique);
-                        }
-                    }
+                    CreateImprovement(objAddQuality.InternalId, _objImprovementSource, SourceName,
+                                      Improvement.ImprovementType.SpecificQuality, _strUnique);
+                }
+                catch
+                {
+                    objAddQuality.Dispose();
+                    throw;
                 }
 
                 _objCharacter.Qualities.Add(objAddQuality);
                 foreach (Weapon objWeapon in lstWeapons)
                     _objCharacter.Weapons.Add(objWeapon);
-                CreateImprovement(objAddQuality.InternalId, _objImprovementSource, SourceName,
-                                  Improvement.ImprovementType.SpecificQuality, _strUnique);
             }
         }
 
@@ -6132,8 +6335,16 @@ namespace Chummer
                 // Create the Improvement.
                 string strSpec = bonusNode["spec"]?.InnerText ?? string.Empty;
                 SkillSpecialization objSpec = new SkillSpecialization(_objCharacter, strSpec);
-                objSkill.Specializations.Add(objSpec);
-                CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecialization, objSpec.InternalId);
+                try
+                {
+                    objSkill.Specializations.Add(objSpec);
+                    CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecialization, objSpec.InternalId);
+                }
+                catch
+                {
+                    objSpec.Dispose();
+                    throw;
+                }
             }
         }
 
@@ -6169,12 +6380,20 @@ namespace Chummer
                 {
                     // Create the Improvement.
                     string strSpec = bonusNode["spec"]?.InnerText;
-                    CreateImprovement(objSkill.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecializationOption, strSpec);
+                    CreateImprovement(objSkill.DictionaryKey, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecializationOption, strSpec);
                     if (_objCharacter.Settings.FreeMartialArtSpecialization && _objImprovementSource == Improvement.ImprovementSource.MartialArt)
                     {
                         SkillSpecialization objSpec = new SkillSpecialization(_objCharacter, strSpec);
-                        objSkill.Specializations.Add(objSpec);
-                        CreateImprovement(objSkill.Name, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecialization, objSpec.InternalId);
+                        try
+                        {
+                            objSkill.Specializations.Add(objSpec);
+                            CreateImprovement(objSkill.DictionaryKey, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecialization, objSpec.InternalId);
+                        }
+                        catch
+                        {
+                            objSpec.Dispose();
+                            throw;
+                        }
                     }
                 }
             }
@@ -6200,20 +6419,18 @@ namespace Chummer
             else
             {
                 // Display the Select Spell window.
-                using (SelectSpellCategory frmPickSpellCategory = new SelectSpellCategory(_objCharacter)
+                using (ThreadSafeForm<SelectSpellCategory> frmPickSpellCategory = ThreadSafeForm<SelectSpellCategory>.Get(() => new SelectSpellCategory(_objCharacter)
                 {
                     Description = LanguageManager.GetString("Title_SelectSpellCategory")
-                })
+                }))
                 {
-                    frmPickSpellCategory.ShowDialogSafe(_objCharacter);
-
                     // Make sure the dialogue window was not canceled.
-                    if (frmPickSpellCategory.DialogResult == DialogResult.Cancel)
+                    if (frmPickSpellCategory.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                     {
                         throw new AbortedException();
                     }
 
-                    CreateImprovement(frmPickSpellCategory.SelectedCategory, Improvement.ImprovementType.AllowSpellCategory);
+                    CreateImprovement(frmPickSpellCategory.MyForm.SelectedCategory, Improvement.ImprovementType.AllowSpellCategory);
                 }
             }
         }
@@ -6238,21 +6455,20 @@ namespace Chummer
             else
             {
                 // Display the Select Spell window.
-                using (SelectSpellCategory frmPickSpellCategory = new SelectSpellCategory(_objCharacter)
+                using (ThreadSafeForm<SelectSpellCategory> frmPickSpellCategory = ThreadSafeForm<SelectSpellCategory>.Get(() => new SelectSpellCategory(_objCharacter)
                 {
                     Description = LanguageManager.GetString("Title_SelectSpellCategory")
-                })
+                }))
                 {
-                    frmPickSpellCategory.SetExcludeCategories(bonusNode.Attributes?["exclude"]?.InnerText.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries));
-                    frmPickSpellCategory.ShowDialogSafe(_objCharacter);
+                    frmPickSpellCategory.MyForm.SetExcludeCategories(bonusNode.Attributes?["exclude"]?.InnerText.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries));
 
                     // Make sure the dialogue window was not canceled.
-                    if (frmPickSpellCategory.DialogResult == DialogResult.Cancel)
+                    if (frmPickSpellCategory.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                     {
                         throw new AbortedException();
                     }
 
-                    CreateImprovement(frmPickSpellCategory.SelectedCategory, Improvement.ImprovementType.LimitSpellCategory);
+                    CreateImprovement(frmPickSpellCategory.MyForm.SelectedCategory, Improvement.ImprovementType.LimitSpellCategory);
                 }
             }
         }
@@ -6270,20 +6486,18 @@ namespace Chummer
             }
             else
             {
-                using (SelectItem frmPickItem = new SelectItem
+                using (ThreadSafeForm<SelectItem> frmPickItem = ThreadSafeForm<SelectItem>.Get(() => new SelectItem
                 {
                     Description = LanguageManager.GetString("Title_SelectSpellDescriptor")
-                })
+                }))
                 {
-                    frmPickItem.ShowDialogSafe(_objCharacter);
-
                     // Make sure the dialogue window was not canceled.
-                    if (frmPickItem.DialogResult == DialogResult.Cancel)
+                    if (frmPickItem.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                     {
                         throw new AbortedException();
                     }
 
-                    strSelected = frmPickItem.SelectedItem;
+                    strSelected = frmPickItem.MyForm.SelectedItem;
                 }
             }
             CreateImprovement(strSelected, Improvement.ImprovementType.LimitSpellDescriptor);
@@ -6302,25 +6516,25 @@ namespace Chummer
             }
             else
             {
-                using (SelectItem frmPickItem = new SelectItem
+                using (ThreadSafeForm<SelectItem> frmPickItem = ThreadSafeForm<SelectItem>.Get(() => new SelectItem
                 {
                     Description = LanguageManager.GetString("Title_SelectSpellDescriptor")
-                })
+                }))
                 {
-                    frmPickItem.ShowDialogSafe(_objCharacter);
-
                     // Make sure the dialogue window was not canceled.
-                    if (frmPickItem.DialogResult == DialogResult.Cancel)
+                    if (frmPickItem.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                     {
                         throw new AbortedException();
                     }
 
-                    strSelected = frmPickItem.SelectedItem;
+                    strSelected = frmPickItem.MyForm.SelectedItem;
                 }
             }
             CreateImprovement(strSelected, Improvement.ImprovementType.BlockSpellDescriptor);
         }
+
         #region addspiritorsprite
+
         /// <summary>
         /// Improvement type that adds to the available sprite types a character can summon.
         /// </summary>
@@ -6354,7 +6568,7 @@ namespace Chummer
             {
                 addToSelected = Convert.ToBoolean(bonusNode.SelectSingleNode("addtoselected")?.Value, GlobalSettings.InvariantCultureInfo);
             }
-            AddSpiritOrSprite("traditions.xml",xmlAllowedSpirits, Improvement.ImprovementType.AddSpirit, addToSelected, "Spirits");
+            AddSpiritOrSprite("traditions.xml", xmlAllowedSpirits, Improvement.ImprovementType.AddSpirit, addToSelected, "Spirits");
         }
 
         /// <summary>
@@ -6418,12 +6632,11 @@ namespace Chummer
                         }
                     }
 
-                    using (SelectItem frmSelect = new SelectItem())
+                    using (ThreadSafeForm<SelectItem> frmSelect = ThreadSafeForm<SelectItem>.Get(() => new SelectItem()))
                     {
-                        frmSelect.SetGeneralItemsMode(lstSpirits);
-                        frmSelect.ForceItem(ForcedValue);
-                        frmSelect.ShowDialogSafe(_objCharacter);
-                        if (frmSelect.DialogResult == DialogResult.Cancel)
+                        frmSelect.MyForm.SetGeneralItemsMode(lstSpirits);
+                        frmSelect.MyForm.ForceItem(ForcedValue);
+                        if (frmSelect.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                         {
                             throw new AbortedException();
                         }
@@ -6431,18 +6644,20 @@ namespace Chummer
                         if (addToSelectedValue)
                         {
                             if (string.IsNullOrEmpty(SelectedValue))
-                                SelectedValue = frmSelect.SelectedItem;
+                                SelectedValue = frmSelect.MyForm.SelectedItem;
                             else
-                                SelectedValue += ", " + frmSelect.SelectedItem;
+                                SelectedValue += ", " + frmSelect.MyForm.SelectedItem;
                         }
 
-                        CreateImprovement(frmSelect.SelectedItem, _objImprovementSource, SourceName, impType,
+                        CreateImprovement(frmSelect.MyForm.SelectedItem, _objImprovementSource, SourceName, impType,
                                           _strUnique);
                     }
                 }
             }
         }
-        #endregion
+
+        #endregion addspiritorsprite
+
         public void movementreplace(XmlNode bonusNode)
         {
             if (bonusNode == null)
@@ -6459,6 +6674,7 @@ namespace Chummer
                     case "RUN":
                         imp = Improvement.ImprovementType.RunSpeed;
                         break;
+
                     case "SPRINT":
                         imp = Improvement.ImprovementType.SprintSpeed;
                         break;
@@ -6482,6 +6698,7 @@ namespace Chummer
                     ImprovementManager.ValueToDec(_objCharacter, strNodeValText, _intRating));
             }
         }
+
         public void addlimb(XmlNode bonusNode)
         {
             if (bonusNode == null)
@@ -6615,23 +6832,22 @@ namespace Chummer
                         lstSkills.Sort(CompareListItems.CompareNames);
                     }
 
-                    using (SelectItem frmPickItem = new SelectItem
-                           {
-                               SelectedItem = _objCharacter.MagicTradition.SourceIDString,
-                               Description = LanguageManager.GetString("String_DisableSkillGroupPrompt"),
-                               AllowAutoSelect = false
-                           })
+                    using (ThreadSafeForm<SelectItem> frmPickItem = ThreadSafeForm<SelectItem>.Get(() => new SelectItem
                     {
-                        frmPickItem.SetGeneralItemsMode(lstSkills);
-                        frmPickItem.ShowDialogSafe(_objCharacter);
+                        SelectedItem = _objCharacter.MagicTradition.SourceIDString,
+                        Description = LanguageManager.GetString("String_DisableSkillGroupPrompt"),
+                        AllowAutoSelect = false
+                    }))
+                    {
+                        frmPickItem.MyForm.SetGeneralItemsMode(lstSkills);
 
                         // Make sure the dialogue window was not canceled.
-                        if (frmPickItem.DialogResult == DialogResult.Cancel)
+                        if (frmPickItem.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                         {
                             throw new AbortedException();
                         }
 
-                        SelectedValue = frmPickItem.SelectedName;
+                        SelectedValue = frmPickItem.MyForm.SelectedName;
                     }
                 }
             }
@@ -7100,7 +7316,7 @@ namespace Chummer
                     + "addware = " + bonusNode.OuterXml + Environment.NewLine
                     + "_strForcedValue = " + ForcedValue + Environment.NewLine
                     + "_strLimitSelection = " + LimitSelection);
-            
+
             XmlNode node;
             Improvement.ImprovementSource eSource;
             string strName = bonusNode["name"]?.InnerText;
@@ -7147,7 +7363,7 @@ namespace Chummer
             objCyberware.ParentID = SourceName;
 
             _objCharacter.Cyberware.Add(objCyberware);
-            
+
             CreateImprovement(objCyberware.InternalId, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.FreeWare,
                 _strUnique);
@@ -7175,7 +7391,6 @@ namespace Chummer
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            
 
             string strForcedValue = ForcedValue;
             Log.Trace("weaponskillaccuracy" + Environment.NewLine
@@ -7196,7 +7411,7 @@ namespace Chummer
             }
 
             string strVal = bonusNode["value"]?.InnerText;
-            
+
             CreateImprovement(SelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.WeaponSkillAccuracy, _strUnique,
                 ImprovementManager.ValueToDec(_objCharacter, strVal, _intRating));
         }
@@ -7282,22 +7497,21 @@ namespace Chummer
                         lstActions.Sort(CompareListItems.CompareNames);
                     }
 
-                    using (SelectItem frmPickItem = new SelectItem
-                           {
-                               SelectedItem = _objCharacter.MagicTradition.SourceIDString,
-                               AllowAutoSelect = false
-                           })
+                    using (ThreadSafeForm<SelectItem> frmPickItem = ThreadSafeForm<SelectItem>.Get(() => new SelectItem
                     {
-                        frmPickItem.SetDropdownItemsMode(lstActions);
-                        frmPickItem.ShowDialogSafe(_objCharacter);
+                        SelectedItem = _objCharacter.MagicTradition.SourceIDString,
+                        AllowAutoSelect = false
+                    }))
+                    {
+                        frmPickItem.MyForm.SetDropdownItemsMode(lstActions);
 
                         // Make sure the dialogue window was not canceled.
-                        if (frmPickItem.DialogResult == DialogResult.Cancel)
+                        if (frmPickItem.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                         {
                             throw new AbortedException();
                         }
 
-                        SelectedValue = frmPickItem.SelectedName;
+                        SelectedValue = frmPickItem.MyForm.SelectedName;
                     }
                 }
             }
@@ -7342,6 +7556,7 @@ namespace Chummer
                     + "enablecyberzombie = " + bonusNode.OuterXml);
             CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.EnableCyberzombie, _strUnique);
         }
+
         public void allowcritterpowercategory(XmlNode bonusNode)
         {
             if (bonusNode == null)
@@ -7421,32 +7636,39 @@ namespace Chummer
             if (objSkill == null)
                 throw new AbortedException();
             // Select the actual specialization to add as an expertise
-            using (SelectItem frmPickItem = new SelectItem())
+            using (ThreadSafeForm<SelectItem> frmPickItem = ThreadSafeForm<SelectItem>.Get(() => new SelectItem()))
             {
                 string strLimitToSpecialization = bonusNode.Attributes?["limittospecialization"]?.InnerText;
                 if (!string.IsNullOrEmpty(strLimitToSpecialization))
-                    frmPickItem.SetDropdownItemsMode(strLimitToSpecialization.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim())
+                    frmPickItem.MyForm.SetDropdownItemsMode(strLimitToSpecialization.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim())
                         .Where(x => objSkill.Specializations.All(y => y.Name != x)).Select(x => new ListItem(x, _objCharacter.TranslateExtra(x, GlobalSettings.Language, "skills.xml"))));
                 else
-                    frmPickItem.SetGeneralItemsMode(objSkill.CGLSpecializations);
+                    frmPickItem.MyForm.SetGeneralItemsMode(objSkill.CGLSpecializations);
                 if (!string.IsNullOrEmpty(ForcedValue))
-                    frmPickItem.ForceItem(ForcedValue);
+                    frmPickItem.MyForm.ForceItem(ForcedValue);
 
-                frmPickItem.AllowAutoSelect = !string.IsNullOrEmpty(ForcedValue);
-                frmPickItem.ShowDialogSafe(_objCharacter);
+                frmPickItem.MyForm.AllowAutoSelect = !string.IsNullOrEmpty(ForcedValue);
 
                 // Make sure the dialogue window was not canceled.
-                if (frmPickItem.DialogResult == DialogResult.Cancel || string.IsNullOrEmpty(frmPickItem.SelectedName))
+                if (frmPickItem.ShowDialogSafe(_objCharacter) == DialogResult.Cancel || string.IsNullOrEmpty(frmPickItem.MyForm.SelectedName))
                 {
                     throw new AbortedException();
                 }
 
-                SelectedValue = frmPickItem.SelectedName;
+                SelectedValue = frmPickItem.MyForm.SelectedName;
             }
             // Create the Improvement.
             SkillSpecialization objExpertise = new SkillSpecialization(_objCharacter, SelectedValue, true, true);
-            objSkill.Specializations.Add(objExpertise);
-            CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillExpertise, objExpertise.InternalId);
+            try
+            {
+                objSkill.Specializations.Add(objExpertise);
+                CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecialization, objExpertise.InternalId);
+            }
+            catch
+            {
+                objExpertise.Dispose();
+                throw;
+            }
         }
 
         public void penaltyfreesustain(XmlNode bonusNode)
@@ -7465,8 +7687,27 @@ namespace Chummer
                 intMaxForce = ImprovementManager.ValueToInt(_objCharacter, strDummy, _intRating);
             CreateImprovement(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.PenaltyFreeSustain, _strUnique, intMaxForce, intCount);
         }
+
+        /// <summary>
+        ///
+        /// </summary>
+        /// <param name="bonusNode">Replaces the Active Skill used for one or all spells with another. Example:
+        /// <replacespellskill spell="Mana Net">Blades</replacespellskill> Replace the Spellcasting skill with Blades for the spell Mana Net.
+        /// <replacespellskill>Blades</replacespellskill> Replace the Spellcasting skill with Blades for ALL spells that are not marked as Alchemical or BareHandedAdept.
+        /// </param>
+        public void replaceskillspell(XmlNode bonusNode)
+        {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+            Log.Trace("replaceskillspell" + Environment.NewLine
+                                          + "replaceskillspell = " + bonusNode.OuterXml);
+
+            CreateImprovement(bonusNode.Attributes?["spell"]?.InnerText ?? string.Empty, bonusNode.InnerText, Improvement.ImprovementType.ReplaceSkillSpell);
+        }
+
 #pragma warning restore IDE1006 // Naming Styles
-        #endregion
+
+        #endregion Improvement Methods
     }
 
     [Serializable]

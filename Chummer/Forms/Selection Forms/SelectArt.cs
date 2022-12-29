@@ -19,6 +19,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
 
@@ -55,14 +57,14 @@ namespace Chummer
             switch (objWindowMode)
             {
                 case Mode.Art:
-                    _objXmlDocument = objCharacter.LoadDataXPath("metamagic.xml").SelectSingleNode("/chummer/arts");
+                    _objXmlDocument = objCharacter.LoadDataXPath("metamagic.xml").SelectSingleNodeAndCacheExpression("/chummer/arts");
                     _strLocalName = LanguageManager.GetString("String_Art");
                     _strBaseXPath = "art";
                     _strXPathFilter = _objCharacter.Settings.BookXPath();
                     break;
 
                 case Mode.Enhancement:
-                    _objXmlDocument = objCharacter.LoadDataXPath("powers.xml").SelectSingleNode("/chummer/enhancements");
+                    _objXmlDocument = objCharacter.LoadDataXPath("powers.xml").SelectSingleNodeAndCacheExpression("/chummer/enhancements");
                     _strLocalName = LanguageManager.GetString("String_Enhancement");
                     _strBaseXPath = "enhancement";
                     _strXPathFilter = _objCharacter.Settings.BookXPath();
@@ -70,39 +72,44 @@ namespace Chummer
 
                 case Mode.Enchantment:
                     _strLocalName = LanguageManager.GetString("String_Enchantment");
-                    _objXmlDocument = objCharacter.LoadDataXPath("spells.xml").SelectSingleNode("/chummer/spells");
+                    _objXmlDocument = objCharacter.LoadDataXPath("spells.xml").SelectSingleNodeAndCacheExpression("/chummer/spells");
                     _strBaseXPath = "spell";
                     _strXPathFilter = "category = 'Enchantments' and (" + _objCharacter.Settings.BookXPath() + ')';
                     break;
 
                 case Mode.Ritual:
                     _strLocalName = LanguageManager.GetString("String_Ritual");
-                    _objXmlDocument = objCharacter.LoadDataXPath("spells.xml").SelectSingleNode("/chummer/spells");
+                    _objXmlDocument = objCharacter.LoadDataXPath("spells.xml").SelectSingleNodeAndCacheExpression("/chummer/spells");
                     _strBaseXPath = "spell";
                     _strXPathFilter = "category = 'Rituals' and (" + _objCharacter.Settings.BookXPath() + ')';
                     break;
             }
         }
 
-        private void SelectArt_Load(object sender, EventArgs e)
+        private async void SelectArt_Load(object sender, EventArgs e)
         {
-            Text = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Title_SelectGeneric"), _strLocalName);
-            chkLimitList.Text = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Checkbox_SelectGeneric_LimitList"), _strLocalName);
+            string strText = string.Format(GlobalSettings.CultureInfo,
+                                           await LanguageManager.GetStringAsync("Title_SelectGeneric").ConfigureAwait(false), _strLocalName);
+            await this.DoThreadSafeAsync(x => x.Text = strText).ConfigureAwait(false);
+            string strLimitText = string.Format(GlobalSettings.CultureInfo,
+                                                await LanguageManager.GetStringAsync(
+                                                    "Checkbox_SelectGeneric_LimitList").ConfigureAwait(false), _strLocalName);
+            await chkLimitList.DoThreadSafeAsync(x => x.Text = strLimitText).ConfigureAwait(false);
 
             _blnLoading = false;
 
-            BuildList();
+            await BuildList().ConfigureAwait(false);
         }
 
-        private void lstArt_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstArt_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
 
-            string strSelected = lstArt.SelectedValue?.ToString();
+            string strSelected = await lstArt.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strSelected))
             {
-                tlpRight.Visible = false;
+                await tlpRight.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
                 return;
             }
 
@@ -111,17 +118,16 @@ namespace Chummer
 
             if (objXmlMetamagic == null)
             {
-                tlpRight.Visible = false;
+                await tlpRight.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
                 return;
             }
 
-            string strSource = objXmlMetamagic.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
-            string strPage = objXmlMetamagic.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlMetamagic.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-            SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
-                GlobalSettings.CultureInfo, _objCharacter);
-            lblSource.Text = objSource.ToString();
-            lblSource.SetToolTip(objSource.LanguageBookTooltip);
-            tlpRight.Visible = true;
+            string strSource = (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("source").ConfigureAwait(false))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
+            string strPage = (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("altpage").ConfigureAwait(false))?.Value ?? (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("page").ConfigureAwait(false))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
+            SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
+                                                                             GlobalSettings.CultureInfo, _objCharacter).ConfigureAwait(false);
+            await objSource.SetControlAsync(lblSource).ConfigureAwait(false);
+            await tlpRight.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -132,6 +138,7 @@ namespace Chummer
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private void lstArt_DoubleClick(object sender, EventArgs e)
@@ -139,14 +146,14 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void chkLimitList_CheckedChanged(object sender, EventArgs e)
+        private async void chkLimitList_CheckedChanged(object sender, EventArgs e)
         {
-            BuildList();
+            await BuildList().ConfigureAwait(false);
         }
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
+        private async void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            BuildList();
+            await BuildList().ConfigureAwait(false);
         }
 
         #region Properties
@@ -163,42 +170,45 @@ namespace Chummer
         /// <summary>
         /// Build the list of Arts.
         /// </summary>
-        private void BuildList()
+        private async ValueTask BuildList(CancellationToken token = default)
         {
             if (_blnLoading)
                 return;
             
             string strFilter = _strXPathFilter;
-            if (!string.IsNullOrEmpty(txtSearch.Text))
-                strFilter += " and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text);
+            string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
+            if (!string.IsNullOrEmpty(strSearch))
+                strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstArts))
             {
+                bool blnLimitList = await chkLimitList.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
                 foreach (XPathNavigator objXmlMetamagic in
                          _objXmlDocument.Select(_strBaseXPath + '[' + strFilter + ']'))
                 {
-                    string strId = objXmlMetamagic.SelectSingleNodeAndCacheExpression("id")?.Value;
+                    string strId = (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("id", token: token).ConfigureAwait(false))?.Value;
                     if (!string.IsNullOrEmpty(strId)
-                        && (!chkLimitList.Checked || objXmlMetamagic.RequirementsMet(_objCharacter)))
+                        && (!blnLimitList || objXmlMetamagic.RequirementsMet(_objCharacter)))
                     {
-                        lstArts.Add(new ListItem(objXmlMetamagic.SelectSingleNodeAndCacheExpression("id")?.Value,
-                                                 objXmlMetamagic.SelectSingleNodeAndCacheExpression("translate")?.Value
-                                                 ?? objXmlMetamagic.SelectSingleNodeAndCacheExpression("name")?.Value
-                                                 ?? LanguageManager.GetString("String_Unknown")));
+                        lstArts.Add(new ListItem((await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("id", token: token).ConfigureAwait(false))?.Value,
+                                                 (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
+                                                 ?? (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value
+                                                 ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false)));
                     }
                 }
 
                 lstArts.Sort(CompareListItems.CompareNames);
-                string strOldSelected = lstArt.SelectedValue?.ToString();
+                string strOldSelected = await lstArt.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
                 _blnLoading = true;
-                lstArt.BeginUpdate();
-                lstArt.PopulateWithListItems(lstArts);
+                await lstArt.PopulateWithListItemsAsync(lstArts, token: token).ConfigureAwait(false);
                 _blnLoading = false;
-                if (!string.IsNullOrEmpty(strOldSelected))
-                    lstArt.SelectedValue = strOldSelected;
-                else
-                    lstArt.SelectedIndex = -1;
-                lstArt.EndUpdate();
+                await lstArt.DoThreadSafeAsync(x =>
+                {
+                    if (!string.IsNullOrEmpty(strOldSelected))
+                        x.SelectedValue = strOldSelected;
+                    else
+                        x.SelectedIndex = -1;
+                }, token: token).ConfigureAwait(false);
             }
         }
 
@@ -221,13 +231,14 @@ namespace Chummer
                     _strSelectedItem = strSelectedItem;
 
                     DialogResult = DialogResult.OK;
+                    Close();
                 }
             }
         }
 
         private async void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            await CommonFunctions.OpenPdfFromControl(sender, e);
+            await CommonFunctions.OpenPdfFromControl(sender).ConfigureAwait(false);
         }
 
         #endregion Methods

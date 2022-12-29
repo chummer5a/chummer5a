@@ -81,7 +81,7 @@ namespace Chummer
             if (control == null)
                 throw new ArgumentNullException(nameof(control));
             _lstControls.Add(control);
-            control.MouseLeave += control_MouseLeave;
+            control.DoThreadSafe(x => x.MouseLeave += control_MouseLeave);
         }
 
         public void AddControlRecursive(Control control)
@@ -89,14 +89,17 @@ namespace Chummer
             if (control == null)
                 throw new ArgumentNullException(nameof(control));
             _lstControls.Add(control);
-            control.MouseLeave += control_MouseLeave;
-            if (control.HasChildren)
+            control.DoThreadSafe(x =>
             {
-                foreach (Control child in control.Controls)
+                x.MouseLeave += control_MouseLeave;
+                if (x.HasChildren)
                 {
-                    AddControlRecursive(child);
+                    foreach (Control child in x.Controls)
+                    {
+                        AddControlRecursive(child);
+                    }
                 }
-            }
+            });
         }
 
         //This is our custom event added to each control to check mouse leave

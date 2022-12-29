@@ -19,6 +19,7 @@
 
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Threading;
 
 namespace Chummer
 {
@@ -45,20 +46,30 @@ namespace Chummer
                 RemoveAt(Count - 1);
         }
 
-        private bool _blnSkipCollectionChanged;
+        private int _intSkipCollectionChanged;
 
         /// <inheritdoc />
         protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
         {
-            if (_blnSkipCollectionChanged)
+            if (_intSkipCollectionChanged > 0)
                 return;
             if (e.Action == NotifyCollectionChangedAction.Reset)
             {
-                _blnSkipCollectionChanged = true;
-                // Remove all entries greater than the allowed size
-                while (Count > _intMaxSize)
-                    RemoveAt(Count - 1);
-                _blnSkipCollectionChanged = false;
+                if (Interlocked.Increment(ref _intSkipCollectionChanged) > 1) // Just in case
+                {
+                    Interlocked.Decrement(ref _intSkipCollectionChanged);
+                    return;
+                }
+                try
+                {
+                    // Remove all entries greater than the allowed size
+                    while (Count > _intMaxSize)
+                        RemoveAt(Count - 1);
+                }
+                finally
+                {
+                    Interlocked.Decrement(ref _intSkipCollectionChanged);
+                }
             }
             base.OnCollectionChanged(e);
         }

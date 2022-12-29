@@ -22,68 +22,66 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer.Annotations;
 using Chummer.Backend.Skills;
 using Chummer.Properties;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Chummer.UI.Skills
 {
     public sealed partial class KnowledgeSkillControl : UserControl
     {
-        private bool _blnUpdatingName = true;
-        private bool _blnUpdatingSpec = true;
+        private int _intUpdatingName = 1;
+        private int _intUpdatingSpec = 1;
         private readonly KnowledgeSkill _objSkill;
         private readonly Timer _tmrNameChangeTimer;
         private readonly Timer _tmrSpecChangeTimer;
+
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly NumericUpDownEx nudKarma;
+
         private readonly NumericUpDownEx nudSkill;
         private readonly Label lblRating;
+
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly ButtonWithToolTip btnCareerIncrease;
+
         private readonly ColorableCheckBox chkNativeLanguage;
         private readonly ElasticComboBox cboSpec;
+
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly ColorableCheckBox chkKarma;
+
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly Label lblSpec;
+
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly ButtonWithToolTip btnAddSpec;
 
-        public KnowledgeSkillControl(KnowledgeSkill objSkill)
+        private readonly CancellationToken _objMyToken;
+
+        public KnowledgeSkillControl(KnowledgeSkill objSkill, CancellationToken objMyToken = default)
         {
             if (objSkill == null)
                 return;
+            _objMyToken = objMyToken;
             _objSkill = objSkill;
             InitializeComponent();
+            Disposed += (sender, args) => UnbindKnowledgeSkillControl();
             SuspendLayout();
             tlpMain.SuspendLayout();
             tlpMiddle.SuspendLayout();
             try
             {
-                lblModifiedRating.DoOneWayDataBinding("Text", objSkill, nameof(KnowledgeSkill.DisplayPool));
-                lblModifiedRating.DoOneWayDataBinding("ToolTipText", objSkill, nameof(KnowledgeSkill.PoolToolTip));
-
-                cmdDelete.DoOneWayDataBinding("Visible", objSkill, nameof(Skill.AllowDelete));
-
-                cboType.BeginUpdate();
-                cboType.PopulateWithListItems(objSkill.CharacterObject.SkillsSection.MyKnowledgeTypes);
-                cboType.DoDataBinding("SelectedValue", objSkill, nameof(KnowledgeSkill.Type));
-                cboType.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.AllowTypeChange));
-                cboType.EndUpdate();
-
-                lblName.DoOneWayNegatableDataBinding("Visible", objSkill, nameof(Skill.AllowNameChange));
-                lblName.DoOneWayDataBinding("Text", objSkill, nameof(KnowledgeSkill.WritableName));
-                lblName.DoOneWayDataBinding("ForeColor", objSkill, nameof(Skill.PreferredColor));
-
-                cboName.BeginUpdate();
-                cboName.PopulateWithListItems(objSkill.CharacterObject.SkillsSection.MyDefaultKnowledgeSkills);
-                cboName.SelectedIndex = -1;
-                cboName.Text = objSkill.WritableName;
-                cboName.DoOneWayDataBinding("Visible", objSkill, nameof(Skill.AllowNameChange));
-                cboName.EndUpdate();
-                _blnUpdatingName = false;
+                // To make sure that the initial load formats the name column properly, we need to set the attribute name in the constructor and then make it invisible
+                lblName.Text = _objSkill.WritableName;
+                if (_objSkill.AllowNameChange)
+                    lblName.Visible = false;
+                else
+                    cboName.Visible = false;
                 _tmrNameChangeTimer = new Timer { Interval = 1000 };
                 _tmrNameChangeTimer.Tick += NameChangeTimer_Tick;
 
@@ -112,13 +110,6 @@ namespace Chummer.UI.Skills
                     };
                     btnCareerIncrease.Click += btnCareerIncrease_Click;
 
-                    lblRating.DoOneWayNegatableDataBinding("Visible", objSkill, nameof(KnowledgeSkill.IsNativeLanguage));
-                    lblRating.DoOneWayDataBinding("Text", objSkill, nameof(Skill.Rating));
-
-                    btnCareerIncrease.DoOneWayDataBinding("Visible", objSkill, nameof(KnowledgeSkill.AllowUpgrade));
-                    btnCareerIncrease.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanUpgradeCareer));
-                    btnCareerIncrease.DoOneWayDataBinding("ToolTipText", objSkill, nameof(Skill.UpgradeToolTip));
-
                     tlpMain.Controls.Add(lblRating, 1, 0);
                     tlpMain.Controls.Add(btnCareerIncrease, 2, 0);
 
@@ -144,12 +135,6 @@ namespace Chummer.UI.Skills
                         UseVisualStyleBackColor = true
                     };
                     btnAddSpec.Click += btnAddSpec_Click;
-                    
-                    lblSpec.DoOneWayDataBinding("Text", objSkill, nameof(Skill.CurrentDisplaySpecialization));
-
-                    btnAddSpec.DoOneWayDataBinding("Visible", objSkill, nameof(Skill.CanHaveSpecs));
-                    btnAddSpec.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanAffordSpecialization));
-                    btnAddSpec.DoOneWayDataBinding("ToolTipText", objSkill, nameof(Skill.AddSpecToolTip));
 
                     tlpMiddle.SetColumnSpan(lblSpec, 2);
                     tlpMiddle.Controls.Add(lblSpec, 1, 0);
@@ -161,7 +146,7 @@ namespace Chummer.UI.Skills
                     {
                         Anchor = AnchorStyles.Right,
                         AutoSize = true,
-                        InterceptMouseWheel = NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver,
+                        InterceptMouseWheel = GlobalSettings.InterceptMode,
                         Margin = new Padding(3, 2, 3, 2),
                         Maximum = new decimal(new[] { 99, 0, 0, 0 }),
                         Name = "nudSkill"
@@ -170,25 +155,16 @@ namespace Chummer.UI.Skills
                     {
                         Anchor = AnchorStyles.Right,
                         AutoSize = true,
-                        InterceptMouseWheel = NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver,
+                        InterceptMouseWheel = GlobalSettings.InterceptMode,
                         Margin = new Padding(3, 2, 3, 2),
                         Maximum = new decimal(new[] { 99, 0, 0, 0 }),
                         Name = "nudKarma"
                     };
 
-                    nudSkill.DoOneWayDataBinding("Visible", objSkill.CharacterObject.SkillsSection,
-                        nameof(SkillsSection.HasKnowledgePoints));
-                    nudSkill.DoOneWayDataBinding("Enabled", objSkill, nameof(KnowledgeSkill.AllowUpgrade));
-                    nudSkill.DoDataBinding("Value", objSkill, nameof(Skill.Base));
-                    nudSkill.InterceptMouseWheel = GlobalSettings.InterceptMode;
-                    nudKarma.DoOneWayDataBinding("Enabled", objSkill, nameof(KnowledgeSkill.AllowUpgrade));
-                    nudKarma.DoDataBinding("Value", objSkill, nameof(Skill.Karma));
-                    nudKarma.InterceptMouseWheel = GlobalSettings.InterceptMode;
-
                     tlpMain.Controls.Add(nudSkill, 1, 0);
                     tlpMain.Controls.Add(nudKarma, 2, 0);
 
-                    chkNativeLanguage = new ColorableCheckBox(components)
+                    chkNativeLanguage = new ColorableCheckBox
                     {
                         Anchor = AnchorStyles.Left,
                         AutoSize = true,
@@ -208,7 +184,8 @@ namespace Chummer.UI.Skills
                         Name = "cboSpec",
                         TabStop = false
                     };
-                    chkKarma = new ColorableCheckBox(components)
+                    cboSpec.TextChanged += cboSpec_TextChanged;
+                    chkKarma = new ColorableCheckBox
                     {
                         Anchor = AnchorStyles.Left,
                         AutoSize = true,
@@ -217,134 +194,581 @@ namespace Chummer.UI.Skills
                         Name = "chkKarma",
                         UseVisualStyleBackColor = true
                     };
-
-                    chkNativeLanguage.DoOneWayDataBinding("Visible", objSkill, nameof(Skill.IsLanguage));
-                    chkNativeLanguage.Enabled = objSkill.IsNativeLanguage ||
-                                                objSkill.CharacterObject.SkillsSection.HasAvailableNativeLanguageSlots;
-                    chkNativeLanguage.DoDataBinding("Checked", objSkill, nameof(Skill.IsNativeLanguage));
-
-                    cboSpec.BeginUpdate();
-                    cboSpec.PopulateWithListItems(objSkill.CGLSpecializations);
-                    cboSpec.EndUpdate();
-                    cboSpec.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanHaveSpecs));
-                    cboSpec.Text = objSkill.CurrentDisplaySpecialization;
-                    cboSpec.TextChanged += cboSpec_TextChanged;
-                    _blnUpdatingSpec = false;
+                    Interlocked.Decrement(ref _intUpdatingSpec);
                     _tmrSpecChangeTimer = new Timer { Interval = 1000 };
                     _tmrSpecChangeTimer.Tick += SpecChangeTimer_Tick;
-
-                    chkKarma.DoOneWayDataBinding("Enabled", objSkill, nameof(Skill.CanHaveSpecs));
-                    chkKarma.DoDataBinding("Checked", objSkill, nameof(Skill.BuyWithKarma));
 
                     tlpMiddle.Controls.Add(chkNativeLanguage, 1, 0);
                     tlpMiddle.Controls.Add(cboSpec, 2, 0);
                     tlpMiddle.Controls.Add(chkKarma, 3, 0);
-
-                    // Hacky way of fixing a weird UI issue caused by items of a combobox only being populated from the DataSource after the combobox is added
-                    _blnUpdatingSpec = true;
-                    cboSpec.Text = objSkill.CurrentDisplaySpecialization;
-                    _blnUpdatingSpec = false;
                 }
 
-                if (objSkill.ForcedName)
-                {
-                    this.DoOneWayDataBinding("Enabled", objSkill, nameof(KnowledgeSkill.Enabled));
-                }
+                DoDataBindings();
 
-                AdjustForDpi();
-                this.UpdateLightDarkMode();
-                this.TranslateWinForm(blnDoResumeLayout: false);
+                this.UpdateLightDarkMode(token: objMyToken);
+                this.TranslateWinForm(blnDoResumeLayout: false, token: objMyToken);
             }
             finally
             {
                 tlpMiddle.ResumeLayout();
                 tlpMain.ResumeLayout();
                 ResumeLayout(true);
+            }
+            using (objSkill.LockObject.EnterWriteLock(objMyToken))
                 objSkill.PropertyChanged += Skill_PropertyChanged;
+            using (objSkill.CharacterObject.SkillsSection.LockObject.EnterWriteLock(objMyToken))
                 objSkill.CharacterObject.SkillsSection.PropertyChanged += OnSkillsSectionPropertyChanged;
-            }
+            Interlocked.Decrement(ref _intUpdatingName);
+            Interlocked.Decrement(ref _intUpdatingSpec);
         }
 
-        private void OnSkillsSectionPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private void DoDataBindings()
         {
-            if (e.PropertyName == nameof(SkillsSection.HasAvailableNativeLanguageSlots) && chkNativeLanguage != null)
+            try
             {
-                chkNativeLanguage.Enabled = _objSkill.IsNativeLanguage || _objSkill.CharacterObject.SkillsSection.HasAvailableNativeLanguageSlots;
+                lblModifiedRating.RegisterOneWayAsyncDataBinding((x, y) => x.Text = y, _objSkill,
+                                                                           nameof(KnowledgeSkill.DisplayPool),
+                                                                           x => x.GetDisplayPoolAsync(_objMyToken),
+                                                                           _objMyToken, _objMyToken);
+                lblModifiedRating.RegisterOneWayAsyncDataBinding((x, y) => x.ToolTipText = y, _objSkill,
+                                                                       nameof(KnowledgeSkill.PoolToolTip),
+                                                                       x => x.GetPoolToolTipAsync(_objMyToken)
+                                                                           .AsTask(),
+                                                                       _objMyToken, _objMyToken);
+
+                cmdDelete.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objSkill,
+                                                               nameof(KnowledgeSkill.AllowDelete),
+                                                               x => x.GetAllowDeleteAsync(_objMyToken).AsTask(),
+                                                               _objMyToken, _objMyToken);
+
+                cboType.PopulateWithListItems(_objSkill.CharacterObject.SkillsSection.MyKnowledgeTypes,
+                                                   token: _objMyToken);
+                cboType.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
+                                                             nameof(KnowledgeSkill.AllowTypeChange),
+                                                             x => x.GetAllowTypeChangeAsync(_objMyToken).AsTask(),
+                                                             _objMyToken, _objMyToken);
+                cboType.DoDataBinding("SelectedValue", _objSkill, nameof(KnowledgeSkill.Type), _objMyToken);
+
+                lblName.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = !y, _objSkill,
+                                                             nameof(KnowledgeSkill.AllowNameChange),
+                                                             x => x.GetAllowNameChangeAsync(_objMyToken).AsTask(),
+                                                             _objMyToken, _objMyToken);
+                lblName.RegisterOneWayAsyncDataBinding((x, y) => x.Text = y, _objSkill,
+                                                             nameof(KnowledgeSkill.WritableName),
+                                                             x => x.GetWritableNameAsync(_objMyToken).AsTask(),
+                                                             _objMyToken, _objMyToken);
+                lblName.RegisterOneWayAsyncDataBinding((x, y) => x.ForeColor = y, _objSkill,
+                                                             nameof(KnowledgeSkill.PreferredColor),
+                                                             x => x.GetPreferredColorAsync(_objMyToken).AsTask(),
+                                                             _objMyToken, _objMyToken);
+
+                string strWritableName = _objSkill.WritableName;
+                Interlocked.Increment(ref _intUpdatingName);
+                try
+                {
+                    cboName.PopulateWithListItems(_objSkill.CharacterObject.SkillsSection.MyDefaultKnowledgeSkills, token: _objMyToken);
+                    cboName.DoThreadSafe((x, y) =>
+                    {
+                        x.SelectedIndex = -1;
+                        x.Text = strWritableName;
+                    }, _objMyToken);
+                }
+                finally
+                {
+                    Interlocked.Decrement(ref _intUpdatingName);
+                }
+
+                cboName.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objSkill,
+                                                             nameof(KnowledgeSkill.AllowNameChange),
+                                                             x => x.GetAllowNameChangeAsync(_objMyToken).AsTask(),
+                                                             _objMyToken, _objMyToken);
+
+                if (_objSkill.CharacterObject.Created)
+                {
+                    lblRating.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = !y, _objSkill,
+                                                                   nameof(KnowledgeSkill.IsNativeLanguage),
+                                                                   x => x.GetIsNativeLanguageAsync(_objMyToken)
+                                                                         .AsTask(),
+                                                                   _objMyToken, _objMyToken);
+                    lblRating.RegisterOneWayAsyncDataBinding(
+                        (x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objSkill,
+                        nameof(KnowledgeSkill.Rating),
+                        x => x.GetRatingAsync(_objMyToken).AsTask(),
+                        _objMyToken, _objMyToken);
+
+                    btnCareerIncrease.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objSkill,
+                                                                           nameof(KnowledgeSkill.AllowUpgrade),
+                                                                           x => x.GetAllowUpgradeAsync(_objMyToken)
+                                                                               .AsTask(),
+                                                                           _objMyToken, _objMyToken);
+                    btnCareerIncrease.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
+                                                                           nameof(KnowledgeSkill.CanUpgradeCareer),
+                                                                           x => x.GetCanUpgradeCareerAsync(
+                                                                                   _objMyToken)
+                                                                               .AsTask(),
+                                                                           _objMyToken, _objMyToken);
+                    btnCareerIncrease.RegisterOneWayAsyncDataBinding((x, y) => x.ToolTipText = y, _objSkill,
+                                                                           nameof(KnowledgeSkill.UpgradeToolTip),
+                                                                           x => x.GetUpgradeToolTipAsync(
+                                                                                   _objMyToken)
+                                                                               .AsTask(),
+                                                                           _objMyToken, _objMyToken);
+
+                    lblSpec.RegisterOneWayAsyncDataBinding((x, y) => x.Text = y, _objSkill,
+                                                                 nameof(KnowledgeSkill
+                                                                            .CurrentDisplaySpecialization),
+                                                                 x => x.GetCurrentDisplaySpecializationAsync(
+                                                                           _objMyToken)
+                                                                       .AsTask(),
+                                                                 _objMyToken, _objMyToken);
+
+                    btnAddSpec.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objSkill,
+                                                                    nameof(KnowledgeSkill.CanHaveSpecs),
+                                                                    x => x.GetCanHaveSpecsAsync(_objMyToken)
+                                                                          .AsTask(),
+                                                                    _objMyToken, _objMyToken);
+                    btnAddSpec.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
+                                                                    nameof(KnowledgeSkill.CanAffordSpecialization),
+                                                                    x => x
+                                                                         .GetCanAffordSpecializationAsync(
+                                                                             _objMyToken)
+                                                                         .AsTask(),
+                                                                    _objMyToken, _objMyToken);
+                    btnAddSpec.RegisterOneWayAsyncDataBinding((x, y) => x.ToolTipText = y, _objSkill,
+                                                                    nameof(KnowledgeSkill.AddSpecToolTip),
+                                                                    x => x.GetAddSpecToolTipAsync(_objMyToken)
+                                                                          .AsTask(),
+                                                                    _objMyToken, _objMyToken);
+                }
+                else
+                {
+                    nudSkill.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y,
+                                                                  _objSkill.CharacterObject.SkillsSection,
+                                                                  nameof(SkillsSection.HasKnowledgePoints),
+                                                                  x => x.GetHasKnowledgePointsAsync(
+                                                                      _objMyToken).AsTask(), _objMyToken,
+                                                                  _objMyToken);
+                    nudSkill.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
+                                                                  nameof(KnowledgeSkill.AllowUpgrade),
+                                                                  x => x.GetAllowUpgradeAsync(_objMyToken).AsTask(),
+                                                                  _objMyToken, _objMyToken);
+                    nudKarma.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
+                                                                  nameof(KnowledgeSkill.AllowUpgrade),
+                                                                  x => x.GetAllowUpgradeAsync(_objMyToken).AsTask(),
+                                                                  _objMyToken, _objMyToken);
+
+                    chkNativeLanguage.RegisterOneWayAsyncDataBinding((x, y) => x.Visible = y, _objSkill,
+                                                                           nameof(KnowledgeSkill.IsLanguage),
+                                                                           x => x.GetIsLanguageAsync(_objMyToken)
+                                                                               .AsTask(),
+                                                                           _objMyToken, _objMyToken);
+                    bool blnEnableNative
+                        = _objSkill.IsNativeLanguage
+                          || _objSkill.CharacterObject.SkillsSection.HasAvailableNativeLanguageSlots;
+                    chkNativeLanguage.DoThreadSafe((x, y) => x.Enabled = blnEnableNative, _objMyToken);
+
+                    chkKarma.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
+                                                                  nameof(KnowledgeSkill.CanHaveSpecs),
+                                                                  x => x.GetCanHaveSpecsAsync(_objMyToken).AsTask(),
+                                                                  _objMyToken, _objMyToken);
+
+                    cboSpec.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
+                                                           nameof(KnowledgeSkill.CanHaveSpecs),
+                                                           x => x.GetCanHaveSpecsAsync(_objMyToken).AsTask(),
+                                                           _objMyToken, _objMyToken);
+                    string strDisplaySpec = _objSkill.CurrentDisplaySpecialization;
+                    Interlocked.Increment(ref _intUpdatingSpec);
+                    try
+                    {
+                        cboSpec.PopulateWithListItems(_objSkill.CGLSpecializations, token: _objMyToken);
+                        cboSpec.DoThreadSafe((x, y) => x.Text = strDisplaySpec, token: _objMyToken);
+                    }
+                    finally
+                    {
+                        Interlocked.Decrement(ref _intUpdatingSpec);
+                    }
+
+                    nudSkill.DoDataBinding("Value", _objSkill, nameof(Skill.Base), _objMyToken);
+                    nudKarma.DoDataBinding("Value", _objSkill, nameof(Skill.Karma), _objMyToken);
+                    chkNativeLanguage.DoDataBinding("Checked", _objSkill, nameof(Skill.IsNativeLanguage), _objMyToken);
+                    chkKarma.DoDataBinding("Checked", _objSkill, nameof(Skill.BuyWithKarma), _objMyToken);
+                }
+
+                if (_objSkill.ForcedName)
+                {
+                    this.RegisterOneWayAsyncDataBinding((x, y) => x.Enabled = y, _objSkill,
+                                                              nameof(KnowledgeSkill.Enabled),
+                                                              x => x.GetEnabledAsync(_objMyToken).AsTask(),
+                                                              _objMyToken, _objMyToken);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
-        private void Skill_PropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async Task DoDataBindingsAsync()
+        {
+            try
+            {
+                await lblModifiedRating.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objSkill,
+                                                                           nameof(KnowledgeSkill.DisplayPool),
+                                                                           x => x.GetDisplayPoolAsync(_objMyToken),
+                                                                           _objMyToken, _objMyToken)
+                                           .ConfigureAwait(false);
+                await lblModifiedRating.RegisterOneWayAsyncDataBindingAsync((x, y) => x.ToolTipText = y, _objSkill,
+                                                                       nameof(KnowledgeSkill.PoolToolTip),
+                                                                       x => x.GetPoolToolTipAsync(_objMyToken)
+                                                                           .AsTask(),
+                                                                       _objMyToken, _objMyToken)
+                                       .ConfigureAwait(false);
+
+                await cmdDelete.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objSkill,
+                                                               nameof(KnowledgeSkill.AllowDelete),
+                                                               x => x.GetAllowDeleteAsync(_objMyToken).AsTask(),
+                                                               _objMyToken, _objMyToken).ConfigureAwait(false);
+
+                await cboType
+                      .PopulateWithListItemsAsync(_objSkill.CharacterObject.SkillsSection.MyKnowledgeTypes,
+                                                  token: _objMyToken).ConfigureAwait(false);
+                await cboType.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSkill,
+                                                             nameof(KnowledgeSkill.AllowTypeChange),
+                                                             x => x.GetAllowTypeChangeAsync(_objMyToken).AsTask(),
+                                                             _objMyToken, _objMyToken).ConfigureAwait(false);
+                await cboType
+                      .DoDataBindingAsync("SelectedValue", _objSkill, nameof(KnowledgeSkill.Type), _objMyToken)
+                      .ConfigureAwait(false);
+
+                await lblName.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = !y, _objSkill,
+                                                             nameof(KnowledgeSkill.AllowNameChange),
+                                                             x => x.GetAllowNameChangeAsync(_objMyToken).AsTask(),
+                                                             _objMyToken, _objMyToken).ConfigureAwait(false);
+                await lblName.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objSkill,
+                                                             nameof(KnowledgeSkill.WritableName),
+                                                             x => x.GetWritableNameAsync(_objMyToken).AsTask(),
+                                                             _objMyToken, _objMyToken).ConfigureAwait(false);
+                await lblName.RegisterOneWayAsyncDataBindingAsync((x, y) => x.ForeColor = y, _objSkill,
+                                                             nameof(KnowledgeSkill.PreferredColor),
+                                                             x => x.GetPreferredColorAsync(_objMyToken).AsTask(),
+                                                             _objMyToken, _objMyToken).ConfigureAwait(false);
+
+                string strWritableName = await _objSkill.GetWritableNameAsync(_objMyToken).ConfigureAwait(false);
+                Interlocked.Increment(ref _intUpdatingName);
+                try
+                {
+                    await cboName
+                          .PopulateWithListItemsAsync(_objSkill.CharacterObject.SkillsSection.MyDefaultKnowledgeSkills,
+                                                      token: _objMyToken).ConfigureAwait(false);
+                    await cboName.DoThreadSafeAsync(x =>
+                    {
+                        x.SelectedIndex = -1;
+                        x.Text = strWritableName;
+                    }, _objMyToken).ConfigureAwait(false);
+                }
+                finally
+                {
+                    Interlocked.Decrement(ref _intUpdatingName);
+                }
+
+                await cboName.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objSkill,
+                                                             nameof(KnowledgeSkill.AllowNameChange),
+                                                             x => x.GetAllowNameChangeAsync(_objMyToken).AsTask(),
+                                                             _objMyToken, _objMyToken).ConfigureAwait(false);
+
+                if (await _objSkill.CharacterObject.GetCreatedAsync(_objMyToken).ConfigureAwait(false))
+                {
+                    await lblRating.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = !y, _objSkill,
+                                                                   nameof(KnowledgeSkill.IsNativeLanguage),
+                                                                   x => x.GetIsNativeLanguageAsync(_objMyToken)
+                                                                         .AsTask(),
+                                                                   _objMyToken, _objMyToken).ConfigureAwait(false);
+                    await lblRating.RegisterOneWayAsyncDataBindingAsync(
+                        (x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), _objSkill,
+                        nameof(KnowledgeSkill.Rating),
+                        x => x.GetRatingAsync(_objMyToken).AsTask(),
+                        _objMyToken, _objMyToken).ConfigureAwait(false);
+
+                    await btnCareerIncrease.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objSkill,
+                                                                           nameof(KnowledgeSkill.AllowUpgrade),
+                                                                           x => x.GetAllowUpgradeAsync(_objMyToken)
+                                                                               .AsTask(),
+                                                                           _objMyToken, _objMyToken)
+                                           .ConfigureAwait(false);
+                    await btnCareerIncrease.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSkill,
+                                                                           nameof(KnowledgeSkill.CanUpgradeCareer),
+                                                                           x => x.GetCanUpgradeCareerAsync(
+                                                                                   _objMyToken)
+                                                                               .AsTask(),
+                                                                           _objMyToken, _objMyToken)
+                                           .ConfigureAwait(false);
+                    await btnCareerIncrease.RegisterOneWayAsyncDataBindingAsync((x, y) => x.ToolTipText = y, _objSkill,
+                                                                           nameof(KnowledgeSkill.UpgradeToolTip),
+                                                                           x => x.GetUpgradeToolTipAsync(
+                                                                                   _objMyToken)
+                                                                               .AsTask(),
+                                                                           _objMyToken, _objMyToken)
+                                           .ConfigureAwait(false);
+
+                    await lblSpec.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Text = y, _objSkill,
+                                                                 nameof(KnowledgeSkill
+                                                                            .CurrentDisplaySpecialization),
+                                                                 x => x.GetCurrentDisplaySpecializationAsync(
+                                                                           _objMyToken)
+                                                                       .AsTask(),
+                                                                 _objMyToken, _objMyToken).ConfigureAwait(false);
+
+                    await btnAddSpec.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objSkill,
+                                                                    nameof(KnowledgeSkill.CanHaveSpecs),
+                                                                    x => x.GetCanHaveSpecsAsync(_objMyToken)
+                                                                          .AsTask(),
+                                                                    _objMyToken, _objMyToken).ConfigureAwait(false);
+                    await btnAddSpec.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSkill,
+                                                                    nameof(KnowledgeSkill.CanAffordSpecialization),
+                                                                    x => x
+                                                                         .GetCanAffordSpecializationAsync(
+                                                                             _objMyToken)
+                                                                         .AsTask(),
+                                                                    _objMyToken, _objMyToken).ConfigureAwait(false);
+                    await btnAddSpec.RegisterOneWayAsyncDataBindingAsync((x, y) => x.ToolTipText = y, _objSkill,
+                                                                    nameof(KnowledgeSkill.AddSpecToolTip),
+                                                                    x => x.GetAddSpecToolTipAsync(_objMyToken)
+                                                                          .AsTask(),
+                                                                    _objMyToken, _objMyToken).ConfigureAwait(false);
+                }
+                else
+                {
+                    await nudSkill.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y,
+                                                                  _objSkill.CharacterObject.SkillsSection,
+                                                                  nameof(SkillsSection.HasKnowledgePoints),
+                                                                  x => x.GetHasKnowledgePointsAsync(
+                                                                      _objMyToken).AsTask(), _objMyToken,
+                                                                  _objMyToken)
+                                  .ConfigureAwait(false);
+                    await nudSkill.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSkill,
+                                                                  nameof(KnowledgeSkill.AllowUpgrade),
+                                                                  x => x.GetAllowUpgradeAsync(_objMyToken).AsTask(),
+                                                                  _objMyToken, _objMyToken).ConfigureAwait(false);
+                    await nudKarma.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSkill,
+                                                                  nameof(KnowledgeSkill.AllowUpgrade),
+                                                                  x => x.GetAllowUpgradeAsync(_objMyToken).AsTask(),
+                                                                  _objMyToken, _objMyToken).ConfigureAwait(false);
+
+                    await chkNativeLanguage.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objSkill,
+                                                                           nameof(KnowledgeSkill.IsLanguage),
+                                                                           x => x.GetIsLanguageAsync(_objMyToken)
+                                                                               .AsTask(),
+                                                                           _objMyToken, _objMyToken)
+                                           .ConfigureAwait(false);
+                    bool blnEnableNative
+                        = await _objSkill.GetIsNativeLanguageAsync(_objMyToken).ConfigureAwait(false)
+                          || await _objSkill.CharacterObject.SkillsSection
+                                            .GetHasAvailableNativeLanguageSlotsAsync(_objMyToken)
+                                            .ConfigureAwait(false);
+                    await chkNativeLanguage.DoThreadSafeAsync(x => x.Enabled = blnEnableNative, _objMyToken)
+                                           .ConfigureAwait(false);
+
+                    await chkKarma.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSkill,
+                                                                  nameof(KnowledgeSkill.CanHaveSpecs),
+                                                                  x => x.GetCanHaveSpecsAsync(_objMyToken).AsTask(),
+                                                                  _objMyToken, _objMyToken).ConfigureAwait(false);
+
+                    await cboSpec.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSkill,
+                                                                      nameof(KnowledgeSkill.CanHaveSpecs),
+                                                                      x => x.GetCanHaveSpecsAsync(_objMyToken).AsTask(),
+                                                                      _objMyToken, _objMyToken).ConfigureAwait(false);
+                    string strDisplaySpec = await _objSkill.GetCurrentDisplaySpecializationAsync(_objMyToken)
+                                                           .ConfigureAwait(false);
+                    Interlocked.Increment(ref _intUpdatingSpec);
+                    try
+                    {
+                        await cboSpec.PopulateWithListItemsAsync(
+                                         await _objSkill.GetCGLSpecializationsAsync(_objMyToken).ConfigureAwait(false),
+                                         token: _objMyToken)
+                                     .ConfigureAwait(false);
+                        await cboSpec.DoThreadSafeAsync(x => x.Text = strDisplaySpec, token: _objMyToken)
+                                     .ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        Interlocked.Decrement(ref _intUpdatingSpec);
+                    }
+
+                    await nudSkill.DoDataBindingAsync("Value", _objSkill, nameof(Skill.Base), _objMyToken)
+                                  .ConfigureAwait(false);
+                    await nudKarma.DoDataBindingAsync("Value", _objSkill, nameof(Skill.Karma), _objMyToken)
+                                  .ConfigureAwait(false);
+                    await chkNativeLanguage
+                          .DoDataBindingAsync("Checked", _objSkill, nameof(Skill.IsNativeLanguage), _objMyToken)
+                          .ConfigureAwait(false);
+                    await chkKarma.DoDataBindingAsync("Checked", _objSkill, nameof(Skill.BuyWithKarma), _objMyToken)
+                                  .ConfigureAwait(false);
+                }
+
+                if (_objSkill.ForcedName)
+                {
+                    await this.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objSkill,
+                                                              nameof(KnowledgeSkill.Enabled),
+                                                              x => x.GetEnabledAsync(_objMyToken).AsTask(),
+                                                              _objMyToken, _objMyToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private void KnowledgeSkillControl_Load(object sender, EventArgs e)
+        {
+            AdjustForDpi();
+        }
+
+        private async void OnSkillsSectionPropertyChanged(object sender, PropertyChangedEventArgs e)
+        {
+            try
+            {
+                if (e.PropertyName == nameof(SkillsSection.HasAvailableNativeLanguageSlots)
+                    && chkNativeLanguage != null)
+                {
+                    bool blnEnabled = await _objSkill.GetIsNativeLanguageAsync(_objMyToken).ConfigureAwait(false)
+                                      || await _objSkill.CharacterObject.SkillsSection
+                                                        .GetHasAvailableNativeLanguageSlotsAsync(_objMyToken)
+                                                        .ConfigureAwait(false);
+                    await chkNativeLanguage.DoThreadSafeAsync(x => x.Enabled = blnEnabled, token: _objMyToken)
+                                           .ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void Skill_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
             bool blnAll = false;
-            switch (e?.PropertyName)
+            try
             {
-                case null:
-                    blnAll = true;
-                    goto case nameof(Skill.CGLSpecializations);
-                case nameof(Skill.CGLSpecializations):
-                    if (cboSpec != null)
-                    {
-                        string strOldSpec = _objSkill.CGLSpecializations.Count != 0 ? cboSpec.SelectedItem?.ToString() : cboSpec.Text;
-                        IReadOnlyList<ListItem> lstSpecializations = _objSkill.CGLSpecializations;
-                        cboSpec.QueueThreadSafe(() =>
+                switch (e?.PropertyName)
+                {
+                    case null:
+                        blnAll = true;
+                        goto case nameof(Skill.CGLSpecializations);
+                    case nameof(Skill.CGLSpecializations):
+                        if (cboSpec != null)
                         {
-                            _blnUpdatingSpec = true;
-                            cboSpec.BeginUpdate();
-                            cboSpec.PopulateWithListItems(lstSpecializations);
-                            if (string.IsNullOrEmpty(strOldSpec))
-                                cboSpec.SelectedIndex = -1;
-                            else
+                            IReadOnlyList<ListItem> lstSpecializations
+                                = await _objSkill.GetCGLSpecializationsAsync(_objMyToken).ConfigureAwait(false);
+                            string strOldSpec = lstSpecializations.Count != 0
+                                ? await cboSpec
+                                        .DoThreadSafeFuncAsync(x => x.SelectedItem?.ToString(), token: _objMyToken)
+                                        .ConfigureAwait(false)
+                                : await cboSpec.DoThreadSafeFuncAsync(x => x.Text, token: _objMyToken)
+                                               .ConfigureAwait(false);
+                            Interlocked.Increment(ref _intUpdatingSpec);
+                            try
                             {
-                                cboSpec.SelectedValue = strOldSpec;
-                                if (cboSpec.SelectedIndex == -1)
-                                    cboSpec.Text = strOldSpec;
+                                await cboSpec.PopulateWithListItemsAsync(lstSpecializations, token: _objMyToken)
+                                             .ConfigureAwait(false);
+                                await cboSpec.DoThreadSafeAsync(x =>
+                                {
+                                    if (string.IsNullOrEmpty(strOldSpec))
+                                        x.SelectedIndex = -1;
+                                    else
+                                    {
+                                        x.SelectedValue = strOldSpec;
+                                        if (x.SelectedIndex == -1)
+                                            x.Text = strOldSpec;
+                                    }
+                                }, token: _objMyToken).ConfigureAwait(false);
                             }
-                            cboSpec.EndUpdate();
-                            _blnUpdatingSpec = false;
-                        });
-                    }
-                    if (blnAll)
-                        goto case nameof(KnowledgeSkill.WritableName);
-                    break;
+                            finally
+                            {
+                                Interlocked.Decrement(ref _intUpdatingSpec);
+                            }
+                        }
 
-                case nameof(KnowledgeSkill.WritableName):
-                    if (!_blnUpdatingName)
-                    {
-                        string strWritableName = _objSkill.WritableName;
-                        cboName.QueueThreadSafe(() =>
+                        if (blnAll)
+                            goto case nameof(KnowledgeSkill.WritableName);
+                        break;
+
+                    case nameof(KnowledgeSkill.WritableName):
                         {
-                            _blnUpdatingName = true;
-                            cboName.Text = strWritableName;
-                            _blnUpdatingName = false;
-                        });
-                    }
-                    if (blnAll)
-                        goto case nameof(Skill.TopMostDisplaySpecialization);
-                    break;
+                            int intOldUpdating = Interlocked.Increment(ref _intUpdatingName);
+                            try
+                            {
+                                if (intOldUpdating == 0)
+                                {
+                                    string strWritableName = await _objSkill.GetWritableNameAsync(_objMyToken)
+                                                                            .ConfigureAwait(false);
+                                    await cboName.DoThreadSafeAsync(x => x.Text = strWritableName, token: _objMyToken)
+                                                 .ConfigureAwait(false);
+                                }
+                            }
+                            finally
+                            {
+                                Interlocked.Decrement(ref _intUpdatingName);
+                            }
 
-                case nameof(KnowledgeSkill.TopMostDisplaySpecialization):
-                    if (!_blnUpdatingSpec)
-                    {
-                        string strDisplaySpec = _objSkill.TopMostDisplaySpecialization;
-                        cboSpec.QueueThreadSafe(() =>
+                            if (blnAll)
+                                goto case nameof(Skill.TopMostDisplaySpecialization);
+                            break;
+                        }
+                    case nameof(KnowledgeSkill.TopMostDisplaySpecialization):
                         {
-                            _blnUpdatingSpec = true;
-                            cboSpec.Text = strDisplaySpec;
-                            _blnUpdatingSpec = false;
-                        });
-                    }
-                    if (blnAll)
-                        goto case nameof(Skill.IsNativeLanguage);
-                    break;
+                            if (cboSpec != null)
+                            {
+                                int intOldUpdating = Interlocked.Increment(ref _intUpdatingSpec);
+                                try
+                                {
+                                    if (intOldUpdating == 0)
+                                    {
+                                        string strDisplaySpec = await _objSkill
+                                                                      .GetTopMostDisplaySpecializationAsync(_objMyToken)
+                                                                      .ConfigureAwait(false);
+                                        await cboSpec.DoThreadSafeAsync(x => x.Text = strDisplaySpec, token: _objMyToken)
+                                                     .ConfigureAwait(false);
+                                    }
+                                }
+                                finally
+                                {
+                                    Interlocked.Decrement(ref _intUpdatingSpec);
+                                }
+                            }
 
-                case nameof(Skill.IsNativeLanguage):
-                    if (chkNativeLanguage != null)
-                    {
-                        bool blnEnabled = _objSkill.IsNativeLanguage ||
-                                          _objSkill.CharacterObject.SkillsSection.HasAvailableNativeLanguageSlots;
-                        chkNativeLanguage.QueueThreadSafe(() => chkNativeLanguage.Enabled = blnEnabled);
-                    }
-                    break;
+                            if (blnAll)
+                                goto case nameof(Skill.IsNativeLanguage);
+                            break;
+                        }
+                    case nameof(Skill.IsNativeLanguage):
+                        if (chkNativeLanguage != null)
+                        {
+                            bool blnEnabled
+                                = await _objSkill.GetIsNativeLanguageAsync(_objMyToken).ConfigureAwait(false)
+                                  || await _objSkill.CharacterObject.SkillsSection
+                                                    .GetHasAvailableNativeLanguageSlotsAsync(_objMyToken)
+                                                    .ConfigureAwait(false);
+                            await chkNativeLanguage.DoThreadSafeAsync(x => x.Enabled = blnEnabled, token: _objMyToken)
+                                                   .ConfigureAwait(false);
+                        }
+
+                        if (blnAll)
+                            goto case nameof(Skill.Specializations);
+                        break;
+
+                    case nameof(Skill.Specializations):
+                        {
+                            if (await Program.GetFormForDialogAsync(_objSkill.CharacterObject, _objMyToken)
+                                             .ConfigureAwait(false) is CharacterShared frmParent)
+                                await frmParent.RequestCharacterUpdate(_objMyToken).ConfigureAwait(false);
+                            break;
+                        }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
@@ -352,8 +776,18 @@ namespace Chummer.UI.Skills
         {
             _tmrNameChangeTimer?.Dispose();
             _tmrSpecChangeTimer?.Dispose();
-            _objSkill.PropertyChanged -= Skill_PropertyChanged;
-            _objSkill.CharacterObject.SkillsSection.PropertyChanged -= OnSkillsSectionPropertyChanged;
+            try
+            {
+                using (_objSkill.LockObject.EnterWriteLock())
+                    _objSkill.PropertyChanged -= Skill_PropertyChanged;
+                using (_objSkill.CharacterObject.SkillsSection.LockObject.EnterWriteLock())
+                    _objSkill.CharacterObject.SkillsSection.PropertyChanged -= OnSkillsSectionPropertyChanged;
+            }
+            catch (ObjectDisposedException)
+            {
+                // swallow this
+            }
+
             foreach (Control objControl in Controls)
             {
                 objControl.DataBindings.Clear();
@@ -362,93 +796,137 @@ namespace Chummer.UI.Skills
 
         private async void btnCareerIncrease_Click(object sender, EventArgs e)
         {
-            int upgradeKarmaCost = _objSkill.UpgradeKarmaCost;
+            try
+            {
+                using (await EnterReadLock.EnterAsync(_objSkill.LockObject, _objMyToken).ConfigureAwait(false))
+                {
+                    int intKarmaCost = await _objSkill.GetUpgradeKarmaCostAsync(_objMyToken).ConfigureAwait(false);
 
-            if (upgradeKarmaCost == -1)
-                return; //TODO: more descriptive
-            string confirmstring = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpense"),
-                _objSkill.CurrentDisplayName, _objSkill.Rating + 1, upgradeKarmaCost, cboType.GetItemText(cboType.SelectedItem));
+                    if (intKarmaCost == -1)
+                        return; //TODO: more descriptive
+                    string strConfirm = string.Format(GlobalSettings.CultureInfo,
+                                                      await LanguageManager
+                                                            .GetStringAsync(
+                                                                "Message_ConfirmKarmaExpense", token: _objMyToken)
+                                                            .ConfigureAwait(false),
+                                                      await _objSkill.GetCurrentDisplayNameAsync(_objMyToken)
+                                                                     .ConfigureAwait(false),
+                                                      await _objSkill.GetRatingAsync(_objMyToken).ConfigureAwait(false)
+                                                      + 1,
+                                                      intKarmaCost,
+                                                      await cboType
+                                                            .DoThreadSafeFuncAsync(
+                                                                x => x.GetItemText(x.SelectedItem), token: _objMyToken)
+                                                            .ConfigureAwait(false));
 
-            if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
-                return;
+                    if (!await CommonFunctions.ConfirmKarmaExpenseAsync(strConfirm, _objMyToken).ConfigureAwait(false))
+                        return;
 
-            _objSkill.Upgrade();
+                    await _objSkill.Upgrade(_objMyToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void btnAddSpec_Click(object sender, EventArgs e)
         {
-            int price = _objSkill.CharacterObject.Settings.KarmaKnowledgeSpecialization;
-
-            decimal decExtraSpecCost = 0;
-            int intTotalBaseRating = _objSkill.TotalBaseRating;
-            decimal decSpecCostMultiplier = 1.0m;
-            foreach (Improvement objLoopImprovement in _objSkill.CharacterObject.Improvements)
+            try
             {
-                if (objLoopImprovement.Minimum <= intTotalBaseRating
-                    && (string.IsNullOrEmpty(objLoopImprovement.Condition)
-                        || (objLoopImprovement.Condition == "career") == _objSkill.CharacterObject.Created
-                        || (objLoopImprovement.Condition == "create") != _objSkill.CharacterObject.Created)
-                    && objLoopImprovement.Enabled
-                    && objLoopImprovement.ImprovedName == _objSkill.SkillCategory)
+                using (await EnterReadLock.EnterAsync(_objSkill.LockObject, _objMyToken).ConfigureAwait(false))
                 {
-                    switch (objLoopImprovement.ImproveType)
-                    {
-                        case Improvement.ImprovementType.SkillCategorySpecializationKarmaCost:
-                            decExtraSpecCost += objLoopImprovement.Value;
-                            break;
+                    int price = _objSkill.CharacterObject.Settings.KarmaKnowledgeSpecialization;
 
-                        case Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier:
-                            decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
-                            break;
+                    decimal decExtraSpecCost = 0;
+                    int intTotalBaseRating = _objSkill.TotalBaseRating;
+                    decimal decSpecCostMultiplier = 1.0m;
+                    bool blnCreated = await _objSkill.CharacterObject.GetCreatedAsync(_objMyToken).ConfigureAwait(false);
+                    foreach (Improvement objLoopImprovement in _objSkill.CharacterObject.Improvements)
+                    {
+                        if (objLoopImprovement.Minimum <= intTotalBaseRating
+                            && (string.IsNullOrEmpty(objLoopImprovement.Condition)
+                                || (objLoopImprovement.Condition == "career") == blnCreated
+                                || (objLoopImprovement.Condition == "create") != blnCreated)
+                            && objLoopImprovement.Enabled
+                            && objLoopImprovement.ImprovedName == _objSkill.SkillCategory)
+                        {
+                            switch (objLoopImprovement.ImproveType)
+                            {
+                                case Improvement.ImprovementType.SkillCategorySpecializationKarmaCost:
+                                    decExtraSpecCost += objLoopImprovement.Value;
+                                    break;
+
+                                case Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier:
+                                    decSpecCostMultiplier *= objLoopImprovement.Value / 100.0m;
+                                    break;
+                            }
+                        }
+                    }
+
+                    if (decSpecCostMultiplier != 1.0m)
+                        price = (price * decSpecCostMultiplier + decExtraSpecCost).StandardRound();
+                    else
+                        price += decExtraSpecCost.StandardRound(); //Spec
+
+                    string strConfirm = string.Format(GlobalSettings.CultureInfo,
+                                                         await LanguageManager
+                                                               .GetStringAsync(
+                                                                   "Message_ConfirmKarmaExpenseSkillSpecialization", token: _objMyToken)
+                                                               .ConfigureAwait(false), price);
+
+                    if (!await CommonFunctions.ConfirmKarmaExpenseAsync(strConfirm, _objMyToken).ConfigureAwait(false))
+                        return;
+
+                    using (ThreadSafeForm<SelectSpec> selectForm =
+                           await ThreadSafeForm<SelectSpec>.GetAsync(() => new SelectSpec(_objSkill)
+                                                                         {Mode = "Knowledge"}, _objMyToken).ConfigureAwait(false))
+                    {
+                        if (await selectForm.ShowDialogSafeAsync(_objSkill.CharacterObject, _objMyToken).ConfigureAwait(false)
+                            != DialogResult.OK)
+                            return;
+                        await _objSkill.AddSpecialization(selectForm.MyForm.SelectedItem, _objMyToken).ConfigureAwait(false);
                     }
                 }
             }
-            if (decSpecCostMultiplier != 1.0m)
-                price = (price * decSpecCostMultiplier + decExtraSpecCost).StandardRound();
-            else
-                price += decExtraSpecCost.StandardRound(); //Spec
-
-            string confirmstring = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSkillSpecialization"), price);
-
-            if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
-                return;
-
-            Form frmToUse = ParentForm ?? Program.MainForm;
-
-            DialogResult eResult = await frmToUse.DoThreadSafeFunc(async () =>
+            catch (OperationCanceledException)
             {
-                using (SelectSpec selectForm = new SelectSpec(_objSkill) {Mode = "Knowledge"})
-                {
-                    await selectForm.ShowDialogSafeAsync(frmToUse);
-
-                    if (selectForm.DialogResult == DialogResult.OK)
-                        _objSkill.AddSpecialization(selectForm.SelectedItem);
-
-                    return selectForm.DialogResult;
-                }
-            });
-
-            if (eResult != DialogResult.OK)
-                return;
-
-            if (ParentForm is CharacterShared frmParent)
-                frmParent.IsCharacterUpdateRequested = true;
+                //swallow this
+            }
         }
 
         private async void cmdDelete_Click(object sender, EventArgs e)
         {
-            if (!_objSkill.AllowDelete)
-                return;
-            if (!CommonFunctions.ConfirmDelete(await LanguageManager.GetStringAsync("Message_DeleteKnowledgeSkill")))
-                return;
-            _objSkill.CharacterObject.SkillsSection.KnowledgeSkills.Remove(_objSkill);
+            try
+            {
+                if (!await _objSkill.GetAllowDeleteAsync(_objMyToken).ConfigureAwait(false))
+                    return;
+                if (!await CommonFunctions
+                           .ConfirmDeleteAsync(
+                               await LanguageManager.GetStringAsync("Message_DeleteKnowledgeSkill", token: _objMyToken)
+                                                    .ConfigureAwait(false), _objMyToken).ConfigureAwait(false))
+                    return;
+                await _objSkill.CharacterObject.SkillsSection.KnowledgeSkills.RemoveAsync(_objSkill, _objMyToken)
+                               .ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         [UsedImplicitly]
-        public int NameWidth => tlpLeft.Width - (lblName.Visible ? lblName.Margin.Left + lblName.Margin.Right : cboName.Margin.Left + cboName.Margin.Right);
+        public int NameWidth => tlpLeft.Width -
+                                (_objSkill.AllowNameChange
+                                    ? cboName.Margin.Left + cboName.Margin.Right
+                                    : lblName.Margin.Left + lblName.Margin.Right);
 
         [UsedImplicitly]
-        public int NudSkillWidth => nudSkill?.Visible == true ? nudSkill.Width : 0;
+        public int NudSkillWidth =>
+            !_objSkill.CharacterObject.Created && _objSkill.CharacterObject.SkillsSection.HasKnowledgePoints
+                ? nudSkill.Width
+                : 0;
 
         [UsedImplicitly]
         public int RightButtonsWidth => tlpRight.Width;
@@ -466,13 +944,13 @@ namespace Chummer.UI.Skills
             get => _activeButton;
             set
             {
-                if (value == ActiveButton)
+                ButtonWithToolTip objOldValue = Interlocked.Exchange(ref _activeButton, value);
+                if (objOldValue == value)
                     return;
-                ActiveButton?.ToolTipObject.Hide(this);
-                _activeButton = value;
-                if (ActiveButton?.Visible == true)
+                objOldValue?.ToolTipObject.Hide(this);
+                if (value?.Visible == true)
                 {
-                    ActiveButton.ToolTipObject.Show(ActiveButton.ToolTipText, this);
+                    value.ToolTipObject.Show(value.ToolTipText, this);
                 }
             }
         }
@@ -516,7 +994,7 @@ namespace Chummer.UI.Skills
                 return;
             if (_tmrNameChangeTimer.Enabled)
                 _tmrNameChangeTimer.Stop();
-            if (_blnUpdatingName)
+            if (_intUpdatingName > 0)
                 return;
             _tmrNameChangeTimer.Start();
         }
@@ -527,25 +1005,55 @@ namespace Chummer.UI.Skills
                 return;
             if (_tmrSpecChangeTimer.Enabled)
                 _tmrSpecChangeTimer.Stop();
-            if (_blnUpdatingSpec)
+            if (_intUpdatingSpec > 0)
                 return;
             _tmrSpecChangeTimer.Start();
         }
 
-        private void NameChangeTimer_Tick(object sender, EventArgs e)
+        private async void NameChangeTimer_Tick(object sender, EventArgs e)
         {
-            _tmrNameChangeTimer.Stop();
-            _blnUpdatingName = true;
-            _objSkill.WritableName = cboName.Text;
-            _blnUpdatingName = false;
+            try
+            {
+                _tmrNameChangeTimer.Stop();
+                Interlocked.Increment(ref _intUpdatingName);
+                try
+                {
+                    string strName = await cboName.DoThreadSafeFuncAsync(x => x.Text, token: _objMyToken)
+                                                  .ConfigureAwait(false);
+                    await _objSkill.SetWritableNameAsync(strName, _objMyToken).ConfigureAwait(false);
+                }
+                finally
+                {
+                    Interlocked.Decrement(ref _intUpdatingName);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
-        private void SpecChangeTimer_Tick(object sender, EventArgs e)
+        private async void SpecChangeTimer_Tick(object sender, EventArgs e)
         {
-            _tmrSpecChangeTimer.Stop();
-            _blnUpdatingSpec = true;
-            _objSkill.TopMostDisplaySpecialization = cboSpec.Text;
-            _blnUpdatingSpec = false;
+            try
+            {
+                _tmrSpecChangeTimer.Stop();
+                Interlocked.Increment(ref _intUpdatingSpec);
+                try
+                {
+                    string strSpec = await cboSpec.DoThreadSafeFuncAsync(x => x.Text, token: _objMyToken)
+                                                  .ConfigureAwait(false);
+                    await _objSkill.SetTopMostDisplaySpecializationAsync(strSpec, _objMyToken).ConfigureAwait(false);
+                }
+                finally
+                {
+                    Interlocked.Decrement(ref _intUpdatingSpec);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
     }
 }

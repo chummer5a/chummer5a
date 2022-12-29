@@ -13,10 +13,9 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && (components != null))
             {
-                components?.Dispose();
-                UnbindContactControl();
+                components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -30,21 +29,21 @@ namespace Chummer
         {
             this.components = new System.ComponentModel.Container();
             this.cmsContact = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsContactOpen = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsRemoveCharacter = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tsAttachCharacter = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tsContactOpen = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsRemoveCharacter = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsAttachCharacter = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cboContactRole = new Chummer.ElasticComboBox();
             this.txtContactName = new System.Windows.Forms.TextBox();
             this.txtContactLocation = new System.Windows.Forms.TextBox();
-            this.cmdExpand = new Chummer.DpiFriendlyImagedButton(this.components);
+            this.cmdExpand = new Chummer.DpiFriendlyImagedButton();
             this.lblQuickStats = new System.Windows.Forms.Label();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.cmdDelete = new Chummer.DpiFriendlyImagedButton(this.components);
-            this.tlpComboBoxes = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.cmdDelete = new Chummer.DpiFriendlyImagedButton();
+            this.tlpComboBoxes = new System.Windows.Forms.TableLayoutPanel();
             this.lblContactArchtypeLabel = new System.Windows.Forms.Label();
             this.lblContactLocationLabel = new System.Windows.Forms.Label();
             this.lblContactNameLabel = new System.Windows.Forms.Label();
-            this.cmdNotes = new Chummer.ButtonWithToolTip(this.components);
+            this.cmdNotes = new Chummer.ButtonWithToolTip();
             this.cmsContact.SuspendLayout();
             this.tlpMain.SuspendLayout();
             this.tlpComboBoxes.SuspendLayout();
@@ -113,9 +112,7 @@ namespace Chummer
             this.cboContactRole.Size = new System.Drawing.Size(177, 21);
             this.cboContactRole.TabIndex = 2;
             this.cboContactRole.TooltipText = "";
-            this.cboContactRole.SelectedIndexChanged += new System.EventHandler(this.UpdateContactRole);
             this.cboContactRole.TextChanged += new System.EventHandler(this.cboContactRole_TextChanged);
-            this.cboContactRole.Leave += new System.EventHandler(this.UpdateContactRole);
             // 
             // txtContactName
             // 
@@ -343,8 +340,8 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtContactLocation;
         private DpiFriendlyImagedButton cmdExpand;
         private System.Windows.Forms.Label lblQuickStats;
-        private BufferedTableLayoutPanel tlpMain;
-        private BufferedTableLayoutPanel tlpComboBoxes;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpComboBoxes;
         private System.Windows.Forms.Label lblContactNameLabel;
         private System.Windows.Forms.Label lblContactLocationLabel;
         private System.Windows.Forms.Label lblContactArchtypeLabel;

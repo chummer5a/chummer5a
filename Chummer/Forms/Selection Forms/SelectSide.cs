@@ -34,29 +34,29 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-
-            // Create a list for the sides.
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSides))
-            {
-                lstSides.Add(new ListItem("Left", LanguageManager.GetString("String_Improvement_SideLeft")));
-                lstSides.Add(new ListItem("Right", LanguageManager.GetString("String_Improvement_SideRight")));
-
-                cboSide.BeginUpdate();
-                cboSide.PopulateWithListItems(lstSides);
-                cboSide.EndUpdate();
-            }
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
             _strSelectedSide = cboSide.SelectedValue.ToString();
             DialogResult = DialogResult.OK;
+            Close();
         }
 
-        private void SelectSide_Load(object sender, EventArgs e)
+        private async void SelectSide_Load(object sender, EventArgs e)
         {
+            // Create a list for the sides.
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSides))
+            {
+                lstSides.Add(new ListItem("Left", await LanguageManager.GetStringAsync("String_Improvement_SideLeft").ConfigureAwait(false)));
+                lstSides.Add(new ListItem("Right", await LanguageManager.GetStringAsync("String_Improvement_SideRight").ConfigureAwait(false)));
+                lstSides.Sort(CompareListItems.CompareNames);
+                
+                await cboSide.PopulateWithListItemsAsync(lstSides).ConfigureAwait(false);
+            }
+
             // Select the first item in the list.
-            cboSide.SelectedIndex = 0;
+            await cboSide.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);
         }
 
         #endregion Control Events
@@ -84,9 +84,9 @@ namespace Chummer
         /// <param name="strSide">Value to force.</param>
         public void ForceValue(string strSide)
         {
-            cboSide.SelectedValue = strSide;
-            cboSide.Text = strSide;
-            cmdOK_Click(this, null);
+            _strSelectedSide = strSide;
+            DialogResult = DialogResult.OK;
+            Close();
         }
 
         #endregion Methods
@@ -94,6 +94,7 @@ namespace Chummer
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
     }
 }

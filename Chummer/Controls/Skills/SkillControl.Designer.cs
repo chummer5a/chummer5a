@@ -17,12 +17,9 @@ namespace Chummer.UI.Skills
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && (components != null))
             {
-                components?.Dispose();
-                _fntItalic?.Dispose();
-                _fntItalicName?.Dispose();
-                UnbindSkillControl();
+                components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -37,13 +34,13 @@ namespace Chummer.UI.Skills
         {
             this.components = new System.ComponentModel.Container();
             this.cmsSkillLabel = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tsSkillLabelNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tsSkillLabelNotes = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.lblName = new Chummer.LabelWithToolTip();
             this.pnlAttributes = new System.Windows.Forms.Panel();
             this.btnAttribute = new System.Windows.Forms.Button();
             this.lblModifiedRating = new Chummer.LabelWithToolTip();
-            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
             this.cmsSkillLabel.SuspendLayout();
             this.tlpMain.SuspendLayout();
             this.pnlAttributes.SuspendLayout();
@@ -180,6 +177,7 @@ namespace Chummer.UI.Skills
             this.Margin = new System.Windows.Forms.Padding(0);
             this.Name = "SkillControl";
             this.Size = new System.Drawing.Size(143, 25);
+            this.Load += new System.EventHandler(this.SkillControl_Load);
             this.MouseLeave += new System.EventHandler(this.OnMouseLeave);
             this.DpiChangedAfterParent += new System.EventHandler(this.SkillControl_DpiChangedAfterParent);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnMouseMove);
@@ -198,10 +196,10 @@ namespace Chummer.UI.Skills
         private LabelWithToolTip lblName;
         private System.Windows.Forms.Button btnAttribute;
         private ContextMenuStrip cmsSkillLabel;
-        private BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
         private Panel pnlAttributes;
         private LabelWithToolTip lblModifiedRating;
-        private BufferedTableLayoutPanel tlpRight;
+        private System.Windows.Forms.TableLayoutPanel tlpRight;
         private DpiFriendlyToolStripMenuItem tsSkillLabelNotes;
     }
 }

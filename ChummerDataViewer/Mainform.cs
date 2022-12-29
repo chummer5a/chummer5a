@@ -1,10 +1,28 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
 using System.Windows.Forms;
-using Chummer.UI.Shared;
+using Chummer;
+using Chummer.Controls.Shared;
 using ChummerDataViewer.Model;
 
 namespace ChummerDataViewer
@@ -12,9 +30,9 @@ namespace ChummerDataViewer
     public partial class Mainform : Form
     {
         //Main display
-        private readonly BindingList<CrashReport> _crashReports = new BindingList<CrashReport>();
+        private readonly ThreadSafeObservableCollection<CrashReport> _lstCrashReports = new ThreadSafeObservableCollection<CrashReport>();
 
-        private BindingListDisplay<CrashReport> _bldCrashReports;
+        private ObservableCollectionDisplay<CrashReport> _bldCrashReports;
 
         //Status strip
         private delegate void MainThreadDelegate(INotifyThreadStatus sender, StatusChangedEventArgs args);
@@ -66,17 +84,17 @@ namespace ChummerDataViewer
 
             foreach (CrashReport crashReport in PersistentState.Database.GetAllCrashes())
             {
-                _crashReports.Add(crashReport);
+                _lstCrashReports.Add(crashReport);
             }
 
-            _bldCrashReports = new BindingListDisplay<CrashReport>(_crashReports, c => new CrashReportView(c, _downloader))
+            _lstCrashReports.Sort(new CrashReportTimeStampFilter());
+
+            _bldCrashReports = new ObservableCollectionDisplay<CrashReport>(_lstCrashReports, c => new CrashReportView(c, _downloader))
             {
                 Anchor = AnchorStyles.Bottom | AnchorStyles.Top | AnchorStyles.Right | AnchorStyles.Left,
                 Location = new Point(12, 69),
                 Size = new Size(863, 277),
             };
-
-            _bldCrashReports.Sort(new CrashReportTimeStampFilter());
 
             tabReports.Controls.Add(_bldCrashReports);
 
@@ -149,7 +167,8 @@ namespace ChummerDataViewer
             foreach (Guid guid in list)
             {
                 CrashReport item = PersistentState.Database.GetCrash(guid);
-                if (item != null) _crashReports.Add(item);
+                if (item != null)
+                    _lstCrashReports.Add(item);
             }
 
             UpdateDBDependantControls();

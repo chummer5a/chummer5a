@@ -19,9 +19,43 @@
 -->
 <chummer>
   <metatypes>
+    <metatype xpathfilter="skills/skill[. = 'Perception' and not(@rating)] and (powers[power = 'Search'] or optionalpowers[power = 'Search'])">
+      <skills>
+        <skill amendoperation="addnode">Query</skill>
+      </skills>
+    </metatype>
     <metatype>
       <skills>
+        <group xpathfilter=". = 'Athletics'">Prowess</group>
+        <skill xpathfilter=". = 'Assensing'" spec="Assensing">Astral</skill>
+        <skill xpathfilter=". = 'Astral Combat'" spec="Astral Combat">Astral</skill>
         <skill xpathfilter=". = 'Ritual Spellcasting'">Ceremony</skill>
+        <skill xpathfilter=". = 'Automatics'">Longarms</skill>
+        <skill xpathfilter=". = 'Blades'">Edged Weapons</skill>
+        <skill xpathfilter=". = 'Clubs'">Blunt Weapons</skill>
+        <skill xpathfilter=". = 'Pistols'">Handguns</skill>
+        <skill xpathfilter=". = 'Disguise'">Sneaking</skill>
+        <skill xpathfilter=". = 'Gymnastics'">Acrobatics</skill>
+        <skill xpathfilter=". = 'Impersonation'">Acting</skill>
+        <skill xpathfilter=". = 'Palming'">Sleight of Hand</skill>
+        <skill xpathfilter=". = 'Negotiation'">Persuade</skill>
+        <skill xpathfilter=". = 'Con' or . = 'Etiquette'">Socialize</skill>
+        <skill xpathfilter=". = 'Intimidation'" spec="Intimidate/Interrogate">Command</skill>
+        <skill xpathfilter=". = 'Leadership'" spec="Leadership">Command</skill>
+        <skill xpathfilter=". = 'Instruction'" spec="Instruction">Command</skill>
+        <skill xpathfilter=". = 'Pilot Ground Craft'">Pilot Groundcraft</skill>
+        <skill xpathfilter=". = 'Artificing'" spec="Artificing">Arcana</skill>
+        <skill xpathfilter=". = 'Disenchanting'" spec="Disenchanting">Arcana</skill>
+        <skill xpathfilter=". = 'Flight'" spec="Flying">Athletics</skill>
+        <skill xpathfilter=". = 'Running'" spec="Running">Athletics</skill>
+        <skill xpathfilter=". = 'Swimming'" spec="Swimming">Aquatics</skill>
+        <skill xpathfilter=". = 'Diving'" spec="Diving">Aquatics</skill>
+        <skill xpathfilter=". = 'Tracking'" spec="Tailing/Tracking">Query</skill>
+        <skill xpathfilter=". = 'Navigation'" spec="Navigation">Query</skill>
+        <skill xpathfilter=". = 'Computer'">Matrix</skill>
+        <skill xpathfilter=". = 'Cybercombat' or . = 'Hacking' or . = 'Electronic Warfare'">Cyberwarfare</skill>
+        <skill xpathfilter=". = 'Hardware' or . = 'Cybertechnology'">Electronics</skill>
+        <skill xpathfilter=". = 'Perception' or . = 'Artisan' or . = 'Forgery' or . = 'Exotic Ranged Weapon'" amendoperation="remove" />
       </skills>
     </metatype>
   </metatypes>

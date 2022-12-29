@@ -61,7 +61,7 @@ namespace Chummer
                     continue;
                 MetricIdentifier mi = new MetricIdentifier(name, prop.Name);
                 Metric metric = tc.GetMetric(mi);
-                metric.TrackValue(boolval ? 1 : 0);
+                metric.TrackValue(boolval.ToInt32());
             }
 
             return true;

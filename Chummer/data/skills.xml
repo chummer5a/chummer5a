@@ -97,7 +97,7 @@
       <id>e09e5aa7-e496-41a2-97ce-17f577361888</id>
       <name>Animal Handling</name>
       <attribute>CHA</attribute>
-      <category>Physical Active</category>
+      <category>Technical Active</category>
       <default>True</default>
       <skillgroup />
       <specs>
@@ -1016,6 +1016,7 @@
       <skillgroup />
       <specs>
         <spec>Hearing</spec>
+        <spec>Numinous Perception</spec>
         <spec>Scent</spec>
         <spec>Searching</spec>
         <spec>Taste</spec>
@@ -1444,8 +1445,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -1467,8 +1473,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -1655,8 +1666,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -1714,8 +1730,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -1813,8 +1834,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -1851,8 +1877,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -1959,8 +1990,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -1997,8 +2033,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -2144,8 +2185,15 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Cityspeak</spec>
+        <spec>Creole</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -2158,8 +2206,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -2255,8 +2308,14 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Creole</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -2351,8 +2410,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -2381,8 +2445,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -2395,8 +2464,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -2470,8 +2544,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -2493,8 +2572,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -2507,8 +2591,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -2521,8 +2610,14 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Cityspeak</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -2535,8 +2630,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -2549,8 +2649,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -2686,8 +2791,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -2987,8 +3097,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -3024,8 +3139,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -3038,8 +3158,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -3107,8 +3232,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -3121,8 +3251,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -3154,8 +3289,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -3219,8 +3359,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -3250,8 +3395,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -3264,8 +3414,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -3495,8 +3650,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -3596,8 +3756,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -3678,8 +3843,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -3692,8 +3862,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -3775,8 +3950,8 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
       </specs>
     </skill>
     <skill>
@@ -4187,6 +4362,20 @@
         <spec>Corporate Politics</spec>
         <spec>Corporate Rumors</spec>
         <spec>Corporate Security</spec>
+      </specs>
+    </skill>
+    <skill>
+      <id>decebd3c-5fb0-426e-8e9c-431e0fa3b880</id>
+      <name>Creole</name>
+      <attribute>INT</attribute>
+      <category>Language</category>
+      <default>False</default>
+      <skillgroup />
+      <specs>
+        <spec>Read/Write</spec>
+        <spec>Speak</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
       </specs>
     </skill>
     <skill>
@@ -4689,8 +4878,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -4703,8 +4897,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -4728,7 +4927,7 @@
     </skill>
     <skill>
       <id>4c0b7b81-5dd4-4247-82da-88161992a374</id>
-      <name>Spanish: Aztlaner</name>
+      <name>Aztlaner Spanish</name>
       <attribute>INT</attribute>
       <category>Language</category>
       <default>False</default>
@@ -4736,8 +4935,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -4797,8 +5001,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -4824,8 +5033,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -4838,8 +5052,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -4871,8 +5090,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
     <skill>
@@ -4885,8 +5109,13 @@
       <specs>
         <spec>Read/Write</spec>
         <spec>Speak</spec>
-        <spec>Dialect</spec>
-        <spec>Lingo</spec>
+        <spec>[Dialect]</spec>
+        <spec>[Lingo]</spec>
+        <spec>Street</spec>
+        <spec>l33tspeak</spec>
+        <spec>Milspec</spec>
+        <spec>Corp</spec>
+        <spec>Orbital</spec>
       </specs>
     </skill>
   </knowledgeskills>

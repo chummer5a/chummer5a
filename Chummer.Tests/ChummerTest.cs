@@ -18,10 +18,13 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.Schema;
@@ -38,6 +41,7 @@ namespace Chummer.Tests
         public static void Initialize(TestContext context)
         {
             Utils.IsUnitTest = true;
+            Utils.IsUnitTestForUI = false;
         }
     }
 
@@ -46,6 +50,7 @@ namespace Chummer.Tests
     {
         public ChummerTest()
         {
+            Utils.CreateSynchronizationContext();
             string strPath = Path.Combine(AppDomain.CurrentDomain.SetupInformation.ApplicationBase, "TestFiles");
             DirectoryInfo objPathInfo = new DirectoryInfo(strPath);//Assuming Test is your Folder
             foreach (DirectoryInfo objOldDir in objPathInfo.GetDirectories("TestRun-*"))
@@ -55,12 +60,30 @@ namespace Chummer.Tests
             TestPath = Path.Combine(strPath, "TestRun-" + DateTime.Now.ToString("yyyy-MM-dd-HH-mm", GlobalSettings.InvariantCultureInfo));
             TestPathInfo = Directory.CreateDirectory(TestPath);
             TestFiles = objPathInfo.GetFiles("*.chum5"); //Getting Text files
+            _lstCharacters = new List<Character>(TestFiles.Length);
         }
 
         private string TestPath { get; }
         private DirectoryInfo TestPathInfo { get; }
 
         private FileInfo[] TestFiles { get; }
+
+        private readonly List<Character> _lstCharacters;
+
+        private IEnumerable<Character> GetTestCharacters()
+        {
+            foreach (FileInfo objFileInfo in TestFiles)
+            {
+                Debug.WriteLine("Loading " + objFileInfo.Name);
+                Character objLoopCharacter = _lstCharacters.FirstOrDefault(x => x.FileName == objFileInfo.FullName);
+                if (objLoopCharacter == null)
+                {
+                    objLoopCharacter = LoadCharacter(objFileInfo);
+                    _lstCharacters.Add(objLoopCharacter);
+                }
+                yield return objLoopCharacter;
+            }
+        }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
@@ -101,19 +124,21 @@ namespace Chummer.Tests
             // Try-finally pattern necessary in order prevent weird exceptions from disposal of MdiChildren
             try
             {
-                frmTestForm = new ChummerMainForm(true)
+                frmTestForm = new ChummerMainForm(true, true)
                 {
-                    WindowState = FormWindowState.Minimized,
                     ShowInTaskbar =
                         false // This lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used, but that forces the test to be interactve)
                 };
                 Program.MainForm = frmTestForm; // Set program Main form to Unit test version
-                frmTestForm.Show(); // Show the main form so that we know the UI can load in properly
+                frmTestForm.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
+#if DEBUG
+                frmTestForm.SendToBack();
+#endif
                 while
                     (!frmTestForm
                         .IsFinishedLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
                 {
-                    Utils.SafeSleep(true);
+                    Utils.SafeSleep();
                 }
 
                 frmTestForm.Close();
@@ -131,76 +156,150 @@ namespace Chummer.Tests
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
-        public void Test02_LoadThenSave()
+        public void Test02_LoadContent()
         {
-            Debug.WriteLine("Unit test initialized for: Test02_LoadThenSave()");
-            foreach (FileInfo objFileInfo in TestFiles)
+            Debug.WriteLine("Unit test initialized for: Test02_LoadContent()");
+            try
             {
-                string strDestination = Path.Combine(TestPathInfo.FullName, objFileInfo.Name);
-                using (Character objCharacter = LoadCharacter(objFileInfo))
+                bool blnTemp = Utils.IsUnitTestForUI;
+                try
                 {
+                    Utils.IsUnitTestForUI = true;
+                    // Attempt to cache all XML files that are used the most.
+                    using (ThreadSafeForm<LoadingBar> frmLoadingBar = Program.CreateAndShowProgressBar(Application.ProductName, Utils.BasicDataFileNames.Count))
+                    {
+                        List<Task> lstCachingTasks = new List<Task>(Utils.MaxParallelBatchSize);
+                        int intCounter = 0;
+                        foreach (string strLoopFile in Utils.BasicDataFileNames)
+                        {
+                            // ReSharper disable once AccessToDisposedClosure
+                            lstCachingTasks.Add(Task.Run(() => CacheCommonFile(strLoopFile, frmLoadingBar.MyForm)));
+                            if (++intCounter != Utils.MaxParallelBatchSize)
+                                continue;
+                            Utils.RunWithoutThreadLock(() => Task.WhenAll(lstCachingTasks));
+                            lstCachingTasks.Clear();
+                            intCounter = 0;
+                        }
+
+                        Utils.RunWithoutThreadLock(() => Task.WhenAll(lstCachingTasks));
+
+                        async Task CacheCommonFile(string strFile, LoadingBar frmLoadingBarInner)
+                        {
+                            // Load default language data first for performance reasons
+                            if (!GlobalSettings.Language.Equals(
+                                    GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                            {
+                                await XmlManager.LoadXPathAsync(strFile, null, GlobalSettings.DefaultLanguage);
+                            }
+                            await XmlManager.LoadXPathAsync(strFile);
+                            await frmLoadingBarInner.PerformStepAsync(
+                                Application.ProductName,
+                                LoadingBar.ProgressBarTextPatterns.Initializing);
+                        }
+                    }
+                }
+                finally
+                {
+                    Utils.IsUnitTestForUI = blnTemp;
+                }
+
+                _lstCharacters.Capacity = GetTestCharacters().ToList().Count; // Dummy command used purely to initialize CharacterList
+            }
+            catch (Exception ex)
+            {
+                Assert.Fail(ex.Message);
+            }
+        }
+
+        // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
+        [TestMethod]
+        public void Test03_LoadThenSaveAsChum5lz()
+        {
+            Debug.WriteLine("Unit test initialized for: Test03_LoadThenSave()");
+            LzmaHelper.ChummerCompressionPreset eOldSetting = GlobalSettings.Chum5lzCompressionLevel;
+            try
+            {
+                GlobalSettings.Chum5lzCompressionLevel = LzmaHelper.ChummerCompressionPreset.Fast;
+                foreach (Character objCharacter in GetTestCharacters())
+                {
+                    string strFileName = Path.GetFileName(objCharacter.FileName)
+                                         ?? LanguageManager.GetString("String_Unknown");
+                    Debug.WriteLine("Checking " + strFileName);
+                    string strDestination = Path.Combine(TestPathInfo.FullName, strFileName);
+                    if (!strDestination.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (strDestination.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
+                            strDestination += "lz";
+                        else
+                            strDestination += ".chum5lz";
+                    }
+
                     SaveCharacter(objCharacter, strDestination);
-                    using (Character _ = LoadCharacter(new FileInfo(strDestination)))
+                    using (LoadCharacter(new FileInfo(strDestination)))
                     {
                         // Assert on failed load will already happen inside LoadCharacter
                     }
                 }
             }
+            finally
+            {
+                GlobalSettings.Chum5lzCompressionLevel = eOldSetting;
+            }
         }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
-        public void Test03_LoadThenSaveIsDeterministic()
+        public void Test04_LoadThenSaveIsDeterministic()
         {
-            Debug.WriteLine("Unit test initialized for: Test03_LoadThenSaveIsDeterministic()");
-            foreach (FileInfo objBaseFileInfo in TestFiles)
+            Debug.WriteLine("Unit test initialized for: Test04_LoadThenSaveIsDeterministic()");
+            foreach (Character objCharacterControl in GetTestCharacters())
             {
+                string strFileName = Path.GetFileName(objCharacterControl.FileName) ?? LanguageManager.GetString("String_Unknown");
+                Debug.WriteLine("Checking " + strFileName);
                 // First Load-Save cycle
-                string strDestinationControl = Path.Combine(TestPathInfo.FullName, "(Control) " + objBaseFileInfo.Name);
-                using (Character objCharacterControl = LoadCharacter(objBaseFileInfo))
+                string strDestinationControl = Path.Combine(TestPathInfo.FullName, "(Control) " + strFileName);
+                SaveCharacter(objCharacterControl, strDestinationControl);
+                // Second Load-Save cycle
+                string strDestinationTest = Path.Combine(TestPathInfo.FullName, "(Test) " + strFileName);
+                using (Character objCharacterTest = LoadCharacter(new FileInfo(strDestinationControl)))
                 {
-                    SaveCharacter(objCharacterControl, strDestinationControl);
-                    // Second Load-Save cycle
-                    string strDestinationTest = Path.Combine(TestPathInfo.FullName, "(Test) " + objBaseFileInfo.Name);
-                    using (Character objCharacterTest = LoadCharacter(new FileInfo(strDestinationControl)))
-                    {
-                        SaveCharacter(objCharacterTest, strDestinationTest);
-                        // Check to see that character after first load cycle is consistent with character after second
-                        using (FileStream controlFileStream =
-                            File.Open(strDestinationControl, FileMode.Open, FileAccess.Read))
-                        {
-                            using (FileStream testFileStream =
-                                File.Open(strDestinationTest, FileMode.Open, FileAccess.Read))
-                            {
-                                try
-                                {
-                                    Diff myDiff = DiffBuilder
-                                        .Compare(controlFileStream)
-                                        .WithTest(testFileStream)
-                                        .CheckForIdentical()
-                                        .WithNodeFilter(x =>
-                                            x.Name !=
-                                            "mugshot") // image loading and unloading is not going to be deterministic due to compression algorithms
-                                        .WithNodeMatcher(
-                                            new DefaultNodeMatcher(
-                                                ElementSelectors.Or(
-                                                    ElementSelectors.ByNameAndText,
-                                                    ElementSelectors.ByName)))
-                                        .IgnoreWhitespace()
-                                        .Build();
-                                    foreach (Difference diff in myDiff.Differences)
-                                    {
-                                        Console.WriteLine(diff.Comparison);
-                                        Console.WriteLine();
-                                    }
+                    SaveCharacter(objCharacterTest, strDestinationTest);
+                }
 
-                                    Assert.IsFalse(myDiff.HasDifferences(), myDiff.ToString());
-                                }
-                                catch (XmlSchemaException e)
-                                {
-                                    Assert.Fail("Unexpected validation failure: " + e.Message);
-                                }
+                // Check to see that character after first load cycle is consistent with character after second
+                using (FileStream controlFileStream =
+                       File.Open(strDestinationControl, FileMode.Open, FileAccess.Read))
+                {
+                    using (FileStream testFileStream =
+                           File.Open(strDestinationTest, FileMode.Open, FileAccess.Read))
+                    {
+                        try
+                        {
+                            Diff myDiff = DiffBuilder
+                                .Compare(controlFileStream)
+                                .WithTest(testFileStream)
+                                .CheckForIdentical()
+                                .WithNodeFilter(x =>
+                                    x.Name !=
+                                    "mugshot") // image loading and unloading is not going to be deterministic due to compression algorithms
+                                .WithNodeMatcher(
+                                    new DefaultNodeMatcher(
+                                        ElementSelectors.Or(
+                                            ElementSelectors.ByNameAndText,
+                                            ElementSelectors.ByName)))
+                                .IgnoreWhitespace()
+                                .Build();
+                            foreach (Difference diff in myDiff.Differences)
+                            {
+                                Console.WriteLine(diff.Comparison);
+                                Console.WriteLine();
                             }
+
+                            Assert.IsFalse(myDiff.HasDifferences(), myDiff.ToString());
+                        }
+                        catch (XmlSchemaException e)
+                        {
+                            Assert.Fail("Unexpected validation failure: " + e.Message);
                         }
                     }
                 }
@@ -208,70 +307,144 @@ namespace Chummer.Tests
         }
 
         [TestMethod]
-        public void Test04_LoadThenPrint()
+        public void Test05_LoadThenPrint()
         {
-            Debug.WriteLine("Unit test initialized for: Test04_LoadThenPrint()");
-            foreach (FileInfo objFileInfo in TestFiles)
+            Debug.WriteLine("Unit test initialized for: Test05_LoadThenPrint()");
+            List<string> lstExportLanguages = new List<string>();
+            foreach (string strFilePath in Directory.EnumerateFiles(Path.Combine(Utils.GetStartupPath, "lang"), "*.xml"))
             {
-                using (Character objCharacter = LoadCharacter(objFileInfo))
+                string strExportLanguage = Path.GetFileNameWithoutExtension(strFilePath);
+                if (strExportLanguage.Contains("data"))
+                    continue;
+                if (strExportLanguage == GlobalSettings.DefaultLanguage)
+                    lstExportLanguages.Insert(0, strExportLanguage);
+                else
+                    lstExportLanguages.Add(strExportLanguage);
+            }
+            Debug.WriteLine("Started pre-loading language files");
+            foreach (string strExportLanguage in lstExportLanguages)
+            {
+                Debug.WriteLine("Pre-loading language file: " + strExportLanguage);
+                LanguageManager.LoadLanguage(strExportLanguage);
+            }
+            Debug.WriteLine("Finished pre-loading language files");
+            foreach (Character objCharacter in GetTestCharacters())
+            {
+                Debug.WriteLine("Checking " + (Path.GetFileName(objCharacter.FileName)
+                                               ?? LanguageManager.GetString("String_Unknown")));
+                foreach (string strExportLanguage in lstExportLanguages)
                 {
-                    string strLanguageDirectoryPath = Path.Combine(Utils.GetStartupPath, "lang");
-                    foreach (string strFilePath in Directory.GetFiles(strLanguageDirectoryPath, "*.xml"))
-                    {
-                        string strExportLanguage = Path.GetFileNameWithoutExtension(strFilePath);
-                        if (strExportLanguage.Contains("data"))
-                            continue;
-                        CultureInfo objExportCultureInfo = new CultureInfo(strExportLanguage);
-                        string strDestination = Path.Combine(TestPathInfo.FullName, strExportLanguage + ' ' + objFileInfo.Name);
-                        // ReSharper disable once AccessToDisposedClosure
-                        XmlDocument xmlCharacter = Utils.RunWithoutThreadLock(() => objCharacter.GenerateExportXml(objExportCultureInfo, strExportLanguage));
-                        xmlCharacter.Save(strDestination);
-                    }
+                    DoAndSaveExport(objCharacter, strExportLanguage);
                 }
             }
         }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
         [TestMethod]
-        public void Test05_LoadCharacterForms()
+        public void Test06_LoadCharacterForms()
         {
-            Debug.WriteLine("Unit test initialized for: Test05_LoadCharacterForms()");
+            Debug.WriteLine("Unit test initialized for: Test06_LoadCharacterForms()");
             ChummerMainForm frmOldMainForm = Program.MainForm;
             ChummerMainForm frmTestForm = null;
             // Try-finally pattern necessary in order prevent weird exceptions from disposal of MdiChildren
             try
             {
-                frmTestForm = new ChummerMainForm(true)
+                frmTestForm = frmOldMainForm.DoThreadSafeFunc(() => new ChummerMainForm(true, true)
                 {
-                    WindowState = FormWindowState.Minimized,
                     ShowInTaskbar =
                         false // This lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used, but that forces the test to be interactive)
-                };
+                });
                 Program.MainForm = frmTestForm; // Set program Main form to Unit test version
-                frmTestForm.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
+                frmTestForm.DoThreadSafe(x =>
+                {
+                    x.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
+#if DEBUG
+                    x.SendToBack();
+#endif
+                });
                 while (!frmTestForm.IsFinishedLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
                 {
-                    Utils.SafeSleep(true);
+                    Utils.SafeSleep();
                 }
-                foreach (FileInfo objFileInfo in TestFiles)
+                Debug.WriteLine("Main form loaded");
+                foreach (Character objCharacter in GetTestCharacters())
                 {
-                    using (Character objCharacter = LoadCharacter(objFileInfo))
+                    string strFileName = Path.GetFileName(objCharacter.FileName) ?? LanguageManager.GetString("String_Unknown");
+                    Debug.WriteLine("Checking " + strFileName);
+                    string strDummyFileName = Path.Combine(TestPathInfo.FullName,
+                                                           "(UnitTest05Dummy) "
+                                                           + Path.GetFileNameWithoutExtension(objCharacter.FileName)
+                                                           + ".txt");
+                    using (File.Create(strDummyFileName, byte.MaxValue,
+                                       FileOptions
+                                           .DeleteOnClose)) // Create this so that we can track how far along the Unit Test is even if we don't have a debugger attached
                     {
                         try
                         {
-                            using (CharacterShared frmCharacterForm = objCharacter.Created
-                                ? (CharacterShared)new CharacterCareer(objCharacter)
-                                : new CharacterCreate(objCharacter))
+                            bool blnFormClosed = false;
+                            // ReSharper disable once AccessToDisposedClosure
+                            CharacterShared frmCharacterForm = Program.MainForm.DoThreadSafeFunc(
+                                () => objCharacter.Created
+                                    // ReSharper disable once AccessToDisposedClosure
+                                    ? (CharacterShared) new CharacterCareer(objCharacter)
+                                    // ReSharper disable once AccessToDisposedClosure
+                                    : new CharacterCreate(objCharacter));
+                            try
                             {
-                                frmCharacterForm.MdiParent = frmTestForm;
-                                frmCharacterForm.ShowInTaskbar = false;
-                                frmCharacterForm.WindowState = FormWindowState.Minimized;
-                                frmCharacterForm.Show();
+                                frmCharacterForm.DoThreadSafe(x =>
+                                {
+                                    x.FormClosed += (sender, args) => blnFormClosed = true;
+                                    x.MdiParent = frmTestForm;
+                                    x.ShowInTaskbar = false;
+                                    x.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
+#if DEBUG
+                                    x.SendToBack();
+#endif
+                                });
+                                while
+                                    (!frmCharacterForm
+                                        .IsFinishedInitializing) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
+                                {
+                                    Utils.SafeSleep();
+                                }
+                            }
+                            finally
+                            {
+                                try
+                                {
+                                    frmCharacterForm.DoThreadSafe(x => x.Close());
+                                    while
+                                        (!blnFormClosed) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
+                                    {
+                                        Utils.SafeSleep();
+                                    }
+                                }
+                                catch (ApplicationException e)
+                                {
+                                    string strErrorMessage
+                                        = "Encountered (non-fatal) exception while disposing of character form."
+                                          + Environment.NewLine
+                                          + e.Message;
+                                    Debug.WriteLine(strErrorMessage);
+                                    Console.WriteLine(strErrorMessage);
+                                    Program.OpenCharacters.Remove(objCharacter);
+                                }
+                                catch (InvalidOperationException e)
+                                {
+                                    string strErrorMessage
+                                        = "Encountered (non-fatal) exception while disposing of character form."
+                                          + Environment.NewLine
+                                          + e.Message;
+                                    Debug.WriteLine(strErrorMessage);
+                                    Console.WriteLine(strErrorMessage);
+                                    Program.OpenCharacters.Remove(objCharacter);
+                                }
                             }
                         }
                         catch (Exception e)
                         {
-                            string strErrorMessage = "Exception while loading form for " + objFileInfo.FullName + ":";
+                            string strErrorMessage
+                                = "Exception while loading form for " + strFileName + ":";
                             strErrorMessage += Environment.NewLine + e;
                             Debug.WriteLine(strErrorMessage);
                             Console.WriteLine(strErrorMessage);
@@ -279,11 +452,21 @@ namespace Chummer.Tests
                         }
                     }
                 }
-                frmTestForm.Close();
             }
             finally
             {
-                frmTestForm?.Dispose();
+                try
+                {
+                    frmTestForm?.DoThreadSafe(x => x.Close());
+                }
+                catch (Exception e)
+                {
+                    string strErrorMessage = "Encountered (non-fatal) exception while disposing of main form." + Environment.NewLine
+                        + e.Message;
+                    Debug.WriteLine(strErrorMessage);
+                    Console.WriteLine(strErrorMessage);
+                    Utils.BreakIfDebug();
+                }
             }
             Program.MainForm = frmOldMainForm;
         }
@@ -294,7 +477,6 @@ namespace Chummer.Tests
         // ReSharper disable once SuggestBaseTypeForParameter
         private static Character LoadCharacter(FileInfo objFileInfo)
         {
-            Debug.WriteLine("Unit test initialized for: LoadCharacter()");
             Character objCharacter = null;
             try
             {
@@ -305,13 +487,16 @@ namespace Chummer.Tests
                 };
                 bool blnSuccess = objCharacter.Load();
                 Assert.IsTrue(blnSuccess);
-                Debug.WriteLine("Character loaded: " + objCharacter.Name);
+                Debug.WriteLine("Character loaded: " + objCharacter.Name + ", " + objFileInfo.Name);
             }
             catch (AssertFailedException e)
             {
-                objCharacter?.Dispose();
-                objCharacter = null;
-                string strErrorMessage = "Could not load " + objFileInfo.FullName + "!";
+                if (objCharacter != null)
+                {
+                    objCharacter.Dispose();
+                    objCharacter = null;
+                }
+                string strErrorMessage = "Could not load " + objFileInfo.FullName + '!';
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
@@ -319,8 +504,12 @@ namespace Chummer.Tests
             }
             catch (Exception e)
             {
-                objCharacter?.Dispose();
-                string strErrorMessage = "Exception while loading " + objFileInfo.FullName + ":";
+                if (objCharacter != null)
+                {
+                    objCharacter.Dispose();
+                    objCharacter = null;
+                }
+                string strErrorMessage = "Exception while loading " + objFileInfo.FullName + ':';
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
@@ -333,17 +522,18 @@ namespace Chummer.Tests
         /// <summary>
         /// Tests saving a given character.
         /// </summary>
-        private static void SaveCharacter(Character c, string path)
+        private static void SaveCharacter(Character objCharacter, string strPath)
         {
-            Debug.WriteLine("Unit test initialized for: SaveCharacter()");
-            Assert.IsNotNull(c);
+            Assert.IsNotNull(objCharacter);
             try
             {
-                c.Save(path, false);
+                Debug.WriteLine("Saving: " + objCharacter.Name + ", " + Path.GetFileName(objCharacter.FileName));
+                objCharacter.Save(strPath, false);
+                Debug.WriteLine("Character saved: " + objCharacter.Name + " to " + Path.GetFileName(strPath));
             }
             catch (AssertFailedException e)
             {
-                string strErrorMessage = "Could not load " + c.FileName + "!";
+                string strErrorMessage = "Could not save " + Path.GetFileName(objCharacter.FileName) + '!';
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
@@ -351,7 +541,7 @@ namespace Chummer.Tests
             }
             catch (InvalidOperationException e)
             {
-                string strErrorMessage = "Could not save to " + path + "!";
+                string strErrorMessage = "Could not save to " + strPath + '!';
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
@@ -359,7 +549,64 @@ namespace Chummer.Tests
             }
             catch (Exception e)
             {
-                string strErrorMessage = "Exception while loading " + c.FileName + ":";
+                string strErrorMessage = "Exception while saving " + Path.GetFileName(objCharacter.FileName) + ':';
+                strErrorMessage += Environment.NewLine + e;
+                Debug.WriteLine(strErrorMessage);
+                Console.WriteLine(strErrorMessage);
+                Assert.Fail(strErrorMessage);
+            }
+        }
+
+        /// <summary>
+        /// Tests exporting a given character.
+        /// </summary>
+        private void DoAndSaveExport(Character objCharacter, string strExportLanguage)
+        {
+            Assert.IsNotNull(objCharacter);
+            string strPath = Path.Combine(TestPathInfo.FullName, strExportLanguage + ' ' + Path.GetFileNameWithoutExtension(objCharacter.FileName) + ".xml");
+            try
+            {
+                Debug.WriteLine("Exporting: " + objCharacter.Name + " to " + Path.GetFileName(strPath));
+                CultureInfo objExportCultureInfo;
+                try
+                {
+                    objExportCultureInfo = new CultureInfo(strExportLanguage);
+                }
+                catch (CultureNotFoundException)
+                {
+                    objExportCultureInfo = CultureInfo.InvariantCulture;
+                }
+
+                XmlDocument xmlDocument
+                    = Utils.SafelyRunSynchronously(
+                        () => objCharacter.GenerateExportXml(objExportCultureInfo,
+                                                             strExportLanguage)); // Need this wrapper to make unit test work
+                using (FileStream objFileStream
+                       = new FileStream(strPath, FileMode.Create, FileAccess.Write, FileShare.None))
+                    xmlDocument.Save(objFileStream);
+                Debug.WriteLine("Character exported: " + objCharacter.Name + " to " + Path.GetFileName(strPath));
+            }
+            catch (AssertFailedException e)
+            {
+                string strErrorMessage = "Could not export " + Path.GetFileName(objCharacter.FileName) + " in "
+                                         + strExportLanguage + '!';
+                strErrorMessage += Environment.NewLine + e;
+                Debug.WriteLine(strErrorMessage);
+                Console.WriteLine(strErrorMessage);
+                Assert.Fail(strErrorMessage);
+            }
+            catch (InvalidOperationException e)
+            {
+                string strErrorMessage = "Could not export to " + strPath + '!';
+                strErrorMessage += Environment.NewLine + e;
+                Debug.WriteLine(strErrorMessage);
+                Console.WriteLine(strErrorMessage);
+                Assert.Fail(strErrorMessage);
+            }
+            catch (Exception e)
+            {
+                string strErrorMessage = "Exception while exporting " + Path.GetFileName(objCharacter.FileName) + " in "
+                                         + strExportLanguage + ':';
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);

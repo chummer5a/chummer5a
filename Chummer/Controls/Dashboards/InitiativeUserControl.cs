@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -51,6 +52,13 @@ namespace Chummer
         public InitiativeUserControl()
         {
             InitializeComponent();
+
+            Disposed += (sender, args) =>
+            {
+                foreach (Character objCharacter in _lstCharacters)
+                    objCharacter.Dispose();
+            };
+
             lblRound.Text = LanguageManager.GetString("Label_Round") + LanguageManager.GetString("String_Space") + 1.ToString(GlobalSettings.CultureInfo);
             _intRound = 1;
 
@@ -64,28 +72,32 @@ namespace Chummer
          * Queries the user for the chummer to add to the list
          */
 
-        private void btnAdd_Click(object sender, EventArgs e)
+        private async void btnAdd_Click(object sender, EventArgs e)
         {
-            AddToken frmAdd = new AddToken(this);
-            frmAdd.Show();
+            using (ThreadSafeForm<AddToken> frmAdd = await ThreadSafeForm<AddToken>.GetAsync(() => new AddToken(this)).ConfigureAwait(false))
+                await frmAdd.ShowDialogSafeAsync(this).ConfigureAwait(false);
         }
 
         /*
          * Removes the chosen chummer from the list
          */
 
-        private void btnRemove_Click(object sender, EventArgs e)
+        private async void btnRemove_Click(object sender, EventArgs e)
         {
             // check if we have selected a chummer in the list
-            if (chkBoxChummer.SelectedItem == null)
-                Program.MainForm.ShowMessageBox("Please Select a Chummer to remove");
+            if (await chkBoxChummer.DoThreadSafeFuncAsync(x => x.SelectedItem).ConfigureAwait(false) == null)
+                Program.ShowMessageBox("Please Select a Chummer to remove");
             else
             {
-                int index = chkBoxChummer.SelectedIndex;
-                chkBoxChummer.Items.RemoveAt(index);
-                if (chkBoxChummer.Items.Count > 0)
-                    chkBoxChummer.SelectedIndex = 0; // reset the selected item to the first item in the list
-                _lstCharacters[index].Dispose();
+                int index = 0;
+                await chkBoxChummer.DoThreadSafeAsync(x =>
+                {
+                    index = x.SelectedIndex;
+                    x.Items.RemoveAt(index);
+                    if (x.Items.Count > 0)
+                        x.SelectedIndex = 0; // reset the selected item to the first item in the list
+                }).ConfigureAwait(false);
+                await _lstCharacters[index].DisposeAsync().ConfigureAwait(false);
                 _lstCharacters.RemoveAt(index);
             }
         }
@@ -98,11 +110,11 @@ namespace Chummer
         {
             // check if we have selected a chummer in the list
             if (chkBoxChummer.SelectedItem == null)
-                Program.MainForm.ShowMessageBox("Please Select a Chummer to remove");
+                Program.ShowMessageBox("Please Select a Chummer to remove");
             else if (_lstCharacters[chkBoxChummer.SelectedIndex].InitRoll - 1 >= 0)
                 ApplyInitChange(-1);
             else
-                Program.MainForm.ShowMessageBox("unable to go beyond 0");
+                Program.ShowMessageBox("unable to go beyond 0");
         }
 
         /*
@@ -113,11 +125,11 @@ namespace Chummer
         {
             // check if we have selected a chummer in the list
             if (chkBoxChummer.SelectedItem == null)
-                Program.MainForm.ShowMessageBox("Please Select a Chummer to remove");
+                Program.ShowMessageBox("Please Select a Chummer to remove");
             else if (_lstCharacters[chkBoxChummer.SelectedIndex].InitRoll - 5 >= 0)
                 ApplyInitChange(-5);
             else
-                Program.MainForm.ShowMessageBox("unable to go beyond 0");
+                Program.ShowMessageBox("unable to go beyond 0");
         }
 
         /*
@@ -128,11 +140,11 @@ namespace Chummer
         {
             // check if we have selected a chummer in the list
             if (chkBoxChummer.SelectedItem == null)
-                Program.MainForm.ShowMessageBox("Please Select a Chummer to remove");
+                Program.ShowMessageBox("Please Select a Chummer to remove");
             else if (_lstCharacters[chkBoxChummer.SelectedIndex].InitRoll - 1 >= 0)
                 ApplyInitChange(-10);
             else
-                Program.MainForm.ShowMessageBox("unable to go beyond 0");
+                Program.ShowMessageBox("unable to go beyond 0");
         }
 
         /*
@@ -143,11 +155,11 @@ namespace Chummer
         {
             // check if we have selected a chummer in the list
             if (chkBoxChummer.SelectedItem == null)
-                Program.MainForm.ShowMessageBox("Please Select a Chummer to remove");
+                Program.ShowMessageBox("Please Select a Chummer to remove");
             else if (_lstCharacters[chkBoxChummer.SelectedIndex].InitRoll - 1 >= 0)
                 ApplyInitChange(1);
             else
-                Program.MainForm.ShowMessageBox("unable to go beyond 0");
+                Program.ShowMessageBox("unable to go beyond 0");
         }
 
         /*
@@ -158,11 +170,11 @@ namespace Chummer
         {
             // check if we have selected a chummer in the list
             if (chkBoxChummer.SelectedItem == null)
-                Program.MainForm.ShowMessageBox("Please Select a Chummer to remove");
+                Program.ShowMessageBox("Please Select a Chummer to remove");
             else if (_lstCharacters[chkBoxChummer.SelectedIndex].InitRoll - 1 >= 0)
                 ApplyInitChange(5);
             else
-                Program.MainForm.ShowMessageBox("unable to go beyond 0");
+                Program.ShowMessageBox("unable to go beyond 0");
         }
 
         /*
@@ -173,11 +185,11 @@ namespace Chummer
         {
             // check if we have selected a chummer in the list
             if (chkBoxChummer.SelectedItem == null)
-                Program.MainForm.ShowMessageBox("Please Select a Chummer to remove");
+                Program.ShowMessageBox("Please Select a Chummer to remove");
             else if (_lstCharacters[chkBoxChummer.SelectedIndex].InitRoll - 1 >= 0)
                 ApplyInitChange(10);
             else
-                Program.MainForm.ShowMessageBox("unable to go beyond 0");
+                Program.ShowMessageBox("unable to go beyond 0");
         }
 
         /*
@@ -200,14 +212,18 @@ namespace Chummer
             if (_intIndex == _lstCharacters.Count - _intTotalChummersWithNoInit)
             {
                 // increment the round count since we have reached the end of the list
-                lblRound.Text = await LanguageManager.GetStringAsync("Label_Round") + await LanguageManager.GetStringAsync("String_Space") + (++_intRound).ToString(GlobalSettings.CultureInfo);
+                string strText = await LanguageManager.GetStringAsync("Label_Round").ConfigureAwait(false) +
+                                 await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false) +
+                                 (++_intRound).ToString(GlobalSettings.CultureInfo);
+                await lblRound.DoThreadSafeAsync(x => x.Text = strText).ConfigureAwait(false);
                 // reset the the round with a minus ten on all
                 int index = -1;
                 for (int i = 0; i < _lstCharacters.Count; i++)
                 {
                     if (_lstCharacters[i].InitRoll > 0)
                     {
-                        chkBoxChummer.SelectedIndex = i;
+                        int i1 = i;
+                        await chkBoxChummer.DoThreadSafeAsync(x => x.SelectedIndex = i1).ConfigureAwait(false);
                         ApplyInitChange(-10);
                         index = i;
                     }
@@ -232,7 +248,7 @@ namespace Chummer
                     return; // we are finished
                 }
 
-                chkBoxChummer.SelectedIndex = _intIndex;
+                await chkBoxChummer.DoThreadSafeAsync(x => x.SelectedIndex = _intIndex).ConfigureAwait(false);
                 ++_intIndex;
             }
         }
@@ -259,9 +275,9 @@ namespace Chummer
         {
             // make sure a chummer is selected
             if (chkBoxChummer.SelectedItem == null)
-                Program.MainForm.ShowMessageBox("please select a chummer");
+                Program.ShowMessageBox("please select a chummer");
             else if (_lstCharacters[chkBoxChummer.SelectedIndex].InitRoll < 1)
-                Program.MainForm.ShowMessageBox("unable to delay chummer with no init");
+                Program.ShowMessageBox("unable to delay chummer with no init");
             else
             {
                 int index = chkBoxChummer.SelectedIndex;
@@ -297,14 +313,15 @@ namespace Chummer
             // for every checked character, we re-roll init
             for (int i = 0; i < _lstCharacters.Count; i++)
             {
-                if (chkBoxChummer.CheckedIndices.Contains(i))
+                int i1 = i;
+                if (await chkBoxChummer.DoThreadSafeFuncAsync(x => x.CheckedIndices.Contains(i1)).ConfigureAwait(false))
                 {
                     Character objLoopCharacter = _lstCharacters[i];
                     int intInitPasses = objLoopCharacter.InitPasses;
                     int intInitRoll = intInitPasses;
                     for (int j = 0; j < intInitPasses; j++)
                     {
-                        intInitRoll += GlobalSettings.RandomGenerator.NextD6ModuloBiasRemoved();
+                        intInitRoll += await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync().ConfigureAwait(false);
                     }
                     objLoopCharacter.InitRoll = intInitRoll + objLoopCharacter.InitialInit;
                 }
@@ -313,19 +330,19 @@ namespace Chummer
             // query for new initiatives
             for (int j = 0; j < _lstCharacters.Count; j++)
             {
-                if (chkBoxChummer.GetItemCheckState(j) == CheckState.Unchecked)
+                int j1 = j;
+                if (await chkBoxChummer.DoThreadSafeFuncAsync(x => x.GetItemCheckState(j1) == CheckState.Unchecked).ConfigureAwait(false))
                 {
                     Character objLoopCharacter = _lstCharacters[j];
-                    using (InitiativeRoller frmHits = new InitiativeRoller
+                    using (ThreadSafeForm<InitiativeRoller> frmHits = await ThreadSafeForm<InitiativeRoller>.GetAsync(
+                               () => new InitiativeRoller
+                               {
+                                   Dice = objLoopCharacter.InitPasses
+                               }).ConfigureAwait(false))
                     {
-                        Dice = objLoopCharacter.InitPasses
-                    })
-                    {
-                        await frmHits.ShowDialogSafeAsync(this);
-
-                        if (frmHits.DialogResult != DialogResult.OK)
+                        if (await frmHits.ShowDialogSafeAsync(this).ConfigureAwait(false) != DialogResult.OK)
                             return; // we decided not to actually change the initiative
-                        objLoopCharacter.InitRoll = frmHits.Result + objLoopCharacter.InitialInit;
+                        objLoopCharacter.InitRoll = frmHits.MyForm.Result + objLoopCharacter.InitialInit;
                     }
                 }
             }
@@ -334,7 +351,8 @@ namespace Chummer
             _blnFinishedCombatTurn = false;
             _intIndex = 0;
             _intRound = 1;
-            lblRound.Text = await LanguageManager.GetStringAsync("Label_Round") + await LanguageManager.GetStringAsync("String_Space") + 1.ToString(GlobalSettings.CultureInfo);
+            string strText = await LanguageManager.GetStringAsync("Label_Round").ConfigureAwait(false) + await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false) + 1.ToString(GlobalSettings.CultureInfo);
+            await lblRound.DoThreadSafeAsync(x => x.Text = strText).ConfigureAwait(false);
             _intTotalChummersWithNoInit = 0;
         }
 
@@ -353,7 +371,7 @@ namespace Chummer
             {
                 if (index != _intIndex)
                 {
-                    DialogResult result = Program.MainForm.ShowMessageBox(
+                    DialogResult result = Program.ShowMessageBox(
                         "Would you like the chummer to perform a delayed action?", "Delayed Action",
                         MessageBoxButtons.YesNo, MessageBoxIcon.Question);
                     if (result == DialogResult.Yes)
@@ -390,22 +408,24 @@ namespace Chummer
             if (e.Button == MouseButtons.Right)
             {
                 // confirm we are selecting a chummer
-                if (chkBoxChummer.SelectedItem == null)
-                    Program.MainForm.ShowMessageBox("Please select a chummer before right-clicking");
+                if (await chkBoxChummer.DoThreadSafeFuncAsync(x => x.SelectedItem == null).ConfigureAwait(false))
+                    Program.ShowMessageBox("Please select a chummer before right-clicking");
 
-                using (InitiativeRoller frmHits = new InitiativeRoller
+                using (ThreadSafeForm<InitiativeRoller> frmHits = await ThreadSafeForm<InitiativeRoller>.GetAsync(() => new InitiativeRoller
+                       {
+                           Dice = _lstCharacters[chkBoxChummer.SelectedIndex].InitPasses
+                       }).ConfigureAwait(false))
                 {
-                    Dice = _lstCharacters[chkBoxChummer.SelectedIndex].InitPasses
-                })
-                {
-                    await frmHits.ShowDialogSafeAsync(this);
-
-                    if (frmHits.DialogResult != DialogResult.OK)
+                    if (await frmHits.ShowDialogSafeAsync(this).ConfigureAwait(false) != DialogResult.OK)
                         return; // we decided not to actually change the initiative
 
-                    _lstCharacters[chkBoxChummer.SelectedIndex].InitRoll = frmHits.Result;
+                    int intResult = frmHits.MyForm.Result;
+                    await chkBoxChummer.DoThreadSafeAsync(x =>
+                    {
+                        _lstCharacters[x.SelectedIndex].InitRoll = intResult;
 
-                    chkBoxChummer.Items[chkBoxChummer.SelectedIndex] = _lstCharacters[chkBoxChummer.SelectedIndex];
+                        x.Items[x.SelectedIndex] = _lstCharacters[x.SelectedIndex];
+                    }).ConfigureAwait(false);
                 }
             }
         }
@@ -423,31 +443,30 @@ namespace Chummer
         /// Adds the token to the initiative chain
         /// </summary>
         /// <param name="character"></param>
-        public async ValueTask AddToken(Character character)
+        /// <param name="token"></param>
+        public async ValueTask AddToken(Character character, CancellationToken token = default)
         {
             if (character == null)
                 return;
             if (character.InitRoll == int.MinValue)
             {
-                using (InitiativeRoller frmHits = new InitiativeRoller
+                using (ThreadSafeForm<InitiativeRoller> frmHits = await ThreadSafeForm<InitiativeRoller>.GetAsync(() => new InitiativeRoller
+                       {
+                           Dice = character.InitPasses
+                       }, token).ConfigureAwait(false))
                 {
-                    Dice = character.InitPasses
-                })
-                {
-                    await frmHits.ShowDialogSafeAsync(this);
-
-                    if (frmHits.DialogResult != DialogResult.OK)
+                    if (await frmHits.ShowDialogSafeAsync(this, token).ConfigureAwait(false) != DialogResult.OK)
                     {
-                        Program.MainForm.ShowMessageBox("ERROR"); // TODO edward show error
+                        Program.ShowMessageBox("ERROR"); // TODO edward show error
                         return;
                     }
 
-                    character.InitRoll = frmHits.Result + character.InitialInit;
+                    character.InitRoll = frmHits.MyForm.Result + character.InitialInit;
                 }
             }
 
             _lstCharacters.Add(character);
-            chkBoxChummer.Items.Add(character);
+            await chkBoxChummer.DoThreadSafeAsync(x => x.Items.Add(character), token: token).ConfigureAwait(false);
         }
 
         /*
@@ -458,12 +477,12 @@ namespace Chummer
         private void ApplyInitChange(int value)
         {
             // check if we have selected a chummer in the list
-            if (chkBoxChummer.SelectedItem == null)
-                Program.MainForm.ShowMessageBox("Please Select a Chummer to remove");
+            if (chkBoxChummer.DoThreadSafeFunc(x => x.SelectedItem) == null)
+                Program.ShowMessageBox("Please Select a Chummer to remove");
             else
             {
                 // pull the simple character out
-                int index = chkBoxChummer.SelectedIndex;
+                int index = chkBoxChummer.DoThreadSafeFunc(x => x.SelectedIndex);
                 _lstCharacters[index].InitRoll += value;
 
                 // if negative or 0 init add to the count
@@ -471,7 +490,7 @@ namespace Chummer
                     _intTotalChummersWithNoInit++;
 
                 ResetListBoxChummers();
-                chkBoxChummer.SelectedIndex = index;
+                chkBoxChummer.DoThreadSafe(x => x.SelectedIndex = index);
             }
         }
 
@@ -481,9 +500,12 @@ namespace Chummer
 
         private void ResetListBoxChummers()
         {
-            chkBoxChummer.Items.Clear();
-            foreach (Character aCharacter in _lstCharacters)
-                chkBoxChummer.Items.Add(aCharacter);
+            chkBoxChummer.DoThreadSafe(x =>
+            {
+                x.Items.Clear();
+                foreach (Character aCharacter in _lstCharacters)
+                    x.Items.Add(aCharacter);
+            });
         }
 
         #endregion Methods

@@ -30,7 +30,8 @@ namespace Chummer
     public sealed class FetchSafelyFromPool<T> : IDisposable where T : class
     {
         private readonly ObjectPool<T> _objMyPool;
-        private readonly T _objMyValue;
+        private readonly SafeObjectPool<T> _objMySafePool;
+        private T _objMyValue;
 
         [CLSCompliant(false)]
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -41,10 +42,20 @@ namespace Chummer
             objReturn = _objMyValue;
         }
 
+        [CLSCompliant(false)]
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public FetchSafelyFromPool(SafeObjectPool<T> objMySafePool, out T objReturn)
+        {
+            _objMySafePool = objMySafePool;
+            _objMyValue = objMySafePool.Get();
+            objReturn = _objMyValue;
+        }
+
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public void Dispose()
         {
-            _objMyPool.Return(_objMyValue);
+            _objMyPool?.Return(_objMyValue);
+            _objMySafePool?.Return(ref _objMyValue);
         }
     }
 }
