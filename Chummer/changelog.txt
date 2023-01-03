@@ -10,6 +10,7 @@ Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.
 - Vocal Expansion can now properly only be taken at Betaware, Deltaware, or Gammaware grades and now properly adds conditional limit modifiers. Existing characters with this bioware will need to reapply improvements to get these bonuses.
 - Internal Synthlink now doubles the cost of the instrument into which it is taken instead of adding double the cost to the instrument. This is based on the way Internal Smartgun's cost is described in the core rulebook.
+- Fixed the Unrestricted Kill Code Qualities customdata not working correctly to allow non-technomancers taking the qualities.
 
 Changed/New Strings:
 - LimitCondition_SkillsActiveLeadership
