@@ -794,7 +794,7 @@
     <!-- Region Dark Terrors -->
     <metamagic>
       <id>42f5af49-ade3-43a7-b501-25ae975a574b</id>
-      <name>Spiritual Sacrifice</name>
+      <name>Echo Binding</name>
       <adept>False</adept>
       <magician>True</magician>
       <required>
