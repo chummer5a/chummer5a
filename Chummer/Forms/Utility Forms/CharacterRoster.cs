@@ -1197,12 +1197,12 @@ namespace Chummer
             if (blnAddWatchNode)
             {
                 if (objWatchNode != null)
-                    objWatchNode.Nodes.Clear();
+                    await treCharacterList.DoThreadSafeAsync(() => objWatchNode.Nodes.Clear(), token).ConfigureAwait(false);
                 else
                     objWatchNode = new TreeNode(await LanguageManager.GetStringAsync("Treenode_Roster_WatchFolder", token: token).ConfigureAwait(false)) { Tag = "Watch" };
             }
-            else
-                objWatchNode?.Remove();
+            else if (objWatchNode != null)
+                await treCharacterList.DoThreadSafeAsync(() => objWatchNode.Remove(), token).ConfigureAwait(false);
 
             token.ThrowIfCancellationRequested();
 
