@@ -325,7 +325,7 @@ namespace Chummer
                 {
                     await cboAmmo.DoThreadSafeAsync(x =>
                     {
-                        if (x.DropDownStyle == ComboBoxStyle.DropDownList)
+                        if (x.DropDownStyle == ComboBoxStyle.DropDownList || x.DropDownStyle == ComboBoxStyle.DropDown)
                         {
                             string strOldSelected = x.SelectedValue?.ToString();
                             x.SelectedValue = _strSelectItemOnLoad;
