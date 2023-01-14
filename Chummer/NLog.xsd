@@ -3070,6 +3070,7 @@
       <xs:element name="attribute" minOccurs="0" maxOccurs="unbounded" type="NLog.Layouts.XmlAttribute" />
       <xs:element name="element" minOccurs="0" maxOccurs="unbounded" type="NLog.Layouts.XmlElement" />
       <xs:element name="includeScopeProperties" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
+      <xs:element name="layout" type="Layout" minOccurs="0" maxOccurs="1" />
       <xs:element name="value" type="Layout" minOccurs="0" maxOccurs="1" />
       <xs:element name="encode" type="xs:boolean" minOccurs="0" maxOccurs="1" default="true" />
       <xs:element name="excludeProperties" type="xs:string" minOccurs="0" maxOccurs="1" />
@@ -3090,6 +3091,11 @@
     <xs:attribute name="includeScopeProperties" type="xs:boolean">
       <xs:annotation>
         <xs:documentation>Whether to include the contents of the T:NLog.ScopeContext dictionary.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="layout" type="SimpleLayoutAttribute">
+      <xs:annotation>
+        <xs:documentation>Value inside the element</xs:documentation>
       </xs:annotation>
     </xs:attribute>
     <xs:attribute name="value" type="SimpleLayoutAttribute">
