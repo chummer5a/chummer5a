@@ -12,6 +12,7 @@ Data Changes:
 - Internal Synthlink now doubles the cost of the instrument into which it is taken instead of adding double the cost to the instrument. This is based on the way Internal Smartgun's cost is described in the core rulebook.
 - Fixed the Unrestricted Kill Code Qualities customdata not working correctly to allow non-technomancers taking the qualities.
 - Added missing Corps Cadavre entries. Fixes #4975.
+- Picking the Chaos mentor spirit when playing with the German Data Changes custom dataset now prompts the user to take Improved Potential twice instead of prompting only once and then prompting that the user take select a limit for the special Improved Potential (Chaos Mentor) adept power. Fixes #4977.
 
 Changed/New Strings:
 - LimitCondition_SkillsActiveLeadership
