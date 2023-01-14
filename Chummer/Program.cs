@@ -224,6 +224,10 @@ namespace Chummer
                             Log.Error(ex1);
                         }
 
+#if DEBUG
+                        if (!Debugger.IsAttached)
+                            Debugger.Launch();
+#endif
                         Utils.BreakIfDebug();
                         CrashHandler.WebMiniDumpHandler(ex, datCrashDateTime);
                     }
