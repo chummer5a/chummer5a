@@ -1231,6 +1231,24 @@ namespace Chummer
         /// <summary>
         /// Run code on the main (UI) thread in a synchronous fashion.
         /// </summary>
+        public static void RunOnMainThread(Func<Task> func, CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+            JoinableTaskFactory.Run(func);
+        }
+
+        /// <summary>
+        /// Run code on the main (UI) thread in a synchronous fashion.
+        /// </summary>
+        public static T RunOnMainThread<T>(Func<Task<T>> func, CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+            return JoinableTaskFactory.Run(func);
+        }
+
+        /// <summary>
+        /// Run code on the main (UI) thread in a synchronous fashion.
+        /// </summary>
         public static void RunOnMainThread(Action func, JoinableTaskCreationOptions eOptions, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
@@ -1280,6 +1298,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             return JoinableTaskFactory.Run(func, eOptions);
         }
+
         /// <summary>
         /// Run code on the main (UI) thread in an awaitable, asynchronous fashion.
         /// </summary>
