@@ -396,6 +396,21 @@
       <page>398</page>
     </power>
     <power>
+      <id>43ff8bf8-a5e5-424c-9dc8-a5229eeea62f</id>
+      <name>Magic Resistance</name>
+      <category>Mundane</category>
+      <rating>True</rating>
+      <type>P</type>
+      <action>Auto</action>
+      <range>Self</range>
+      <duration>Always</duration>
+      <bonus>
+        <spellresistance>Rating</spellresistance>
+      </bonus>
+      <source>SR5</source>
+      <page>76</page>
+    </power>
+    <power>
       <id>bf6c7543-0fa6-4297-8690-8230db5e46a8</id>
       <name>Materialization</name>
       <category>Paranormal</category>
