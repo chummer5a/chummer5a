@@ -17706,6 +17706,12 @@ namespace Chummer
                         break;
                     }
                 }
+                await lblMetamagicSourceLabel
+                    .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblMetamagicSource.Text.ToString()),
+                        token: token).ConfigureAwait(false);
+                await lblMetamagicSource
+                    .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblMetamagicSource.Text.ToString()),
+                        token: token).ConfigureAwait(false);
             }
             finally
             {
