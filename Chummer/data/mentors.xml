@@ -733,7 +733,9 @@
               <val>1</val>
             </selectpower>
             </selectpowers>
-            <specificpower>Improved Potential (Chaos Mentor)</specificpower>
+            <specificpower>
+              <name>Improved Potential (Chaos Mentor)</name>
+            </specificpower>
           </bonus>
         </choice>
       </choices>
