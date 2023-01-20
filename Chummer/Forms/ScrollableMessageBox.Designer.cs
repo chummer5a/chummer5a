@@ -56,7 +56,7 @@ namespace Chummer.Forms
             this.tlpMain.RowCount = 2;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.Size = new System.Drawing.Size(464, 281);
+            this.tlpMain.Size = new System.Drawing.Size(464, 201);
             this.tlpMain.TabIndex = 0;
             // 
             // tlpButtons
@@ -71,7 +71,7 @@ namespace Chummer.Forms
             this.tlpButtons.Controls.Add(this.cmdButton2, 1, 0);
             this.tlpButtons.Controls.Add(this.cmdButton1, 2, 0);
             this.tlpButtons.Dock = System.Windows.Forms.DockStyle.Right;
-            this.tlpButtons.Location = new System.Drawing.Point(196, 241);
+            this.tlpButtons.Location = new System.Drawing.Point(196, 161);
             this.tlpButtons.Margin = new System.Windows.Forms.Padding(0, 6, 10, 11);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
@@ -137,7 +137,7 @@ namespace Chummer.Forms
             this.tlpTop.Name = "tlpTop";
             this.tlpTop.RowCount = 1;
             this.tlpTop.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpTop.Size = new System.Drawing.Size(464, 235);
+            this.tlpTop.Size = new System.Drawing.Size(464, 155);
             this.tlpTop.TabIndex = 7;
             // 
             // imgIcon
@@ -163,7 +163,7 @@ namespace Chummer.Forms
             this.txtText.Name = "txtText";
             this.txtText.ReadOnly = true;
             this.txtText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtText.Size = new System.Drawing.Size(318, 193);
+            this.txtText.Size = new System.Drawing.Size(318, 113);
             this.txtText.TabIndex = 6;
             this.txtText.TabStop = false;
             // 
@@ -173,7 +173,7 @@ namespace Chummer.Forms
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.BackColor = System.Drawing.SystemColors.Control;
-            this.ClientSize = new System.Drawing.Size(464, 281);
+            this.ClientSize = new System.Drawing.Size(464, 201);
             this.Controls.Add(this.tlpMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;

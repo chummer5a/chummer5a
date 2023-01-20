@@ -19570,7 +19570,7 @@
         <power select="F">Hardened Mystic Armor</power>
         <power>Influence</power>
         <power>Materialization</power>
-        <power select="DV (F-1)S">Natural Weapon (Fist</power>
+        <power select="DV (F-1)S">Natural Weapon (Fist)</power>
         <power>AP –Force)</power>
         <power>Psychokinesis</power>
         <power>Sapience</power>
@@ -20544,8 +20544,83 @@
       <source>SR5</source>
       <page>298</page>
     </metatype>
-
-<!-- End Region Ritual -->
+  <metatype>
+    <id>3394309a-7bb3-43fc-8ecb-a3ada800a55e</id>
+    <name>Corps Cadavre</name>
+    <category>Ritual</category>
+    <forcecreature />
+    <karma>0</karma>
+    <bodmin>F</bodmin>
+    <bodmax>F</bodmax>
+    <bodaug>F</bodaug>
+    <agimin>F-2</agimin>
+    <agimax>F-2</agimax>
+    <agiaug>F-2</agiaug>
+    <reamin>F-2</reamin>
+    <reamax>F-2</reamax>
+    <reaaug>F-2</reaaug>
+    <strmin>F</strmin>
+    <strmax>F</strmax>
+    <straug>F</straug>
+    <chamin>1</chamin>
+    <chamax>1</chamax>
+    <chaaug>1</chaaug>
+    <intmin>1</intmin>
+    <intmax>1</intmax>
+    <intaug>1</intaug>
+    <logmin>1</logmin>
+    <logmax>1</logmax>
+    <logaug>1</logaug>
+    <wilmin>1</wilmin>
+    <wilmax>1</wilmax>
+    <wilaug>1</wilaug>
+    <inimin>F-1</inimin>
+    <inimax>F-1</inimax>
+    <iniaug>F-1</iniaug>
+    <edgmin>0</edgmin>
+    <edgmax>0</edgmax>
+    <edgaug>0</edgaug>
+    <magmin>0</magmin>
+    <magmax>0</magmax>
+    <magaug>0</magaug>
+    <resmin>0</resmin>
+    <resmax>0</resmax>
+    <resaug>0</resaug>
+    <depmin>0</depmin>
+    <depmax>0</depmax>
+    <depaug>0</depaug>
+    <essmin>0</essmin>
+    <essmax>F</essmax>
+    <essaug>F</essaug>
+    <walk>2/1/0</walk>
+    <run>3/0/0</run>
+    <sprint>2/1/0</sprint>
+    <bonus>
+      <enabletab>
+        <name>critter</name>
+      </enabletab>
+    </bonus>
+    <powers>
+      <power>Sapience</power>
+    </powers>
+    <optionalpowers>
+      <power>Magic Resistance</power>
+      <power>Combat Skill</power>
+      <power>Physical Skill</power>
+      <power>Social Skill</power>
+      <power>Technical Skill</power>
+      <power>Vehicle Skill</power>
+    </optionalpowers>
+    <skills>
+      <skill rating="F">Assensing</skill>
+      <skill rating="F">Astral Combat</skill>
+      <skill rating="F">Perception</skill>
+      <skill rating="F">Unarmed Combat</skill>
+    </skills>
+    <source>HT</source>
+    <page>129</page>
+  </metatype>
+  <!-- End Region Ritual -->
 <!-- Region Dracoforms -->
     <metatype>
       <id>805e79e4-4a6c-4877-b764-b07566414180</id>

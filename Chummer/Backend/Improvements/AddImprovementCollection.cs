@@ -539,11 +539,11 @@ namespace Chummer
 
                     using (ThreadSafeForm<SelectItem> frmPickItem = ThreadSafeForm<SelectItem>.Get(() => new SelectItem
                     {
-                        SelectedItem = _objCharacter.MagicTradition.SourceIDString,
                         AllowAutoSelect = false
                     }))
                     {
                         frmPickItem.MyForm.SetDropdownItemsMode(lstTraditions);
+                        frmPickItem.MyForm.SelectedItem = _objCharacter.MagicTradition.SourceIDString;
 
                         // Make sure the dialogue window was not canceled.
                         if (frmPickItem.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
@@ -6834,7 +6834,6 @@ namespace Chummer
 
                     using (ThreadSafeForm<SelectItem> frmPickItem = ThreadSafeForm<SelectItem>.Get(() => new SelectItem
                     {
-                        SelectedItem = _objCharacter.MagicTradition.SourceIDString,
                         Description = LanguageManager.GetString("String_DisableSkillGroupPrompt"),
                         AllowAutoSelect = false
                     }))
@@ -7499,7 +7498,6 @@ namespace Chummer
 
                     using (ThreadSafeForm<SelectItem> frmPickItem = ThreadSafeForm<SelectItem>.Get(() => new SelectItem
                     {
-                        SelectedItem = _objCharacter.MagicTradition.SourceIDString,
                         AllowAutoSelect = false
                     }))
                     {

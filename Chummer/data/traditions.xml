@@ -2496,6 +2496,40 @@
       </weaknesses>
     </spirit>
     <!-- End Region -->
+    <!-- Region Hard Targets -->
+    <spirit>
+      <id>bf79c864-3276-452d-86d4-957e9f2f53ca</id>
+      <name>Corps Cadavre</name>
+      <bod>F</bod>
+      <agi>F-2</agi>
+      <rea>F-2</rea>
+      <str>F</str>
+      <cha>1</cha>
+      <int>1</int>
+      <log>1</log>
+      <wil>1</wil>
+      <ini>(F-1)</ini>
+      <source>HT</source>
+      <page>129</page>
+      <optionalpowers>
+        <power>Magic Resistance</power>
+        <power>Combat Skill</power>
+        <power>Physical Skill</power>
+        <power>Social Skill</power>
+        <power>Technical Skill</power>
+        <power>Vehicle Skill</power>
+      </optionalpowers>
+      <powers>
+        <power>Sapience</power>
+      </powers>
+      <skills>
+        <skill attr="int">Assensing</skill>
+        <skill attr="wil">Astral Combat</skill>
+        <skill attr="int">Perception</skill>
+        <skill attr="agi">Unarmed Combat</skill>
+      </skills>
+    </spirit>
+    <!-- End Region -->
     <!-- Region Forbidden Arcana -->
     <spirit>
       <id>6237233f-1872-45da-b828-16df75a30127</id>

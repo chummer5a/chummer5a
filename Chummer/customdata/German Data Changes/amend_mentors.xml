@@ -42,6 +42,25 @@
         </choice>
       </choices>
     </mentor>
+    <mentor>
+      <id>2c6a5ac3-0d61-46dd-86a3-a630ebc91070</id> <!-- Chaos -->
+      <choices>
+        <choice xpathfilter="starts-with(name, 'Adept:')">
+          <bonus amendoperation="replace">
+            <selectpowers>
+              <selectpower limittopowers="Improved Potential (Social),Improved Potential (Physical),Improved Potential (Mental)">
+                <val>1</val>
+              </selectpower>
+            </selectpowers>
+            <selectpowers>
+              <selectpower limittopowers="Improved Potential (Social),Improved Potential (Physical),Improved Potential (Mental)">
+                <val>1</val>
+              </selectpower>
+            </selectpowers>
+          </bonus>
+        </choice>
+      </choices>
+    </mentor>
     <mentor> <!--Great Mother SASS-->
       <id>7a837193-2b58-49be-9dbb-c1c0c108ca6e</id>
       <hide />
