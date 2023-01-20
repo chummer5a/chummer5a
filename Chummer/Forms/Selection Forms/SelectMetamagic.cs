@@ -239,7 +239,7 @@ namespace Chummer
                 // Make sure the selected Metamagic or Echo meets its requirements.
                 XPathNavigator objXmlMetamagic = _objXmlDocument.SelectSingleNode(_strRootXPath + "[id = " + strSelectedId.CleanXPath() + ']');
 
-                if (objXmlMetamagic?.RequirementsMet(_objCharacter, _strType) != true)
+                if (objXmlMetamagic?.RequirementsMet(_objCharacter, null, _strType) != true)
                     return;
 
                 _strSelectedMetamagic = strSelectedId;

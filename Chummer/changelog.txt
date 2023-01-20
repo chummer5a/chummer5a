@@ -6,6 +6,7 @@ Application Changes:
 - Corrupted save data for Cyber-Singularity Seeker and/or Redliner can no longer cause duplicates to be generated for their bonuses.
 - Characters can now have contacts with a total connection plus loyalty that is greater than 7 at character creation if they also have something that lowers said contacts' cost to 7 karma or lower.
 - When being prompted to select a tradition, an action, or a to-be-disabled skill group, the prompt is no longer automatically filled with a string of seemingly random numbers and letters.
+- Fixed Metamagics/Echos not correctly showing why they cannot be taken in the Select Metamagic window. Closes #4973
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.
