@@ -860,5 +860,15 @@
       <xml forced="True"><![CDATA[{select}]]></xml>
       <page>Adds a free Complex Form to the character. Any Complex Form can be added, even ones for which the character would not be normally eligible.</page>
     </improvement>
+    <improvement>
+      <name>Surprise</name>
+      <id>surprise</id>
+      <internal>surprise</internal>
+      <fields>
+        <field>val</field>
+      </fields>
+      <xml><![CDATA[{val}]]></xml>
+      <page>Adjusts the character's Surprise dicepool by the value entered. Positive numbers improve the dicepool. Negative numbers reduce the dicepool.</page>
+    </improvement>
   </improvements>
 </chummer>
