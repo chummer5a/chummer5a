@@ -52,6 +52,7 @@ namespace Chummer
 
         private async void SelectPower_Load(object sender, EventArgs e)
         {
+            await cmdOKAdd.DoThreadSafeAsync(x => x.Visible = !ForBonus);
             _blnLoading = false;
             await BuildPowerList().ConfigureAwait(false);
         }
@@ -174,6 +175,11 @@ namespace Chummer
         public bool IgnoreLimits { get; set; }
 
         /// <summary>
+        /// Whether this window is being shown to select a power for a bonus node or to just select a power for a character traditionally
+        /// </summary>
+        public bool ForBonus { get; set; }
+
+        /// <summary>
         /// Power that was selected in the dialogue.
         /// </summary>
         public string SelectedPower { get; private set; } = string.Empty;
@@ -250,8 +256,13 @@ namespace Chummer
                         continue;
                     }
 
-                    if (!objXmlPower.RequirementsMet(_objCharacter, null, string.Empty, string.Empty, string.Empty,
-                                                     string.Empty, IgnoreLimits))
+                    bool blnIgnoreLimit = IgnoreLimits || (ForBonus
+                                                           && (await objXmlPower
+                                                                     .SelectSingleNodeAndCacheExpressionAsync(
+                                                                         "levels", token: token).ConfigureAwait(false))
+                                                           ?.Value == bool.TrueString);
+
+                    if (!objXmlPower.RequirementsMet(_objCharacter, blnIgnoreLimit: blnIgnoreLimit))
                         continue;
 
                     lstPower.Add(new ListItem(

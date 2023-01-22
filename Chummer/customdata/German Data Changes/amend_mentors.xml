@@ -51,8 +51,6 @@
               <selectpower limittopowers="Improved Potential (Social),Improved Potential (Physical),Improved Potential (Mental)">
                 <val>1</val>
               </selectpower>
-            </selectpowers>
-            <selectpowers>
               <selectpower limittopowers="Improved Potential (Social),Improved Potential (Physical),Improved Potential (Mental)">
                 <val>1</val>
               </selectpower>

@@ -4299,6 +4299,7 @@ namespace Chummer
                             {
                                 Log.Trace("selectpower = " + objNode.OuterXml);
 
+                                frmPickPower.MyForm.ForBonus = true;
                                 frmPickPower.MyForm.IgnoreLimits = objNode["ignorerating"]?.InnerText == bool.TrueString;
 
                                 if (!string.IsNullOrEmpty(strPointsPerLevel))
