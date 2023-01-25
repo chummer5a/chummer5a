@@ -9,6 +9,7 @@ Application Changes:
 - Fixed Metamagics/Echos not correctly showing why they cannot be taken in the Select Metamagic window. Closes #4973
 - Fixed Source for metamagics/echoes not being visible when selected in the Initation/Submersion window. Closes #4974
 - When an adept tries buying a mentor spirit that lets them choose between multiple adept powers and at least one of those choices is for an adept power with levels that the adept already has, the program now properly allows the adept to choose one of those powers regardless to increase their level in that power.
+- Potential issues with initiation and/or submersion grades not increasing after the first initiation/submersion have been fixed.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.

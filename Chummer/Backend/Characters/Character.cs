@@ -363,108 +363,103 @@ namespace Chummer
 
         private async void InitiationGradesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
-            if (_blnClearingInitiations || IsLoading)
+            if (_blnClearingInitiations || IsLoading || e.Action == NotifyCollectionChangedAction.Move)
                 return;
+            bool blnUpdateSubmersion = false;
+            bool blnUpdateInitiation = false;
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
-                {
-                    int intAddSubmersion = 0;
-                    int intAddInitiation = 0;
-
-                    foreach (InitiationGrade objItem in e.NewItems)
+                    foreach (InitiationGrade objGrade in e.NewItems)
                     {
-                        if (objItem.Technomancer)
-                            ++intAddSubmersion;
-                        else
-                            ++intAddInitiation;
-                    }
-
-                    await SetSubmersionGradeAsync(await GetInitiateGradeAsync().ConfigureAwait(false) + intAddSubmersion).ConfigureAwait(false);
-                    await SetInitiateGradeAsync(await GetInitiateGradeAsync().ConfigureAwait(false) + intAddInitiation).ConfigureAwait(false);
-                    break;
-                }
-                case NotifyCollectionChangedAction.Remove:
-                {
-                    int intRemoveSubmersion = 0;
-                    int intRemoveInitiation = 0;
-
-                    foreach (InitiationGrade objItem in e.OldItems)
-                    {
-                        if (objItem.Technomancer)
-                            ++intRemoveSubmersion;
-                        else
-                            ++intRemoveInitiation;
-                    }
-
-                    int intNewSubmersionValue = await GetSubmersionGradeAsync().ConfigureAwait(false) - intRemoveSubmersion;
-                    if (intNewSubmersionValue < 0)
-                        await SetSubmersionGradeAsync(0).ConfigureAwait(false);
-                    else
-                        await SetSubmersionGradeAsync(intNewSubmersionValue).ConfigureAwait(false);
-                    int intNewValue = await GetInitiateGradeAsync().ConfigureAwait(false) - intRemoveInitiation;
-                    if (intNewValue < 0)
-                        await SetInitiateGradeAsync(0).ConfigureAwait(false);
-                    else
-                        await SetInitiateGradeAsync(intNewValue).ConfigureAwait(false);
-                    break;
-                }
-                case NotifyCollectionChangedAction.Replace:
-                {
-                    int intAddSubmersion = 0;
-                    int intAddInitiation = 0;
-
-                    foreach (InitiationGrade objItem in e.OldItems)
-                    {
-                        if (objItem.Technomancer)
-                            --intAddSubmersion;
-                        else
-                            --intAddInitiation;
-                    }
-
-                    foreach (InitiationGrade objItem in e.NewItems)
-                    {
-                        if (objItem.Technomancer)
-                            ++intAddSubmersion;
-                        else
-                            ++intAddInitiation;
-                    }
-
-                    int intNewSubmersionValue = await GetSubmersionGradeAsync().ConfigureAwait(false) + intAddSubmersion;
-                    if (intNewSubmersionValue < 0)
-                        await SetSubmersionGradeAsync(0).ConfigureAwait(false);
-                    else
-                        await SetSubmersionGradeAsync(intNewSubmersionValue).ConfigureAwait(false);
-                    int intNewValue = await GetInitiateGradeAsync().ConfigureAwait(false) + intAddInitiation;
-                    if (intNewValue < 0)
-                        await SetInitiateGradeAsync(0).ConfigureAwait(false);
-                    else
-                        await SetInitiateGradeAsync(intNewValue).ConfigureAwait(false);
-                    break;
-                }
-                case NotifyCollectionChangedAction.Move:
-                    return;
-                case NotifyCollectionChangedAction.Reset:
-                {
-                    int intSubmersion = 0;
-                    int intInitiation = 0;
-
-                    using (await EnterReadLock.EnterAsync(LockObject).ConfigureAwait(false))
-                    {
-                        foreach (InitiationGrade objItem in InitiationGrades)
+                        if (objGrade.Technomancer)
                         {
-                            if (objItem.Technomancer)
-                                ++intSubmersion;
-                            else
-                                ++intInitiation;
+                            blnUpdateSubmersion = true;
+                            if (blnUpdateInitiation)
+                                break;
                         }
-
-                        await SetSubmersionGradeAsync(intSubmersion).ConfigureAwait(false);
-                        await SetInitiateGradeAsync(intInitiation).ConfigureAwait(false);
+                        else
+                        {
+                            blnUpdateInitiation = true;
+                            if (blnUpdateSubmersion)
+                                break;
+                        }
                     }
-
                     break;
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (InitiationGrade objGrade in e.OldItems)
+                    {
+                        if (objGrade.Technomancer)
+                        {
+                            blnUpdateSubmersion = true;
+                            if (blnUpdateInitiation)
+                                break;
+                        }
+                        else
+                        {
+                            blnUpdateInitiation = true;
+                            if (blnUpdateSubmersion)
+                                break;
+                        }
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Replace:
+                    foreach (InitiationGrade objGrade in e.OldItems)
+                    {
+                        if (objGrade.Technomancer)
+                        {
+                            blnUpdateSubmersion = true;
+                            if (blnUpdateInitiation)
+                                break;
+                        }
+                        else
+                        {
+                            blnUpdateInitiation = true;
+                            if (blnUpdateSubmersion)
+                                break;
+                        }
+                    }
+                    if (blnUpdateInitiation && blnUpdateSubmersion)
+                        break;
+                    foreach (InitiationGrade objGrade in e.NewItems)
+                    {
+                        if (objGrade.Technomancer)
+                        {
+                            blnUpdateSubmersion = true;
+                            if (blnUpdateInitiation)
+                                break;
+                        }
+                        else
+                        {
+                            blnUpdateInitiation = true;
+                            if (blnUpdateSubmersion)
+                                break;
+                        }
+                    }
+                    break;
+                case NotifyCollectionChangedAction.Reset:
+                    blnUpdateInitiation = true;
+                    blnUpdateSubmersion = true;
+                    break;
+            }
+            // Need a complete recalculation because of potential issues where grades can change in between the grade getter and setter calls.
+            int intSubmersion = 0;
+            int intInitiation = 0;
+            using (await EnterReadLock.EnterAsync(LockObject).ConfigureAwait(false))
+            {
+                // Don't do checks for update submersion/initiation in the accumulator because it's faster to just index counts than to do those checks every iteration.
+                foreach (InitiationGrade objItem in InitiationGrades)
+                {
+                    if (objItem.Technomancer)
+                        ++intSubmersion;
+                    else
+                        ++intInitiation;
                 }
+
+                if (blnUpdateSubmersion)
+                    await SetSubmersionGradeAsync(intSubmersion).ConfigureAwait(false);
+                if (blnUpdateInitiation)
+                    await SetInitiateGradeAsync(intInitiation).ConfigureAwait(false);
             }
         }
 
@@ -14855,13 +14850,20 @@ namespace Chummer
             {
                 // Do not update grade numbers until after we're done processing everything
                 _blnClearingInitiations = true;
-                // We need to remove grades that can potentially add stuff that adds grades, so we cannot use foreach
-                for (int i = InitiationGrades.Count - 1; i >= 0; --i)
+                try
                 {
-                    InitiationGrades[i].Remove(false, false);
+                    // We need to remove grades that can potentially add stuff that adds grades, so we cannot use foreach
+                    for (int i = InitiationGrades.Count - 1; i >= 0; --i)
+                    {
+                        InitiationGrades[i].Remove(false, false);
+                    }
                 }
+                finally
+                {
+                    _blnClearingInitiations = false;
+                }
+
                 // Now update our grade numbers
-                _blnClearingInitiations = false;
                 InitiateGrade = 0;
                 SubmersionGrade = 0;
             }
@@ -14877,14 +14879,21 @@ namespace Chummer
             {
                 // Do not update grade numbers until after we're done processing everything
                 _blnClearingInitiations = true;
-                // We need to remove grades that can potentially add stuff that adds grades, so we cannot use foreach
-                for (int i = await InitiationGrades.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
+                try
                 {
-                    await (await InitiationGrades.GetValueAtAsync(i, token).ConfigureAwait(false)).RemoveAsync(false, false, token).ConfigureAwait(false);
+                    // We need to remove grades that can potentially add stuff that adds grades, so we cannot use foreach
+                    for (int i = await InitiationGrades.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
+                    {
+                        await (await InitiationGrades.GetValueAtAsync(i, token).ConfigureAwait(false))
+                              .RemoveAsync(false, false, token).ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    _blnClearingInitiations = false;
                 }
 
                 // Now update our grade numbers
-                _blnClearingInitiations = false;
                 await SetInitiateGradeAsync(0, token).ConfigureAwait(false);
                 await SetSubmersionGradeAsync(0, token).ConfigureAwait(false);
             }
@@ -18710,11 +18719,12 @@ namespace Chummer
                 {
                     if (_intInitiateGrade == value)
                         return;
-                    bool blnFirstInitiation = _intInitiateGrade == 0;
                     using (LockObject.EnterWriteLock())
                     {
-                        if (Interlocked.Exchange(ref _intInitiateGrade, value) == value)
+                        int intOldValue = Interlocked.Exchange(ref _intInitiateGrade, value);
+                        if (intOldValue == value)
                             return;
+                        bool blnFirstInitiation = intOldValue == 0;
                         // Remove any existing Initiation Improvements.
                         if (value == 0)
                         {
@@ -18747,13 +18757,23 @@ namespace Chummer
                                 ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Metamagic,
                                                                       objMetamagic.InternalId, objMetamagic.Bonus,
                                                                       value,
-                                                                      objMetamagic.DisplayNameShort(
-                                                                          GlobalSettings.Language));
+                                                                      objMetamagic.CurrentDisplayNameShort);
                             }
                         }
                         else
                         {
-                            if (Improvements.All(x => x.ImproveSource != Improvement.ImprovementSource.Initiation))
+                            bool blnFoundImprovement = false;
+                            // ReSharper disable once ForCanBeConvertedToForeach
+                            for (int i = 0; i < Improvements.Count; ++i)
+                            {
+                                Improvement objImprovement = Improvements[i];
+                                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Initiation)
+                                {
+                                    blnFoundImprovement = true;
+                                    objImprovement.Rating = value;
+                                }
+                            }
+                            if (!blnFoundImprovement)
                             {
                                 // Create the new Improvement.
                                 ImprovementManager.CreateImprovement(this, "MAG",
@@ -18768,43 +18788,31 @@ namespace Chummer
                                                                      string.Empty, 0, value, 0, 1);
                                 ImprovementManager.Commit(this);
                             }
-                            else
-                            {
-                                // ReSharper disable once ForCanBeConvertedToForeach
-                                for (int i = 0; i < Improvements.Count; ++i)
-                                {
-                                    Improvement objImprovement = Improvements[i];
-                                    if (objImprovement.ImproveSource == Improvement.ImprovementSource.Initiation)
-                                        objImprovement.Rating = value;
-                                }
-                            }
 
                             // Update any Metamagic Improvements the character might have.
                             foreach (Metamagic objMetamagic in Metamagics.Where(
                                          x => x.SourceType == Improvement.ImprovementSource.Metamagic
                                               && x.Bonus?.InnerXml.Contains("Rating") == true))
                             {
+                                blnFoundImprovement = false;
                                 string strMetamagicId = objMetamagic.InternalId;
+                                // ReSharper disable once ForCanBeConvertedToForeach
+                                for (int i = 0; i < Improvements.Count; ++i)
+                                {
+                                    Improvement objImprovement = Improvements[i];
+                                    if (objImprovement.SourceName == strMetamagicId &&
+                                        objImprovement.ImproveSource == Improvement.ImprovementSource.Metamagic)
+                                    {
+                                        blnFoundImprovement = true;
+                                        objImprovement.Rating = value;
+                                    }
+                                }
                                 // If the Bonus contains "Rating", refresh ratings of existing Improvements.
-                                if (Improvements.All(x =>
-                                                         x.ImproveSource != Improvement.ImprovementSource.Metamagic ||
-                                                         x.SourceName != strMetamagicId))
+                                if (!blnFoundImprovement)
                                 {
                                     ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Metamagic,
                                                                           strMetamagicId, objMetamagic.Bonus, value,
-                                                                          objMetamagic.DisplayNameShort(
-                                                                              GlobalSettings.Language));
-                                }
-                                else
-                                {
-                                    // ReSharper disable once ForCanBeConvertedToForeach
-                                    for (int i = 0; i < Improvements.Count; ++i)
-                                    {
-                                        Improvement objImprovement = Improvements[i];
-                                        if (objImprovement.SourceName == strMetamagicId &&
-                                            objImprovement.ImproveSource == Improvement.ImprovementSource.Metamagic)
-                                            objImprovement.Rating = value;
-                                    }
+                                                                          objMetamagic.CurrentDisplayNameShort);
                                 }
                             }
                         }
@@ -18833,12 +18841,13 @@ namespace Chummer
             {
                 if (_intInitiateGrade == value)
                     return;
-                bool blnFirstInitiation = _intInitiateGrade == 0;
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
-                    if (Interlocked.Exchange(ref _intInitiateGrade, value) == value)
+                    int intOldValue = Interlocked.Exchange(ref _intInitiateGrade, value);
+                    if (intOldValue == value)
                         return;
+                    bool blnFirstInitiation = intOldValue == 0;
                     // Remove any existing Initiation Improvements.
                     if (value == 0)
                     {
@@ -18887,9 +18896,19 @@ namespace Chummer
                     }
                     else
                     {
-                        if (await Improvements
-                                  .AllAsync(x => x.ImproveSource != Improvement.ImprovementSource.Initiation, token)
-                                  .ConfigureAwait(false))
+                        bool blnFoundImprovement = false;
+                        // ReSharper disable once ForCanBeConvertedToForeach
+                        for (int i = 0; i < await Improvements.GetCountAsync(token).ConfigureAwait(false); ++i)
+                        {
+                            Improvement objImprovement
+                                = await Improvements.GetValueAtAsync(i, token).ConfigureAwait(false);
+                            if (objImprovement.ImproveSource == Improvement.ImprovementSource.Initiation)
+                            {
+                                blnFoundImprovement = true;
+                                objImprovement.Rating = value;
+                            }
+                        }
+                        if (!blnFoundImprovement)
                         {
                             // Create the new Improvement.
                             await ImprovementManager.CreateImprovementAsync(this, "MAG",
@@ -18906,17 +18925,6 @@ namespace Chummer
                                                     .ConfigureAwait(false);
                             await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
                         }
-                        else
-                        {
-                            // ReSharper disable once ForCanBeConvertedToForeach
-                            for (int i = 0; i < await Improvements.GetCountAsync(token).ConfigureAwait(false); ++i)
-                            {
-                                Improvement objImprovement
-                                    = await Improvements.GetValueAtAsync(i, token).ConfigureAwait(false);
-                                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Initiation)
-                                    objImprovement.Rating = value;
-                            }
-                        }
 
                         // Update any Metamagic Improvements the character might have.
                         await Metamagics.ForEachAsync(async objMetamagic =>
@@ -18924,31 +18932,30 @@ namespace Chummer
                             if (objMetamagic.SourceType == Improvement.ImprovementSource.Metamagic
                                 && objMetamagic.Bonus?.InnerXml.Contains("Rating") == true)
                             {
+                                blnFoundImprovement = false;
                                 string strMetamagicId = objMetamagic.InternalId;
+                                // ReSharper disable once ForCanBeConvertedToForeach
+                                for (int i = 0;
+                                     i < await Improvements.GetCountAsync(token).ConfigureAwait(false);
+                                     ++i)
+                                {
+                                    Improvement objImprovement = await Improvements.GetValueAtAsync(i, token)
+                                        .ConfigureAwait(false);
+                                    if (objImprovement.SourceName == strMetamagicId && objImprovement.ImproveSource
+                                        == Improvement.ImprovementSource.Initiation)
+                                    {
+                                        blnFoundImprovement = true;
+                                        objImprovement.Rating = value;
+                                    }
+                                }
                                 // If the Bonus contains "Rating", refresh ratings of existing Improvements.
-                                if (await Improvements.AllAsync(
-                                        x => x.ImproveSource != Improvement.ImprovementSource.Metamagic
-                                             || x.SourceName != strMetamagicId, token).ConfigureAwait(false))
+                                if (!blnFoundImprovement)
                                 {
                                     await ImprovementManager.CreateImprovementsAsync(
                                         this, Improvement.ImprovementSource.Metamagic, strMetamagicId,
                                         objMetamagic.Bonus, value,
                                         await objMetamagic.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
                                         token: token).ConfigureAwait(false);
-                                }
-                                else
-                                {
-                                    // ReSharper disable once ForCanBeConvertedToForeach
-                                    for (int i = 0;
-                                         i < await Improvements.GetCountAsync(token).ConfigureAwait(false);
-                                         ++i)
-                                    {
-                                        Improvement objImprovement = await Improvements.GetValueAtAsync(i, token)
-                                            .ConfigureAwait(false);
-                                        if (objImprovement.SourceName == strMetamagicId && objImprovement.ImproveSource
-                                            == Improvement.ImprovementSource.Initiation)
-                                            objImprovement.Rating = value;
-                                    }
                                 }
                             }
                         }, token).ConfigureAwait(false);
@@ -20020,11 +20027,12 @@ namespace Chummer
                 {
                     if (_intSubmersionGrade == value)
                         return;
-                    bool blnFirstSubmersion = _intSubmersionGrade == 0;
                     using (LockObject.EnterWriteLock())
                     {
-                        if (Interlocked.Exchange(ref _intSubmersionGrade, value) == value)
+                        int intOldValue = Interlocked.Exchange(ref _intSubmersionGrade, value);
+                        if (intOldValue == value)
                             return;
+                        bool blnFirstSubmersion = intOldValue == 0;
                         // Remove any existing Submersion Improvements.
                         if (value == 0)
                         {
@@ -20053,13 +20061,23 @@ namespace Chummer
                                 ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Echo,
                                                                       objMetamagic.InternalId, objMetamagic.Bonus,
                                                                       value,
-                                                                      objMetamagic.DisplayNameShort(
-                                                                          GlobalSettings.Language));
+                                                                      objMetamagic.CurrentDisplayNameShort);
                             }
                         }
                         else
                         {
-                            if (Improvements.All(x => x.ImproveSource != Improvement.ImprovementSource.Submersion))
+                            bool blnFoundImprovement = false;
+                            // ReSharper disable once ForCanBeConvertedToForeach
+                            for (int i = 0; i < Improvements.Count; ++i)
+                            {
+                                Improvement objImprovement = Improvements[i];
+                                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Submersion)
+                                {
+                                    blnFoundImprovement = true;
+                                    objImprovement.Rating = value;
+                                }
+                            }
+                            if (!blnFoundImprovement)
                             {
                                 // Create the new Improvement.
                                 ImprovementManager.CreateImprovement(this, "RES",
@@ -20069,43 +20087,31 @@ namespace Chummer
                                                                      string.Empty, 0, value, 0, 1);
                                 ImprovementManager.Commit(this);
                             }
-                            else
-                            {
-                                // ReSharper disable once ForCanBeConvertedToForeach
-                                for (int i = 0; i < Improvements.Count; ++i)
-                                {
-                                    Improvement objImprovement = Improvements[i];
-                                    if (objImprovement.ImproveSource == Improvement.ImprovementSource.Submersion)
-                                        objImprovement.Rating = value;
-                                }
-                            }
 
                             // Update any Echo Improvements the character might have.
                             foreach (Metamagic objMetamagic in Metamagics.Where(
                                          x => x.SourceType == Improvement.ImprovementSource.Echo
                                               && x.Bonus?.InnerXml.Contains("Rating") == true))
                             {
+                                blnFoundImprovement = false;
                                 string strMetamagicId = objMetamagic.InternalId;
+                                // ReSharper disable once ForCanBeConvertedToForeach
+                                for (int i = 0; i < Improvements.Count; ++i)
+                                {
+                                    Improvement objImprovement = Improvements[i];
+                                    if (objImprovement.SourceName == strMetamagicId &&
+                                        objImprovement.ImproveSource == Improvement.ImprovementSource.Echo)
+                                    {
+                                        blnFoundImprovement = true;
+                                        objImprovement.Rating = value;
+                                    }
+                                }
                                 // If the Bonus contains "Rating", refresh ratings of existing Improvements.
-                                if (Improvements.All(x =>
-                                                         x.ImproveSource != Improvement.ImprovementSource.Echo ||
-                                                         x.SourceName != strMetamagicId))
+                                if (!blnFoundImprovement)
                                 {
                                     ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Echo,
                                                                           strMetamagicId, objMetamagic.Bonus, value,
-                                                                          objMetamagic.DisplayNameShort(
-                                                                              GlobalSettings.Language));
-                                }
-                                else
-                                {
-                                    // ReSharper disable once ForCanBeConvertedToForeach
-                                    for (int i = 0; i < Improvements.Count; ++i)
-                                    {
-                                        Improvement objImprovement = Improvements[i];
-                                        if (objImprovement.SourceName == strMetamagicId &&
-                                            objImprovement.ImproveSource == Improvement.ImprovementSource.Echo)
-                                            objImprovement.Rating = value;
-                                    }
+                                                                          objMetamagic.CurrentDisplayNameShort);
                                 }
                             }
                         }
@@ -20133,12 +20139,13 @@ namespace Chummer
             {
                 if (_intSubmersionGrade == value)
                     return;
-                bool blnFirstSubmersion = _intSubmersionGrade == 0;
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
-                    if (Interlocked.Exchange(ref _intSubmersionGrade, value) == value)
+                    int intOldValue = Interlocked.Exchange(ref _intSubmersionGrade, value);
+                    if (intOldValue == value)
                         return;
+                    bool blnFirstSubmersion = intOldValue == 0;
                     // Remove any existing Submersion Improvements.
                     if (value == 0)
                     {
@@ -20182,9 +20189,19 @@ namespace Chummer
                     }
                     else
                     {
-                        if (await Improvements
-                                  .AllAsync(x => x.ImproveSource != Improvement.ImprovementSource.Submersion,
-                                            token: token).ConfigureAwait(false))
+                        bool blnFoundImprovement = false;
+                        // ReSharper disable once ForCanBeConvertedToForeach
+                        for (int i = 0; i < await Improvements.GetCountAsync(token).ConfigureAwait(false); ++i)
+                        {
+                            Improvement objImprovement
+                                = await Improvements.GetValueAtAsync(i, token).ConfigureAwait(false);
+                            if (objImprovement.ImproveSource == Improvement.ImprovementSource.Submersion)
+                            {
+                                blnFoundImprovement = true;
+                                objImprovement.Rating = value;
+                            }
+                        }
+                        if (!blnFoundImprovement)
                         {
                             // Create the new Improvement.
                             await ImprovementManager.CreateImprovementAsync(this, "RES",
@@ -20195,17 +20212,6 @@ namespace Chummer
                                                     .ConfigureAwait(false);
                             await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
                         }
-                        else
-                        {
-                            // ReSharper disable once ForCanBeConvertedToForeach
-                            for (int i = 0; i < await Improvements.GetCountAsync(token).ConfigureAwait(false); ++i)
-                            {
-                                Improvement objImprovement
-                                    = await Improvements.GetValueAtAsync(i, token).ConfigureAwait(false);
-                                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Submersion)
-                                    objImprovement.Rating = value;
-                            }
-                        }
 
                         // Update any Echo Improvements the character might have.
                         await Metamagics.ForEachAsync(async objMetamagic =>
@@ -20213,31 +20219,30 @@ namespace Chummer
                             if (objMetamagic.SourceType == Improvement.ImprovementSource.Echo
                                 && objMetamagic.Bonus?.InnerXml.Contains("Rating") == true)
                             {
+                                blnFoundImprovement = false;
                                 string strMetamagicId = objMetamagic.InternalId;
+                                // ReSharper disable once ForCanBeConvertedToForeach
+                                for (int i = 0;
+                                     i < await Improvements.GetCountAsync(token).ConfigureAwait(false);
+                                     ++i)
+                                {
+                                    Improvement objImprovement = await Improvements.GetValueAtAsync(i, token)
+                                        .ConfigureAwait(false);
+                                    if (objImprovement.SourceName == strMetamagicId && objImprovement.ImproveSource
+                                        == Improvement.ImprovementSource.Echo)
+                                    {
+                                        blnFoundImprovement = true;
+                                        objImprovement.Rating = value;
+                                    }
+                                }
                                 // If the Bonus contains "Rating", refresh ratings of existing Improvements.
-                                if (await Improvements.AllAsync(
-                                        x => x.ImproveSource != Improvement.ImprovementSource.Echo
-                                             || x.SourceName != strMetamagicId, token).ConfigureAwait(false))
+                                if (!blnFoundImprovement)
                                 {
                                     await ImprovementManager.CreateImprovementsAsync(
                                         this, Improvement.ImprovementSource.Echo, strMetamagicId, objMetamagic.Bonus,
                                         value,
                                         await objMetamagic.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
                                         token: token).ConfigureAwait(false);
-                                }
-                                else
-                                {
-                                    // ReSharper disable once ForCanBeConvertedToForeach
-                                    for (int i = 0;
-                                         i < await Improvements.GetCountAsync(token).ConfigureAwait(false);
-                                         ++i)
-                                    {
-                                        Improvement objImprovement = await Improvements.GetValueAtAsync(i, token)
-                                            .ConfigureAwait(false);
-                                        if (objImprovement.SourceName == strMetamagicId && objImprovement.ImproveSource
-                                            == Improvement.ImprovementSource.Echo)
-                                            objImprovement.Rating = value;
-                                    }
                                 }
                             }
                         }, token).ConfigureAwait(false);
