@@ -172,12 +172,15 @@ namespace Chummer
                 using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                 out HashSet<string> setExistingExoticSkills))
                 {
-                    setExistingExoticSkills.AddRange(_objCharacter.SkillsSection.Skills
-                                                         .Where(
-                                                             x => x.Name
-                                                                  == strSelectedCategory)
-                                                         .Select(x => ((ExoticSkill) x)
-                                                                     .Specific));
+                    foreach (Skill objSkill in await (await _objCharacter.GetSkillsSectionAsync(token)
+                                                                         .ConfigureAwait(false)).GetSkillsAsync(token)
+                                 .ConfigureAwait(false))
+                    {
+                        if (await objSkill.GetNameAsync(token).ConfigureAwait(false) != strSelectedCategory)
+                            continue;
+                        setExistingExoticSkills.Add(await ((ExoticSkill)objSkill).GetSpecificAsync(token)
+                                                        .ConfigureAwait(false));
+                    }
                     lstSkillSpecializations.RemoveAll(x => setExistingExoticSkills.Contains(x.Value));
                 }
 

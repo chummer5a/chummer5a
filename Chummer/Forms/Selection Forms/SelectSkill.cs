@@ -19,7 +19,10 @@
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
+using System.Threading;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -61,25 +64,50 @@ namespace Chummer
 
         private async void SelectSkill_Load(object sender, EventArgs e)
         {
+            bool blnForcedExotic = false;
+            string strForcedExoticSkillName = string.Empty;
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkills))
             {
                 // Build the list of non-Exotic Skills from the Skills file.
                 XPathNodeIterator objXmlSkillList;
                 if (!string.IsNullOrEmpty(_strForceSkill))
                 {
-                    objXmlSkillList = _objXmlDocument.Select("/chummer/skills/skill[name = "
-                                                             + _strForceSkill.CleanXPath() + " and not(exotic = 'True') and ("
-                                                             + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false) + ")]");
+                    (blnForcedExotic, strForcedExoticSkillName)
+                        = await ExoticSkill.IsExoticSkillNameTupleAsync(_objCharacter, _strForceSkill);
+                    if (blnForcedExotic)
+                    {
+                        objXmlSkillList = _objXmlDocument.Select("/chummer/skills/skill[name = "
+                                                                 + strForcedExoticSkillName.CleanXPath()
+                                                                 + " and exotic = 'True' and ("
+                                                                 + await _objCharacter.Settings.BookXPathAsync()
+                                                                     .ConfigureAwait(false) + ")]");
+                    }
+                    else
+                    {
+                        objXmlSkillList = _objXmlDocument.Select("/chummer/skills/skill[name = "
+                                                                 + _strForceSkill.CleanXPath()
+                                                                 + " and not(exotic = 'True') and ("
+                                                                 + await _objCharacter.Settings.BookXPathAsync()
+                                                                     .ConfigureAwait(false) + ")]");
+                    }
                 }
                 else if (!string.IsNullOrEmpty(_strLimitToCategories))
-                    objXmlSkillList = _objXmlDocument.Select("/chummer/skills/skill[" + _strLimitToCategories + " and ("
-                                                             + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false) + ")]");
+                    objXmlSkillList = _objXmlDocument.Select(
+                        "/chummer/skills/skill["
+                        + _strLimitToCategories + " and ("
+                        + await _objCharacter.Settings.BookXPathAsync()
+                                             .ConfigureAwait(false) + ")]");
                 else
                 {
                     string strFilter = string.Empty;
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                     {
-                        sbdFilter.Append("not(exotic = 'True') and (").Append(await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false)).Append(')');
+                        // If we don't have a minimum rating, include exotic skills as normal because they'll just make the second dropdown appear when selected
+                        if (_intMinimumRating > 0)
+                            sbdFilter.Append("not(exotic = 'True') and ");
+                        sbdFilter.Append('(')
+                                 .Append(await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false))
+                                 .Append(')');
                         if (!string.IsNullOrEmpty(_strIncludeCategory))
                         {
                             sbdFilter.Append(" and (");
@@ -174,8 +202,10 @@ namespace Chummer
                 {
                     foreach (XPathNavigator objXmlSkill in objXmlSkillList)
                     {
-                        string strXmlSkillName = (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false))?.Value;
-                        Skill objExistingSkill = await _objCharacter.SkillsSection.GetActiveSkillAsync(strXmlSkillName).ConfigureAwait(false);
+                        string strXmlSkillName = (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("name")
+                                                                   .ConfigureAwait(false))?.Value;
+                        Skill objExistingSkill = await _objCharacter.SkillsSection.GetActiveSkillAsync(strXmlSkillName)
+                                                                    .ConfigureAwait(false);
                         if (objExistingSkill == null)
                         {
                             if (_intMinimumRating > 0)
@@ -189,48 +219,84 @@ namespace Chummer
                             continue;
                         }
 
-                        lstSkills.Add(new ListItem(strXmlSkillName,
-                                                   (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("translate").ConfigureAwait(false))?.Value
-                                                   ?? strXmlSkillName));
+                        lstSkills.Add(new ListItem(
+                                          new Tuple<string, bool>(strXmlSkillName,
+                                                                  (await objXmlSkill
+                                                                         .SelectSingleNodeAndCacheExpressionAsync(
+                                                                             "exotic").ConfigureAwait(false))?.Value
+                                                                  == bool.TrueString),
+                                          (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("translate")
+                                                            .ConfigureAwait(false))?.Value
+                                          ?? strXmlSkillName));
                     }
                 }
 
-                // Add in any Exotic Skills the character has.
-                foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
+                // Add in any Exotic Skills the character has if we need a minimum rating.
+                if (_intMinimumRating > 0)
                 {
-                    if (objSkill.IsExoticSkill)
+                    await cboExtra.DoThreadSafeAsync(x =>
                     {
-                        ExoticSkill objExoticSkill = objSkill as ExoticSkill;
-                        bool blnAddSkill = true;
-                        if (objSkill.TotalBaseRating < _intMinimumRating || objSkill.TotalBaseRating > _intMaximumRating)
-                            blnAddSkill = false;
-                        else if (!string.IsNullOrEmpty(_strForceSkill))
-                            blnAddSkill = _strForceSkill == objExoticSkill.DictionaryKey;
-                        else if (!string.IsNullOrEmpty(_strIncludeCategory))
-                            blnAddSkill = _strIncludeCategory.Contains(objExoticSkill.SkillCategory);
-                        else if (!string.IsNullOrEmpty(_strExcludeCategory))
-                            blnAddSkill = !_strExcludeCategory.Contains(objExoticSkill.SkillCategory);
-                        else if (!string.IsNullOrEmpty(_strIncludeSkillGroup))
-                            blnAddSkill = _strIncludeSkillGroup.Contains(objExoticSkill.SkillGroup);
-                        else if (!string.IsNullOrEmpty(_strExcludeSkillGroup))
-                            blnAddSkill = !_strExcludeSkillGroup.Contains(objExoticSkill.SkillGroup);
-                        else if (!string.IsNullOrEmpty(_strLimitToSkill))
-                            blnAddSkill = _strLimitToSkill.Contains(objExoticSkill.Name);
-                        else if (!string.IsNullOrEmpty(_strExcludeSkill))
-                            blnAddSkill = !_strExcludeSkill.Contains(objExoticSkill.Name);
-
-                        if (blnAddSkill)
+                        x.AutoCompleteMode = AutoCompleteMode.None;
+                        x.DropDownStyle = ComboBoxStyle.DropDownList;
+                    }).ConfigureAwait(false);
+                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                    out HashSet<string> setAddedExotics))
+                    {
+                        foreach (Skill objSkill in _objCharacter.SkillsSection.Skills)
                         {
-                            // Use the translated Exotic Skill name if available.
-                            XPathNavigator objXmlSkill = _objXmlDocument.SelectSingleNode(
-                                "/chummer/skills/skill[exotic = " + bool.TrueString.CleanXPath()
-                                                                  + " and name = " + objExoticSkill.Name.CleanXPath()
-                                                                  + ']');
-                            lstSkills.Add(new ListItem(await objExoticSkill.GetDictionaryKeyAsync().ConfigureAwait(false),
-                                                       ((await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("translate").ConfigureAwait(false))?.Value
-                                                        ?? await objExoticSkill.GetCurrentDisplayNameAsync().ConfigureAwait(false))
-                                                       + await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false) + '('
-                                                       + await objExoticSkill.GetCurrentDisplaySpecializationAsync().ConfigureAwait(false) + ')'));
+                            if (!objSkill.IsExoticSkill)
+                                continue;
+                            string strLoopName = await objSkill.GetNameAsync().ConfigureAwait(false);
+                            if (setAddedExotics.Contains(strLoopName))
+                                continue;
+                            ExoticSkill objExoticSkill = objSkill as ExoticSkill;
+                            if (!string.IsNullOrEmpty(_strForceSkill) && _strForceSkill
+                                != await objExoticSkill.GetDictionaryKeyAsync().ConfigureAwait(false))
+                                continue;
+                            int intBaseRating = await objSkill.GetTotalBaseRatingAsync().ConfigureAwait(false);
+                            if (intBaseRating < _intMinimumRating || intBaseRating > _intMaximumRating)
+                                continue;
+                            if (!string.IsNullOrEmpty(_strIncludeCategory)
+                                && _strIncludeCategory.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
+                                                      .All(x => x != objSkill.SkillCategory))
+                            {
+                                continue;
+                            }
+                            if (!string.IsNullOrEmpty(_strExcludeCategory)
+                                && _strExcludeCategory.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
+                                                      .Any(x => x == objSkill.SkillCategory))
+                            {
+                                continue;
+                            }
+                            if (!string.IsNullOrEmpty(_strIncludeSkillGroup)
+                                && _strIncludeSkillGroup.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
+                                                        .All(x => x != objSkill.SkillGroup))
+                            {
+                                continue;
+                            }
+                            if (!string.IsNullOrEmpty(_strExcludeSkillGroup)
+                                && _strExcludeSkillGroup.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
+                                                        .Any(x => x == objSkill.SkillGroup))
+                            {
+                                continue;
+                            }
+                            if (!string.IsNullOrEmpty(_strLimitToSkill)
+                                && _strLimitToSkill.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
+                                                   .All(x => x != strLoopName))
+                            {
+                                continue;
+                            }
+                            if (!string.IsNullOrEmpty(_strExcludeSkill)
+                                && _strExcludeSkill.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
+                                                   .Any(x => x == strLoopName))
+                            {
+                                continue;
+                            }
+
+                            lstSkills.Add(new ListItem(new Tuple<string, bool>(strLoopName, true),
+                                                       await objExoticSkill.GetCurrentDisplayNameAsync()
+                                                                           .ConfigureAwait(false)));
+                            setAddedExotics.Add(strLoopName);
                         }
                     }
                 }
@@ -240,7 +306,9 @@ namespace Chummer
                     Program.ShowScrollableMessageBox(
                         this,
                         string.Format(GlobalSettings.CultureInfo,
-                                      await LanguageManager.GetStringAsync("Message_Improvement_EmptySelectionListNamed").ConfigureAwait(false),
+                                      await LanguageManager
+                                            .GetStringAsync("Message_Improvement_EmptySelectionListNamed")
+                                            .ConfigureAwait(false),
                                       _strSourceName));
                     await this.DoThreadSafeAsync(x =>
                     {
@@ -258,18 +326,75 @@ namespace Chummer
 
             if (await cboSkill.DoThreadSafeFuncAsync(x => x.Items.Count).ConfigureAwait(false) == 1)
             {
-                _strReturnValue = await cboSkill.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString()).ConfigureAwait(false);
-                await this.DoThreadSafeAsync(x =>
+                Tuple<string, bool> tupSelected
+                    = blnForcedExotic
+                        ? new Tuple<string, bool>(strForcedExoticSkillName, true)
+                        : (Tuple<string, bool>) await cboSkill.DoThreadSafeFuncAsync(x => x.SelectedValue)
+                                                              .ConfigureAwait(false);
+                if (!tupSelected.Item2)
                 {
-                    x.DialogResult = DialogResult.OK;
-                    x.Close();
-                }).ConfigureAwait(false);
+                    _strReturnValue = tupSelected.Item1;
+                    await this.DoThreadSafeAsync(x =>
+                    {
+                        x.DialogResult = DialogResult.OK;
+                        x.Close();
+                    }).ConfigureAwait(false);
+                }
+                else if (blnForcedExotic || await cboExtra.DoThreadSafeFuncAsync(x => x.DropDownStyle == ComboBoxStyle.DropDownList))
+                {
+                    await BuildExtraList(tupSelected.Item1).ConfigureAwait(false);
+                    int intCount = await cboExtra.DoThreadSafeFuncAsync(x => x.Items.Count).ConfigureAwait(false);
+                    if (intCount == 0)
+                    {
+                        Program.ShowScrollableMessageBox(
+                            this,
+                            string.Format(GlobalSettings.CultureInfo,
+                                          await LanguageManager
+                                                .GetStringAsync("Message_Improvement_EmptySelectionListNamed")
+                                                .ConfigureAwait(false),
+                                          _strSourceName));
+                        await this.DoThreadSafeAsync(x =>
+                        {
+                            x.DialogResult = DialogResult.Cancel;
+                            x.Close();
+                        }).ConfigureAwait(false);
+                        return;
+                    }
+
+                    if (blnForcedExotic)
+                    {
+                        _strReturnValue = _strForceSkill;
+                        await this.DoThreadSafeAsync(x =>
+                        {
+                            x.DialogResult = DialogResult.OK;
+                            x.Close();
+                        }).ConfigureAwait(false);
+                    }
+
+                    if (intCount == 1)
+                    {
+                        _strReturnValue = tupSelected.Item1 + " ("
+                                                            + await cboExtra.DoThreadSafeFuncAsync(x => x.SelectedValue)
+                                                                            .ConfigureAwait(false) + ')';
+                        await this.DoThreadSafeAsync(x =>
+                        {
+                            x.DialogResult = DialogResult.OK;
+                            x.Close();
+                        }).ConfigureAwait(false);
+                    }
+                }
+                else
+                    await cboSkill.DoThreadSafeAsync(x => x.Enabled = false).ConfigureAwait(false);
             }
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
-            _strReturnValue = cboSkill.SelectedValue.ToString();
+            Tuple<string, bool> tupSelected = (Tuple<string, bool>)cboSkill.SelectedValue;
+            if (tupSelected.Item2)
+                _strReturnValue = tupSelected.Item1 + " (" + cboExtra.SelectedValue + ')';
+            else
+                _strReturnValue = tupSelected.Item1;
             DialogResult = DialogResult.OK;
             Close();
         }
@@ -398,5 +523,115 @@ namespace Chummer
         }
 
         #endregion Properties
+
+        private async void cboSkill_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            Tuple<string, bool> tupSelected = (Tuple<string, bool>)await cboSkill.DoThreadSafeFuncAsync(x => x.SelectedValue).ConfigureAwait(false);
+            if (tupSelected.Item2)
+            {
+                await BuildExtraList(tupSelected.Item1);
+                await cboExtra.DoThreadSafeAsync(x => x.Visible = true);
+            }
+            else
+                await cboExtra.DoThreadSafeAsync(x => x.Visible = false);
+        }
+
+        private async ValueTask BuildExtraList(string strSelectedCategory, CancellationToken token = default)
+        {
+            if (string.IsNullOrEmpty(strSelectedCategory))
+                return;
+            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkillSpecializations))
+            {
+                if (_intMinimumRating <= 0)
+                {
+                    XPathNodeIterator xmlWeaponList = (await _objCharacter.LoadDataXPathAsync("weapons.xml", token: token).ConfigureAwait(false))
+                        .Select("/chummer/weapons/weapon[(category = "
+                                + (strSelectedCategory + 's').CleanXPath()
+                                + " or useskill = "
+                                + strSelectedCategory.CleanXPath() + ") and ("
+                                + await _objCharacter.Settings.BookXPathAsync(false, token).ConfigureAwait(false) + ")]");
+                    if (xmlWeaponList.Count > 0)
+                    {
+                        foreach (XPathNavigator xmlWeapon in xmlWeaponList)
+                        {
+                            string strName = (await xmlWeapon.SelectSingleNodeAndCacheExpressionAsync("name", token)
+                                                             .ConfigureAwait(false))?.Value;
+                            if (!string.IsNullOrEmpty(strName))
+                            {
+                                lstSkillSpecializations.Add(
+                                    new ListItem(
+                                        strName,
+                                        (await xmlWeapon
+                                               .SelectSingleNodeAndCacheExpressionAsync("translate", token: token)
+                                               .ConfigureAwait(false))?.Value ?? strName));
+                            }
+                        }
+                    }
+
+                    foreach (XPathNavigator xmlSpec in (await _objCharacter
+                                                              .LoadDataXPathAsync("skills.xml", token: token)
+                                                              .ConfigureAwait(false))
+                             .Select("/chummer/skills/skill[name = "
+                                     + strSelectedCategory.CleanXPath() + " and ("
+                                     + await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false)
+                                     + ")]/specs/spec"))
+                    {
+                        string strName = xmlSpec.Value;
+                        if (!string.IsNullOrEmpty(strName))
+                        {
+                            lstSkillSpecializations.Add(new ListItem(
+                                                            strName,
+                                                            (await xmlSpec
+                                                                   .SelectSingleNodeAndCacheExpressionAsync(
+                                                                       "@translate", token: token)
+                                                                   .ConfigureAwait(false))?.Value
+                                                            ?? strName));
+                        }
+                    }
+                }
+
+                foreach (Skill objSkill in await (await _objCharacter.GetSkillsSectionAsync(token)
+                                                                     .ConfigureAwait(false)).GetSkillsAsync(token)
+                             .ConfigureAwait(false))
+                {
+                    if (await objSkill.GetNameAsync(token).ConfigureAwait(false) != strSelectedCategory)
+                        continue;
+                    ExoticSkill objExoticSkill = (ExoticSkill) objSkill;
+                    string strSpecific = await objExoticSkill.GetSpecificAsync(token).ConfigureAwait(false);
+                    if (_intMinimumRating > 0 || _intMaximumRating < int.MaxValue)
+                    {
+                        int intTotalBaseRating
+                            = await objSkill.GetTotalBaseRatingAsync(token).ConfigureAwait(false);
+                        if (intTotalBaseRating < _intMinimumRating)
+                            continue;
+                        if (intTotalBaseRating > _intMaximumRating)
+                        {
+                            lstSkillSpecializations.RemoveAll(x => x.Value.ToString() == strSpecific);
+                            continue;
+                        }
+                    }
+                    lstSkillSpecializations.Add(new ListItem(strSpecific, await objExoticSkill.GetCurrentDisplaySpecific(token).ConfigureAwait(false)));
+                }
+
+                lstSkillSpecializations.Sort(
+                    Comparer<ListItem>.Create((a, b) => string.CompareOrdinal(a.Name, b.Name)));
+                string strOldText = await cboExtra.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
+                string strOldSelectedValue = await cboExtra.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false) ?? string.Empty;
+                await cboExtra.PopulateWithListItemsAsync(lstSkillSpecializations, token: token).ConfigureAwait(false);
+                await cboExtra.DoThreadSafeAsync(x =>
+                {
+                    if (!string.IsNullOrEmpty(strOldSelectedValue))
+                        x.SelectedValue = strOldSelectedValue;
+                    if (x.SelectedIndex == -1)
+                    {
+                        if (!string.IsNullOrEmpty(strOldText))
+                            x.Text = strOldText;
+                        // Select the first Skill in the list.
+                        else if (lstSkillSpecializations.Count > 0)
+                            x.SelectedIndex = 0;
+                    }
+                }, token: token).ConfigureAwait(false);
+            }
+        }
     }
 }

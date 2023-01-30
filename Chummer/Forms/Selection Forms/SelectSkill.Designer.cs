@@ -34,21 +34,22 @@ namespace Chummer
             this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
+            this.cboExtra = new Chummer.ElasticComboBox();
             this.tlpMain.SuspendLayout();
             this.tlpButtons.SuspendLayout();
             this.SuspendLayout();
             // 
             // cboSkill
             // 
-            this.cboSkill.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboSkill.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cboSkill.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSkill.FormattingEnabled = true;
-            this.cboSkill.Location = new System.Drawing.Point(3, 50);
+            this.cboSkill.Location = new System.Drawing.Point(3, 43);
             this.cboSkill.Name = "cboSkill";
-            this.cboSkill.Size = new System.Drawing.Size(280, 21);
+            this.cboSkill.Size = new System.Drawing.Size(320, 21);
             this.cboSkill.TabIndex = 1;
             this.cboSkill.TooltipText = "";
+            this.cboSkill.SelectedIndexChanged += new System.EventHandler(this.cboSkill_SelectedIndexChanged);
             // 
             // lblDescription
             // 
@@ -57,7 +58,7 @@ namespace Chummer
             this.lblDescription.Location = new System.Drawing.Point(3, 6);
             this.lblDescription.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDescription.Name = "lblDescription";
-            this.lblDescription.Size = new System.Drawing.Size(280, 35);
+            this.lblDescription.Size = new System.Drawing.Size(320, 28);
             this.lblDescription.TabIndex = 0;
             this.lblDescription.Text = "Description goes here.";
             // 
@@ -67,18 +68,19 @@ namespace Chummer
             this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpMain.ColumnCount = 1;
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.Controls.Add(this.cboExtra, 0, 2);
             this.tlpMain.Controls.Add(this.lblDescription, 0, 0);
             this.tlpMain.Controls.Add(this.cboSkill, 0, 1);
-            this.tlpMain.Controls.Add(this.tlpButtons, 0, 2);
+            this.tlpMain.Controls.Add(this.tlpButtons, 0, 3);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
-            this.tlpMain.RowCount = 2;
+            this.tlpMain.RowCount = 4;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpMain.Size = new System.Drawing.Size(286, 103);
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.Size = new System.Drawing.Size(326, 123);
             this.tlpMain.TabIndex = 4;
             // 
             // tlpButtons
@@ -91,7 +93,7 @@ namespace Chummer
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
             this.tlpButtons.Controls.Add(this.cmdOK, 1, 0);
-            this.tlpButtons.Location = new System.Drawing.Point(114, 74);
+            this.tlpButtons.Location = new System.Drawing.Point(154, 94);
             this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
@@ -130,6 +132,18 @@ namespace Chummer
             this.cmdOK.UseVisualStyleBackColor = true;
             this.cmdOK.Click += new System.EventHandler(this.cmdOK_Click);
             // 
+            // cboExtra
+            // 
+            this.cboExtra.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboExtra.AutoCompleteMode = System.Windows.Forms.AutoCompleteMode.Suggest;
+            this.cboExtra.FormattingEnabled = true;
+            this.cboExtra.Location = new System.Drawing.Point(3, 70);
+            this.cboExtra.Name = "cboExtra";
+            this.cboExtra.Size = new System.Drawing.Size(320, 21);
+            this.cboExtra.TabIndex = 4;
+            this.cboExtra.TooltipText = "";
+            this.cboExtra.Visible = false;
+            // 
             // SelectSkill
             // 
             this.AcceptButton = this.cmdOK;
@@ -137,7 +151,7 @@ namespace Chummer
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(304, 121);
+            this.ClientSize = new System.Drawing.Size(344, 141);
             this.ControlBox = false;
             this.Controls.Add(this.tlpMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
@@ -167,5 +181,6 @@ namespace Chummer
         private System.Windows.Forms.TableLayoutPanel tlpButtons;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Button cmdOK;
+        private ElasticComboBox cboExtra;
     }
 }

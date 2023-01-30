@@ -3987,11 +3987,38 @@ namespace Chummer
                     if (blnSync)
                     {
                         if (blnAllowDuplicatesFromSameSource)
+                        {
                             blnHasDuplicate = objCharacter.Improvements.Any(
                                 x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
                                                                    && x.ImproveType == eImprovementType
                                                                    && x.Enabled
                                                                    && !ReferenceEquals(x, objImprovement));
+                            if (!blnHasDuplicate)
+                            {
+                                switch (eImprovementType)
+                                {
+                                    case Improvement.ImprovementType.Skillsoft:
+                                    case Improvement.ImprovementType.Activesoft:
+                                        blnHasDuplicate = objCharacter.Improvements.Any(
+                                            x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
+                                                                               && x.ImproveType == Improvement.ImprovementType.Hardwire
+                                                                               && x.Enabled
+                                                                               && !ReferenceEquals(x, objImprovement));
+                                        break;
+                                    case Improvement.ImprovementType.Hardwire:
+                                        blnHasDuplicate = objCharacter.Improvements.Any(
+                                            x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
+                                                                               && (x.ImproveType
+                                                                                   == Improvement.ImprovementType.Skillsoft
+                                                                                   || eImprovementType
+                                                                                   == Improvement.ImprovementType
+                                                                                       .Activesoft)
+                                                                               && x.Enabled
+                                                                               && !ReferenceEquals(x, objImprovement));
+                                        break;
+                                }
+                            }
+                        }
                         else
                         {
                             string strSourceName = objImprovement.SourceName;
@@ -4000,9 +4027,35 @@ namespace Chummer
                                                                    && x.ImproveType == eImprovementType
                                                                    && x.SourceName != strSourceName
                                                                    && x.Enabled);
+                            if (!blnHasDuplicate)
+                            {
+                                switch (eImprovementType)
+                                {
+                                    case Improvement.ImprovementType.Skillsoft:
+                                    case Improvement.ImprovementType.Activesoft:
+                                        blnHasDuplicate = objCharacter.Improvements.Any(
+                                            x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
+                                                                               && x.ImproveType == Improvement.ImprovementType.Hardwire
+                                                                               && x.SourceName != strSourceName
+                                                                               && x.Enabled);
+                                        break;
+                                    case Improvement.ImprovementType.Hardwire:
+                                        blnHasDuplicate = objCharacter.Improvements.Any(
+                                            x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
+                                                                               && (x.ImproveType
+                                                                                   == Improvement.ImprovementType.Skillsoft
+                                                                                   || eImprovementType
+                                                                                   == Improvement.ImprovementType
+                                                                                       .Activesoft)
+                                                                               && x.SourceName != strSourceName
+                                                                               && x.Enabled);
+                                        break;
+                                }
+                            }
                         }
                     }
                     else if (blnAllowDuplicatesFromSameSource)
+                    {
                         blnHasDuplicate = await objCharacter.Improvements.AnyAsync(
                                                                 x => x.UniqueName == strUniqueName
                                                                      && x.ImprovedName == strImprovedName
@@ -4010,6 +4063,34 @@ namespace Chummer
                                                                      && x.Enabled
                                                                      && !ReferenceEquals(x, objImprovement), token)
                                                             .ConfigureAwait(false);
+                        if (!blnHasDuplicate)
+                        {
+                            switch (eImprovementType)
+                            {
+                                case Improvement.ImprovementType.Skillsoft:
+                                case Improvement.ImprovementType.Activesoft:
+                                    blnHasDuplicate = await objCharacter.Improvements.AnyAsync(
+                                        x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
+                                                                           && x.ImproveType == Improvement.ImprovementType.Hardwire
+                                                                           && x.Enabled
+                                                                           && !ReferenceEquals(x, objImprovement), token)
+                                                                        .ConfigureAwait(false);
+                                    break;
+                                case Improvement.ImprovementType.Hardwire:
+                                    blnHasDuplicate = await objCharacter.Improvements.AnyAsync(
+                                        x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
+                                                                           && (x.ImproveType
+                                                                               == Improvement.ImprovementType.Skillsoft
+                                                                               || eImprovementType
+                                                                               == Improvement.ImprovementType
+                                                                                   .Activesoft)
+                                                                           && x.Enabled
+                                                                           && !ReferenceEquals(x, objImprovement), token)
+                                                                        .ConfigureAwait(false);
+                                    break;
+                            }
+                        }
+                    }
                     else
                     {
                         string strSourceName = objImprovement.SourceName;
@@ -4071,8 +4152,33 @@ namespace Chummer
 
                             break;
 
+                        case Improvement.ImprovementType.Activesoft:
+                            if (!blnHasDuplicate && !blnReapplyImprovements)
+                            {
+                                if (blnSync)
+                                {
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    Skill objSkill = objCharacter.SkillsSection.GetActiveSkill(strImprovedName);
+                                    if (objSkill?.IsExoticSkill == true)
+                                    {
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                        objCharacter.SkillsSection.Skills.Remove(objSkill);
+                                    }
+                                }
+                                else
+                                {
+                                    Skill objSkill = await objCharacter.SkillsSection.GetActiveSkillAsync(strImprovedName, token).ConfigureAwait(false);
+                                    if (objSkill?.IsExoticSkill == true)
+                                    {
+                                        await objCharacter.SkillsSection.Skills.RemoveAsync(objSkill, token).ConfigureAwait(false);
+                                    }
+                                }
+                            }
+
+                            break;
+
                         case Improvement.ImprovementType.Skillsoft:
-                            if (!blnHasDuplicate)
+                            if (!blnHasDuplicate && !blnReapplyImprovements)
                             {
                                 objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(
                                     x => x.InternalId == strImprovedName);
@@ -4107,6 +4213,68 @@ namespace Chummer
                                                 objCharacter.SkillsSection.KnowsoftSkills.RemoveAtAsync(i, token)
                                                             .AsTask()).ConfigureAwait(false);
                                         }
+                                    }
+                                }
+                            }
+
+                            break;
+
+                        case Improvement.ImprovementType.Hardwire:
+                            if (!blnHasDuplicate && !blnReapplyImprovements)
+                            {
+                                if (blnSync)
+                                {
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    Skill objSkill = objCharacter.SkillsSection.GetActiveSkill(strImprovedName);
+                                    if (objSkill == null)
+                                    {
+                                        objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(
+                                            x => x.InternalId == strImprovedName);
+                                        for (int i = objCharacter.SkillsSection.KnowsoftSkills.Count - 1; i >= 0; --i)
+                                        {
+                                            KnowledgeSkill objKnoSkill = objCharacter.SkillsSection.KnowsoftSkills[i];
+                                            if (objKnoSkill.InternalId == strImprovedName)
+                                            {
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                objCharacter.SkillsSection.KnowledgeSkills.Remove(objKnoSkill);
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                objCharacter.SkillsSection.KnowsoftSkills.RemoveAt(i);
+                                            }
+                                        }
+                                    }
+                                    else if (objSkill.IsExoticSkill)
+                                    {
+                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                        objCharacter.SkillsSection.Skills.Remove(objSkill);
+                                    }
+                                }
+                                else
+                                {
+                                    Skill objSkill = await objCharacter.SkillsSection.GetActiveSkillAsync(strImprovedName, token).ConfigureAwait(false);
+                                    if (objSkill == null)
+                                    {
+                                        objCharacter.SkillsSection.KnowledgeSkills.RemoveAll(
+                                            x => x.InternalId == strImprovedName);
+                                        for (int i = await objCharacter.SkillsSection.KnowsoftSkills.GetCountAsync(token)
+                                                                       .ConfigureAwait(false) - 1;
+                                             i >= 0;
+                                             --i)
+                                        {
+                                            KnowledgeSkill objKnoSkill = await objCharacter.SkillsSection.KnowsoftSkills
+                                                .GetValueAtAsync(i, token).ConfigureAwait(false);
+                                            if (objKnoSkill.InternalId == strImprovedName)
+                                            {
+                                                await Task.WhenAll(
+                                                    objCharacter.SkillsSection.KnowledgeSkills.RemoveAsync(objKnoSkill, token)
+                                                                .AsTask(),
+                                                    objCharacter.SkillsSection.KnowsoftSkills.RemoveAtAsync(i, token)
+                                                                .AsTask()).ConfigureAwait(false);
+                                            }
+                                        }
+                                    }
+                                    else if (objSkill.IsExoticSkill)
+                                    {
+                                        await objCharacter.SkillsSection.Skills.RemoveAsync(objSkill, token).ConfigureAwait(false);
                                     }
                                 }
                             }

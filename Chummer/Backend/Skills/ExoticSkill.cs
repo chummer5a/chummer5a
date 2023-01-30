@@ -155,6 +155,23 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        public async ValueTask<string> GetSpecificAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _strSpecific;
+        }
+
+        public async ValueTask SetSpecificAsync(string value, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                // No need to write lock because interlocked guarantees safety
+                if (Interlocked.Exchange(ref _strSpecific, value) == value)
+                    return;
+                OnPropertyChanged(nameof(Specific));
+            }
+        }
+
         public string DisplaySpecific(string strLanguage)
         {
             using (EnterReadLock.Enter(LockObject))
@@ -175,6 +192,10 @@ namespace Chummer.Backend.Skills
                         .ConfigureAwait(false);
             }
         }
+
+        public string CurrentDisplaySpecific => DisplaySpecific(GlobalSettings.Language);
+
+        public ValueTask<string> GetCurrentDisplaySpecific(CancellationToken token = default) => DisplaySpecificAsync(GlobalSettings.Language, token);
 
         public override string DisplaySpecialization(string strLanguage)
         {

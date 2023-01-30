@@ -3362,7 +3362,7 @@ namespace Chummer.Backend.Skills
                 {
                     if (IsExoticSkill)
                     {
-                        return ((ExoticSkill)this).DisplaySpecific(GlobalSettings.Language);
+                        return ((ExoticSkill)this).CurrentDisplaySpecific;
                     }
 
                     return Specializations.FirstOrDefault(x => !x.Free)?.CurrentDisplayName ?? string.Empty;
@@ -3412,7 +3412,7 @@ namespace Chummer.Backend.Skills
             {
                 if (IsExoticSkill)
                 {
-                    return await ((ExoticSkill) this).DisplaySpecificAsync(GlobalSettings.Language, token).ConfigureAwait(false);
+                    return await ((ExoticSkill) this).GetCurrentDisplaySpecific(token).ConfigureAwait(false);
                 }
 
                 SkillSpecialization objSpec = await Specializations.FirstOrDefaultAsync(x => !x.Free, token: token).ConfigureAwait(false);

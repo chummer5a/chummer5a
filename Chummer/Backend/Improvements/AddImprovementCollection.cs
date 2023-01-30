@@ -2447,7 +2447,9 @@ namespace Chummer
 
             string strVal = bonusNode["val"]?.InnerText;
 
-            if (ExoticSkill.IsExoticSkillName(_objCharacter, SelectedValue))
+            (bool blnIsExotic, string strExoticSkillName)
+                = ExoticSkill.IsExoticSkillNameTuple(_objCharacter, SelectedValue);
+            if (blnIsExotic)
             {
                 if (!string.IsNullOrEmpty(strVal))
                 {
@@ -2456,12 +2458,11 @@ namespace Chummer
                     if (objExistingSkill?.IsExoticSkill != true)
                     {
                         string strSkillName = SelectedValue;
-                        int intParenthesesIndex = strSkillName.IndexOf(" (", StringComparison.OrdinalIgnoreCase);
-                        if (intParenthesesIndex > 0)
+                        int intParenthesesIndex = strExoticSkillName.Length - 1 + strSkillName.TrimStartOnce(strExoticSkillName, true).IndexOf(" (", StringComparison.OrdinalIgnoreCase);
+                        if (intParenthesesIndex >= strExoticSkillName.Length)
                         {
                             string strSkillSpecific = strSkillName.Substring(intParenthesesIndex + 2, strSkillName.Length - intParenthesesIndex - 3);
-                            strSkillName = strSkillName.Substring(0, intParenthesesIndex);
-                            _objCharacter.SkillsSection.AddExoticSkill(strSkillName, strSkillSpecific);
+                            _objCharacter.SkillsSection.AddExoticSkill(strExoticSkillName, strSkillSpecific);
                         }
                     }
                     CreateImprovement(SelectedValue, _objImprovementSource, SourceName,
@@ -4716,13 +4717,14 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             Log.Trace("skillwire" + Environment.NewLine
-                + "skillwire = " + bonusNode.OuterXml);
+                                  + "skillwire = " + bonusNode.OuterXml);
             string strUseUnique = _strUnique;
             string strPrecendenceString = bonusNode.Attributes?["precedence"]?.InnerText;
             if (!string.IsNullOrEmpty(strPrecendenceString))
                 strUseUnique = "precedence" + strPrecendenceString;
-            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Skillwire, strUseUnique,
-                ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Skillwire,
+                              strUseUnique,
+                              ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
         }
 
         // Check for Hardwires.
@@ -4735,16 +4737,46 @@ namespace Chummer
 
             string strForcedValue = ForcedValue;
             Log.Trace("hardwire" + Environment.NewLine
-                + "hardwire = " + strNodeOuterXml + Environment.NewLine
-                + "_strForcedValue = " + strForcedValue + Environment.NewLine
-                );
+                                 + "hardwire = " + strNodeOuterXml + Environment.NewLine
+                                 + "_strForcedValue = " + strForcedValue + Environment.NewLine
+            );
 
             bool blnDummy = false;
-            SelectedValue = string.IsNullOrEmpty(strForcedValue) ? ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, _strFriendlyName, ref blnDummy) : strForcedValue;
+            SelectedValue = string.IsNullOrEmpty(strForcedValue)
+                ? ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, _strFriendlyName, ref blnDummy)
+                : strForcedValue;
 
-            CreateImprovement(SelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.Hardwire,
-                SelectedValue,
-                ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
+            (bool blnIsExotic, string strExoticSkillName)
+                = ExoticSkill.IsExoticSkillNameTuple(_objCharacter, SelectedValue);
+            if (blnIsExotic)
+            {
+                if (!string.IsNullOrEmpty(bonusNode.InnerText))
+                {
+                    // Make sure we have the exotic skill in the list if we're adding an activesoft
+                    Skill objExistingSkill = _objCharacter.SkillsSection.GetActiveSkill(SelectedValue);
+                    if (objExistingSkill?.IsExoticSkill != true)
+                    {
+                        string strSkillName = SelectedValue;
+                        int intParenthesesIndex = strExoticSkillName.Length - 1 + strSkillName.TrimStartOnce(strExoticSkillName, true).IndexOf(" (", StringComparison.OrdinalIgnoreCase);
+                        if (intParenthesesIndex >= strExoticSkillName.Length)
+                        {
+                            string strSkillSpecific = strSkillName.Substring(intParenthesesIndex + 2, strSkillName.Length - intParenthesesIndex - 3);
+                            _objCharacter.SkillsSection.AddExoticSkill(strExoticSkillName, strSkillSpecific);
+                        }
+                    }
+                    CreateImprovement(SelectedValue, _objImprovementSource, SourceName,
+                                      Improvement.ImprovementType.Hardwire,
+                                      _strUnique,
+                                      ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
+                }
+            }
+            else
+            {
+                CreateImprovement(SelectedValue, _objImprovementSource, SourceName,
+                                  Improvement.ImprovementType.Hardwire,
+                                  SelectedValue,
+                                  ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
+            }
         }
 
         // Check for Damage Resistance.
@@ -5381,12 +5413,14 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             Log.Trace("skillsoftaccess" + Environment.NewLine
-                + "skillsoftaccess = " + bonusNode.OuterXml);
+                                        + "skillsoftaccess = " + bonusNode.OuterXml);
             string strUseUnique = _strUnique;
             string strPrecendenceString = bonusNode.Attributes?["precedence"]?.InnerText;
             if (!string.IsNullOrEmpty(strPrecendenceString))
                 strUseUnique = "precedence" + strPrecendenceString;
-            CreateImprovement(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillsoftAccess, strUseUnique, ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName,
+                              Improvement.ImprovementType.SkillsoftAccess, strUseUnique,
+                              ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerText, _intRating));
             _objCharacter.SkillsSection.KnowledgeSkills.AddRange(_objCharacter.SkillsSection.KnowsoftSkills);
         }
 

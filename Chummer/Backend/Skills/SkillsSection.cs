@@ -2489,8 +2489,8 @@ namespace Chummer.Backend.Skills
             if (rhs is ExoticSkill rhsExoticSkill)
             {
                 return lhsExoticSkill != null
-                    ? string.Compare(rhsExoticSkill.DisplaySpecific(GlobalSettings.Language),
-                        lhsExoticSkill.DisplaySpecific(GlobalSettings.Language) ?? string.Empty, false,
+                    ? string.Compare(rhsExoticSkill.CurrentDisplaySpecific,
+                        lhsExoticSkill.CurrentDisplaySpecific ?? string.Empty, false,
                         GlobalSettings.CultureInfo)
                     : 1;
             }
