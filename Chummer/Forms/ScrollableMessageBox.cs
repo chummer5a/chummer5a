@@ -54,8 +54,15 @@ namespace Chummer.Forms
             InitializeComponent();
             this.UpdateLightDarkMode();
 
+            // This whole bunch of math makes sure that our message box can expand to be big if need be, shrink to its smallest size otherwise, and still use scrollbars appropriately
+            int intMaxHeight = txtText.Height * 3;
+            txtText.Dock = DockStyle.None;
+            txtText.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             txtText.Text = text;
+            (int intNumDisplayedLines, int intMaxLineHeight) = txtText.MeasureLineHeights();
+            txtText.Height = Math.Min(intMaxHeight, intNumDisplayedLines * (intMaxLineHeight + 2));
             txtText.AutoSetScrollbars();
+
             Text = string.IsNullOrWhiteSpace(caption) ? string.Empty : caption;
             _eBoxButtons = buttons;
             switch (buttons)

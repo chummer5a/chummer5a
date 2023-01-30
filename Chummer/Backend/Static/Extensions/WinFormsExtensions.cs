@@ -1990,12 +1990,11 @@ namespace Chummer
         #region TextBox Extensions
 
         /// <summary>
-        /// Automatically (un)set vertical scrollbars for a TextBox based on whether or not it needs them.
+        /// Get the number of preferred shown lines for a TextBox control and the maximum height of these lines. Multiply the two to get the preferred height of the control.
         /// </summary>
-        /// <param name="txtTextBox">Control to analyze and potentially (un)set scrollbars</param>
-        public static void AutoSetScrollbars(this TextBox txtTextBox)
+        /// <param name="txtTextBox">Control to analyze</param>
+        public static Tuple<int, int> MeasureLineHeights(this TextBox txtTextBox)
         {
-            // Set textbox vertical scrollbar based on whether it's needed or not
             string[] astrLines = txtTextBox.Lines;
             int intNumDisplayedLines = 0;
             int intMaxLineHeight = 0;
@@ -2008,6 +2007,17 @@ namespace Chummer
                     intMaxLineHeight = Math.Max(intMaxLineHeight, objTextSize.Height);
                 }
             }
+            return new Tuple<int, int>(intNumDisplayedLines, intMaxLineHeight);
+        }
+
+        /// <summary>
+        /// Automatically (un)set vertical scrollbars for a TextBox based on whether or not it needs them.
+        /// </summary>
+        /// <param name="txtTextBox">Control to analyze and potentially (un)set scrollbars</param>
+        public static void AutoSetScrollbars(this TextBox txtTextBox)
+        {
+            // Set textbox vertical scrollbar based on whether it's needed or not
+            (int intNumDisplayedLines, int intMaxLineHeight) = MeasureLineHeights(txtTextBox);
 
             // Search the height of the biggest line and set scrollbars based on that
             ScrollBars eOldScrollBars = txtTextBox.ScrollBars;

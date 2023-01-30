@@ -71,12 +71,12 @@ namespace Chummer.Forms
             this.tlpButtons.Controls.Add(this.cmdButton2, 1, 0);
             this.tlpButtons.Controls.Add(this.cmdButton1, 2, 0);
             this.tlpButtons.Dock = System.Windows.Forms.DockStyle.Right;
-            this.tlpButtons.Location = new System.Drawing.Point(196, 161);
-            this.tlpButtons.Margin = new System.Windows.Forms.Padding(0, 6, 10, 11);
+            this.tlpButtons.Location = new System.Drawing.Point(188, 156);
+            this.tlpButtons.Margin = new System.Windows.Forms.Padding(0, 5, 9, 10);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
             this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpButtons.Size = new System.Drawing.Size(258, 29);
+            this.tlpButtons.Size = new System.Drawing.Size(267, 35);
             this.tlpButtons.TabIndex = 3;
             // 
             // cmdButton3
@@ -84,10 +84,11 @@ namespace Chummer.Forms
             this.cmdButton3.AutoSize = true;
             this.cmdButton3.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdButton3.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdButton3.Location = new System.Drawing.Point(3, 3);
-            this.cmdButton3.MinimumSize = new System.Drawing.Size(80, 0);
+            this.cmdButton3.Location = new System.Drawing.Point(4, 4);
+            this.cmdButton3.Margin = new System.Windows.Forms.Padding(4);
+            this.cmdButton3.MinimumSize = new System.Drawing.Size(81, 27);
             this.cmdButton3.Name = "cmdButton3";
-            this.cmdButton3.Size = new System.Drawing.Size(80, 23);
+            this.cmdButton3.Size = new System.Drawing.Size(81, 27);
             this.cmdButton3.TabIndex = 2;
             this.cmdButton3.Text = "OK";
             this.cmdButton3.UseVisualStyleBackColor = true;
@@ -98,10 +99,11 @@ namespace Chummer.Forms
             this.cmdButton2.AutoSize = true;
             this.cmdButton2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdButton2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdButton2.Location = new System.Drawing.Point(89, 3);
-            this.cmdButton2.MinimumSize = new System.Drawing.Size(80, 0);
+            this.cmdButton2.Location = new System.Drawing.Point(93, 4);
+            this.cmdButton2.Margin = new System.Windows.Forms.Padding(4);
+            this.cmdButton2.MinimumSize = new System.Drawing.Size(81, 27);
             this.cmdButton2.Name = "cmdButton2";
-            this.cmdButton2.Size = new System.Drawing.Size(80, 23);
+            this.cmdButton2.Size = new System.Drawing.Size(81, 27);
             this.cmdButton2.TabIndex = 1;
             this.cmdButton2.Text = "OK";
             this.cmdButton2.UseVisualStyleBackColor = true;
@@ -112,10 +114,11 @@ namespace Chummer.Forms
             this.cmdButton1.AutoSize = true;
             this.cmdButton1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdButton1.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdButton1.Location = new System.Drawing.Point(175, 3);
-            this.cmdButton1.MinimumSize = new System.Drawing.Size(80, 0);
+            this.cmdButton1.Location = new System.Drawing.Point(182, 4);
+            this.cmdButton1.Margin = new System.Windows.Forms.Padding(4);
+            this.cmdButton1.MinimumSize = new System.Drawing.Size(81, 27);
             this.cmdButton1.Name = "cmdButton1";
-            this.cmdButton1.Size = new System.Drawing.Size(80, 23);
+            this.cmdButton1.Size = new System.Drawing.Size(81, 27);
             this.cmdButton1.TabIndex = 0;
             this.cmdButton1.Text = "OK";
             this.cmdButton1.UseVisualStyleBackColor = true;
@@ -135,16 +138,17 @@ namespace Chummer.Forms
             this.tlpTop.Location = new System.Drawing.Point(0, 0);
             this.tlpTop.Margin = new System.Windows.Forms.Padding(0);
             this.tlpTop.Name = "tlpTop";
+            this.tlpTop.Padding = new System.Windows.Forms.Padding(24, 33, 6, 9);
             this.tlpTop.RowCount = 1;
             this.tlpTop.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpTop.Size = new System.Drawing.Size(464, 155);
+            this.tlpTop.Size = new System.Drawing.Size(464, 151);
             this.tlpTop.TabIndex = 7;
             // 
             // imgIcon
             // 
             this.imgIcon.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.imgIcon.Location = new System.Drawing.Point(24, 33);
-            this.imgIcon.Margin = new System.Windows.Forms.Padding(24, 33, 0, 9);
+            this.imgIcon.Margin = new System.Windows.Forms.Padding(0);
             this.imgIcon.Name = "imgIcon";
             this.imgIcon.Size = new System.Drawing.Size(100, 100);
             this.imgIcon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
@@ -157,13 +161,13 @@ namespace Chummer.Forms
             this.txtText.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtText.Dock = System.Windows.Forms.DockStyle.Fill;
             this.txtText.Location = new System.Drawing.Point(140, 33);
-            this.txtText.Margin = new System.Windows.Forms.Padding(16, 33, 6, 9);
+            this.txtText.Margin = new System.Windows.Forms.Padding(16, 0, 0, 0);
             this.txtText.MaxLength = 2147483647;
             this.txtText.Multiline = true;
             this.txtText.Name = "txtText";
             this.txtText.ReadOnly = true;
             this.txtText.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtText.Size = new System.Drawing.Size(318, 113);
+            this.txtText.Size = new System.Drawing.Size(318, 109);
             this.txtText.TabIndex = 6;
             this.txtText.TabStop = false;
             // 
@@ -172,6 +176,7 @@ namespace Chummer.Forms
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
+            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.BackColor = System.Drawing.SystemColors.Control;
             this.ClientSize = new System.Drawing.Size(464, 201);
             this.Controls.Add(this.tlpMain);
