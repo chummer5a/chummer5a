@@ -892,6 +892,7 @@ namespace Chummer
             this.cboXSLT.Size = new System.Drawing.Size(360, 21);
             this.cboXSLT.TabIndex = 8;
             this.cboXSLT.TooltipText = "";
+            this.cboXSLT.SelectedIndexChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // cboLanguage
             // 

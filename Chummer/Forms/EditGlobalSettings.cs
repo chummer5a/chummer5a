@@ -234,6 +234,7 @@ namespace Chummer
             try
             {
                 await PopulateXsltList().ConfigureAwait(false);
+                OptionsChanged(sender, e);
             }
             finally
             {
