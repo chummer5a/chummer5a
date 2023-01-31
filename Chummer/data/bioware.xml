@@ -3128,7 +3128,7 @@
       <category>Immunization</category>
       <ess>0.1</ess>
       <capacity>0</capacity>
-      <avail>8</avail>
+      <avail>6</avail>
       <cost>20000</cost>
       <forcegrade>None</forcegrade>
       <isgeneware />
