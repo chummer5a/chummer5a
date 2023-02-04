@@ -30257,9 +30257,14 @@ namespace Chummer
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (_intCachedRedlinerBonus == int.MinValue)
+                    int intReturn = _intCachedRedlinerBonus;
+                    while (intReturn == int.MinValue)
+                    {
                         RefreshRedlinerImprovements();
-                    return _intCachedRedlinerBonus;
+                        intReturn = _intCachedRedlinerBonus;
+                    }
+
+                    return intReturn;
                 }
             }
         }
@@ -30275,12 +30280,12 @@ namespace Chummer
                 }
 
                 //Get attributes affected by redliner/cyber singularity seeker
-                List<Improvement> lstSeekerImprovements = ImprovementManager
-                                                          .GetCachedImprovementListForValueOf(
-                                                              this, Improvement.ImprovementType.Attribute)
-                                                          .Where(objLoopImprovement =>
-                                                                     objLoopImprovement.SourceName.Contains(
-                                                                         "SEEKER")).ToList();
+                List<Improvement> lstSeekerImprovements = new List<Improvement>(Improvements.Count);
+                lstSeekerImprovements.AddRange(ImprovementManager
+                                               .GetCachedImprovementListForValueOf(
+                                                   this, Improvement.ImprovementType.Attribute)
+                                               .Where(objLoopImprovement =>
+                                                          objLoopImprovement.SourceName.Contains("SEEKER")));
                 lstSeekerImprovements.AddRange(ImprovementManager
                                                .GetCachedImprovementListForValueOf(
                                                    this, Improvement.ImprovementType.PhysicalCM)
@@ -30299,8 +30304,7 @@ namespace Chummer
                 }
 
                 //Calculate bonus from cyberlimbs
-                int intCount = Cyberware.Sum(objCyberware =>
-                                                 objCyberware.GetCyberlimbCount(Settings.RedlinerExcludes));
+                int intCount = Cyberware.Sum(x => x.GetCyberlimbCount(Settings.RedlinerExcludes));
 
                 intCount = Math.Min(intCount / 2, 2);
                 using (LockObject.EnterWriteLock())
@@ -30309,58 +30313,61 @@ namespace Chummer
                         ? intCount
                         : 0;
 
-                    for (int i = lstSeekerAttributes.Count - 1; i >= 0; --i)
+                    if (lstSeekerImprovements.Count == lstSeekerAttributes.Count)
                     {
-                        string strSeekerAttribute = "SEEKER_" + lstSeekerAttributes[i];
-                        int intCountToTarget = strSeekerAttribute == "SEEKER_BOX" ? intCount * -3 : intCount;
-                        Improvement objImprovement
-                            = lstSeekerImprovements.Find(x => x.SourceName == strSeekerAttribute
-                                                              && x.Value == intCountToTarget);
-                        if (objImprovement != null)
+                        for (int i = lstSeekerAttributes.Count - 1; i >= 0; --i)
                         {
-                            lstSeekerAttributes.RemoveAt(i);
-                            lstSeekerImprovements.Remove(objImprovement);
+                            string strSeekerAttribute = "SEEKER_" + lstSeekerAttributes[i];
+                            int intCountToTarget = strSeekerAttribute == "SEEKER_BOX" ? intCount * -3 : intCount;
+                            Improvement objImprovement
+                                = lstSeekerImprovements.Find(x => x.SourceName == strSeekerAttribute
+                                                                  && x.Value == intCountToTarget);
+                            if (objImprovement != null)
+                            {
+                                lstSeekerAttributes.RemoveAt(i);
+                                lstSeekerImprovements.Remove(objImprovement);
+                            }
                         }
+                        if (lstSeekerImprovements.Count == 0 && lstSeekerAttributes.Count == 0)
+                            return true;
                     }
 
                     //Improvement manager defines the functions needed to manipulate improvements
                     //When the locals (someday) gets moved to this class, this can be removed and use
                     //the local
-                    if (lstSeekerImprovements.Count != 0 || lstSeekerAttributes.Count != 0)
+
+                    // Remove which qualities have been removed or which values have changed
+                    ImprovementManager.RemoveImprovements(this, lstSeekerImprovements);
+
+                    // Add new improvements or old improvements with new values
+                    foreach (string strAttribute in lstSeekerAttributes)
                     {
-                        // Remove which qualities have been removed or which values have changed
-                        ImprovementManager.RemoveImprovements(this, lstSeekerImprovements);
-
-                        // Add new improvements or old improvements with new values
-                        foreach (string strAttribute in lstSeekerAttributes)
+                        if (strAttribute == "BOX")
                         {
-                            if (strAttribute == "BOX")
-                            {
-                                ImprovementManager.CreateImprovement(this, strAttribute,
-                                                                     Improvement.ImprovementSource.Quality,
-                                                                     "SEEKER_BOX",
-                                                                     Improvement.ImprovementType.PhysicalCM,
-                                                                     Guid.NewGuid()
-                                                                         .ToString(
-                                                                             "D", GlobalSettings.InvariantCultureInfo),
-                                                                     intCount * -3);
-                            }
-                            else
-                            {
-                                ImprovementManager.CreateImprovement(this, strAttribute,
-                                                                     Improvement.ImprovementSource.Quality,
-                                                                     "SEEKER_" + strAttribute,
-                                                                     Improvement.ImprovementType.Attribute,
-                                                                     Guid.NewGuid()
-                                                                         .ToString(
-                                                                             "D", GlobalSettings.InvariantCultureInfo),
-                                                                     intCount, 1, 0, 0,
-                                                                     intCount);
-                            }
+                            ImprovementManager.CreateImprovement(this, strAttribute,
+                                                                 Improvement.ImprovementSource.Quality,
+                                                                 "SEEKER_BOX",
+                                                                 Improvement.ImprovementType.PhysicalCM,
+                                                                 Guid.NewGuid()
+                                                                     .ToString(
+                                                                         "D", GlobalSettings.InvariantCultureInfo),
+                                                                 intCount * -3);
                         }
-
-                        ImprovementManager.Commit(this);
+                        else
+                        {
+                            ImprovementManager.CreateImprovement(this, strAttribute,
+                                                                 Improvement.ImprovementSource.Quality,
+                                                                 "SEEKER_" + strAttribute,
+                                                                 Improvement.ImprovementType.Attribute,
+                                                                 Guid.NewGuid()
+                                                                     .ToString(
+                                                                         "D", GlobalSettings.InvariantCultureInfo),
+                                                                 intCount, 1, 0, 0,
+                                                                 intCount);
+                        }
                     }
+
+                    ImprovementManager.Commit(this);
                 }
                 return true;
             }
