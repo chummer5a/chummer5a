@@ -415,7 +415,7 @@
       <category>Entertainment - Asset</category>
       <lp>4</lp>
       <allowed>Luxury</allowed>
-	  <allowmultiple />
+      <allowmultiple />
       <source>RF</source>
       <cost>18000</cost>
       <page>221</page>
@@ -426,7 +426,7 @@
       <category>Entertainment - Asset</category>
       <lp>3</lp>
       <allowed>High, Luxury</allowed>
-	  <allowmultiple />
+      <allowmultiple />
       <source>RF</source>
       <cost>4500</cost>
       <page>221</page>
@@ -437,7 +437,7 @@
       <category>Entertainment - Asset</category>
       <lp>1</lp>
       <allowed>Medium,High,Luxury</allowed>
-	  <allowmultiple />
+      <allowmultiple />
       <source>RF</source>
       <cost>45</cost>
       <page>221</page>
@@ -448,7 +448,7 @@
       <category>Entertainment - Asset</category>
       <lp>2</lp>
       <allowed>Medium,High,Luxury</allowed>
-	  <allowmultiple />
+      <allowmultiple />
       <source>RF</source>
       <cost>90</cost>
       <page>221</page>
@@ -459,7 +459,7 @@
       <category>Entertainment - Asset</category>
       <lp>4</lp>
       <allowed>Luxury</allowed>
-	  <allowmultiple />
+      <allowmultiple />
       <source>RF</source>
       <cost>9000</cost>
       <page>221</page>
@@ -470,7 +470,7 @@
       <category>Entertainment - Asset</category>
       <lp>4</lp>
       <allowed>Luxury</allowed>
-	  <allowmultiple />
+      <allowmultiple />
       <source>RF</source>
       <cost>20000</cost>
       <page>221</page>
@@ -481,7 +481,7 @@
       <category>Entertainment - Asset</category>
       <lp>3</lp>
       <allowed>High, Luxury</allowed>
-	  <allowmultiple />
+      <allowmultiple />
       <source>RF</source>
       <cost>5000</cost>
       <page>221</page>
@@ -492,7 +492,7 @@
       <category>Entertainment - Asset</category>
       <lp>1</lp>
       <allowed>Medium,High,Luxury</allowed>
-	  <allowmultiple />
+      <allowmultiple />
       <source>RF</source>
       <cost>50</cost>
       <page>221</page>
@@ -503,7 +503,7 @@
       <category>Entertainment - Asset</category>
       <lp>2</lp>
       <allowed>Medium,High,Luxury</allowed>
-	  <allowmultiple />
+      <allowmultiple />
       <source>RF</source>
       <cost>100</cost>
       <page>221</page>
@@ -512,7 +512,7 @@
       <id>67e41d1f-78a9-417b-88d4-94eeb58fa4ff</id>
       <name>Garage (Helicopter)</name>
       <category>Entertainment - Asset</category>
-	  <allowmultiple />
+      <allowmultiple />
       <lp>4</lp>
       <allowed>Luxury</allowed>
       <source>RF</source>
@@ -535,7 +535,7 @@
       <category>Entertainment - Asset</category>
       <lp>1</lp>
       <allowed>Medium,High,Luxury</allowed>
-	  <allowmultiple />
+      <allowmultiple />
       <bonus>
         <selecttext />
       </bonus>
@@ -582,11 +582,11 @@
       <name>Merchandise: Goods (Specific Item) (Avail 3)</name>
       <category>Entertainment - Asset</category>
       <lp>1</lp>
-	  <bonus>
+      <bonus>
         <selecttext />
       </bonus>
       <allowed>Commercial</allowed>
-	  <allowmultiple />
+      <allowmultiple />
       <source>RF</source>
       <cost>10000</cost>
       <page>222</page>
@@ -596,11 +596,11 @@
       <name>Merchandise: Goods (Specific Item) (Avail 5)</name>
       <category>Entertainment - Asset</category>
       <lp>2</lp>
-	  <bonus>
+      <bonus>
         <selecttext />
       </bonus>
       <allowed>Commercial</allowed>
-	  <allowmultiple />
+      <allowmultiple />
       <source>RF</source>
       <cost>10000</cost>
       <page>222</page>
@@ -610,11 +610,11 @@
       <name>Merchandise: Goods (Specific Item) (Avail 7)</name>
       <category>Entertainment - Asset</category>
       <lp>3</lp>
-	  <bonus>
+      <bonus>
         <selecttext />
       </bonus>
       <allowed>Commercial</allowed>
-	  <allowmultiple />
+      <allowmultiple />
       <source>RF</source>
       <cost>10000</cost>
       <page>222</page>
@@ -624,11 +624,11 @@
       <name>Merchandise: Goods (Specific Item) (Avail 9)</name>
       <category>Entertainment - Asset</category>
       <lp>4</lp>
-	  <bonus>
+      <bonus>
         <selecttext />
       </bonus>
       <allowed>Commercial</allowed>
-	  <allowmultiple />
+      <allowmultiple />
       <source>RF</source>
       <cost>10000</cost>
       <page>222</page>
@@ -652,7 +652,7 @@
         <selecttext />
       </bonus>
       <allowed>Commercial</allowed>
-	  <allowmultiple />
+      <allowmultiple />
       <source>RF</source>
       <cost>10000</cost>
       <page>222</page>
@@ -676,7 +676,7 @@
       </bonus>
       <lp>1</lp>
       <allowed>Medium,High,Luxury</allowed>
-	  <allowmultiple />
+      <allowmultiple />
       <source>RF</source>
       <cost>100</cost>
       <page>223</page>
@@ -690,7 +690,7 @@
       </bonus>
       <lp>1</lp>
       <allowed>High,Luxury</allowed>
-	  <allowmultiple />
+      <allowmultiple />
       <source>RF</source>
       <cost>200</cost>
       <page>223</page>
@@ -704,7 +704,7 @@
       </bonus>
       <lp>1</lp>
       <allowed>Low,Medium,High,Luxury</allowed>
-	  <allowmultiple />
+      <allowmultiple />
       <source>RF</source>
       <cost>75</cost>
       <page>223</page>
@@ -718,7 +718,7 @@
       </bonus>
       <lp>1</lp>
       <allowed>Medium,High,Luxury</allowed>
-	  <allowmultiple />
+      <allowmultiple />
       <source>RF</source>
       <cost>100</cost>
       <page>223</page>
@@ -742,7 +742,7 @@
       </bonus>
       <lp>1</lp>
       <allowed>Low,Medium,High,Luxury</allowed>
-	  <allowmultiple />
+      <allowmultiple />
       <source>RF</source>
       <cost>50</cost>
       <page>223</page>
@@ -756,7 +756,7 @@
       </bonus>
       <lp>1</lp>
       <allowed>Medium,High,Luxury</allowed>
-	  <allowmultiple />
+      <allowmultiple />
       <source>RF</source>
       <cost>75</cost>
       <page>222</page>
@@ -790,7 +790,7 @@
       <category>Entertainment - Asset</category>
       <lp>2</lp>
       <allowed>High,Luxury</allowed>
-	  <allowmultiple />
+      <allowmultiple />
       <source>RF</source>
       <cost>300</cost>
       <page>224</page>
@@ -821,7 +821,7 @@
       <category>Entertainment - Asset</category>
       <lp>2</lp>
       <allowed>Commercial</allowed>
-	  <allowmultiple />
+      <allowmultiple />
       <bonus>
         <selecttext xml="skills.xml" xpath="/chummer/skills/skill/name | /chummer/knowledgeskills/skill/name" allowedit="True" />
       </bonus>
@@ -838,7 +838,7 @@
         <selecttext xml="skills.xml" xpath="/chummer/skills/skill/name | /chummer/knowledgeskills/skill/name" allowedit="True" />
       </bonus>
       <allowed>Commercial</allowed>
-	  <allowmultiple />
+      <allowmultiple />
       <source>RF</source>
       <cost>2250</cost>
       <page>224</page>
@@ -1181,7 +1181,7 @@
       <category>Entertainment - Asset</category>
       <lp>1</lp>
       <allowed>Medium,High,Luxury</allowed>
-	  <allowmultiple />
+      <allowmultiple />
       <bonus>
         <selecttext />
       </bonus>
@@ -1195,7 +1195,7 @@
       <category>Entertainment - Asset</category>
       <lp>1</lp>
       <allowed>High,Luxury</allowed>
-	  <allowmultiple />
+      <allowmultiple />
       <bonus>
         <selecttext />
       </bonus>
@@ -1401,7 +1401,7 @@
       <category>Entertainment - Asset</category>
       <lp>1</lp>
       <allowed>Medium,High,Luxury</allowed>
-	  <allowmultiple />
+      <allowmultiple />
       <source>SFB</source>
       <cost>180</cost>
       <page>20</page>
@@ -1412,7 +1412,7 @@
       <category>Entertainment - Asset</category>
       <lp>1</lp>
       <allowed>Medium,High,Luxury</allowed>
-	  <allowmultiple />
+      <allowmultiple />
       <source>SFB</source>
       <cost>200</cost>
       <page>20</page>

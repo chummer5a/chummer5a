@@ -2452,10 +2452,10 @@
       <avail>4</avail>
       <cost>1000</cost>
       <wirelessbonus>
-          <skillcategory>
-            <name>Combat Active</name>
-            <bonus>1</bonus>
-          </skillcategory>
+        <skillcategory>
+          <name>Combat Active</name>
+          <bonus>1</bonus>
+        </skillcategory>
       </wirelessbonus>
       <source>CF</source>
       <page>77</page>
@@ -2563,7 +2563,7 @@
         <gearcategory>Toxins</gearcategory>
       </allowgear>
       <allowsubsystems>
-          <category>Auto Injector Mods</category>
+        <category>Auto Injector Mods</category>
       </allowsubsystems>
       <avail>2</avail>
       <cost>500</cost>
@@ -3213,7 +3213,7 @@
       <avail>2</avail>
       <cost>Variable(100-20000)</cost>
       <bonus>
-          <selecttext />
+        <selecttext />
       </bonus>
       <source>CF</source>
       <page>72</page>
@@ -4596,7 +4596,7 @@
         <category>Cyberlimb Enhancement</category>
         <category>Cyberlimb Accessory</category>
         <category>Cyber Implant Weapon</category>
-		<category>Nanocybernetics</category>
+        <category>Nanocybernetics</category>
       </allowsubsystems>
       <forbidden>
         <oneof>

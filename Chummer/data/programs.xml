@@ -19,7 +19,7 @@
   https://github.com/chummer5a/chummer5a
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-     xsi:schemaLocation="http://www.w3.org/2001/XMLSchema programs.xsd">
+         xsi:schemaLocation="http://www.w3.org/2001/XMLSchema programs.xsd">
 
   <categories>
     <category>Autosofts</category>
@@ -499,9 +499,9 @@
       <rating>6</rating>
       <avail>Rating * 2</avail>
       <cost>Rating * 500</cost>
-        <bonus>
-          <selecttext xml="vehicles.xml" xpath="/chummer/vehicles/vehicle" allowedit="True" />
-        </bonus>
+      <bonus>
+        <selecttext xml="vehicles.xml" xpath="/chummer/vehicles/vehicle" allowedit="True" />
+      </bonus>
       <source>SR5</source>
       <page>270</page>
     </program>
@@ -727,11 +727,11 @@
       <category>Advanced Programs</category>
       <avail>0F</avail>
       <cost>0</cost>
-        <required>
-            <oneof>
-                <program>Guard</program>
-            </oneof>
-        </required>
+      <required>
+        <oneof>
+          <program>Guard</program>
+        </oneof>
+      </required>
       <source>DT</source>
       <page>160</page>
     </program>
@@ -772,11 +772,11 @@
       <category>Advanced Programs</category>
       <avail>0F</avail>
       <cost>0</cost>
-        <required>
-            <oneof>
-                <program>Lockdown</program>
-            </oneof>
-        </required>
+      <required>
+        <oneof>
+          <program>Lockdown</program>
+        </oneof>
+      </required>
       <source>DT</source>
       <page>160</page>
     </program>

@@ -21,34 +21,34 @@
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://www.w3.org/2001/XMLSchema vehicles.xsd">
   <categories>
-    <category blackmarket="Vehicles" >Bikes</category>
-    <category blackmarket="Vehicles" >Cars</category>
-    <category blackmarket="Vehicles" >Trucks</category>
-    <category blackmarket="Vehicles" >Municipal/Construction</category>
-    <category blackmarket="Vehicles" >Corpsec/Police/Military</category>
-    <category blackmarket="Vehicles" >Boats</category>
-    <category blackmarket="Vehicles" >Submarines</category>
-    <category blackmarket="Vehicles" >Fixed-Wing Aircraft</category>
-    <category blackmarket="Vehicles" >LTAV</category>
-    <category blackmarket="Vehicles" >Rotorcraft</category>
-    <category blackmarket="Vehicles" >VTOL/VSTOL</category>
-    <category blackmarket="Vehicles" >Drones: Micro</category>
-    <category blackmarket="Vehicles" >Drones: Mini</category>
-    <category blackmarket="Vehicles" >Drones: Small</category>
-    <category blackmarket="Vehicles" >Drones: Medium</category>
-    <category blackmarket="Vehicles" >Drones: Anthro</category>
-    <category blackmarket="Vehicles" >Drones: Large</category>
-    <category blackmarket="Vehicles" >Drones: Huge</category>
-    <category blackmarket="Vehicles" >Drones: Missile</category>
+    <category blackmarket="Vehicles">Bikes</category>
+    <category blackmarket="Vehicles">Cars</category>
+    <category blackmarket="Vehicles">Trucks</category>
+    <category blackmarket="Vehicles">Municipal/Construction</category>
+    <category blackmarket="Vehicles">Corpsec/Police/Military</category>
+    <category blackmarket="Vehicles">Boats</category>
+    <category blackmarket="Vehicles">Submarines</category>
+    <category blackmarket="Vehicles">Fixed-Wing Aircraft</category>
+    <category blackmarket="Vehicles">LTAV</category>
+    <category blackmarket="Vehicles">Rotorcraft</category>
+    <category blackmarket="Vehicles">VTOL/VSTOL</category>
+    <category blackmarket="Vehicles">Drones: Micro</category>
+    <category blackmarket="Vehicles">Drones: Mini</category>
+    <category blackmarket="Vehicles">Drones: Small</category>
+    <category blackmarket="Vehicles">Drones: Medium</category>
+    <category blackmarket="Vehicles">Drones: Anthro</category>
+    <category blackmarket="Vehicles">Drones: Large</category>
+    <category blackmarket="Vehicles">Drones: Huge</category>
+    <category blackmarket="Vehicles">Drones: Missile</category>
   </categories>
   <modcategories>
-    <category blackmarket="Vehicles" >Body</category>
-    <category blackmarket="Vehicles" >Cosmetic</category>
-    <category blackmarket="Software,Vehicles" >Electromagnetic</category>
-    <category blackmarket="Vehicles" >Model-Specific</category>
-    <category blackmarket="Vehicles" >Powertrain</category>
-    <category blackmarket="Vehicles" >Protection</category>
-    <category blackmarket="Vehicles" >Weapons</category>
+    <category blackmarket="Vehicles">Body</category>
+    <category blackmarket="Vehicles">Cosmetic</category>
+    <category blackmarket="Software,Vehicles">Electromagnetic</category>
+    <category blackmarket="Vehicles">Model-Specific</category>
+    <category blackmarket="Vehicles">Powertrain</category>
+    <category blackmarket="Vehicles">Protection</category>
+    <category blackmarket="Vehicles">Weapons</category>
   </modcategories>
   <weaponmountcategories>
     <category blackmarket="Vehicles">Size</category>

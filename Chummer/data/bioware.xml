@@ -874,13 +874,13 @@
           <condition>LimitCondition_SkillsActiveEscapeArtist</condition>
         </limitmodifier>
       </bonus>
-        <forbidden>
-          <oneof>
-            <bioware>Elastic Joints</bioware>
-            <bioware>Enhanced Articulation</bioware>
-            <cyberware>Smart Articulation</cyberware>
-          </oneof>
-        </forbidden>
+      <forbidden>
+        <oneof>
+          <bioware>Elastic Joints</bioware>
+          <bioware>Enhanced Articulation</bioware>
+          <cyberware>Smart Articulation</cyberware>
+        </oneof>
+      </forbidden>
       <source>CF</source>
       <page>112</page>
     </bioware>
@@ -2353,27 +2353,27 @@
       <forcegrade>None</forcegrade>
       <isgeneware />
       <bonus>
-		<composure>1</composure>
-		<judgeintentionsdefense>1</judgeintentionsdefense>
-		<drainresist>1</drainresist>
-		<fadingresist>1</fadingresist>
-		<directmanaspellresist>1</directmanaspellresist>
-		<detectionspellresist>1</detectionspellresist>
-		<manaillusionresist>1</manaillusionresist>
-		<mentalmanipulationresist>1</mentalmanipulationresist>
-		<decreasebodresist>1</decreasebodresist>
-		<decreaseagiresist>1</decreaseagiresist>
-		<decreaserearesist>1</decreaserearesist>
-		<decreasestrresist>1</decreasestrresist>
-		<decreasecharesist>1</decreasecharesist>
-		<decreaseintresist>1</decreaseintresist>
-		<decreaselogresist>1</decreaselogresist>
-		<decreasewilresist>1</decreasewilresist>
-		<skillattribute>
+        <composure>1</composure>
+        <judgeintentionsdefense>1</judgeintentionsdefense>
+        <drainresist>1</drainresist>
+        <fadingresist>1</fadingresist>
+        <directmanaspellresist>1</directmanaspellresist>
+        <detectionspellresist>1</detectionspellresist>
+        <manaillusionresist>1</manaillusionresist>
+        <mentalmanipulationresist>1</mentalmanipulationresist>
+        <decreasebodresist>1</decreasebodresist>
+        <decreaseagiresist>1</decreaseagiresist>
+        <decreaserearesist>1</decreaserearesist>
+        <decreasestrresist>1</decreasestrresist>
+        <decreasecharesist>1</decreasecharesist>
+        <decreaseintresist>1</decreaseintresist>
+        <decreaselogresist>1</decreaselogresist>
+        <decreasewilresist>1</decreasewilresist>
+        <skillattribute>
           <name>WIL</name>
           <bonus>1</bonus>
         </skillattribute>
-		<physiologicaladdictionfirsttime>1</physiologicaladdictionfirsttime>
+        <physiologicaladdictionfirsttime>1</physiologicaladdictionfirsttime>
         <psychologicaladdictionfirsttime>1</psychologicaladdictionfirsttime>
         <physiologicaladdictionalreadyaddicted>1</physiologicaladdictionalreadyaddicted>
         <psychologicaladdictionalreadyaddicted>1</psychologicaladdictionalreadyaddicted>

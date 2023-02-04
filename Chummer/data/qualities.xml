@@ -19,7 +19,7 @@
   https://github.com/chummer5a/chummer5a
 -->
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-     xsi:schemaLocation="http://www.w3.org/2001/XMLSchema qualities.xsd">
+         xsi:schemaLocation="http://www.w3.org/2001/XMLSchema qualities.xsd">
 
   <categories>
     <category>Positive</category>
@@ -2707,7 +2707,7 @@
           <name>Animal Handling</name>
           <bonus>2</bonus>
         </specificskill>
-	  </bonus>
+      </bonus>
       <source>RF</source>
       <page>145</page>
     </quality>
@@ -10921,7 +10921,7 @@
       <source>RF</source>
       <page>136</page>
     </quality>
-	<quality>
+    <quality>
       <id>59d9baa1-6705-49e8-940b-ea42ffc02692</id>
       <name>Infected Advanced Optional Power: Mimicry</name>
       <karma>9</karma>
@@ -10932,7 +10932,7 @@
           <power>Mimicry</power>
         </critterpowers>
       </bonus>
-	  <forbidden>
+      <forbidden>
         <oneof>
           <critterpower>Mimicry</critterpower>
         </oneof>
@@ -10945,7 +10945,7 @@
       <source>SR5</source>
       <page>398</page>
     </quality>
-	<quality>
+    <quality>
       <id>7843087c-30a3-4d87-aaa2-5ebdb90cccd8</id>
       <name>Infected Optional Power: Mist Form</name>
       <karma>12</karma>
@@ -10992,7 +10992,7 @@
       <source>RF</source>
       <page>136</page>
     </quality>
-	<quality>
+    <quality>
       <id>8dbc6b92-18a7-4007-b37f-295d21f8ab82</id>
       <name>Infected Advanced Optional Power: Psychokinesis</name>
       <karma>9</karma>
@@ -11003,7 +11003,7 @@
           <power>Psychokinesis</power>
         </critterpowers>
       </bonus>
-	  <forbidden>
+      <forbidden>
         <oneof>
           <critterpower>Psychokinesis</critterpower>
         </oneof>
@@ -13221,7 +13221,7 @@
           <power select="Thermographic Vision">Enhanced Senses</power>
           <power select="Normal Weapons">Immunity</power>
           <power>Realistic Form</power>
-        <power select="Insecticides, Mild">Allergy</power>
+          <power select="Insecticides, Mild">Allergy</power>
         </critterpowers>
         <enableattribute>
           <name>MAG</name>
@@ -13258,7 +13258,7 @@
           <power select="Thermographic Vision">Enhanced Senses</power>
           <power select="Normal Weapons">Immunity</power>
           <power>Realistic Form</power>
-        <power select="Insecticides, Mild">Allergy</power>
+          <power select="Insecticides, Mild">Allergy</power>
         </critterpowers>
         <enableattribute>
           <name>MAG</name>
@@ -13334,7 +13334,7 @@
           <power select="Thermographic Vision">Enhanced Senses</power>
           <power select="Normal Weapons">Immunity</power>
           <power>Realistic Form</power>
-        <power select="Insecticides, Mild">Allergy</power>
+          <power select="Insecticides, Mild">Allergy</power>
         </critterpowers>
         <enableattribute>
           <name>MAG</name>
@@ -13387,9 +13387,9 @@
           <power select="Normal Weapons">Immunity</power>
           <power>Realistic Form</power>
           <power select="Insecticides, Mild">Allergy</power>
-		  <power select="Blind">Reduced Sense</power>
+          <power select="Blind">Reduced Sense</power>
         </critterpowers>
-		<damageresistance>2</damageresistance>
+        <damageresistance>2</damageresistance>
         <enableattribute>
           <name>MAG</name>
         </enableattribute>
@@ -13425,7 +13425,7 @@
           <power select="Thermographic Vision">Enhanced Senses</power>
           <power select="Normal Weapons">Immunity</power>
           <power>Realistic Form</power>
-        <power select="Insecticides, Mild">Allergy</power>
+          <power select="Insecticides, Mild">Allergy</power>
         </critterpowers>
         <enableattribute>
           <name>MAG</name>
@@ -13462,7 +13462,7 @@
           <power select="Thermographic Vision">Enhanced Senses</power>
           <power select="Normal Weapons">Immunity</power>
           <power>Realistic Form</power>
-        <power select="Insecticides, Mild">Allergy</power>
+          <power select="Insecticides, Mild">Allergy</power>
         </critterpowers>
         <enableattribute>
           <name>MAG</name>
@@ -13499,7 +13499,7 @@
           <power select="Thermographic Vision">Enhanced Senses</power>
           <power select="Normal Weapons">Immunity</power>
           <power>Realistic Form</power>
-        <power select="Insecticides, Mild">Allergy</power>
+          <power select="Insecticides, Mild">Allergy</power>
         </critterpowers>
         <damageresistance>4</damageresistance>
         <enableattribute>
@@ -13537,7 +13537,7 @@
           <power select="Thermographic Vision">Enhanced Senses</power>
           <power select="Normal Weapons">Immunity</power>
           <power>Realistic Form</power>
-        <power select="Insecticides, Mild">Allergy</power>
+          <power select="Insecticides, Mild">Allergy</power>
         </critterpowers>
         <enableattribute>
           <name>MAG</name>
@@ -13574,8 +13574,8 @@
           <power select="Thermographic Vision">Enhanced Senses</power>
           <power select="Normal Weapons">Immunity</power>
           <power>Realistic Form</power>
-		  <power select="Self Only">Movement</power>
-        <power select="Insecticides, Mild">Allergy</power>
+          <power select="Self Only">Movement</power>
+          <power select="Insecticides, Mild">Allergy</power>
         </critterpowers>
         <enableattribute>
           <name>MAG</name>
@@ -13612,9 +13612,9 @@
           <power select="Thermographic Vision">Enhanced Senses</power>
           <power select="Normal Weapons">Immunity</power>
           <power>Realistic Form</power>
-		  <power select="Self Only">Movement</power>
+          <power select="Self Only">Movement</power>
           <power select="Insecticides, Mild">Allergy</power>
-		  <power>Venom</power>
+          <power>Venom</power>
         </critterpowers>
         <enableattribute>
           <name>MAG</name>
@@ -13652,7 +13652,7 @@
           <power select="Normal Weapons">Immunity</power>
           <power>Realistic Form</power>
           <power select="Insecticides, Mild">Allergy</power>
-		  <power select="Queen's Command">Induced Dormancy</power>
+          <power select="Queen's Command">Induced Dormancy</power>
         </critterpowers>
         <enableattribute>
           <name>MAG</name>
@@ -13690,7 +13690,7 @@
           <power select="Normal Weapons">Immunity</power>
           <power>Realistic Form</power>
           <power select="Insecticides, Mild">Allergy</power>
-		  <power>Binding</power>
+          <power>Binding</power>
         </critterpowers>
         <enableattribute>
           <name>MAG</name>
@@ -13728,9 +13728,9 @@
           <power select="Normal Weapons">Immunity</power>
           <power>Realistic Form</power>
           <power select="Insecticides, Mild">Allergy</power>
-		  <power>Binding</power>
-		  <power>Wall Walking</power>
-		  <power>Venom</power>
+          <power>Binding</power>
+          <power>Wall Walking</power>
+          <power>Venom</power>
         </critterpowers>
         <enableattribute>
           <name>MAG</name>
@@ -13768,7 +13768,7 @@
           <power select="Normal Weapons">Immunity</power>
           <power>Realistic Form</power>
           <power select="Insecticides, Mild">Allergy</power>
-		  <power select="Mass Sight Removal">Innate Spell</power>
+          <power select="Mass Sight Removal">Innate Spell</power>
         </critterpowers>
         <enableattribute>
           <name>MAG</name>
@@ -13843,8 +13843,8 @@
           <power select="Normal Weapons">Immunity</power>
           <power>Realistic Form</power>
           <power select="Insecticides, Mild">Allergy</power>
-		  <power>Movement</power>
-		  <power>Dive Attack</power>
+          <power>Movement</power>
+          <power>Dive Attack</power>
         </critterpowers>
         <enableattribute>
           <name>MAG</name>
@@ -13919,7 +13919,7 @@
           <power select="Normal Weapons">Immunity</power>
           <power>Realistic Form</power>
           <power select="Insecticides, Mild">Allergy</power>
-		  <power>Empathy</power>
+          <power>Empathy</power>
         </critterpowers>
         <enableattribute>
           <name>MAG</name>
@@ -13957,7 +13957,7 @@
           <power select="Normal Weapons">Immunity</power>
           <power>Realistic Form</power>
           <power select="Insecticides, Mild">Allergy</power>
-		  <power>Essence Loss</power>
+          <power>Essence Loss</power>
         </critterpowers>
         <enableattribute>
           <name>MAG</name>
@@ -13995,8 +13995,8 @@
           <power select="Normal Weapons">Immunity</power>
           <power>Realistic Form</power>
           <power select="Insecticides, Mild">Allergy</power>
-		  <power>Essence Drain</power>
-		  <power>Pestilence</power>
+          <power>Essence Drain</power>
+          <power>Pestilence</power>
         </critterpowers>
         <enableattribute>
           <name>MAG</name>
@@ -14139,7 +14139,7 @@
           <power select="Normal Weapons">Immunity</power>
           <power>Realistic Form</power>
           <power select="Insecticides, Mild">Allergy</power>
-		  <power select="Blind">Reduced Sense</power>
+          <power select="Blind">Reduced Sense</power>
         </critterpowers>
         <enableattribute>
           <name>MAG</name>
@@ -14177,7 +14177,7 @@
           <power select="Normal Weapons">Immunity</power>
           <power>Realistic Form</power>
           <power select="Insecticides, Mild">Allergy</power>
-		  <power select="Sugar">Dietary Requirement</power>
+          <power select="Sugar">Dietary Requirement</power>
         </critterpowers>
         <enableattribute>
           <name>MAG</name>
@@ -18630,11 +18630,11 @@
           <quality>Digital Doppelganger</quality>
         </oneof>
       </forbidden>
-        <required>
-            <oneof>
-                <quality>Technomancer</quality>
-            </oneof>
-        </required>
+      <required>
+        <oneof>
+          <quality>Technomancer</quality>
+        </oneof>
+      </required>
       <source>KC</source>
       <page>98</page>
     </quality>
@@ -18734,10 +18734,10 @@
       <karma>-15</karma>
       <category>Negative</category>
       <!--<forbidden>
-	  <oneof>
-	  <quality>Code of Honor: White Hat</quality>
-	  </oneof>
-	  </forbidden>-->
+    <oneof>
+    <quality>Code of Honor: White Hat</quality>
+    </oneof>
+    </forbidden>-->
       <required>
         <oneof>
           <quality>Technomancer</quality>
@@ -19187,7 +19187,8 @@
       <name>Hard Luck</name>
       <karma>-5</karma>
       <category>Negative</category>
-      <bonus /> <!-- TODO: Witchcraft -->
+      <bonus />
+      <!-- TODO: Witchcraft -->
       <source>BTB</source>
       <page>162</page>
     </quality>
@@ -19449,7 +19450,7 @@
       <karma>20</karma>
       <category>Positive</category>
       <bonus>
-          <contactkarma>-2</contactkarma>
+        <contactkarma>-2</contactkarma>
       </bonus>
       <forbidden>
         <oneof>
@@ -19490,6 +19491,6 @@
       <source>NF</source>
       <page>177</page>
     </quality>
-      <!-- End Region -->
+    <!-- End Region -->
   </qualities>
 </chummer>

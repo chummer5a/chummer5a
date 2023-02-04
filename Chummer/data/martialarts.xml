@@ -1845,8 +1845,8 @@
       </techniques>
       <source>SOTG</source>
       <page>6</page>
-	</martialart>
-	<martialart>
+    </martialart>
+    <martialart>
       <id>e78deb30-4e17-4b86-b084-897009c55a15</id>
       <name>Circle Fencing</name>
       <bonus>
@@ -1883,8 +1883,8 @@
       </techniques>
       <source>SOTG</source>
       <page>5</page>
-	</martialart>
-	<martialart>
+    </martialart>
+    <martialart>
       <id>70f75f97-ba03-41a6-b591-7c3ae24953a2</id>
       <name>Kreussler Fencing</name>
       <bonus>
@@ -1925,8 +1925,8 @@
       </techniques>
       <source>SOTG</source>
       <page>5</page>
-	</martialart>
-	<martialart>
+    </martialart>
+    <martialart>
       <id>736db820-cbe4-4a0b-b6c3-d90471117731</id>
       <name>Asthenologica</name>
       <bonus>
@@ -1963,8 +1963,8 @@
       </techniques>
       <source>SOTG</source>
       <page>6</page>
-	</martialart>
-	<!-- End Region -->
+    </martialart>
+    <!-- End Region -->
   </martialarts>
   <techniques>
     <!-- Region Run and Gun -->

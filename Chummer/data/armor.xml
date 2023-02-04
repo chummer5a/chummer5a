@@ -21,21 +21,21 @@
 <!-- Documentation of the tags used in armor.xml
 
 <armor> a container for a single tradition
-	<name> Human readable name
-	<source> The Rulebook of this armor
-	<page> reference to the page in the rulebook the armor is described in
-	<category> the category of the armor as specified in <categories>
-	<armor> the actual armor value of the armor
-	<armorcapacity> ?
-	<avail> availability of the armor
-	<cost> price in NewYen or "Variable(nn-mm)"
-	<gears> container for included gear
-	<bonus> container for bonus from the armor
-		<limitmodifier> container for modifier to a single limit
-			<limit> the limit to be modified
-			<value> the modifier
-			<condition> textual description of the condition of the modifier
-	<addmodcategory> the category of available modifications/addons to the armor
+  <name> Human readable name
+  <source> The Rulebook of this armor
+  <page> reference to the page in the rulebook the armor is described in
+  <category> the category of the armor as specified in <categories>
+  <armor> the actual armor value of the armor
+  <armorcapacity> ?
+  <avail> availability of the armor
+  <cost> price in NewYen or "Variable(nn-mm)"
+  <gears> container for included gear
+  <bonus> container for bonus from the armor
+    <limitmodifier> container for modifier to a single limit
+      <limit> the limit to be modified
+      <value> the modifier
+      <condition> textual description of the condition of the modifier
+  <addmodcategory> the category of available modifications/addons to the armor
 -->
 
 <chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema armor.xsd">
@@ -3336,7 +3336,7 @@
       <mods>
         <name rating="3">Chemical Protection</name>
         <name>Internal Air Tank (5 Minutes)</name>
-	  </mods>
+      </mods>
       <source>HAMG</source>
       <page>173</page>
     </armor>
@@ -4297,7 +4297,7 @@
       <armor>0</armor>
       <maxrating>1</maxrating>
       <armorcapacity>[0]</armorcapacity>
-	  <gearcapacity>1</gearcapacity>
+      <gearcapacity>1</gearcapacity>
       <avail>0</avail>
       <cost>0</cost>
       <source>KC</source>

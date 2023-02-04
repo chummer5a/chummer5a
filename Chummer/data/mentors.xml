@@ -2876,7 +2876,7 @@
             </spellcategory>
           </bonus>
         </choice>
-		<choice>
+        <choice>
           <name>Adept: 2 free levels of Analytics</name>
           <bonus>
             <specificpower>
@@ -2920,7 +2920,7 @@
             </spellcategory>
           </bonus>
         </choice>
-	<choice>
+        <choice>
           <name>Adept: 2 levels of Danger Sense</name>
           <bonus>
             <specificpower>
@@ -2946,7 +2946,7 @@
         <selectskill skillcategory="Combat Active">
           <val>1</val>
         </selectskill>
-	  </bonus>
+      </bonus>
       <choices>
         <choice set="2">
           <name>Magician: +2 dice for Combat spells</name>
@@ -2995,7 +2995,7 @@
             </spellcategory>
           </bonus>
         </choice>
-	<choice>
+        <choice>
           <name>Adept: 1 free level of Enhanced Perception</name>
           <bonus>
             <specificpower>
@@ -3028,7 +3028,7 @@
               <bonus>1</bonus>
             </spellcategory>
           </bonus>
-	  <bonus>
+          <bonus>
             <spellcategory>
               <name>Combat</name>
               <val>2</val>
@@ -3116,11 +3116,11 @@
         </choice>
         <choice>
           <name>Adept: Gain Linguist for free</name>
-      <bonus>
-        <addqualities>
-          <addquality>Linguist</addquality>
-        </addqualities>
-      </bonus>
+          <bonus>
+            <addqualities>
+              <addquality>Linguist</addquality>
+            </addqualities>
+          </bonus>
         </choice>
       </choices>
       <source>SOTG</source>
@@ -3178,38 +3178,38 @@
           <bonus>1</bonus>
         </specificskill>
       </bonus>
-	    <choices>
-          <choice>
-            <name>Magician: +2 dice for summoning guardian spirits.</name>
-            <bonus>
-              <specificskill>
-                <name>Summoning</name>
-                <bonus>2</bonus>
-                <condition>Guardian Spirit</condition>
-              </specificskill>
-            </bonus>
-          </choice>
-          <choice>
-            <name>Magician: +2 dice for summoning task spirits.</name>
-            <bonus>
-              <specificskill>
-                <name>Summoning</name>
-                <bonus>2</bonus>
-                <condition>Task Spirit</condition>
-              </specificskill>
-            </bonus>
-          </choice>
-          <choice>
-            <name>Magician: +2 dice for summoning spirits of man.</name>
-            <bonus>
-              <specificskill>
-                <name>Summoning</name>
-                <bonus>2</bonus>
-                <condition>Spirits of Man</condition>
-              </specificskill>
-            </bonus>
-          </choice>
-          <choice>
+      <choices>
+        <choice>
+          <name>Magician: +2 dice for summoning guardian spirits.</name>
+          <bonus>
+            <specificskill>
+              <name>Summoning</name>
+              <bonus>2</bonus>
+              <condition>Guardian Spirit</condition>
+            </specificskill>
+          </bonus>
+        </choice>
+        <choice>
+          <name>Magician: +2 dice for summoning task spirits.</name>
+          <bonus>
+            <specificskill>
+              <name>Summoning</name>
+              <bonus>2</bonus>
+              <condition>Task Spirit</condition>
+            </specificskill>
+          </bonus>
+        </choice>
+        <choice>
+          <name>Magician: +2 dice for summoning spirits of man.</name>
+          <bonus>
+            <specificskill>
+              <name>Summoning</name>
+              <bonus>2</bonus>
+              <condition>Spirits of Man</condition>
+            </specificskill>
+          </bonus>
+        </choice>
+        <choice>
         </choice>
         <choice>
           <name>Adept: 1 free level of Mystic Armor</name>
@@ -3220,7 +3220,7 @@
             </specificpower>
           </bonus>
         </choice>
-	    </choices>
+      </choices>
       <source>SOTG</source>
       <page>32</page>
     </mentor>

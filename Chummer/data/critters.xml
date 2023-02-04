@@ -48,9 +48,9 @@
     <category>Necro Spirits</category>
   </categories>
   <metatypes>
-  <!-- Region SR5-->
+    <!-- Region SR5-->
     <!-- Region SR5 Mundane Critters -->
-  <metatype>
+    <metatype>
       <id>47428a29-890f-4b3a-9d18-d8c2e581f1b4</id>
       <name>Dog</name>
       <category>Mundane Critters</category>
@@ -397,9 +397,9 @@
       <page>403</page>
     </metatype>
 
-  <!-- End Region SR5 Mundane Critters -->
+    <!-- End Region SR5 Mundane Critters -->
     <!-- Region SR5 Paranormal Critters -->
-<metatype>
+    <metatype>
       <id>6fb20284-a25b-4eb7-82d5-e20f79d345e3</id>
       <name>Devil Rat</name>
       <category>Paranormal Critters</category>
@@ -731,7 +731,7 @@
       <source>SR5</source>
       <page>403</page>
     </metatype>
- <metatype>
+    <metatype>
       <id>6d15c952-542a-429d-9b56-51fc21ebb138</id>
       <name>Sasquatch</name>
       <category>Paranormal Critters</category>
@@ -907,7 +907,7 @@
       <source>SR5</source>
       <page>406</page>
     </metatype>
-<metatype>
+    <metatype>
       <id>f023c6db-03f3-4dba-b7ee-7e64f71f7d5b</id>
       <name>Cockatrice</name>
       <category>Paranormal Critters</category>
@@ -1063,12 +1063,12 @@
       <page>404</page>
     </metatype>
 
-<!-- End Region SR5 Paranormal Critters -->
+    <!-- End Region SR5 Paranormal Critters -->
 
-<!-- End Region SR5 -->
-  <!-- Region Howling Shadows-->
+    <!-- End Region SR5 -->
+    <!-- Region Howling Shadows-->
     <!-- Region Howling Shadows Mundane Critters -->
-  <metatype>
+    <metatype>
       <id>522d14b3-9f8f-485d-9796-cd15fc94f044</id>
       <name>Bear</name>
       <category>Mundane Critters</category>
@@ -1140,75 +1140,80 @@
       <page>39</page>
     </metatype>
 
-    <metatype>
-      <id>9465b7be-1488-4b29-a024-8a7048f305a1</id>
-      <name>Sea Lion</name>
-      <category>Mundane Critters</category>
-      <karma>0</karma>
-      <bodmin>7</bodmin>
-      <bodmax>10</bodmax>
-      <bodaug>14</bodaug>
-      <agimin>4</agimin>
-      <agimax>7</agimax>
-      <agiaug>11</agiaug>
-      <reamin>4</reamin>
-      <reamax>7</reamax>
-      <reaaug>11</reaaug>
-      <strmin>5</strmin>
-      <strmax>8</strmax>
-      <straug>12</straug>
-      <chamin>2</chamin>
-      <chamax>5</chamax>
-      <chaaug>9</chaaug>
-      <intmin>4</intmin>
-      <intmax>7</intmax>
-      <intaug>11</intaug>
-      <logmin>1</logmin>
-      <logmax>4</logmax>
-      <logaug>8</logaug>
-      <wilmin>3</wilmin>
-      <wilmax>6</wilmax>
-      <wilaug>10</wilaug>
-      <inimin>8</inimin>
-      <inimax>14</inimax>
-      <iniaug>22</iniaug>
-      <edgmin>3</edgmin>
-      <edgmax>6</edgmax>
-      <edgaug>6</edgaug>
-      <magmin>0</magmin>
-      <magmax>3</magmax>
-      <magaug>3</magaug>
-      <resmin>0</resmin>
-      <resmax>3</resmax>
-      <resaug>3</resaug>
-      <depmin>0</depmin>
-      <depmax>0</depmax>
-      <depaug>0</depaug>
-      <essmin>0</essmin>
-      <essmax>6</essmax>
-      <essaug>6</essaug>
-      <walk>1/3/0</walk>
-      <run>0/8/0</run>
-      <sprint>1/4/0</sprint>
-      <bonus>
-        <enabletab>
-          <name>critter</name>
-        </enabletab>
-      </bonus>
-      <powers>
-        <power select="Bite: DV (STR+2)P, AP 0">Natural Weapon</power>
-        <power rating="2">Armor</power>
-      </powers>
-      <skills>
-        <skill rating="2">Diving</skill>
-        <skill rating="3">Gymnastics</skill>
-        <skill rating="2">Perception</skill>
-        <skill rating="4">Swimming</skill>
-        <skill rating="4">Unarmed Combat</skill>
-      </skills>
-      <source>HS</source>
-      <page>43</page>
-    </metatype>
+        <metatype>
+            <id>9465b7be-1488-4b29-a024-8a7048f305a1</id>
+            <name>Sea Lion</name>
+            <category>Mundane Critters</category>
+            <karma>0</karma>
+            <bodmin>7</bodmin>
+            <bodmax>10</bodmax>
+            <bodaug>14</bodaug>
+            <agimin>4</agimin>
+            <agimax>7</agimax>
+            <agiaug>11</agiaug>
+            <reamin>4</reamin>
+            <reamax>7</reamax>
+            <reaaug>11</reaaug>
+            <strmin>5</strmin>
+            <strmax>8</strmax>
+            <straug>12</straug>
+            <chamin>2</chamin>
+            <chamax>5</chamax>
+            <chaaug>9</chaaug>
+            <intmin>4</intmin>
+            <intmax>7</intmax>
+            <intaug>11</intaug>
+            <logmin>1</logmin>
+            <logmax>4</logmax>
+            <logaug>8</logaug>
+            <wilmin>3</wilmin>
+            <wilmax>6</wilmax>
+            <wilaug>10</wilaug>
+            <inimin>8</inimin>
+            <inimax>14</inimax>
+            <iniaug>22</iniaug>
+            <edgmin>3</edgmin>
+            <edgmax>6</edgmax>
+            <edgaug>6</edgaug>
+            <magmin>0</magmin>
+            <magmax>3</magmax>
+            <magaug>3</magaug>
+            <resmin>0</resmin>
+            <resmax>3</resmax>
+            <resaug>3</resaug>
+            <depmin>0</depmin>
+            <depmax>0</depmax>
+            <depaug>0</depaug>
+            <essmin>0</essmin>
+            <essmax>6</essmax>
+            <essaug>6</essaug>
+            <walk>1/3/0</walk>
+            <run>0/8/0</run>
+            <sprint>1/4/0</sprint>
+            <bonus>
+                <enabletab>
+                    <name>critter</name>
+
+        </enabletab>
+
+      </bonus>
+            <powers>
+                <power select="Bite: DV (STR+2)P, AP 0">Natural Weapon</power>
+                <power rating="2">Armor</power>
+
+      </powers>
+            <skills>
+                <skill rating="2">Diving</skill>
+                <skill rating="3">Gymnastics</skill>
+                <skill rating="2">Perception</skill>
+                <skill rating="4">Swimming</skill>
+                <skill rating="4">Unarmed Combat</skill>
+
+      </skills>
+            <source>HS</source>
+            <page>43</page>
+
+    </metatype>
     <metatype>
       <id>dda86d60-2d40-4e1a-bb9f-b58e834330f6</id>
       <name>Squid</name>
@@ -2551,9 +2556,9 @@
       <page>39</page>
     </metatype>
 
-  <!-- End Region Howling Shadows Mundane Critters -->
+    <!-- End Region Howling Shadows Mundane Critters -->
     <!-- Region Howling Shadows Paranormal Critters -->
-<metatype>
+    <metatype>
       <id>77c9b816-af11-4aa7-bc94-4c373fd147a6</id>
       <name>Abrams Lobster</name>
       <category>Paranormal Critters</category>
@@ -2625,7 +2630,7 @@
       <source>HS</source>
       <page>53</page>
     </metatype>
-<metatype>
+    <metatype>
       <id>edc96d39-459c-43df-907c-1559bff5c450</id>
       <name>Merrow</name>
       <category>Paranormal Critters</category>
@@ -3629,7 +3634,7 @@
       <source>HS</source>
       <page>56</page>
     </metatype>
-<metatype>
+    <metatype>
       <id>9030debc-e820-4c9d-89f2-472703308423</id>
       <name>Juggernaut</name>
       <category>Paranormal Critters</category>
@@ -5885,8 +5890,8 @@
       <page>54</page>
     </metatype>
 
-<!-- End Region Howling Shadows Paranormal Critters -->
- <!-- Region Toxic/Mutant Critters -->
+    <!-- End Region Howling Shadows Paranormal Critters -->
+    <!-- Region Toxic/Mutant Critters -->
     <metatype>
       <id>ba5e2809-186c-4d11-a5a9-c8b1cb060f2c</id>
       <name>Amphora Mite</name>
@@ -7350,7 +7355,7 @@
       <sprint>3/0/0</sprint>
       <qualities />
       <bonus>
-          <reach>1</reach>
+        <reach>1</reach>
         <enabletab>
           <name>critter</name>
         </enabletab>
@@ -7427,7 +7432,7 @@
       <sprint>0.5/0/0</sprint>
       <qualities />
       <bonus>
-          <reach>-2</reach>
+        <reach>-2</reach>
         <enabletab>
           <name>critter</name>
         </enabletab>
@@ -7531,13 +7536,12 @@
 
     <!-- End Region Toxic/Mutant Critters -->
 
- <!-- Region Extraplaner Travelers -->
+    <!-- Region Extraplaner Travelers -->
 
+    <!-- End Region Extraplaner Travelers -->
+    <!-- End Region Howling Shadows -->
 
-<!-- End Region Extraplaner Travelers -->
-<!-- End Region Howling Shadows -->
-
-<!-- Region Spirits -->
+    <!-- Region Spirits -->
     <metatype>
       <id>5275de83-c4da-421a-951b-7c63ec453051</id>
       <name>Ally Spirit</name>
@@ -9198,629 +9202,678 @@
       <source>SG</source>
       <page>87</page>
     </metatype>
-    <metatype>
-      <id>a29dbdbd-d20f-4b8e-b273-7913f32e0b04</id>
-      <name>Gum Toad (Demon)</name>
-      <category>Spirits</category>
-      <forcecreature />
-      <karma>0</karma>
-      <bodmin>F+7</bodmin>
-      <bodmax>F+7</bodmax>
-      <bodaug>F+7</bodaug>
-      <agimin>F-2</agimin>
-      <agimax>F-2</agimax>
-      <agiaug>F-2</agiaug>
-      <reamin>F</reamin>
-      <reamax>F</reamax>
-      <reaaug>F</reaaug>
-      <strmin>F+2</strmin>
-      <strmax>F+2</strmax>
-      <straug>F+2</straug>
-      <chamin>F+1</chamin>
-      <chamax>F+1</chamax>
-      <chaaug>F+1</chaaug>
-      <intmin>F</intmin>
-      <intmax>F</intmax>
-      <intaug>F</intaug>
-      <logmin>F</logmin>
-      <logmax>F</logmax>
-      <logaug>F</logaug>
-      <wilmin>F-1</wilmin>
-      <wilmax>F-1</wilmax>
-      <wilaug>F-1</wilaug>
-      <inimin>(F*2)</inimin>
-      <inimax>(F*2)</inimax>
-      <iniaug>(F*2)+2</iniaug>
-      <edgmin>F</edgmin>
-      <edgmax>F</edgmax>
-      <edgaug>F</edgaug>
-      <magmin>F</magmin>
-      <magmax>F</magmax>
-      <magaug>F</magaug>
-      <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
-      <depmin>0</depmin>
-      <depmax>0</depmax>
-      <depaug>0</depaug>
-      <essmin>0</essmin>
-      <essmax>6</essmax>
-      <essaug>6</essaug>
-      <walk>2/2/2</walk>
-      <run>4/4/4</run>
-      <sprint>2/2/2</sprint>
-      <bonus>
-        <enableattribute>
-          <name>MAG</name>
-          <min>F</min>
-          <max>F</max>
-          <aug>F</aug>
-          <val>F</val>
-        </enableattribute>
-        <enabletab>
-          <name>critter</name>
-        </enabletab>
-        <initiativepass>1</initiativepass>
-      </bonus>
-      <powers>
-        <power>Astral Form</power>
-        <power rating="14">Armor</power>
-        <power>Banishing Resistance</power>
-        <power rating="LOS, Touch, and Self">Binding</power>
-        <power>Concealment</power>
-        <power>Engulf</power>
-        <power>Materialization</power>
-        <power>Movement</power>
-        <power>Sapience</power>
-        <power>Search</power>
-      </powers>
-      <optionalpowers>
-      </optionalpowers>
-      <skills>
-        <skill rating="F">Assensing</skill>
-        <skill rating="F">Astral Combat</skill>
-        <skill rating="F">Perception</skill>
-        <skill rating="F">Unarmed Combat</skill>
-      </skills>
-      <source>AET</source>
-      <page>34</page>
-    </metatype>
-    <metatype>
-      <id>eece2f07-efa7-411e-a7be-adae734f19f9</id>
-      <name>Crawler (Demon)</name>
-      <category>Spirits</category>
-      <forcecreature />
-      <karma>0</karma>
-      <bodmin>F+4</bodmin>
-      <bodmax>F+4</bodmax>
-      <bodaug>F+4</bodaug>
-      <agimin>F</agimin>
-      <agimax>F</agimax>
-      <agiaug>F</agiaug>
-      <reamin>F+3</reamin>
-      <reamax>F+3</reamax>
-      <reaaug>F+3</reaaug>
-      <strmin>F+6</strmin>
-      <strmax>F+6</strmax>
-      <straug>F+6</straug>
-      <chamin>F-1</chamin>
-      <chamax>F-1</chamax>
-      <chaaug>F-1</chaaug>
-      <intmin>F+3</intmin>
-      <intmax>F+3</intmax>
-      <intaug>F+3</intaug>
-      <logmin>F</logmin>
-      <logmax>F</logmax>
-      <logaug>F</logaug>
-      <wilmin>F-1</wilmin>
-      <wilmax>F-1</wilmax>
-      <wilaug>F-1</wilaug>
-      <inimin>(F*2)+6</inimin>
-      <inimax>(F*2)+6</inimax>
-      <iniaug>(F*2)+6</iniaug>
-      <edgmin>F</edgmin>
-      <edgmax>F</edgmax>
-      <edgaug>F</edgaug>
-      <magmin>F</magmin>
-      <magmax>F</magmax>
-      <magaug>F</magaug>
-      <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
-      <depmin>0</depmin>
-      <depmax>0</depmax>
-      <depaug>0</depaug>
-      <essmin>0</essmin>
-      <essmax>6</essmax>
-      <essaug>6</essaug>
-      <walk>2/2/2</walk>
-      <run>4/4/4</run>
-      <sprint>2/2/2</sprint>
-      <bonus>
-        <enableattribute>
-          <name>MAG</name>
-          <min>F</min>
-          <max>F</max>
-          <aug>F</aug>
-          <val>F</val>
-        </enableattribute>
-        <enabletab>
-          <name>critter</name>
-        </enabletab>
-        <initiativepass>1</initiativepass>
-      </bonus>
-      <powers>
-        <power>Astral Form</power>
-        <power>Astral Perception</power>
-        <power>Banishing Resistance</power>
-        <power>Concealment</power>
-        <power>Confusion</power>
-        <power>Devour</power>
-        <power rating="6">Hardened Armor</power>
-        <power rating="Living Vessels">Inhabitation</power>
-        <power>Movement</power>
-        <power>Sapience</power>
-        <power>Search</power>
-        <power rating="F">Skill</power>
-      </powers>
-      <optionalpowers>
-      </optionalpowers>
-      <skills>
-        <skill rating="F">Assensing</skill>
-        <skill rating="F">Astral Combat</skill>
-        <skill rating="F">Perception</skill>
-        <skill rating="F">Running</skill>
-        <skill rating="F">Shadowing</skill>
-        <skill rating="F">Unarmed Combat</skill>
-      </skills>
-      <source>AET</source>
-      <page>34</page>
-    </metatype>
-    <metatype>
-      <id>250adb08-63e6-4b64-b593-57723730bb11</id>
-      <name>Ghasts (Demon)</name>
-      <category>Spirits</category>
-      <forcecreature />
-      <karma>0</karma>
-      <bodmin>F+2</bodmin>
-      <bodmax>F+2</bodmax>
-      <bodaug>F+2</bodaug>
-      <agimin>F</agimin>
-      <agimax>F</agimax>
-      <agiaug>F</agiaug>
-      <reamin>F+2</reamin>
-      <reamax>F+2</reamax>
-      <reaaug>F+2</reaaug>
-      <strmin>F</strmin>
-      <strmax>F</strmax>
-      <straug>F</straug>
-      <chamin>F</chamin>
-      <chamax>F</chamax>
-      <chaaug>F</chaaug>
-      <intmin>F</intmin>
-      <intmax>F</intmax>
-      <intaug>F</intaug>
-      <logmin>F</logmin>
-      <logmax>F</logmax>
-      <logaug>F</logaug>
-      <wilmin>F</wilmin>
-      <wilmax>F</wilmax>
-      <wilaug>F</wilaug>
-      <inimin>(F*2)+2</inimin>
-      <inimax>(F*2)+2</inimax>
-      <iniaug>(F*2)+2</iniaug>
-      <edgmin>F</edgmin>
-      <edgmax>F</edgmax>
-      <edgaug>F</edgaug>
-      <magmin>F</magmin>
-      <magmax>F</magmax>
-      <magaug>F</magaug>
-      <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
-      <depmin>0</depmin>
-      <depmax>0</depmax>
-      <depaug>0</depaug>
-      <essmin>0</essmin>
-      <essmax>6</essmax>
-      <essaug>6</essaug>
-      <walk>2/2/2</walk>
-      <run>4/4/4</run>
-      <sprint>2/2/2</sprint>
-      <bonus>
-        <enableattribute>
-          <name>MAG</name>
-          <min>F</min>
-          <max>F</max>
-          <aug>F</aug>
-          <val>F</val>
-        </enableattribute>
-        <enabletab>
-          <name>critter</name>
-        </enabletab>
-        <initiativepass>1</initiativepass>
-      </bonus>
-      <powers>
-        <power>Accident</power>
-        <power>Astral Form</power>
-        <power>Banishing Resistance</power>
-        <power rating="Low-Light-Vision, Thermographic Vision, Spatial Sense">Enhanced Senses</power>
-        <power>Materialization</power>
-        <power>Paralyzing Touch</power>
-        <power>Sapience</power>
-        <power>Sillence</power>
-        <power>Vanishing</power>
-      </powers>
-      <optionalpowers>
-      </optionalpowers>
-      <skills>
-        <skill rating="F">Assensing</skill>
-        <skill rating="F">Astral Combat</skill>
-        <skill rating="F">Flight</skill>
-        <skill rating="F">Perception</skill>
-        <skill rating="F">Spellcasting</skill>
-        <skill rating="F">Unarmed Combat</skill>
-      </skills>
-      <source>AET</source>
-      <page>35</page>
-    </metatype>
-    <metatype>
-      <id>e77798be-e755-441d-a143-5e49b3757576</id>
-      <name>Vrygoths</name>
-      <category>Spirits</category>
-      <forcecreature />
-      <karma>0</karma>
-      <bodmin>F+4</bodmin>
-      <bodmax>F+4</bodmax>
-      <bodaug>F+4</bodaug>
-      <agimin>F</agimin>
-      <agimax>F</agimax>
-      <agiaug>F</agiaug>
-      <reamin>F</reamin>
-      <reamax>F</reamax>
-      <reaaug>F</reaaug>
-      <strmin>F+3</strmin>
-      <strmax>F+3</strmax>
-      <straug>F+3</straug>
-      <chamin>F</chamin>
-      <chamax>F</chamax>
-      <chaaug>F</chaaug>
-      <intmin>F</intmin>
-      <intmax>F</intmax>
-      <intaug>F</intaug>
-      <logmin>F+2</logmin>
-      <logmax>F+2</logmax>
-      <logaug>F+2</logaug>
-      <wilmin>F</wilmin>
-      <wilmax>F</wilmax>
-      <wilaug>F</wilaug>
-      <inimin>(F*2)</inimin>
-      <inimax>(F*2)</inimax>
-      <iniaug>(F*2)</iniaug>
-      <edgmin>F</edgmin>
-      <edgmax>F</edgmax>
-      <edgaug>F</edgaug>
-      <magmin>F</magmin>
-      <magmax>F</magmax>
-      <magaug>F</magaug>
-      <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
-      <depmin>0</depmin>
-      <depmax>0</depmax>
-      <depaug>0</depaug>
-      <essmin>0</essmin>
-      <essmax>6</essmax>
-      <essaug>6</essaug>
-      <walk>2/2/2</walk>
-      <run>4/4/4</run>
-      <sprint>2/2/2</sprint>
-      <bonus>
-        <enableattribute>
-          <name>MAG</name>
-          <min>F</min>
-          <max>F</max>
-          <aug>F</aug>
-          <val>F</val>
-        </enableattribute>
-        <enabletab>
-          <name>critter</name>
-        </enabletab>
-        <initiativepass>1</initiativepass>
-      </bonus>
-      <powers>
-        <power>Astral Form</power>
-        <power>Aura Masking</power>
-        <power>Banishing Resistance</power>
-        <power rating="Essence">Energy Drain</power>
-        <power rating="Thermographic Vision">Enhanced Senses</power>
-        <power rating="Foreboding">Innate Spell</power>
-        <power rating="Living Vessels">Inhabitation</power>
-        <power>Materialization</power>
-        <power>Sapience</power>
-        <power rating="Metahuman">Shift</power>
-        <power>Transfer Energy (Essence)</power>
-        <power>Vanishing</power>
-      </powers>
-      <optionalpowers>
-      </optionalpowers>
-      <skills>
-        <skill rating="F">Assensing</skill>
-        <skill rating="F">Astral Combat</skill>
-        <skill rating="F">Flight</skill>
-        <skill rating="F">Perception</skill>
-        <skill rating="F">Spellcasting</skill>
-        <skill rating="F">Unarmed Combat</skill>
-      </skills>
-      <source>AET</source>
-      <page>36</page>
-    </metatype>
-    <metatype>
-      <id>fb6a313e-7bcd-4b27-8283-0ece49970dd4</id>
-      <name>Gremlin</name>
-      <category>Spirits</category>
-      <forcecreature />
-      <karma>0</karma>
-      <bodmin>F</bodmin>
-      <bodmax>F</bodmax>
-      <bodaug>F</bodaug>
-      <agimin>F</agimin>
-      <agimax>F</agimax>
-      <agiaug>F</agiaug>
-      <reamin>F+3</reamin>
-      <reamax>F+3</reamax>
-      <reaaug>F+3</reaaug>
-      <strmin>F</strmin>
-      <strmax>F</strmax>
-      <straug>F</straug>
-      <chamin>F</chamin>
-      <chamax>F</chamax>
-      <chaaug>F</chaaug>
-      <intmin>F</intmin>
-      <intmax>F</intmax>
-      <intaug>F</intaug>
-      <logmin>F</logmin>
-      <logmax>F</logmax>
-      <logaug>F</logaug>
-      <wilmin>F</wilmin>
-      <wilmax>F</wilmax>
-      <wilaug>F</wilaug>
-      <inimin>(F*2)+3</inimin>
-      <inimax>(F*2)+3</inimax>
-      <iniaug>(F*2)+3</iniaug>
-      <edgmin>F</edgmin>
-      <edgmax>F</edgmax>
-      <edgaug>F</edgaug>
-      <magmin>F</magmin>
-      <magmax>F</magmax>
-      <magaug>F</magaug>
-      <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
-      <depmin>0</depmin>
-      <depmax>0</depmax>
-      <depaug>0</depaug>
-      <essmin>0</essmin>
-      <essmax>6</essmax>
-      <essaug>6</essaug>
-      <walk>2/2/2</walk>
-      <run>4/4/4</run>
-      <sprint>2/2/2</sprint>
-      <bonus>
-        <enableattribute>
-          <name>MAG</name>
-          <min>F</min>
-          <max>F</max>
-          <aug>F</aug>
-          <val>F</val>
-        </enableattribute>
-        <enabletab>
-          <name>critter</name>
-        </enabletab>
-        <initiativepass>1</initiativepass>
-      </bonus>
-      <powers>
-        <power>Accident</power>
-        <power>Aura Masking</power>
-        <power>Desire Reflection</power>
-        <power rating="Karma">Energy Drain</power>
-        <power>Influence</power>
-        <power rating="Alter Memory">Innate Spell</power>
-        <power>Movement</power>
-        <power rating="Inanimate Mechanical Devices Only">Inhabitation</power>
-        <power rating="Occupied Mechanical Device Only">Psychokinesis</power>
-      </powers>
-      <optionalpowers>
-      </optionalpowers>
-      <skills>
-        <skill rating="F">Assensing</skill>
-        <skill rating="F">Astral Combat</skill>
-        <skill rating="F">Con</skill>
-        <skill rating="F">Counterspelling</skill>
-        <skill rating="F">Intimidation</skill>
-        <skill rating="F">Perception</skill>
-        <skill rating="F">Spellcasting</skill>
-        <skill rating="F">Unarmed Combat</skill>
-      </skills>
-      <source>AET</source>
-      <page>36</page>
-    </metatype>
-    <metatype>
-      <id>7d8bc3b9-e2be-4139-9399-a3904e12528d</id>
-      <name>Anansi</name>
-      <category>Spirits</category>
-      <forcecreature />
-      <karma>0</karma>
-      <bodmin>F</bodmin>
-      <bodmax>F</bodmax>
-      <bodaug>F</bodaug>
-      <agimin>F+2</agimin>
-      <agimax>F+2</agimax>
-      <agiaug>F+2</agiaug>
-      <reamin>F+2</reamin>
-      <reamax>F+2</reamax>
-      <reaaug>F+2</reaaug>
-      <strmin>F</strmin>
-      <strmax>F</strmax>
-      <straug>F</straug>
-      <chamin>F</chamin>
-      <chamax>F</chamax>
-      <chaaug>F</chaaug>
-      <intmin>F</intmin>
-      <intmax>F</intmax>
-      <intaug>F</intaug>
-      <logmin>F</logmin>
-      <logmax>F</logmax>
-      <logaug>F</logaug>
-      <wilmin>F</wilmin>
-      <wilmax>F</wilmax>
-      <wilaug>F</wilaug>
-      <inimin>(F*2)+2</inimin>
-      <inimax>(F*2)+2</inimax>
-      <iniaug>(F*2)+2</iniaug>
-      <edgmin>F</edgmin>
-      <edgmax>F</edgmax>
-      <edgaug>F</edgaug>
-      <magmin>F</magmin>
-      <magmax>F</magmax>
-      <magaug>F</magaug>
-      <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
-      <depmin>0</depmin>
-      <depmax>0</depmax>
-      <depaug>0</depaug>
-      <essmin>0</essmin>
-      <essmax>6</essmax>
-      <essaug>6</essaug>
-      <walk>0/0/(0</walk>
-      <run>0/0/0</run>
-      <sprint>2/2/2</sprint>
-      <bonus>
-        <enableattribute>
-          <name>MAG</name>
-          <min>F</min>
-          <max>F</max>
-          <aug>F</aug>
-          <val>F</val>
-        </enableattribute>
-        <enabletab>
-          <name>critter</name>
-        </enabletab>
-        <initiativepass>1</initiativepass>
-      </bonus>
-      <powers>
-        <power rating="Spider Type">Animal Control</power>
-        <power>Astral Form</power>
-        <power rating="Touch">Binding</power>
-        <power>Concealment</power>
-        <power rating="Smell, Thermographic Vision, or Ultrasound">Enhanced Senses</power>
-        <power>Movement</power>
-        <power>Reinforcement</power>
-        <power>Sapience</power>
-        <power>Search</power>
-      </powers>
-      <optionalpowers>
-      </optionalpowers>
-      <skills>
-        <skill rating="F">Assensing</skill>
-        <skill rating="F">Astral Combat</skill>
-        <skill rating="F">Dodge</skill>
-        <skill rating="F">Infiltration</skill>
-        <skill rating="F">Perception</skill>
-        <skill rating="F">Sneaking</skill>
-        <skill rating="F">Unarmed Combat</skill>
-      </skills>
-      <source>AET</source>
-      <page>37</page>
-    </metatype>
-    <metatype>
-      <id>74a4b48f-01cf-4ff8-b95f-83a8b4b25734</id>
-      <name>Tsuchigumo Warrior</name>
-      <category>Spirits</category>
-      <forcecreature />
-      <karma>0</karma>
-      <bodmin>F+2</bodmin>
-      <bodmax>F+2</bodmax>
-      <bodaug>F+2</bodaug>
-      <agimin>F+2</agimin>
-      <agimax>F+2</agimax>
-      <agiaug>F+2</agiaug>
-      <reamin>F+1</reamin>
-      <reamax>F+1</reamax>
-      <reaaug>F+1</reaaug>
-      <strmin>F+3</strmin>
-      <strmax>F+3</strmax>
-      <straug>F+3</straug>
-      <chamin>F</chamin>
-      <chamax>F</chamax>
-      <chaaug>F</chaaug>
-      <intmin>F</intmin>
-      <intmax>F</intmax>
-      <intaug>F</intaug>
-      <logmin>F</logmin>
-      <logmax>F</logmax>
-      <logaug>F</logaug>
-      <wilmin>F</wilmin>
-      <wilmax>F</wilmax>
-      <wilaug>F</wilaug>
-      <inimin>(F*2)+1</inimin>
-      <inimax>(F*2)+1</inimax>
-      <iniaug>(F*2)+1</iniaug>
-      <edgmin>F</edgmin>
-      <edgmax>F</edgmax>
-      <edgaug>F</edgaug>
-      <magmin>F</magmin>
-      <magmax>F</magmax>
-      <magaug>F</magaug>
-      <resmin>0</resmin>
-      <resmax>6</resmax>
-      <resaug>6</resaug>
-      <depmin>0</depmin>
-      <depmax>0</depmax>
-      <depaug>0</depaug>
-      <essmin>0</essmin>
-      <essmax>6</essmax>
-      <essaug>6</essaug>
-      <walk>0/0/(0</walk>
-      <run>0/0/0</run>
-      <sprint>2/2/2</sprint>
-      <bonus>
-        <enableattribute>
-          <name>MAG</name>
-          <min>F</min>
-          <max>F</max>
-          <aug>F</aug>
-          <val>F</val>
-        </enableattribute>
-        <enabletab>
-          <name>critter</name>
-        </enabletab>
-        <initiativepass>1</initiativepass>
-      </bonus>
-      <powers>
-        <power>Astral Form</power>
-        <power rating="LOS">Binding</power>
-        <power>Fear</power>
-        <power>Natural Weapon</power>
-        <power>Reinforcement</power>
-        <power>Sapience</power>
-      </powers>
-      <optionalpowers>
-      </optionalpowers>
-      <skills>
-        <skill rating="F">Assensing</skill>
-        <skill rating="F">Astral Combat</skill>
-        <skill rating="F">Counterspelling</skill>
-        <skill rating="F">Perception</skill>
-        <skill rating="F">Unarmed Combat</skill>
-      </skills>
-      <source>AET</source>
-      <page>38</page>
-    </metatype>
+        <metatype>
+            <id>a29dbdbd-d20f-4b8e-b273-7913f32e0b04</id>
+            <name>Gum Toad (Demon)</name>
+            <category>Spirits</category>
+            <forcecreature />
+            <karma>0</karma>
+            <bodmin>F+7</bodmin>
+            <bodmax>F+7</bodmax>
+            <bodaug>F+7</bodaug>
+            <agimin>F-2</agimin>
+            <agimax>F-2</agimax>
+            <agiaug>F-2</agiaug>
+            <reamin>F</reamin>
+            <reamax>F</reamax>
+            <reaaug>F</reaaug>
+            <strmin>F+2</strmin>
+            <strmax>F+2</strmax>
+            <straug>F+2</straug>
+            <chamin>F+1</chamin>
+            <chamax>F+1</chamax>
+            <chaaug>F+1</chaaug>
+            <intmin>F</intmin>
+            <intmax>F</intmax>
+            <intaug>F</intaug>
+            <logmin>F</logmin>
+            <logmax>F</logmax>
+            <logaug>F</logaug>
+            <wilmin>F-1</wilmin>
+            <wilmax>F-1</wilmax>
+            <wilaug>F-1</wilaug>
+            <inimin>(F*2)</inimin>
+            <inimax>(F*2)</inimax>
+            <iniaug>(F*2)+2</iniaug>
+            <edgmin>F</edgmin>
+            <edgmax>F</edgmax>
+            <edgaug>F</edgaug>
+            <magmin>F</magmin>
+            <magmax>F</magmax>
+            <magaug>F</magaug>
+            <resmin>0</resmin>
+            <resmax>6</resmax>
+            <resaug>6</resaug>
+            <depmin>0</depmin>
+            <depmax>0</depmax>
+            <depaug>0</depaug>
+            <essmin>0</essmin>
+            <essmax>6</essmax>
+            <essaug>6</essaug>
+            <walk>2/2/2</walk>
+            <run>4/4/4</run>
+            <sprint>2/2/2</sprint>
+            <bonus>
+                <enableattribute>
+                    <name>MAG</name>
+                    <min>F</min>
+                    <max>F</max>
+                    <aug>F</aug>
+                    <val>F</val>
 
-<!-- End Region Spirits -->
-<!-- Region Insect Spirits -->
+        </enableattribute>
+                <enabletab>
+                    <name>critter</name>
+
+        </enabletab>
+                <initiativepass>1</initiativepass>
+
+      </bonus>
+            <powers>
+                <power>Astral Form</power>
+                <power rating="14">Armor</power>
+                <power>Banishing Resistance</power>
+                <power rating="LOS, Touch, and Self">Binding</power>
+                <power>Concealment</power>
+                <power>Engulf</power>
+                <power>Materialization</power>
+                <power>Movement</power>
+                <power>Sapience</power>
+                <power>Search</power>
+
+      </powers>
+            <optionalpowers>
+
+      </optionalpowers>
+            <skills>
+                <skill rating="F">Assensing</skill>
+                <skill rating="F">Astral Combat</skill>
+                <skill rating="F">Perception</skill>
+                <skill rating="F">Unarmed Combat</skill>
+
+      </skills>
+            <source>AET</source>
+            <page>34</page>
+
+    </metatype>
+        <metatype>
+            <id>eece2f07-efa7-411e-a7be-adae734f19f9</id>
+            <name>Crawler (Demon)</name>
+            <category>Spirits</category>
+            <forcecreature />
+            <karma>0</karma>
+            <bodmin>F+4</bodmin>
+            <bodmax>F+4</bodmax>
+            <bodaug>F+4</bodaug>
+            <agimin>F</agimin>
+            <agimax>F</agimax>
+            <agiaug>F</agiaug>
+            <reamin>F+3</reamin>
+            <reamax>F+3</reamax>
+            <reaaug>F+3</reaaug>
+            <strmin>F+6</strmin>
+            <strmax>F+6</strmax>
+            <straug>F+6</straug>
+            <chamin>F-1</chamin>
+            <chamax>F-1</chamax>
+            <chaaug>F-1</chaaug>
+            <intmin>F+3</intmin>
+            <intmax>F+3</intmax>
+            <intaug>F+3</intaug>
+            <logmin>F</logmin>
+            <logmax>F</logmax>
+            <logaug>F</logaug>
+            <wilmin>F-1</wilmin>
+            <wilmax>F-1</wilmax>
+            <wilaug>F-1</wilaug>
+            <inimin>(F*2)+6</inimin>
+            <inimax>(F*2)+6</inimax>
+            <iniaug>(F*2)+6</iniaug>
+            <edgmin>F</edgmin>
+            <edgmax>F</edgmax>
+            <edgaug>F</edgaug>
+            <magmin>F</magmin>
+            <magmax>F</magmax>
+            <magaug>F</magaug>
+            <resmin>0</resmin>
+            <resmax>6</resmax>
+            <resaug>6</resaug>
+            <depmin>0</depmin>
+            <depmax>0</depmax>
+            <depaug>0</depaug>
+            <essmin>0</essmin>
+            <essmax>6</essmax>
+            <essaug>6</essaug>
+            <walk>2/2/2</walk>
+            <run>4/4/4</run>
+            <sprint>2/2/2</sprint>
+            <bonus>
+                <enableattribute>
+                    <name>MAG</name>
+                    <min>F</min>
+                    <max>F</max>
+                    <aug>F</aug>
+                    <val>F</val>
+
+        </enableattribute>
+                <enabletab>
+                    <name>critter</name>
+
+        </enabletab>
+                <initiativepass>1</initiativepass>
+
+      </bonus>
+            <powers>
+                <power>Astral Form</power>
+                <power>Astral Perception</power>
+                <power>Banishing Resistance</power>
+                <power>Concealment</power>
+                <power>Confusion</power>
+                <power>Devour</power>
+                <power rating="6">Hardened Armor</power>
+                <power rating="Living Vessels">Inhabitation</power>
+                <power>Movement</power>
+                <power>Sapience</power>
+                <power>Search</power>
+                <power rating="F">Skill</power>
+
+      </powers>
+            <optionalpowers>
+
+      </optionalpowers>
+            <skills>
+                <skill rating="F">Assensing</skill>
+                <skill rating="F">Astral Combat</skill>
+                <skill rating="F">Perception</skill>
+                <skill rating="F">Running</skill>
+                <skill rating="F">Shadowing</skill>
+                <skill rating="F">Unarmed Combat</skill>
+
+      </skills>
+            <source>AET</source>
+            <page>34</page>
+
+    </metatype>
+        <metatype>
+            <id>250adb08-63e6-4b64-b593-57723730bb11</id>
+            <name>Ghasts (Demon)</name>
+            <category>Spirits</category>
+            <forcecreature />
+            <karma>0</karma>
+            <bodmin>F+2</bodmin>
+            <bodmax>F+2</bodmax>
+            <bodaug>F+2</bodaug>
+            <agimin>F</agimin>
+            <agimax>F</agimax>
+            <agiaug>F</agiaug>
+            <reamin>F+2</reamin>
+            <reamax>F+2</reamax>
+            <reaaug>F+2</reaaug>
+            <strmin>F</strmin>
+            <strmax>F</strmax>
+            <straug>F</straug>
+            <chamin>F</chamin>
+            <chamax>F</chamax>
+            <chaaug>F</chaaug>
+            <intmin>F</intmin>
+            <intmax>F</intmax>
+            <intaug>F</intaug>
+            <logmin>F</logmin>
+            <logmax>F</logmax>
+            <logaug>F</logaug>
+            <wilmin>F</wilmin>
+            <wilmax>F</wilmax>
+            <wilaug>F</wilaug>
+            <inimin>(F*2)+2</inimin>
+            <inimax>(F*2)+2</inimax>
+            <iniaug>(F*2)+2</iniaug>
+            <edgmin>F</edgmin>
+            <edgmax>F</edgmax>
+            <edgaug>F</edgaug>
+            <magmin>F</magmin>
+            <magmax>F</magmax>
+            <magaug>F</magaug>
+            <resmin>0</resmin>
+            <resmax>6</resmax>
+            <resaug>6</resaug>
+            <depmin>0</depmin>
+            <depmax>0</depmax>
+            <depaug>0</depaug>
+            <essmin>0</essmin>
+            <essmax>6</essmax>
+            <essaug>6</essaug>
+            <walk>2/2/2</walk>
+            <run>4/4/4</run>
+            <sprint>2/2/2</sprint>
+            <bonus>
+                <enableattribute>
+                    <name>MAG</name>
+                    <min>F</min>
+                    <max>F</max>
+                    <aug>F</aug>
+                    <val>F</val>
+
+        </enableattribute>
+                <enabletab>
+                    <name>critter</name>
+
+        </enabletab>
+                <initiativepass>1</initiativepass>
+
+      </bonus>
+            <powers>
+                <power>Accident</power>
+                <power>Astral Form</power>
+                <power>Banishing Resistance</power>
+                <power rating="Low-Light-Vision, Thermographic Vision, Spatial Sense">Enhanced Senses</power>
+                <power>Materialization</power>
+                <power>Paralyzing Touch</power>
+                <power>Sapience</power>
+                <power>Sillence</power>
+                <power>Vanishing</power>
+
+      </powers>
+            <optionalpowers>
+
+      </optionalpowers>
+            <skills>
+                <skill rating="F">Assensing</skill>
+                <skill rating="F">Astral Combat</skill>
+                <skill rating="F">Flight</skill>
+                <skill rating="F">Perception</skill>
+                <skill rating="F">Spellcasting</skill>
+                <skill rating="F">Unarmed Combat</skill>
+
+      </skills>
+            <source>AET</source>
+            <page>35</page>
+
+    </metatype>
+        <metatype>
+            <id>e77798be-e755-441d-a143-5e49b3757576</id>
+            <name>Vrygoths</name>
+            <category>Spirits</category>
+            <forcecreature />
+            <karma>0</karma>
+            <bodmin>F+4</bodmin>
+            <bodmax>F+4</bodmax>
+            <bodaug>F+4</bodaug>
+            <agimin>F</agimin>
+            <agimax>F</agimax>
+            <agiaug>F</agiaug>
+            <reamin>F</reamin>
+            <reamax>F</reamax>
+            <reaaug>F</reaaug>
+            <strmin>F+3</strmin>
+            <strmax>F+3</strmax>
+            <straug>F+3</straug>
+            <chamin>F</chamin>
+            <chamax>F</chamax>
+            <chaaug>F</chaaug>
+            <intmin>F</intmin>
+            <intmax>F</intmax>
+            <intaug>F</intaug>
+            <logmin>F+2</logmin>
+            <logmax>F+2</logmax>
+            <logaug>F+2</logaug>
+            <wilmin>F</wilmin>
+            <wilmax>F</wilmax>
+            <wilaug>F</wilaug>
+            <inimin>(F*2)</inimin>
+            <inimax>(F*2)</inimax>
+            <iniaug>(F*2)</iniaug>
+            <edgmin>F</edgmin>
+            <edgmax>F</edgmax>
+            <edgaug>F</edgaug>
+            <magmin>F</magmin>
+            <magmax>F</magmax>
+            <magaug>F</magaug>
+            <resmin>0</resmin>
+            <resmax>6</resmax>
+            <resaug>6</resaug>
+            <depmin>0</depmin>
+            <depmax>0</depmax>
+            <depaug>0</depaug>
+            <essmin>0</essmin>
+            <essmax>6</essmax>
+            <essaug>6</essaug>
+            <walk>2/2/2</walk>
+            <run>4/4/4</run>
+            <sprint>2/2/2</sprint>
+            <bonus>
+                <enableattribute>
+                    <name>MAG</name>
+                    <min>F</min>
+                    <max>F</max>
+                    <aug>F</aug>
+                    <val>F</val>
+
+        </enableattribute>
+                <enabletab>
+                    <name>critter</name>
+
+        </enabletab>
+                <initiativepass>1</initiativepass>
+
+      </bonus>
+            <powers>
+                <power>Astral Form</power>
+                <power>Aura Masking</power>
+                <power>Banishing Resistance</power>
+                <power rating="Essence">Energy Drain</power>
+                <power rating="Thermographic Vision">Enhanced Senses</power>
+                <power rating="Foreboding">Innate Spell</power>
+                <power rating="Living Vessels">Inhabitation</power>
+                <power>Materialization</power>
+                <power>Sapience</power>
+                <power rating="Metahuman">Shift</power>
+                <power>Transfer Energy (Essence)</power>
+                <power>Vanishing</power>
+
+      </powers>
+            <optionalpowers>
+
+      </optionalpowers>
+            <skills>
+                <skill rating="F">Assensing</skill>
+                <skill rating="F">Astral Combat</skill>
+                <skill rating="F">Flight</skill>
+                <skill rating="F">Perception</skill>
+                <skill rating="F">Spellcasting</skill>
+                <skill rating="F">Unarmed Combat</skill>
+
+      </skills>
+            <source>AET</source>
+            <page>36</page>
+
+    </metatype>
+        <metatype>
+            <id>fb6a313e-7bcd-4b27-8283-0ece49970dd4</id>
+            <name>Gremlin</name>
+            <category>Spirits</category>
+            <forcecreature />
+            <karma>0</karma>
+            <bodmin>F</bodmin>
+            <bodmax>F</bodmax>
+            <bodaug>F</bodaug>
+            <agimin>F</agimin>
+            <agimax>F</agimax>
+            <agiaug>F</agiaug>
+            <reamin>F+3</reamin>
+            <reamax>F+3</reamax>
+            <reaaug>F+3</reaaug>
+            <strmin>F</strmin>
+            <strmax>F</strmax>
+            <straug>F</straug>
+            <chamin>F</chamin>
+            <chamax>F</chamax>
+            <chaaug>F</chaaug>
+            <intmin>F</intmin>
+            <intmax>F</intmax>
+            <intaug>F</intaug>
+            <logmin>F</logmin>
+            <logmax>F</logmax>
+            <logaug>F</logaug>
+            <wilmin>F</wilmin>
+            <wilmax>F</wilmax>
+            <wilaug>F</wilaug>
+            <inimin>(F*2)+3</inimin>
+            <inimax>(F*2)+3</inimax>
+            <iniaug>(F*2)+3</iniaug>
+            <edgmin>F</edgmin>
+            <edgmax>F</edgmax>
+            <edgaug>F</edgaug>
+            <magmin>F</magmin>
+            <magmax>F</magmax>
+            <magaug>F</magaug>
+            <resmin>0</resmin>
+            <resmax>6</resmax>
+            <resaug>6</resaug>
+            <depmin>0</depmin>
+            <depmax>0</depmax>
+            <depaug>0</depaug>
+            <essmin>0</essmin>
+            <essmax>6</essmax>
+            <essaug>6</essaug>
+            <walk>2/2/2</walk>
+            <run>4/4/4</run>
+            <sprint>2/2/2</sprint>
+            <bonus>
+                <enableattribute>
+                    <name>MAG</name>
+                    <min>F</min>
+                    <max>F</max>
+                    <aug>F</aug>
+                    <val>F</val>
+
+        </enableattribute>
+                <enabletab>
+                    <name>critter</name>
+
+        </enabletab>
+                <initiativepass>1</initiativepass>
+
+      </bonus>
+            <powers>
+                <power>Accident</power>
+                <power>Aura Masking</power>
+                <power>Desire Reflection</power>
+                <power rating="Karma">Energy Drain</power>
+                <power>Influence</power>
+                <power rating="Alter Memory">Innate Spell</power>
+                <power>Movement</power>
+                <power rating="Inanimate Mechanical Devices Only">Inhabitation</power>
+                <power rating="Occupied Mechanical Device Only">Psychokinesis</power>
+
+      </powers>
+            <optionalpowers>
+
+      </optionalpowers>
+            <skills>
+                <skill rating="F">Assensing</skill>
+                <skill rating="F">Astral Combat</skill>
+                <skill rating="F">Con</skill>
+                <skill rating="F">Counterspelling</skill>
+                <skill rating="F">Intimidation</skill>
+                <skill rating="F">Perception</skill>
+                <skill rating="F">Spellcasting</skill>
+                <skill rating="F">Unarmed Combat</skill>
+
+      </skills>
+            <source>AET</source>
+            <page>36</page>
+
+    </metatype>
+        <metatype>
+            <id>7d8bc3b9-e2be-4139-9399-a3904e12528d</id>
+            <name>Anansi</name>
+            <category>Spirits</category>
+            <forcecreature />
+            <karma>0</karma>
+            <bodmin>F</bodmin>
+            <bodmax>F</bodmax>
+            <bodaug>F</bodaug>
+            <agimin>F+2</agimin>
+            <agimax>F+2</agimax>
+            <agiaug>F+2</agiaug>
+            <reamin>F+2</reamin>
+            <reamax>F+2</reamax>
+            <reaaug>F+2</reaaug>
+            <strmin>F</strmin>
+            <strmax>F</strmax>
+            <straug>F</straug>
+            <chamin>F</chamin>
+            <chamax>F</chamax>
+            <chaaug>F</chaaug>
+            <intmin>F</intmin>
+            <intmax>F</intmax>
+            <intaug>F</intaug>
+            <logmin>F</logmin>
+            <logmax>F</logmax>
+            <logaug>F</logaug>
+            <wilmin>F</wilmin>
+            <wilmax>F</wilmax>
+            <wilaug>F</wilaug>
+            <inimin>(F*2)+2</inimin>
+            <inimax>(F*2)+2</inimax>
+            <iniaug>(F*2)+2</iniaug>
+            <edgmin>F</edgmin>
+            <edgmax>F</edgmax>
+            <edgaug>F</edgaug>
+            <magmin>F</magmin>
+            <magmax>F</magmax>
+            <magaug>F</magaug>
+            <resmin>0</resmin>
+            <resmax>6</resmax>
+            <resaug>6</resaug>
+            <depmin>0</depmin>
+            <depmax>0</depmax>
+            <depaug>0</depaug>
+            <essmin>0</essmin>
+            <essmax>6</essmax>
+            <essaug>6</essaug>
+            <walk>0/0/(0</walk>
+            <run>0/0/0</run>
+            <sprint>2/2/2</sprint>
+            <bonus>
+                <enableattribute>
+                    <name>MAG</name>
+                    <min>F</min>
+                    <max>F</max>
+                    <aug>F</aug>
+                    <val>F</val>
+
+        </enableattribute>
+                <enabletab>
+                    <name>critter</name>
+
+        </enabletab>
+                <initiativepass>1</initiativepass>
+
+      </bonus>
+            <powers>
+                <power rating="Spider Type">Animal Control</power>
+                <power>Astral Form</power>
+                <power rating="Touch">Binding</power>
+                <power>Concealment</power>
+                <power rating="Smell, Thermographic Vision, or Ultrasound">Enhanced Senses</power>
+                <power>Movement</power>
+                <power>Reinforcement</power>
+                <power>Sapience</power>
+                <power>Search</power>
+
+      </powers>
+            <optionalpowers>
+
+      </optionalpowers>
+            <skills>
+                <skill rating="F">Assensing</skill>
+                <skill rating="F">Astral Combat</skill>
+                <skill rating="F">Dodge</skill>
+                <skill rating="F">Infiltration</skill>
+                <skill rating="F">Perception</skill>
+                <skill rating="F">Sneaking</skill>
+                <skill rating="F">Unarmed Combat</skill>
+
+      </skills>
+            <source>AET</source>
+            <page>37</page>
+
+    </metatype>
+        <metatype>
+            <id>74a4b48f-01cf-4ff8-b95f-83a8b4b25734</id>
+            <name>Tsuchigumo Warrior</name>
+            <category>Spirits</category>
+            <forcecreature />
+            <karma>0</karma>
+            <bodmin>F+2</bodmin>
+            <bodmax>F+2</bodmax>
+            <bodaug>F+2</bodaug>
+            <agimin>F+2</agimin>
+            <agimax>F+2</agimax>
+            <agiaug>F+2</agiaug>
+            <reamin>F+1</reamin>
+            <reamax>F+1</reamax>
+            <reaaug>F+1</reaaug>
+            <strmin>F+3</strmin>
+            <strmax>F+3</strmax>
+            <straug>F+3</straug>
+            <chamin>F</chamin>
+            <chamax>F</chamax>
+            <chaaug>F</chaaug>
+            <intmin>F</intmin>
+            <intmax>F</intmax>
+            <intaug>F</intaug>
+            <logmin>F</logmin>
+            <logmax>F</logmax>
+            <logaug>F</logaug>
+            <wilmin>F</wilmin>
+            <wilmax>F</wilmax>
+            <wilaug>F</wilaug>
+            <inimin>(F*2)+1</inimin>
+            <inimax>(F*2)+1</inimax>
+            <iniaug>(F*2)+1</iniaug>
+            <edgmin>F</edgmin>
+            <edgmax>F</edgmax>
+            <edgaug>F</edgaug>
+            <magmin>F</magmin>
+            <magmax>F</magmax>
+            <magaug>F</magaug>
+            <resmin>0</resmin>
+            <resmax>6</resmax>
+            <resaug>6</resaug>
+            <depmin>0</depmin>
+            <depmax>0</depmax>
+            <depaug>0</depaug>
+            <essmin>0</essmin>
+            <essmax>6</essmax>
+            <essaug>6</essaug>
+            <walk>0/0/(0</walk>
+            <run>0/0/0</run>
+            <sprint>2/2/2</sprint>
+            <bonus>
+                <enableattribute>
+                    <name>MAG</name>
+                    <min>F</min>
+                    <max>F</max>
+                    <aug>F</aug>
+                    <val>F</val>
+
+        </enableattribute>
+                <enabletab>
+                    <name>critter</name>
+
+        </enabletab>
+                <initiativepass>1</initiativepass>
+
+      </bonus>
+            <powers>
+                <power>Astral Form</power>
+                <power rating="LOS">Binding</power>
+                <power>Fear</power>
+                <power>Natural Weapon</power>
+                <power>Reinforcement</power>
+                <power>Sapience</power>
+
+      </powers>
+            <optionalpowers>
+
+      </optionalpowers>
+            <skills>
+                <skill rating="F">Assensing</skill>
+                <skill rating="F">Astral Combat</skill>
+                <skill rating="F">Counterspelling</skill>
+                <skill rating="F">Perception</skill>
+                <skill rating="F">Unarmed Combat</skill>
+
+      </skills>
+            <source>AET</source>
+            <page>38</page>
+
+    </metatype>
+
+    <!-- End Region Spirits -->
+    <!-- Region Insect Spirits -->
     <metatype>
       <id>5f9921cb-52f5-4291-aa59-9c2e9577fdd9</id>
       <name>Caretaker Spirit</name>
@@ -16673,8 +16726,8 @@
         </metavariant>
       </metavariants>
     </metatype>
-<!-- End Region Insect Spirits -->
-<!-- Region Shedim -->
+    <!-- End Region Insect Spirits -->
+    <!-- Region Shedim -->
     <metatype>
       <id>67ac70ce-554b-45bb-affc-1de3b29e0696</id>
       <name>Shedim</name>
@@ -17290,8 +17343,8 @@
       <source>SG</source>
       <page>93</page>
     </metatype>
-<!-- End Region Shedim -->
-<!-- Region Shadow Spirits -->
+    <!-- End Region Shedim -->
+    <!-- Region Shadow Spirits -->
     <metatype>
       <id>b3172604-44ee-4d9d-94d7-f37ee5f85527</id>
       <name>Muse</name>
@@ -17739,8 +17792,8 @@
       <page>92</page>
     </metatype>
 
-<!-- End Region Shadow Spirits -->
-<!-- Region Necro Spirits -->
+    <!-- End Region Shadow Spirits -->
+    <!-- Region Necro Spirits -->
     <metatype>
       <id>3ba5a627-736f-4ce7-98d8-163b58d0665e</id>
       <name>Carcass Spirit</name>
@@ -18213,8 +18266,8 @@
       <source>FA</source>
       <page>53</page>
     </metatype>
-<!-- End Region Necro Spirits -->
-<!-- Region Extraplaner Travelers -->
+    <!-- End Region Necro Spirits -->
+    <!-- Region Extraplaner Travelers -->
     <metatype>
       <id>e5727729-0e19-4c1e-924d-b2bc4232e752</id>
       <name>Anarch</name>
@@ -19852,8 +19905,8 @@
       <source>HS</source>
       <page>135</page>
     </metatype>
-<!-- End Region Extraplaner Travelers -->
-<!-- Region Ritual -->
+    <!-- End Region Extraplaner Travelers -->
+    <!-- Region Ritual -->
     <metatype>
       <id>c24746f8-2a42-4d51-9b58-60200701b036</id>
       <name>Watcher</name>
@@ -20544,84 +20597,84 @@
       <source>SR5</source>
       <page>298</page>
     </metatype>
-  <metatype>
-    <id>3394309a-7bb3-43fc-8ecb-a3ada800a55e</id>
-    <name>Corps Cadavre</name>
-    <category>Ritual</category>
-    <forcecreature />
-    <karma>0</karma>
-    <bodmin>F</bodmin>
-    <bodmax>F</bodmax>
-    <bodaug>F</bodaug>
-    <agimin>F-2</agimin>
-    <agimax>F-2</agimax>
-    <agiaug>F-2</agiaug>
-    <reamin>F-2</reamin>
-    <reamax>F-2</reamax>
-    <reaaug>F-2</reaaug>
-    <strmin>F</strmin>
-    <strmax>F</strmax>
-    <straug>F</straug>
-    <chamin>1</chamin>
-    <chamax>1</chamax>
-    <chaaug>1</chaaug>
-    <intmin>1</intmin>
-    <intmax>1</intmax>
-    <intaug>1</intaug>
-    <logmin>1</logmin>
-    <logmax>1</logmax>
-    <logaug>1</logaug>
-    <wilmin>1</wilmin>
-    <wilmax>1</wilmax>
-    <wilaug>1</wilaug>
-    <inimin>F-1</inimin>
-    <inimax>F-1</inimax>
-    <iniaug>F-1</iniaug>
-    <edgmin>0</edgmin>
-    <edgmax>0</edgmax>
-    <edgaug>0</edgaug>
-    <magmin>0</magmin>
-    <magmax>0</magmax>
-    <magaug>0</magaug>
-    <resmin>0</resmin>
-    <resmax>0</resmax>
-    <resaug>0</resaug>
-    <depmin>0</depmin>
-    <depmax>0</depmax>
-    <depaug>0</depaug>
-    <essmin>0</essmin>
-    <essmax>F</essmax>
-    <essaug>F</essaug>
-    <walk>2/1/0</walk>
-    <run>3/0/0</run>
-    <sprint>2/1/0</sprint>
-    <bonus>
-      <enabletab>
-        <name>critter</name>
-      </enabletab>
-    </bonus>
-    <powers>
-      <power>Sapience</power>
-    </powers>
-    <optionalpowers>
-      <power>Magic Resistance</power>
-      <power>Combat Skill</power>
-      <power>Physical Skill</power>
-      <power>Social Skill</power>
-      <power>Technical Skill</power>
-      <power>Vehicle Skill</power>
-    </optionalpowers>
-    <skills>
-      <skill rating="F">Assensing</skill>
-      <skill rating="F">Astral Combat</skill>
-      <skill rating="F">Perception</skill>
-      <skill rating="F">Unarmed Combat</skill>
-    </skills>
-    <source>HT</source>
-    <page>129</page>
-  </metatype>
-  <!-- End Region Ritual -->
-<!-- Region Dracoforms -->
+    <metatype>
+      <id>3394309a-7bb3-43fc-8ecb-a3ada800a55e</id>
+      <name>Corps Cadavre</name>
+      <category>Ritual</category>
+      <forcecreature />
+      <karma>0</karma>
+      <bodmin>F</bodmin>
+      <bodmax>F</bodmax>
+      <bodaug>F</bodaug>
+      <agimin>F-2</agimin>
+      <agimax>F-2</agimax>
+      <agiaug>F-2</agiaug>
+      <reamin>F-2</reamin>
+      <reamax>F-2</reamax>
+      <reaaug>F-2</reaaug>
+      <strmin>F</strmin>
+      <strmax>F</strmax>
+      <straug>F</straug>
+      <chamin>1</chamin>
+      <chamax>1</chamax>
+      <chaaug>1</chaaug>
+      <intmin>1</intmin>
+      <intmax>1</intmax>
+      <intaug>1</intaug>
+      <logmin>1</logmin>
+      <logmax>1</logmax>
+      <logaug>1</logaug>
+      <wilmin>1</wilmin>
+      <wilmax>1</wilmax>
+      <wilaug>1</wilaug>
+      <inimin>F-1</inimin>
+      <inimax>F-1</inimax>
+      <iniaug>F-1</iniaug>
+      <edgmin>0</edgmin>
+      <edgmax>0</edgmax>
+      <edgaug>0</edgaug>
+      <magmin>0</magmin>
+      <magmax>0</magmax>
+      <magaug>0</magaug>
+      <resmin>0</resmin>
+      <resmax>0</resmax>
+      <resaug>0</resaug>
+      <depmin>0</depmin>
+      <depmax>0</depmax>
+      <depaug>0</depaug>
+      <essmin>0</essmin>
+      <essmax>F</essmax>
+      <essaug>F</essaug>
+      <walk>2/1/0</walk>
+      <run>3/0/0</run>
+      <sprint>2/1/0</sprint>
+      <bonus>
+        <enabletab>
+          <name>critter</name>
+        </enabletab>
+      </bonus>
+      <powers>
+        <power>Sapience</power>
+      </powers>
+      <optionalpowers>
+        <power>Magic Resistance</power>
+        <power>Combat Skill</power>
+        <power>Physical Skill</power>
+        <power>Social Skill</power>
+        <power>Technical Skill</power>
+        <power>Vehicle Skill</power>
+      </optionalpowers>
+      <skills>
+        <skill rating="F">Assensing</skill>
+        <skill rating="F">Astral Combat</skill>
+        <skill rating="F">Perception</skill>
+        <skill rating="F">Unarmed Combat</skill>
+      </skills>
+      <source>HT</source>
+      <page>129</page>
+    </metatype>
+    <!-- End Region Ritual -->
+    <!-- Region Dracoforms -->
     <metatype>
       <id>805e79e4-4a6c-4877-b764-b07566414180</id>
       <name>Eastern Dragon</name>
@@ -20935,8 +20988,8 @@
       <page>407</page>
     </metatype>
 
-<!-- End Region Dracoforms -->
-<!-- Region Infected -->
+    <!-- End Region Dracoforms -->
+    <!-- Region Infected -->
     <metatype>
       <id>dc636061-6285-47c6-92ee-35c8cba323bf</id>
       <name>Vampire</name>
@@ -22107,8 +22160,8 @@
       <page>91</page>
     </metatype>
 
-<!-- End Region Infected -->
-<!-- Region Warforms -->
+    <!-- End Region Infected -->
+    <!-- Region Warforms -->
     <metatype>
       <id>beba6b35-2b2b-40f8-b943-ce690b6a96bb</id>
       <name>War Hound</name>
@@ -22344,8 +22397,8 @@
       <source>HS</source>
       <page>177</page>
     </metatype>
-<!-- End Region Infected -->
-<!-- Region Technocritters -->
+    <!-- End Region Infected -->
+    <!-- Region Technocritters -->
     <metatype>
       <id>3061956f-c87e-4588-abbb-9b9968917e53</id>
       <name>Ahi</name>
@@ -25042,8 +25095,8 @@
       <page>174</page>
     </metatype>
 
-<!-- End Region Technocritters -->
-<!-- Region Protosapients -->
+    <!-- End Region Technocritters -->
+    <!-- Region Protosapients -->
     <metatype>
       <id>67184157-820f-4738-a854-e1574527c20b</id>
       <name>Daemon</name>
@@ -25638,8 +25691,8 @@
       <page>156</page>
     </metatype>
 
-<!-- End Region Protosapients -->
-<!-- Region Sprites -->
+    <!-- End Region Protosapients -->
+    <!-- Region Sprites -->
     <metatype>
       <id>8db4f865-57b6-4363-8d1d-d2979df47cac</id>
       <name>Courier Sprite</name>
@@ -26117,8 +26170,8 @@
       <page>100</page>
     </metatype>
 
-<!-- End Region Sprites -->
-<!-- Region Sprawl Wilds -->
+    <!-- End Region Sprites -->
+    <!-- Region Sprawl Wilds -->
     <metatype>
       <id>ee0f69b3-318e-4427-8f81-185266edba1f</id>
       <name>Gabriel Hound</name>
@@ -26200,8 +26253,8 @@
       <source>SW</source>
       <page>14</page>
     </metatype>
-<!-- End Region Sprawl Wilds -->
-<!-- Region Schattenhandbuch -->
+    <!-- End Region Sprawl Wilds -->
+    <!-- Region Schattenhandbuch -->
     <metatype>
       <id>9c4e06f8-74b9-4088-9681-01e9d44d4a24</id>
       <name>Chalk Wyvern</name>
@@ -26600,10 +26653,6 @@
       <page>207</page>
     </metatype>
 
-<!-- End Region Schattenhandbuch -->
-
-
+    <!-- End Region Schattenhandbuch -->
   </metatypes>
 </chummer>
-
-

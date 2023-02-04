@@ -34,8 +34,8 @@
     <category>Chimeric Modification</category>
   </categories>
   <powers>
-	<!-- Skills as optional powers (hidden from normal view, only accessible through bonuses) -->
-	<power>
+    <!-- Skills as optional powers (hidden from normal view, only accessible through bonuses) -->
+    <power>
       <id>57dd33b3-7fea-421e-bcf3-336d56ea08b5</id>
       <name>Combat Skill</name>
       <category>Paranormal</category>
@@ -44,17 +44,17 @@
       <range />
       <duration />
       <karma />
-	  <bonus>
-		<selectskill skillcategory="Combat Active">
-		  <val>MAG</val>
-		  <applytorating>True</applytorating>
-		</selectskill>
-	  </bonus>
+      <bonus>
+        <selectskill skillcategory="Combat Active">
+          <val>MAG</val>
+          <applytorating>True</applytorating>
+        </selectskill>
+      </bonus>
       <source>SR5</source>
       <page>130</page>
-	  <hide />
+      <hide />
     </power>
-	<power>
+    <power>
       <id>a3f11764-2569-48a1-8eb8-8cdae58b23e8</id>
       <name>Physical Skill</name>
       <category>Paranormal</category>
@@ -63,17 +63,17 @@
       <range />
       <duration />
       <karma />
-	  <bonus>
-		<selectskill skillcategory="Physical Active">
-		  <val>MAG</val>
-		  <applytorating>True</applytorating>
-		</selectskill>
-	  </bonus>
+      <bonus>
+        <selectskill skillcategory="Physical Active">
+          <val>MAG</val>
+          <applytorating>True</applytorating>
+        </selectskill>
+      </bonus>
       <source>SR5</source>
       <page>133</page>
-	  <hide />
+      <hide />
     </power>
-	<power>
+    <power>
       <id>410c17d0-0490-4e67-b2ca-4ad5e2feb016</id>
       <name>Social Skill</name>
       <category>Paranormal</category>
@@ -82,17 +82,17 @@
       <range />
       <duration />
       <karma />
-	  <bonus>
-		<selectskill skillcategory="Social Active">
-		  <val>MAG</val>
-		  <applytorating>True</applytorating>
-		</selectskill>
-	  </bonus>
+      <bonus>
+        <selectskill skillcategory="Social Active">
+          <val>MAG</val>
+          <applytorating>True</applytorating>
+        </selectskill>
+      </bonus>
       <source>SR5</source>
       <page>137</page>
-	  <hide />
+      <hide />
     </power>
-	<power>
+    <power>
       <id>07229dc9-3b46-4843-a30a-7b7c4c144ea0</id>
       <name>Technical Skill</name>
       <category>Paranormal</category>
@@ -101,17 +101,17 @@
       <range />
       <duration />
       <karma />
-	  <bonus>
-		<selectskill skillcategory="Technical Active">
-		  <val>MAG</val>
-		  <applytorating>True</applytorating>
-		</selectskill>
-	  </bonus>
+      <bonus>
+        <selectskill skillcategory="Technical Active">
+          <val>MAG</val>
+          <applytorating>True</applytorating>
+        </selectskill>
+      </bonus>
       <source>SR5</source>
       <page>143</page>
-	  <hide />
+      <hide />
     </power>
-	<power>
+    <power>
       <id>bb55305e-0c6f-47bd-a92f-ce85df478096</id>
       <name>Vehicle Skill</name>
       <category>Paranormal</category>
@@ -120,15 +120,15 @@
       <range />
       <duration />
       <karma />
-	  <bonus>
-		<selectskill skillcategory="Vehicle Active">
-		  <val>MAG</val>
-		  <applytorating>True</applytorating>
-		</selectskill>
-	  </bonus>
+      <bonus>
+        <selectskill skillcategory="Vehicle Active">
+          <val>MAG</val>
+          <applytorating>True</applytorating>
+        </selectskill>
+      </bonus>
       <source>SR5</source>
       <page>146</page>
-	  <hide />
+      <hide />
     </power>
     <power>
       <id>d9e0cc36-3183-4fa6-b9a6-b7e62d7d72fc</id>
@@ -3137,7 +3137,7 @@
       <type>P</type>
       <action>Auto</action>
       <range>Self</range>
-        <duration>Always</duration>
+      <duration>Always</duration>
       <required>
         <allof>
           <attribute>
@@ -3185,38 +3185,38 @@
       <type>M</type>
       <action>Complex</action>
       <range>LOS</range>
-        <duration>Special</duration>
-        <required>
-            <allof>
-                <attribute>
-                    <name>MAG</name>
-                    <total>3</total>
-                </attribute>
-            </allof>
-            <oneof>
-                <quality>Free Insect Spirit: Cutter Ant</quality>
-                <quality>Free Insect Spirit: Fire Ant</quality>
-                <quality>Free Insect Spirit: Desert Locust</quality>
-                <quality>Free Insect Spirit: Mole Cricket</quality>
-                <quality>Free Insect Spirit: Subterranean Termite</quality>
-                <quality>Free Insect Spirit: Hunter Wasp</quality>
-                <quality>Free Insect Spirit: Bee</quality>
-                <quality>Free Insect Spirit: Goliath Beetle</quality>
-                <quality>Free Insect Spirit: Water Beetle</quality>
-                <quality>Free Insect Spirit: House Centipede</quality>
-                <quality>Free Insect Spirit: Tropical Centipede</quality>
-                <quality>Free Insect Spirit: Century Cicada</quality>
-                <quality>Free Insect Spirit: Trapdoor Spider</quality>
-                <quality>Free Insect Spirit: Black Widow</quality>
-                <quality>Free Insect Spirit: Burster Firefly</quality>
-                <quality>Free Insect Spirit: Botfly</quality>
-                <quality>Free Insect Spirit: Dragonfly</quality>
-                <quality>Free Insect Spirit: Mimic Mantis</quality>
-                <quality>Free Insect Spirit: Orchid Mantis</quality>
-                <quality>Free Insect Spirit: Vampire Mosquito</quality>
-                <quality>Free Insect Spirit: Tick</quality>
-                <quality>Free Insect Spirit: Death's Head Moth</quality>
-                <quality>Free Insect Spirit: Cryptid Moth</quality>
+      <duration>Special</duration>
+      <required>
+        <allof>
+          <attribute>
+            <name>MAG</name>
+            <total>3</total>
+          </attribute>
+        </allof>
+        <oneof>
+          <quality>Free Insect Spirit: Cutter Ant</quality>
+          <quality>Free Insect Spirit: Fire Ant</quality>
+          <quality>Free Insect Spirit: Desert Locust</quality>
+          <quality>Free Insect Spirit: Mole Cricket</quality>
+          <quality>Free Insect Spirit: Subterranean Termite</quality>
+          <quality>Free Insect Spirit: Hunter Wasp</quality>
+          <quality>Free Insect Spirit: Bee</quality>
+          <quality>Free Insect Spirit: Goliath Beetle</quality>
+          <quality>Free Insect Spirit: Water Beetle</quality>
+          <quality>Free Insect Spirit: House Centipede</quality>
+          <quality>Free Insect Spirit: Tropical Centipede</quality>
+          <quality>Free Insect Spirit: Century Cicada</quality>
+          <quality>Free Insect Spirit: Trapdoor Spider</quality>
+          <quality>Free Insect Spirit: Black Widow</quality>
+          <quality>Free Insect Spirit: Burster Firefly</quality>
+          <quality>Free Insect Spirit: Botfly</quality>
+          <quality>Free Insect Spirit: Dragonfly</quality>
+          <quality>Free Insect Spirit: Mimic Mantis</quality>
+          <quality>Free Insect Spirit: Orchid Mantis</quality>
+          <quality>Free Insect Spirit: Vampire Mosquito</quality>
+          <quality>Free Insect Spirit: Tick</quality>
+          <quality>Free Insect Spirit: Death's Head Moth</quality>
+          <quality>Free Insect Spirit: Cryptid Moth</quality>
           <quality>Free Insect Spirit: Cave Roach</quality>
           <quality>Free Insect Spirit: Silverfish</quality>
         </oneof>
@@ -3234,40 +3234,40 @@
       <range>Special</range>
       <duration>Special</duration>
       <required>
-            <allof>
-                <attribute>
-                    <name>MAG</name>
-                    <total>3</total>
-                </attribute>
-            </allof>
-            <oneof>
-                <quality>Free Insect Spirit: Cutter Ant</quality>
-                <quality>Free Insect Spirit: Fire Ant</quality>
-                <quality>Free Insect Spirit: Desert Locust</quality>
-                <quality>Free Insect Spirit: Mole Cricket</quality>
-                <quality>Free Insect Spirit: Subterranean Termite</quality>
-                <quality>Free Insect Spirit: Hunter Wasp</quality>
-                <quality>Free Insect Spirit: Bee</quality>
-                <quality>Free Insect Spirit: Goliath Beetle</quality>
-                <quality>Free Insect Spirit: Water Beetle</quality>
-                <quality>Free Insect Spirit: House Centipede</quality>
-                <quality>Free Insect Spirit: Tropical Centipede</quality>
-                <quality>Free Insect Spirit: Century Cicada</quality>
-                <quality>Free Insect Spirit: Trapdoor Spider</quality>
-                <quality>Free Insect Spirit: Black Widow</quality>
-                <quality>Free Insect Spirit: Burster Firefly</quality>
-                <quality>Free Insect Spirit: Botfly</quality>
-                <quality>Free Insect Spirit: Dragonfly</quality>
-                <quality>Free Insect Spirit: Mimic Mantis</quality>
-                <quality>Free Insect Spirit: Orchid Mantis</quality>
-                <quality>Free Insect Spirit: Vampire Mosquito</quality>
-                <quality>Free Insect Spirit: Tick</quality>
-                <quality>Free Insect Spirit: Death's Head Moth</quality>
-                <quality>Free Insect Spirit: Cryptid Moth</quality>
-                <quality>Free Insect Spirit: Cave Roach</quality>
-                <quality>Free Insect Spirit: Silverfish</quality>
-            </oneof>
-        </required>
+        <allof>
+          <attribute>
+            <name>MAG</name>
+            <total>3</total>
+          </attribute>
+        </allof>
+        <oneof>
+          <quality>Free Insect Spirit: Cutter Ant</quality>
+          <quality>Free Insect Spirit: Fire Ant</quality>
+          <quality>Free Insect Spirit: Desert Locust</quality>
+          <quality>Free Insect Spirit: Mole Cricket</quality>
+          <quality>Free Insect Spirit: Subterranean Termite</quality>
+          <quality>Free Insect Spirit: Hunter Wasp</quality>
+          <quality>Free Insect Spirit: Bee</quality>
+          <quality>Free Insect Spirit: Goliath Beetle</quality>
+          <quality>Free Insect Spirit: Water Beetle</quality>
+          <quality>Free Insect Spirit: House Centipede</quality>
+          <quality>Free Insect Spirit: Tropical Centipede</quality>
+          <quality>Free Insect Spirit: Century Cicada</quality>
+          <quality>Free Insect Spirit: Trapdoor Spider</quality>
+          <quality>Free Insect Spirit: Black Widow</quality>
+          <quality>Free Insect Spirit: Burster Firefly</quality>
+          <quality>Free Insect Spirit: Botfly</quality>
+          <quality>Free Insect Spirit: Dragonfly</quality>
+          <quality>Free Insect Spirit: Mimic Mantis</quality>
+          <quality>Free Insect Spirit: Orchid Mantis</quality>
+          <quality>Free Insect Spirit: Vampire Mosquito</quality>
+          <quality>Free Insect Spirit: Tick</quality>
+          <quality>Free Insect Spirit: Death's Head Moth</quality>
+          <quality>Free Insect Spirit: Cryptid Moth</quality>
+          <quality>Free Insect Spirit: Cave Roach</quality>
+          <quality>Free Insect Spirit: Silverfish</quality>
+        </oneof>
+      </required>
       <karma>9</karma>
       <source>SR5</source>
       <page>400</page>
@@ -4527,9 +4527,9 @@
           <reach>0</reach>
           <damage>({STR}-1)P</damage>
           <ap>+1</ap>
-            <useskill>Exotic Melee Weapon</useskill>
-            <useskillspec>Trunk</useskillspec>
-            <accuracy>Physical</accuracy>
+          <useskill>Exotic Melee Weapon</useskill>
+          <useskillspec>Trunk</useskillspec>
+          <accuracy>Physical</accuracy>
           <source>HS</source>
           <page>172</page>
         </naturalweapon>
@@ -4562,8 +4562,8 @@
           <reach>0</reach>
           <damage>({STR}+1)P</damage>
           <ap>+1</ap>
-            <useskill>Exotic Melee Weapon</useskill>
-            <useskillspec>Quills</useskillspec>
+          <useskill>Exotic Melee Weapon</useskill>
+          <useskillspec>Quills</useskillspec>
           <accuracy>Physical</accuracy>
           <source>HS</source>
           <page>172</page>

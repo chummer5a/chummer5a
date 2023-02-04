@@ -4785,11 +4785,11 @@
       <type>P</type>
       <bonus>
         <addspirit>
-            <spirit>Carcass Spirit</spirit>
-            <spirit>Corpse Spirit</spirit>
-            <spirit>Rot Spirit</spirit>
-            <spirit>Palefire Spirit</spirit>
-            <spirit>Detritus Spirit</spirit>
+          <spirit>Carcass Spirit</spirit>
+          <spirit>Corpse Spirit</spirit>
+          <spirit>Rot Spirit</spirit>
+          <spirit>Palefire Spirit</spirit>
+          <spirit>Detritus Spirit</spirit>
         </addspirit>
       </bonus>
     </spell>

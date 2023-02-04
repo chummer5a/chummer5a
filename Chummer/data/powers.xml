@@ -17,7 +17,8 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema powers.xsd">
+<chummer xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://www.w3.org/2001/XMLSchema powers.xsd">
 
   <powers>
     <!-- Region SR5 -->
@@ -592,7 +593,7 @@
             <quality>The Athlete's Way</quality>
             <quality>The Spiritual Way</quality>
             <quality>The Invisible Way</quality>
-			</oneof>
+          </oneof>
         </required>
       </adeptwayrequires>
     </power>
@@ -765,14 +766,14 @@
       <page>4</page>
       <adeptway>0.25</adeptway>
       <!-- Awaiting activation by errata
-	  <adeptwayrequires>
+    <adeptwayrequires>
         <required>
           <oneof>
             <quality>The Speaker's Way</quality>
           </oneof>
         </required>
       </adeptwayrequires>
-	  -->
+    -->
       <maxlevels>3</maxlevels>
     </power>
     <power>
@@ -1670,7 +1671,7 @@
       <action>Simple</action>
       <adeptway>0.5</adeptway>
       <bonus>
-        <selectspell ignorerequirements ="True" />
+        <selectspell ignorerequirements="True" />
         <unlockskills name="Spellcasting">Name</unlockskills>
       </bonus>
     </power>
