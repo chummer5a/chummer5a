@@ -2436,6 +2436,7 @@ namespace Chummer
                 case ImprovementType.BiowareEssCost:
                 case ImprovementType.BiowareTotalEssMultiplier:
                 case ImprovementType.BasicBiowareEssCost:
+                case ImprovementType.GenetechEssMultiplier:
                     // Immediately reset cached essence to make sure this fires off before any other property changers would
                     _objCharacter.ResetCachedEssence();
                     yield return new Tuple<INotifyMultiplePropertyChanged, string>(_objCharacter,
