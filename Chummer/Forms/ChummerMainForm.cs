@@ -62,6 +62,7 @@ namespace Chummer
         private Chummy _mascotChummy;
         private readonly CancellationTokenSource _objGenericCancellationTokenSource = new CancellationTokenSource();
         private readonly CancellationToken _objGenericToken;
+        private readonly DebuggableSemaphoreSlim _objFormOpeningSemaphore = new DebuggableSemaphoreSlim();
 
         public string MainTitle
         {
@@ -106,6 +107,7 @@ namespace Chummer
             Disposed += (sender, args) =>
             {
                 _objGenericCancellationTokenSource.Dispose();
+                _objFormOpeningSemaphore.Dispose();
                 _lstOpenCharacterEditorForms.Dispose();
                 _lstOpenCharacterSheetViewers.Dispose();
                 _lstOpenCharacterExportForms.Dispose();
@@ -2913,88 +2915,107 @@ namespace Chummer
                     List<Character> lstNewCharacters = lstCharacters.ToList();
                     if (lstNewCharacters.Count == 0)
                         return;
-                    bool blnMaximizeNewForm
-                        = await this.DoThreadSafeFuncAsync(x => x.MdiChildren.Length == 0
-                                                                || x.MdiChildren.Any(
-                                                                    y => y.WindowState == FormWindowState.Maximized),
-                                                           token).ConfigureAwait(false);
-                    string strUI = await LanguageManager.GetStringAsync("String_UI", token: token).ConfigureAwait(false);
-                    string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-                    string strTooManyHandles
-                        = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token).ConfigureAwait(false);
-                    string strTooManyHandlesTitle
-                        = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token).ConfigureAwait(false);
-                    using (ThreadSafeForm<LoadingBar> frmLoadingBar
-                           = await Program.CreateAndShowProgressBarAsync(strUI, lstNewCharacters.Count, token).ConfigureAwait(false))
+                    await _objFormOpeningSemaphore.WaitAsync(token).ConfigureAwait(false);
+                    try
                     {
-                        foreach (Character objCharacter in lstNewCharacters)
+                        bool blnMaximizeNewForm
+                            = await this.DoThreadSafeFuncAsync(x => x.MdiChildren.Length == 0
+                                                                    || x.MdiChildren.Any(
+                                                                        y => y.WindowState
+                                                                             == FormWindowState.Maximized),
+                                                               token).ConfigureAwait(false);
+                        string strUI = await LanguageManager.GetStringAsync("String_UI", token: token)
+                                                            .ConfigureAwait(false);
+                        string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
+                                                               .ConfigureAwait(false);
+                        string strTooManyHandles
+                            = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token)
+                                                   .ConfigureAwait(false);
+                        string strTooManyHandlesTitle
+                            = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token)
+                                                   .ConfigureAwait(false);
+                        using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                               = await Program.CreateAndShowProgressBarAsync(strUI, lstNewCharacters.Count, token)
+                                              .ConfigureAwait(false))
                         {
-                            token.ThrowIfCancellationRequested();
-                            await frmLoadingBar.MyForm.PerformStepAsync(objCharacter == null
-                                                                            ? strUI
-                                                                            : strUI + strSpace + '('
-                                                                              + objCharacter.CharacterName
-                                                                              + ')', token: token).ConfigureAwait(false);
-                            if (objCharacter == null
-                                || await OpenCharacterEditorForms.AnyAsync(
-                                    x => x.CharacterObject == objCharacter, token).ConfigureAwait(false))
-                                continue;
-                            if (Program.MyProcess.HandleCount >= (objCharacter.Created ? 8000 : 7500)
-                                && Program.ShowScrollableMessageBox(
-                                    string.Format(strTooManyHandles, objCharacter.CharacterName),
-                                    strTooManyHandlesTitle,
-                                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                            foreach (Character objCharacter in lstNewCharacters)
                             {
-                                if (Program.OpenCharacters.All(
-                                        x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter)))
-                                    await Program.OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
-                                continue;
-                            }
-
-                            //Timekeeper.Start("load_event_time");
-                            // Show the character forms.
-                            await this.DoThreadSafeAsync(y =>
-                            {
-                                CharacterShared frmNewCharacter = objCharacter.Created
-                                    ? (CharacterShared) new CharacterCareer(objCharacter)
-                                    : new CharacterCreate(objCharacter);
-                                frmNewCharacter.MdiParent = y;
-                                bool blnMaximizePreShow = y.MdiChildren.Length <= 1 && (y.MdiChildren.Length == 0 || ReferenceEquals(MdiChildren[0], frmNewCharacter));
-                                Stack<Form> stkToMaximize = null;
-                                if (blnMaximizePreShow)
+                                token.ThrowIfCancellationRequested();
+                                await frmLoadingBar.MyForm.PerformStepAsync(objCharacter == null
+                                                                                ? strUI
+                                                                                : strUI + strSpace + '('
+                                                                                + objCharacter.CharacterName
+                                                                                + ')', token: token)
+                                                   .ConfigureAwait(false);
+                                if (objCharacter == null
+                                    || await OpenCharacterEditorForms.AnyAsync(
+                                        x => x.CharacterObject == objCharacter, token).ConfigureAwait(false))
+                                    continue;
+                                if (Program.MyProcess.HandleCount >= (objCharacter.Created ? 8000 : 7500)
+                                    && Program.ShowScrollableMessageBox(
+                                        string.Format(strTooManyHandles, objCharacter.CharacterName),
+                                        strTooManyHandlesTitle,
+                                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                                 {
-                                    if (blnMaximizeNewForm)
-                                        frmNewCharacter.WindowState = FormWindowState.Maximized;
+                                    if (Program.OpenCharacters.All(
+                                            x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter)))
+                                        await Program.OpenCharacters.RemoveAsync(objCharacter, token)
+                                                     .ConfigureAwait(false);
+                                    continue;
                                 }
-                                else
+
+                                //Timekeeper.Start("load_event_time");
+                                // Show the character forms.
+                                await this.DoThreadSafeAsync(y =>
                                 {
-                                    // There is an issue in WinForms MDI Containers where showing a new form when other forms are maximized can cause a crash,
-                                    // so let's make sure we un-maximize all maximized forms before showing this newly added one
-                                    stkToMaximize = new Stack<Form>(y.MdiChildren.Length);
-                                    if (blnMaximizeNewForm)
-                                        stkToMaximize.Push(frmNewCharacter);
-                                    foreach (Form frmLoop in y.MdiChildren)
+                                    CharacterShared frmNewCharacter = objCharacter.Created
+                                        ? (CharacterShared) new CharacterCareer(objCharacter)
+                                        : new CharacterCreate(objCharacter);
+                                    frmNewCharacter.MdiParent = y;
+                                    bool blnMaximizePreShow = y.MdiChildren.Length <= 1 && (y.MdiChildren.Length == 0
+                                        || ReferenceEquals(MdiChildren[0], frmNewCharacter));
+                                    Stack<Form> stkToMaximize = null;
+                                    if (blnMaximizePreShow)
                                     {
-                                        if (frmLoop.WindowState == FormWindowState.Maximized && !ReferenceEquals(frmLoop, frmNewCharacter))
+                                        if (blnMaximizeNewForm)
+                                            frmNewCharacter.WindowState = FormWindowState.Maximized;
+                                    }
+                                    else
+                                    {
+                                        // There is an issue in WinForms MDI Containers where showing a new form when other forms are maximized can cause a crash,
+                                        // so let's make sure we un-maximize all maximized forms before showing this newly added one
+                                        stkToMaximize = new Stack<Form>(y.MdiChildren.Length);
+                                        if (blnMaximizeNewForm)
+                                            stkToMaximize.Push(frmNewCharacter);
+                                        foreach (Form frmLoop in y.MdiChildren)
                                         {
-                                            frmLoop.WindowState = FormWindowState.Normal;
-                                            stkToMaximize.Push(frmLoop);
+                                            if (frmLoop.WindowState == FormWindowState.Maximized
+                                                && !ReferenceEquals(frmLoop, frmNewCharacter))
+                                            {
+                                                frmLoop.WindowState = FormWindowState.Normal;
+                                                stkToMaximize.Push(frmLoop);
+                                            }
                                         }
                                     }
-                                }
-                                frmNewCharacter.Show();
-                                if (stkToMaximize?.Count > 0)
-                                {
-                                    while (stkToMaximize.Count > 0)
-                                        stkToMaximize.Pop().WindowState = FormWindowState.Maximized;
-                                }
-                            }, token).ConfigureAwait(false);
-                            if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)
-                                                && File.Exists(objCharacter.FileName))
-                                await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
-                                    0, objCharacter.FileName, token).ConfigureAwait(false);
-                            //Timekeeper.Finish("load_event_time");
+
+                                    frmNewCharacter.Show();
+                                    if (stkToMaximize?.Count > 0)
+                                    {
+                                        while (stkToMaximize.Count > 0)
+                                            stkToMaximize.Pop().WindowState = FormWindowState.Maximized;
+                                    }
+                                }, token).ConfigureAwait(false);
+                                if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)
+                                                    && File.Exists(objCharacter.FileName))
+                                    await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
+                                        0, objCharacter.FileName, token).ConfigureAwait(false);
+                                //Timekeeper.Finish("load_event_time");
+                            }
                         }
+                    }
+                    finally
+                    {
+                        _objFormOpeningSemaphore.Release();
                     }
                 }
                 finally
@@ -3107,119 +3128,135 @@ namespace Chummer
                     List<Character> lstNewCharacters = lstCharacters.ToList();
                     if (lstNewCharacters.Count == 0)
                         return;
-                    bool blnMaximizeNewForm
-                        = await this.DoThreadSafeFuncAsync(x => x.MdiChildren.Length == 0
-                                                                || x.MdiChildren.Any(
-                                                                    y => y.WindowState == FormWindowState.Maximized),
-                                                           token).ConfigureAwait(false);
-                    List<Tuple<CharacterSheetViewer, Character>> lstNewFormsToProcess
-                        = new List<Tuple<CharacterSheetViewer, Character>>(lstNewCharacters.Count);
-                    string strUI = await LanguageManager.GetStringAsync("String_UI", token: token).ConfigureAwait(false);
-                    string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-                    string strTooManyHandles
-                        = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token).ConfigureAwait(false);
-                    string strTooManyHandlesTitle
-                        = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token).ConfigureAwait(false);
-                    using (ThreadSafeForm<LoadingBar> frmLoadingBar
-                           = await Program.CreateAndShowProgressBarAsync(strUI, lstNewCharacters.Count, token).ConfigureAwait(false))
+                    await _objFormOpeningSemaphore.WaitAsync(token).ConfigureAwait(false);
+                    try
                     {
-                        foreach (Character objCharacter in lstNewCharacters)
+                        bool blnMaximizeNewForm
+                            = await this.DoThreadSafeFuncAsync(x => x.MdiChildren.Length == 0
+                                                                    || x.MdiChildren.Any(
+                                                                        y => y.WindowState
+                                                                             == FormWindowState.Maximized),
+                                                               token).ConfigureAwait(false);
+                        List<Tuple<CharacterSheetViewer, Character>> lstNewFormsToProcess
+                            = new List<Tuple<CharacterSheetViewer, Character>>(lstNewCharacters.Count);
+                        string strUI = await LanguageManager.GetStringAsync("String_UI", token: token)
+                                                            .ConfigureAwait(false);
+                        string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
+                                                               .ConfigureAwait(false);
+                        string strTooManyHandles
+                            = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token)
+                                                   .ConfigureAwait(false);
+                        string strTooManyHandlesTitle
+                            = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token)
+                                                   .ConfigureAwait(false);
+                        using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                               = await Program.CreateAndShowProgressBarAsync(strUI, lstNewCharacters.Count, token)
+                                              .ConfigureAwait(false))
                         {
-                            token.ThrowIfCancellationRequested();
-                            await frmLoadingBar.MyForm.PerformStepAsync(objCharacter == null
-                                                                            ? strUI
-                                                                            : strUI + strSpace + '('
-                                                                              + objCharacter.CharacterName
-                                                                              + ')', token: token).ConfigureAwait(false);
-                            if (objCharacter == null
-                                || await OpenCharacterSheetViewers.AnyAsync(
-                                    x => x.CharacterObjects.Contains(objCharacter), token).ConfigureAwait(false))
-                                continue;
-
-                            if (Program.MyProcess.HandleCount >= 9500
-                                && Program.ShowScrollableMessageBox(
-                                    string.Format(strTooManyHandles, objCharacter.CharacterName),
-                                    strTooManyHandlesTitle,
-                                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                            foreach (Character objCharacter in lstNewCharacters)
                             {
-                                if (Program.OpenCharacters.All(
-                                        x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter)))
-                                    await Program.OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
-                                continue;
+                                token.ThrowIfCancellationRequested();
+                                await frmLoadingBar.MyForm.PerformStepAsync(objCharacter == null
+                                                                                ? strUI
+                                                                                : strUI + strSpace + '('
+                                                                                + objCharacter.CharacterName
+                                                                                + ')', token: token)
+                                                   .ConfigureAwait(false);
+                                if (objCharacter == null
+                                    || await OpenCharacterSheetViewers.AnyAsync(
+                                        x => x.CharacterObjects.Contains(objCharacter), token).ConfigureAwait(false))
+                                    continue;
+
+                                if (Program.MyProcess.HandleCount >= 9500
+                                    && Program.ShowScrollableMessageBox(
+                                        string.Format(strTooManyHandles, objCharacter.CharacterName),
+                                        strTooManyHandlesTitle,
+                                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                                {
+                                    if (Program.OpenCharacters.All(
+                                            x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter)))
+                                        await Program.OpenCharacters.RemoveAsync(objCharacter, token)
+                                                     .ConfigureAwait(false);
+                                    continue;
+                                }
+
+                                //Timekeeper.Start("load_event_time");
+                                // Show the character forms.
+                                await this.DoThreadSafeAsync(y =>
+                                {
+                                    CharacterSheetViewer frmViewer = new CharacterSheetViewer
+                                    {
+                                        MdiParent = y
+                                    };
+                                    lstNewFormsToProcess.Add(
+                                        new Tuple<CharacterSheetViewer, Character>(frmViewer, objCharacter));
+                                }, token: token).ConfigureAwait(false);
+
+                                if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)
+                                                    && File.Exists(objCharacter.FileName))
+                                    await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
+                                        0, objCharacter.FileName, token).ConfigureAwait(false);
+                                //Timekeeper.Finish("load_event_time");
+                            }
+                        }
+
+                        foreach ((CharacterSheetViewer frmViewer, Character objCharacter) in lstNewFormsToProcess)
+                        {
+                            await frmViewer.SetCharacters(token, objCharacter).ConfigureAwait(false);
+                        }
+
+                        await this.DoThreadSafeAsync(x =>
+                        {
+                            bool blnMaximizePreShow = x.MdiChildren.Length <= 1 && (x.MdiChildren.Length == 0
+                                || ReferenceEquals(x.MdiChildren[0], lstNewFormsToProcess[0].Item1));
+                            Stack<Form> stkToMaximize = null;
+                            if (blnMaximizePreShow)
+                            {
+                                if (blnMaximizeNewForm)
+                                {
+                                    foreach ((CharacterSheetViewer frmViewer, Character _) in lstNewFormsToProcess)
+                                    {
+                                        frmViewer.WindowState = FormWindowState.Maximized;
+                                    }
+                                }
+                            }
+                            else
+                            {
+                                // There is an issue in WinForms MDI Containers where showing a new form when other forms are maximized can cause a crash,
+                                // so let's make sure we un-maximize all maximized forms before showing this newly added one
+                                stkToMaximize = new Stack<Form>(x.MdiChildren.Length);
+                                if (blnMaximizeNewForm)
+                                {
+                                    foreach ((CharacterSheetViewer frmViewer, Character _) in lstNewFormsToProcess)
+                                    {
+                                        stkToMaximize.Push(frmViewer);
+                                    }
+                                }
+
+                                foreach (Form frmLoop in x.MdiChildren)
+                                {
+                                    if (frmLoop.WindowState == FormWindowState.Maximized
+                                        && lstNewFormsToProcess.All(z => !ReferenceEquals(z.Item1, frmLoop)))
+                                    {
+                                        frmLoop.WindowState = FormWindowState.Normal;
+                                        stkToMaximize.Push(frmLoop);
+                                    }
+                                }
                             }
 
-                            //Timekeeper.Start("load_event_time");
-                            // Show the character forms.
-                            await this.DoThreadSafeAsync(y =>
+                            foreach ((CharacterSheetViewer frmViewer, Character _) in lstNewFormsToProcess)
+                                frmViewer.Show();
+                            if (stkToMaximize?.Count > 0)
                             {
-                                CharacterSheetViewer frmViewer = new CharacterSheetViewer
-                                {
-                                    MdiParent = y
-                                };
-                                lstNewFormsToProcess.Add(
-                                    new Tuple<CharacterSheetViewer, Character>(frmViewer, objCharacter));
-                            }, token: token).ConfigureAwait(false);
-
-                            if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)
-                                                && File.Exists(objCharacter.FileName))
-                                await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
-                                    0, objCharacter.FileName, token).ConfigureAwait(false);
-                            //Timekeeper.Finish("load_event_time");
-                        }
+                                while (stkToMaximize.Count > 0)
+                                    stkToMaximize.Pop().WindowState = FormWindowState.Maximized;
+                            }
+                        }, _objGenericToken).ConfigureAwait(false);
                     }
-
-                    foreach ((CharacterSheetViewer frmViewer, Character objCharacter) in lstNewFormsToProcess)
+                    finally
                     {
-                        await frmViewer.SetCharacters(token, objCharacter).ConfigureAwait(false);
+                        _objFormOpeningSemaphore.Release();
                     }
-
-                    await this.DoThreadSafeAsync(x =>
-                    {
-                        bool blnMaximizePreShow = x.MdiChildren.Length <= 1 && (x.MdiChildren.Length == 0
-                            || ReferenceEquals(x.MdiChildren[0], lstNewFormsToProcess[0].Item1));
-                        Stack<Form> stkToMaximize = null;
-                        if (blnMaximizePreShow)
-                        {
-                            if (blnMaximizeNewForm)
-                            {
-                                foreach ((CharacterSheetViewer frmViewer, Character _) in lstNewFormsToProcess)
-                                {
-                                    frmViewer.WindowState = FormWindowState.Maximized;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            // There is an issue in WinForms MDI Containers where showing a new form when other forms are maximized can cause a crash,
-                            // so let's make sure we un-maximize all maximized forms before showing this newly added one
-                            stkToMaximize = new Stack<Form>(x.MdiChildren.Length);
-                            if (blnMaximizeNewForm)
-                            {
-                                foreach ((CharacterSheetViewer frmViewer, Character _) in lstNewFormsToProcess)
-                                {
-                                    stkToMaximize.Push(frmViewer);
-                                }
-                            }
-
-                            foreach (Form frmLoop in x.MdiChildren)
-                            {
-                                if (frmLoop.WindowState == FormWindowState.Maximized
-                                    && lstNewFormsToProcess.All(z => !ReferenceEquals(z.Item1, frmLoop)))
-                                {
-                                    frmLoop.WindowState = FormWindowState.Normal;
-                                    stkToMaximize.Push(frmLoop);
-                                }
-                            }
-                        }
-
-                        foreach ((CharacterSheetViewer frmViewer, Character _) in lstNewFormsToProcess)
-                            frmViewer.Show();
-                        if (stkToMaximize?.Count > 0)
-                        {
-                            while (stkToMaximize.Count > 0)
-                                stkToMaximize.Pop().WindowState = FormWindowState.Maximized;
-                        }
-                    }, _objGenericToken).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -3331,87 +3368,106 @@ namespace Chummer
                     List<Character> lstNewCharacters = lstCharacters.ToList();
                     if (lstNewCharacters.Count == 0)
                         return;
-                    bool blnMaximizeNewForm
-                        = await this.DoThreadSafeFuncAsync(x => x.MdiChildren.Length == 0
-                                                                || x.MdiChildren.Any(
-                                                                    y => y.WindowState == FormWindowState.Maximized),
-                                                           token).ConfigureAwait(false);
-                    string strUI = await LanguageManager.GetStringAsync("String_UI", token: token).ConfigureAwait(false);
-                    string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-                    string strTooManyHandles
-                        = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token).ConfigureAwait(false);
-                    string strTooManyHandlesTitle
-                        = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token).ConfigureAwait(false);
-                    using (ThreadSafeForm<LoadingBar> frmLoadingBar
-                           = await Program.CreateAndShowProgressBarAsync(strUI, lstNewCharacters.Count, token).ConfigureAwait(false))
+                    await _objFormOpeningSemaphore.WaitAsync(token).ConfigureAwait(false);
+                    try
                     {
-                        foreach (Character objCharacter in lstNewCharacters)
+                        bool blnMaximizeNewForm
+                            = await this.DoThreadSafeFuncAsync(x => x.MdiChildren.Length == 0
+                                                                    || x.MdiChildren.Any(
+                                                                        y => y.WindowState
+                                                                             == FormWindowState.Maximized),
+                                                               token).ConfigureAwait(false);
+                        string strUI = await LanguageManager.GetStringAsync("String_UI", token: token)
+                                                            .ConfigureAwait(false);
+                        string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
+                                                               .ConfigureAwait(false);
+                        string strTooManyHandles
+                            = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token)
+                                                   .ConfigureAwait(false);
+                        string strTooManyHandlesTitle
+                            = await LanguageManager.GetStringAsync("Message_TooManyHandlesWarning", token: token)
+                                                   .ConfigureAwait(false);
+                        using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                               = await Program.CreateAndShowProgressBarAsync(strUI, lstNewCharacters.Count, token)
+                                              .ConfigureAwait(false))
                         {
-                            await frmLoadingBar.MyForm.PerformStepAsync(objCharacter == null
-                                                                            ? strUI
-                                                                            : strUI + strSpace + '('
-                                                                              + objCharacter.CharacterName
-                                                                              + ')', token: token).ConfigureAwait(false);
-                            if (objCharacter == null
-                                || await OpenCharacterExportForms.AnyAsync(
-                                    x => x.CharacterObject == objCharacter, token).ConfigureAwait(false))
-                                continue;
-                            if (Program.MyProcess.HandleCount >= 9500
-                                && Program.ShowScrollableMessageBox(
-                                    string.Format(strTooManyHandles, objCharacter.CharacterName),
-                                    strTooManyHandlesTitle,
-                                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+                            foreach (Character objCharacter in lstNewCharacters)
                             {
-                                if (Program.OpenCharacters.All(
-                                        x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter)))
-                                    await Program.OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
-                                continue;
-                            }
-
-                            //Timekeeper.Start("load_event_time");
-                            // Show the character forms.
-                            await this.DoThreadSafeAsync(y =>
-                            {
-                                ExportCharacter frmViewer = new ExportCharacter(objCharacter)
+                                await frmLoadingBar.MyForm.PerformStepAsync(objCharacter == null
+                                                                                ? strUI
+                                                                                : strUI + strSpace + '('
+                                                                                + objCharacter.CharacterName
+                                                                                + ')', token: token)
+                                                   .ConfigureAwait(false);
+                                if (objCharacter == null
+                                    || await OpenCharacterExportForms.AnyAsync(
+                                        x => x.CharacterObject == objCharacter, token).ConfigureAwait(false))
+                                    continue;
+                                if (Program.MyProcess.HandleCount >= 9500
+                                    && Program.ShowScrollableMessageBox(
+                                        string.Format(strTooManyHandles, objCharacter.CharacterName),
+                                        strTooManyHandlesTitle,
+                                        MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
                                 {
-                                    MdiParent = y
-                                };
-                                bool blnMaximizePreShow = y.MdiChildren.Length <= 1 && (y.MdiChildren.Length == 0 || ReferenceEquals(MdiChildren[0], frmViewer));
-                                Stack<Form> stkToMaximize = null;
-                                if (blnMaximizePreShow)
-                                {
-                                    if (blnMaximizeNewForm)
-                                        frmViewer.WindowState = FormWindowState.Maximized;
+                                    if (Program.OpenCharacters.All(
+                                            x => x == objCharacter || !x.LinkedCharacters.Contains(objCharacter)))
+                                        await Program.OpenCharacters.RemoveAsync(objCharacter, token)
+                                                     .ConfigureAwait(false);
+                                    continue;
                                 }
-                                else
+
+                                //Timekeeper.Start("load_event_time");
+                                // Show the character forms.
+                                await this.DoThreadSafeAsync(y =>
                                 {
-                                    // There is an issue in WinForms MDI Containers where showing a new form when other forms are maximized can cause a crash,
-                                    // so let's make sure we un-maximize all maximized forms before showing this newly added one
-                                    stkToMaximize = new Stack<Form>(y.MdiChildren.Length);
-                                    if (blnMaximizeNewForm)
-                                        stkToMaximize.Push(frmViewer);
-                                    foreach (Form frmLoop in y.MdiChildren)
+                                    ExportCharacter frmViewer = new ExportCharacter(objCharacter)
                                     {
-                                        if (frmLoop.WindowState == FormWindowState.Maximized && !ReferenceEquals(frmLoop, frmViewer))
+                                        MdiParent = y
+                                    };
+                                    bool blnMaximizePreShow = y.MdiChildren.Length <= 1 && (y.MdiChildren.Length == 0
+                                        || ReferenceEquals(MdiChildren[0], frmViewer));
+                                    Stack<Form> stkToMaximize = null;
+                                    if (blnMaximizePreShow)
+                                    {
+                                        if (blnMaximizeNewForm)
+                                            frmViewer.WindowState = FormWindowState.Maximized;
+                                    }
+                                    else
+                                    {
+                                        // There is an issue in WinForms MDI Containers where showing a new form when other forms are maximized can cause a crash,
+                                        // so let's make sure we un-maximize all maximized forms before showing this newly added one
+                                        stkToMaximize = new Stack<Form>(y.MdiChildren.Length);
+                                        if (blnMaximizeNewForm)
+                                            stkToMaximize.Push(frmViewer);
+                                        foreach (Form frmLoop in y.MdiChildren)
                                         {
-                                            frmLoop.WindowState = FormWindowState.Normal;
-                                            stkToMaximize.Push(frmLoop);
+                                            if (frmLoop.WindowState == FormWindowState.Maximized
+                                                && !ReferenceEquals(frmLoop, frmViewer))
+                                            {
+                                                frmLoop.WindowState = FormWindowState.Normal;
+                                                stkToMaximize.Push(frmLoop);
+                                            }
                                         }
                                     }
-                                }
-                                frmViewer.Show();
-                                if (stkToMaximize?.Count > 0)
-                                {
-                                    while (stkToMaximize.Count > 0)
-                                        stkToMaximize.Pop().WindowState = FormWindowState.Maximized;
-                                }
-                            }, token).ConfigureAwait(false);
-                            if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)
-                                                && File.Exists(objCharacter.FileName))
-                                await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
-                                    0, objCharacter.FileName, token).ConfigureAwait(false);
-                            //Timekeeper.Finish("load_event_time");
+
+                                    frmViewer.Show();
+                                    if (stkToMaximize?.Count > 0)
+                                    {
+                                        while (stkToMaximize.Count > 0)
+                                            stkToMaximize.Pop().WindowState = FormWindowState.Maximized;
+                                    }
+                                }, token).ConfigureAwait(false);
+                                if (blnIncludeInMru && !string.IsNullOrEmpty(objCharacter.FileName)
+                                                    && File.Exists(objCharacter.FileName))
+                                    await GlobalSettings.MostRecentlyUsedCharacters.InsertAsync(
+                                        0, objCharacter.FileName, token).ConfigureAwait(false);
+                                //Timekeeper.Finish("load_event_time");
+                            }
                         }
+                    }
+                    finally
+                    {
+                        _objFormOpeningSemaphore.Release();
                     }
                 }
                 finally
