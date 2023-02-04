@@ -3949,17 +3949,29 @@ namespace Chummer
 
                 string strForce = ForcedValue;
                 MentorSpirit objMentor = new MentorSpirit(_objCharacter);
-                objMentor.Create(xmlMentor, Improvement.ImprovementType.MentorSpirit, ForcedValue, frmPickMentorSpirit.MyForm.Choice1, frmPickMentorSpirit.MyForm.Choice2);
-                if (objMentor.InternalId == Guid.Empty.ToString())
+                try
                 {
-                    throw new AbortedException();
+                    objMentor.Create(xmlMentor, Improvement.ImprovementType.MentorSpirit, ForcedValue,
+                                     frmPickMentorSpirit.MyForm.Choice1, frmPickMentorSpirit.MyForm.Choice2);
+                    if (objMentor.InternalId == Guid.Empty.ToString())
+                    {
+                        throw new AbortedException();
+                    }
+
+                    _objCharacter.MentorSpirits.Add(objMentor);
                 }
-                _objCharacter.MentorSpirits.Add(objMentor);
+                catch
+                {
+                    objMentor.Dispose();
+                    throw;
+                }
 
                 ForcedValue = strForce;
                 SelectedValue = strHoldValue;
                 Log.Trace("_strForcedValue = " + ForcedValue);
-                CreateImprovement(objMentor.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.MentorSpirit, frmPickMentorSpirit.MyForm.SelectedMentor);
+                CreateImprovement(objMentor.InternalId, _objImprovementSource, SourceName,
+                                  Improvement.ImprovementType.MentorSpirit,
+                                  frmPickMentorSpirit.MyForm.SelectedMentor);
             }
         }
 
@@ -3988,17 +4000,27 @@ namespace Chummer
 
                 string strForce = ForcedValue;
                 MentorSpirit objMentor = new MentorSpirit(_objCharacter);
-                objMentor.Create(xmlMentor, Improvement.ImprovementType.Paragon, ForcedValue, frmPickMentorSpirit.MyForm.Choice1, frmPickMentorSpirit.MyForm.Choice2);
-                if (objMentor.InternalId == Guid.Empty.ToString())
+                try
                 {
-                    throw new AbortedException();
+                    objMentor.Create(xmlMentor, Improvement.ImprovementType.Paragon, ForcedValue,
+                                     frmPickMentorSpirit.MyForm.Choice1, frmPickMentorSpirit.MyForm.Choice2);
+                    if (objMentor.InternalId == Guid.Empty.ToString())
+                    {
+                        throw new AbortedException();
+                    }
+                    _objCharacter.MentorSpirits.Add(objMentor);
                 }
-                _objCharacter.MentorSpirits.Add(objMentor);
+                catch
+                {
+                    objMentor.Dispose();
+                    throw;
+                }
 
                 ForcedValue = strForce;
                 SelectedValue = strHoldValue;
                 Log.Trace("_strForcedValue = " + ForcedValue);
-                CreateImprovement(objMentor.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.Paragon, frmPickMentorSpirit.MyForm.SelectedMentor);
+                CreateImprovement(objMentor.InternalId, _objImprovementSource, SourceName,
+                                  Improvement.ImprovementType.Paragon, frmPickMentorSpirit.MyForm.SelectedMentor);
             }
         }
 

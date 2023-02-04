@@ -11547,6 +11547,9 @@ namespace Chummer
                 foreach (Drug objItem in _lstDrugs)
                     objItem.Dispose();
                 _lstDrugs.Dispose();
+                foreach (MentorSpirit objItem in _lstMentorSpirits)
+                    objItem.Dispose();
+                _lstMentorSpirits.Dispose();
                 _lstExpenseLog.Dispose();
                 foreach (Location objItem in _lstArmorLocations)
                     objItem.Dispose();
@@ -11643,6 +11646,8 @@ namespace Chummer
                 await _lstCalendar.DisposeAsync().ConfigureAwait(false);
                 await _lstDrugs.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
                 await _lstDrugs.DisposeAsync().ConfigureAwait(false);
+                await _lstMentorSpirits.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
+                await _lstMentorSpirits.DisposeAsync().ConfigureAwait(false);
                 await _lstExpenseLog.DisposeAsync().ConfigureAwait(false);
                 await _lstArmorLocations.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
                 await _lstGearLocations.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
@@ -11791,6 +11796,8 @@ namespace Chummer
                     objItem.Dispose();
                 foreach (Drug objItem in _lstDrugs)
                     objItem.Dispose();
+                foreach (MentorSpirit objItem in _lstMentorSpirits)
+                    objItem.Dispose();
                 // Reset all of the Lists.
                 // This kills the GC
                 ImprovementManager.ClearCachedValues(this);
@@ -11819,6 +11826,7 @@ namespace Chummer
                 _lstQualities.Clear();
                 _lstCalendar.Clear();
                 _lstDrugs.Clear();
+                _lstMentorSpirits.Clear();
 
                 LoadAsDirty = false;
             }
@@ -11938,6 +11946,8 @@ namespace Chummer
                                      .ConfigureAwait(false);
                 await _lstDrugs.ForEachAsync(x => x.DisposeAsync().AsTask(), token)
                                .ConfigureAwait(false);
+                await _lstMentorSpirits.ForEachAsync(x => x.DisposeAsync().AsTask(), token)
+                                       .ConfigureAwait(false);
                 // Reset all of the Lists.
                 // This kills the GC
                 await ImprovementManager.ClearCachedValuesAsync(this, token).ConfigureAwait(false);
@@ -11966,6 +11976,7 @@ namespace Chummer
                 await _lstQualities.ClearAsync(token).ConfigureAwait(false);
                 await _lstCalendar.ClearAsync(token).ConfigureAwait(false);
                 await _lstDrugs.ClearAsync(token).ConfigureAwait(false);
+                await _lstMentorSpirits.ClearAsync(token).ConfigureAwait(false);
                 LoadAsDirty = false;
             }
             finally
