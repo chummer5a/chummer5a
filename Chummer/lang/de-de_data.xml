@@ -21637,7 +21637,7 @@
 			</martialart>
 			<martialart>
 				<id>7bbd5565-5020-4ef1-8ff0-9329cbffcfa9</id>
-				<name>German Ju-Jutsu</name>
+				<name>German Jujitsu</name>
 				<translate>Deutsches Ju-Jutsu</translate>
 				<altpage>17</altpage>
 			</martialart>
@@ -21659,6 +21659,26 @@
 				<translate>Sternschutz Tactical</translate>
 				<altpage>17</altpage>
 			</martialart>
+          <martialart translated="True">
+            <id>e253fc2a-87f5-4a20-9f2c-c0b9e54e0f6e</id>
+            <name>Arbeitskreis INI</name>
+            <translate>Arbeitskreis INI</translate>
+          </martialart>
+          <martialart>
+            <id>e78deb308-4e17-4b86-b084-897009c55a15</id>
+            <name>Circle Fencing</name>
+            <translate>Zirkelfechten</translate>
+          </martialart>
+          <martialart>
+            <id>70f75f97-ba03-41a6-b591-7c3ae24953a2</id>
+            <name>Kreussler Fencing</name>
+            <translate>Fechten nach Kreussler</translate>
+          </martialart>
+          <martialart translated="True">
+            <id>736db820-cbe4-4a0b-b6c3-d90471117731</id>
+            <name>Asthenologica</name>
+            <translate>Asthenologica</translate>
+          </martialart>
 		</martialarts>
 		<techniques>
 			<technique translated="True">

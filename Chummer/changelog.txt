@@ -21,6 +21,7 @@ Data Changes:
 - Added missing Corps Cadavre entries. Fixes #4975.
 - Picking the Chaos mentor spirit when playing with the German Data Changes custom dataset now prompts the user to take Improved Potential twice instead of prompting only once and then prompting that the user take select a limit for the special Improved Potential (Chaos Mentor) adept power. Fixes #4977.
 - Added the Surprise improvement type to improvements.xml to enable adding the improvement via custom Improvements. Closes #4962
+- Added missing martial arts from Datapuls SOTA 2080. Fixes #4986.
 
 Changed/New Strings:
 - LimitCondition_SkillsActiveLeadership
