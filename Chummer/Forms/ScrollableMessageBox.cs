@@ -120,6 +120,8 @@ namespace Chummer.Forms
             {
                 case MessageBoxIcon.None:
                     imgIcon.Visible = false;
+                    txtText.Margin = new Padding(0);
+                    tlpTop.Padding = new Padding(tlpTop.Padding.Right, tlpTop.Padding.Top, tlpTop.Padding.Right, tlpTop.Padding.Bottom);
                     break;
                 case MessageBoxIcon.Error:
                     imgIcon.Image = Utils.GetStockIconBitmapsForSystemIcon(SystemIcons.Error);
