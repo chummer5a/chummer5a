@@ -29,6 +29,9 @@
                  <power removable="False">Dual Natured</power>
               </powers>
               <powers amendoperation="addnode">
+                 <power removable="False">Regeneration</power>
+              </powers>
+              <powers amendoperation="addnode">
                  <power select="Silver">Vulnerability</power>
               </powers>
            </metavariant>
