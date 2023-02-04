@@ -1573,7 +1573,7 @@ namespace Chummer
             this.chkEncumbrancePenaltyWoundModifier.Name = "chkEncumbrancePenaltyWoundModifier";
             this.chkEncumbrancePenaltyWoundModifier.Size = new System.Drawing.Size(205, 17);
             this.chkEncumbrancePenaltyWoundModifier.TabIndex = 58;
-            this.chkEncumbrancePenaltyWoundModifier.Tag = "Checkbox_CharacterOptions_EncumbrancePenaltySkillWoundModifier";
+            this.chkEncumbrancePenaltyWoundModifier.Tag = "Checkbox_CharacterOptions_EncumbrancePenaltyWoundModifier";
             this.chkEncumbrancePenaltyWoundModifier.Text = "Apply an additional Wound Modifier of";
             this.chkEncumbrancePenaltyWoundModifier.UseVisualStyleBackColor = true;
             // 

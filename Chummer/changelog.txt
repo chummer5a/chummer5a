@@ -14,6 +14,7 @@ Application Changes:
 - Exotic skills that a character has not learned can now be properly selected for activesofts, hardwires, and any other item that can grant a user access to a skill. Part of #4983.
 - The program now properly prompts users about saving or discarding changes to their global settings if the only settings that were changed were the default character sheet and/or character sheet language.
 - Adding or removing improvements or improvement sources that modify the Essence cost of Geneware specifically now properly updates relevant Essence costs.
+- The character option to apply wound modifiers from encumbrance now shows properly in the character settings editing menu.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.
