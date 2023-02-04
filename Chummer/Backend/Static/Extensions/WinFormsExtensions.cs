@@ -2003,7 +2003,7 @@ namespace Chummer
                 foreach (string strLine in astrLines)
                 {
                     Size objTextSize = TextRenderer.MeasureText(strLine, txtTextBox.Font);
-                    intNumDisplayedLines += ((decimal)objTextSize.Width / txtTextBox.Width).StandardRound();
+                    intNumDisplayedLines += Math.Max(((decimal)objTextSize.Width / txtTextBox.Width).StandardRound(), 1);
                     intMaxLineHeight = Math.Max(intMaxLineHeight, objTextSize.Height);
                 }
             }

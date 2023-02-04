@@ -60,7 +60,14 @@ namespace Chummer.Forms
             txtText.Anchor = AnchorStyles.Left | AnchorStyles.Right;
             txtText.Text = text;
             (int intNumDisplayedLines, int intMaxLineHeight) = txtText.MeasureLineHeights();
-            txtText.Height = Math.Min(intMaxHeight, intNumDisplayedLines * (intMaxLineHeight + 2));
+            int intIdealHeight = intNumDisplayedLines * (intMaxLineHeight + 2);
+            if (intIdealHeight > intMaxHeight)
+                txtText.Height = intMaxHeight;
+            else
+            {
+                txtText.Height = intIdealHeight;
+                tlpTop.Padding = new Padding(tlpTop.Padding.Left, tlpTop.Padding.Top, tlpTop.Padding.Right, tlpTop.Padding.Top);
+            }
             txtText.AutoSetScrollbars();
 
             Text = string.IsNullOrWhiteSpace(caption) ? string.Empty : caption;

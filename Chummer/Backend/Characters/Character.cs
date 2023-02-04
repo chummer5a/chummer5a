@@ -6122,7 +6122,7 @@ namespace Chummer
                                                         : await LanguageManager.GetStringAsync(
                                                             "MessageTitle_CharacterOptions_CannotLoadSetting",
                                                             token: token).ConfigureAwait(false),
-                                                    MessageBoxButtons.YesNo) == DialogResult.No)
+                                                    MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.No)
                                             {
                                                 return false;
                                             }
@@ -6234,7 +6234,7 @@ namespace Chummer
                                                         : await LanguageManager.GetStringAsync(
                                                             "MessageTitle_CharacterOptions_DesyncBuildMethod",
                                                             token: token).ConfigureAwait(false),
-                                                    MessageBoxButtons.YesNo) == DialogResult.No)
+                                                    MessageBoxButtons.YesNo, MessageBoxIcon.Error) == DialogResult.No)
                                             {
                                                 return false;
                                             }
@@ -6359,7 +6359,7 @@ namespace Chummer
                                                         : await LanguageManager.GetStringAsync(
                                                             "MessageTitle_CharacterOptions_DesyncBooksOrCustomData",
                                                             token: token).ConfigureAwait(false),
-                                                    MessageBoxButtons.YesNoCancel);
+                                                    MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
                                                 if (eShowBPResult == DialogResult.Cancel)
                                                 {
                                                     return false;
@@ -6402,7 +6402,7 @@ namespace Chummer
                                                     : await LanguageManager.GetStringAsync(
                                                         "MessageTitle_CharacterOptions_DesyncFromHashCode",
                                                         token: token).ConfigureAwait(false),
-                                                MessageBoxButtons.YesNoCancel);
+                                                MessageBoxButtons.YesNoCancel, MessageBoxIcon.Warning);
                                             if (eShowBPResult == DialogResult.Cancel)
                                             {
                                                 return false;
