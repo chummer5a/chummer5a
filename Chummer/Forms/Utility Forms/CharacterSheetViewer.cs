@@ -53,7 +53,7 @@ namespace Chummer
         private string _strPrintLanguage = GlobalSettings.Language;
         private CancellationTokenSource _objRefresherCancellationTokenSource;
         private CancellationTokenSource _objOutputGeneratorCancellationTokenSource;
-        private readonly CancellationTokenSource _objGenericFormClosingCancellationTokenSource = new CancellationTokenSource();
+        private CancellationTokenSource _objGenericFormClosingCancellationTokenSource = new CancellationTokenSource();
         private readonly CancellationToken _objGenericToken;
         private bool _blnCanPrint;
         private Task _tskRefresher;
@@ -66,15 +66,30 @@ namespace Chummer
 
         public CharacterSheetViewer(CancellationToken token = default)
         {
+            _objGenericToken = _objGenericFormClosingCancellationTokenSource.Token;
             Disposed += (sender, args) =>
             {
-                _objGenericFormClosingCancellationTokenSource.Dispose();
                 _lstCharacters.Dispose();
-                _objRefresherCancellationTokenSource?.Dispose();
-                _objOutputGeneratorCancellationTokenSource?.Dispose();
+                CancellationTokenSource objTempTokenSource = Interlocked.Exchange(ref _objRefresherCancellationTokenSource, null);
+                if (objTempTokenSource?.IsCancellationRequested == false)
+                {
+                    objTempTokenSource.Cancel(false);
+                    objTempTokenSource.Dispose();
+                }
+                objTempTokenSource = Interlocked.Exchange(ref _objOutputGeneratorCancellationTokenSource, null);
+                if (objTempTokenSource?.IsCancellationRequested == false)
+                {
+                    objTempTokenSource.Cancel(false);
+                    objTempTokenSource.Dispose();
+                }
+                objTempTokenSource = Interlocked.Exchange(ref _objGenericFormClosingCancellationTokenSource, null);
+                if (objTempTokenSource?.IsCancellationRequested == false)
+                {
+                    objTempTokenSource.Cancel(false);
+                    objTempTokenSource.Dispose();
+                }
             };
             Program.MainForm.OpenCharacterSheetViewers.Add(this);
-            _objGenericToken = _objGenericFormClosingCancellationTokenSource.Token;
             if (_strSelectedSheet.StartsWith("Shadowrun 4", StringComparison.Ordinal))
             {
                 _strSelectedSheet = GlobalSettings.DefaultCharacterSheetDefaultValue;
@@ -370,7 +385,12 @@ namespace Chummer
             {
                 //swallow this
             }
-            _objGenericFormClosingCancellationTokenSource?.Cancel(false);
+            objTempTokenSource = Interlocked.Exchange(ref _objGenericFormClosingCancellationTokenSource, null);
+            if (objTempTokenSource?.IsCancellationRequested == false)
+            {
+                objTempTokenSource.Cancel(false);
+                objTempTokenSource.Dispose();
+            }
         }
 
         private async void cmdSaveAsPdf_Click(object sender, EventArgs e)
