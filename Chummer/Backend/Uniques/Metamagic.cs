@@ -94,7 +94,7 @@ namespace Chummer
             objXmlMetamagicNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
-            if (string.IsNullOrEmpty(Notes))
+            if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
             {
                 Notes = CommonFunctions.GetBookNotes(objXmlMetamagicNode, Name, CurrentDisplayName, Source, Page,
                     DisplayPage(GlobalSettings.Language), _objCharacter);

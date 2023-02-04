@@ -362,9 +362,7 @@ namespace Chummer
                 return;
             }
             if (Interlocked.Decrement(ref _intCountActiveReaders) == 0)
-            {
                 _objReaderSemaphore.Release();
-            }
         }
 
         /// <summary>

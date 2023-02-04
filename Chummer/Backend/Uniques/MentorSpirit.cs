@@ -105,7 +105,7 @@ namespace Chummer
                 if (!xmlMentor.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                     xmlMentor.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
-                if (string.IsNullOrEmpty(Notes))
+                if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
                 {
                     Notes = CommonFunctions.GetBookNotes(xmlMentor, Name, CurrentDisplayNameShort, Source, Page,
                                                              DisplayPage(GlobalSettings.Language), _objCharacter);

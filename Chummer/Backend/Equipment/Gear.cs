@@ -239,7 +239,7 @@ namespace Chummer.Backend.Equipment
             objXmlGear.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
             objXmlGear.TryGetBoolFieldQuickly("isflechetteammo", ref _blnIsFlechetteAmmo);
 
-            if (string.IsNullOrEmpty(Notes))
+            if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
             {
                 Notes = CommonFunctions.GetBookNotes(objXmlGear, Name, CurrentDisplayName, Source, Page,
                     DisplayPage(GlobalSettings.Language), _objCharacter);

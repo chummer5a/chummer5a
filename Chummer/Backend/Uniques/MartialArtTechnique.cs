@@ -77,7 +77,7 @@ namespace Chummer
 
             xmlTechniqueDataNode.TryGetStringFieldQuickly("source", ref _strSource);
             xmlTechniqueDataNode.TryGetStringFieldQuickly("page", ref _strPage);
-            if (string.IsNullOrEmpty(Notes))
+            if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
             {
                 Notes = CommonFunctions.GetBookNotes(xmlTechniqueDataNode, Name, CurrentDisplayName, Source, Page,
                     DisplayPage(GlobalSettings.Language), _objCharacter);

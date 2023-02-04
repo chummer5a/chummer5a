@@ -4523,11 +4523,18 @@ namespace Chummer
                                                                     Improvement.ImprovementSource.MentorSpirit,
                                                                     objMentor.InternalId, token).ConfigureAwait(false);
                                 if (blnSync)
+                                {
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     objCharacter.MentorSpirits.Remove(objMentor);
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objMentor.Dispose();
+                                }
                                 else
+                                {
                                     await objCharacter.MentorSpirits.RemoveAsync(objMentor, token)
                                                       .ConfigureAwait(false);
+                                    await objMentor.DisposeAsync().ConfigureAwait(false);
+                                }
                             }
 
                             break;

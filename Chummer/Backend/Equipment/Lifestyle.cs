@@ -192,7 +192,7 @@ namespace Chummer.Backend.Equipment
                 if (!objXmlLifestyle.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                     objXmlLifestyle.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
-                if (string.IsNullOrEmpty(Notes))
+                if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
                 {
                     Notes = CommonFunctions.GetBookNotes(objXmlLifestyle, Name, CurrentDisplayName, Source, Page,
                                                          DisplayPage(GlobalSettings.Language), _objCharacter);

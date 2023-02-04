@@ -1454,6 +1454,9 @@ namespace Chummer
             await chkPrintSkillsWithZeroRating
                   .DoThreadSafeAsync(x => x.Checked = GlobalSettings.PrintSkillsWithZeroRating, token)
                   .ConfigureAwait(false);
+            await chkInsertPdfNotesIfAvailable
+                  .DoThreadSafeAsync(x => x.Checked = GlobalSettings.InsertPdfNotesIfAvailable, token)
+                  .ConfigureAwait(false);
             await nudBrowserVersion.DoThreadSafeAsync(x => x.Value = GlobalSettings.EmulatedBrowserVersion, token)
                                    .ConfigureAwait(false);
             bool blnEnabled = await txtPDFAppPath.DoThreadSafeFuncAsync(x =>
@@ -1570,6 +1573,9 @@ namespace Chummer
             GlobalSettings.PrintNotes
                 = await chkPrintNotes.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false);
             GlobalSettings.PrintSkillsWithZeroRating = await chkPrintSkillsWithZeroRating
+                                                             .DoThreadSafeFuncAsync(x => x.Checked, token)
+                                                             .ConfigureAwait(false);
+            GlobalSettings.InsertPdfNotesIfAvailable = await chkInsertPdfNotesIfAvailable
                                                              .DoThreadSafeFuncAsync(x => x.Checked, token)
                                                              .ConfigureAwait(false);
             GlobalSettings.EmulatedBrowserVersion

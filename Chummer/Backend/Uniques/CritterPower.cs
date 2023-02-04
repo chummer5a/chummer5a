@@ -128,7 +128,7 @@ namespace Chummer
             objXmlPowerNode.TryGetStringFieldQuickly("page", ref _strPage);
             objXmlPowerNode.TryGetInt32FieldQuickly("karma", ref _intKarma);
 
-            if (string.IsNullOrEmpty(Notes))
+            if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
             {
                 Notes = CommonFunctions.GetBookNotes(objXmlPowerNode, Name, CurrentDisplayName, Source, Page,
                     DisplayPage(GlobalSettings.Language), _objCharacter);

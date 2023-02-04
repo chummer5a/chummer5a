@@ -197,7 +197,7 @@ namespace Chummer
                 objNode.TryGetStringFieldQuickly("source", ref _strSource);
                 objNode.TryGetStringFieldQuickly("page", ref _strPage);
 
-                if (string.IsNullOrEmpty(Notes))
+                if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
                 {
                     Notes = CommonFunctions.GetBookNotes(objNode, Name, CurrentDisplayName, Source, Page,
                                                          DisplayPage(GlobalSettings.Language), CharacterObject);

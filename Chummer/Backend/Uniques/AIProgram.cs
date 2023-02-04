@@ -92,7 +92,7 @@ namespace Chummer
             objXmlProgramNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
-            if (string.IsNullOrEmpty(Notes))
+            if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
             {
                 Notes = CommonFunctions.GetBookNotes(objXmlProgramNode, Name, CurrentDisplayNameShort, Source, Page,
                     DisplayPage(GlobalSettings.Language), _objCharacter);

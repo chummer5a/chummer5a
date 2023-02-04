@@ -230,7 +230,7 @@ namespace Chummer.Backend.Equipment
             objXmlMod.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlMod.TryGetStringFieldQuickly("page", ref _strPage);
 
-            if (string.IsNullOrEmpty(Notes))
+            if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
             {
                 Notes = CommonFunctions.GetBookNotes(objXmlMod, Name, CurrentDisplayName, Source, Page,
                     DisplayPage(GlobalSettings.Language), _objCharacter);

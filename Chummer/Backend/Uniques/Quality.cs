@@ -349,7 +349,7 @@ namespace Chummer
                 // Check if the quality is already suppressed by something
                 RefreshSuppressed();
 
-                if (string.IsNullOrEmpty(Notes))
+                if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
                 {
                     Notes = CommonFunctions.GetBookNotes(objXmlQuality, Name, CurrentDisplayName, Source, Page,
                                                          DisplayPage(GlobalSettings.Language), _objCharacter);

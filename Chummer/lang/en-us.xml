@@ -5945,7 +5945,7 @@
     </string>
     <string>
       <key>Checkbox_Options_AllowHoverIncrement</key>
-      <text>Allow incrementing values of NumericUpDown controls by hovering over the control</text>
+      <text>Scrolling the mouse while hovering it over a spinner changes the spinner's values</text>
     </string>
     <string>
       <key>Checkbox_Options_UseLifeModule</key>
@@ -6030,6 +6030,10 @@
     <string>
       <key>Checkbox_Options_IncreasedImprovedAbilityModifier</key>
       <text>Improved Ability is capped by Learned Rating x 1.5 instead of 0.5</text>
+    </string>
+    <string>
+      <key>Checkbox_Options_InsertPdfNotesIfAvailable</key>
+      <text>Add scraped text from available PDFs as Notes for newly added items </text>
     </string>
     <string>
       <key>String_SelectBP_LifeModuleSummary</key>

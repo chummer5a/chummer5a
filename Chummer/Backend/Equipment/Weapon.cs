@@ -533,7 +533,7 @@ namespace Chummer.Backend.Equipment
             objXmlWeapon.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlWeapon.TryGetStringFieldQuickly("page", ref _strPage);
 
-            if (string.IsNullOrEmpty(Notes))
+            if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
             {
                 Notes = CommonFunctions.GetBookNotes(objXmlWeapon, Name, CurrentDisplayName, Source, Page,
                     DisplayPage(GlobalSettings.Language), _objCharacter);

@@ -206,7 +206,7 @@ namespace Chummer
                                                           objXmlArtNode["bonus"], 1, CurrentDisplayNameShort);
                 }
 
-                if (string.IsNullOrEmpty(Notes))
+                if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
                 {
                     Notes = CommonFunctions.GetBookNotes(objXmlArtNode, Name, CurrentDisplayName, Source, Page,
                                                          DisplayPage(GlobalSettings.Language), _objCharacter);

@@ -223,6 +223,7 @@ namespace Chummer
         private static bool _blnPrintFreeExpenses = true;
         private static bool _blnPrintNotes;
         private static bool _blnPrintSkillsWithZeroRating = true;
+        private static bool _blnInsertPdfNotesIfAvailable = true;
 
         public const int MaxStackLimit = 1024;
         private static bool _blnShowCharacterCustomDataWarning;
@@ -502,6 +503,9 @@ namespace Chummer
 
             // Print Notes.
             LoadBoolFromRegistry(ref _blnPrintNotes, "printnotes");
+
+            // Whether or not to insert scraped text from PDFs into the notes fields of newly added items
+            LoadBoolFromRegistry(ref _blnInsertPdfNotesIfAvailable, "insertpdfnotesifavailable");
 
             // Which version of the Internet Explorer's rendering engine will be emulated for rendering the character view.
             LoadInt32FromRegistry(ref _intEmulatedBrowserVersion, "emulatedbrowserversion");
@@ -1239,6 +1243,15 @@ namespace Chummer
         {
             get => _blnPrintNotes;
             set => _blnPrintNotes = value;
+        }
+
+        /// <summary>
+        /// Whether or not to insert scraped text from PDFs into the Notes fields of newly added items.
+        /// </summary>
+        public static bool InsertPdfNotesIfAvailable
+        {
+            get => _blnInsertPdfNotesIfAvailable;
+            set => _blnInsertPdfNotesIfAvailable = value;
         }
 
         /// <summary>

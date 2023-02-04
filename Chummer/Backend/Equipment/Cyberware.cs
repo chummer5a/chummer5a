@@ -759,7 +759,7 @@ namespace Chummer.Backend.Equipment
                     objXmlCyberware.TryGetStringFieldQuickly("avail", ref _strAvail);
                     objXmlCyberware.TryGetStringFieldQuickly("source", ref _strSource);
                     objXmlCyberware.TryGetStringFieldQuickly("page", ref _strPage);
-                    if (string.IsNullOrEmpty(Notes))
+                    if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
                     {
                         Notes = CommonFunctions.GetBookNotes(objXmlCyberware, Name, CurrentDisplayName, Source, Page,
                                                              DisplayPage(GlobalSettings.Language), _objCharacter);

@@ -1,6 +1,7 @@
 Future Build 226
 Application Changes:
 - The program no longer crashes when attempting to open characters from outside the program (e.g. by double-clicking a Chummer5a save file).
+- A new global setting is now available that can toggle whether or not scraped text from PDF files is automatically inserted as Notes for items newly added to a character.
 - XPath 1.0 functions like ceiling() and floor() are now properly supported in all fields that work off of the document-invariant XPath processor.
 - Having multiple conditional bonuses to the same skill now only makes the greatest conditional bonus show up in the skill pool's modified rating.
 - Corrupted save data for Cyber-Singularity Seeker and/or Redliner can no longer cause duplicates to be generated for their bonuses.
@@ -25,6 +26,8 @@ Data Changes:
 
 Changed/New Strings:
 - LimitCondition_SkillsActiveLeadership
+- Checkbox_Options_AllowHoverIncrement
+- Checkbox_Options_InsertPdfNotesIfAvailable
 
 Build 225
 Application Changes:

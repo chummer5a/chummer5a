@@ -1178,17 +1178,17 @@ namespace Chummer
 
             using (EnterReadLock.Enter(objCharacter.LockObject))
             {
-                string strGearNotes = GetTextFromPdf(strSource + ' ' + strPage, strEnglishNameOnPage, objCharacter);
+                string strNotes = GetTextFromPdf(strSource + ' ' + strPage, strEnglishNameOnPage, objCharacter);
 
-                if (!string.IsNullOrEmpty(strGearNotes)
+                if (!string.IsNullOrEmpty(strNotes)
                     || GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
                                                       StringComparison.OrdinalIgnoreCase))
-                    return strGearNotes;
+                    return strNotes;
                 string strTranslatedNameOnPage = strDisplayName;
 
                 // don't check again it is not translated
                 if (strTranslatedNameOnPage == strName)
-                    return strGearNotes;
+                    return strNotes;
 
                 // if we found <altnameonpage>, and is not empty and not the same as english we must use that instead
                 if (objNode.TryGetStringFieldQuickly("altnameonpage", ref strNameOnPage)
@@ -1215,17 +1215,17 @@ namespace Chummer
 
             using (await EnterReadLock.EnterAsync(objCharacter.LockObject, token).ConfigureAwait(false))
             {
-                string strGearNotes = await GetTextFromPdfAsync(strSource + ' ' + strPage, strEnglishNameOnPage, objCharacter, token).ConfigureAwait(false);
+                string strNotes = await GetTextFromPdfAsync(strSource + ' ' + strPage, strEnglishNameOnPage, objCharacter, token).ConfigureAwait(false);
 
-                if (!string.IsNullOrEmpty(strGearNotes)
+                if (!string.IsNullOrEmpty(strNotes)
                     || GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
                         StringComparison.OrdinalIgnoreCase))
-                    return strGearNotes;
+                    return strNotes;
                 string strTranslatedNameOnPage = strDisplayName;
 
                 // don't check again it is not translated
                 if (strTranslatedNameOnPage == strName)
-                    return strGearNotes;
+                    return strNotes;
 
                 // if we found <altnameonpage>, and is not empty and not the same as english we must use that instead
                 if (objNode.TryGetStringFieldQuickly("altnameonpage", ref strNameOnPage)
