@@ -418,6 +418,42 @@ namespace Chummer
                 if (xmlCyberware != null)
                 {
                     strForceGrade = (await xmlCyberware.SelectSingleNodeAndCacheExpressionAsync("forcegrade", token).ConfigureAwait(false))?.Value;
+                    if (!string.IsNullOrEmpty(strForceGrade))
+                    {
+                        // Force the Cyberware to be a particular Grade.
+                        await cboGrade.DoThreadSafeAsync(x =>
+                        {
+                            if (x.Enabled)
+                                x.Enabled = false;
+                        }, token: token).ConfigureAwait(false);
+                        Grade objForcedGrade = _lstGrades.Find(x => x.Name == strForceGrade);
+                        strForceGrade = objForcedGrade?.SourceIDString;
+                    }
+                    else
+                    {
+                        await cboGrade.DoThreadSafeAsync(x => x.Enabled = !_blnLockGrade, token: token)
+                                      .ConfigureAwait(false);
+                        if (_blnLockGrade)
+                        {
+                            strForceGrade = _objForcedGrade?.SourceIDString ?? await cboGrade
+                                .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token)
+                                .ConfigureAwait(false);
+                        }
+                    }
+
+                    // We will need to rebuild the Grade list since certain categories of 'ware disallow certain grades (e.g. Used for cultured bioware) and ForceGrades can change.
+                    HashSet<string> setDisallowedGrades = null;
+                    if (await xmlCyberware.SelectSingleNodeAndCacheExpressionAsync("bannedgrades", token).ConfigureAwait(false) != null)
+                    {
+                        setDisallowedGrades = new HashSet<string>();
+                        foreach (XPathNavigator objNode in await xmlCyberware.SelectAndCacheExpressionAsync("bannedgrades/grade", token).ConfigureAwait(false))
+                        {
+                            setDisallowedGrades.Add(objNode.Value);
+                        }
+                    }
+                    await PopulateGrades(setDisallowedGrades, false, strForceGrade,
+                                         await chkHideBannedGrades.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+
                     // If the piece has a Rating value, enable the Rating control, otherwise, disable it and set its value to 0.
                     XPathNavigator xmlRatingNode = await xmlCyberware.SelectSingleNodeAndCacheExpressionAsync("rating", token).ConfigureAwait(false);
                     if (xmlRatingNode != null)
@@ -468,10 +504,9 @@ namespace Chummer
                         }
                         if (await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
                         {
-                            int intAvailModifier = strForceGrade == "None" ? 0 : _intAvailModifier;
                             while (intMaxRating > intMinRating
                                    && !await xmlCyberware.CheckAvailRestrictionAsync(
-                                       _objCharacter, intMaxRating, intAvailModifier, token: token).ConfigureAwait(false))
+                                       _objCharacter, intMaxRating, _intAvailModifier, token: token).ConfigureAwait(false))
                             {
                                 --intMaxRating;
                             }
@@ -525,26 +560,6 @@ namespace Chummer
                     bool blnShowSource = !string.IsNullOrEmpty(await lblSource.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false));
                     await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = blnShowSource, token: token).ConfigureAwait(false);
 
-                    if (!string.IsNullOrEmpty(strForceGrade))
-                    {
-                        // Force the Cyberware to be a particular Grade.
-                        await cboGrade.DoThreadSafeAsync(x =>
-                        {
-                            if (x.Enabled)
-                                x.Enabled = false;
-                        }, token: token).ConfigureAwait(false);
-                        Grade objForcedGrade = _lstGrades.Find(x => x.Name == strForceGrade);
-                        strForceGrade = objForcedGrade?.SourceIDString;
-                    }
-                    else
-                    {
-                        await cboGrade.DoThreadSafeAsync(x => x.Enabled = !_blnLockGrade, token: token).ConfigureAwait(false);
-                        if (_blnLockGrade)
-                        {
-                            strForceGrade = _objForcedGrade?.SourceIDString ?? await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
-                        }
-                    }
-
                     bool blnCanBlackMarketDiscount = _setBlackMarketMaps.Contains((await xmlCyberware.SelectSingleNodeAndCacheExpressionAsync("category", token).ConfigureAwait(false))?.Value);
                     await chkBlackMarketDiscount.DoThreadSafeAsync(x =>
                     {
@@ -559,19 +574,6 @@ namespace Chummer
                             x.Checked = false;
                         }
                     }, token: token).ConfigureAwait(false);
-
-                    // We will need to rebuild the Grade list since certain categories of 'ware disallow certain grades (e.g. Used for cultured bioware) and ForceGrades can change.
-                    HashSet<string> setDisallowedGrades = null;
-                    if (await xmlCyberware.SelectSingleNodeAndCacheExpressionAsync("bannedgrades", token).ConfigureAwait(false) != null)
-                    {
-                        setDisallowedGrades = new HashSet<string>();
-                        foreach (XPathNavigator objNode in await xmlCyberware.SelectAndCacheExpressionAsync("bannedgrades/grade", token).ConfigureAwait(false))
-                        {
-                            setDisallowedGrades.Add(objNode.Value);
-                        }
-                    }
-                    await PopulateGrades(setDisallowedGrades, false, strForceGrade,
-                                         await chkHideBannedGrades.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
 
                     string strNotes = (await xmlCyberware.SelectSingleNodeAndCacheExpressionAsync("altnotes", token).ConfigureAwait(false))?.Value ?? (await xmlCyberware.SelectSingleNodeAndCacheExpressionAsync("notes", token).ConfigureAwait(false))?.Value;
                     if (!string.IsNullOrEmpty(strNotes))
