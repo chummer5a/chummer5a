@@ -843,6 +843,7 @@ namespace Chummer
                 objRegistry.SetValue("printexpenses", PrintExpenses.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("printfreeexpenses", PrintFreeExpenses.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("printnotes", PrintNotes.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("insertpdfnotesifavailable", InsertPdfNotesIfAvailable.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("emulatedbrowserversion",
                                      EmulatedBrowserVersion.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("pdfapppath", PdfAppPath);
