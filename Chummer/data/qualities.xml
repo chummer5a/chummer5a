@@ -521,6 +521,14 @@
           <val>2</val>
         </spelldicepool>
         <stuncmrecovery>2</stuncmrecovery>
+        <specificskill>
+          <name>First Aid</name>
+          <bonus>2</bonus>
+        </specificskill>
+        <specificskill>
+          <name>Medicine</name>
+          <bonus>2</bonus>
+        </specificskill>
       </bonus>
       <forbidden>
         <oneof>
