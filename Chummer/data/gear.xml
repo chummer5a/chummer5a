@@ -14103,7 +14103,7 @@
       <avail>0</avail>
       <capacity>0</capacity>
       <requireparent />
-      <cost>(Parent Cost * 0.5)</cost>
+      <cost>(Parent Cost * -0.5)</cost>
       <required>
         <geardetails>
           <category>Drugs</category>
