@@ -14103,7 +14103,7 @@
       <avail>0</avail>
       <capacity>0</capacity>
       <requireparent />
-      <cost>Parent Cost * -.5</cost>
+      <cost>(Parent Cost * 0.5)</cost>
       <required>
         <geardetails>
           <category>Drugs</category>
@@ -14120,7 +14120,7 @@
       <avail>0</avail>
       <capacity>0</capacity>
       <requireparent />
-      <cost>Parent Cost</cost>
+      <cost>(Parent Cost)</cost>
       <required>
         <geardetails>
           <category>Drugs</category>
@@ -14137,7 +14137,7 @@
       <avail>0</avail>
       <capacity>0</capacity>
       <requireparent />
-      <cost>Parent Cost * 5</cost>
+      <cost>(Parent Cost * 5)</cost>
       <required>
         <geardetails>
           <category>Drugs</category>
