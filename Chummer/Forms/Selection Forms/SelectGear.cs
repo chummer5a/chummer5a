@@ -1254,7 +1254,7 @@ namespace Chummer
                 objOldCancellationTokenSource.Cancel(false);
                 objOldCancellationTokenSource.Dispose();
             }
-            using (CancellationTokenSource objJoinedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_objGenericToken, objNewToken))
+            using (CancellationTokenSource objJoinedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(token, objNewToken))
                 return await RefreshList(strCategory, true, objJoinedCancellationTokenSource.Token);
         }
 
