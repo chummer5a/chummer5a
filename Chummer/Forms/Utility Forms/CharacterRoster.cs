@@ -294,7 +294,19 @@ namespace Chummer
                         objTemp = objCurrent;
                     }
 
-                    _tskMostRecentlyUsedsRefresh = LoadMruCharacters(true, objTemp.Token);
+                    Task tskNewRecentlyUsedsRefresh = LoadMruCharacters(true, objTemp.Token);
+                    Task tskOldRecentlyUsedsRefresh = Interlocked.Exchange(ref _tskMostRecentlyUsedsRefresh, tskNewRecentlyUsedsRefresh);
+                    if (tskOldRecentlyUsedsRefresh != null)
+                    {
+                        try
+                        {
+                            await tskOldRecentlyUsedsRefresh.ConfigureAwait(false);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            //swallow this
+                        }
+                    }
 
                     objTemp = new CancellationTokenSource();
                     objCurrent = Interlocked.CompareExchange(
@@ -306,12 +318,24 @@ namespace Chummer
                         objTemp = objCurrent;
                     }
 
-                    _tskWatchFolderRefresh = LoadWatchFolderCharacters(objTemp.Token);
+                    Task tskNewWatchFolderRefresh = LoadWatchFolderCharacters(objTemp.Token);
+                    Task tskOldWatchFolderRefresh = Interlocked.Exchange(ref _tskWatchFolderRefresh, tskNewRecentlyUsedsRefresh);
+                    if (tskOldWatchFolderRefresh != null)
+                    {
+                        try
+                        {
+                            await tskOldWatchFolderRefresh.ConfigureAwait(false);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            //swallow this
+                        }
+                    }
 
                     try
                     {
-                        await Task.WhenAll(_tskMostRecentlyUsedsRefresh.Yield()
-                                                                       .Concat(_tskWatchFolderRefresh.Yield())
+                        await Task.WhenAll(tskNewRecentlyUsedsRefresh.Yield()
+                                                                       .Concat(tskNewWatchFolderRefresh.Yield())
                                                                        .Concat((await Program.PluginLoader
                                                                                    .GetMyActivePluginsAsync(
                                                                                        objTemp.Token)
@@ -395,7 +419,9 @@ namespace Chummer
 
                     try
                     {
-                        await _tskMostRecentlyUsedsRefresh.ConfigureAwait(false);
+                        Task tskTemp = Interlocked.Exchange(ref _tskMostRecentlyUsedsRefresh, null);
+                        if (tskTemp != null)
+                            await tskTemp.ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {
@@ -404,7 +430,9 @@ namespace Chummer
 
                     try
                     {
-                        await _tskWatchFolderRefresh.ConfigureAwait(false);
+                        Task tskTemp = Interlocked.Exchange(ref _tskWatchFolderRefresh, null);
+                        if (tskTemp != null)
+                            await tskTemp.ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {
@@ -436,10 +464,12 @@ namespace Chummer
                 objTemp.Dispose();
             }
 
+            Task tskTemp;
             try
             {
-                if (_tskWatchFolderRefresh?.IsCompleted == false)
-                    await _tskWatchFolderRefresh.ConfigureAwait(false);
+                tskTemp = Interlocked.Exchange(ref _tskWatchFolderRefresh, null);
+                if (tskTemp != null)
+                    await tskTemp.ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -447,6 +477,7 @@ namespace Chummer
             }
             catch
             {
+                Interlocked.CompareExchange(ref _tskWatchFolderRefresh, tskTemp, null);
                 Interlocked.CompareExchange(ref _objWatchFolderRefreshCancellationTokenSource, null, objNewSource);
                 objNewSource.Dispose();
                 throw;
@@ -464,11 +495,26 @@ namespace Chummer
                 await this.DoThreadSafeAsync(x => x.SuspendLayout(), _objGenericToken).ConfigureAwait(false);
                 try
                 {
-                    _tskWatchFolderRefresh
-                        = LoadWatchFolderCharacters(innerToken);
+                    Task tskNewMostRecentlyUsedsRefresh = LoadWatchFolderCharacters(innerToken);
+                    Task tskOldMostRecentlyUsedsRefresh = Interlocked.Exchange(ref _tskMostRecentlyUsedsRefresh, tskNewMostRecentlyUsedsRefresh);
+                    if (tskOldMostRecentlyUsedsRefresh != null)
+                    {
+                        try
+                        {
+                            await tskOldMostRecentlyUsedsRefresh.ConfigureAwait(false);
+                        }
+                        catch (ObjectDisposedException)
+                        {
+                            //swallow this
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            //swallow this
+                        }
+                    }
                     try
                     {
-                        await _tskWatchFolderRefresh.ConfigureAwait(false);
+                        await tskNewMostRecentlyUsedsRefresh.ConfigureAwait(false);
                     }
                     catch (ObjectDisposedException)
                     {
@@ -524,10 +570,12 @@ namespace Chummer
             }
             token.ThrowIfCancellationRequested();
 
+            Task tskTemp;
             try
             {
-                if (_tskMostRecentlyUsedsRefresh?.IsCompleted == false)
-                    await _tskMostRecentlyUsedsRefresh.ConfigureAwait(false);
+                tskTemp = Interlocked.Exchange(ref _tskMostRecentlyUsedsRefresh, null);
+                if (tskTemp != null)
+                    await tskTemp.ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -535,6 +583,7 @@ namespace Chummer
             }
             catch
             {
+                Interlocked.CompareExchange(ref _tskMostRecentlyUsedsRefresh, tskTemp, null);
                 Interlocked.CompareExchange(ref _objMostRecentlyUsedsRefreshCancellationTokenSource, null, objNewSource);
                 objNewSource.Dispose();
                 throw;
@@ -550,11 +599,26 @@ namespace Chummer
             await this.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
             try
             {
-                _tskMostRecentlyUsedsRefresh
-                    = LoadMruCharacters(strMruType != "mru", objToken);
+                Task tskNewRecentlyUsedsRefresh = LoadMruCharacters(strMruType != "mru", objToken);
+                Task tskOldRecentlyUsedsRefresh = Interlocked.Exchange(ref _tskMostRecentlyUsedsRefresh, tskNewRecentlyUsedsRefresh);
+                if (tskOldRecentlyUsedsRefresh != null)
+                {
+                    try
+                    {
+                        await tskOldRecentlyUsedsRefresh.ConfigureAwait(false);
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        //swallow this
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        //swallow this
+                    }
+                }
                 try
                 {
-                    await _tskMostRecentlyUsedsRefresh.ConfigureAwait(false);
+                    await tskNewRecentlyUsedsRefresh.ConfigureAwait(false);
                 }
                 catch (ObjectDisposedException)
                 {
