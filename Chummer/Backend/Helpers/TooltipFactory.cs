@@ -17,6 +17,8 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using TheArtOfDev.HtmlRenderer.WinForms;
 
@@ -36,13 +38,21 @@ namespace Chummer
             OwnerDraw = true,
             ReshowDelay = 100,
             TooltipCssClass = "htmltooltip",
+            UseGdiPlusTextRendering = true,
             //UseAnimation = true,
             //UseFading = true
         };
 
         public static void SetToolTip(this Control c, string caption)
         {
-            ToolTip.SetToolTip(c, caption.CleanForHtml());
+            caption = caption.CleanForHtml();
+            c.DoThreadSafe(x => ToolTip.SetToolTip(x, caption));
+        }
+
+        public static Task SetToolTipAsync(this Control c, string caption, CancellationToken token = default)
+        {
+            caption = caption.CleanForHtml();
+            return c.DoThreadSafeAsync(x => ToolTip.SetToolTip(x, caption), token);
         }
     }
 }

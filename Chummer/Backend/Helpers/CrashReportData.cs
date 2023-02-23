@@ -25,56 +25,69 @@ using System.Linq;
 using System.Net;
 using System.Net.Mail;
 using System.Text;
+using Microsoft.IO;
 using Microsoft.Win32;
 
 namespace Chummer
 {
-    public sealed class CrashReportData
+    public sealed class CrashReportData : IDisposable
     {
         // ReSharper disable once UnusedMember.Local
         // ReSharper disable once UnusedParameter.Local
         private static void BuildFromException(object sender, UnhandledExceptionEventArgs e)
         {
-            if (Debugger.IsAttached)
+            if (Debugger.IsAttached || Utils.IsUnitTest || Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                 return;
 
-            CrashReportData report = new CrashReportData(Guid.NewGuid()).AddDefaultData().AddData("exception.txt", e.ExceptionObject.ToString());
-
-            //Log.IsLoggerEnabled = false; //Make sure log object is not used
-
-            try
+            using (CrashReportData report = new CrashReportData(Guid.NewGuid()).AddDefaultData()
+                                                                               .AddData("exception.txt",
+                                                                                   e.ExceptionObject.ToString()))
             {
-                string strFile = Path.Combine(Utils.GetStartupPath, "chummerlog.txt");
-                using (StreamReader objStream = new StreamReader(strFile, Encoding.UTF8, true))
-                    report.AddData("chummerlog.txt", objStream.BaseStream);
-            }
-            catch (Exception ex)
-            {
-                report.AddData("chummerlog.txt", ex.ToString());
-            }
 
-            //Considering doing some magic with
-            //Application.OpenForms
-            //And reflection to all savefiles
-            //here
+                //Log.IsLoggerEnabled = false; //Make sure log object is not used
 
-            //try to include all settings files
-            foreach (string strSettingFile in Directory.EnumerateFiles(Path.Combine(Utils.GetStartupPath, "settings"), "*.xml"))
-            {
-                string strName = Path.GetFileName(strSettingFile);
-                try
+                string strChummerLog = Path.Combine(Utils.GetStartupPath, "chummerlog.txt");
+                if (File.Exists(strChummerLog))
                 {
-                    using (StreamReader objStream = new StreamReader(strSettingFile, Encoding.UTF8, true))
-                        report.AddData(strName, objStream.BaseStream);
+                    try
+                    {
+                        using (FileStream objFileStream
+                               = new FileStream(strChummerLog, FileMode.Open, FileAccess.Read, FileShare.Read))
+                        using (StreamReader objStream = new StreamReader(objFileStream, Encoding.UTF8, true))
+                            report.AddData("chummerlog.txt", objStream.BaseStream);
+                    }
+                    catch (Exception ex)
+                    {
+                        report.AddData("chummerlog.txt", ex.ToString());
+                    }
                 }
-                catch (Exception ex)
-                {
-                    report.AddData(strName, ex.ToString());
-                }
-            }
 
-            report.Send();
-            Program.MainForm.ShowMessageBox("Crash report sent." + Environment.NewLine + "Please refer to the crash id " + report.Id);
+                //Considering doing some magic with
+                //Application.OpenForms
+                //And reflection to all savefiles
+                //here
+
+                //try to include all settings files
+                foreach (string strSettingFile in Directory.EnumerateFiles(Utils.GetSettingsFolderPath, "*.xml"))
+                {
+                    string strName = Path.GetFileName(strSettingFile);
+                    try
+                    {
+                        using (FileStream objFileStream
+                               = new FileStream(strSettingFile, FileMode.Open, FileAccess.Read, FileShare.Read))
+                        using (StreamReader objStream = new StreamReader(objFileStream, Encoding.UTF8, true))
+                            report.AddData(strName, objStream.BaseStream);
+                    }
+                    catch (Exception ex)
+                    {
+                        report.AddData(strName, ex.ToString());
+                    }
+                }
+
+                report.Send();
+                Program.ShowScrollableMessageBox("Crash report sent." + Environment.NewLine + "Please refer to the crash id "
+                                                 + report.Id);
+            }
         }
 
         private readonly List<KeyValuePair<string, Stream>> _lstValues;
@@ -133,6 +146,7 @@ namespace Chummer
                                 //on 32 bit builds?
                                 //cv = Registry.LocalMachine.OpenSubKey(@"SOFTWARE\Wow6432Node\Microsoft\Windows NT\CurrentVersion");
                                 cv.Close();
+                                cv.Dispose();
                                 cv2 = RegistryKey.OpenBaseKey(RegistryHive.LocalMachine, RegistryView.Registry64);
                                 cv = cv2.OpenSubKey(@"SOFTWARE\Microsoft\Windows NT\CurrentVersion");
                             }
@@ -164,7 +178,7 @@ namespace Chummer
         public CrashReportData AddData(string title, string contents)
         {
             //Convert string to stream
-            MemoryStream stream = new MemoryStream();
+            RecyclableMemoryStream stream = new RecyclableMemoryStream(Utils.MemoryStreamManager);
             using (StreamWriter writer = new StreamWriter(stream))
             {
                 writer.Write(contents);
@@ -231,6 +245,13 @@ namespace Chummer
             {
                 return false;
             }
+        }
+
+        /// <inheritdoc />
+        public void Dispose()
+        {
+            foreach (KeyValuePair<string, Stream> pair in _lstValues)
+                pair.Value?.Dispose();
         }
     }
 }

@@ -23,53 +23,7 @@
 	https://www.reddit.com/r/NeonAnarchy
 -->
 <chummer>
-	<categories>
-		<category>Jetpacks</category>
-		<category>RCC Accessories</category>
-	</categories>
-	<gears>
-		<gear>
-			<id>4e010d54-c232-11ea-b3de-0242ac130004</id>
-			<name>Vulcan Systems "Hot-Drop" Jetpack Fuel</name>
-			<category>Jetpacks</category>
-			<rating>0</rating>
-			<source>NA</source>
-			<page>33</page>
-			<avail>10F</avail>
-			<cost>500</cost>
-			<costfor>20</costfor>
-		</gear>
-		<gear>
-			<id>a91d8b6c-c22e-11ea-b3de-0242ac130004</id>
-			<name>Vulcan Systems "Hot-Drop" Rapid-Egress Jetpack System</name>
-			<category>Jetpacks</category>
-			<rating>0</rating>
-			<source>NA</source>
-			<page>33</page>
-			<avail>16F</avail>
-			<cost>40000</cost>
-		</gear>
-		<gear>
-		  <id>bfc0eb75-fb25-4f51-92c6-a8460375b5d9</id>
-		  <name>RCC Stealth Expansion</name>
-		  <category>RCC Accessories</category>
-		  <rating>6</rating>
-		  <source>NA</source>
-		  <page>24</page>
-		  <avail>(Rating*2)R</avail>
-		  <armorcapacity>[2]</armorcapacity>
-		  <cost>(Rating*Rating)*1000</cost>
-		  <devicerating>0</devicerating>
-		  <modsleaze>{Rating}</modsleaze>
-		  <required>
-			<geardetails>
-			  <OR>
-				<category>Rigger Command Consoles</category>
-				<category>Custom</category>
-			  </OR>
-			</geardetails>
-		  </required>
-		</gear>
+<gears>
 		<gear>
 			<id>a91d8b6c-c22e-11ea-b3de-0242ac130005</id>
 			<name>Grenade: Painade</name>

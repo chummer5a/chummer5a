@@ -55,7 +55,7 @@ namespace Chummer
             set;
         }
 
-        public DiceRollerControl DiceRoller => tabControl.TabPages[(int)DashBoardPages.Dice].Controls[0] as DiceRollerControl;
+        public DiceRollerControl DiceRoller => tabControl.DoThreadSafeFunc(x => x.TabPages[(int)DashBoardPages.Dice].Controls[0]) as DiceRollerControl;
 
         #endregion Properties
 

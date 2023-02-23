@@ -67,7 +67,7 @@ namespace Translator
             this.gbxCreate.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gbxCreate.Location = new System.Drawing.Point(3, 3);
             this.gbxCreate.Name = "gbxCreate";
-            this.gbxCreate.Size = new System.Drawing.Size(217, 102);
+            this.gbxCreate.Size = new System.Drawing.Size(297, 102);
             this.gbxCreate.TabIndex = 0;
             this.gbxCreate.TabStop = false;
             this.gbxCreate.Text = "Create a Language File";
@@ -93,17 +93,17 @@ namespace Translator
             this.tlpCreate.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCreate.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpCreate.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpCreate.Size = new System.Drawing.Size(211, 83);
+            this.tlpCreate.Size = new System.Drawing.Size(291, 83);
             this.tlpCreate.TabIndex = 149;
             // 
             // chkRightToLeft
             // 
+            this.chkRightToLeft.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkRightToLeft.AutoSize = true;
             this.tlpCreate.SetColumnSpan(this.chkRightToLeft, 2);
-            this.chkRightToLeft.Dock = System.Windows.Forms.DockStyle.Left;
-            this.chkRightToLeft.Location = new System.Drawing.Point(3, 57);
+            this.chkRightToLeft.Location = new System.Drawing.Point(3, 60);
             this.chkRightToLeft.Name = "chkRightToLeft";
-            this.chkRightToLeft.Size = new System.Drawing.Size(84, 23);
+            this.chkRightToLeft.Size = new System.Drawing.Size(84, 17);
             this.chkRightToLeft.TabIndex = 9;
             this.chkRightToLeft.Text = "Right-to-Left";
             this.chkRightToLeft.UseVisualStyleBackColor = true;
@@ -111,10 +111,10 @@ namespace Translator
             // 
             // lblLanguageCode
             // 
-            this.lblLanguageCode.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblLanguageCode.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblLanguageCode.AutoSize = true;
             this.tlpCreate.SetColumnSpan(this.lblLanguageCode, 2);
-            this.lblLanguageCode.Location = new System.Drawing.Point(3, 6);
+            this.lblLanguageCode.Location = new System.Drawing.Point(4, 6);
             this.lblLanguageCode.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblLanguageCode.Name = "lblLanguageCode";
             this.lblLanguageCode.Size = new System.Drawing.Size(83, 13);
@@ -124,13 +124,14 @@ namespace Translator
             // 
             // cmdCreate
             // 
+            this.cmdCreate.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.cmdCreate.AutoSize = true;
             this.cmdCreate.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdCreate.Dock = System.Windows.Forms.DockStyle.Right;
             this.cmdCreate.Enabled = false;
-            this.cmdCreate.Location = new System.Drawing.Point(160, 57);
+            this.cmdCreate.Location = new System.Drawing.Point(208, 57);
+            this.cmdCreate.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdCreate.Name = "cmdCreate";
-            this.cmdCreate.Size = new System.Drawing.Size(48, 23);
+            this.cmdCreate.Size = new System.Drawing.Size(80, 23);
             this.cmdCreate.TabIndex = 4;
             this.cmdCreate.Text = "Create";
             this.cmdCreate.UseVisualStyleBackColor = true;
@@ -138,7 +139,7 @@ namespace Translator
             // 
             // lblName
             // 
-            this.lblName.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblName.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblName.AutoSize = true;
             this.lblName.Location = new System.Drawing.Point(3, 33);
             this.lblName.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
@@ -155,28 +156,28 @@ namespace Translator
             this.txtLanguageName.Location = new System.Drawing.Point(44, 29);
             this.txtLanguageName.MaxLength = 100;
             this.txtLanguageName.Name = "txtLanguageName";
-            this.txtLanguageName.Size = new System.Drawing.Size(164, 20);
+            this.txtLanguageName.Size = new System.Drawing.Size(244, 20);
             this.txtLanguageName.TabIndex = 3;
             // 
             // flpLanguageCode
             // 
+            this.flpLanguageCode.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.flpLanguageCode.AutoSize = true;
             this.flpLanguageCode.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flpLanguageCode.Controls.Add(this.txtRegionCode);
             this.flpLanguageCode.Controls.Add(this.lblDash);
             this.flpLanguageCode.Controls.Add(this.txtLanguageCode);
-            this.flpLanguageCode.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpLanguageCode.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flpLanguageCode.Location = new System.Drawing.Point(90, 0);
+            this.flpLanguageCode.Location = new System.Drawing.Point(199, 0);
             this.flpLanguageCode.Margin = new System.Windows.Forms.Padding(0);
             this.flpLanguageCode.Name = "flpLanguageCode";
-            this.flpLanguageCode.Size = new System.Drawing.Size(121, 25);
+            this.flpLanguageCode.Size = new System.Drawing.Size(92, 25);
             this.flpLanguageCode.TabIndex = 147;
             // 
             // txtRegionCode
             // 
             this.txtRegionCode.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtRegionCode.Location = new System.Drawing.Point(86, 3);
+            this.txtRegionCode.Location = new System.Drawing.Point(57, 3);
             this.txtRegionCode.MaxLength = 2;
             this.txtRegionCode.Name = "txtRegionCode";
             this.txtRegionCode.Size = new System.Drawing.Size(32, 20);
@@ -188,7 +189,7 @@ namespace Translator
             // 
             this.lblDash.AutoSize = true;
             this.lblDash.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblDash.Location = new System.Drawing.Point(70, 6);
+            this.lblDash.Location = new System.Drawing.Point(41, 6);
             this.lblDash.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDash.Name = "lblDash";
             this.lblDash.Size = new System.Drawing.Size(10, 13);
@@ -199,7 +200,7 @@ namespace Translator
             // txtLanguageCode
             // 
             this.txtLanguageCode.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtLanguageCode.Location = new System.Drawing.Point(32, 3);
+            this.txtLanguageCode.Location = new System.Drawing.Point(3, 3);
             this.txtLanguageCode.Name = "txtLanguageCode";
             this.txtLanguageCode.Size = new System.Drawing.Size(32, 20);
             this.txtLanguageCode.TabIndex = 1;
@@ -212,9 +213,9 @@ namespace Translator
             this.gbxEdit.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gbxEdit.Controls.Add(this.tlpEdit);
             this.gbxEdit.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gbxEdit.Location = new System.Drawing.Point(226, 3);
+            this.gbxEdit.Location = new System.Drawing.Point(306, 3);
             this.gbxEdit.Name = "gbxEdit";
-            this.gbxEdit.Size = new System.Drawing.Size(217, 102);
+            this.gbxEdit.Size = new System.Drawing.Size(297, 102);
             this.gbxEdit.TabIndex = 146;
             this.gbxEdit.TabStop = false;
             this.gbxEdit.Text = "Edit Language File";
@@ -224,7 +225,7 @@ namespace Translator
             this.tlpEdit.AutoSize = true;
             this.tlpEdit.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpEdit.ColumnCount = 3;
-            this.tlpEdit.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tlpEdit.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33332F));
             this.tlpEdit.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
             this.tlpEdit.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
             this.tlpEdit.Controls.Add(this.cmdRebuild, 2, 1);
@@ -235,56 +236,65 @@ namespace Translator
             this.tlpEdit.Location = new System.Drawing.Point(3, 16);
             this.tlpEdit.Name = "tlpEdit";
             this.tlpEdit.RowCount = 2;
-            this.tlpEdit.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpEdit.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpEdit.Size = new System.Drawing.Size(211, 83);
+            this.tlpEdit.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpEdit.Size = new System.Drawing.Size(291, 83);
             this.tlpEdit.TabIndex = 9;
             // 
             // cmdRebuild
             // 
+            this.cmdRebuild.AutoSize = true;
+            this.cmdRebuild.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdRebuild.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdRebuild.Enabled = false;
-            this.cmdRebuild.Location = new System.Drawing.Point(143, 57);
+            this.cmdRebuild.Location = new System.Drawing.Point(196, 30);
+            this.cmdRebuild.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdRebuild.Name = "cmdRebuild";
-            this.cmdRebuild.Size = new System.Drawing.Size(65, 23);
+            this.cmdRebuild.Size = new System.Drawing.Size(92, 50);
             this.cmdRebuild.TabIndex = 7;
-            this.cmdRebuild.Text = "Rebuild";
+            this.cmdRebuild.Text = "Rebuild with Only Current Entries and Edit";
             this.cmdRebuild.UseVisualStyleBackColor = true;
             this.cmdRebuild.Click += new System.EventHandler(this.cmdRebuild_Click);
             // 
             // cmdUpdate
             // 
+            this.cmdUpdate.AutoSize = true;
+            this.cmdUpdate.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdUpdate.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdUpdate.Enabled = false;
-            this.cmdUpdate.Location = new System.Drawing.Point(73, 57);
+            this.cmdUpdate.Location = new System.Drawing.Point(99, 30);
+            this.cmdUpdate.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdUpdate.Name = "cmdUpdate";
-            this.cmdUpdate.Size = new System.Drawing.Size(64, 23);
+            this.cmdUpdate.Size = new System.Drawing.Size(91, 50);
             this.cmdUpdate.TabIndex = 8;
-            this.cmdUpdate.Text = "Update";
+            this.cmdUpdate.Text = "Update with Missing Entries and Edit";
             this.cmdUpdate.UseVisualStyleBackColor = true;
             this.cmdUpdate.Click += new System.EventHandler(this.cmdUpdate_Click);
             // 
             // cboLanguages
             // 
+            this.cboLanguages.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.tlpEdit.SetColumnSpan(this.cboLanguages, 3);
-            this.cboLanguages.Dock = System.Windows.Forms.DockStyle.Top;
             this.cboLanguages.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboLanguages.FormattingEnabled = true;
             this.cboLanguages.Location = new System.Drawing.Point(3, 3);
             this.cboLanguages.Name = "cboLanguages";
-            this.cboLanguages.Size = new System.Drawing.Size(205, 21);
+            this.cboLanguages.Size = new System.Drawing.Size(285, 21);
             this.cboLanguages.TabIndex = 5;
             this.cboLanguages.SelectedIndexChanged += new System.EventHandler(this.cboLanguages_SelectedIndexChanged);
             // 
             // cmdEdit
             // 
+            this.cmdEdit.AutoSize = true;
+            this.cmdEdit.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdEdit.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdEdit.Enabled = false;
-            this.cmdEdit.Location = new System.Drawing.Point(3, 57);
+            this.cmdEdit.Location = new System.Drawing.Point(3, 30);
+            this.cmdEdit.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdEdit.Name = "cmdEdit";
-            this.cmdEdit.Size = new System.Drawing.Size(64, 23);
+            this.cmdEdit.Size = new System.Drawing.Size(90, 50);
             this.cmdEdit.TabIndex = 6;
-            this.cmdEdit.Text = "Edit";
+            this.cmdEdit.Text = "Edit Only the Existing Entries";
             this.cmdEdit.UseVisualStyleBackColor = true;
             this.cmdEdit.Click += new System.EventHandler(this.cmdEdit_Click);
             // 
@@ -293,19 +303,20 @@ namespace Translator
             this.pbProcessProgress.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.pbProcessProgress.Location = new System.Drawing.Point(3, 117);
             this.pbProcessProgress.Name = "pbProcessProgress";
-            this.pbProcessProgress.Size = new System.Drawing.Size(384, 23);
+            this.pbProcessProgress.Size = new System.Drawing.Size(514, 23);
             this.pbProcessProgress.Step = 1;
             this.pbProcessProgress.TabIndex = 147;
             // 
             // cmdCancel
             // 
+            this.cmdCancel.Anchor = System.Windows.Forms.AnchorStyles.Bottom;
             this.cmdCancel.AutoSize = true;
             this.cmdCancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdCancel.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.cmdCancel.Enabled = false;
-            this.cmdCancel.Location = new System.Drawing.Point(393, 117);
+            this.cmdCancel.Location = new System.Drawing.Point(523, 117);
+            this.cmdCancel.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(50, 23);
+            this.cmdCancel.Size = new System.Drawing.Size(80, 23);
             this.cmdCancel.TabIndex = 8;
             this.cmdCancel.Text = "Cancel";
             this.cmdCancel.UseVisualStyleBackColor = true;
@@ -325,7 +336,7 @@ namespace Translator
             this.tlpGroupBoxes.Name = "tlpGroupBoxes";
             this.tlpGroupBoxes.RowCount = 1;
             this.tlpGroupBoxes.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpGroupBoxes.Size = new System.Drawing.Size(446, 108);
+            this.tlpGroupBoxes.Size = new System.Drawing.Size(606, 108);
             this.tlpGroupBoxes.TabIndex = 148;
             // 
             // tlpMain
@@ -344,19 +355,19 @@ namespace Translator
             this.tlpMain.RowCount = 2;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMain.Size = new System.Drawing.Size(446, 143);
+            this.tlpMain.Size = new System.Drawing.Size(606, 143);
             this.tlpMain.TabIndex = 149;
             // 
-            // frmTranslatorMain
+            // TranslatorMain
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.ClientSize = new System.Drawing.Size(464, 161);
+            this.ClientSize = new System.Drawing.Size(624, 161);
             this.Controls.Add(this.tlpMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
-            this.Name = "frmTranslatorMain";
+            this.Name = "TranslatorMain";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "Chummer Translator";
@@ -371,6 +382,7 @@ namespace Translator
             this.gbxEdit.ResumeLayout(false);
             this.gbxEdit.PerformLayout();
             this.tlpEdit.ResumeLayout(false);
+            this.tlpEdit.PerformLayout();
             this.tlpGroupBoxes.ResumeLayout(false);
             this.tlpGroupBoxes.PerformLayout();
             this.tlpMain.ResumeLayout(false);

@@ -1,4 +1,6 @@
-namespace Chummer.UI.Shared
+using System;
+
+namespace Chummer.Controls.Shared
 {
     partial class BindingListDisplay<TType>
     {
@@ -13,10 +15,9 @@ namespace Chummer.UI.Shared
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && (components != null))
             {
-                components?.Dispose();
-                System.Windows.Forms.Application.Idle -= ApplicationOnIdle;
+                components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -36,7 +37,7 @@ namespace Chummer.UI.Shared
             // 
             this.pnlDisplay.Location = new System.Drawing.Point(0, 0);
             this.pnlDisplay.Name = "pnlDisplay";
-            this.pnlDisplay.Size = new System.Drawing.Size(606, 433);
+            this.pnlDisplay.Size = new System.Drawing.Size(637, 477);
             this.pnlDisplay.TabIndex = 0;
             // 
             // BindingListDisplay
@@ -48,7 +49,7 @@ namespace Chummer.UI.Shared
             this.Controls.Add(this.pnlDisplay);
             this.DoubleBuffered = true;
             this.Name = "BindingListDisplay";
-            this.Size = new System.Drawing.Size(609, 436);
+            this.Size = new System.Drawing.Size(640, 480);
             this.Load += new System.EventHandler(this.BindingListDisplay_Load);
             this.Scroll += new System.Windows.Forms.ScrollEventHandler(this.BindingListDisplay_Scroll);
             this.SizeChanged += new System.EventHandler(this.BindingListDisplay_SizeChanged);

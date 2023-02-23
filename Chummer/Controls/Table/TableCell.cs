@@ -30,6 +30,8 @@ namespace Chummer.UI.Table
         {
             ContentField = content;
             InitializeComponent();
+            if (content != null)
+                Disposed += (sender, args) => content.Dispose();
             Alignment = Alignment.Left;
         }
 
@@ -57,7 +59,8 @@ namespace Chummer.UI.Table
         /// <param name="height"></param>
         protected internal virtual void UpdateAvailableSize(int width, int height)
         {
-            if (ContentField == null) return;
+            if (ContentField == null)
+                return;
             Size size = ContentField.Size;
             int x;
             if ((Alignment & Alignment.Left) != 0)
@@ -88,9 +91,15 @@ namespace Chummer.UI.Table
             }
 
             SuspendLayout();
-            ContentField.Location = new Point(x, y);
-            Size = new Size(x + size.Width, y + size.Height);
-            ResumeLayout(false);
+            try
+            {
+                ContentField.Location = new Point(x, y);
+                Size = new Size(x + size.Width, y + size.Height);
+            }
+            finally
+            {
+                ResumeLayout(false);
+            }
             //Invalidate();
         }
 

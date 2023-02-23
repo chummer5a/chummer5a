@@ -22,13 +22,13 @@
          xsi:schemaLocation="http://www.w3.org/2001/XMLSchema spells.xsd">
 
   <categories>
-    <category>Combat</category>
-    <category>Detection</category>
-    <category>Health</category>
-    <category>Illusion</category>
-    <category>Manipulation</category>
-    <category>Enchantments</category>
-    <category>Rituals</category>
+    <category useskill="Spellcasting" alchemicalskill="Alchemy" barehandedadeptskill="Unarmed Combat">Combat</category>
+    <category useskill="Spellcasting" alchemicalskill="Alchemy" barehandedadeptskill="Unarmed Combat">Detection</category>
+    <category useskill="Spellcasting" alchemicalskill="Alchemy" barehandedadeptskill="Unarmed Combat">Health</category>
+    <category useskill="Spellcasting" alchemicalskill="Alchemy" barehandedadeptskill="Unarmed Combat">Illusion</category>
+    <category useskill="Spellcasting" alchemicalskill="Alchemy" barehandedadeptskill="Unarmed Combat">Manipulation</category>
+    <category useskill="Artificing">Enchantments</category>
+    <category useskill="Ritual Spellcasting">Rituals</category>
   </categories>
   <spells>
     <!-- Region SR5 -->
@@ -143,7 +143,7 @@
       <source>SR5</source>
       <category>Combat</category>
       <damage>P</damage>
-      <descriptor>Indirect</descriptor>
+      <descriptor>Indirect, Elemental</descriptor>
       <duration>I</duration>
       <dv>F-3</dv>
       <range>LOS</range>
@@ -2945,6 +2945,10 @@
       </bonus>
       <required>
         <oneof>
+          <group>
+            <initiategrade>2</initiategrade>
+            <tradition>Red Magic</tradition>
+          </group>
           <quality>Adept</quality>
           <quality>Mystic Adept</quality>
         </oneof>
@@ -3718,6 +3722,18 @@
       <type>P</type>
     </spell>
     <spell>
+      <id>547c0959-7a9b-487c-adec-54f639585695</id>
+      <name>Fashion</name>
+      <page>190</page>
+      <source>SS</source>
+      <category>Manipulation</category>
+      <damage>0</damage>
+      <duration>P</duration>
+      <dv>F-1</dv>
+      <range>T (A)</range>
+      <type>P</type>
+    </spell>
+    <spell>
       <id>ad128cba-aa39-4433-ab1e-9259e19778f6</id>
       <name>Hibernate</name>
       <page>190</page>
@@ -3729,6 +3745,19 @@
       <dv>F-2</dv>
       <range>T</range>
       <type>M</type>
+    </spell>
+    <spell>
+      <id>ffc5309a-9ae8-4770-aabd-2abe8246c0ec</id>
+      <name>Interference</name>
+      <page>190</page>
+      <source>SS</source>
+      <category>Manipulation</category>
+      <damage>0</damage>
+      <descriptor>Environmental, Area</descriptor>
+      <duration>S</duration>
+      <dv>F-2</dv>
+      <range>LOS (A)</range>
+      <type>P</type>
     </spell>
     <spell>
       <id>d3431ff8-e33f-4cd4-a185-4817b5cce2f8</id>
@@ -3753,6 +3782,32 @@
       <descriptor />
       <duration>P</duration>
       <dv>F-3</dv>
+      <range>T</range>
+      <type>P</type>
+    </spell>
+    <spell>
+      <id>8b3edb22-35ab-44a3-aa9d-0553a1af4da4</id>
+      <name>Sound Barrier</name>
+      <page>190</page>
+      <source>SS</source>
+      <category>Illusion</category>
+      <damage>0</damage>
+      <descriptor>Realistic, Single-Sense, Area</descriptor>
+      <duration>S</duration>
+      <dv>F-2</dv>
+      <range>LOS (A)</range>
+      <type>P</type>
+    </spell>
+    <spell>
+      <id>58331f62-e907-4a4a-a59c-f9303d16dcbe</id>
+      <name>Vehicle Mask</name>
+      <page>190</page>
+      <source>SS</source>
+      <category>Illusion</category>
+      <damage>0</damage>
+      <descriptor>Realistic, Multi-Sense</descriptor>
+      <duration>S</duration>
+      <dv>F-2</dv>
       <range>T</range>
       <type>P</type>
     </spell>
@@ -4730,11 +4785,11 @@
       <type>P</type>
       <bonus>
         <addspirit>
-            <spirit>Carcass Spirit</spirit>
-            <spirit>Corpse Spirit</spirit>
-            <spirit>Rot Spirit</spirit>
-            <spirit>Palefire Spirit</spirit>
-            <spirit>Detritus Spirit</spirit>
+          <spirit>Carcass Spirit</spirit>
+          <spirit>Corpse Spirit</spirit>
+          <spirit>Rot Spirit</spirit>
+          <spirit>Palefire Spirit</spirit>
+          <spirit>Detritus Spirit</spirit>
         </addspirit>
       </bonus>
     </spell>

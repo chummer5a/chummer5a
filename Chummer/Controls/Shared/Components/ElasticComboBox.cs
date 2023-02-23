@@ -18,11 +18,12 @@
  */
 
 using System;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Chummer
 {
-    public sealed class ElasticComboBox : ComboBox
+    public class ElasticComboBox : ComboBox
     {
         private readonly int _intToolTipWrap;
 
@@ -36,9 +37,8 @@ namespace Chummer
             set
             {
                 value = _intToolTipWrap > 0 ? value.WordWrap(_intToolTipWrap) : value.WordWrap();
-                if (_strToolTipText == value)
+                if (Interlocked.Exchange(ref _strToolTipText, value) == value)
                     return;
-                _strToolTipText = value;
                 _objToolTip.SetToolTip(this, value.CleanForHtml());
             }
         }
@@ -51,7 +51,6 @@ namespace Chummer
         {
             _objToolTip = objToolTip;
             _intToolTipWrap = intToolTipWrap;
-            DoubleBuffered = true;
             SelectedIndexChanged += ClearUnintendedHighlight;
             Resize += ClearUnintendedHighlight;
         }
@@ -59,7 +58,7 @@ namespace Chummer
         private void ClearUnintendedHighlight(object sender, EventArgs e)
         {
             if (DropDownStyle != ComboBoxStyle.DropDownList && IsHandleCreated)
-                this.DoThreadSafe(ClearSelection);
+                ClearSelection();
         }
 
         protected override void OnDataSourceChanged(EventArgs e)

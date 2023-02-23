@@ -4215,7 +4215,7 @@
             <naturalweapon>
               <name>Bite (Canine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -4300,7 +4300,7 @@
             <naturalweapon>
               <name>Bite (Canine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -4381,7 +4381,7 @@
             <naturalweapon>
               <name>Bite (Canine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -4465,7 +4465,7 @@
             <naturalweapon>
               <name>Bite (Canine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -4552,7 +4552,7 @@
             <naturalweapon>
               <name>Bite (Canine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -4637,7 +4637,7 @@
             <naturalweapon>
               <name>Bite (Canine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -4719,7 +4719,7 @@
             <naturalweapon>
               <name>Bite (Canine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -4803,7 +4803,7 @@
             <naturalweapon>
               <name>Bite (Canine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -4889,7 +4889,7 @@
             <naturalweapon>
               <name>Bite (Canine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -4977,7 +4977,7 @@
             <naturalweapon>
               <name>Bite (Canine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -5065,7 +5065,7 @@
             <naturalweapon>
               <name>Bite (Canine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -5151,7 +5151,7 @@
             <naturalweapon>
               <name>Bite (Canine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -5233,7 +5233,7 @@
             <naturalweapon>
               <name>Bite (Canine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -5317,7 +5317,7 @@
             <naturalweapon>
               <name>Bite (Canine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -5398,7 +5398,7 @@
             <naturalweapon>
               <name>Bite (Canine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -5482,7 +5482,7 @@
             <naturalweapon>
               <name>Bite (Canine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -5564,7 +5564,7 @@
             <naturalweapon>
               <name>Bite (Canine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -5650,7 +5650,7 @@
             <naturalweapon>
               <name>Bite (Canine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -5738,7 +5738,7 @@
             <naturalweapon>
               <name>Bite (Canine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -5823,7 +5823,7 @@
             <naturalweapon>
               <name>Bite (Canine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -5908,7 +5908,7 @@
             <naturalweapon>
               <name>Bite (Canine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -5994,7 +5994,7 @@
             <naturalweapon>
               <name>Bite (Canine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -7833,7 +7833,7 @@
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -7843,7 +7843,7 @@
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -7927,7 +7927,7 @@
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -7937,7 +7937,7 @@
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -8020,7 +8020,7 @@
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -8030,7 +8030,7 @@
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -8114,7 +8114,7 @@
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -8124,7 +8124,7 @@
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -8211,7 +8211,7 @@
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -8221,7 +8221,7 @@
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -8305,7 +8305,7 @@
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -8315,7 +8315,7 @@
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -8399,7 +8399,7 @@
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -8409,7 +8409,7 @@
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -8495,7 +8495,7 @@
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -8505,7 +8505,7 @@
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -8590,7 +8590,7 @@
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -8600,7 +8600,7 @@
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -8687,7 +8687,7 @@
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -8697,7 +8697,7 @@
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -8784,7 +8784,7 @@
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -8794,7 +8794,7 @@
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -8882,7 +8882,7 @@
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -8892,7 +8892,7 @@
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -8975,7 +8975,7 @@
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -8985,7 +8985,7 @@
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -9070,7 +9070,7 @@
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -9080,7 +9080,7 @@
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -9163,7 +9163,7 @@
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -9173,7 +9173,7 @@
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -9257,7 +9257,7 @@
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -9267,7 +9267,7 @@
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -9350,7 +9350,7 @@
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -9360,7 +9360,7 @@
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -9447,7 +9447,7 @@
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -9457,7 +9457,7 @@
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -9544,7 +9544,7 @@
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -9554,7 +9554,7 @@
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -9639,7 +9639,7 @@
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -9649,7 +9649,7 @@
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -9734,7 +9734,7 @@
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -9744,7 +9744,7 @@
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -9830,7 +9830,7 @@
             <naturalweapon>
               <name>Bite (Falconine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -9840,7 +9840,7 @@
             <naturalweapon>
               <name>Talons (Falconine Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -9979,7 +9979,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -9989,7 +9989,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -10075,7 +10075,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -10085,7 +10085,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -10169,7 +10169,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -10179,7 +10179,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -10264,7 +10264,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -10274,7 +10274,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -10362,7 +10362,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -10372,7 +10372,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -10457,7 +10457,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -10467,7 +10467,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -10552,7 +10552,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -10562,7 +10562,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -10649,7 +10649,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -10659,7 +10659,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -10746,7 +10746,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -10756,7 +10756,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -10845,7 +10845,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -10855,7 +10855,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -10944,7 +10944,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -10954,7 +10954,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -11042,7 +11042,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -11052,7 +11052,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -11136,7 +11136,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -11146,7 +11146,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -11231,7 +11231,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -11241,7 +11241,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -11325,7 +11325,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -11335,7 +11335,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -11420,7 +11420,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -11430,7 +11430,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -11514,7 +11514,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -11524,7 +11524,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -11613,7 +11613,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -11623,7 +11623,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -11713,7 +11713,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -11723,7 +11723,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -11810,7 +11810,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -11820,7 +11820,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -11907,7 +11907,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -11917,7 +11917,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -12004,7 +12004,7 @@
             <naturalweapon>
               <name>Bite (Leonine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -12014,7 +12014,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -12153,7 +12153,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -12239,7 +12239,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -12323,7 +12323,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -12408,7 +12408,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -12496,7 +12496,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -12581,7 +12581,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -12666,7 +12666,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -12753,7 +12753,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -12841,7 +12841,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -12931,7 +12931,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -13020,7 +13020,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -13109,7 +13109,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -13194,7 +13194,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -13279,7 +13279,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -13363,7 +13363,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -13448,7 +13448,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -13532,7 +13532,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -13618,7 +13618,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -13708,7 +13708,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -13796,7 +13796,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -13883,7 +13883,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -13970,7 +13970,7 @@
             <naturalweapon>
               <name>Bite (Lupine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -14111,7 +14111,7 @@
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-3</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -14121,7 +14121,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -14207,7 +14207,7 @@
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-3</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -14217,7 +14217,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -14301,7 +14301,7 @@
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-3</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -14311,7 +14311,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -14396,7 +14396,7 @@
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-3</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -14406,7 +14406,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -14494,7 +14494,7 @@
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-3</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -14504,7 +14504,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -14589,7 +14589,7 @@
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-3</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -14599,7 +14599,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -14684,7 +14684,7 @@
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-3</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -14694,7 +14694,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -14781,7 +14781,7 @@
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-3</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -14791,7 +14791,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -14878,7 +14878,7 @@
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-3</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -14888,7 +14888,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -14977,7 +14977,7 @@
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-3</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -14987,7 +14987,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -15076,7 +15076,7 @@
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-3</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -15086,7 +15086,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -15175,7 +15175,7 @@
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-3</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -15185,7 +15185,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -15270,7 +15270,7 @@
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-3</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -15280,7 +15280,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -15365,7 +15365,7 @@
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-3</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -15375,7 +15375,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -15460,7 +15460,7 @@
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-3</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -15470,7 +15470,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -15555,7 +15555,7 @@
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-3</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -15565,7 +15565,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -15649,7 +15649,7 @@
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-3</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -15659,7 +15659,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -15745,7 +15745,7 @@
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-3</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -15755,7 +15755,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -15845,7 +15845,7 @@
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-3</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -15855,7 +15855,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -15942,7 +15942,7 @@
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-3</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -15952,7 +15952,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -16039,7 +16039,7 @@
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-3</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -16049,7 +16049,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -16136,7 +16136,7 @@
             <naturalweapon>
               <name>Bite (Pantherine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-3</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -16146,7 +16146,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -16287,7 +16287,7 @@
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -16297,7 +16297,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -16383,7 +16383,7 @@
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -16393,7 +16393,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -16477,7 +16477,7 @@
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -16487,7 +16487,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -16572,7 +16572,7 @@
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -16582,7 +16582,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -16670,7 +16670,7 @@
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -16680,7 +16680,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -16765,7 +16765,7 @@
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -16775,7 +16775,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -16860,7 +16860,7 @@
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -16870,7 +16870,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -16957,7 +16957,7 @@
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -16967,7 +16967,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -17054,7 +17054,7 @@
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -17064,7 +17064,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -17153,7 +17153,7 @@
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -17163,7 +17163,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -17252,7 +17252,7 @@
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -17262,7 +17262,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -17351,7 +17351,7 @@
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -17361,7 +17361,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -17445,7 +17445,7 @@
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -17455,7 +17455,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -17540,7 +17540,7 @@
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -17550,7 +17550,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -17635,7 +17635,7 @@
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -17645,7 +17645,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -17730,7 +17730,7 @@
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -17740,7 +17740,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -17824,7 +17824,7 @@
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -17834,7 +17834,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -17922,7 +17922,7 @@
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -17932,7 +17932,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -18021,7 +18021,7 @@
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -18031,7 +18031,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -18118,7 +18118,7 @@
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -18128,7 +18128,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -18215,7 +18215,7 @@
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -18225,7 +18225,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -18312,7 +18312,7 @@
             <naturalweapon>
               <name>Bite (Tigrine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -18322,7 +18322,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>0</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -18464,7 +18464,7 @@
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -18474,7 +18474,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+3)P</damage>
+              <damage>({STR}+3)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -18561,7 +18561,7 @@
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -18571,7 +18571,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+3)P</damage>
+              <damage>({STR}+3)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -18656,7 +18656,7 @@
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -18666,7 +18666,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+3)P</damage>
+              <damage>({STR}+3)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -18752,7 +18752,7 @@
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -18762,7 +18762,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+3)P</damage>
+              <damage>({STR}+3)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -18850,7 +18850,7 @@
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -18860,7 +18860,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+3)P</damage>
+              <damage>({STR}+3)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -18946,7 +18946,7 @@
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -18956,7 +18956,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+3)P</damage>
+              <damage>({STR}+3)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -19042,7 +19042,7 @@
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -19052,7 +19052,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+3)P</damage>
+              <damage>({STR}+3)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -19140,7 +19140,7 @@
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -19150,7 +19150,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+3)P</damage>
+              <damage>({STR}+3)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -19239,7 +19239,7 @@
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -19249,7 +19249,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+3)P</damage>
+              <damage>({STR}+3)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -19340,7 +19340,7 @@
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -19350,7 +19350,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+3)P</damage>
+              <damage>({STR}+3)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -19440,7 +19440,7 @@
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -19450,7 +19450,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+3)P</damage>
+              <damage>({STR}+3)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -19540,7 +19540,7 @@
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -19550,7 +19550,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+3)P</damage>
+              <damage>({STR}+3)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -19639,7 +19639,7 @@
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -19649,7 +19649,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+3)P</damage>
+              <damage>({STR}+3)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -19735,7 +19735,7 @@
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -19745,7 +19745,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+3)P</damage>
+              <damage>({STR}+3)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -19831,7 +19831,7 @@
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -19841,7 +19841,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+3)P</damage>
+              <damage>({STR}+3)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -19927,7 +19927,7 @@
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -19937,7 +19937,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+3)P</damage>
+              <damage>({STR}+3)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -20022,7 +20022,7 @@
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -20032,7 +20032,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+3)P</damage>
+              <damage>({STR}+3)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -20119,7 +20119,7 @@
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -20129,7 +20129,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+3)P</damage>
+              <damage>({STR}+3)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -20220,7 +20220,7 @@
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -20230,7 +20230,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+3)P</damage>
+              <damage>({STR}+3)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -20318,7 +20318,7 @@
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -20328,7 +20328,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+3)P</damage>
+              <damage>({STR}+3)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -20416,7 +20416,7 @@
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -20426,7 +20426,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+3)P</damage>
+              <damage>({STR}+3)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -20514,7 +20514,7 @@
             <naturalweapon>
               <name>Bite (Ursine Form)</name>
               <reach>0</reach>
-              <damage>(STR+2)P</damage>
+              <damage>({STR}+2)P</damage>
               <ap>-2</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -20524,7 +20524,7 @@
             <naturalweapon>
               <name>Claws</name>
               <reach>1</reach>
-              <damage>(STR+3)P</damage>
+              <damage>({STR}+3)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -20665,7 +20665,7 @@
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -20752,7 +20752,7 @@
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -20837,7 +20837,7 @@
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -20923,7 +20923,7 @@
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -21011,7 +21011,7 @@
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -21097,7 +21097,7 @@
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -21183,7 +21183,7 @@
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -21272,7 +21272,7 @@
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -21360,7 +21360,7 @@
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -21451,7 +21451,7 @@
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -21541,7 +21541,7 @@
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -21631,7 +21631,7 @@
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -21717,7 +21717,7 @@
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -21803,7 +21803,7 @@
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -21888,7 +21888,7 @@
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -21974,7 +21974,7 @@
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -22059,7 +22059,7 @@
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -22147,7 +22147,7 @@
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -22237,7 +22237,7 @@
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -22325,7 +22325,7 @@
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -22413,7 +22413,7 @@
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -22501,7 +22501,7 @@
             <naturalweapon>
               <name>Bite (Vulpine Form)</name>
               <reach>0</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -22647,7 +22647,7 @@
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -22736,7 +22736,7 @@
             <naturalweapon>
               <name>Bite (Seal Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -22823,7 +22823,7 @@
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -22910,7 +22910,7 @@
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -23000,7 +23000,7 @@
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -23089,7 +23089,7 @@
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -23178,7 +23178,7 @@
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -23268,7 +23268,7 @@
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -23340,7 +23340,7 @@
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -23430,7 +23430,7 @@
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -23525,7 +23525,7 @@
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -23632,7 +23632,7 @@
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -23719,7 +23719,7 @@
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -23806,7 +23806,7 @@
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -23894,7 +23894,7 @@
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -23982,7 +23982,7 @@
             <naturalweapon>
               <name>Bite (Phocine Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -24067,7 +24067,7 @@
             <naturalweapon>
               <name>Bite (Seal Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -24160,7 +24160,7 @@
             <naturalweapon>
               <name>Bite (Seal Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -24254,7 +24254,7 @@
             <naturalweapon>
               <name>Bite (Seal Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -24344,7 +24344,7 @@
             <naturalweapon>
               <name>Bite (Seal Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -24436,7 +24436,7 @@
             <naturalweapon>
               <name>Bite (Seal Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>
@@ -24528,7 +24528,7 @@
             <naturalweapon>
               <name>Bite (Seal Form)</name>
               <reach>-1</reach>
-              <damage>(STR+1)P</damage>
+              <damage>({STR}+1)P</damage>
               <ap>-1</ap>
               <useskill>Unarmed Combat</useskill>
               <accuracy>Physical</accuracy>

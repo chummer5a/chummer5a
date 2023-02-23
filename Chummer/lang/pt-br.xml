@@ -355,6 +355,10 @@
       <text xml:space="preserve"> de </text>
     </string>
     <string>
+      <key>String_NuyenSymbol</key>
+      <text>¥</text>
+    </string>
+    <string>
       <key>String_Remaining</key>
       <text>restante</text>
     </string>
@@ -4532,7 +4536,7 @@
     </string>
     <string>
       <key>Message_KarmaNuyenExchange</key>
-      <text>Neoiene só pode ser trocado em múltiplos de 2.000¥.</text>
+      <text>Neoiene só pode ser trocado em múltiplos de {0}.</text>
     </string>
     <string>
       <key>MessageTitle_KarmaNuyenExchange</key>
@@ -8397,8 +8401,8 @@
       <text>Módulos de Vida são atualmente um sistema experimental com características limitadas; ele está presente exclusivamente para fins de teste. Veja https://github.com/chummer5a/chummer5a/issues/2000 para detalhes sobre os problemas existentes. Prossiga por sua conta e risca.\nVocê quer continuar?</text>
     </string>
     <string>
-      <key>DialogFilter_Chum5</key>
-      <text>Arquivos do Chummer5 (*.chum5)|*.chum5</text>
+      <key>DialogFilter_Chummer</key>
+      <text>Arquivos do Chummer5 (*.chum5;*.chum5lz)|*.chum5;*.chum5lz</text>
     </string>
     <string>
       <key>DialogFilter_Xml</key>

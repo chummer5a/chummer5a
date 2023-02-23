@@ -158,7 +158,7 @@ namespace Chummer.Properties
                 Dictionary<string, object> userdict = (Dictionary<string, object>) userjson;
                 name = userdict["name"]?.ToString();
             }
-            catch (Exception)
+            catch
             {
             }
             

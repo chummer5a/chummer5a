@@ -1,8 +1,28 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using ChummerHub.API;
 using ChummerHub.Data;
 using ChummerHub.Models.V1;
 using ChummerHub.Models.V1.Examples;
 using Microsoft.ApplicationInsights;
+using Microsoft.AspNetCore.Authentication.Cookies;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Http;
@@ -32,10 +52,8 @@ namespace ChummerHub.Controllers.V1
     [EnableCors("AllowOrigin")]
     [ApiVersion("1.0")]
     [ControllerName("SINner")]
-    [Authorize]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerController'
+    [Authorize(Roles = API.Authorization.Constants.UserRolePublicAccess, AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
     public class SINnerController : ControllerBase
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerController'
     {
         private readonly ApplicationDbContext _context;
         private readonly ILogger _logger;
@@ -43,9 +61,7 @@ namespace ChummerHub.Controllers.V1
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly TelemetryClient tc;
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerController.SINnerController(ApplicationDbContext, ILogger<SINnerController>, SignInManager<ApplicationUser>, UserManager<ApplicationUser>, TelemetryClient)'
         public SINnerController(ApplicationDbContext context,
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerController.SINnerController(ApplicationDbContext, ILogger<SINnerController>, SignInManager<ApplicationUser>, UserManager<ApplicationUser>, TelemetryClient)'
             ILogger<SINnerController> logger,
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
@@ -75,7 +91,7 @@ namespace ChummerHub.Controllers.V1
         /// <param name="sinnerid"></param>
         /// <returns></returns>
         [HttpGet("{sinnerid}")]
-        [AllowAnonymous]
+        [Authorize(Roles = "PublicAccess", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SINnerDownloadFile")]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
@@ -162,10 +178,8 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NoContent)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SinnerGetSINnerGroupFromSINerById")]
-        [AllowAnonymous]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerController.GetSINnerGroupFromSINerById(Guid)'
+        [Authorize(Roles = "PublicAccess", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<ResultSinnerGetSINnerGroupFromSINerById>> GetSINnerGroupFromSINerById([FromRoute] Guid id)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerController.GetSINnerGroupFromSINerById(Guid)'
         {
             ResultSinnerGetSINnerGroupFromSINerById res;
             try
@@ -208,10 +222,8 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SinnerGetSINById")]
-        [AllowAnonymous]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerController.GetSINById(Guid)'
+        [Authorize(Roles = "PublicAccess", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<ResultSinnerGetSINById>> GetSINById([FromRoute] Guid id)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerController.GetSINById(Guid)'
         {
             ResultSinnerGetSINById res;
             try
@@ -275,10 +287,8 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("GetSINnerVisibilityById")]
         [ProducesResponseType(typeof(ResultSinnerGetSINnerVisibilityById), (int)HttpStatusCode.OK)]
-        [Authorize]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerController.GetSINnerVisibilityById(Guid)'
+        [Authorize(Roles = "PublicAccess", AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<ResultSinnerGetSINnerVisibilityById>> GetSINnerVisibilityById([FromRoute] Guid id)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerController.GetSINnerVisibilityById(Guid)'
         {
             ResultSinnerGetSINnerVisibilityById res;
             try
@@ -311,10 +321,8 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SinnerGetOwnedSINByAlias")]
-        [AllowAnonymous]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerController.GetOwnedSINByAlias(string)'
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<ResultSinnerGetOwnedSINByAlias>> GetOwnedSINByAlias([FromRoute] string id)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerController.GetOwnedSINByAlias(string)'
         {
             ResultSinnerGetOwnedSINByAlias res;
             try
@@ -370,7 +378,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Conflict)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SINnerPut")]
-        [AllowAnonymous]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<ResultSINnerPut>> PutSIN([FromRoute] Guid id, IFormFile uploadedFile)
         {
             ResultSINnerPut res;
@@ -887,6 +895,7 @@ namespace ChummerHub.Controllers.V1
                     if (user != null)
                         user.FavoriteGroups = user.FavoriteGroups.GroupBy(a => a.FavoriteGuid).Select(b => b.First()).ToList();
 
+
                     try
                     {
                         await _context.SaveChangesAsync();
@@ -1092,7 +1101,7 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.BadRequest)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.Conflict)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SINnerPostSIN")]
-        [AllowAnonymous]
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<ResultSinnerPostSIN>> PostSIN([FromBody] UploadInfoObject uploadInfo)
         {
             try
@@ -1122,10 +1131,8 @@ namespace ChummerHub.Controllers.V1
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.OK)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerResponse((int)HttpStatusCode.NotFound)]
         [Swashbuckle.AspNetCore.Annotations.SwaggerOperation("SINnerDelete")]
-        [Authorize]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SINnerController.Delete(Guid)'
+        [Authorize(AuthenticationSchemes = JwtBearerDefaults.AuthenticationScheme + "," + CookieAuthenticationDefaults.AuthenticationScheme)]
         public async Task<ActionResult<ResultSinnerDelete>> Delete([FromRoute] Guid id)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SINnerController.Delete(Guid)'
         {
             ResultSinnerDelete res;
             try

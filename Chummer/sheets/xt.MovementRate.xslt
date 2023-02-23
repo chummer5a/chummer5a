@@ -64,21 +64,6 @@
       <xsl:param name="movrate" />
       <xsl:param name="pfx" select="''" />
     <xsl:choose>
-      <xsl:when test="contains($movrate,',')">
-        <xsl:value-of select="$pfx" />
-        <xsl:variable name="mv">
-          <xsl:call-template name="fnx-replace">
-            <xsl:with-param name="string" select="$movrate" />
-            <xsl:with-param name="replace" select="'/ hit'" />
-            <xsl:with-param name="by" select="concat('/',$lang.hit,')')" />
-          </xsl:call-template>
-        </xsl:variable>
-        <xsl:call-template name="fnx-replace">
-          <xsl:with-param name="string" select="$mv" />
-          <xsl:with-param name="replace" select="', '" />
-          <xsl:with-param name="by" select="' ('" />
-        </xsl:call-template>
-      </xsl:when>
       <xsl:when test="$movrate != '0'">
         <xsl:value-of select="$movrate" />
       </xsl:when>

@@ -63,7 +63,7 @@ namespace Chummer
                 AddToParent = strAvailExpr.StartsWith('+') || strAvailExpr.StartsWith('-');
                 if (Suffix == 'F' || Suffix == 'R')
                     strAvailExpr = strAvailExpr.Substring(0, strAvailExpr.Length - 1);
-                object objProcess = CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)), out bool blnIsSuccess);
+                (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strAvailExpr.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo)));
                 Value = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
             }
             else

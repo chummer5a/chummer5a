@@ -16,6 +16,7 @@
  *  You can obtain the full source code for Chummer5a at
  *  https://github.com/chummer5a/chummer5a
  */
+
 using System;
 using System.Xml;
 // ReSharper disable StringLiteralTypo
@@ -93,8 +94,12 @@ namespace Chummer
                     return objImprovementAdder.selecttradition;
                 case "CYBERSEEKER":
                     return objImprovementAdder.cyberseeker;
+                case "BLOCKSKILLCATEGORYDEFAULTING":
+                    return objImprovementAdder.blockskillcategorydefaulting;
                 case "BLOCKSKILLGROUPDEFAULTING":
                     return objImprovementAdder.blockskillgroupdefaulting;
+                case "BLOCKSKILLDEFAULTING":
+                    return objImprovementAdder.blockskilldefaulting;
                 case "ALLOWSKILLDEFAULTING":
                     return objImprovementAdder.allowskilldefaulting;
                 case "SELECTSKILL":
@@ -463,6 +468,14 @@ namespace Chummer
                     return objImprovementAdder.essencepenaltyt100;
                 case "ESSENCEPENALTYMAGONLYT100":
                     return objImprovementAdder.essencepenaltymagonlyt100;
+                case "ESSENCEPENALTYRESONLYT100":
+                    return objImprovementAdder.essencepenaltyresonlyt100;
+                case "ESSENCEPENALTYDEPONLYT100":
+                    return objImprovementAdder.essencepenaltydeponlyt100;
+                case "SPECIALATTBURNMULTIPLIER":
+                    return objImprovementAdder.specialattburnmultiplier;
+                case "SPECIALATTTOTALBURNMULTIPLIER":
+                    return objImprovementAdder.specialatttotalburnmultiplier;
                 case "ESSENCEMAX":
                     return objImprovementAdder.essencemax;
                 case "SELECTSPRITE":
@@ -647,6 +660,8 @@ namespace Chummer
                     return objImprovementAdder.selectexpertise;
                 case "PENALTYFREESUSTAIN":
                     return objImprovementAdder.penaltyfreesustain;
+                case "REPLACESKILLSPELL":
+                    return objImprovementAdder.replaceskillspell;
                 // No method matches, return a null pointer
                 default:
                     return null;

@@ -13,12 +13,9 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && (components != null))
             {
-                components?.Dispose();
-                _objConnectionLoaderCancellationTokenSource?.Dispose();
-                _clientDownloader?.Dispose();
-                _clientChangelogDownloader?.Dispose();
+                components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -31,7 +28,6 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ChummerUpdater));
             this.webNotes = new System.Windows.Forms.WebBrowser();
             this.cmdUpdate = new System.Windows.Forms.Button();
@@ -40,10 +36,10 @@ namespace Chummer
             this.lblUpdaterStatusLabel = new System.Windows.Forms.Label();
             this.lblUpdaterStatus = new System.Windows.Forms.Label();
             this.cmdRestart = new System.Windows.Forms.Button();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tableLayoutPanel2 = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpBottom = new System.Windows.Forms.TableLayoutPanel();
             this.tlpMain.SuspendLayout();
-            this.tableLayoutPanel2.SuspendLayout();
+            this.tlpBottom.SuspendLayout();
             this.SuspendLayout();
             // 
             // webNotes
@@ -60,12 +56,14 @@ namespace Chummer
             // 
             // cmdUpdate
             // 
+            this.cmdUpdate.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdUpdate.AutoSize = true;
-            this.cmdUpdate.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdUpdate.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdUpdate.Enabled = false;
-            this.cmdUpdate.Location = new System.Drawing.Point(3, 3);
+            this.cmdUpdate.Location = new System.Drawing.Point(3, 7);
+            this.cmdUpdate.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdUpdate.Name = "cmdUpdate";
-            this.cmdUpdate.Size = new System.Drawing.Size(100, 31);
+            this.cmdUpdate.Size = new System.Drawing.Size(80, 23);
             this.cmdUpdate.TabIndex = 1;
             this.cmdUpdate.Tag = "Button_Download";
             this.cmdUpdate.Text = "Download";
@@ -75,20 +73,22 @@ namespace Chummer
             // pgbOverallProgress
             // 
             this.pgbOverallProgress.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pgbOverallProgress.Location = new System.Drawing.Point(109, 3);
+            this.pgbOverallProgress.Location = new System.Drawing.Point(89, 3);
             this.pgbOverallProgress.Name = "pgbOverallProgress";
-            this.pgbOverallProgress.Size = new System.Drawing.Size(440, 31);
+            this.pgbOverallProgress.Size = new System.Drawing.Size(473, 31);
             this.pgbOverallProgress.Style = System.Windows.Forms.ProgressBarStyle.Continuous;
             this.pgbOverallProgress.TabIndex = 2;
             // 
             // cmdCleanReinstall
             // 
+            this.cmdCleanReinstall.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdCleanReinstall.AutoSize = true;
-            this.cmdCleanReinstall.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdCleanReinstall.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdCleanReinstall.Enabled = false;
-            this.cmdCleanReinstall.Location = new System.Drawing.Point(663, 3);
+            this.cmdCleanReinstall.Location = new System.Drawing.Point(676, 7);
+            this.cmdCleanReinstall.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdCleanReinstall.Name = "cmdCleanReinstall";
-            this.cmdCleanReinstall.Size = new System.Drawing.Size(100, 31);
+            this.cmdCleanReinstall.Size = new System.Drawing.Size(87, 23);
             this.cmdCleanReinstall.TabIndex = 4;
             this.cmdCleanReinstall.Tag = "Button_Clean_Reinstall";
             this.cmdCleanReinstall.Text = "Clean Reinstall";
@@ -123,12 +123,14 @@ namespace Chummer
             // 
             // cmdRestart
             // 
+            this.cmdRestart.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.cmdRestart.AutoSize = true;
-            this.cmdRestart.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdRestart.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdRestart.Enabled = false;
-            this.cmdRestart.Location = new System.Drawing.Point(555, 3);
+            this.cmdRestart.Location = new System.Drawing.Point(568, 7);
+            this.cmdRestart.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdRestart.Name = "cmdRestart";
-            this.cmdRestart.Size = new System.Drawing.Size(102, 31);
+            this.cmdRestart.Size = new System.Drawing.Size(102, 23);
             this.cmdRestart.TabIndex = 3;
             this.cmdRestart.Tag = "Button_Install_Restart";
             this.cmdRestart.Text = "Install and Restart";
@@ -145,7 +147,7 @@ namespace Chummer
             this.tlpMain.Controls.Add(this.webNotes, 0, 0);
             this.tlpMain.Controls.Add(this.lblUpdaterStatus, 1, 1);
             this.tlpMain.Controls.Add(this.lblUpdaterStatusLabel, 0, 1);
-            this.tlpMain.Controls.Add(this.tableLayoutPanel2, 0, 2);
+            this.tlpMain.Controls.Add(this.tlpBottom, 0, 2);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
@@ -156,30 +158,31 @@ namespace Chummer
             this.tlpMain.Size = new System.Drawing.Size(766, 543);
             this.tlpMain.TabIndex = 107;
             // 
-            // tableLayoutPanel2
+            // tlpBottom
             // 
-            this.tableLayoutPanel2.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.tableLayoutPanel2.AutoSize = true;
-            this.tableLayoutPanel2.ColumnCount = 4;
-            this.tlpMain.SetColumnSpan(this.tableLayoutPanel2, 2);
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel2.Controls.Add(this.pgbOverallProgress, 1, 0);
-            this.tableLayoutPanel2.Controls.Add(this.cmdCleanReinstall, 3, 0);
-            this.tableLayoutPanel2.Controls.Add(this.cmdRestart, 2, 0);
-            this.tableLayoutPanel2.Controls.Add(this.cmdUpdate, 0, 0);
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 506);
-            this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
-            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 1;
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(766, 37);
-            this.tableLayoutPanel2.TabIndex = 107;
+            this.tlpBottom.AutoSize = true;
+            this.tlpBottom.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tlpBottom.ColumnCount = 4;
+            this.tlpMain.SetColumnSpan(this.tlpBottom, 2);
+            this.tlpBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpBottom.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpBottom.Controls.Add(this.cmdRestart, 2, 0);
+            this.tlpBottom.Controls.Add(this.pgbOverallProgress, 1, 0);
+            this.tlpBottom.Controls.Add(this.cmdUpdate, 0, 0);
+            this.tlpBottom.Controls.Add(this.cmdCleanReinstall, 3, 0);
+            this.tlpBottom.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.tlpBottom.Location = new System.Drawing.Point(0, 506);
+            this.tlpBottom.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpBottom.Name = "tlpBottom";
+            this.tlpBottom.RowCount = 1;
+            this.tlpBottom.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpBottom.Size = new System.Drawing.Size(766, 37);
+            this.tlpBottom.TabIndex = 107;
             // 
-            // frmUpdate
+            // ChummerUpdater
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -190,13 +193,14 @@ namespace Chummer
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "ChummerUpdater";
             this.Padding = new System.Windows.Forms.Padding(9);
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Chummer Updater";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ChummerUpdater_FormClosing);
             this.Load += new System.EventHandler(this.ChummerUpdater_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
-            this.tableLayoutPanel2.ResumeLayout(false);
-            this.tableLayoutPanel2.PerformLayout();
+            this.tlpBottom.ResumeLayout(false);
+            this.tlpBottom.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -211,7 +215,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblUpdaterStatusLabel;
         private System.Windows.Forms.Label lblUpdaterStatus;
         private System.Windows.Forms.Button cmdRestart;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
-        private Chummer.BufferedTableLayoutPanel tableLayoutPanel2;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpBottom;
     }
 }

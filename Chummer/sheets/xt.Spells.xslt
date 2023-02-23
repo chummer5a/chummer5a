@@ -94,6 +94,8 @@
         <td valign="top">
           <xsl:value-of select="name" />
           <xsl:if test="extra != ''"> (<xsl:value-of select="extra" />)</xsl:if>
+          <xsl:if test="limited = 'True'"> (<xsl:value-of select="$lang.Limited" />)</xsl:if>
+          <xsl:if test="alchemy = 'True'"> (<xsl:value-of select="$lang.Alchemical" />)</xsl:if>
         </td>
         <td style="text-align: center" valign="top">
           <xsl:value-of select="type" />

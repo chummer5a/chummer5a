@@ -26,7 +26,7 @@
 	<skillgroups amendoperation="replace">
 		<name>Acting</name>
 		<name>Athletics</name>
-		<!--<name>Biotech</name>-->
+		<name>Biotech</name>
 		<name>Close Combat</name>
 		<name>Conjuring</name>
 		<name>Cracking</name>
@@ -42,30 +42,6 @@
 		<name>Tasking</name>
 	</skillgroups>
 	<skills>
-		<skill amendoperation="remove">
-			<name>Biotechnology</name>
-			<skillgroup amendoperation="replace" />
-			<hide />
-		</skill>
-		<skill amendoperation="remove">
-			<name>Cybertechnology</name>
-			<skillgroup amendoperation="replace" />
-			<hide />
-		</skill>
-		<skill amendoperation="remove">
-			<name>Chemistry</name>
-			<!--<skillgroup amendoperation="replace">Biotech</skillgroup>-->
-			<hide />
-		</skill>
-		<skill>
-			<name>First Aid</name>
-			<skillgroup amendoperation="replace" />
-		</skill>
-		<skill amendoperation="remove">
-			<name>Medicine</name>
-			<skillgroup amendoperation="replace" />
-			<hide />
-		</skill>
 		<skill amendoperation="remove">
 			<name>Instruction</name>
 			<hide />

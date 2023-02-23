@@ -50,7 +50,7 @@
 		</spell>
 		<spell>
 			<name>Turn To Goo</name>
-			<hide />
+			<dv>F+3</dv>
 		</spell>
 		<spell>
 			<name>Rot</name>
@@ -62,7 +62,7 @@
 		</spell>
 		<spell>
 			<name>Petrify</name>
-			<hide />
+			 <dv>F+3</dv>
 		</spell>
 		<spell>
 			<name>Growth</name>

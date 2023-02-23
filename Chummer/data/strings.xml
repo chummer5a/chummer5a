@@ -1,4 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -19,10 +20,10 @@
 -->
 <chummer>
   <matrixattributes>
-    <attribute>Attack</attribute>
-    <attribute>Data Processing</attribute>
-    <attribute>Firewall</attribute>
-    <attribute>Sleaze</attribute>
+    <key>String_Attack</key>
+    <key>String_DataProcessing</key>
+    <key>String_Firewall</key>
+    <key>String_Sleaze</key>
   </matrixattributes>
   <elements>
     <element>Acid</element>

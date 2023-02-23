@@ -29,39 +29,44 @@ namespace Chummer
         private int _intBonus = 1;
         private string _strCondition = string.Empty;
         private string _strLimitType = string.Empty;
+        private readonly LimitModifier _objLimitModifier;
+        private readonly string[] _lstLimits;
 
         #region Control Events
 
         public SelectLimitModifier(LimitModifier objLimitModifier = null, params string[] lstLimits)
         {
+            _objLimitModifier = objLimitModifier;
+            _lstLimits = lstLimits;
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+        }
 
+        private async void SelectLimitModifier_Load(object sender, EventArgs e)
+        {
             // Build the list of Limits.
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstLimitItems))
             {
-                foreach (string strLimit in lstLimits)
+                foreach (string strLimit in _lstLimits)
                 {
                     lstLimitItems.Add(
-                        new ListItem(strLimit, LanguageManager.GetString("String_Limit" + strLimit + "Short")));
+                        new ListItem(strLimit, await LanguageManager.GetStringAsync("String_Limit" + strLimit + "Short").ConfigureAwait(false)));
                 }
-
-                cboLimit.BeginUpdate();
-                cboLimit.PopulateWithListItems(lstLimitItems);
+                
+                await cboLimit.PopulateWithListItemsAsync(lstLimitItems).ConfigureAwait(false);
                 if (lstLimitItems.Count >= 1)
-                    cboLimit.SelectedIndex = 0;
+                    await cboLimit.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);
                 else
-                    cmdOK.Enabled = false;
-                cboLimit.EndUpdate();
+                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = false).ConfigureAwait(false);
             }
 
-            if (objLimitModifier != null)
+            if (_objLimitModifier != null)
             {
-                cboLimit.SelectedValue = objLimitModifier.Limit;
-                txtName.Text = objLimitModifier.Name;
-                _intBonus = objLimitModifier.Bonus;
-                txtCondition.Text = objLimitModifier.Condition;
+                await cboLimit.DoThreadSafeAsync(x => x.SelectedValue = _objLimitModifier.Limit).ConfigureAwait(false);
+                await txtName.DoThreadSafeAsync(x => x.Text = _objLimitModifier.Name).ConfigureAwait(false);
+                _intBonus = _objLimitModifier.Bonus;
+                await txtCondition.DoThreadSafeAsync(x => x.Text = _objLimitModifier.Condition).ConfigureAwait(false);
             }
         }
 
@@ -75,8 +80,9 @@ namespace Chummer
                     _strReturnName = txtName.Text;
                     _intBonus = nudBonus.ValueAsInt;
                     _strCondition = txtCondition.Text;
-                    _strLimitType = cboLimit.SelectedValue?.ToString();
+                    _strLimitType = strLimitType;
                     DialogResult = DialogResult.OK;
+                    Close();
                 }
             }
         }
@@ -84,6 +90,7 @@ namespace Chummer
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         #endregion Control Events

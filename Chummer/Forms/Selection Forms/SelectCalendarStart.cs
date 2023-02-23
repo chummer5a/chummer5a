@@ -57,6 +57,7 @@ namespace Chummer
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private void nudMonth_ValueChanged(object sender, EventArgs e)
@@ -101,6 +102,7 @@ namespace Chummer
                 _intSelectedWeek++;
 
             DialogResult = DialogResult.OK;
+            Close();
         }
 
         #endregion Methods

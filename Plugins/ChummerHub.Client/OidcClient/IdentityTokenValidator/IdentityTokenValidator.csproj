@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk">
+    <PropertyGroup>
+        <PackageId>IdentityModel.OidcClient.IdentityTokenValidator</PackageId>
+        <RootNamespace>IdentityModel.OidcClient</RootNamespace>
+        <AssemblyName>IdentityModel.OidcClient.IdentityTokenValidator</AssemblyName>
+        
+        <TargetFramework>netstandard2.0</TargetFramework>
+    
+        <PackageTags>OAuth2;OAuth 2.0;OpenID Connect;Security;Identity;IdentityServer</PackageTags>
+        <Description>Identity token validator for IdentityModeo.OidcClient ased on the Microsoft JWT handler</Description>
+        <Authors>Dominick Baier;Brock Allen</Authors>
+        <PackageIcon>icon.jpg</PackageIcon>
+        <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+        <GenerateDocumentationFile>true</GenerateDocumentationFile>
+
+        <!-- Publish the repository URL in the built .nupkg (in the NuSpec <Repository> element) -->
+        <PublishRepositoryUrl>true</PublishRepositoryUrl>
+
+        <!-- Embed source files that are not tracked by the source control manager in the PDB -->
+        <EmbedUntrackedSources>true</EmbedUntrackedSources>
+
+        <!-- Recommended: Embed symbols containing Source Link in the main file (exe/dll) -->
+        <DebugType>embedded</DebugType>
+
+        <ContinuousIntegrationBuild Condition="'$(GITHUB_ACTIONS)' == 'true'">True</ContinuousIntegrationBuild>
+        
+        <AssemblyOriginatorKeyFile>../../key.snk</AssemblyOriginatorKeyFile>
+        <SignAssembly>true</SignAssembly>
+        <PublicSign Condition="'$(OS)' != 'Windows_NT'">true</PublicSign>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <None Include="../../icon.jpg" Pack="true" Visible="false" PackagePath="" />
+    </ItemGroup>
+    
+    <ItemGroup>
+        <PackageReference Include="minver" Version="3.0.0-alpha.1" PrivateAssets="All" />
+
+        <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.15.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging" Version="6.0.0" />
+        <PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
+    </ItemGroup>
+    
+    <ItemGroup>
+      <ProjectReference Include="..\OidcClient\OidcClient.csproj" />
+    </ItemGroup>
+
+</Project>

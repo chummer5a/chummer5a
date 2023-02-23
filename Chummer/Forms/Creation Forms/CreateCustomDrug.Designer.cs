@@ -13,10 +13,9 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && (components != null))
             {
-                components?.Dispose();
-                Utils.ListItemListPool.Return(_lstGrade);
+                components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -29,13 +28,13 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.Windows.Forms.TreeNode treeNode4 = new System.Windows.Forms.TreeNode("Foundations");
             System.Windows.Forms.TreeNode treeNode5 = new System.Windows.Forms.TreeNode("Blocks");
             System.Windows.Forms.TreeNode treeNode6 = new System.Windows.Forms.TreeNode("Enhancers");
             System.Windows.Forms.TreeNode treeNode1 = new System.Windows.Forms.TreeNode("Foundations");
             System.Windows.Forms.TreeNode treeNode2 = new System.Windows.Forms.TreeNode("Blocks");
             System.Windows.Forms.TreeNode treeNode3 = new System.Windows.Forms.TreeNode("Enhancers");
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CreateCustomDrug));
             this.treAvailableComponents = new System.Windows.Forms.TreeView();
             this.btnAddComponent = new System.Windows.Forms.Button();
             this.btnRemoveComponent = new System.Windows.Forms.Button();
@@ -48,12 +47,12 @@ namespace Chummer
             this.txtDrugName = new System.Windows.Forms.TextBox();
             this.lblGrade = new System.Windows.Forms.Label();
             this.cboGrade = new Chummer.ElasticComboBox();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.flpButtons = new System.Windows.Forms.FlowLayoutPanel();
-            this.tlpMiddle = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpMiddle = new System.Windows.Forms.TableLayoutPanel();
+            this.bufferedTableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.tlpMain.SuspendLayout();
-            this.flpButtons.SuspendLayout();
             this.tlpMiddle.SuspendLayout();
+            this.bufferedTableLayoutPanel1.SuspendLayout();
             this.SuspendLayout();
             // 
             // treAvailableComponents
@@ -76,7 +75,7 @@ namespace Chummer
             treeNode4,
             treeNode5,
             treeNode6});
-            this.treAvailableComponents.Size = new System.Drawing.Size(344, 243);
+            this.treAvailableComponents.Size = new System.Drawing.Size(360, 243);
             this.treAvailableComponents.TabIndex = 0;
             this.treAvailableComponents.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treAvailableComponents_AfterSelect);
             this.treAvailableComponents.NodeMouseDoubleClick += new System.Windows.Forms.TreeNodeMouseClickEventHandler(this.treAvailableComponents_NodeMouseDoubleClick);
@@ -112,7 +111,7 @@ namespace Chummer
             this.tlpMain.SetColumnSpan(this.treChosenComponents, 2);
             this.treChosenComponents.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treChosenComponents.HideSelection = false;
-            this.treChosenComponents.Location = new System.Drawing.Point(388, 30);
+            this.treChosenComponents.Location = new System.Drawing.Point(404, 30);
             this.treChosenComponents.Name = "treChosenComponents";
             treeNode1.Name = "Node_Foundation";
             treeNode1.Tag = "Node_Foundation";
@@ -127,18 +126,20 @@ namespace Chummer
             treeNode1,
             treeNode2,
             treeNode3});
-            this.treChosenComponents.Size = new System.Drawing.Size(343, 243);
+            this.treChosenComponents.Size = new System.Drawing.Size(359, 243);
             this.treChosenComponents.TabIndex = 0;
             this.treChosenComponents.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treChoosenComponents_AfterSelect);
             // 
             // btnCancel
             // 
-            this.btnCancel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.btnCancel.AutoSize = true;
+            this.btnCancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
+            this.btnCancel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnCancel.Location = new System.Drawing.Point(3, 3);
+            this.btnCancel.MinimumSize = new System.Drawing.Size(80, 0);
             this.btnCancel.Name = "btnCancel";
-            this.btnCancel.Size = new System.Drawing.Size(75, 23);
+            this.btnCancel.Size = new System.Drawing.Size(80, 23);
             this.btnCancel.TabIndex = 3;
             this.btnCancel.Tag = "String_Cancel";
             this.btnCancel.Text = "Cancel";
@@ -147,11 +148,13 @@ namespace Chummer
             // 
             // btnAdd
             // 
-            this.btnAdd.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.btnAdd.AutoSize = true;
-            this.btnAdd.Location = new System.Drawing.Point(84, 3);
+            this.btnAdd.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnAdd.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnAdd.Location = new System.Drawing.Point(89, 3);
+            this.btnAdd.MinimumSize = new System.Drawing.Size(80, 0);
             this.btnAdd.Name = "btnAdd";
-            this.btnAdd.Size = new System.Drawing.Size(75, 23);
+            this.btnAdd.Size = new System.Drawing.Size(80, 23);
             this.btnAdd.TabIndex = 3;
             this.btnAdd.Tag = "Button_Add";
             this.btnAdd.Text = "Add";
@@ -162,9 +165,9 @@ namespace Chummer
             // 
             this.tlpMain.SetColumnSpan(this.lblDrugDescription, 2);
             this.lblDrugDescription.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblDrugDescription.Location = new System.Drawing.Point(388, 276);
+            this.lblDrugDescription.Location = new System.Drawing.Point(404, 276);
             this.lblDrugDescription.Name = "lblDrugDescription";
-            this.lblDrugDescription.Size = new System.Drawing.Size(343, 214);
+            this.lblDrugDescription.Size = new System.Drawing.Size(359, 238);
             this.lblDrugDescription.TabIndex = 4;
             // 
             // lblBlockDescription
@@ -173,14 +176,14 @@ namespace Chummer
             this.lblBlockDescription.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblBlockDescription.Location = new System.Drawing.Point(3, 276);
             this.lblBlockDescription.Name = "lblBlockDescription";
-            this.lblBlockDescription.Size = new System.Drawing.Size(344, 214);
+            this.lblBlockDescription.Size = new System.Drawing.Size(360, 238);
             this.lblBlockDescription.TabIndex = 5;
             // 
             // lblDrugNameLabel
             // 
             this.lblDrugNameLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblDrugNameLabel.AutoSize = true;
-            this.lblDrugNameLabel.Location = new System.Drawing.Point(388, 7);
+            this.lblDrugNameLabel.Location = new System.Drawing.Point(404, 7);
             this.lblDrugNameLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDrugNameLabel.Name = "lblDrugNameLabel";
             this.lblDrugNameLabel.Size = new System.Drawing.Size(38, 13);
@@ -192,9 +195,9 @@ namespace Chummer
             // txtDrugName
             // 
             this.txtDrugName.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtDrugName.Location = new System.Drawing.Point(432, 3);
+            this.txtDrugName.Location = new System.Drawing.Point(448, 3);
             this.txtDrugName.Name = "txtDrugName";
-            this.txtDrugName.Size = new System.Drawing.Size(299, 20);
+            this.txtDrugName.Size = new System.Drawing.Size(315, 20);
             this.txtDrugName.TabIndex = 7;
             this.txtDrugName.TextChanged += new System.EventHandler(this.txtDrugName_TextChanged);
             // 
@@ -218,7 +221,7 @@ namespace Chummer
             this.cboGrade.FormattingEnabled = true;
             this.cboGrade.Location = new System.Drawing.Point(48, 3);
             this.cboGrade.Name = "cboGrade";
-            this.cboGrade.Size = new System.Drawing.Size(299, 21);
+            this.cboGrade.Size = new System.Drawing.Size(315, 21);
             this.cboGrade.TabIndex = 27;
             this.cboGrade.TooltipText = "";
             this.cboGrade.SelectedIndexChanged += new System.EventHandler(this.cboGrade_SelectedIndexChanged);
@@ -241,8 +244,8 @@ namespace Chummer
             this.tlpMain.Controls.Add(this.txtDrugName, 4, 0);
             this.tlpMain.Controls.Add(this.lblDrugNameLabel, 3, 0);
             this.tlpMain.Controls.Add(this.treChosenComponents, 3, 1);
-            this.tlpMain.Controls.Add(this.flpButtons, 0, 3);
             this.tlpMain.Controls.Add(this.tlpMiddle, 2, 1);
+            this.tlpMain.Controls.Add(this.bufferedTableLayoutPanel1, 0, 3);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
@@ -251,23 +254,9 @@ namespace Chummer
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.Size = new System.Drawing.Size(734, 519);
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpMain.Size = new System.Drawing.Size(766, 543);
             this.tlpMain.TabIndex = 28;
-            // 
-            // flpButtons
-            // 
-            this.flpButtons.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.flpButtons.AutoSize = true;
-            this.flpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpMain.SetColumnSpan(this.flpButtons, 5);
-            this.flpButtons.Controls.Add(this.btnAdd);
-            this.flpButtons.Controls.Add(this.btnCancel);
-            this.flpButtons.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flpButtons.Location = new System.Drawing.Point(572, 490);
-            this.flpButtons.Margin = new System.Windows.Forms.Padding(0);
-            this.flpButtons.Name = "flpButtons";
-            this.flpButtons.Size = new System.Drawing.Size(162, 29);
-            this.flpButtons.TabIndex = 29;
             // 
             // tlpMiddle
             // 
@@ -278,7 +267,7 @@ namespace Chummer
             this.tlpMiddle.Controls.Add(this.btnAddComponent, 0, 1);
             this.tlpMiddle.Controls.Add(this.btnRemoveComponent, 0, 0);
             this.tlpMiddle.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpMiddle.Location = new System.Drawing.Point(350, 27);
+            this.tlpMiddle.Location = new System.Drawing.Point(366, 27);
             this.tlpMiddle.Margin = new System.Windows.Forms.Padding(0);
             this.tlpMiddle.Name = "tlpMiddle";
             this.tlpMiddle.RowCount = 2;
@@ -287,27 +276,50 @@ namespace Chummer
             this.tlpMiddle.Size = new System.Drawing.Size(35, 249);
             this.tlpMiddle.TabIndex = 30;
             // 
-            // frmCreateCustomDrug
+            // bufferedTableLayoutPanel1
+            // 
+            this.bufferedTableLayoutPanel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
+            this.bufferedTableLayoutPanel1.AutoSize = true;
+            this.bufferedTableLayoutPanel1.ColumnCount = 2;
+            this.tlpMain.SetColumnSpan(this.bufferedTableLayoutPanel1, 5);
+            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.bufferedTableLayoutPanel1.Controls.Add(this.btnCancel, 0, 0);
+            this.bufferedTableLayoutPanel1.Controls.Add(this.btnAdd, 1, 0);
+            this.bufferedTableLayoutPanel1.Location = new System.Drawing.Point(594, 514);
+            this.bufferedTableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
+            this.bufferedTableLayoutPanel1.Name = "bufferedTableLayoutPanel1";
+            this.bufferedTableLayoutPanel1.RowCount = 1;
+            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.bufferedTableLayoutPanel1.Size = new System.Drawing.Size(172, 29);
+            this.bufferedTableLayoutPanel1.TabIndex = 31;
+            // 
+            // CreateCustomDrug
             // 
             this.AcceptButton = this.btnAdd;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.CancelButton = this.btnCancel;
-            this.ClientSize = new System.Drawing.Size(752, 537);
+            this.ClientSize = new System.Drawing.Size(784, 561);
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
-            this.MinimumSize = new System.Drawing.Size(768, 576);
-            this.Name = "frmCreateCustomDrug";
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.MinimumSize = new System.Drawing.Size(800, 600);
+            this.Name = "CreateCustomDrug";
             this.Padding = new System.Windows.Forms.Padding(9);
-            this.ShowIcon = false;
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Button_CreateCustomDrug";
             this.Text = "Create Custom Drug";
+            this.Load += new System.EventHandler(this.CreateCustomDrug_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
-            this.flpButtons.ResumeLayout(false);
-            this.flpButtons.PerformLayout();
             this.tlpMiddle.ResumeLayout(false);
             this.tlpMiddle.PerformLayout();
+            this.bufferedTableLayoutPanel1.ResumeLayout(false);
+            this.bufferedTableLayoutPanel1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -327,8 +339,8 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtDrugName;
 		private System.Windows.Forms.Label lblGrade;
 		private ElasticComboBox cboGrade;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
-        private System.Windows.Forms.FlowLayoutPanel flpButtons;
-        private Chummer.BufferedTableLayoutPanel tlpMiddle;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMiddle;
+        private System.Windows.Forms.TableLayoutPanel bufferedTableLayoutPanel1;
     }
 }

@@ -16,11 +16,6 @@ namespace Chummer
             if (disposing && (components != null))
             {
                 components.Dispose();
-                _dicCachedNotes?.Dispose();
-                foreach (ListItem objExistingItem in _lstItems)
-                    ((MasterIndexEntry)objExistingItem.Value).Dispose();
-                Utils.ListItemListPool.Return(_lstFileNamesWithItems);
-                Utils.ListItemListPool.Return(_lstItems);
             }
             base.Dispose(disposing);
         }
@@ -33,22 +28,21 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(MasterIndex));
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
             this.txtSearch = new System.Windows.Forms.TextBox();
             this.lblSearch = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
             this.lblSource = new Chummer.LabelWithToolTip();
             this.lblSourceClickReminder = new System.Windows.Forms.Label();
             this.txtNotes = new System.Windows.Forms.TextBox();
-            this.tlpTopLeft = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpTopLeft = new System.Windows.Forms.TableLayoutPanel();
             this.lblFile = new System.Windows.Forms.Label();
             this.cboFile = new Chummer.ElasticComboBox();
             this.lstItems = new System.Windows.Forms.ListBox();
-            this.tlpGameplayOption = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.cmdEditCharacterSetting = new Chummer.ButtonWithToolTip(this.components);
+            this.tlpGameplayOption = new System.Windows.Forms.TableLayoutPanel();
+            this.cmdEditCharacterSetting = new Chummer.ButtonWithToolTip();
             this.lblCharacterSetting = new System.Windows.Forms.Label();
             this.cboCharacterSetting = new Chummer.ElasticComboBox();
             this.tlpMain.SuspendLayout();
@@ -147,19 +141,18 @@ namespace Chummer
             this.lblSource.Location = new System.Drawing.Point(53, 32);
             this.lblSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSource.Name = "lblSource";
-            this.lblSource.Size = new System.Drawing.Size(49, 13);
+            this.lblSource.Size = new System.Drawing.Size(55, 13);
             this.lblSource.TabIndex = 3;
-            this.lblSource.Text = "SR5 000";
+            this.lblSource.Text = "[SR5 000]";
             this.lblSource.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lblSource.ToolTipText = "";
-            this.lblSource.Visible = false;
             this.lblSource.Click += new System.EventHandler(this.lblSource_Click);
             // 
             // lblSourceClickReminder
             // 
             this.lblSourceClickReminder.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSourceClickReminder.AutoSize = true;
-            this.lblSourceClickReminder.Location = new System.Drawing.Point(108, 32);
+            this.lblSourceClickReminder.Location = new System.Drawing.Point(114, 32);
             this.lblSourceClickReminder.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSourceClickReminder.Name = "lblSourceClickReminder";
             this.lblSourceClickReminder.Size = new System.Drawing.Size(142, 13);
@@ -268,9 +261,10 @@ namespace Chummer
             this.cmdEditCharacterSetting.ImageDpi288 = null;
             this.cmdEditCharacterSetting.ImageDpi384 = null;
             this.cmdEditCharacterSetting.ImageDpi96 = null;
-            this.cmdEditCharacterSetting.Location = new System.Drawing.Point(706, 3);
+            this.cmdEditCharacterSetting.Location = new System.Drawing.Point(683, 3);
+            this.cmdEditCharacterSetting.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdEditCharacterSetting.Name = "cmdEditCharacterSetting";
-            this.cmdEditCharacterSetting.Size = new System.Drawing.Size(57, 23);
+            this.cmdEditCharacterSetting.Size = new System.Drawing.Size(80, 23);
             this.cmdEditCharacterSetting.TabIndex = 20;
             this.cmdEditCharacterSetting.Text = "Modify...";
             this.cmdEditCharacterSetting.ToolTipText = "";
@@ -296,22 +290,22 @@ namespace Chummer
             this.cboCharacterSetting.FormattingEnabled = true;
             this.cboCharacterSetting.Location = new System.Drawing.Point(74, 4);
             this.cboCharacterSetting.Name = "cboCharacterSetting";
-            this.cboCharacterSetting.Size = new System.Drawing.Size(626, 21);
+            this.cboCharacterSetting.Size = new System.Drawing.Size(603, 21);
             this.cboCharacterSetting.TabIndex = 21;
             this.cboCharacterSetting.TooltipText = "";
             this.cboCharacterSetting.SelectedIndexChanged += new System.EventHandler(this.cboCharacterSetting_SelectedIndexChanged);
             // 
-            // frmMasterIndex
+            // MasterIndex
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.ClientSize = new System.Drawing.Size(784, 561);
             this.Controls.Add(this.tlpMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "MasterIndex";
             this.Padding = new System.Windows.Forms.Padding(9);
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_MasterIndex";
             this.Text = "Master Index";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MasterIndex_FormClosing);
@@ -331,11 +325,11 @@ namespace Chummer
 
         #endregion
 
-        private BufferedTableLayoutPanel tlpMain;
-        private BufferedTableLayoutPanel tlpRight;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpRight;
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.Label lblSearch;
-        private BufferedTableLayoutPanel tlpTopLeft;
+        private System.Windows.Forms.TableLayoutPanel tlpTopLeft;
         private System.Windows.Forms.Label lblFile;
         private ElasticComboBox cboFile;
         private System.Windows.Forms.ListBox lstItems;
@@ -343,7 +337,7 @@ namespace Chummer
         private LabelWithToolTip lblSource;
         private System.Windows.Forms.Label lblSourceClickReminder;
         private System.Windows.Forms.TextBox txtNotes;
-        private BufferedTableLayoutPanel tlpGameplayOption;
+        private System.Windows.Forms.TableLayoutPanel tlpGameplayOption;
         private System.Windows.Forms.Label lblCharacterSetting;
         private ButtonWithToolTip cmdEditCharacterSetting;
         private ElasticComboBox cboCharacterSetting;

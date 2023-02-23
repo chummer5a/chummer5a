@@ -52,7 +52,7 @@
 	<mods>
 		<mod>
 			<name>Grey Mana Integration</name>
-			<avail>FixedValues(6R,6R,6R,9R,9R,9R)</avail>
+			<avail>FixedValues(6F,6F,6F,9F,9F,9F)</avail>
 		</mod>
 	</mods>
 </chummer>

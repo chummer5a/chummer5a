@@ -20,6 +20,8 @@
 using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Xml;
 
 namespace Chummer
@@ -152,7 +154,7 @@ namespace Chummer
         /// Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Save(XmlTextWriter objWriter)
+        public void Save(XmlWriter objWriter)
         {
             if (objWriter == null)
                 return;
@@ -237,7 +239,7 @@ namespace Chummer
         private DateTime _datDate;
         private decimal _decAmount;
         private string _strReason = string.Empty;
-        private ExpenseType _objExpenseType;
+        private ExpenseType _eExpenseType;
         private bool _blnRefund;
         private bool _blnForceCareerVisible;
 
@@ -282,7 +284,7 @@ namespace Chummer
             _decAmount = decAmount;
             _strReason = strReason;
             _datDate = datDate;
-            _objExpenseType = objExpenseType;
+            _eExpenseType = objExpenseType;
             _blnRefund = blnRefund;
 
             return this; //Allow chaining
@@ -292,7 +294,7 @@ namespace Chummer
         /// Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Save(XmlTextWriter objWriter)
+        public void Save(XmlWriter objWriter)
         {
             if (objWriter == null)
                 return;
@@ -301,7 +303,7 @@ namespace Chummer
             objWriter.WriteElementString("date", _datDate.ToString("s", GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("amount", _decAmount.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("reason", _strReason);
-            objWriter.WriteElementString("type", _objExpenseType.ToString());
+            objWriter.WriteElementString("type", _eExpenseType.ToString());
             objWriter.WriteElementString("refund", _blnRefund.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("forcecareervisible", _blnForceCareerVisible.ToString(GlobalSettings.InvariantCultureInfo));
             Undo?.Save(objWriter);
@@ -322,7 +324,7 @@ namespace Chummer
             if (objNode.TryGetStringFieldQuickly("reason", ref _strReason))
                 _strReason = _strReason.TrimEndOnce(" (" + LanguageManager.GetString("String_Expense_Refund") + ')').Replace("🡒", "->");
             if (objNode["type"] != null)
-                _objExpenseType = ConvertToExpenseType(objNode["type"].InnerText);
+                _eExpenseType = ConvertToExpenseType(objNode["type"].InnerText);
             objNode.TryGetBoolFieldQuickly("refund", ref _blnRefund);
             objNode.TryGetBoolFieldQuickly("forcecareervisible", ref _blnForceCareerVisible);
 
@@ -339,20 +341,29 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print numbers.</param>
         /// <param name="strLanguageToPrint">Language in which to print.</param>
-        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
             if (Amount != 0 || GlobalSettings.PrintFreeExpenses)
             {
-                objWriter.WriteStartElement("expense");
-                objWriter.WriteElementString("guid", InternalId);
-                objWriter.WriteElementString("date", Date.ToString(objCulture));
-                objWriter.WriteElementString("amount", Amount.ToString(Type == ExpenseType.Nuyen ? _objCharacter.Settings.NuyenFormat : "#,0.##", objCulture));
-                objWriter.WriteElementString("reason", DisplayReason(strLanguageToPrint));
-                objWriter.WriteElementString("type", Type.ToString());
-                objWriter.WriteElementString("refund", Refund.ToString(GlobalSettings.InvariantCultureInfo));
-                objWriter.WriteEndElement();
+                // <expense>
+                XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("expense", token: token).ConfigureAwait(false);
+                try
+                {
+                    await objWriter.WriteElementStringAsync("guid", InternalId, token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("date", Date.ToString(objCulture), token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("amount", Amount.ToString(Type == ExpenseType.Nuyen ? _objCharacter.Settings.NuyenFormat : "#,0.##", objCulture), token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("reason", await DisplayReasonAsync(strLanguageToPrint, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("type", Type.ToString(), token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("refund", Refund.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    // </expense>
+                    await objBaseElement.DisposeAsync().ConfigureAwait(false);
+                }
             }
         }
 
@@ -413,19 +424,26 @@ namespace Chummer
         }
 
         /// <summary>
+        /// The Reason for the Entry expense.
+        /// </summary>
+        public async ValueTask<string> DisplayReasonAsync(string strLanguage, CancellationToken token = default)
+        {
+            if (Refund)
+                return Reason + await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false) + '(' + await LanguageManager.GetStringAsync("String_Expense_Refund", strLanguage, token: token).ConfigureAwait(false) + ')';
+            return Reason;
+        }
+
+        /// <summary>
         /// The Expense type.
         /// </summary>
         public ExpenseType Type
         {
-            get => _objExpenseType;
+            get => _eExpenseType;
             set
             {
-                if (_objExpenseType != value)
-                {
-                    _objExpenseType = value;
-                    if (Amount > 0 && !Refund)
-                        _objCharacter?.OnMultiplePropertyChanged(nameof(Character.CareerNuyen), nameof(Character.CareerKarma));
-                }
+                if (InterlockedExtensions.Exchange(ref _eExpenseType, value) != value && Amount > 0 && !Refund)
+                    _objCharacter?.OnMultiplePropertyChanged(nameof(Character.CareerNuyen),
+                                                             nameof(Character.CareerKarma));
             }
         }
 
@@ -495,7 +513,7 @@ namespace Chummer
                 int intReturn = Date.CompareTo(other.Date);
                 if (intReturn == 0)
                 {
-                    intReturn = _objExpenseType.CompareTo(other._objExpenseType);
+                    intReturn = _eExpenseType.CompareTo(other._eExpenseType);
                     if (intReturn == 0)
                     {
                         intReturn = string.CompareOrdinal(Reason, other.Reason);
@@ -515,7 +533,7 @@ namespace Chummer
                 return -intReturn;
             }
 
-            int intBackupReturn = string.CompareOrdinal(_objCharacter?.FileName ?? string.Empty, other._objCharacter?.FileName ?? string.Empty);
+            int intBackupReturn = string.Compare(_objCharacter?.FileName ?? string.Empty, other._objCharacter?.FileName ?? string.Empty, StringComparison.OrdinalIgnoreCase);
             if (intBackupReturn == 0)
             {
                 intBackupReturn = string.CompareOrdinal(_objCharacter?.CharacterName ?? string.Empty, other._objCharacter?.CharacterName ?? string.Empty);
@@ -524,7 +542,7 @@ namespace Chummer
                     intBackupReturn = Date.CompareTo(other.Date);
                     if (intBackupReturn == 0)
                     {
-                        intBackupReturn = _objExpenseType.CompareTo(other._objExpenseType);
+                        intBackupReturn = _eExpenseType.CompareTo(other._eExpenseType);
                         if (intBackupReturn == 0)
                         {
                             intBackupReturn = string.CompareOrdinal(Reason, other.Reason);

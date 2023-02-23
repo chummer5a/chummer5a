@@ -19,6 +19,8 @@
 
 using System;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Windows.Media;
 using LiveCharts;
@@ -29,7 +31,6 @@ namespace Chummer.UI.Charts
 {
     public partial class ExpenseChart : UserControl
     {
-        private bool _blnDisposeCharacterOnDispose;
         private Character _objCharacter;
         private readonly LineSeries _objMainSeries;
         private readonly Axis _objYAxis;
@@ -68,29 +69,39 @@ namespace Chummer.UI.Charts
             chtCartesian.AxisY.Add(_objYAxis);
         }
 
-        private void ExpenseChart_Load(object sender, EventArgs e)
+        private async void ExpenseChart_Load(object sender, EventArgs e)
         {
-            if (_objCharacter == null)
+            if (ParentForm is CharacterShared frmParent && frmParent.CharacterObject != null)
             {
-                if (ParentForm is CharacterShared frmParent)
-                    _objCharacter = frmParent.CharacterObject;
-                else
+                if (Interlocked.CompareExchange(ref _objCharacter, frmParent.CharacterObject, null) != null)
+                    return;
+            }
+            else
+            {
+                Character objCharacter = new Character();
+                if (Interlocked.CompareExchange(ref _objCharacter, objCharacter, null) != null)
                 {
-                    _blnDisposeCharacterOnDispose = true;
-                    _objCharacter = new Character();
-                    Utils.BreakIfDebug();
+                    await objCharacter.DisposeAsync().ConfigureAwait(false);
+                    return;
                 }
-                if (NuyenMode)
-                {
-                    _objYAxis.LabelFormatter = val => val.ToString((_objCharacter?.Settings.NuyenFormat ?? "#,0.##") + '¥', GlobalSettings.CultureInfo);
-                }
+                await this.DoThreadSafeAsync(x => x.Disposed += (o, args) => objCharacter.Dispose()).ConfigureAwait(false);
+                Utils.BreakIfDebug();
+            }
+            if (NuyenMode)
+            {
+                string strNuyen = await LanguageManager.GetStringAsync("String_NuyenSymbol").ConfigureAwait(false);
+                await _objYAxis.DoThreadSafeAsync(x => x.LabelFormatter = val =>
+                                                      val.ToString((_objCharacter?.Settings.NuyenFormat ?? "#,0.##") + strNuyen,
+                                                                   GlobalSettings.CultureInfo)).ConfigureAwait(false);
             }
         }
 
-        public void NormalizeYAxis()
+        public Task NormalizeYAxis(CancellationToken token = default)
         {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
             if (ExpenseValues.Count == 0)
-                return;
+                return Task.CompletedTask;
             double dblActualMin = ExpenseValues[0].Value;
             double dblActualMax = dblActualMin;
             foreach (double dblValue in ExpenseValues.Select(x => x.Value))
@@ -110,8 +121,12 @@ namespace Chummer.UI.Charts
                 dblActualMax = Math.Max(Math.Ceiling(dblActualMax / 5.0), Math.Floor(dblActualMin / 5.0) + 1) * 5.0;
                 dblActualMin = Math.Floor(dblActualMin / 5.0) * 5.0;
             }
-            _objYAxis.MinValue = dblActualMin;
-            _objYAxis.MaxValue = dblActualMax;
+
+            return _objYAxis.DoThreadSafeAsync(x =>
+            {
+                x.MinValue = dblActualMin;
+                x.MaxValue = dblActualMax;
+            }, token);
         }
 
         #region Properties
@@ -119,34 +134,42 @@ namespace Chummer.UI.Charts
         [CLSCompliant(false)]
         public ChartValues<DateTimePoint> ExpenseValues { get; } = new ChartValues<DateTimePoint>();
 
-        private bool _blnNuyenMode;
+        private int _intNuyenMode;
 
         public bool NuyenMode
         {
-            get => _blnNuyenMode;
+            get => _intNuyenMode > 0;
             set
             {
-                if (_blnNuyenMode == value)
+                int intNewValue = value.ToInt32();
+                if (Interlocked.Exchange(ref _intNuyenMode, intNewValue) == intNewValue)
                     return;
-                _blnNuyenMode = value;
                 chtCartesian.SuspendLayout();
-                if (value)
+                try
                 {
-                    _objYAxis.Title = LanguageManager.GetString("Label_SummaryNuyen");
-                    _objYAxis.LabelFormatter = val => val.ToString((_objCharacter?.Settings.NuyenFormat ?? "#,0.##") + '¥', GlobalSettings.CultureInfo);
-                    _objMainSeries.Title = LanguageManager.GetString("String_NuyenRemaining");
-                    _objMainSeries.Stroke = Brushes.Red;
-                    _objMainSeries.Fill = s_ObjNuyenFillBrush;
+                    if (value)
+                    {
+                        _objYAxis.Title = LanguageManager.GetString("Label_SummaryNuyen");
+                        _objYAxis.LabelFormatter = val =>
+                            val.ToString((_objCharacter?.Settings.NuyenFormat ?? "#,0.##") + LanguageManager.GetString("String_NuyenSymbol"),
+                                         GlobalSettings.CultureInfo);
+                        _objMainSeries.Title = LanguageManager.GetString("String_NuyenRemaining");
+                        _objMainSeries.Stroke = Brushes.Red;
+                        _objMainSeries.Fill = s_ObjNuyenFillBrush;
+                    }
+                    else
+                    {
+                        _objYAxis.Title = LanguageManager.GetString("String_Karma");
+                        _objYAxis.LabelFormatter = val => val.ToString("#,0.##", GlobalSettings.CultureInfo);
+                        _objMainSeries.Title = LanguageManager.GetString("String_KarmaRemaining");
+                        _objMainSeries.Stroke = Brushes.Blue;
+                        _objMainSeries.Fill = s_ObjKarmaFillBrush;
+                    }
                 }
-                else
+                finally
                 {
-                    _objYAxis.Title = LanguageManager.GetString("String_Karma");
-                    _objYAxis.LabelFormatter = val => val.ToString("#,0.##", GlobalSettings.CultureInfo);
-                    _objMainSeries.Title = LanguageManager.GetString("String_KarmaRemaining");
-                    _objMainSeries.Stroke = Brushes.Blue;
-                    _objMainSeries.Fill = s_ObjKarmaFillBrush;
+                    chtCartesian.ResumeLayout();
                 }
-                chtCartesian.ResumeLayout();
             }
         }
 

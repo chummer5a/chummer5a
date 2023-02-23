@@ -17,6 +17,10 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System.Drawing;
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace Chummer
 {
     public class DiceRollerListViewItem : ListViewItemWithValue
@@ -26,7 +30,8 @@ namespace Chummer
         private int _intGlitchMin;
         private bool _blnBubbleDie;
 
-        public DiceRollerListViewItem(int intResult, int intTarget = 5, int intGlitchMin = 1, bool blnBubbleDie = false) : base(intResult)
+        public DiceRollerListViewItem(int intResult, int intTarget = 5, int intGlitchMin = 1, bool blnBubbleDie = false)
+            : base(intResult)
         {
             _intResult = intResult;
             _intTarget = intTarget;
@@ -42,13 +47,21 @@ namespace Chummer
             get => _intResult;
             set
             {
-                if (_intResult == value)
+                if (Interlocked.Exchange(ref _intResult, value) == value)
                     return;
-                _intResult = value;
                 Value = value;
                 UpdateText();
                 UpdateColor();
             }
+        }
+
+        public async ValueTask SetResult(int value, CancellationToken token = default)
+        {
+            if (Interlocked.Exchange(ref _intResult, value) == value)
+                return;
+            Value = value;
+            await UpdateTextAsync(token).ConfigureAwait(false);
+            await UpdateColorAsync(token).ConfigureAwait(false);
         }
 
         public int Target
@@ -56,11 +69,17 @@ namespace Chummer
             get => _intTarget;
             set
             {
-                if (_intTarget == value)
+                if (Interlocked.Exchange(ref _intTarget, value) == value)
                     return;
-                _intTarget = value;
                 UpdateColor();
             }
+        }
+
+        public async ValueTask SetTargetAsync(int value, CancellationToken token = default)
+        {
+            if (Interlocked.Exchange(ref _intTarget, value) == value)
+                return;
+            await UpdateColorAsync(token).ConfigureAwait(false);
         }
 
         public int GlitchMin
@@ -68,11 +87,17 @@ namespace Chummer
             get => _intGlitchMin;
             set
             {
-                if (_intGlitchMin == value)
+                if (Interlocked.Exchange(ref _intGlitchMin, value) == value)
                     return;
-                _intGlitchMin = value;
                 UpdateColor();
             }
+        }
+
+        public async ValueTask SetGlitchMinAsync(int value, CancellationToken token = default)
+        {
+            if (Interlocked.Exchange(ref _intGlitchMin, value) == value)
+                return;
+            await UpdateColorAsync(token).ConfigureAwait(false);
         }
 
         public bool BubbleDie
@@ -87,42 +112,108 @@ namespace Chummer
             }
         }
 
+        public async ValueTask SetBubbleDie(bool value, CancellationToken token = default)
+        {
+            if (_blnBubbleDie == value)
+                return;
+            _blnBubbleDie = value;
+            await UpdateTextAsync(token).ConfigureAwait(false);
+        }
+
         public bool IsHit => Result >= Target && !BubbleDie;
 
         public bool IsGlitch => Result <= GlitchMin;
 
-        private void UpdateText()
+        private void UpdateText(CancellationToken token = default)
         {
-            Text = BubbleDie
-                ? LanguageManager.GetString("String_BubbleDie") + LanguageManager.GetString("String_Space") + '(' + Result.ToString(GlobalSettings.CultureInfo) + ')'
+            string strText = BubbleDie
+                ? LanguageManager.GetString("String_BubbleDie", token: token)
+                  + LanguageManager.GetString("String_Space", token: token) + '('
+                  + Result.ToString(GlobalSettings.CultureInfo) + ')'
                 : Result.ToString(GlobalSettings.CultureInfo);
+            Utils.RunOnMainThread(() => Text = strText, token);
         }
 
-        private void UpdateColor()
+        private async ValueTask UpdateTextAsync(CancellationToken token = default)
         {
+            string strText = BubbleDie
+                ? await LanguageManager.GetStringAsync("String_BubbleDie", token: token).ConfigureAwait(false)
+                  + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '('
+                  + Result.ToString(GlobalSettings.CultureInfo) + ')'
+                : Result.ToString(GlobalSettings.CultureInfo);
+            await Utils.RunOnMainThreadAsync(() => Text = strText, token).ConfigureAwait(false);
+        }
+
+        private void UpdateColor(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            Color objForeColor;
+            Color objBackColor;
             if (IsHit)
             {
                 if (IsGlitch)
                 {
-                    ForeColor = ColorManager.DieGlitchHitFore;
-                    BackColor = ColorManager.DieGlitchHitBackground;
+                    objForeColor = ColorManager.DieGlitchHitFore;
+                    objBackColor = ColorManager.DieGlitchHitBackground;
                 }
                 else
                 {
-                    ForeColor = ColorManager.DieHitFore;
-                    BackColor = ColorManager.DieHitBackground;
+                    objForeColor = ColorManager.DieHitFore;
+                    objBackColor = ColorManager.DieHitBackground;
                 }
             }
             else if (IsGlitch)
             {
-                ForeColor = ColorManager.DieGlitchFore;
-                BackColor = ColorManager.DieGlitchBackground;
+                objForeColor = ColorManager.DieGlitchFore;
+                objBackColor = ColorManager.DieGlitchBackground;
             }
             else
             {
-                ForeColor = ColorManager.WindowText;
-                BackColor = ColorManager.Window;
+                objForeColor = ColorManager.WindowText;
+                objBackColor = ColorManager.Window;
             }
+
+            Utils.RunOnMainThread(() =>
+            {
+                ForeColor = objForeColor;
+                BackColor = objBackColor;
+            }, token);
+        }
+
+        private async ValueTask UpdateColorAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            Color objForeColor;
+            Color objBackColor;
+            if (IsHit)
+            {
+                if (IsGlitch)
+                {
+                    objForeColor = await ColorManager.GetDieGlitchHitForeAsync(token).ConfigureAwait(false);
+                    objBackColor = await ColorManager.GetDieGlitchHitBackgroundAsync(token).ConfigureAwait(false);
+                }
+                else
+                {
+                    objForeColor = await ColorManager.GetDieHitForeAsync(token).ConfigureAwait(false);
+                    objBackColor = await ColorManager.GetDieHitBackgroundAsync(token).ConfigureAwait(false);
+                }
+            }
+            else if (IsGlitch)
+            {
+                objForeColor = await ColorManager.GetDieGlitchForeAsync(token).ConfigureAwait(false);
+                objBackColor = await ColorManager.GetDieGlitchBackgroundAsync(token).ConfigureAwait(false);
+            }
+            else
+            {
+                objForeColor = await ColorManager.GetWindowTextAsync(token).ConfigureAwait(false);
+                objBackColor = await ColorManager.GetWindowAsync(token).ConfigureAwait(false);
+            }
+
+            await Utils.RunOnMainThreadAsync(() =>
+            {
+                ForeColor = objForeColor;
+                BackColor = objBackColor;
+            }, token).ConfigureAwait(false);
         }
     }
 }

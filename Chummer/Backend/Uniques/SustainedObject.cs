@@ -23,6 +23,8 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Xml;
 using Chummer.Annotations;
 using NLog;
@@ -31,7 +33,8 @@ namespace Chummer
 {
     public class SustainedObject : IHasInternalId, INotifyPropertyChanged
     {
-        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
         private Guid _guiID;
         private readonly Character _objCharacter;
         private bool _blnSelfSustained = true;
@@ -80,7 +83,7 @@ namespace Chummer
         /// Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Save(XmlTextWriter objWriter)
+        public void Save(XmlWriter objWriter)
         {
             if (objWriter == null)
                 return;
@@ -154,18 +157,36 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print numbers.</param>
         /// <param name="strLanguageToPrint">Language in which to print.</param>
-        public void Print(XmlTextWriter objWriter, CultureInfo objCulture, string strLanguageToPrint)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
-            objWriter.WriteStartElement("sustainedobject");
-            objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
-            objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
-            objWriter.WriteElementString("name_english", Name);
-            objWriter.WriteElementString("force", Force.ToString(objCulture));
-            objWriter.WriteElementString("nethits", NetHits.ToString(objCulture));
-            objWriter.WriteElementString("self", SelfSustained.ToString(objCulture));
-            objWriter.WriteEndElement();
+            // <sustainedobject>
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("sustainedobject", token).ConfigureAwait(false);
+            try
+            {
+                await objWriter
+                      .WriteElementStringAsync(
+                          "name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
+                      .ConfigureAwait(false);
+                await objWriter
+                      .WriteElementStringAsync(
+                          "fullname", await DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
+                      .ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("name_english", Name, token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("force", Force.ToString(objCulture), token)
+                               .ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("nethits", NetHits.ToString(objCulture), token)
+                               .ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("self", SelfSustained.ToString(objCulture), token)
+                               .ConfigureAwait(false);
+            }
+            finally
+            {
+                // </sustainedobject>
+                await objBaseElement.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods
@@ -195,10 +216,8 @@ namespace Chummer
             get => _intForce;
             set
             {
-                if (_intForce == value)
-                    return;
-                _intForce = value;
-                OnPropertyChanged();
+                if (Interlocked.Exchange(ref _intForce, value) != value)
+                    OnPropertyChanged();
             }
         }
 
@@ -210,10 +229,8 @@ namespace Chummer
             get => _intNetHits;
             set
             {
-                if (_intNetHits == value)
-                    return;
-                _intNetHits = value;
-                OnPropertyChanged();
+                if (Interlocked.Exchange(ref _intNetHits, value) != value)
+                    OnPropertyChanged();
             }
         }
 
@@ -244,6 +261,32 @@ namespace Chummer
         }
 
         /// <summary>
+        /// The name of the object as it should be displayed on printouts (translated name only).
+        /// </summary>
+        public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
+        {
+            // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
+            switch (_eLinkedObjectType)
+            {
+                case Improvement.ImprovementSource.Spell:
+                    if (_objLinkedObject is Spell objSpell)
+                        return await objSpell.DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
+                    break;
+
+                case Improvement.ImprovementSource.ComplexForm:
+                    if (_objLinkedObject is ComplexForm objComplexForm)
+                        return await objComplexForm.DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
+                    break;
+
+                case Improvement.ImprovementSource.CritterPower:
+                    if (_objLinkedObject is CritterPower objCritterPower)
+                        return await objCritterPower.DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
+                    break;
+            }
+            return await LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// The name of the object as it should be displayed in lists.
         /// </summary>
         public string DisplayName(string strLanguage)
@@ -263,7 +306,36 @@ namespace Chummer
             return LanguageManager.GetString("String_Unknown", strLanguage);
         }
 
+        /// <summary>
+        /// The name of the object as it should be displayed on printouts (translated name only).
+        /// </summary>
+        public async ValueTask<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
+        {
+            // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
+            switch (_eLinkedObjectType)
+            {
+                case Improvement.ImprovementSource.Spell:
+                    if (_objLinkedObject is Spell objSpell)
+                        return await objSpell.DisplayNameAsync(strLanguage, token).ConfigureAwait(false);
+                    break;
+
+                case Improvement.ImprovementSource.ComplexForm:
+                    if (_objLinkedObject is ComplexForm objComplexForm)
+                        return await objComplexForm.DisplayNameAsync(strLanguage, token).ConfigureAwait(false);
+                    break;
+
+                case Improvement.ImprovementSource.CritterPower:
+                    if (_objLinkedObject is CritterPower objCritterPower)
+                        return await objCritterPower.DisplayNameAsync(strLanguage, token).ConfigureAwait(false);
+                    break;
+            }
+            return await LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token).ConfigureAwait(false);
+        }
+
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
+
+        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
+            DisplayNameAsync(GlobalSettings.Language, token);
 
         public string Name
         {
@@ -294,7 +366,7 @@ namespace Chummer
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyName));
+            Utils.RunOnMainThread(() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyName)));
             if (strPropertyName == nameof(SelfSustained) || strPropertyName == nameof(LinkedObjectType))
                 _objCharacter.RefreshSustainingPenalties();
         }

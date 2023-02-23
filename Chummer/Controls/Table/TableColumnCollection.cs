@@ -21,6 +21,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Chummer.UI.Table
 {
@@ -48,7 +50,7 @@ namespace Chummer.UI.Table
 
         public int Count => _lstColumns.Count;
 
-        public void Add(TableColumn<T> objColumn)
+        public void Add(TableColumn<T> objColumn, CancellationToken token = default)
         {
             if (objColumn == null)
             {
@@ -56,7 +58,18 @@ namespace Chummer.UI.Table
             }
 
             _lstColumns.Add(objColumn);
-            _table.ColumnAdded(objColumn);
+            Utils.SafelyRunSynchronously(() => _table.ColumnAdded(objColumn, token).AsTask(), token);
+        }
+
+        public async ValueTask AddAsync(TableColumn<T> objColumn, CancellationToken token = default)
+        {
+            if (objColumn == null)
+            {
+                throw new ArgumentNullException(nameof(objColumn));
+            }
+
+            _lstColumns.Add(objColumn);
+            await _table.ColumnAdded(objColumn, token).ConfigureAwait(false);
         }
 
         public IEnumerator<TableColumn<T>> GetEnumerator()

@@ -28,7 +28,6 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CreateExpense));
             this.lblKarma = new System.Windows.Forms.Label();
             this.nudAmount = new Chummer.NumericUpDownEx();
@@ -36,16 +35,16 @@ namespace Chummer
             this.txtDescription = new System.Windows.Forms.TextBox();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
-            this.chkRefund = new Chummer.ColorableCheckBox(this.components);
+            this.chkRefund = new Chummer.ColorableCheckBox();
             this.datDate = new System.Windows.Forms.DateTimePicker();
             this.lblDateLabel = new System.Windows.Forms.Label();
             this.nudPercent = new Chummer.NumericUpDownEx();
             this.lblPercent = new System.Windows.Forms.Label();
-            this.chkKarmaNuyenExchange = new Chummer.ColorableCheckBox(this.components);
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.chkKarmaNuyenExchange = new Chummer.ColorableCheckBox();
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.flpAmount = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkForceCareerVisible = new Chummer.ColorableCheckBox(this.components);
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.chkForceCareerVisible = new Chummer.ColorableCheckBox();
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.nudAmount)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudPercent)).BeginInit();
             this.tlpMain.SuspendLayout();
@@ -119,8 +118,9 @@ namespace Chummer
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cmdCancel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdCancel.Location = new System.Drawing.Point(3, 3);
+            this.cmdCancel.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(50, 23);
+            this.cmdCancel.Size = new System.Drawing.Size(80, 23);
             this.cmdCancel.TabIndex = 10;
             this.cmdCancel.Tag = "String_Cancel";
             this.cmdCancel.Text = "Cancel";
@@ -132,9 +132,10 @@ namespace Chummer
             this.cmdOK.AutoSize = true;
             this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdOK.Location = new System.Drawing.Point(59, 3);
+            this.cmdOK.Location = new System.Drawing.Point(89, 3);
+            this.cmdOK.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdOK.Name = "cmdOK";
-            this.cmdOK.Size = new System.Drawing.Size(50, 23);
+            this.cmdOK.Size = new System.Drawing.Size(80, 23);
             this.cmdOK.TabIndex = 9;
             this.cmdOK.Tag = "String_OK";
             this.cmdOK.Text = "OK";
@@ -298,15 +299,15 @@ namespace Chummer
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
             this.tlpButtons.Controls.Add(this.cmdOK, 1, 0);
-            this.tlpButtons.Location = new System.Drawing.Point(334, 154);
+            this.tlpButtons.Location = new System.Drawing.Point(274, 154);
             this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
-            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpButtons.Size = new System.Drawing.Size(112, 29);
+            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpButtons.Size = new System.Drawing.Size(172, 29);
             this.tlpButtons.TabIndex = 14;
             // 
-            // frmExpense
+            // CreateExpense
             // 
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -320,7 +321,7 @@ namespace Chummer
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmExpense";
+            this.Name = "CreateExpense";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -354,9 +355,9 @@ namespace Chummer
         private Chummer.NumericUpDownEx nudPercent;
         private System.Windows.Forms.Label lblPercent;
         private Chummer.ColorableCheckBox chkKarmaNuyenExchange;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
         private System.Windows.Forms.FlowLayoutPanel flpAmount;
         private Chummer.ColorableCheckBox chkForceCareerVisible;
-        private BufferedTableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
     }
 }

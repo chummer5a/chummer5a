@@ -1,0 +1,444 @@
+<?xml version="1.0" encoding="utf-8" ?>
+
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <modules>
+    <module>
+      <bonus xpathfilter="(specificskill/name = 'Escape Artist' or specificskill/name = 'Free-Fall') and not(specificskill/name = 'Gymnastics')">
+        <specificskill xpathfilter="name = 'Escape Artist'">
+          <name>Prowess</name>
+          <condition>Acrobatics</condition>
+        </specificskill>
+      </bonus>
+      <bonus xpathfilter="specificskill/name = 'Diving' and not(specificskill/name = 'Swimming')">
+        <specificskill xpathfilter="name = 'Diving'">
+          <name>Prowess</name>
+          <condition>Aquatics</condition>
+        </specificskill>
+      </bonus>
+      <bonus xpathfilter="specificskill/name = 'Tracking' and not(specificskill/name = 'Navigation')">
+        <specificskill xpathfilter="name = 'Tracking'">
+          <name>Outdoors</name>
+          <condition>Query</condition>
+        </specificskill>
+      </bonus>
+      <bonus xpathfilter="specificskill/name = 'Artificing' and not(specificskill/name = 'Arcana')">
+        <specificskill xpathfilter="name = 'Artificing'">
+          <name>Aetherology</name>
+          <condition>Arcana</condition>
+        </specificskill>
+      </bonus>
+      <bonus xpathfilter="specificskill/name = 'Disenchanting' and not(specificskill/name = 'Arcana') and not(specificskill/name = 'Artificing')">
+        <specificskill xpathfilter="name = 'Disenchanting'">
+          <name>Aetherology</name>
+          <condition>Arcana</condition>
+        </specificskill>
+      </bonus>
+      <bonus xpathfilter="specificskill/name = 'Astral Combat' and not(specificskill/name = 'Assensing')">
+        <specificskill xpathfilter="name = 'Astral Combat'">
+          <name>Aetherology</name>
+          <condition>Astral</condition>
+        </specificskill>
+      </bonus>
+      <bonus xpathfilter="specificskill/name = 'Leadership' and not(specificskill/name = 'Intimidation')">
+        <specificskill xpathfilter="name = 'Leadership'">
+          <name>Influence</name>
+          <condition>Command</condition>
+        </specificskill>
+      </bonus>
+      <bonus xpathfilter="specificskill/name = 'Instruction' and not(specificskill/name = 'Leadership') and not(specificskill/name = 'Intimidation')">
+        <specificskill xpathfilter="name = 'Instruction'">
+          <name>Influence</name>
+          <condition>Command</condition>
+        </specificskill>
+      </bonus>
+      <bonus xpathfilter="specificskill/name = 'Disguise' and not(specificskill/name = 'Impersonation')">
+        <specificskill xpathfilter="name = 'Disguise'">
+          <name>Stagecraft</name>
+          <condition>Acting</condition>
+        </specificskill>
+      </bonus>
+      <bonus xpathfilter="skillgroup[name = 'Conjuring' and bonus = '1']">
+        <specificskill amendoperation="addnode">
+          <name>Conjuring</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </bonus>
+      <bonus xpathfilter="skillgroup[name = 'Influence' and bonus = '1']">
+        <specificskill amendoperation="addnode">
+          <name>Influence</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </bonus>
+      <bonus xpathfilter="skillgroup[name = 'Electronics' and bonus = '-4']">
+        <specificskill amendoperation="addnode">
+          <name>Electronics</name>
+          <bonus>-4</bonus>
+        </specificskill>
+      </bonus>
+      <bonus xpathfilter="skillgroup[name = 'Close Combat' and bonus = '1']">
+        <specificskill amendoperation="addnode">
+          <name>Close Combat</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </bonus>
+      <bonus xpathfilter="skillgroup[name = 'Engineering' and bonus = '1']">
+        <specificskill amendoperation="addnode">
+          <name>Engineering</name>
+          <bonus>1</bonus>
+        </specificskill>
+      </bonus>
+      <bonus xpathfilter="skillgroupdisable = 'Sorcery'">
+        <skilldisable amendoperation="addnode">Sorcery</skilldisable>
+      </bonus>
+      <bonus xpathfilter="skillgroupdisable = 'Conjuring'">
+        <skilldisable amendoperation="addnode">Conjuring</skilldisable>
+      </bonus>
+      <bonus xpathfilter="blockskillgroupdefaulting">
+        <selectskill amendoperation="addnode">
+          <val>-40</val>
+          <disablespecializationeffects />
+        </selectskill>
+      </bonus>
+      <bonus xpathfilter="selectskill[@limittoskill = 'Artisan,Performance']/val = '1'">
+        <specificskill amendoperation="addnode">
+          <name>Stagecraft</name>
+          <bonus>1</bonus>
+          <condition>Performance</condition>
+        </specificskill>
+      </bonus>
+      <bonus>
+        <specificskill xpathfilter="name = 'Disguise' or name = 'Leadership' or name = 'Instruction' or name = 'Astral Combat' or name = 'Escape Artist' or name = 'Free-Fall' or name = 'Perception' or name = 'Diving' or name = 'Tracking' or name = 'Artificing' or name = 'Disenchanting' or name = 'Exotic Melee Weapon'" amendoperation="remove" />
+        <skillgroup amendoperation="remove" />
+        <skillgroupdisable amendoperation="remove" />
+        <blockskillgroupdefaulting amendoperation="remove" />
+        <selectskill xpathfilter="@limittoskill = 'Artisan,Performance' and val = '1'" amendoperation="remove" />
+        <specificskill xpathfilter="name = 'Arcana'">
+          <name>Aetherology</name>
+          <condition>Arcana</condition>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Assensing'">
+          <name>Aetherology</name>
+          <condition>Astral</condition>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Ritual Spellcasting'">
+          <name>Aetherology</name>
+          <condition>Ceremony</condition>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Running'">
+          <name>Prowess</name>
+          <condition>Athletics</condition>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Gymnastics'">
+          <name>Prowess</name>
+          <condition>Acrobatics</condition>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Swimming'">
+          <name>Prowess</name>
+          <condition>Aquatics</condition>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Navigation'">
+          <name>Outdoors</name>
+          <condition>Query</condition>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Survival'">
+          <name>Outdoors</name>
+          <condition>Survival</condition>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Animal Handling'">
+          <name>Outdoors</name>
+          <condition>Animal Handling</condition>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Etiquette'">
+          <name>Influence</name>
+          <condition>Socialize</condition>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Intimidation'">
+          <name>Influence</name>
+          <condition>Command</condition>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Negotiation'">
+          <name>Influence</name>
+          <condition>Persuade</condition>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Palming'">
+          <name>Stealth</name>
+          <condition>Sleight of Hand</condition>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Sneaking'">
+          <name>Stealth</name>
+          <condition>Sneaking</condition>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Locksmith'">
+          <name>Stealth</name>
+          <condition>Locksmith</condition>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Performance'">
+          <name>Stagecraft</name>
+          <condition>Performance</condition>
+        </specificskill>
+        <specificskill xpathfilter="name = 'Impersonation'">
+          <name>Stagecraft</name>
+          <condition>Acting</condition>
+        </specificskill>
+        <specificskill xpathfilter="(name = 'Compiling' or name = 'Registering' or name = 'Summoning' or name = 'Binding') and condition" amendoperation="remove" />
+        <focusbindingkarmacost xpathfilter="name = 'Qi Focus' and extracontains = 'Improved Ability (skill) (Artisan)'" amendoperation="remove" />
+        <unlockskills xpathfilter="@name = 'Assensing' or @name = 'Astral Combat'" amendoperation="replace" name="Aetherology">Name</unlockskills>
+        <skillcategory xpathfilter="exclude">
+          <exclude xpathfilter=". = 'Intimidation'" amendoperation="remove" />
+        </skillcategory>
+        <weaponcategorydv>
+          <selectskill xpathfilter="@limittoskill='Astral Combat,Blades,Clubs,Exotic Melee Weapon,Unarmed Combat'" amendoperation="replace" limittoskill="Aetherology,Close Combat" />
+        </weaponcategorydv>
+        <skilldisable xpathfilter=". = 'Ritual Spellcasting' or . = 'Artificing' or . = 'Disenchanting'" amendoperation="remove" />
+        <selectskill xpathfilter="@limittoskill='Compiling, Computer, Cybercombat, Decompiling, Electronic Warfare, Hacking, Registering, Software'" amendoperation="replace" limittoskill="Tasking, Processing, Computers" />
+      </bonus>
+      <bonus xpathfilter="unlockskills = 'Adept' or unlockskills = 'Aware' or unlockskills = 'Explorer'">
+        <unlockskills amendoperation="addnode" name="Aetherology">Name</unlockskills>
+        <!-- Need to remove nodes last to make sure filter keeps firing -->
+        <unlockskills xpathfilter=". = 'Adept' or . = 'Aware' or . = 'Explorer'" amendoperation="remove" />
+      </bonus>
+      <bonus xpathfilter="unlockskills = 'Sorcery,Conjuring,Enchanting'">
+        <unlockskills amendoperation="addnode" name="Aetherology">Name</unlockskills>
+        <unlockskills amendoperation="addnode" name="Sorcery,Conjuring">Name</unlockskills>
+        <!-- Need to remove nodes last to make sure filter keeps firing -->
+        <unlockskills xpathfilter=". = 'Sorcery,Conjuring,Enchanting'" amendoperation="remove" />
+      </bonus>
+      <bonus xpathfilter="not(unlockskills = 'Magician') and unlockskills = 'Sorcery' and unlockskills = 'Conjuring'">
+        <unlockskills amendoperation="addnode" name="Aetherology">Name</unlockskills>
+        <unlockskills amendoperation="addnode" name="Sorcery">Name</unlockskills>
+        <unlockskills amendoperation="addnode" name="Conjuring">Name</unlockskills>
+        <!-- Need to remove nodes last to make sure filter keeps firing -->
+        <unlockskills xpathfilter=". = 'Sorcery' or . = 'Conjuring'" amendoperation="remove" />
+      </bonus>
+      <versions>
+        <version>
+          <bonus xpathfilter="(specificskill/name = 'Escape Artist' or specificskill/name = 'Free-Fall') and not(specificskill/name = 'Gymnastics')">
+            <specificskill xpathfilter="name = 'Escape Artist'">
+              <name>Prowess</name>
+              <condition>Acrobatics</condition>
+            </specificskill>
+          </bonus>
+          <bonus xpathfilter="specificskill/name = 'Diving' and not(specificskill/name = 'Swimming')">
+            <specificskill xpathfilter="name = 'Diving'">
+              <name>Prowess</name>
+              <condition>Aquatics</condition>
+            </specificskill>
+          </bonus>
+          <bonus xpathfilter="specificskill/name = 'Tracking' and not(specificskill/name = 'Navigation')">
+            <specificskill xpathfilter="name = 'Tracking'">
+              <name>Outdoors</name>
+              <condition>Query</condition>
+            </specificskill>
+          </bonus>
+          <bonus xpathfilter="specificskill/name = 'Artificing' and not(specificskill/name = 'Arcana')">
+            <specificskill xpathfilter="name = 'Artificing'">
+              <name>Aetherology</name>
+              <condition>Arcana</condition>
+            </specificskill>
+          </bonus>
+          <bonus xpathfilter="specificskill/name = 'Disenchanting' and not(specificskill/name = 'Arcana') and not(specificskill/name = 'Artificing')">
+            <specificskill xpathfilter="name = 'Disenchanting'">
+              <name>Aetherology</name>
+              <condition>Arcana</condition>
+            </specificskill>
+          </bonus>
+          <bonus xpathfilter="specificskill/name = 'Astral Combat' and not(specificskill/name = 'Assensing')">
+            <specificskill xpathfilter="name = 'Astral Combat'">
+              <name>Aetherology</name>
+              <condition>Astral</condition>
+            </specificskill>
+          </bonus>
+          <bonus xpathfilter="specificskill/name = 'Leadership' and not(specificskill/name = 'Intimidation')">
+            <specificskill xpathfilter="name = 'Leadership'">
+              <name>Influence</name>
+              <condition>Command</condition>
+            </specificskill>
+          </bonus>
+          <bonus xpathfilter="specificskill/name = 'Instruction' and not(specificskill/name = 'Leadership') and not(specificskill/name = 'Intimidation')">
+            <specificskill xpathfilter="name = 'Instruction'">
+              <name>Influence</name>
+              <condition>Command</condition>
+            </specificskill>
+          </bonus>
+          <bonus xpathfilter="specificskill/name = 'Disguise' and not(specificskill/name = 'Impersonation')">
+            <specificskill xpathfilter="name = 'Disguise'">
+              <name>Stagecraft</name>
+              <condition>Acting</condition>
+            </specificskill>
+          </bonus>
+          <bonus xpathfilter="skillgroup[name = 'Conjuring' and bonus = '1']">
+            <specificskill amendoperation="addnode">
+              <name>Conjuring</name>
+              <bonus>1</bonus>
+            </specificskill>
+          </bonus>
+          <bonus xpathfilter="skillgroup[name = 'Influence' and bonus = '1']">
+            <specificskill amendoperation="addnode">
+              <name>Influence</name>
+              <bonus>1</bonus>
+            </specificskill>
+          </bonus>
+          <bonus xpathfilter="skillgroup[name = 'Electronics' and bonus = '-4']">
+            <specificskill amendoperation="addnode">
+              <name>Electronics</name>
+              <bonus>-4</bonus>
+            </specificskill>
+          </bonus>
+          <bonus xpathfilter="skillgroup[name = 'Close Combat' and bonus = '1']">
+            <specificskill amendoperation="addnode">
+              <name>Close Combat</name>
+              <bonus>1</bonus>
+            </specificskill>
+          </bonus>
+          <bonus xpathfilter="skillgroup[name = 'Engineering' and bonus = '1']">
+            <specificskill amendoperation="addnode">
+              <name>Engineering</name>
+              <bonus>1</bonus>
+            </specificskill>
+          </bonus>
+          <bonus xpathfilter="skillgroupdisable = 'Sorcery'">
+            <skilldisable amendoperation="addnode">Sorcery</skilldisable>
+          </bonus>
+          <bonus xpathfilter="skillgroupdisable = 'Conjuring'">
+            <skilldisable amendoperation="addnode">Conjuring</skilldisable>
+          </bonus>
+          <bonus xpathfilter="blockskillgroupdefaulting">
+            <selectskill amendoperation="addnode">
+              <val>-40</val>
+              <disablespecializationeffects />
+            </selectskill>
+          </bonus>
+          <bonus xpathfilter="selectskill[@limittoskill = 'Artisan,Performance']/val = '1'">
+            <specificskill amendoperation="addnode">
+              <name>Stagecraft</name>
+              <bonus>1</bonus>
+              <condition>Performance</condition>
+            </specificskill>
+          </bonus>
+          <bonus>
+            <specificskill xpathfilter="name = 'Disguise' or name = 'Leadership' or name = 'Instruction' or name = 'Astral Combat' or name = 'Escape Artist' or name = 'Free-Fall' or name = 'Perception' or name = 'Diving' or name = 'Tracking' or name = 'Artificing' or name = 'Disenchanting' or name = 'Exotic Melee Weapon'" amendoperation="remove" />
+            <skillgroup amendoperation="remove" />
+            <skillgroupdisable amendoperation="remove" />
+            <blockskillgroupdefaulting amendoperation="remove" />
+            <selectskill xpathfilter="@limittoskill = 'Artisan,Performance' and val = '1'" amendoperation="remove" />
+            <specificskill xpathfilter="name = 'Arcana'">
+              <name>Aetherology</name>
+              <condition>Arcana</condition>
+            </specificskill>
+            <specificskill xpathfilter="name = 'Assensing'">
+              <name>Aetherology</name>
+              <condition>Astral</condition>
+            </specificskill>
+            <specificskill xpathfilter="name = 'Ritual Spellcasting'">
+              <name>Aetherology</name>
+              <condition>Ceremony</condition>
+            </specificskill>
+            <specificskill xpathfilter="name = 'Running'">
+              <name>Prowess</name>
+              <condition>Athletics</condition>
+            </specificskill>
+            <specificskill xpathfilter="name = 'Gymnastics'">
+              <name>Prowess</name>
+              <condition>Acrobatics</condition>
+            </specificskill>
+            <specificskill xpathfilter="name = 'Swimming'">
+              <name>Prowess</name>
+              <condition>Aquatics</condition>
+            </specificskill>
+            <specificskill xpathfilter="name = 'Navigation'">
+              <name>Outdoors</name>
+              <condition>Query</condition>
+            </specificskill>
+            <specificskill xpathfilter="name = 'Survival'">
+              <name>Outdoors</name>
+              <condition>Survival</condition>
+            </specificskill>
+            <specificskill xpathfilter="name = 'Animal Handling'">
+              <name>Outdoors</name>
+              <condition>Animal Handling</condition>
+            </specificskill>
+            <specificskill xpathfilter="name = 'Etiquette'">
+              <name>Influence</name>
+              <condition>Socialize</condition>
+            </specificskill>
+            <specificskill xpathfilter="name = 'Intimidation'">
+              <name>Influence</name>
+              <condition>Command</condition>
+            </specificskill>
+            <specificskill xpathfilter="name = 'Negotiation'">
+              <name>Influence</name>
+              <condition>Persuade</condition>
+            </specificskill>
+            <specificskill xpathfilter="name = 'Palming'">
+              <name>Stealth</name>
+              <condition>Sleight of Hand</condition>
+            </specificskill>
+            <specificskill xpathfilter="name = 'Sneaking'">
+              <name>Stealth</name>
+              <condition>Sneaking</condition>
+            </specificskill>
+            <specificskill xpathfilter="name = 'Locksmith'">
+              <name>Stealth</name>
+              <condition>Locksmith</condition>
+            </specificskill>
+            <specificskill xpathfilter="name = 'Performance'">
+              <name>Stagecraft</name>
+              <condition>Performance</condition>
+            </specificskill>
+            <specificskill xpathfilter="name = 'Impersonation'">
+              <name>Stagecraft</name>
+              <condition>Acting</condition>
+            </specificskill>
+            <specificskill xpathfilter="(name = 'Compiling' or name = 'Registering' or name = 'Summoning' or name = 'Binding') and condition" amendoperation="remove" />
+            <focusbindingkarmacost xpathfilter="name = 'Qi Focus' and extracontains = 'Improved Ability (skill) (Artisan)'" amendoperation="remove" />
+            <unlockskills xpathfilter="@name = 'Assensing' or @name = 'Astral Combat'" amendoperation="replace" name="Aetherology">Name</unlockskills>
+            <skillcategory xpathfilter="exclude">
+              <exclude xpathfilter=". = 'Intimidation'" amendoperation="remove" />
+            </skillcategory>
+            <weaponcategorydv>
+              <selectskill xpathfilter="@limittoskill='Astral Combat,Blades,Clubs,Exotic Melee Weapon,Unarmed Combat'" amendoperation="replace" limittoskill="Aetherology,Close Combat" />
+            </weaponcategorydv>
+            <skilldisable xpathfilter=". = 'Ritual Spellcasting' or . = 'Artificing' or . = 'Disenchanting'" amendoperation="remove" />
+            <selectskill xpathfilter="@limittoskill='Compiling, Computer, Cybercombat, Decompiling, Electronic Warfare, Hacking, Registering, Software'" amendoperation="replace" limittoskill="Tasking, Processing, Computers" />
+          </bonus>
+          <bonus xpathfilter="unlockskills = 'Adept' or unlockskills = 'Aware' or unlockskills = 'Explorer'">
+            <unlockskills amendoperation="addnode" name="Aetherology">Name</unlockskills>
+            <!-- Need to remove nodes last to make sure filter keeps firing -->
+            <unlockskills xpathfilter=". = 'Adept' or . = 'Aware' or . = 'Explorer'" amendoperation="remove" />
+          </bonus>
+          <bonus xpathfilter="unlockskills = 'Sorcery,Conjuring,Enchanting'">
+            <unlockskills amendoperation="addnode" name="Aetherology">Name</unlockskills>
+            <unlockskills amendoperation="addnode" name="Sorcery,Conjuring">Name</unlockskills>
+            <!-- Need to remove nodes last to make sure filter keeps firing -->
+            <unlockskills xpathfilter=". = 'Sorcery,Conjuring,Enchanting'" amendoperation="remove" />
+          </bonus>
+          <bonus xpathfilter="not(unlockskills = 'Magician') and unlockskills = 'Sorcery' and unlockskills = 'Conjuring'">
+            <unlockskills amendoperation="addnode" name="Aetherology">Name</unlockskills>
+            <unlockskills amendoperation="addnode" name="Sorcery">Name</unlockskills>
+            <unlockskills amendoperation="addnode" name="Conjuring">Name</unlockskills>
+            <!-- Need to remove nodes last to make sure filter keeps firing -->
+            <unlockskills xpathfilter=". = 'Sorcery' or . = 'Conjuring'" amendoperation="remove" />
+          </bonus>
+        </version>
+      </versions>
+    </module>
+  </modules>
+</chummer>

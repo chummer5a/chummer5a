@@ -149,9 +149,13 @@
       <adept>False</adept>
       <magician>True</magician>
       <required>
-        <allof>
+        <oneof>
           <metamagic>Paradigm Shift: Toxic</metamagic>
-        </allof>
+          <group>
+            <tradition>Elder God</tradition>
+            <initiategrade>3</initiategrade>
+          </group>
+        </oneof>
       </required>
       <source>SG</source>
       <page>87</page>
@@ -632,7 +636,7 @@
           <spirit>Spirit of Air</spirit>
           <spirit>Spirit of Beasts</spirit>
           <spirit>Spirit of Earth</spirit>
-          <spirit>Spirit of Man</spirit>        
+          <spirit>Spirit of Man</spirit>
           <spirit>Spirit of Fire</spirit>
           <spirit>Plant Spirit</spirit>
           <spirit>Spirit of Water</spirit>
@@ -790,7 +794,7 @@
     <!-- Region Dark Terrors -->
     <metamagic>
       <id>42f5af49-ade3-43a7-b501-25ae975a574b</id>
-      <name>Spiritual Sacrifice</name>
+      <name>Echo Binding</name>
       <adept>False</adept>
       <magician>True</magician>
       <required>

@@ -85,14 +85,17 @@ namespace Chummer
         /// <param name="objComparer">The System.Collections.Generic.IComparer`1 generic interface
         /// implementation to use when comparing elements, or null to use the System.IComparable`1 generic
         /// interface implementation of each element.</param>
-        public static void Sort<T>(this ObservableCollection<T> lstCollection, IComparer<T> objComparer = null) where T : IComparable
+        public static void Sort<T>(this ObservableCollection<T> lstCollection, IComparer<T> objComparer = null)
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
             T[] aobjSorted = new T[lstCollection.Count];
             for (int i = 0; i < lstCollection.Count; ++i)
                 aobjSorted[i] = lstCollection[i];
-            Array.Sort(aobjSorted, objComparer);
+            if (objComparer != null)
+                Array.Sort(aobjSorted, objComparer);
+            else
+                Array.Sort(aobjSorted);
             for (int i = 0; i < aobjSorted.Length; ++i)
                 lstCollection.Move(lstCollection.IndexOf(aobjSorted[i]), i);
         }

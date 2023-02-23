@@ -19,22 +19,27 @@
 
 using System;
 using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.DataContracts;
 
 namespace Chummer
 {
     [CLSCompliant(false)]
-    public sealed class CustomActivity : Activity
+    public sealed class CustomActivity : Activity, IAsyncDisposable
     {
         [CLSCompliant(false)]
         //public IOperationHolder<DependencyTelemetry> myOperationDependencyHolder { get; set; }
         //public IOperationHolder<RequestTelemetry> myOperationRequestHolder { get; set; }
         public TelemetryClient MyTelemetryClient { get; set; }
+
         [CLSCompliant(false)]
         public DependencyTelemetry MyDependencyTelemetry { get; private set; }
+
         [CLSCompliant(false)]
         public RequestTelemetry MyRequestTelemetry { get; private set; }
+
         public string MyTelemetryTarget { get; private set; }
 
         public enum OperationType
@@ -125,13 +130,14 @@ namespace Chummer
                 MyRequestTelemetry.Success = success;
         }
 
-        private bool _blnDisposed;
+        private int _intIsDisposed;
 
         protected override void Dispose(bool disposing)
         {
+            base.Dispose(disposing);
             if (!disposing)
                 return;
-            if (_blnDisposed)
+            if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
                 return;
 
             Timekeeper.Finish(OperationName);
@@ -154,8 +160,34 @@ namespace Chummer
                 default:
                     throw new NotImplementedException("Implement OperationType " + OperationName);
             }
+        }
 
-            _blnDisposed = true;
+        /// <inheritdoc />
+        public async ValueTask DisposeAsync()
+        {
+            if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
+                return;
+
+            await Timekeeper.FinishAsync(OperationName).ConfigureAwait(false);
+            switch (MyOperationType)
+            {
+                case OperationType.DependencyOperation:
+                    MyDependencyTelemetry.Duration = DateTimeOffset.UtcNow - MyDependencyTelemetry.Timestamp;
+                    if (MyDependencyTelemetry.ResultCode == "not disposed")
+                        MyDependencyTelemetry.ResultCode = "OK";
+                    MyTelemetryClient.TrackDependency(MyDependencyTelemetry);
+                    break;
+
+                case OperationType.RequestOperation:
+                    MyRequestTelemetry.Duration = DateTimeOffset.UtcNow - MyRequestTelemetry.Timestamp;
+                    if (MyRequestTelemetry.ResponseCode == "not disposed")
+                        MyRequestTelemetry.ResponseCode = "OK";
+                    MyTelemetryClient.TrackRequest(MyRequestTelemetry);
+                    break;
+
+                default:
+                    throw new NotImplementedException("Implement OperationType " + OperationName);
+            }
         }
     }
 }

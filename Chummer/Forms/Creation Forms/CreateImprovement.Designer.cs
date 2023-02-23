@@ -28,7 +28,7 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CreateImprovement));
             this.lblImprovementType = new System.Windows.Forms.Label();
             this.cboImprovemetType = new Chummer.ElasticComboBox();
             this.cmdCancel = new System.Windows.Forms.Button();
@@ -46,14 +46,14 @@ namespace Chummer
             this.lblSelect = new System.Windows.Forms.Label();
             this.txtSelect = new System.Windows.Forms.TextBox();
             this.cmdChangeSelection = new System.Windows.Forms.Button();
-            this.chkApplyToRating = new Chummer.ColorableCheckBox(this.components);
-            this.chkFree = new Chummer.ColorableCheckBox(this.components);
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.chkApplyToRating = new Chummer.ColorableCheckBox();
+            this.chkFree = new Chummer.ColorableCheckBox();
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.txtTranslateSelection = new System.Windows.Forms.TextBox();
             this.flpSelectValue = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkIgnoreLimits = new Chummer.ColorableCheckBox(this.components);
+            this.chkIgnoreLimits = new Chummer.ColorableCheckBox();
             this.txtHelp = new System.Windows.Forms.TextBox();
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             ((System.ComponentModel.ISupportInitialize)(this.nudVal)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMin)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMax)).BeginInit();
@@ -95,8 +95,9 @@ namespace Chummer
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cmdCancel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdCancel.Location = new System.Drawing.Point(3, 3);
+            this.cmdCancel.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(50, 23);
+            this.cmdCancel.Size = new System.Drawing.Size(80, 23);
             this.cmdCancel.TabIndex = 18;
             this.cmdCancel.Tag = "String_Cancel";
             this.cmdCancel.Text = "Cancel";
@@ -108,9 +109,10 @@ namespace Chummer
             this.cmdOK.AutoSize = true;
             this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdOK.Location = new System.Drawing.Point(59, 3);
+            this.cmdOK.Location = new System.Drawing.Point(89, 3);
+            this.cmdOK.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdOK.Name = "cmdOK";
-            this.cmdOK.Size = new System.Drawing.Size(50, 23);
+            this.cmdOK.Size = new System.Drawing.Size(80, 23);
             this.cmdOK.TabIndex = 17;
             this.cmdOK.Tag = "String_OK";
             this.cmdOK.Text = "OK";
@@ -135,6 +137,11 @@ namespace Chummer
             this.nudVal.DecimalPlaces = 2;
             this.nudVal.Dock = System.Windows.Forms.DockStyle.Fill;
             this.nudVal.Location = new System.Drawing.Point(107, 85);
+            this.nudVal.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
             this.nudVal.Minimum = new decimal(new int[] {
             100,
             0,
@@ -170,6 +177,11 @@ namespace Chummer
             this.nudMin.AutoSize = true;
             this.nudMin.Dock = System.Windows.Forms.DockStyle.Fill;
             this.nudMin.Location = new System.Drawing.Point(107, 111);
+            this.nudMin.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
             this.nudMin.Minimum = new decimal(new int[] {
             100,
             0,
@@ -196,6 +208,11 @@ namespace Chummer
             this.nudMax.AutoSize = true;
             this.nudMax.Dock = System.Windows.Forms.DockStyle.Fill;
             this.nudMax.Location = new System.Drawing.Point(107, 137);
+            this.nudMax.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
             this.nudMax.Minimum = new decimal(new int[] {
             100,
             0,
@@ -222,6 +239,11 @@ namespace Chummer
             this.nudAug.AutoSize = true;
             this.nudAug.Dock = System.Windows.Forms.DockStyle.Fill;
             this.nudAug.Location = new System.Drawing.Point(107, 163);
+            this.nudAug.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
             this.nudAug.Minimum = new decimal(new int[] {
             100,
             0,
@@ -271,8 +293,9 @@ namespace Chummer
             this.cmdChangeSelection.AutoSize = true;
             this.cmdChangeSelection.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdChangeSelection.Location = new System.Drawing.Point(3, 3);
+            this.cmdChangeSelection.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdChangeSelection.Name = "cmdChangeSelection";
-            this.cmdChangeSelection.Size = new System.Drawing.Size(77, 23);
+            this.cmdChangeSelection.Size = new System.Drawing.Size(80, 23);
             this.cmdChangeSelection.TabIndex = 6;
             this.cmdChangeSelection.Tag = "Button_ChangeSelection";
             this.cmdChangeSelection.Text = "Select Value";
@@ -351,7 +374,7 @@ namespace Chummer
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpMain.Size = new System.Drawing.Size(686, 263);
+            this.tlpMain.Size = new System.Drawing.Size(686, 303);
             this.tlpMain.TabIndex = 20;
             // 
             // txtTranslateSelection
@@ -374,7 +397,7 @@ namespace Chummer
             this.flpSelectValue.Location = new System.Drawing.Point(295, 53);
             this.flpSelectValue.Margin = new System.Windows.Forms.Padding(0);
             this.flpSelectValue.Name = "flpSelectValue";
-            this.flpSelectValue.Size = new System.Drawing.Size(174, 29);
+            this.flpSelectValue.Size = new System.Drawing.Size(177, 29);
             this.flpSelectValue.TabIndex = 22;
             // 
             // chkIgnoreLimits
@@ -382,7 +405,7 @@ namespace Chummer
             this.chkIgnoreLimits.AutoSize = true;
             this.chkIgnoreLimits.DefaultColorScheme = true;
             this.chkIgnoreLimits.Dock = System.Windows.Forms.DockStyle.Left;
-            this.chkIgnoreLimits.Location = new System.Drawing.Point(86, 3);
+            this.chkIgnoreLimits.Location = new System.Drawing.Point(89, 3);
             this.chkIgnoreLimits.Name = "chkIgnoreLimits";
             this.chkIgnoreLimits.Size = new System.Drawing.Size(85, 23);
             this.chkIgnoreLimits.TabIndex = 7;
@@ -401,7 +424,7 @@ namespace Chummer
             this.txtHelp.ReadOnly = true;
             this.tlpMain.SetRowSpan(this.txtHelp, 8);
             this.txtHelp.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
-            this.txtHelp.Size = new System.Drawing.Size(196, 230);
+            this.txtHelp.Size = new System.Drawing.Size(196, 270);
             this.txtHelp.TabIndex = 23;
             this.txtHelp.Tag = "String_Empty";
             this.txtHelp.Text = "[Help]";
@@ -417,29 +440,29 @@ namespace Chummer
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
             this.tlpButtons.Controls.Add(this.cmdOK, 1, 0);
-            this.tlpButtons.Location = new System.Drawing.Point(574, 234);
+            this.tlpButtons.Location = new System.Drawing.Point(514, 274);
             this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
-            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpButtons.Size = new System.Drawing.Size(112, 29);
+            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpButtons.Size = new System.Drawing.Size(172, 29);
             this.tlpButtons.TabIndex = 24;
             // 
-            // frmCreateImprovement
+            // CreateImprovement
             // 
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.CancelButton = this.cmdCancel;
-            this.ClientSize = new System.Drawing.Size(704, 281);
-            this.ControlBox = false;
+            this.ClientSize = new System.Drawing.Size(704, 321);
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmCreateImprovement";
+            this.Name = "CreateImprovement";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -482,11 +505,11 @@ namespace Chummer
         private System.Windows.Forms.Button cmdChangeSelection;
         private Chummer.ColorableCheckBox chkApplyToRating;
         private Chummer.ColorableCheckBox chkFree;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
         private System.Windows.Forms.TextBox txtTranslateSelection;
         private System.Windows.Forms.FlowLayoutPanel flpSelectValue;
         private Chummer.ColorableCheckBox chkIgnoreLimits;
         private System.Windows.Forms.TextBox txtHelp;
-        private BufferedTableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
     }
 }

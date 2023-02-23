@@ -20,6 +20,7 @@
 using System;
 using System.IO;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -29,8 +30,7 @@ namespace Chummer
     {
         // used when the user has filled out the information
         private readonly InitiativeUserControl parentControl;
-
-        private bool _blnCharacterAdded;
+        
         private Character _character;
 
         public AddToken(InitiativeUserControl init)
@@ -46,48 +46,74 @@ namespace Chummer
         /// </summary>
         private async void OpenFile(object sender, EventArgs e)
         {
-            using (OpenFileDialog openFileDialog = new OpenFileDialog
+            string strFilter = await LanguageManager.GetStringAsync("DialogFilter_Chummer").ConfigureAwait(false) + '|'
+                +
+                await LanguageManager.GetStringAsync("DialogFilter_Chum5").ConfigureAwait(false) + '|' +
+                await LanguageManager.GetStringAsync("DialogFilter_Chum5lz").ConfigureAwait(false) + '|' +
+                await LanguageManager.GetStringAsync("DialogFilter_All").ConfigureAwait(false);
+            string strFileName = string.Empty;
+            DialogResult eResult = await this.DoThreadSafeFuncAsync(x =>
             {
-                Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' + await LanguageManager.GetStringAsync("DialogFilter_All")
-            })
-                if (openFileDialog.ShowDialog(this) == DialogResult.OK)
-                    await LoadCharacter(openFileDialog.FileName);
+                using (OpenFileDialog dlgOpenFile = new OpenFileDialog())
+                {
+                    dlgOpenFile.Filter = strFilter;
+                    DialogResult eReturn = dlgOpenFile.ShowDialog(x);
+                    strFileName = dlgOpenFile.FileName;
+                    return eReturn;
+                }
+            }).ConfigureAwait(false);
+            if (eResult != DialogResult.OK)
+                return;
+            await LoadCharacter(strFileName).ConfigureAwait(false);
         }
 
         /// <summary>
         /// Loads the character
         /// </summary>
         /// <param name="fileName"></param>
-        private async ValueTask LoadCharacter(string fileName)
+        /// <param name="token"></param>
+        private async ValueTask LoadCharacter(string fileName, CancellationToken token = default)
         {
-            if (File.Exists(fileName) && fileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
+            if (File.Exists(fileName) && (fileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase) || fileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase)))
             {
                 Character objCharacter = new Character
                 {
                     FileName = fileName
                 };
-                using (new CursorWait(this))
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+                try
                 {
-                    if (!await objCharacter.LoadAsync())
+                    if (!await objCharacter.LoadAsync(token: token).ConfigureAwait(false))
                     {
                         // TODO edward setup error page
-                        objCharacter.Dispose();
+                        await objCharacter.DisposeAsync().ConfigureAwait(false);
                         return; // we obviously cannot init
                     }
 
-                    nudInit.Value = objCharacter.InitiativeDice;
-                    txtName.Text = objCharacter.Name;
-                    if (int.TryParse(objCharacter.Initiative.SplitNoAlloc(' ', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault(), out int intTemp))
-                        nudInitStart.Value = intTemp;
+                    await nudInit.DoThreadSafeAsync(x => x.Value = objCharacter.InitiativeDice, token: token).ConfigureAwait(false);
+                    await txtName.DoThreadSafeAsync(x => x.Text = objCharacter.Name, token: token).ConfigureAwait(false);
+                    if (int.TryParse(
+                            objCharacter.Initiative.SplitNoAlloc(' ', StringSplitOptions.RemoveEmptyEntries)
+                                        .FirstOrDefault(), out int intTemp))
+                        await nudInitStart.DoThreadSafeAsync(x => x.Value = intTemp, token: token).ConfigureAwait(false);
                     if (_character != null)
                     {
-                        _character.Dispose();
-                        _blnCharacterAdded = false;
+                        await _character.DisposeAsync().ConfigureAwait(false);
                     }
 
                     _character = objCharacter;
+                    Disposed += OnDisposed;
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
+        }
+
+        private void OnDisposed(object sender, EventArgs e)
+        {
+            _character?.Dispose();
         }
 
         /// <summary>
@@ -109,37 +135,37 @@ namespace Chummer
         {
             if (_character != null)
             {
-                _character.Name = txtName.Text;
-                _character.InitPasses = (int)nudInit.Value;
+                _character.Name = await txtName.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
+                _character.InitPasses = await nudInit.DoThreadSafeFuncAsync(x => x.ValueAsInt).ConfigureAwait(false);
                 _character.Delayed = false;
-                _character.InitialInit = (int)nudInitStart.Value;
+                _character.InitialInit = await nudInitStart.DoThreadSafeFuncAsync(x => x.ValueAsInt).ConfigureAwait(false);
             }
             else
             {
                 _character = new Character
                 {
-                    Name = txtName.Text,
-                    InitPasses = (int)nudInit.Value,
+                    Name = await txtName.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false),
+                    InitPasses = await nudInit.DoThreadSafeFuncAsync(x => x.ValueAsInt).ConfigureAwait(false),
                     Delayed = false,
-                    InitialInit = (int)nudInitStart.Value
+                    InitialInit = await nudInitStart.DoThreadSafeFuncAsync(x => x.ValueAsInt).ConfigureAwait(false)
                 };
             }
-            if (chkAutoRollInit.Checked)
+            if (await chkAutoRollInit.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
             {
                 int intInitPasses = _character.InitPasses;
                 int intInitRoll = intInitPasses;
                 for (int j = 0; j < intInitPasses; ++j)
                 {
-                    intInitRoll += GlobalSettings.RandomGenerator.NextD6ModuloBiasRemoved();
+                    intInitRoll += await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync().ConfigureAwait(false);
                 }
                 _character.InitRoll = intInitRoll + _character.InitialInit;
             }
             else
                 _character.InitRoll = int.MinValue;
 
-            _blnCharacterAdded = true;
-            await parentControl.AddToken(_character);
-            Close();
+            Disposed -= OnDisposed;
+            await parentControl.AddToken(_character).ConfigureAwait(false);
+            await this.DoThreadSafeAsync(x => x.Close()).ConfigureAwait(false);
         }
     }
 }

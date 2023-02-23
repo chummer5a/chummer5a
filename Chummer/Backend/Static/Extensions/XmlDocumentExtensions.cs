@@ -20,15 +20,18 @@
 using System.IO;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
+using Microsoft.IO;
 
 namespace Chummer
 {
     public static class XmlDocumentExtensions
     {
         /// <summary>
-        /// Syntactic sugar for loading an XmlDocument from a file with standard encoding and XmlReader settings
+        /// Syntactic sugar for synchronously loading an XmlDocument from a file with standard encoding and XmlReader settings
         /// </summary>
         /// <param name="xmlDocument">The document into which the XML data should be loaded.</param>
         /// <param name="strFileName">The file to use.</param>
@@ -36,10 +39,106 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void LoadStandard(this XmlDocument xmlDocument, string strFileName, bool blnSafe = true)
         {
-            using (StreamReader objStreamReader = new StreamReader(strFileName, Encoding.UTF8, true))
+            using (FileStream objFileStream = new FileStream(strFileName, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (StreamReader objStreamReader = new StreamReader(objFileStream, Encoding.UTF8, true))
             using (XmlReader objReader = XmlReader.Create(objStreamReader,
                 blnSafe ? GlobalSettings.SafeXmlReaderSettings : GlobalSettings.UnSafeXmlReaderSettings))
                 xmlDocument.Load(objReader);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for asynchronously loading an XmlDocument from a file with standard encoding and XmlReader settings
+        /// </summary>
+        /// <param name="xmlDocument">The document into which the XML data should be loaded.</param>
+        /// <param name="strFileName">The file to use.</param>
+        /// <param name="blnSafe">Whether or not to check characters for validity while loading.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Task LoadStandardAsync(this XmlDocument xmlDocument, string strFileName, bool blnSafe = true, CancellationToken token = default)
+        {
+            return Task.Run(() =>
+            {
+                using (FileStream objFileStream
+                       = new FileStream(strFileName, FileMode.Open, FileAccess.Read, FileShare.Read))
+                {
+                    token.ThrowIfCancellationRequested();
+                    using (StreamReader objStreamReader = new StreamReader(objFileStream, Encoding.UTF8, true))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        using (XmlReader objReader = XmlReader.Create(objStreamReader,
+                                                                      blnSafe
+                                                                          ? GlobalSettings.SafeXmlReaderSettings
+                                                                          : GlobalSettings.UnSafeXmlReaderSettings))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            xmlDocument.Load(objReader);
+                        }
+                    }
+                }
+            }, token);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for synchronously loading an XmlDocument from an LZMA-compressed file with standard encoding and XmlReader settings
+        /// </summary>
+        /// <param name="xmlDocument">The document into which the XML data should be loaded.</param>
+        /// <param name="strFileName">The file to use.</param>
+        /// <param name="blnSafe">Whether or not to check characters for validity while loading.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void LoadStandardFromLzmaCompressed(this XmlDocument xmlDocument, string strFileName, bool blnSafe = true)
+        {
+            using (FileStream objFileStream = new FileStream(strFileName, FileMode.Open, FileAccess.Read, FileShare.Read))
+            using (RecyclableMemoryStream objMemoryStream = new RecyclableMemoryStream(Utils.MemoryStreamManager, "LzmaMemoryStream", (int)objFileStream.Length))
+            {
+                objFileStream.DecompressLzmaFile(objMemoryStream);
+                objMemoryStream.Seek(0, SeekOrigin.Begin);
+                using (StreamReader objStreamReader
+                       = new StreamReader(objMemoryStream, Encoding.UTF8, true))
+                using (XmlReader objReader = XmlReader.Create(objStreamReader,
+                                                              blnSafe
+                                                                  ? GlobalSettings.SafeXmlReaderSettings
+                                                                  : GlobalSettings.UnSafeXmlReaderSettings))
+                    xmlDocument.Load(objReader);
+            }
+        }
+
+        /// <summary>
+        /// Syntactic sugar for asynchronously loading an XmlDocument from an LZMA-compressed file with standard encoding and XmlReader settings
+        /// </summary>
+        /// <param name="xmlDocument">The document into which the XML data should be loaded.</param>
+        /// <param name="strFileName">The file to use.</param>
+        /// <param name="blnSafe">Whether or not to check characters for validity while loading.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static Task LoadStandardFromLzmaCompressedAsync(this XmlDocument xmlDocument, string strFileName, bool blnSafe = true, CancellationToken token = default)
+        {
+            return Task.Run(async () =>
+            {
+                using (FileStream objFileStream = new FileStream(strFileName, FileMode.Open, FileAccess.Read, FileShare.Read))
+                {
+                    token.ThrowIfCancellationRequested();
+                    using (RecyclableMemoryStream objMemoryStream = new RecyclableMemoryStream(Utils.MemoryStreamManager, "LzmaMemoryStream", (int) objFileStream.Length))
+                    {
+                        await objFileStream.DecompressLzmaFileAsync(objMemoryStream, token: token).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        objMemoryStream.Seek(0, SeekOrigin.Begin);
+                        token.ThrowIfCancellationRequested();
+                        using (StreamReader objStreamReader
+                               = new StreamReader(objMemoryStream, Encoding.UTF8, true))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            using (XmlReader objReader = XmlReader.Create(objStreamReader,
+                                                                          blnSafe
+                                                                              ? GlobalSettings.SafeXmlReaderSettings
+                                                                              : GlobalSettings.UnSafeXmlReaderSettings))
+                            {
+                                token.ThrowIfCancellationRequested();
+                                xmlDocument.Load(objReader);
+                            }
+                        }
+                    }
+                }
+            }, token);
         }
 
         /// <summary>
@@ -52,14 +151,47 @@ namespace Chummer
         {
             if (xmlDocument == null)
                 return null;
-            using (MemoryStream memStream = new MemoryStream())
+            using (RecyclableMemoryStream objMemoryStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
             {
-                xmlDocument.Save(memStream);
-                memStream.Position = 0;
+                xmlDocument.Save(objMemoryStream);
+                objMemoryStream.Seek(0, SeekOrigin.Begin);
                 //TODO: Should probably be using GlobalSettings.SafeXmlReaderSettings here but it has some issues.
-                using (XmlReader objXmlReader = XmlReader.Create(memStream, GlobalSettings.UnSafeXmlReaderSettings))
+                using (XmlReader objXmlReader = XmlReader.Create(objMemoryStream, GlobalSettings.UnSafeXmlReaderSettings))
                     return new XPathDocument(objXmlReader).CreateNavigator();
             }
+        }
+
+        /// <summary>
+        /// Get an XPathNavigator for an XPathDocument copy of an XmlDocument.
+        /// Method is slow, but the nagivator it creates is faster than that of an XmlDocument. Use accordingly.
+        /// </summary>
+        /// <param name="xmlDocument">The document from which a navigator should be spawned.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>An XPathNavigator of an XPathDocument copy of <paramref name="xmlDocument"/>.</returns>
+        public static Task<XPathNavigator> GetFastNavigatorAsync(this XmlDocument xmlDocument, CancellationToken token = default)
+        {
+            return xmlDocument == null
+                ? Task.FromResult<XPathNavigator>(null)
+                : Task.Run(() =>
+                {
+                    using (RecyclableMemoryStream objMemoryStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        xmlDocument.Save(objMemoryStream);
+                        token.ThrowIfCancellationRequested();
+                        objMemoryStream.Seek(0, SeekOrigin.Begin);
+                        token.ThrowIfCancellationRequested();
+                        //TODO: Should probably be using GlobalSettings.SafeXmlReaderSettings here but it has some issues.
+                        using (XmlReader objXmlReader
+                               = XmlReader.Create(objMemoryStream, GlobalSettings.UnSafeXmlReaderSettings))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            XPathDocument objReturn = new XPathDocument(objXmlReader);
+                            token.ThrowIfCancellationRequested();
+                            return objReturn.CreateNavigator();
+                        }
+                    }
+                }, token);
         }
     }
 }

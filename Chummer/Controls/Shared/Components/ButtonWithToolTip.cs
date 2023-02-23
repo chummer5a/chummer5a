@@ -17,12 +17,13 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-using System.ComponentModel;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Chummer
 {
-    public sealed class ButtonWithToolTip : DpiFriendlyImagedButton
+    public class ButtonWithToolTip : DpiFriendlyImagedButton
     {
         private readonly int _intToolTipWrap;
 
@@ -38,11 +39,20 @@ namespace Chummer
             set
             {
                 value = _intToolTipWrap > 0 ? value.WordWrap(_intToolTipWrap) : value.WordWrap();
-                if (_strToolTipText == value)
+                if (Interlocked.Exchange(ref _strToolTipText, value) == value)
                     return;
-                _strToolTipText = value;
-                _objToolTip.SetToolTip(this, value.CleanForHtml());
+                this.DoThreadSafe(x => _objToolTip.SetToolTip(x, value.CleanForHtml()));
             }
+        }
+
+        public Task SetToolTipTextAsync(string value, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            value = _intToolTipWrap > 0 ? value.WordWrap(_intToolTipWrap) : value.WordWrap();
+            return Interlocked.Exchange(ref _strToolTipText, value) != value
+                ? this.DoThreadSafeAsync(x => _objToolTip.SetToolTip(x, value.CleanForHtml()), token: token)
+                : Task.CompletedTask;
         }
 
         public ButtonWithToolTip() : this(ToolTipFactory.ToolTip)
@@ -53,18 +63,6 @@ namespace Chummer
         {
             _objToolTip = objToolTip;
             _intToolTipWrap = intToolTipWrap;
-            DoubleBuffered = true;
-        }
-
-        public ButtonWithToolTip(IContainer container) : this(container, ToolTipFactory.ToolTip)
-        {
-        }
-
-        public ButtonWithToolTip(IContainer container, ToolTip objToolTip, int intToolTipWrap = -1) : base(container)
-        {
-            _objToolTip = objToolTip;
-            _intToolTipWrap = intToolTipWrap;
-            DoubleBuffered = true;
         }
 
         protected override void Dispose(bool disposing)

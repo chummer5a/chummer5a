@@ -1,4 +1,5 @@
-<?xml version="1.0" encoding="utf-8" ?>
+<?xml version="1.0" encoding="utf-8"?>
+
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -89,7 +90,7 @@
       <name>Shadowrun 5 (Base, Skills grouped by Category)</name>
       <filename>Shadowrun 5 (Base Skills grouped by Category)</filename>
     </sheet>
-	<sheet>
+    <sheet>
       <id>00d11e6f-025c-42cf-b62d-0aaf3c4addab</id>
       <name>Shadowrun 5 (Core, Skills grouped by Category)</name>
       <filename>Shadowrun 5 (Core Skills grouped by Category)</filename>
@@ -201,7 +202,7 @@
       <name>Shadowrun 5 (Basis, Gruppiert Fähigkeit durch Kategorie)</name>
       <filename>Shadowrun 5 (Base Skills grouped by Category)</filename>
     </sheet>
-	<sheet>
+    <sheet>
       <id>aa00e72d-bddb-48ee-98b1-de860da11a16</id>
       <name>Shadowrun 5 (Kern, Gruppiert Fähigkeit durch Kategorie)</name>
       <filename>Shadowrun 5 (Core Skills grouped by Category)</filename>
@@ -298,7 +299,7 @@
       <name>Shadowrun 5 (Base, Groupé par catégorie)</name>
       <filename>Shadowrun 5 (Base Skills grouped by Category)</filename>
     </sheet>
-	<sheet>
+    <sheet>
       <id>613b6079-9ca7-4625-9147-be33b466c5fa</id>
       <name>Shadowrun 5 (Coeur, Groupé par catégorie)</name>
       <filename>Shadowrun 5 (Core Skills grouped by Category)</filename>
@@ -395,7 +396,7 @@
       <name>Shadowrun 5 (Base, Skills grouped by Category)</name>
       <filename>Shadowrun 5 (Base Skills grouped by Category)</filename>
     </sheet>
-	<sheet>
+    <sheet>
       <id>f388b19f-4d3b-4d21-8e1e-0127d9d349a8</id>
       <name>Shadowrun 5 (Core, Skills grouped by Category)</name>
       <filename>Shadowrun 5 (Core Skills grouped by Category)</filename>
@@ -599,7 +600,7 @@
       <name>暗影狂奔5(名称排列和类别排列)</name>
       <filename>Shadowrun 5 (Base Skills grouped by Category)</filename>
     </sheet>
-	<sheet>
+    <sheet>
       <id>b9eeb2c0-eba2-4e33-8549-46f5f281c6f9</id>
       <name>暗影狂奔5(核心和类别排列)</name>
       <filename>Shadowrun 5 (Core Skills grouped by Category)</filename>

@@ -18,6 +18,7 @@
  */
 
 using System.Drawing;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -37,33 +38,39 @@ namespace Chummer
         /// <summary>
         /// Writes notes to an IHasNotes object, returns True if notes were changed and False otherwise.
         /// </summary>
-        /// <param name="objNotes"></param>
-        /// <param name="treNode"></param>
-        public static async ValueTask<bool> WriteNotes(this IHasNotes objNotes, TreeNode treNode)
+        public static async ValueTask<bool> WriteNotes(this IHasNotes objNotes, TreeNode treNode, CancellationToken token = default)
         {
             if (objNotes == null || treNode == null)
                 return false;
-            Form frmToUse = treNode.TreeView.FindForm() ?? Program.MainForm;
+            TreeView objTreeView = treNode.TreeView;
+            Form frmToUse = objTreeView != null
+                ? await objTreeView.DoThreadSafeFuncAsync(x => x.FindForm(), token: token).ConfigureAwait(false) ?? Program.MainForm
+                : Program.MainForm;
 
-            DialogResult eResult = await frmToUse.DoThreadSafeFunc(async () =>
+            using (ThreadSafeForm<EditNotes> frmItemNotes = await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(objNotes.Notes, objNotes.NotesColor, token), token).ConfigureAwait(false))
             {
-                using (EditNotes frmItemNotes = new EditNotes(objNotes.Notes, objNotes.NotesColor))
+                if (await frmItemNotes.ShowDialogSafeAsync(frmToUse, token).ConfigureAwait(false) != DialogResult.OK)
+                    return false;
+
+                objNotes.Notes = frmItemNotes.MyForm.Notes;
+                objNotes.NotesColor = frmItemNotes.MyForm.NotesColor;
+            }
+
+            if (objTreeView != null)
+            {
+                await objTreeView.DoThreadSafeAsync(() =>
                 {
-                    await frmItemNotes.ShowDialogSafeAsync(frmToUse);
-                    if (frmItemNotes.DialogResult != DialogResult.OK)
-                        return frmItemNotes.DialogResult;
-
-                    objNotes.Notes = frmItemNotes.Notes;
-                    objNotes.NotesColor = frmItemNotes.NotesColor;
-                }
-
+                    treNode.ForeColor = objNotes.PreferredColor;
+                    treNode.ToolTipText = objNotes.Notes.WordWrap();
+                }, token: token).ConfigureAwait(false);
+            }
+            else
+            {
                 treNode.ForeColor = objNotes.PreferredColor;
                 treNode.ToolTipText = objNotes.Notes.WordWrap();
+            }
 
-                return DialogResult.OK;
-            });
-
-            return eResult == DialogResult.OK;
+            return true;
         }
     }
 }

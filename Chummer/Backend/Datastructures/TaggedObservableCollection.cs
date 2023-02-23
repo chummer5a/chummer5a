@@ -20,6 +20,8 @@
 using System;
 using System.Collections.Generic;
 using System.Collections.Specialized;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Chummer
 {
@@ -56,6 +58,40 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Use in place of CollectionChanged Adder
+        /// </summary>
+        /// <param name="objTag">Tag to associate with added delegate</param>
+        /// <param name="funcDelegateToAdd">Delegate to add to CollectionChanged</param>
+        /// <param name="token">CancellationToken to listen to.</param>
+        /// <returns>True if delegate was successfully added, false if a delegate already exists with the associated tag.</returns>
+        public async ValueTask<bool> AddTaggedCollectionChangedAsync(object objTag, NotifyCollectionChangedEventHandler funcDelegateToAdd, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                (bool blnSuccess, HashSet<NotifyCollectionChangedEventHandler> setFuncs)
+                    = await _dicTaggedAddedDelegates.TryGetValueAsync(objTag, token).ConfigureAwait(false);
+                if (!blnSuccess)
+                {
+                    setFuncs = new HashSet<NotifyCollectionChangedEventHandler>();
+                    await _dicTaggedAddedDelegates.AddAsync(objTag, setFuncs, token).ConfigureAwait(false);
+                }
+
+                if (setFuncs.Add(funcDelegateToAdd))
+                {
+                    base.CollectionChanged += funcDelegateToAdd;
+                    return true;
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            Utils.BreakIfDebug();
+            return false;
+        }
+
+        /// <summary>
         /// Use in place of CollectionChanged Subtract
         /// </summary>
         /// <param name="objTag">Tag of delegate to remove from CollectionChanged</param>
@@ -74,6 +110,39 @@ namespace Chummer
             }
             setFuncs.Clear();
             return true;
+        }
+
+        /// <summary>
+        /// Use in place of CollectionChanged Subtract
+        /// </summary>
+        /// <param name="objTag">Tag of delegate to remove from CollectionChanged</param>
+        /// <param name="token">CancellationToken to listen to.</param>
+        /// <returns>True if a delegate associated with the tag was found and deleted, false otherwise.</returns>
+        public async ValueTask<bool> RemoveTaggedCollectionChangedAsync(object objTag, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                (bool blnSuccess, HashSet<NotifyCollectionChangedEventHandler> setFuncs)
+                    = await _dicTaggedAddedDelegates.TryGetValueAsync(objTag, token).ConfigureAwait(false);
+                if (!blnSuccess)
+                {
+                    Utils.BreakIfDebug();
+                    return false;
+                }
+
+                foreach (NotifyCollectionChangedEventHandler funcDelegateToRemove in setFuncs)
+                {
+                    base.CollectionChanged -= funcDelegateToRemove;
+                }
+
+                setFuncs.Clear();
+                return true;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <inheritdoc />
@@ -106,6 +175,40 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Use in place of CollectionChanged Adder
+        /// </summary>
+        /// <param name="objTag">Tag to associate with added delegate</param>
+        /// <param name="funcDelegateToAdd">Delegate to add to CollectionChanged</param>
+        /// <param name="token">CancellationToken to listen to.</param>
+        /// <returns>True if delegate was successfully added, false if a delegate already exists with the associated tag.</returns>
+        public async ValueTask<bool> AddTaggedBeforeClearCollectionChangedAsync(object objTag, NotifyCollectionChangedEventHandler funcDelegateToAdd, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                (bool blnSuccess, HashSet<NotifyCollectionChangedEventHandler> setFuncs)
+                    = await _dicTaggedAddedBeforeClearDelegates.TryGetValueAsync(objTag, token).ConfigureAwait(false);
+                if (!blnSuccess)
+                {
+                    setFuncs = new HashSet<NotifyCollectionChangedEventHandler>();
+                    await _dicTaggedAddedBeforeClearDelegates.AddAsync(objTag, setFuncs, token).ConfigureAwait(false);
+                }
+
+                if (setFuncs.Add(funcDelegateToAdd))
+                {
+                    base.BeforeClearCollectionChanged += funcDelegateToAdd;
+                    return true;
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            Utils.BreakIfDebug();
+            return false;
+        }
+
+        /// <summary>
         /// Use in place of CollectionChanged Subtract
         /// </summary>
         /// <param name="objTag">Tag of delegate to remove from CollectionChanged</param>
@@ -120,10 +223,43 @@ namespace Chummer
             }
             foreach (NotifyCollectionChangedEventHandler funcDelegateToRemove in setFuncs)
             {
-                base.CollectionChanged -= funcDelegateToRemove;
+                base.BeforeClearCollectionChanged -= funcDelegateToRemove;
             }
             setFuncs.Clear();
             return true;
+        }
+
+        /// <summary>
+        /// Use in place of CollectionChanged Subtract
+        /// </summary>
+        /// <param name="objTag">Tag of delegate to remove from CollectionChanged</param>
+        /// <param name="token">CancellationToken to listen to.</param>
+        /// <returns>True if a delegate associated with the tag was found and deleted, false otherwise.</returns>
+        public async ValueTask<bool> RemoveTaggedBeforeClearCollectionChangedAsync(object objTag, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                (bool blnSuccess, HashSet<NotifyCollectionChangedEventHandler> setFuncs)
+                    = await _dicTaggedAddedBeforeClearDelegates.TryGetValueAsync(objTag, token).ConfigureAwait(false);
+                if (!blnSuccess)
+                {
+                    Utils.BreakIfDebug();
+                    return false;
+                }
+
+                foreach (NotifyCollectionChangedEventHandler funcDelegateToRemove in setFuncs)
+                {
+                    base.BeforeClearCollectionChanged -= funcDelegateToRemove;
+                }
+
+                setFuncs.Clear();
+                return true;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <inheritdoc />
@@ -141,6 +277,16 @@ namespace Chummer
                 _dicTaggedAddedBeforeClearDelegates.Dispose();
             }
             base.Dispose(disposing);
+        }
+
+        protected override async ValueTask DisposeAsync(bool disposing)
+        {
+            if (disposing)
+            {
+                await _dicTaggedAddedDelegates.DisposeAsync().ConfigureAwait(false);
+                await _dicTaggedAddedBeforeClearDelegates.DisposeAsync().ConfigureAwait(false);
+            }
+            await base.DisposeAsync(disposing).ConfigureAwait(false);
         }
     }
 }

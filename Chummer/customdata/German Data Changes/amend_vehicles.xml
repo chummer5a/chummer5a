@@ -40,6 +40,25 @@
       <id>945d3c12-d119-4441-a6f5-d69c6317aff2</id>
       <body>17</body>
     </vehicle>
+    <vehicle> <!-- Harley-Davidson Nightmare -->
+      <id>f0b4963e-d709-47a2-a290-5528c79d2cd8</id>
+      <mods>
+        <name>Improved Economy</name>
+        <name>Gyro-Stabilization</name>
+      </mods>
+    </vehicle>
+    <vehicle> <!-- Evo Falcon-EX -->
+      <id>cfafdbac-509e-49f3-a62a-5cfa8e987e0f</id>
+      <mods>
+        <name>SunCell</name>
+      </mods>
+    </vehicle>
+    <vehicle> <!-- Thundercloud Mustang -->
+      <id>e61ac395-78d2-44d8-a3bd-6ac74b1d76f5</id>
+      <mods>
+        <name>Off-Road Suspension</name>
+      </mods>
+    </vehicle>
     <vehicle> <!-- Federated-Boeing PBY-70 Catalina II -->
       <id>6f75f984-b5bd-4fd7-b4a2-c59a9c4f9ce6</id>
       <weaponmounts amendoperation="replace">
@@ -91,6 +110,13 @@
       <cost>Body * 1000</cost>
       <rating>0</rating>
       <slots>1</slots>
+      <required>
+        <vehicledetails>
+          <OR>
+            <name amendoperation="addnode">Harley-Davidson Nightmare</name>
+          </OR>
+        </vehicledetails>
+      </required>
     </mod>
   </mods>
   <weaponmounts>

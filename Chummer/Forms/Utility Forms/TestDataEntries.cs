@@ -35,6 +35,11 @@ namespace Chummer
         {
             InitializeComponent();
             _sbdOutputBuilder = Utils.StringBuilderPool.Get();
+            Disposed += (sender, args) =>
+            {
+                _objCharacter.Dispose();
+                Utils.StringBuilderPool.Return(_sbdOutputBuilder);
+            };
         }
 
         private bool _blnAddExceptionInfoToErrors;
@@ -108,7 +113,7 @@ namespace Chummer
                     string strName = objXmlGear["name"]?.InnerText ?? objXmlGear["id"]?.InnerText;
                     if (string.IsNullOrEmpty(strName))
                         continue;
-                    Application.DoEvents();
+                    Utils.DoEventsSafe();
                     try
                     {
                         Vehicle objTemp = new Vehicle(_objCharacter);
@@ -150,7 +155,7 @@ namespace Chummer
                     string strName = objXmlGear["name"]?.InnerText ?? objXmlGear["id"]?.InnerText;
                     if (string.IsNullOrEmpty(strName))
                         continue;
-                    Application.DoEvents();
+                    Utils.DoEventsSafe();
                     try
                     {
                         VehicleMod objTemp = new VehicleMod(_objCharacter);
@@ -216,7 +221,7 @@ namespace Chummer
                     string strName = objXmlGear["name"]?.InnerText ?? objXmlGear["id"]?.InnerText;
                     if (string.IsNullOrEmpty(strName))
                         continue;
-                    Application.DoEvents();
+                    Utils.DoEventsSafe();
                     try
                     {
                         Weapon objTemp = new Weapon(_objCharacter);
@@ -258,7 +263,7 @@ namespace Chummer
                     string strName = objXmlGear["name"]?.InnerText ?? objXmlGear["id"]?.InnerText;
                     if (string.IsNullOrEmpty(strName))
                         continue;
-                    Application.DoEvents();
+                    Utils.DoEventsSafe();
                     try
                     {
                         WeaponAccessory objTemp = new WeaponAccessory(_objCharacter);
@@ -312,7 +317,7 @@ namespace Chummer
                     string strName = objXmlGear["name"]?.InnerText ?? objXmlGear["id"]?.InnerText;
                     if (string.IsNullOrEmpty(strName))
                         continue;
-                    Application.DoEvents();
+                    Utils.DoEventsSafe();
                     try
                     {
                         Armor objTemp = new Armor(_objCharacter);
@@ -355,7 +360,7 @@ namespace Chummer
                     string strName = objXmlGear["name"]?.InnerText ?? objXmlGear["id"]?.InnerText;
                     if (string.IsNullOrEmpty(strName))
                         continue;
-                    Application.DoEvents();
+                    Utils.DoEventsSafe();
                     try
                     {
                         ArmorMod objTemp = new ArmorMod(_objCharacter);
@@ -409,7 +414,7 @@ namespace Chummer
                         string strName = objXmlGear["name"]?.InnerText ?? objXmlGear["id"]?.InnerText;
                         if (string.IsNullOrEmpty(strName))
                             continue;
-                        Application.DoEvents();
+                        Utils.DoEventsSafe();
                         try
                         {
                             Gear objTemp = new Gear(_objCharacter);
@@ -460,7 +465,7 @@ namespace Chummer
             pgbProgress.Minimum = 0;
             pgbProgress.Value = 0;
 
-            Grade objTestGrade = _objCharacter.GetGradeList(objSource, true).FirstOrDefault(x => x.Name == "Standard");
+            Grade objTestGrade = _objCharacter.GetGrades(objSource, true).FirstOrDefault(x => x.Name == "Standard");
 
             using (XmlNodeList xmlGearList = objXmlDocument.SelectNodes("/chummer/" + strPrefix + "s/" + strPrefix))
             {
@@ -474,7 +479,7 @@ namespace Chummer
                         string strName = objXmlGear["name"]?.InnerText ?? objXmlGear["id"]?.InnerText;
                         if (string.IsNullOrEmpty(strName))
                             continue;
-                        Application.DoEvents();
+                        Utils.DoEventsSafe();
                         try
                         {
                             using (Cyberware objTemp = new Cyberware(_objCharacter))
@@ -536,28 +541,39 @@ namespace Chummer
                         string strName = objXmlGear["name"]?.InnerText ?? objXmlGear["id"]?.InnerText;
                         if (string.IsNullOrEmpty(strName))
                             continue;
-                        Application.DoEvents();
+                        Utils.DoEventsSafe();
                         try
                         {
                             List<Weapon> lstWeapons = new List<Weapon>(1);
                             Quality objTemp = new Quality(_objCharacter);
-                            objTemp.Create(objXmlGear, QualitySource.Selected, lstWeapons);
-
-                            Type objType = objTemp.GetType();
-
-                            foreach (PropertyInfo objProperty in objType.GetProperties())
+                            try
                             {
-                                try
+                                objTemp.Create(objXmlGear, QualitySource.Selected, lstWeapons);
+
+                                Type objType = objTemp.GetType();
+
+                                foreach (PropertyInfo objProperty in objType.GetProperties())
                                 {
-                                    objProperty.GetValue(objTemp, null);
+                                    try
+                                    {
+                                        objProperty.GetValue(objTemp, null);
+                                    }
+                                    catch (Exception e)
+                                    {
+                                        if (_blnAddExceptionInfoToErrors)
+                                            _sbdOutputBuilder.Append(strName).Append(" failed ")
+                                                             .Append(objProperty.Name).Append(". Exception: ")
+                                                             .AppendLine(e.ToString());
+                                        else
+                                            _sbdOutputBuilder.Append(strName).Append(" failed ")
+                                                             .AppendLine(objProperty.Name);
+                                    }
                                 }
-                                catch (Exception e)
-                                {
-                                    if (_blnAddExceptionInfoToErrors)
-                                        _sbdOutputBuilder.Append(strName).Append(" failed ").Append(objProperty.Name).Append(". Exception: ").AppendLine(e.ToString());
-                                    else
-                                        _sbdOutputBuilder.Append(strName).Append(" failed ").AppendLine(objProperty.Name);
-                                }
+                            }
+                            catch
+                            {
+                                objTemp.Dispose();
+                                throw;
                             }
                         }
                         catch (Exception e)
@@ -590,7 +606,7 @@ namespace Chummer
                         string strName = objXmlMetatype["name"]?.InnerText ?? objXmlMetatype["id"]?.InnerText;
                         if (string.IsNullOrEmpty(strName))
                             continue;
-                        Application.DoEvents();
+                        Utils.DoEventsSafe();
 
                         objXmlDocument = XmlManager.Load(strFile);
                         _objCharacter.ResetCharacter();
@@ -828,7 +844,7 @@ namespace Chummer
                             // Set the Skill Ratings for the Critter.
                             foreach (XmlNode objXmlSkill in objXmlCritter.SelectNodes("skills/skill"))
                             {
-                                if (ExoticSkill.IsExoticSkillName(objXmlSkill.InnerText))
+                                if (ExoticSkill.IsExoticSkillName(_objCharacter, objXmlSkill.InnerText))
                                 {
                                     //Skill objExotic = new Skill(_objCharacter);
                                     //objExotic.ExoticSkill = true;

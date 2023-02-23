@@ -28,30 +28,30 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
-            this.chkAttributes = new Chummer.ColorableCheckBox(this.components);
-            this.chkQualities = new Chummer.ColorableCheckBox(this.components);
-            this.chkStartingNuyen = new Chummer.ColorableCheckBox(this.components);
-            this.chkActiveSkills = new Chummer.ColorableCheckBox(this.components);
-            this.chkKnowledgeSkills = new Chummer.ColorableCheckBox(this.components);
-            this.chkMartialArts = new Chummer.ColorableCheckBox(this.components);
-            this.chkSpells = new Chummer.ColorableCheckBox(this.components);
-            this.chkComplexForms = new Chummer.ColorableCheckBox(this.components);
-            this.chkCyberware = new Chummer.ColorableCheckBox(this.components);
-            this.chkLifestyle = new Chummer.ColorableCheckBox(this.components);
-            this.chkArmor = new Chummer.ColorableCheckBox(this.components);
-            this.chkWeapons = new Chummer.ColorableCheckBox(this.components);
-            this.chkGear = new Chummer.ColorableCheckBox(this.components);
-            this.chkVehicles = new Chummer.ColorableCheckBox(this.components);
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CreatePACKSKit));
+            this.chkAttributes = new Chummer.ColorableCheckBox();
+            this.chkQualities = new Chummer.ColorableCheckBox();
+            this.chkStartingNuyen = new Chummer.ColorableCheckBox();
+            this.chkActiveSkills = new Chummer.ColorableCheckBox();
+            this.chkKnowledgeSkills = new Chummer.ColorableCheckBox();
+            this.chkMartialArts = new Chummer.ColorableCheckBox();
+            this.chkSpells = new Chummer.ColorableCheckBox();
+            this.chkComplexForms = new Chummer.ColorableCheckBox();
+            this.chkCyberware = new Chummer.ColorableCheckBox();
+            this.chkLifestyle = new Chummer.ColorableCheckBox();
+            this.chkArmor = new Chummer.ColorableCheckBox();
+            this.chkWeapons = new Chummer.ColorableCheckBox();
+            this.chkGear = new Chummer.ColorableCheckBox();
+            this.chkVehicles = new Chummer.ColorableCheckBox();
             this.lblNameLabel = new System.Windows.Forms.Label();
             this.txtName = new System.Windows.Forms.TextBox();
             this.txtFileName = new System.Windows.Forms.TextBox();
             this.lblFileNameLabel = new System.Windows.Forms.Label();
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpTop = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpTop = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.tlpMain.SuspendLayout();
             this.tlpTop.SuspendLayout();
             this.tlpButtons.SuspendLayout();
@@ -289,9 +289,10 @@ namespace Chummer
             this.cmdOK.AutoSize = true;
             this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdOK.Location = new System.Drawing.Point(59, 3);
+            this.cmdOK.Location = new System.Drawing.Point(89, 3);
+            this.cmdOK.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdOK.Name = "cmdOK";
-            this.cmdOK.Size = new System.Drawing.Size(50, 23);
+            this.cmdOK.Size = new System.Drawing.Size(80, 23);
             this.cmdOK.TabIndex = 18;
             this.cmdOK.Tag = "String_OK";
             this.cmdOK.Text = "OK";
@@ -305,8 +306,9 @@ namespace Chummer
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cmdCancel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdCancel.Location = new System.Drawing.Point(3, 3);
+            this.cmdCancel.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(50, 23);
+            this.cmdCancel.Size = new System.Drawing.Size(80, 23);
             this.cmdCancel.TabIndex = 19;
             this.cmdCancel.Tag = "String_Cancel";
             this.cmdCancel.Text = "Cancel";
@@ -385,15 +387,15 @@ namespace Chummer
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
             this.tlpButtons.Controls.Add(this.cmdOK, 1, 0);
-            this.tlpButtons.Location = new System.Drawing.Point(214, 234);
+            this.tlpButtons.Location = new System.Drawing.Point(154, 234);
             this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
-            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpButtons.Size = new System.Drawing.Size(112, 29);
+            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpButtons.Size = new System.Drawing.Size(172, 29);
             this.tlpButtons.TabIndex = 19;
             // 
-            // frmCreatePACKSKit
+            // CreatePACKSKit
             // 
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -404,9 +406,10 @@ namespace Chummer
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmCreatePACKSKit";
+            this.Name = "CreatePACKSKit";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -445,8 +448,8 @@ namespace Chummer
         private System.Windows.Forms.Label lblFileNameLabel;
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.Button cmdCancel;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
-        private Chummer.BufferedTableLayoutPanel tlpTop;
-        private BufferedTableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpTop;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
     }
 }

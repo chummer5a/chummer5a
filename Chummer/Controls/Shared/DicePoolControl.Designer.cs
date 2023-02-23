@@ -13,9 +13,9 @@ namespace Chummer.UI.Shared.Components
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && (components != null))
             {
-                components?.Dispose();
+                components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -29,7 +29,7 @@ namespace Chummer.UI.Shared.Components
         private void InitializeComponent()
         {
             this.components = new System.ComponentModel.Container();
-            this.cmdRoll = new Chummer.ButtonWithToolTip(this.components);
+            this.cmdRoll = new Chummer.ButtonWithToolTip();
             this.lblDicePool = new Chummer.LabelWithToolTip();
             this.flpContainer = new System.Windows.Forms.FlowLayoutPanel();
             this.flpContainer.SuspendLayout();
@@ -93,6 +93,7 @@ namespace Chummer.UI.Shared.Components
             this.Margin = new System.Windows.Forms.Padding(3, 0, 3, 0);
             this.Name = "DicePoolControl";
             this.Size = new System.Drawing.Size(64, 24);
+            this.Load += new System.EventHandler(this.DicePoolControl_Load);
             this.flpContainer.ResumeLayout(false);
             this.flpContainer.PerformLayout();
             this.ResumeLayout(false);

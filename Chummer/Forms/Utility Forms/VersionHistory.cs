@@ -34,21 +34,29 @@ namespace Chummer
             this.TranslateWinForm();
         }
 
-        private void VersionHistory_Load(object sender, EventArgs e)
+        private async void VersionHistory_Load(object sender, EventArgs e)
         {
             // Display the contents of the changelog.txt file in the TextBox.
             try
             {
-                txtHistory.Text = File.ReadAllText(Path.Combine(Utils.GetStartupPath, "changelog.txt"));
+                await txtHistory.DoThreadSafeAsync(
+                    x => x.Text = File.ReadAllText(Path.Combine(Utils.GetStartupPath, "changelog.txt"))).ConfigureAwait(false);
             }
             catch
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_History_FileNotFound"), LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                Close();
+                Program.ShowScrollableMessageBox(this,
+                                                 await LanguageManager.GetStringAsync("Message_History_FileNotFound").ConfigureAwait(false),
+                                                 await LanguageManager.GetStringAsync("MessageTitle_FileNotFound").ConfigureAwait(false), MessageBoxButtons.OK,
+                                                 MessageBoxIcon.Exclamation);
+                await this.DoThreadSafeAsync(x => x.Close()).ConfigureAwait(false);
                 return;
             }
-            txtHistory.SelectionStart = 0;
-            txtHistory.SelectionLength = 0;
+
+            await txtHistory.DoThreadSafeAsync(x =>
+            {
+                x.SelectionStart = 0;
+                x.SelectionLength = 0;
+            }).ConfigureAwait(false);
         }
 
         #endregion Control Events

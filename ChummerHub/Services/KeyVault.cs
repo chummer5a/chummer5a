@@ -1,13 +1,49 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
+using Azure.Core.Pipeline;
+using Azure.Extensions.AspNetCore.Configuration.Secrets;
 using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Security.Authentication;
+using System.Threading;
 using System.Threading.Tasks;
+using Azure.Extensions.AspNetCore.Configuration.Secrets; // v1.2.1
+using System.Net.Http;
+using System.Security.Authentication;
+using System.Net;
+using Azure.Core.Pipeline;
+using System.Diagnostics;
 
 namespace ChummerHub.Services
 {
+    public class MyKeyVaultCredential : DefaultAzureCredential
+    {
+       
+    }
+
     public class KeyVault
     {
         private readonly ILogger _logger;
@@ -24,7 +60,40 @@ namespace ChummerHub.Services
             try
             {
                 if (client == null)
-                    client = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
+                {
+                    //client = new SecretClient(new Uri(keyVaultUrl), new DefaultAzureCredential());
+
+                    var httpClient = new HttpClient(new HttpClientHandler
+                    {
+                        DefaultProxyCredentials = CredentialCache.DefaultCredentials,
+                        SslProtocols = SslProtocols.Tls12 | SslProtocols.Tls11 | SslProtocols.Tls
+                    });
+
+                    var secretClientOptions = new SecretClientOptions
+                    {
+                        Transport = new HttpClientTransport(httpClient)
+                    };
+
+                    var azureOptions = new DefaultAzureCredentialOptions()
+                    {
+                        Transport = new HttpClientTransport(httpClient)
+                    };
+                    if (Debugger.IsAttached)
+                    {
+                        azureOptions.ExcludeInteractiveBrowserCredential = false;
+                    }
+                    client = new SecretClient(
+                        new Uri(keyVaultUrl),
+                        new DefaultAzureCredential(azureOptions),
+                        secretClientOptions);
+
+                    //builder.Configuration
+                    //    .AddAzureKeyVault(secretClient, new KeyVaultSecretManager());
+
+                    //var output = builder.Configuration
+                    //    .GetSection("ApplicationInsights:InstrumentationKey").Value;
+
+                }
                 KeyVaultSecret keySecret = client.GetSecret(secretName);
                 return keySecret.Value;
 

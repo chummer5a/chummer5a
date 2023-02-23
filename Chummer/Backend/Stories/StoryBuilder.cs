@@ -20,13 +20,14 @@
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
 
 namespace Chummer
 {
-    public sealed class StoryBuilder : IDisposable
+    public sealed class StoryBuilder : IHasLockObject
     {
         private readonly LockingDictionary<string, string> _dicPersistence = new LockingDictionary<string, string>();
         private readonly Character _objCharacter;
@@ -38,109 +39,150 @@ namespace Chummer
             _dicPersistence.TryAdd("metavariant", _objCharacter.Metavariant.ToLowerInvariant());
         }
 
-        public async ValueTask<string> GetStory(string strLanguage)
+        public async ValueTask<string> GetStory(string strLanguage = "", CancellationToken token = default)
         {
-            //Little bit of data required for following steps
-            XmlDocument xmlDoc = await _objCharacter.LoadDataAsync("lifemodules.xml", strLanguage);
-            XPathNavigator xdoc = await _objCharacter.LoadDataXPathAsync("lifemodules.xml", strLanguage);
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrWhiteSpace(strLanguage))
+                strLanguage = GlobalSettings.Language;
 
-            //Generate list of all life modules (xml, we don't save required data to quality) this character has
-            List<XmlNode> modules = new List<XmlNode>(10);
-
-            foreach (Quality quality in _objCharacter.Qualities)
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                if (quality.Type == QualityType.LifeModule)
-                {
-                    modules.Add(Quality.GetNodeOverrideable(quality.SourceIDString, xmlDoc));
-                }
-            }
+                //Little bit of data required for following steps
+                XmlDocument xmlDoc = await _objCharacter.LoadDataAsync("lifemodules.xml", strLanguage, token: token)
+                                                        .ConfigureAwait(false);
+                XPathNavigator xdoc = await _objCharacter
+                                            .LoadDataXPathAsync("lifemodules.xml", strLanguage, token: token)
+                                            .ConfigureAwait(false);
 
-            //Sort the list (Crude way, but have to do)
-            for (int i = 0; i < modules.Count; i++)
-            {
-                string stageName = xdoc.SelectSingleNode("chummer/stages/stage[@order = " + (i <= 4 ? (i + 1).ToString(GlobalSettings.InvariantCultureInfo).CleanXPath() : "\"5\"") + ']')?.Value;
-                int j;
-                for (j = i; j < modules.Count; j++)
-                {
-                    if (modules[j]["stage"]?.InnerText == stageName)
-                        break;
-                }
-                if (j != i && j < modules.Count)
-                {
-                    (modules[i], modules[j]) = (modules[j], modules[i]);
-                }
-            }
+                //Generate list of all life modules (xml, we don't save required data to quality) this character has
+                List<XmlNode> modules = new List<XmlNode>(10);
 
-            string[] story = new string[modules.Count];
-            XPathNavigator xmlBaseMacrosNode = xdoc.SelectSingleNodeAndCacheExpression("/chummer/storybuilder/macros");
-            //Actually "write" the story
-            await Task.Run(() => Parallel.For(0, modules.Count,
-                i =>
+                foreach (Quality quality in _objCharacter.Qualities)
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                  out StringBuilder sbdTemp))
+                    if (quality.Type == QualityType.LifeModule)
                     {
-                        story[i] = Write(sbdTemp, modules[i]["story"]?.InnerText ?? string.Empty, 5,
-                                         xmlBaseMacrosNode).ToString();
+                        modules.Add(Quality.GetNodeOverrideable(quality.SourceIDString, xmlDoc));
                     }
-                }));
-            return string.Join(Environment.NewLine + Environment.NewLine, story);
+                }
+
+                //Sort the list (Crude way, but have to do)
+                for (int i = 0; i < modules.Count; i++)
+                {
+                    string stageName = xdoc
+                                       .SelectSingleNode("chummer/stages/stage[@order = "
+                                                         + (i <= 4
+                                                             ? (i + 1).ToString(GlobalSettings.InvariantCultureInfo)
+                                                                      .CleanXPath()
+                                                             : "\"5\"") + ']')?.Value;
+                    int j;
+                    for (j = i; j < modules.Count; j++)
+                    {
+                        if (modules[j]["stage"]?.InnerText == stageName)
+                            break;
+                    }
+
+                    if (j != i && j < modules.Count)
+                    {
+                        (modules[i], modules[j]) = (modules[j], modules[i]);
+                    }
+                }
+
+                string[] story = new string[modules.Count];
+                Task<string>[] atskStoryTasks = new Task<string>[modules.Count];
+                XPathNavigator xmlBaseMacrosNode = await xdoc
+                                                         .SelectSingleNodeAndCacheExpressionAsync(
+                                                             "/chummer/storybuilder/macros", token: token)
+                                                         .ConfigureAwait(false);
+                //Actually "write" the story
+                for (int i = 0; i < modules.Count; ++i)
+                {
+                    int intLocal = i;
+                    atskStoryTasks[i] = Task.Run(async () =>
+                    {
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                      out StringBuilder sbdTemp))
+                        {
+                            return (await Write(sbdTemp, modules[intLocal]["story"]?.InnerText ?? string.Empty, 5,
+                                                xmlBaseMacrosNode, token).ConfigureAwait(false)).ToString();
+                        }
+                    }, token);
+                }
+
+                await Task.WhenAll(atskStoryTasks).ConfigureAwait(false);
+
+                for (int i = 0; i < modules.Count; ++i)
+                {
+                    story[i] = await atskStoryTasks[i].ConfigureAwait(false);
+                }
+
+                return string.Join(Environment.NewLine + Environment.NewLine, story);
+            }
         }
 
-        private StringBuilder Write(StringBuilder story, string innerText, int levels, XPathNavigator xmlBaseMacrosNode)
+        private async Task<StringBuilder> Write(StringBuilder story, string innerText, int levels, XPathNavigator xmlBaseMacrosNode, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (levels <= 0)
                 return story;
-            int startingLength = story.Length;
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                int startingLength = story.Length;
 
-            IEnumerable<string> words;
-            if (innerText.StartsWith('$') && innerText.IndexOf(' ') < 0)
-            {
-                words = Macro(innerText, xmlBaseMacrosNode).SplitNoAlloc(' ', '\n', '\r', '\t');
-            }
-            else
-            {
-                words = innerText.SplitNoAlloc(' ', '\n', '\r', '\t');
-            }
-            bool mfix = false;
-            foreach (string word in words)
-            {
-                if (string.IsNullOrWhiteSpace(word))
-                    continue;
-                string trim = word.Trim();
-
-                if (trim.StartsWith('$'))
+                IEnumerable<string> words;
+                if (innerText.StartsWith('$') && innerText.IndexOf(' ') < 0)
                 {
-                    if (trim.StartsWith("$DOLLAR", StringComparison.Ordinal))
-                    {
-                        story.Append('$');
-                    }
-                    else
-                    {
-                        //if (story.Length > 0 && story[story.Length - 1] == ' ') story.Length--;
-                        Write(story, trim, --levels, xmlBaseMacrosNode);
-                    }
-                    mfix = true;
+                    words = (await Macro(innerText, xmlBaseMacrosNode, token).ConfigureAwait(false)).SplitNoAlloc(
+                        ' ', '\n', '\r', '\t');
                 }
                 else
                 {
-                    if (story.Length != startingLength && !mfix)
+                    words = innerText.SplitNoAlloc(' ', '\n', '\r', '\t');
+                }
+
+                bool mfix = false;
+                foreach (string word in words)
+                {
+                    if (string.IsNullOrWhiteSpace(word))
+                        continue;
+                    token.ThrowIfCancellationRequested();
+                    string trim = word.Trim();
+
+                    if (trim.StartsWith('$'))
                     {
-                        story.Append(' ');
+                        if (trim.StartsWith("$DOLLAR", StringComparison.Ordinal))
+                        {
+                            story.Append('$');
+                        }
+                        else
+                        {
+                            //if (story.Length > 0 && story[story.Length - 1] == ' ') story.Length--;
+                            await Write(story, trim, --levels, xmlBaseMacrosNode, token).ConfigureAwait(false);
+                        }
+
+                        mfix = true;
                     }
                     else
                     {
-                        mfix = false;
-                    }
-                    story.Append(trim);
-                }
-            }
+                        if (story.Length != startingLength && !mfix)
+                        {
+                            story.Append(' ');
+                        }
+                        else
+                        {
+                            mfix = false;
+                        }
 
-            return story;
+                        story.Append(trim);
+                    }
+                }
+
+                return story;
+            }
         }
 
-        public string Macro(string innerText, XPathNavigator xmlBaseMacrosNode)
+        public async ValueTask<string> Macro(string innerText, XPathNavigator xmlBaseMacrosNode, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(innerText))
                 return string.Empty;
             string endString = innerText.ToLowerInvariant().Substring(1).TrimEnd(',', '.');
@@ -156,116 +198,163 @@ namespace Chummer
                 macroName = macroPool = endString;
             }
 
-            switch (macroName)
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                //$DOLLAR is defined elsewhere to prevent recursive calling
-                case "street":
-                    return !string.IsNullOrEmpty(_objCharacter.Alias) ? _objCharacter.Alias : "Alias ";
-
-                case "real":
-                    return !string.IsNullOrEmpty(_objCharacter.Name) ? _objCharacter.Name : "Unnamed John Doe ";
-
-                case "year" when int.TryParse(_objCharacter.Age, out int year):
-                    return int.TryParse(macroPool, out int age)
-                        ? (DateTime.UtcNow.Year + 62 + age - year).ToString(GlobalSettings.CultureInfo)
-                        : (DateTime.UtcNow.Year + 62 - year).ToString(GlobalSettings.CultureInfo);
-
-                case "year":
-                    return "(ERROR PARSING \"" + _objCharacter.Age + "\")";
-            }
-
-            //Did not meet predefined macros, check user defined
-
-            XPathNavigator xmlUserMacroNode = xmlBaseMacrosNode?.SelectSingleNode(macroName);
-
-            if (xmlUserMacroNode != null)
-            {
-                XPathNavigator xmlUserMacroFirstChild = xmlUserMacroNode.SelectChildren(XPathNodeType.Element).Current;
-                if (xmlUserMacroFirstChild != null)
+                switch (macroName)
                 {
-                    //Already defined, no need to do anything fancy
-                    if (!_dicPersistence.TryGetValue(macroPool, out string strSelectedNodeName))
-                    {
-                        switch (xmlUserMacroFirstChild.Name)
-                        {
-                            case "random":
-                                {
-                                    XPathNodeIterator xmlPossibleNodeList = xmlUserMacroFirstChild.SelectAndCacheExpression("./*[not(self::default)]");
-                                    if (xmlPossibleNodeList.Count > 0)
-                                    {
-                                        int intUseIndex = xmlPossibleNodeList.Count > 1
-                                            ? GlobalSettings.RandomGenerator.NextModuloBiasRemoved(xmlPossibleNodeList.Count)
-                                            : 0;
-                                        int i = 0;
-                                        foreach (XPathNavigator xmlLoopNode in xmlPossibleNodeList)
-                                        {
-                                            if (i == intUseIndex)
-                                            {
-                                                strSelectedNodeName = xmlLoopNode.Name;
-                                                break;
-                                            }
-                                            ++i;
-                                        }
-                                    }
+                    //$DOLLAR is defined elsewhere to prevent recursive calling
+                    case "street":
+                        return !string.IsNullOrEmpty(_objCharacter.Alias) ? _objCharacter.Alias : "Alias ";
 
-                                    break;
-                                }
-                            case "persistent":
-                                {
-                                    //Any node not named
-                                    XPathNodeIterator xmlPossibleNodeList = xmlUserMacroFirstChild.SelectAndCacheExpression("./*[not(self::default)]");
-                                    if (xmlPossibleNodeList.Count > 0)
-                                    {
-                                        int intUseIndex = xmlPossibleNodeList.Count > 1
-                                            ? GlobalSettings.RandomGenerator.NextModuloBiasRemoved(xmlPossibleNodeList.Count)
-                                            : 0;
-                                        int i = 0;
-                                        foreach (XPathNavigator xmlLoopNode in xmlPossibleNodeList)
-                                        {
-                                            if (i == intUseIndex)
-                                            {
-                                                strSelectedNodeName = xmlLoopNode.Name;
-                                                break;
-                                            }
-                                            ++i;
-                                        }
+                    case "real":
+                        return !string.IsNullOrEmpty(_objCharacter.Name) ? _objCharacter.Name : "Unnamed John Doe ";
 
-                                        if (!_dicPersistence.TryAdd(macroPool, strSelectedNodeName))
-                                            _dicPersistence.TryGetValue(macroPool, out strSelectedNodeName);
-                                    }
+                    case "year" when int.TryParse(_objCharacter.Age, out int year):
+                        return int.TryParse(macroPool, out int age)
+                            ? (DateTime.UtcNow.Year + 62 + age - year).ToString(GlobalSettings.CultureInfo)
+                            : (DateTime.UtcNow.Year + 62 - year).ToString(GlobalSettings.CultureInfo);
 
-                                    break;
-                                }
-                            default:
-                                return "(Formating error in $DOLLAR" + macroName + ')';
-                        }
-                    }
-
-                    if (!string.IsNullOrEmpty(strSelectedNodeName))
-                    {
-                        string strSelected = xmlUserMacroFirstChild.SelectSingleNode(strSelectedNodeName)?.Value;
-                        if (!string.IsNullOrEmpty(strSelected))
-                            return strSelected;
-                    }
-
-                    string strDefault = xmlUserMacroFirstChild.SelectSingleNodeAndCacheExpression("default")?.Value;
-                    if (!string.IsNullOrEmpty(strDefault))
-                    {
-                        return strDefault;
-                    }
-
-                    return "(Unknown key " + macroPool + " in $DOLLAR" + macroName + ')';
+                    case "year":
+                        return "(ERROR PARSING \"" + _objCharacter.Age + "\")";
                 }
 
-                return xmlUserMacroNode.Value;
+                //Did not meet predefined macros, check user defined
+
+                XPathNavigator xmlUserMacroNode = xmlBaseMacrosNode?.SelectSingleNode(macroName);
+
+                if (xmlUserMacroNode != null)
+                {
+                    XPathNavigator xmlUserMacroFirstChild
+                        = xmlUserMacroNode.SelectChildren(XPathNodeType.Element).Current;
+                    if (xmlUserMacroFirstChild != null)
+                    {
+                        //Already defined, no need to do anything fancy
+                        (bool blnSuccess, string strSelectedNodeName)
+                            = await _dicPersistence.TryGetValueAsync(macroPool, token).ConfigureAwait(false);
+                        if (!blnSuccess)
+                        {
+                            switch (xmlUserMacroFirstChild.Name)
+                            {
+                                case "random":
+                                {
+                                    XPathNodeIterator xmlPossibleNodeList = await xmlUserMacroFirstChild
+                                        .SelectAndCacheExpressionAsync("./*[not(self::default)]", token: token)
+                                        .ConfigureAwait(false);
+                                    if (xmlPossibleNodeList.Count > 0)
+                                    {
+                                        int intUseIndex = xmlPossibleNodeList.Count > 1
+                                            ? await GlobalSettings.RandomGenerator
+                                                                  .NextModuloBiasRemovedAsync(
+                                                                      xmlPossibleNodeList.Count, token: token)
+                                                                  .ConfigureAwait(false)
+                                            : 0;
+                                        int i = 0;
+                                        foreach (XPathNavigator xmlLoopNode in xmlPossibleNodeList)
+                                        {
+                                            token.ThrowIfCancellationRequested();
+                                            if (i == intUseIndex)
+                                            {
+                                                strSelectedNodeName = xmlLoopNode.Name;
+                                                break;
+                                            }
+
+                                            ++i;
+                                        }
+                                    }
+
+                                    break;
+                                }
+                                case "persistent":
+                                {
+                                    //Any node not named
+                                    XPathNodeIterator xmlPossibleNodeList = await xmlUserMacroFirstChild
+                                        .SelectAndCacheExpressionAsync("./*[not(self::default)]", token: token)
+                                        .ConfigureAwait(false);
+                                    if (xmlPossibleNodeList.Count > 0)
+                                    {
+                                        int intUseIndex = xmlPossibleNodeList.Count > 1
+                                            ? await GlobalSettings.RandomGenerator
+                                                                  .NextModuloBiasRemovedAsync(
+                                                                      xmlPossibleNodeList.Count, token: token)
+                                                                  .ConfigureAwait(false)
+                                            : 0;
+                                        int i = 0;
+                                        foreach (XPathNavigator xmlLoopNode in xmlPossibleNodeList)
+                                        {
+                                            token.ThrowIfCancellationRequested();
+                                            if (i == intUseIndex)
+                                            {
+                                                strSelectedNodeName = xmlLoopNode.Name;
+                                                break;
+                                            }
+
+                                            ++i;
+                                        }
+
+                                        if (!await _dicPersistence.TryAddAsync(macroPool, strSelectedNodeName, token)
+                                                                  .ConfigureAwait(false))
+                                            strSelectedNodeName = (await _dicPersistence
+                                                                         .TryGetValueAsync(macroPool, token)
+                                                                         .ConfigureAwait(false)).Item2;
+                                    }
+
+                                    break;
+                                }
+                                default:
+                                    return "(Formating error in $DOLLAR" + macroName + ')';
+                            }
+                        }
+
+                        if (!string.IsNullOrEmpty(strSelectedNodeName))
+                        {
+                            string strSelected = xmlUserMacroFirstChild.SelectSingleNode(strSelectedNodeName)?.Value;
+                            if (!string.IsNullOrEmpty(strSelected))
+                                return strSelected;
+                        }
+
+                        string strDefault = (await xmlUserMacroFirstChild
+                                                   .SelectSingleNodeAndCacheExpressionAsync("default", token: token)
+                                                   .ConfigureAwait(false))?.Value;
+                        if (!string.IsNullOrEmpty(strDefault))
+                        {
+                            return strDefault;
+                        }
+
+                        return "(Unknown key " + macroPool + " in $DOLLAR" + macroName + ')';
+                    }
+
+                    return xmlUserMacroNode.Value;
+                }
+
+                return "(Unknown Macro $DOLLAR" + innerText.Substring(1) + ')';
             }
-            return "(Unknown Macro $DOLLAR" + innerText.Substring(1) + ')';
         }
 
         /// <inheritdoc />
         public void Dispose()
         {
-            _dicPersistence?.Dispose();
+            using (LockObject.EnterWriteLock())
+                _dicPersistence.Dispose();
+            LockObject.Dispose();
         }
+
+        /// <inheritdoc />
+        public async ValueTask DisposeAsync()
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            try
+            {
+                await _dicPersistence.DisposeAsync().ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            await LockObject.DisposeAsync().ConfigureAwait(false);
+        }
+
+        /// <inheritdoc />
+        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
     }
 }

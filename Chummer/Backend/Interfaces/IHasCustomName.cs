@@ -17,10 +17,15 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace Chummer
 {
     internal interface IHasCustomName
     {
+        ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default);
+
         string CurrentDisplayName { get; }
 
         string CustomName { get; set; }

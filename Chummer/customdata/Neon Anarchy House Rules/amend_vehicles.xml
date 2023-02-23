@@ -25,10 +25,6 @@
 <chummer>
 	<vehicles>
 		<vehicle>
-			<name>Horizon Noizquito (Microdrone)</name>
-			<hide />
-		</vehicle>
-		<vehicle>
 			<name>Krime Bazoo Basic</name>
 			<avail>0</avail>
 			<cost>11000</cost>

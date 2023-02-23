@@ -188,6 +188,13 @@
       <choices>
         <choice>
           <name>Magician: +2 dice summoning spirits of air</name>
+          <bonus>
+            <specificskill>
+              <name>Summoning</name>
+              <bonus>2</bonus>
+              <condition>Spirits of Air</condition>
+            </specificskill>
+          </bonus>
         </choice>
         <choice>
           <name>Adept: 1 free level of Combat Sense</name>
@@ -373,6 +380,13 @@
       <choices>
         <choice>
           <name>Magician: +2 dice summoning spirits of water</name>
+          <bonus>
+            <specificskill>
+              <name>Summoning</name>
+              <bonus>2</bonus>
+              <condition>Spirits of Water</condition>
+            </specificskill>
+          </bonus>
         </choice>
         <choice>
           <name>Adept: 1 free level of Improved Ability on an athletic skill</name>
@@ -514,6 +528,13 @@
       <choices>
         <choice>
           <name>Magician: +2 dice for summoning spirits of air</name>
+          <bonus>
+            <specificskill>
+              <name>Summoning</name>
+              <bonus>2</bonus>
+              <condition>Spirits of Air</condition>
+            </specificskill>
+          </bonus>
         </choice>
         <choice>
           <name>Adept: 1 free level of Critical Strike</name>
@@ -630,7 +651,23 @@
       <choices>
         <choice>
           <name>Magician: +2 dice for Physical-type Combat Spells</name>
-          <bonus />
+          <bonus>
+            <specificskill>
+              <name>Spellcasting</name>
+              <bonus>2</bonus>
+              <condition>Physical Combat</condition>
+            </specificskill>
+            <specificskill>
+              <name>Ritual Spellcasting</name>
+              <bonus>2</bonus>
+              <condition>Physical Combat</condition>
+            </specificskill>
+            <specificskill>
+              <name>Alchemy</name>
+              <bonus>2</bonus>
+              <condition>Physical Combat</condition>
+            </specificskill>
+          </bonus>
         </choice>
         <choice>
           <name>Adept: 2 free levels of Mystic Armor</name>
@@ -692,11 +729,14 @@
           <name>Adept: 2 free levels of Improved Potential</name>
           <bonus>
             <selectpowers>
-            <selectpower limittopowers="Improved Potential (Social),Improved Potential (Physical),Improved Potential (Mental)">
-              <val>1</val>
-            </selectpower>
+              <selectpower limittopowers="Improved Potential (Social),Improved Potential (Physical),Improved Potential (Mental)">
+                <val>1</val>
+                <ignorerating>True</ignorerating>
+              </selectpower>
             </selectpowers>
-            <specificpower>Improved Potential (Chaos Mentor)</specificpower>
+            <specificpower>
+              <name>Improved Potential (Chaos Mentor)</name>
+            </specificpower>
           </bonus>
         </choice>
       </choices>
@@ -836,8 +876,19 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice for summoning or binding plague spirits</name>
-          <bonus />
+          <name>Magician: +2 dice for Summoning or Binding plague spirits</name>
+          <bonus>
+            <specificskill>
+              <name>Summoning</name>
+              <bonus>2</bonus>
+              <condition>Plague Spirit</condition>
+            </specificskill>
+            <specificskill>
+              <name>Binding</name>
+              <bonus>2</bonus>
+              <condition>Plague Spirit</condition>
+            </specificskill>
+          </bonus>
         </choice>
         <choice>
           <name>Adept: Free Plague Cloud</name>
@@ -903,7 +954,16 @@
         <choice>
           <name>Magician: +2 dice for summoning or binding toxic spirits</name>
           <bonus>
-            <selecttext />
+            <specificskill>
+              <name>Summoning</name>
+              <bonus>2</bonus>
+              <condition>Toxic Spirits</condition>
+            </specificskill>
+            <specificskill>
+              <name>Binding</name>
+              <bonus>2</bonus>
+              <condition>Toxic Spirits</condition>
+            </specificskill>
           </bonus>
         </choice>
         <choice>
@@ -1017,11 +1077,22 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice for conjuring spirits of Water or Man (Choose one.)</name>
+          <name>Magician: +2 dice for conjuring Spirits of Water.</name>
           <bonus>
             <specificskill>
               <name>Conjuring</name>
               <bonus>2</bonus>
+              <condition>Spirits of Water</condition>
+            </specificskill>
+          </bonus>
+        </choice>
+        <choice>
+          <name>Magician: +2 dice for conjuring Spirits of Man.</name>
+          <bonus>
+            <specificskill>
+              <name>Conjuring</name>
+              <bonus>2</bonus>
+              <condition>Spirits of Man</condition>
             </specificskill>
           </bonus>
         </choice>
@@ -1075,7 +1146,13 @@
       <name>Monkey</name>
       <advantage>All: +2 dice to gymnastics tests involving climbing.</advantage>
       <disadvantage>Because Monkey is not an assassin, the magician must succeed in a Charisma + Willpower (3) Test in order to strike a surprised opponent. Monkey must be able to watch his prank go off or see the look on the opponent’s face after taunting them, otherwise he suffers –1 to all Magic tests until the next sunrise/sunset.</disadvantage>
-      <bonus />
+      <bonus>
+        <specificskill>
+          <name>Gymnastics</name>
+          <bonus>2</bonus>
+          <condition>Climbing</condition>
+        </specificskill>
+      </bonus>
       <choices>
         <choice>
           <name>Magician: +2 dice for spells, preparations, and rituals of the manipulation type.</name>
@@ -1192,9 +1269,9 @@
           <name>Adept: 1 free level of Improved Potential.</name>
           <bonus>
             <selectpowers>
-            <selectpower limittopowers="Improved Potential (Social),Improved Potential (Physical),Improved Potential (Mental)">
-              <val>1</val>
-            </selectpower>
+              <selectpower limittopowers="Improved Potential (Social),Improved Potential (Physical),Improved Potential (Mental)">
+                <val>1</val>
+              </selectpower>
             </selectpowers>
           </bonus>
         </choice>
@@ -1215,6 +1292,13 @@
       <choices>
         <choice>
           <name>Magician: +2 dice for summoning spirits of fire.</name>
+          <bonus>
+            <specificskill>
+              <name>Summoning</name>
+              <bonus>2</bonus>
+              <condition>Spirits of Fire</condition>
+            </specificskill>
+          </bonus>
         </choice>
         <choice>
           <name>Adept: 2 free levels of Enhanced Accuracy (skill)</name>
@@ -1768,9 +1852,9 @@
           <name>Adept: Gain 1 free level of Mystic Armor or Empathic Healing (choose one).</name>
           <bonus>
             <selectpowers>
-            <selectpower limittopowers="Mystic Armor,Empathic Healing">
-              <val>1</val>
-            </selectpower>
+              <selectpower limittopowers="Mystic Armor,Empathic Healing">
+                <val>1</val>
+              </selectpower>
             </selectpowers>
           </bonus>
         </choice>
@@ -1922,6 +2006,13 @@
       <choices>
         <choice>
           <name>Magician: +2 dice pool modifier to summon Plant Spirits.</name>
+          <bonus>
+            <specificskill>
+              <name>Summoning</name>
+              <bonus>2</bonus>
+              <condition>Plant Spirit</condition>
+            </specificskill>
+          </bonus>
         </choice>
         <choice>
           <name>Adept: Gain 2 free levels of Rooting.</name>
@@ -1944,7 +2035,38 @@
       <choices>
         <choice>
           <name>Magician: +2 dice pool modifier when casting Sun- or Fire-based spells.</name>
-          <bonus />
+          <bonus>
+            <specificskill>
+              <name>Spellcasting</name>
+              <bonus>2</bonus>
+              <condition>Sun</condition>
+            </specificskill>
+            <specificskill>
+              <name>Spellcasting</name>
+              <bonus>2</bonus>
+              <condition>Fire</condition>
+            </specificskill>
+            <specificskill>
+              <name>Ritual Spellcasting</name>
+              <bonus>2</bonus>
+              <condition>Sun</condition>
+            </specificskill>
+            <specificskill>
+              <name>Ritual Spellcasting</name>
+              <bonus>2</bonus>
+              <condition>Fire</condition>
+            </specificskill>
+            <specificskill>
+              <name>Alchemy</name>
+              <bonus>2</bonus>
+              <condition>Sun</condition>
+            </specificskill>
+            <specificskill>
+              <name>Alchemy</name>
+              <bonus>2</bonus>
+              <condition>Fire</condition>
+            </specificskill>
+          </bonus>
         </choice>
         <choice>
           <name>Adept: Gain 3 free levels of Temperature Tolerance</name>
@@ -1973,7 +2095,13 @@
       <choices>
         <choice>
           <name>Magician: +2 dice to Contractual Rituals.</name>
-          <bonus />
+          <bonus>
+            <specificskill>
+              <name>Ritual Spellcasting</name>
+              <bonus>2</bonus>
+              <condition>Contractual</condition>
+            </specificskill>
+          </bonus>
         </choice>
         <choice>
           <name>Adept: Gain Spirit Ram for free.</name>
@@ -2036,8 +2164,24 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice pool bonus when summoning plant or air spirits (choose 1 when selecting this mentor spirit).</name>
-          <bonus />
+          <name>Magician: +2 dice pool bonus when summoning plant spirits.</name>
+          <bonus>
+            <specificskill>
+              <name>Summoning</name>
+              <bonus>2</bonus>
+              <condition>Plant Spirit</condition>
+            </specificskill>
+          </bonus>
+        </choice>
+        <choice>
+          <name>Magician: +2 dice pool bonus when summoning air spirits.</name>
+          <bonus>
+            <specificskill>
+              <name>Summoning</name>
+              <bonus>2</bonus>
+              <condition>Spirits of Air</condition>
+            </specificskill>
+          </bonus>
         </choice>
         <choice>
           <name>Adept: Gain 2 levels of Stillness for free</name>
@@ -2080,6 +2224,13 @@
       <choices>
         <choice>
           <name>Magician: +2 to summoning earth spirits.</name>
+          <bonus>
+            <specificskill>
+              <name>Summoning</name>
+              <bonus>2</bonus>
+              <condition>Spirits of Earth</condition>
+            </specificskill>
+          </bonus>
         </choice>
         <choice>
           <name>Adept: Gain +2 levels of Light Body for free.</name>
@@ -2377,6 +2528,18 @@
       <choices>
         <choice>
           <name>Magician: +2 dice summoning spirits of water or earth (The type of spirit for which this bonus applies changes every 6 hours).</name>
+          <bonus>
+            <specificskill>
+              <name>Summoning</name>
+              <bonus>2</bonus>
+              <condition>Spirits of Water (High Tide)</condition>
+            </specificskill>
+            <specificskill>
+              <name>Summoning</name>
+              <bonus>2</bonus>
+              <condition>Spirits of Earth (Low Tide)</condition>
+            </specificskill>
+          </bonus>
         </choice>
         <choice>
           <name>Adept: Gain 2 free levels of Heightened Concentration.</name>
@@ -2499,6 +2662,13 @@
       <choices>
         <choice>
           <name>Magician: +2 dice summoning spirits of water.</name>
+          <bonus>
+            <specificskill>
+              <name>Summoning</name>
+              <bonus>2</bonus>
+              <condition>Spirits of Water</condition>
+            </specificskill>
+          </bonus>
         </choice>
         <choice>
           <name>Magician: +2 dice pool modifier when casting Illusion spells, preparations, and rituals</name>
@@ -2576,6 +2746,13 @@
       <choices>
         <choice>
           <name>Magician: +2 dice summoning spirits of earth.</name>
+          <bonus>
+            <specificskill>
+              <name>Summoning</name>
+              <bonus>2</bonus>
+              <condition>Spirits of Earth</condition>
+            </specificskill>
+          </bonus>
         </choice>
         <choice>
           <name>Adept: 2 free levels of Hang Time.</name>
@@ -2616,9 +2793,23 @@
         </choice>
         <choice set="2">
           <name>Magician: +2 dice summoning spirits of man.</name>
+          <bonus>
+            <specificskill>
+              <name>Summoning</name>
+              <bonus>2</bonus>
+              <condition>Spirits of Man</condition>
+            </specificskill>
+          </bonus>
         </choice>
         <choice set="2">
           <name>Magician: +2 dice summoning guardian spirits.</name>
+          <bonus>
+            <specificskill>
+              <name>Summoning</name>
+              <bonus>2</bonus>
+              <condition>Guardian Spirit</condition>
+            </specificskill>
+          </bonus>
         </choice>
         <choice set="2">
           <name>Adept: Gain the Berserk power for free.</name>
@@ -2686,7 +2877,7 @@
             </spellcategory>
           </bonus>
         </choice>
-		<choice>
+        <choice>
           <name>Adept: 2 free levels of Analytics</name>
           <bonus>
             <specificpower>
@@ -2730,7 +2921,7 @@
             </spellcategory>
           </bonus>
         </choice>
-	<choice>
+        <choice>
           <name>Adept: 2 levels of Danger Sense</name>
           <bonus>
             <specificpower>
@@ -2756,7 +2947,7 @@
         <selectskill skillcategory="Combat Active">
           <val>1</val>
         </selectskill>
-	  </bonus>
+      </bonus>
       <choices>
         <choice set="2">
           <name>Magician: +2 dice for Combat spells</name>
@@ -2805,7 +2996,7 @@
             </spellcategory>
           </bonus>
         </choice>
-	<choice>
+        <choice>
           <name>Adept: 1 free level of Enhanced Perception</name>
           <bonus>
             <specificpower>
@@ -2838,7 +3029,7 @@
               <bonus>1</bonus>
             </spellcategory>
           </bonus>
-	  <bonus>
+          <bonus>
             <spellcategory>
               <name>Combat</name>
               <val>2</val>
@@ -2870,8 +3061,24 @@
       </bonus>
       <choices>
         <choice>
-          <name>Magician: +2 dice for summoning guardian or beast spirits (choose one)</name>
-          <bonus />
+          <name>Magician: +2 dice for summoning guardian spirits.</name>
+          <bonus>
+            <specificskill>
+              <name>Summoning</name>
+              <bonus>2</bonus>
+              <condition>Guardian Spirit</condition>
+            </specificskill>
+          </bonus>
+        </choice>
+        <choice>
+          <name>Magician: +2 dice for summoning beast spirits.</name>
+          <bonus>
+            <specificskill>
+              <name>Summoning</name>
+              <bonus>2</bonus>
+              <condition>Spirits of Beasts</condition>
+            </specificskill>
+          </bonus>
         </choice>
         <choice>
           <name>Adept: Magic Sense</name>
@@ -2900,15 +3107,21 @@
       <choices>
         <choice>
           <name>Magician: +2 dice to Contractual Rituals</name>
-          <bonus />
+          <bonus>
+            <specificskill>
+              <name>Ritual Spellcasting</name>
+              <bonus>2</bonus>
+              <condition>Contractual</condition>
+            </specificskill>
+          </bonus>
         </choice>
         <choice>
           <name>Adept: Gain Linguist for free</name>
-      <bonus>
-        <addqualities>
-          <addquality>Linguist</addquality>
-        </addqualities>
-      </bonus>
+          <bonus>
+            <addqualities>
+              <addquality>Linguist</addquality>
+            </addqualities>
+          </bonus>
         </choice>
       </choices>
       <source>SOTG</source>
@@ -2966,9 +3179,38 @@
           <bonus>1</bonus>
         </specificskill>
       </bonus>
-	    <choices>
+      <choices>
         <choice>
-          <name>Magician: +2 dice summoning guardian spirits, task spirits or spirits of man (choose one)</name>
+          <name>Magician: +2 dice for summoning guardian spirits.</name>
+          <bonus>
+            <specificskill>
+              <name>Summoning</name>
+              <bonus>2</bonus>
+              <condition>Guardian Spirit</condition>
+            </specificskill>
+          </bonus>
+        </choice>
+        <choice>
+          <name>Magician: +2 dice for summoning task spirits.</name>
+          <bonus>
+            <specificskill>
+              <name>Summoning</name>
+              <bonus>2</bonus>
+              <condition>Task Spirit</condition>
+            </specificskill>
+          </bonus>
+        </choice>
+        <choice>
+          <name>Magician: +2 dice for summoning spirits of man.</name>
+          <bonus>
+            <specificskill>
+              <name>Summoning</name>
+              <bonus>2</bonus>
+              <condition>Spirits of Man</condition>
+            </specificskill>
+          </bonus>
+        </choice>
+        <choice>
         </choice>
         <choice>
           <name>Adept: 1 free level of Mystic Armor</name>
@@ -2979,7 +3221,7 @@
             </specificpower>
           </bonus>
         </choice>
-	    </choices>
+      </choices>
       <source>SOTG</source>
       <page>32</page>
     </mentor>

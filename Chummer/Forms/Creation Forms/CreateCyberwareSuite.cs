@@ -19,7 +19,6 @@
 
 using System;
 using System.IO;
-using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Equipment;
@@ -29,20 +28,20 @@ namespace Chummer
     public sealed partial class CreateCyberwareSuite : Form
     {
         private readonly Character _objCharacter;
-        private readonly Improvement.ImprovementSource _objSource;
+        private readonly Improvement.ImprovementSource _eSource;
         private readonly string _strType;
 
         #region Control Events
 
-        public CreateCyberwareSuite(Character objCharacter, Improvement.ImprovementSource objSource = Improvement.ImprovementSource.Cyberware)
+        public CreateCyberwareSuite(Character objCharacter, Improvement.ImprovementSource eSource = Improvement.ImprovementSource.Cyberware)
         {
             InitializeComponent();
-            _objSource = objSource;
+            _eSource = eSource;
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
             _objCharacter = objCharacter;
 
-            if (_objSource == Improvement.ImprovementSource.Cyberware)
+            if (_eSource == Improvement.ImprovementSource.Cyberware)
                 _strType = "cyberware";
             else
             {
@@ -53,36 +52,37 @@ namespace Chummer
             txtFileName.Text = "custom_" + _strType + ".xml";
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object sender, EventArgs e)
         {
             // Make sure the suite and file name fields are populated.
-            if (string.IsNullOrEmpty(txtName.Text))
+            string strName = await txtName.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(strName))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CyberwareSuite_SuiteName"), LanguageManager.GetString("MessageTitle_CyberwareSuite_SuiteName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_CyberwareSuite_SuiteName").ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_CyberwareSuite_SuiteName").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            if (string.IsNullOrEmpty(txtFileName.Text))
+            string strFileName = await txtFileName.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(strFileName))
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CyberwareSuite_FileName"), LanguageManager.GetString("MessageTitle_CyberwareSuite_FileName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_CyberwareSuite_FileName").ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_CyberwareSuite_FileName").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // Make sure the file name starts with custom and ends with _cyberware.xml.
-            if (!txtFileName.Text.StartsWith("custom_", StringComparison.OrdinalIgnoreCase) || !txtFileName.Text.EndsWith('_' + _strType + ".xml", StringComparison.OrdinalIgnoreCase))
+            if (!strFileName.StartsWith("custom_", StringComparison.OrdinalIgnoreCase) || !strFileName.EndsWith('_' + _strType + ".xml", StringComparison.OrdinalIgnoreCase))
             {
-                Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_CyberwareSuite_InvalidFileName"), _strType),
-                    LanguageManager.GetString("MessageTitle_CyberwareSuite_InvalidFileName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowScrollableMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_CyberwareSuite_InvalidFileName").ConfigureAwait(false), _strType),
+                    await LanguageManager.GetStringAsync("MessageTitle_CyberwareSuite_InvalidFileName").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             // See if a Suite with this name already exists for the Custom category.
             // This was originally done without the XmlManager, but because amends and overrides and toggling custom data directories can change names, we need to use it.
-            string strName = txtName.Text;
-            if (_objCharacter.LoadDataXPath(_strType + ".xml").SelectSingleNode("/chummer/suites/suite[name = " + strName.CleanXPath() + ']') != null)
+            if ((await _objCharacter.LoadDataXPathAsync(_strType + ".xml").ConfigureAwait(false)).SelectSingleNode("/chummer/suites/suite[name = " + strName.CleanXPath() + ']') != null)
             {
-                Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_CyberwareSuite_DuplicateName"), strName),
-                    LanguageManager.GetString("MessageTitle_CyberwareSuite_DuplicateName"), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowScrollableMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_CyberwareSuite_DuplicateName").ConfigureAwait(false), strName),
+                    await LanguageManager.GetStringAsync("MessageTitle_CyberwareSuite_DuplicateName").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
@@ -96,47 +96,42 @@ namespace Chummer
             {
                 try
                 {
-                    objXmlCurrentDocument.LoadStandard(strPath);
+                    await objXmlCurrentDocument.LoadStandardAsync(strPath).ConfigureAwait(false);
                 }
                 catch (IOException ex)
                 {
-                    Program.MainForm.ShowMessageBox(this, ex.ToString());
+                    Program.ShowScrollableMessageBox(this, ex.ToString());
                     return;
                 }
                 catch (XmlException ex)
                 {
-                    Program.MainForm.ShowMessageBox(this, ex.ToString());
+                    Program.ShowScrollableMessageBox(this, ex.ToString());
                     return;
                 }
             }
 
-            using (FileStream objStream = new FileStream(strPath, FileMode.Create, FileAccess.Write, FileShare.ReadWrite))
+            using (FileStream objStream = new FileStream(strPath, FileMode.Create, FileAccess.Write, FileShare.None))
             {
-                using (XmlTextWriter objWriter = new XmlTextWriter(objStream, Encoding.UTF8)
+                using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                 {
-                    Formatting = Formatting.Indented,
-                    Indentation = 1,
-                    IndentChar = '\t'
-                })
-                {
-                    objWriter.WriteStartDocument();
+                    await objWriter.WriteStartDocumentAsync().ConfigureAwait(false);
 
                     // <chummer>
-                    objWriter.WriteStartElement("chummer");
+                    await objWriter.WriteStartElementAsync("chummer").ConfigureAwait(false);
                     if (!blnNewFile)
                     {
                         // <cyberwares>
-                        objWriter.WriteStartElement(_strType + 's');
+                        await objWriter.WriteStartElementAsync(_strType + 's').ConfigureAwait(false);
                         using (XmlNodeList xmlCyberwareList = objXmlCurrentDocument.SelectNodes("/chummer/" + _strType + 's'))
                             if (xmlCyberwareList?.Count > 0)
                                 foreach (XmlNode xmlCyberware in xmlCyberwareList)
                                     xmlCyberware.WriteContentTo(objWriter);
                         // </cyberwares>
-                        objWriter.WriteEndElement();
+                        await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                     }
 
                     // <suites>
-                    objWriter.WriteStartElement("suites");
+                    await objWriter.WriteStartElementAsync("suites").ConfigureAwait(false);
 
                     // If this is not a new file, write out the current contents.
                     if (!blnNewFile)
@@ -151,7 +146,7 @@ namespace Chummer
                     // Determine the Grade of Cyberware.
                     foreach (Cyberware objCyberware in _objCharacter.Cyberware)
                     {
-                        if (objCyberware.SourceType == _objSource)
+                        if (objCyberware.SourceType == _eSource)
                         {
                             strGrade = objCyberware.Grade.Name;
                             break;
@@ -159,73 +154,78 @@ namespace Chummer
                     }
 
                     // <suite>
-                    objWriter.WriteStartElement("suite");
+                    await objWriter.WriteStartElementAsync("suite").ConfigureAwait(false);
                     // <name />
-                    objWriter.WriteElementString("id", Guid.NewGuid().ToString());
+                    await objWriter.WriteElementStringAsync("id", Guid.NewGuid().ToString()).ConfigureAwait(false);
                     // <name />
-                    objWriter.WriteElementString("name", txtName.Text);
+                    await objWriter.WriteElementStringAsync("name", txtName.Text).ConfigureAwait(false);
                     // <grade />
-                    objWriter.WriteElementString("grade", strGrade);
+                    await objWriter.WriteElementStringAsync("grade", strGrade).ConfigureAwait(false);
                     // <cyberwares>
-                    objWriter.WriteStartElement(_strType + 's');
+                    await objWriter.WriteStartElementAsync(_strType + 's').ConfigureAwait(false);
 
                     // Write out the Cyberware.
                     foreach (Cyberware objCyberware in _objCharacter.Cyberware)
                     {
-                        if (objCyberware.SourceType == _objSource)
+                        if (objCyberware.SourceType == _eSource)
                         {
                             // <cyberware>
-                            objWriter.WriteStartElement(_strType);
-                            objWriter.WriteElementString("name", objCyberware.Name);
+                            await objWriter.WriteStartElementAsync(_strType).ConfigureAwait(false);
+                            await objWriter.WriteElementStringAsync("name", objCyberware.Name).ConfigureAwait(false);
                             if (objCyberware.Rating > 0)
-                                objWriter.WriteElementString("rating", objCyberware.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                await objWriter.WriteElementStringAsync("rating", objCyberware.Rating.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
                             // Write out child items.
                             if (objCyberware.Children.Count > 0)
                             {
                                 // <cyberwares>
-                                objWriter.WriteStartElement(_strType + 's');
+                                await objWriter.WriteStartElementAsync(_strType + 's').ConfigureAwait(false);
                                 foreach (Cyberware objChild in objCyberware.Children)
                                 {
                                     // Do not include items that come with the base item by default.
                                     if (objChild.Capacity != "[*]")
                                     {
-                                        objWriter.WriteStartElement(_strType);
-                                        objWriter.WriteElementString("name", objChild.Name);
+                                        await objWriter.WriteStartElementAsync(_strType).ConfigureAwait(false);
+                                        await objWriter.WriteElementStringAsync("name", objChild.Name).ConfigureAwait(false);
                                         if (objChild.Rating > 0)
-                                            objWriter.WriteElementString("rating", objChild.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                            await objWriter.WriteElementStringAsync("rating", objChild.Rating.ToString(GlobalSettings.InvariantCultureInfo)).ConfigureAwait(false);
                                         // </cyberware>
-                                        objWriter.WriteEndElement();
+                                        await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                                     }
                                 }
 
                                 // </cyberwares>
-                                objWriter.WriteEndElement();
+                                await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                             }
 
                             // </cyberware>
-                            objWriter.WriteEndElement();
+                            await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                         }
                     }
 
                     // </cyberwares>
-                    objWriter.WriteEndElement();
+                    await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                     // </suite>
-                    objWriter.WriteEndElement();
+                    await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                     // </chummer>
-                    objWriter.WriteEndElement();
+                    await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
-                    objWriter.WriteEndDocument();
+                    await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
                 }
             }
 
-            Program.MainForm.ShowMessageBox(this, string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_CyberwareSuite_SuiteCreated"), txtName.Text),
-                LanguageManager.GetString("MessageTitle_CyberwareSuite_SuiteCreated"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-            DialogResult = DialogResult.OK;
+            Program.ShowScrollableMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_CyberwareSuite_SuiteCreated").ConfigureAwait(false), strName),
+                await LanguageManager.GetStringAsync("MessageTitle_CyberwareSuite_SuiteCreated").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
+            await this.DoThreadSafeAsync(x =>
+            {
+                x.DialogResult = DialogResult.OK;
+                x.Close();
+            }).ConfigureAwait(false);
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private void CreateCyberwareSuite_Load(object sender, EventArgs e)

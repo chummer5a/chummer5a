@@ -29,6 +29,8 @@ namespace Chummer
     public partial class PrintMultipleCharacters : Form
     {
         private CancellationTokenSource _objPrinterCancellationTokenSource;
+        private readonly CancellationTokenSource _objGenericCancellationTokenSource = new CancellationTokenSource();
+        private readonly CancellationToken _objGenericToken;
         private Task _tskPrinter;
         private Character[] _aobjCharacters;
         private CharacterSheetViewer _frmPrintView;
@@ -37,172 +39,372 @@ namespace Chummer
 
         public PrintMultipleCharacters()
         {
+            Disposed += (sender, args) => _objGenericCancellationTokenSource.Dispose();
+            _objGenericToken = _objGenericCancellationTokenSource.Token;
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            dlgOpenFile.Filter = LanguageManager.GetString("DialogFilter_Chum5") + '|' + LanguageManager.GetString("DialogFilter_All");
         }
 
-        private void PrintMultipleCharacters_FormClosing(object sender, FormClosingEventArgs e)
+        private async void PrintMultipleCharacters_Load(object sender, EventArgs e)
         {
-            _objPrinterCancellationTokenSource?.Cancel(false);
+            try
+            {
+                dlgOpenFile.Title = await LanguageManager.GetStringAsync("Title_PrintMultiple", token: _objGenericToken).ConfigureAwait(false);
+                dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chummer", token: _objGenericToken).ConfigureAwait(false) + '|' +
+                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5", token: _objGenericToken).ConfigureAwait(false) + '|' +
+                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5lz", token: _objGenericToken).ConfigureAwait(false) + '|' +
+                                     await LanguageManager.GetStringAsync("DialogFilter_All", token: _objGenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
 
-            CleanUpOldCharacters();
+        private async void PrintMultipleCharacters_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            CancellationTokenSource objTemp = Interlocked.Exchange(ref _objPrinterCancellationTokenSource, null);
+            if (objTemp?.IsCancellationRequested == false)
+            {
+                objTemp.Cancel(false);
+                objTemp.Dispose();
+            }
+            _objGenericCancellationTokenSource.Cancel(false);
+            // ReSharper disable once MethodSupportsCancellation
+            await CleanUpOldCharacters().ConfigureAwait(false);
         }
 
         private async void cmdSelectCharacter_Click(object sender, EventArgs e)
         {
             // Add the selected Files to the list of characters to print.
-            if (dlgOpenFile.ShowDialog(this) == DialogResult.OK)
+            if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x), token: _objGenericToken).ConfigureAwait(false) != DialogResult.OK)
+                return;
+            CancellationTokenSource objNewSource = new CancellationTokenSource();
+            CancellationToken objToken = objNewSource.Token;
+            CancellationTokenSource objTemp = Interlocked.Exchange(ref _objPrinterCancellationTokenSource, objNewSource);
+            if (objTemp?.IsCancellationRequested == false)
             {
-                await CancelPrint();
+                objTemp.Cancel(false);
+                objTemp.Dispose();
+            }
+            Task tskOld = Interlocked.Exchange(ref _tskPrinter, null);
+            if (tskOld?.IsCompleted == false)
+            {
+                try
+                {
+                    await tskOld.ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
+            }
+            try
+            {
+                await cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken).ConfigureAwait(false);
+                await prgProgress.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken).ConfigureAwait(false);
+
                 foreach (string strFileName in dlgOpenFile.FileNames)
                 {
                     TreeNode objNode = new TreeNode
                     {
-                        Text = Path.GetFileName(strFileName) ?? await LanguageManager.GetStringAsync("String_Unknown"),
+                        Text = Path.GetFileName(strFileName) ?? await LanguageManager.GetStringAsync("String_Unknown", token: _objGenericToken).ConfigureAwait(false),
                         Tag = strFileName
                     };
-                    treCharacters.Nodes.Add(objNode);
+                    await treCharacters.DoThreadSafeAsync(x => x.Nodes.Add(objNode), _objGenericToken).ConfigureAwait(false);
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                Interlocked.CompareExchange(ref _objPrinterCancellationTokenSource, null, objNewSource);
+                objNewSource.Dispose();
+                return;
+            }
 
-                if (_frmPrintView != null)
-                    await StartPrint();
+            if (_frmPrintView != null)
+            {
+                Task tskNew = Task.Run(() => DoPrint(objToken), objToken);
+                if (Interlocked.CompareExchange(ref _tskPrinter, tskNew, null) != null)
+                {
+                    Interlocked.CompareExchange(ref _objPrinterCancellationTokenSource, null, objNewSource);
+                    try
+                    {
+                        objNewSource.Cancel(false);
+                    }
+                    finally
+                    {
+                        objNewSource.Dispose();
+                    }
+                    try
+                    {
+                        await tskNew.ConfigureAwait(false);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        //swallow this
+                    }
+                }
+            }
+            else
+            {
+                Interlocked.CompareExchange(ref _objPrinterCancellationTokenSource, null, objNewSource);
+                objNewSource.Dispose();
             }
         }
 
         private async void cmdDelete_Click(object sender, EventArgs e)
         {
-            if (treCharacters.SelectedNode != null)
+            try
             {
-                await CancelPrint();
-                treCharacters.SelectedNode.Remove();
-                if (_frmPrintView != null)
-                    await StartPrint();
+                TreeNode objSelectedNode = await treCharacters
+                                                 .DoThreadSafeFuncAsync(x => x.SelectedNode, _objGenericToken)
+                                                 .ConfigureAwait(false);
+                if (objSelectedNode != null)
+                {
+                    CancellationTokenSource objNewSource = new CancellationTokenSource();
+                    CancellationToken objToken = objNewSource.Token;
+                    CancellationTokenSource objTemp = Interlocked.Exchange(ref _objPrinterCancellationTokenSource, objNewSource);
+                    if (objTemp?.IsCancellationRequested == false)
+                    {
+                        objTemp.Cancel(false);
+                        objTemp.Dispose();
+                    }
+                    Task tskOld = Interlocked.Exchange(ref _tskPrinter, null);
+                    if (tskOld?.IsCompleted == false)
+                    {
+                        try
+                        {
+                            await tskOld.ConfigureAwait(false);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            //swallow this
+                        }
+                    }
+                    try
+                    {
+                        await cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken).ConfigureAwait(false);
+                        await prgProgress.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken).ConfigureAwait(false);
+                        await treCharacters.DoThreadSafeAsync(() => objSelectedNode.Remove(), _objGenericToken).ConfigureAwait(false);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        Interlocked.CompareExchange(ref _objPrinterCancellationTokenSource, null, objNewSource);
+                        objNewSource.Dispose();
+                        return;
+                    }
+                    catch
+                    {
+                        Interlocked.CompareExchange(ref _objPrinterCancellationTokenSource, null, objNewSource);
+                        objNewSource.Dispose();
+                        throw;
+                    }
+
+                    if (_frmPrintView != null)
+                    {
+                        Task tskNew = Task.Run(() => DoPrint(objToken), objToken);
+                        if (Interlocked.CompareExchange(ref _tskPrinter, tskNew, null) != null)
+                        {
+                            Interlocked.CompareExchange(ref _objPrinterCancellationTokenSource, null, objNewSource);
+                            try
+                            {
+                                objNewSource.Cancel(false);
+                            }
+                            finally
+                            {
+                                objNewSource.Dispose();
+                            }
+                            try
+                            {
+                                await tskNew.ConfigureAwait(false);
+                            }
+                            catch (OperationCanceledException)
+                            {
+                                //swallow this
+                            }
+                        }
+                    }
+                    else
+                    {
+                        Interlocked.CompareExchange(ref _objPrinterCancellationTokenSource, null, objNewSource);
+                        objNewSource.Dispose();
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
         private async void cmdPrint_Click(object sender, EventArgs e)
         {
-            await StartPrint();
-        }
-
-        private async ValueTask CancelPrint()
-        {
-            _objPrinterCancellationTokenSource?.Cancel(false);
-            try
+            CancellationTokenSource objNewSource = new CancellationTokenSource();
+            CancellationToken objToken = objNewSource.Token;
+            CancellationTokenSource objTemp = Interlocked.Exchange(ref _objPrinterCancellationTokenSource, objNewSource);
+            if (objTemp?.IsCancellationRequested == false)
             {
-                if (_tskPrinter?.IsCompleted == false)
-                    await Task.WhenAll(_tskPrinter, cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = true),
-                                       prgProgress.DoThreadSafeAsync(() => prgProgress.Value = 0));
-                else
-                    await Task.WhenAll(cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = true),
-                                       prgProgress.DoThreadSafeAsync(() => prgProgress.Value = 0));
+                objTemp.Cancel(false);
+                objTemp.Dispose();
             }
-            catch (TaskCanceledException)
-            {
-                // Swallow this
-            }
-        }
-
-        private async ValueTask StartPrint()
-        {
-            await CancelPrint();
-            _objPrinterCancellationTokenSource?.Dispose();
-            _objPrinterCancellationTokenSource = new CancellationTokenSource();
-            _tskPrinter = Task.Run(DoPrint, _objPrinterCancellationTokenSource.Token);
-        }
-
-        private async Task DoPrint()
-        {
-            using (new CursorWait(this, true))
+            Task tskOld = Interlocked.Exchange(ref _tskPrinter, null);
+            if (tskOld?.IsCompleted == false)
             {
                 try
                 {
-                    await Task.WhenAll(cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = false),
-                        prgProgress.DoThreadSafeAsync(() =>
-                        {
-                            prgProgress.Value = 0;
-                            prgProgress.Maximum = treCharacters.Nodes.Count;
-                        }));
-                    Character[] lstCharacters = new Character[treCharacters.Nodes.Count];
-                    // Parallelized load because this is one major bottleneck.
-                    Parallel.For(0, lstCharacters.Length, (i, objState) =>
-                    {
-                        if (_objPrinterCancellationTokenSource.IsCancellationRequested ||
-                            objState.ShouldExitCurrentIteration)
-                        {
-                            if (!objState.IsStopped)
-                                objState.Stop();
-                            _objPrinterCancellationTokenSource?.Cancel(false);
-                            return;
-                        }
+                    await tskOld.ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
+            }
+            try
+            {
+                await cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken).ConfigureAwait(false);
+                await prgProgress.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                Interlocked.CompareExchange(ref _objPrinterCancellationTokenSource, null, objNewSource);
+                objNewSource.Dispose();
+                return;
+            }
+            catch
+            {
+                Interlocked.CompareExchange(ref _objPrinterCancellationTokenSource, null, objNewSource);
+                objNewSource.Dispose();
+                throw;
+            }
+            Task tskNew = Task.Run(() => DoPrint(objToken), objToken);
+            if (Interlocked.CompareExchange(ref _tskPrinter, tskNew, null) != null)
+            {
+                Interlocked.CompareExchange(ref _objPrinterCancellationTokenSource, null, objNewSource);
+                try
+                {
+                    objNewSource.Cancel(false);
+                }
+                finally
+                {
+                    objNewSource.Dispose();
+                }
+                try
+                {
+                    await tskNew.ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
+            }
+        }
 
-                        lstCharacters[i] = Program.MainForm.LoadCharacter(treCharacters.Nodes[i].Tag.ToString(), string.Empty, false, false, false);
-                        bool blnLoadSuccessful = lstCharacters[i] != null;
-                        if (_objPrinterCancellationTokenSource.IsCancellationRequested ||
-                            objState.ShouldExitCurrentIteration)
-                        {
-                            if (!objState.IsStopped)
-                                objState.Stop();
-                            _objPrinterCancellationTokenSource?.Cancel(false);
-                            return;
-                        }
+        private async Task DoPrint(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, true, token).ConfigureAwait(false);
+            try
+            {
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    int intNodesCount = await treCharacters.DoThreadSafeFuncAsync(x => x.Nodes.Count, token).ConfigureAwait(false);
+                    await cmdPrint.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
+                    await prgProgress.DoThreadSafeAsync(objBar =>
+                    {
+                        objBar.Value = 0;
+                        objBar.Maximum = intNodesCount;
+                    }, token).ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+                    // Parallelized load because this is one major bottleneck.
+                    Character[] lstCharacters = new Character[intNodesCount];
+                    Task<Character>[] tskLoadingTasks = new Task<Character>[intNodesCount];
+                    for (int i = 0; i < tskLoadingTasks.Length; ++i)
+                    {
+                        int i1 = i;
+                        string strLoopFile
+                            = await treCharacters.DoThreadSafeFuncAsync(x => x.Nodes[i1].Tag.ToString(), token).ConfigureAwait(false);
+                        tskLoadingTasks[i]
+                            = Task.Run(() => InnerLoad(strLoopFile, token), token);
+                    }
+
+                    async Task<Character> InnerLoad(string strLoopFile, CancellationToken innerToken = default)
+                    {
+                        innerToken.ThrowIfCancellationRequested();
+
+                        Character objReturn;
+                        using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                               = await Program.CreateAndShowProgressBarAsync(strLoopFile, Character.NumLoadingSections, token: innerToken).ConfigureAwait(false))
+                            objReturn = await Program.LoadCharacterAsync(
+                                strLoopFile, string.Empty, false, false, frmLoadingBar.MyForm, innerToken).ConfigureAwait(false);
+                        bool blnLoadSuccessful = objReturn != null;
+                        innerToken.ThrowIfCancellationRequested();
+
                         if (blnLoadSuccessful)
-                            prgProgress.DoThreadSafe(() => ++prgProgress.Value);
-                    });
-                    if (_objPrinterCancellationTokenSource.IsCancellationRequested)
-                        return;
-                    CleanUpOldCharacters();
-                    if (_objPrinterCancellationTokenSource.IsCancellationRequested)
-                        return;
+                            await prgProgress.DoThreadSafeAsync(x => ++x.Value, innerToken).ConfigureAwait(false);
+                        return objReturn;
+                    }
+
+                    await Task.WhenAll(tskLoadingTasks).ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+                    for (int i = 0; i < lstCharacters.Length; ++i)
+                        lstCharacters[i] = await tskLoadingTasks[i].ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+                    await CleanUpOldCharacters(token).ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
                     _aobjCharacters = lstCharacters;
 
                     if (_frmPrintView == null)
                     {
-                        await this.DoThreadSafeFunc(async () =>
+                        _frmPrintView = await this.DoThreadSafeFuncAsync(x =>
                         {
-                            _frmPrintView = new CharacterSheetViewer();
-                            await _frmPrintView.SetSelectedSheet("Game Master Summary");
-                            await _frmPrintView.SetCharacters(_aobjCharacters);
-                            _frmPrintView.Show();
-                        });
+                            CharacterSheetViewer objReturn = new CharacterSheetViewer();
+                            x.Disposed += (sender, args) => objReturn.Dispose();
+                            return objReturn;
+                        }, token).ConfigureAwait(false);
+                        await _frmPrintView.SetSelectedSheet("Game Master Summary", token).ConfigureAwait(false);
+                        await _frmPrintView.SetCharacters(token, _aobjCharacters).ConfigureAwait(false);
+                        await _frmPrintView.DoThreadSafeAsync(x => x.Show(), token).ConfigureAwait(false);
                     }
                     else
                     {
-                        await _frmPrintView.DoThreadSafeFunc(async () =>
-                        {
-                            await _frmPrintView.SetCharacters(_aobjCharacters);
-                            _frmPrintView.Activate();
-                        });
+                        await _frmPrintView.SetCharacters(token, _aobjCharacters).ConfigureAwait(false);
+                        await _frmPrintView.DoThreadSafeAsync(x => x.Activate(), token).ConfigureAwait(false);
                     }
                 }
                 finally
                 {
-                    await Task.WhenAll(cmdPrint.DoThreadSafeAsync(() => cmdPrint.Enabled = true),
-                        prgProgress.DoThreadSafeAsync(() => prgProgress.Value = 0));
+                    await cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
+                    await prgProgress.DoThreadSafeAsync(x => x.Value = 0, token).ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
-        private void CleanUpOldCharacters()
+        private async ValueTask CleanUpOldCharacters(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (!(_aobjCharacters?.Length > 0))
                 return;
             // Dispose of any characters who were previous loaded but are no longer needed and don't have any linked characters
             bool blnAnyChanges = true;
             while (blnAnyChanges)
             {
+                token.ThrowIfCancellationRequested();
                 blnAnyChanges = false;
                 foreach (Character objCharacter in _aobjCharacters)
                 {
-                    if (!Program.MainForm.OpenCharacters.Contains(objCharacter) ||
-                        Program.MainForm.OpenCharacterForms.Any(x => x.CharacterObject == objCharacter) ||
-                        Program.MainForm.OpenCharacters.Any(x => x.LinkedCharacters.Contains(objCharacter)))
+                    if (!await Program.OpenCharacters.ContainsAsync(objCharacter, token: token).ConfigureAwait(false)
+                        || await Program.OpenCharacters.AnyAsync(x => x.LinkedCharacters.Contains(objCharacter), token).ConfigureAwait(false)
+                        || Program.MainForm.OpenFormsWithCharacters.Any(x => x.CharacterObjects.Contains(objCharacter)))
                         continue;
                     blnAnyChanges = true;
-                    Program.MainForm.OpenCharacters.Remove(objCharacter);
-                    objCharacter.Dispose();
+                    await Program.OpenCharacters.RemoveAsync(objCharacter, token: token).ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
                 }
             }
         }

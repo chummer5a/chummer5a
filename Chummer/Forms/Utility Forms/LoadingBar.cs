@@ -19,6 +19,8 @@
 
 using System;
 using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -40,14 +42,13 @@ namespace Chummer
             get => _strCharacterFile;
             set
             {
-                if (_strCharacterFile == value)
+                if (Interlocked.Exchange(ref _strCharacterFile, value) == value)
                     return;
-                _strCharacterFile = value;
                 if (this.IsNullOrDisposed())
                     return;
                 string strDisplayText = string.Format(GlobalSettings.CultureInfo,
                     LanguageManager.GetString("String_Loading_Pattern"), value);
-                this.QueueThreadSafe(() => Text = strDisplayText);
+                this.DoThreadSafe(x => x.Text = strDisplayText);
             }
         }
 
@@ -68,12 +69,33 @@ namespace Chummer
             if (this.IsNullOrDisposed())
                 return;
             string strNewText = LanguageManager.GetString("String_Initializing");
-            lblLoadingInfo.QueueThreadSafe(() => lblLoadingInfo.Text = strNewText);
-            pgbLoadingProgress.DoThreadSafe(() =>
+            lblLoadingInfo.DoThreadSafe(x => x.Text = strNewText);
+            pgbLoadingProgress.DoThreadSafe(x =>
             {
-                pgbLoadingProgress.Value = 0;
-                pgbLoadingProgress.Maximum = intMaxProgressBarValue + 1;
+                x.Value = 0;
+                x.Maximum = intMaxProgressBarValue + 1;
             });
+            Utils.DoEventsSafe();
+        }
+
+        /// <summary>
+        /// Resets the ProgressBar
+        /// </summary>
+        /// <param name="intMaxProgressBarValue">New Maximum Value the ProgressBar should have.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        public async ValueTask ResetAsync(int intMaxProgressBarValue = 100, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (this.IsNullOrDisposed())
+                return;
+            string strTemp = await LanguageManager.GetStringAsync("String_Initializing", token: token).ConfigureAwait(false);
+            await lblLoadingInfo.DoThreadSafeAsync(x => x.Text = strTemp, token).ConfigureAwait(false);
+            await pgbLoadingProgress.DoThreadSafeAsync(x =>
+            {
+                x.Value = 0;
+                x.Maximum = intMaxProgressBarValue + 1;
+            }, token).ConfigureAwait(false);
+            Utils.DoEventsSafe();
         }
 
         /// <summary>
@@ -123,11 +145,85 @@ namespace Chummer
                 default:
                     throw new ArgumentOutOfRangeException(nameof(eUseTextPattern), eUseTextPattern, null);
             }
-            if (pgbLoadingProgress.Maximum > 2)
-                strNewText += LanguageManager.GetString("String_Space") + '(' + (pgbLoadingProgress.Value + 1).ToString(GlobalSettings.CultureInfo)
-                              + '/' + (pgbLoadingProgress.Maximum - 1).ToString(GlobalSettings.CultureInfo) + ')';
-            lblLoadingInfo.QueueThreadSafe(() => lblLoadingInfo.Text = strNewText);
-            pgbLoadingProgress.QueueThreadSafe(() => pgbLoadingProgress.PerformStep());
+
+            string strSpace = LanguageManager.GetString("String_Space");
+            pgbLoadingProgress.DoThreadSafe(x =>
+            {
+                int intLoadingMaximum = x.Maximum;
+                if (intLoadingMaximum > 2)
+                    strNewText += strSpace + '('
+                                           + (x.Value + 1).ToString(
+                                               GlobalSettings.CultureInfo)
+                                           + '/' + (intLoadingMaximum - 1).ToString(GlobalSettings.CultureInfo) + ')';
+                x.PerformStep();
+            });
+            lblLoadingInfo.DoThreadSafe(x => x.Text = strNewText);
+            Utils.DoEventsSafe();
+        }
+
+        /// <summary>
+        /// Performs a single step on the underlying ProgressBar
+        /// </summary>
+        /// <param name="strStepName">The text that the descriptive label above the ProgressBar should use, i.e. "Loading {strStepName}..."</param>
+        /// <param name="eUseTextPattern">The text pattern to use in combination with <paramref name="strStepName"/>, e.g. "Loading", "Saving", et al.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        public async ValueTask PerformStepAsync(string strStepName = "", ProgressBarTextPatterns eUseTextPattern = ProgressBarTextPatterns.Loading, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (this.IsNullOrDisposed())
+                return;
+            string strNewText;
+            switch (eUseTextPattern)
+            {
+                case ProgressBarTextPatterns.Saving:
+                    if (string.IsNullOrEmpty(strStepName))
+                        strNewText = await LanguageManager.GetStringAsync("String_Saving", token: token).ConfigureAwait(false);
+                    else
+                        strNewText = string.Format(GlobalSettings.CultureInfo,
+                                                   await LanguageManager.GetStringAsync("String_Saving_Pattern", token: token).ConfigureAwait(false),
+                                                   strStepName);
+                    break;
+                case ProgressBarTextPatterns.Loading:
+                    if (string.IsNullOrEmpty(strStepName))
+                        strNewText = await LanguageManager.GetStringAsync("String_Loading", token: token).ConfigureAwait(false);
+                    else
+                        strNewText = string.Format(GlobalSettings.CultureInfo,
+                                                   await LanguageManager.GetStringAsync("String_Loading_Pattern", token: token).ConfigureAwait(false),
+                                                   strStepName);
+                    break;
+                case ProgressBarTextPatterns.Scanning:
+                    if (string.IsNullOrEmpty(strStepName))
+                        strNewText = await LanguageManager.GetStringAsync("String_Scanning", token: token).ConfigureAwait(false);
+                    else
+                        strNewText = string.Format(GlobalSettings.CultureInfo,
+                                                   await LanguageManager.GetStringAsync("String_Scanning_Pattern", token: token).ConfigureAwait(false),
+                                                   strStepName);
+                    break;
+                case ProgressBarTextPatterns.Initializing:
+                    if (string.IsNullOrEmpty(strStepName))
+                        strNewText = await LanguageManager.GetStringAsync("String_Initializing", token: token).ConfigureAwait(false);
+                    else
+                        strNewText = string.Format(GlobalSettings.CultureInfo,
+                                                   await LanguageManager.GetStringAsync("String_Initializing_Pattern", token: token).ConfigureAwait(false),
+                                                   strStepName);
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException(nameof(eUseTextPattern), eUseTextPattern, null);
+            }
+
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            await pgbLoadingProgress.DoThreadSafeAsync(x =>
+            {
+                int intLoadingMaximum = x.Maximum;
+                if (intLoadingMaximum > 2)
+                    strNewText += strSpace + '('
+                                           + (x.Value + 1).ToString(
+                                               GlobalSettings.CultureInfo)
+                                           + '/' + (intLoadingMaximum - 1).ToString(GlobalSettings.CultureInfo) + ')';
+                x.PerformStep();
+            }, token).ConfigureAwait(false);
+            await lblLoadingInfo.DoThreadSafeAsync(x => x.Text = strNewText, token).ConfigureAwait(false);
+            Utils.DoEventsSafe();
         }
     }
 }

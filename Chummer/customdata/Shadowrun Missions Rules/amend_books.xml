@@ -71,16 +71,6 @@
       <!-- Shadowrun 2050 is for 5e in German, but 4e in English. So we need to hide it because we only have the 5e version in Chummer5a, which is German-only -->
       <hide />
     </book>
-    <book>
-      <name>No Future</name>
-      <!-- Note: this is for 6e only per SRM -->
-      <hide />
-    </book>
-    <book>
-      <name>Krime Katalog</name>
-      <!-- Note: this is for 6e only per SRM -->
-      <hide />
-    </book>
     <!-- End Region -->
     <!-- Region German (not specifically included in Missions FAQ) -->
     <book>

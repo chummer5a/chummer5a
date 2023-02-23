@@ -18,14 +18,24 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 
 namespace Chummer
 {
     public class CachedBindingList<T> : BindingList<T>
     {
-        public event EventHandler<RemovingOldEventArgs> BeforeRemove;
+        public virtual event EventHandler<RemovingOldEventArgs> BeforeRemove;
 
+        public CachedBindingList()
+        {
+        }
+
+        public CachedBindingList(IList<T> list) : base(list)
+        {
+        }
+
+        /// <inheritdoc />
         protected override void RemoveItem(int index)
         {
             if (RaiseListChangedEvents)
@@ -34,6 +44,7 @@ namespace Chummer
             base.RemoveItem(index);
         }
 
+        /// <inheritdoc />
         protected override void ClearItems()
         {
             if (RaiseListChangedEvents)
@@ -47,6 +58,7 @@ namespace Chummer
             base.ClearItems();
         }
 
+        /// <inheritdoc />
         protected override void SetItem(int index, T item)
         {
             if (RaiseListChangedEvents)

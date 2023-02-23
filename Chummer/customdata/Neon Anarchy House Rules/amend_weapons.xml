@@ -67,9 +67,7 @@
 			<useskill>Directed Energy</useskill>
 			<spec>Laser Weapons</spec>
 		</weapon>
-		<weapon xpathfilter="spec = 'Microwave'">
-			<useskill>Directed Energy</useskill>
-		</weapon>
+
 
 		<!-- Exotic Ballistic -->
 		<weapon>
@@ -325,5 +323,15 @@
 			<name>Onotari Arms Ballista MML</name>
 			<accuracy>5</accuracy>
 		</weapon>
+        
+<!---banned--->
+        <weapon>
+            <name>Microwave Gun, High Frequency</name>
+            <hide />
+        </weapon>
+        <weapon>
+        <name>Microwave Gun, Low Frequency</name>
+            <hide />
+        </weapon>
 	</weapons>
 </chummer>

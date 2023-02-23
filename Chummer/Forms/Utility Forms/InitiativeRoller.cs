@@ -33,16 +33,21 @@ namespace Chummer
             this.TranslateWinForm();
         }
 
-        private void InitiativeRoller_Load(object sender, EventArgs e)
+        private async void InitiativeRoller_Load(object sender, EventArgs e)
         {
-            lblDice.Text = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Label_LifestyleNuyen_ResultOf"), Dice);
-            nudDiceResult.Maximum = Dice * 6;
-            nudDiceResult.Minimum = Dice;
+            string strText = await LanguageManager.GetStringAsync("Label_LifestyleNuyen_ResultOf").ConfigureAwait(false);
+            await lblDice.DoThreadSafeAsync(x => x.Text = string.Format(GlobalSettings.CultureInfo, strText, Dice)).ConfigureAwait(false);
+            await nudDiceResult.DoThreadSafeAsync(x =>
+            {
+                x.Maximum = Dice * 6;
+                x.Minimum = Dice;
+            }).ConfigureAwait(false);
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.OK;
+            Close();
         }
 
         #endregion Control Events
@@ -57,7 +62,7 @@ namespace Chummer
         /// <summary>
         /// Dice roll result.
         /// </summary>
-        public int Result => nudDiceResult.ValueAsInt;
+        public int Result => nudDiceResult.DoThreadSafeFunc(x => x.ValueAsInt);
 
         #endregion Properties
     }

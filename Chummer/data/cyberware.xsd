@@ -93,7 +93,13 @@
                                         <xs:element name="blocksmounts" type="xs:string" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="addtoparentess" type="xs:string" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="requireparent" type="xs:string" minOccurs="1" maxOccurs="1" />
-                                        <xs:element name="nosecondhand" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="bannedgrades" minOccurs="0" maxOccurs="1">
+                                          <xs:complexType>
+                                            <xs:sequence>
+                                              <xs:element name ="grade" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+                                            </xs:sequence>
+                                          </xs:complexType>
+                                        </xs:element>
                                         <xs:element name="inheritattributes" type="xs:string" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="limbslot" type="xs:string" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="limbslotcount" type="xs:string" minOccurs="0" maxOccurs="1" />

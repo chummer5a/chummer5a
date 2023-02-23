@@ -19,7 +19,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Collections.Specialized;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Chummer
 {
@@ -37,48 +38,103 @@ namespace Chummer
         {
         }
 
-        private bool _blnSkipCollectionChanged;
-
-        /// <inheritdoc />
-        protected override void OnCollectionChanged(NotifyCollectionChangedEventArgs e)
+        /// <inheritdoc cref="List{T}.Insert" />
+        public override void Insert(int index, T item)
         {
-            using (new EnterUpgradeableReadLock(LockObject))
-            {
-                if (_blnSkipCollectionChanged)
-                    return;
-                if (e.Action == NotifyCollectionChangedAction.Reset)
-                {
-                    _blnSkipCollectionChanged = true;
-                    using (new EnterWriteLock(LockObject))
-                    {
-                        // Remove all duplicate entries
-                        for (int intLastIndex = Count - 1; intLastIndex >= 0; --intLastIndex)
-                        {
-                            T objItem = this[intLastIndex];
-                            for (int intIndex = IndexOf(objItem); intIndex != intLastIndex; intIndex = IndexOf(objItem))
-                            {
-                                RemoveAt(intIndex);
-                                --intLastIndex;
-                            }
-                        }
-                    }
-                    _blnSkipCollectionChanged = false;
-                }
-            }
-            base.OnCollectionChanged(e);
-        }
-
-        /// <inheritdoc />
-        protected override void InsertItem(int index, T item)
-        {
-            // Immediately enter a write lock to prevent attempted reads until we have either inserted the item we want to insert or failed to do so
-            using (new EnterWriteLock(LockObject))
+            using (LockObject.EnterWriteLock())
             {
                 int intExistingIndex = IndexOf(item);
                 if (intExistingIndex == -1)
-                    base.InsertItem(index, item);
+                    base.Insert(index, item);
                 else
-                    MoveItem(intExistingIndex, Math.Min(index, Count - 1));
+                    Move(intExistingIndex, Math.Min(index, Count - 1));
+            }
+        }
+
+        /// <inheritdoc cref="List{T}.Insert" />
+        public override async ValueTask InsertAsync(int index, T item, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                int intExistingIndex = await IndexOfAsync(item, token).ConfigureAwait(false);
+                if (intExistingIndex == -1)
+                    await base.InsertAsync(index, item, token).ConfigureAwait(false);
+                else
+                    await MoveAsync(intExistingIndex, Math.Min(index, await GetCountAsync(token).ConfigureAwait(false) - 1), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public override int Add(object value)
+        {
+            using (LockObject.EnterWriteLock())
+            {
+                int intExistingIndex = IndexOf(value);
+                if (intExistingIndex == -1)
+                    return base.Add(value);
+                int intNewIndex = Count - 1;
+                Move(intExistingIndex, intNewIndex);
+                return intNewIndex;
+            }
+        }
+
+        /// <inheritdoc />
+        public override void Add(T item)
+        {
+            using (LockObject.EnterWriteLock())
+            {
+                int intExistingIndex = IndexOf(item);
+                if (intExistingIndex == -1)
+                    base.Add(item);
+                else
+                    Move(intExistingIndex, Count - 1);
+            }
+        }
+
+        public override async ValueTask AddAsync(T item, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                int intExistingIndex = await IndexOfAsync(item, token).ConfigureAwait(false);
+                if (intExistingIndex == -1)
+                    await base.AddAsync(item, token).ConfigureAwait(false);
+                else
+                    await MoveAsync(intExistingIndex, await GetCountAsync(token).ConfigureAwait(false) - 1, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <inheritdoc />
+        public override bool TryAdd(T item)
+        {
+            using (LockObject.EnterWriteLock())
+            {
+                int intExistingIndex = IndexOf(item);
+                if (intExistingIndex == -1)
+                    return base.TryAdd(item);
+                Move(intExistingIndex, Count - 1);
+                return true;
+            }
+        }
+
+        /// <inheritdoc />
+        public override async ValueTask<bool> TryAddAsync(T item, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                int intExistingIndex = await IndexOfAsync(item, token).ConfigureAwait(false);
+                if (intExistingIndex == -1)
+                    return await base.TryAddAsync(item, token).ConfigureAwait(false);
+                await MoveAsync(intExistingIndex, await GetCountAsync(token).ConfigureAwait(false) - 1, token).ConfigureAwait(false);
+                return true;
             }
         }
     }

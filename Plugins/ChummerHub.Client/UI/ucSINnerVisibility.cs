@@ -1,3 +1,21 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
 using System.Collections.Generic;
 using System.Windows.Forms;
@@ -11,7 +29,8 @@ namespace ChummerHub.Client.UI
 {
     public partial class ucSINnerVisibility : UserControl
     {
-        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
         private SINnerVisibility _mySINnerVisibility;
         public SINnerVisibility MyVisibility
         {
@@ -100,7 +119,7 @@ namespace ChummerHub.Client.UI
                 }
             }
             else
-                Program.MainForm.ShowMessageBox("No email selected!");
+                Program.ShowMessageBox("No email selected!");
         }
 
         private void bVisibilityRemove_Click(object sender, EventArgs e)
@@ -119,7 +138,7 @@ namespace ChummerHub.Client.UI
                 FillVisibilityListBox();
             }
             else
-                Program.MainForm.ShowMessageBox("No email selected!");
+                Program.ShowMessageBox("No email selected!");
         }
 
         private void CbVisibleInGroups_Click(object sender, EventArgs e)

@@ -1,7 +1,27 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
 using System.Collections.Generic;
 using System.Reflection;
+using System.Threading;
 using System.Threading.Tasks;
+using System.Windows.Forms;
 using Chummer;
 using Chummer.Plugins;
 using Newtonsoft.Json;
@@ -11,8 +31,9 @@ namespace SamplePlugin
 {
     public class MySamplePlugin : IPlugin
     {
-        //Just use NLog, like we all do... or don'T and implement your own logging...
-        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        //Just use NLog, like we all do... or don't and implement your own logging...
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
 
         //If you want this plugin NOT to be visible with the default "SamplePlugin.MySamplePlugin"
         public override string ToString()
@@ -51,25 +72,28 @@ namespace SamplePlugin
             GC.SuppressFinalize(this);
         }
 
-        public async Task<bool> DoCharacterList_DragDrop(object sender, System.Windows.Forms.DragEventArgs dragEventArgs, System.Windows.Forms.TreeView treCharacterList)
+        public Task<bool> DoCharacterList_DragDrop(object sender, DragEventArgs dragEventArgs, TreeView treCharacterList, CancellationToken token = default)
         {
             //if we don't want to use the dragdrop-feature, just return true
-            return true;
+            // If you do this all synchronously, just make sure you return the final result wrapped in a task
+            return Task.FromResult(true);
         }
 
-        public async Task<ICollection<System.Windows.Forms.TreeNode>> GetCharacterRosterTreeNode(CharacterRoster frmCharRoster, bool forceUpdate)
+        public Task<ICollection<TreeNode>> GetCharacterRosterTreeNode(CharacterRoster frmCharRoster, bool forceUpdate, CancellationToken token = default)
         {
             //here you can add nodes to the character roster.
-            return null;
+            // If you do this all synchronously, just make sure you return the final result wrapped in a task
+            return Task.FromResult<ICollection<TreeNode>>(null);
         }
 
-        public IEnumerable<System.Windows.Forms.ToolStripMenuItem> GetMenuItems(System.Windows.Forms.ToolStripMenuItem menu)
+        public Task<ICollection<ToolStripMenuItem>> GetMenuItems(ToolStripMenuItem menu, CancellationToken token = default)
         {
             //here you could add menu items to the chummer menu
-            yield break;
+            // If you do this all synchronously, just make sure you return the final result wrapped in a task
+            return Task.FromResult<ICollection<ToolStripMenuItem>>(null);
         }
 
-        public System.Windows.Forms.UserControl GetOptionsControl()
+        public UserControl GetOptionsControl()
         {
             try
             {
@@ -89,7 +113,7 @@ namespace SamplePlugin
             {
                 //this is the first thing needed for reflection in Chummer Main. Please don't return null, but your assembly
                 //that is probably bad coding AND we should change it, but for now, just stick with it...
-                return this.GetType().Assembly;
+                return GetType().Assembly;
             }
             catch (Exception e)
             {
@@ -105,7 +129,7 @@ namespace SamplePlugin
                 //here you can inject your own string in every chummer save file. Preferable as json, so you can
                 //a) distingish it from the main chummer elements in xml
                 //b) actually use it ;)
-                var savesetting = "This Char was saved with the SamplePlugin enabled!";
+                string savesetting = "This Char was saved with the SamplePlugin enabled!";
                 return JsonConvert.SerializeObject(savesetting, Formatting.Indented);
             }
             catch (Exception e)
@@ -115,17 +139,18 @@ namespace SamplePlugin
             return null;
         }
 
-        public IEnumerable<System.Windows.Forms.TabPage> GetTabPages(CharacterCareer input)
+        public Task<ICollection<TabPage>> GetTabPages(CharacterCareer input, CancellationToken token = default)
         {
             //here you can add (or remove!) tabs from frmCareer
             //as well as manipulate every single tab
-            yield break;
+            // If you do this all synchronously, just make sure you return the final result wrapped in a task
+            return Task.FromResult<ICollection<TabPage>>(null);
         }
 
-        public IEnumerable<System.Windows.Forms.TabPage> GetTabPages(CharacterCreate input)
+        public Task<ICollection<TabPage>> GetTabPages(CharacterCreate input, CancellationToken token = default)
         {
             //the same goes for the frmCreate
-            yield break;
+            return Task.FromResult<ICollection<TabPage>>(null);
         }
 
         public void LoadFileElement(Character input, string fileElement)
@@ -142,7 +167,7 @@ namespace SamplePlugin
             return true;
         }
 
-        public bool SetCharacterRosterNode(System.Windows.Forms.TreeNode objNode)
+        public bool SetCharacterRosterNode(TreeNode objNode)
         {
             //here you can tweak the nodes from the char-roster. Add onclickevents, change texts, reorder them - whatever you want...
 

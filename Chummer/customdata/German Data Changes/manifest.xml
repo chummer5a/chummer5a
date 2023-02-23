@@ -19,11 +19,15 @@
 -->
 <manifest>
   <guid>b422724d-42d5-4ef4-bbb3-9dfa3c40cb61</guid>
-  <version>1</version>
+  <version>1.0.1</version>
   <authors>
     <author>
       <name>chummer5a</name>
       <main>true</main>
+    </author>
+    <author>
+      <name>Joschi</name>
+      <main>false</main>
     </author>
   </authors>
   <descriptions>

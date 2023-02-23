@@ -1,8 +1,25 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
 using Chummer;
 using ChummerHub.Client.Sinners;
 using PropertyInfo = System.Reflection.PropertyInfo;
@@ -40,7 +57,7 @@ namespace ChummerHub.Client.Backend
                             if (!string.IsNullOrEmpty(classprop.ListInstanceNameFromProperty))
                             {
                                 tag.TagName = classprop.ListInstanceNameFromProperty;
-                                PropertyInfo childprop = obj.GetType().GetProperties().FirstOrDefault(x => x.Name == classprop.ListInstanceNameFromProperty);
+                                PropertyInfo childprop = obj.GetType().GetProperties().Find(x => x.Name == classprop.ListInstanceNameFromProperty);
                                 if (childprop == null)
                                     throw new ArgumentOutOfRangeException("Could not find property " + classprop.ListInstanceNameFromProperty + " on instance of type " + obj.GetType() + ".");
                                 tag.TagValue += childprop.GetValue(obj);
@@ -75,7 +92,7 @@ namespace ChummerHub.Client.Backend
                             if (!string.IsNullOrEmpty(classprop.ListInstanceNameFromProperty))
                             {
                                 tag.TagName = classprop.ListInstanceNameFromProperty;
-                                PropertyInfo childprop = item.GetType().GetProperties().FirstOrDefault(x => x.Name == classprop.ListInstanceNameFromProperty);
+                                PropertyInfo childprop = item.GetType().GetProperties().Find(x => x.Name == classprop.ListInstanceNameFromProperty);
                                 if (childprop == null)
                                     throw new ArgumentOutOfRangeException("Could not find property " + classprop.ListInstanceNameFromProperty + " on instance of type " + item.GetType() + ".");
                                 tag.TagValue += childprop.GetValue(item);
@@ -112,10 +129,14 @@ namespace ChummerHub.Client.Backend
             PropertyInfo[] aPropertyInfos = objPropertyHaver.GetType().GetProperties();
             foreach(string includeprop in objPropertyFilterAttribute.ListExtraProperties)
             {
-                PropertyInfo propfound = aPropertyInfos.FirstOrDefault(x => x.Name == includeprop);
+                PropertyInfo propfound = aPropertyInfos.Find(x => x.Name == includeprop);
                 if(propfound == null)
                 {
-                    throw new ArgumentOutOfRangeException("Could not find property " + includeprop + " on instance of type " + objPropertyHaver.GetType() + ".");
+                    //sometimes we simply don't have a specialication (for example)
+                    if (includeprop == "Specialization")
+                        continue;
+                    throw new ArgumentOutOfRangeException("Could not find property " + includeprop + " on instance of type " + objPropertyHaver.GetType() + " with name "+ objPropertyHaver.ToString()+".");
+
                 }
                 object includeInstance = propfound.GetValue(objPropertyHaver);
                 if(includeInstance != null && !string.IsNullOrEmpty(includeInstance.ToString()))

@@ -27,12 +27,11 @@ namespace Chummer
 {
     public class CustomTelemetryInitializer : ITelemetryInitializer
     {
-       
-        private static Logger Log { get; } = LogManager.GetCurrentClassLogger();
+        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
+        private static Logger Log => s_ObjLogger.Value;
 
         // Set session data:
         //private static string Hostname =  Dns.GetHostName();
-
 
         [CLSCompliant(false)]
         public void Initialize(ITelemetry telemetry)
@@ -52,7 +51,7 @@ namespace Chummer
                 Properties.Settings.Default.Save();
             }
             else
-            { 
+            {
                 //sometimes, there are odd values stored in the UploadClientId.
                 if (!Properties.Settings.Default.UploadClientId.ToString().IsGuid())
                 {
@@ -66,8 +65,6 @@ namespace Chummer
             telemetry.Context.Session.Id = Properties.Settings.Default.UploadClientId.ToString();
             telemetry.Context.User.Id = Properties.Settings.Default.UploadClientId.ToString();
 
-
-       
             telemetry.Context.Component.Version = Utils.CurrentChummerVersion.ToString();
 
             if (System.Diagnostics.Debugger.IsAttached)

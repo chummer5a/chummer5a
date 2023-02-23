@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Chummer.Annotations;
 
@@ -94,11 +95,12 @@ namespace Chummer
         /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The result of a StringBuilder::Replace() method if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ValueTask<StringBuilder> CheapReplaceAsync([NotNull] this StringBuilder sbdInput, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
+        public static ValueTask<StringBuilder> CheapReplaceAsync([NotNull] this StringBuilder sbdInput, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal, CancellationToken token = default)
         {
-            return sbdInput.CheapReplaceAsync(sbdInput.ToString(), strOldValue, funcNewValueFactory, eStringComparison);
+            return sbdInput.CheapReplaceAsync(sbdInput.ToString(), strOldValue, funcNewValueFactory, eStringComparison, token: token);
         }
 
         /// <summary>
@@ -110,30 +112,104 @@ namespace Chummer
         /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The result of a StringBuilder::Replace() method if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async ValueTask<StringBuilder> CheapReplaceAsync([NotNull] this StringBuilder sbdInput, string strOriginal, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
+        public static async ValueTask<StringBuilder> CheapReplaceAsync([NotNull] this StringBuilder sbdInput, string strOriginal, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (sbdInput.Length > 0 && !string.IsNullOrEmpty(strOriginal) && funcNewValueFactory != null)
             {
+                token.ThrowIfCancellationRequested();
                 if (eStringComparison == StringComparison.Ordinal)
                 {
                     if (strOriginal.Contains(strOldValue))
                     {
+                        token.ThrowIfCancellationRequested();
                         string strFactoryResult = string.Empty;
-                        await Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke, x => strFactoryResult = funcNewValueFactory.EndInvoke(x), null);
+                        using (CancellationTokenTaskSource<string> objCancellationTokenTaskSource
+                               = new CancellationTokenTaskSource<string>(token))
+                        {
+                            await Task.WhenAny(Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke,
+                                                                      x => strFactoryResult
+                                                                          = funcNewValueFactory.EndInvoke(x),
+                                                                      null), objCancellationTokenTaskSource.Task).ConfigureAwait(false);
+                        }
+                        token.ThrowIfCancellationRequested();
                         sbdInput.Replace(strOldValue, strFactoryResult);
                     }
                 }
                 else if (strOriginal.IndexOf(strOldValue, eStringComparison) != -1)
                 {
+                    token.ThrowIfCancellationRequested();
                     string strFactoryResult = string.Empty;
-                    Task<string> tskGetValue = Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke,
-                                                                      x => strFactoryResult = funcNewValueFactory.EndInvoke(x), null);
+                    string strOldStringBuilderValue;
+                    using (CancellationTokenTaskSource<string> objCancellationTokenTaskSource
+                           = new CancellationTokenTaskSource<string>(token))
+                    {
+                        Task<string> tskGetValue = Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke,
+                                                                          x => strFactoryResult
+                                                                              = funcNewValueFactory.EndInvoke(x), null);
+                        strOldStringBuilderValue = sbdInput.ToString();
+                        sbdInput.Clear();
+                        await Task.WhenAny(tskGetValue, objCancellationTokenTaskSource.Task).ConfigureAwait(false);
+                    }
+                    token.ThrowIfCancellationRequested();
+                    sbdInput.Append(
+                            strOldStringBuilderValue.Replace(strOldValue, strFactoryResult, eStringComparison));
+                }
+            }
+
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Like StringBuilder::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
+        /// </summary>
+        /// <param name="sbdInput">Base StringBuilder in which the replacing takes place.</param>
+        /// <param name="strOriginal">Original string around which StringBuilder was created. Set this so that StringBuilder::ToString() doesn't need to be called.</param>
+        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
+        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The result of a StringBuilder::Replace() method if a replacement is made, the original string otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async ValueTask<StringBuilder> CheapReplaceAsync([NotNull] this StringBuilder sbdInput, string strOriginal, string strOldValue, Func<Task<string>> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (sbdInput.Length > 0 && !string.IsNullOrEmpty(strOriginal) && funcNewValueFactory != null)
+            {
+                token.ThrowIfCancellationRequested();
+                if (eStringComparison == StringComparison.Ordinal)
+                {
+                    if (strOriginal.Contains(strOldValue))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        Task<string> tskReplaceTask = funcNewValueFactory.Invoke();
+                        using (CancellationTokenTaskSource<string> objCancellationTokenTaskSource
+                               = new CancellationTokenTaskSource<string>(token))
+                        {
+                            await Task.WhenAny(tskReplaceTask, objCancellationTokenTaskSource.Task).ConfigureAwait(false);
+                        }
+                        token.ThrowIfCancellationRequested();
+                        sbdInput.Replace(strOldValue, await tskReplaceTask.ConfigureAwait(false));
+                    }
+                }
+                else if (strOriginal.IndexOf(strOldValue, eStringComparison) != -1)
+                {
+                    token.ThrowIfCancellationRequested();
+                    Task<string> tskReplaceTask = funcNewValueFactory.Invoke();
                     string strOldStringBuilderValue = sbdInput.ToString();
                     sbdInput.Clear();
-                    await tskGetValue;
-                    sbdInput.Append(strOldStringBuilderValue.Replace(strOldValue, strFactoryResult, eStringComparison));
+                    token.ThrowIfCancellationRequested();
+                    using (CancellationTokenTaskSource<string> objCancellationTokenTaskSource
+                           = new CancellationTokenTaskSource<string>(token))
+                    {
+                        await Task.WhenAny(tskReplaceTask, objCancellationTokenTaskSource.Task).ConfigureAwait(false);
+                    }
+                    token.ThrowIfCancellationRequested();
+                    sbdInput.Append(strOldStringBuilderValue.Replace(strOldValue, await tskReplaceTask.ConfigureAwait(false), eStringComparison));
                 }
             }
 
@@ -209,10 +285,9 @@ namespace Chummer
                 throw new ArgumentOutOfRangeException(nameof(intStartIndex));
             for (int i = 0; i < intCount; ++i)
             {
-                string strLoop = astrValues[i + intStartIndex];
                 if (i > 0)
                     sbdInput.Append(strSeparator);
-                sbdInput.Append(strLoop);
+                sbdInput.Append(astrValues[i + intStartIndex]);
             }
             return sbdInput;
         }
@@ -231,10 +306,9 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(astrValues));
             for (int i = 0; i < astrValues.Length; ++i)
             {
-                string strLoop = astrValues[i];
                 if (i > 0)
                     sbdInput.Append(strSeparator);
-                sbdInput.Append(strLoop);
+                sbdInput.Append(astrValues[i]);
             }
             return sbdInput;
         }
@@ -253,10 +327,9 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(aobjValues));
             for (int i = 0; i < aobjValues.Length; ++i)
             {
-                string strLoop = aobjValues[i].ToString();
                 if (i > 0)
                     sbdInput.Append(strSeparator);
-                sbdInput.Append(strLoop);
+                sbdInput.Append(aobjValues[i]);
             }
             return sbdInput;
         }
@@ -330,9 +403,9 @@ namespace Chummer
                 throw new ArgumentOutOfRangeException(nameof(intStartIndex));
             for (int i = 0; i < intCount; ++i)
             {
-                string strLoop = astrValues[i + intStartIndex];
                 if (i > 0)
                     sbdInput.Append(chrSeparator);
+                string strLoop = astrValues[i + intStartIndex];
                 sbdInput.Append(strLoop);
             }
             return sbdInput;
@@ -352,9 +425,9 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(astrValues));
             for (int i = 0; i < astrValues.Length; ++i)
             {
-                string strLoop = astrValues[i];
                 if (i > 0)
                     sbdInput.Append(chrSeparator);
+                string strLoop = astrValues[i];
                 sbdInput.Append(strLoop);
             }
             return sbdInput;
@@ -378,6 +451,271 @@ namespace Chummer
                 if (i > 0)
                     sbdInput.Append(chrSeparator);
                 sbdInput.Append(strLoop);
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Combination of StringBuilder::Append() and static string::Join(), appending a list of strings with a separator.
+        /// </summary>
+        /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
+        /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
+        /// <param name="lstValues">A collection that contains the strings to append.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns><paramref name="sbdInput" /> with values appended.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<StringBuilder> AppendJoinAsync<T>([NotNull] this StringBuilder sbdInput, string strSeparator, IEnumerable<Task<T>> lstValues, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (lstValues == null)
+                throw new ArgumentNullException(nameof(lstValues));
+            bool blnFirst = true;
+            foreach (Task<T> tskValue in lstValues)
+            {
+                token.ThrowIfCancellationRequested();
+                if (!blnFirst)
+                    sbdInput.Append(strSeparator);
+                sbdInput.Append(await tskValue.ConfigureAwait(false));
+                blnFirst = false;
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Combination of StringBuilder::Append() and static string::Join(), appending a list of strings with a separator.
+        /// </summary>
+        /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
+        /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
+        /// <param name="lstValues">A collection that contains the strings to append.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns><paramref name="sbdInput" /> with values appended.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<StringBuilder> AppendJoinAsync([NotNull] this StringBuilder sbdInput, string strSeparator, IEnumerable<Task<string>> lstValues, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (lstValues == null)
+                throw new ArgumentNullException(nameof(lstValues));
+            bool blnFirst = true;
+            foreach (Task<string> tskValue in lstValues)
+            {
+                token.ThrowIfCancellationRequested();
+                if (!blnFirst)
+                    sbdInput.Append(strSeparator);
+                sbdInput.Append(await tskValue.ConfigureAwait(false));
+                blnFirst = false;
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
+        /// </summary>
+        /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
+        /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
+        /// <param name="astrValues">An array that contains the string to append.</param>
+        /// <param name="intStartIndex">The first element in <paramref name="astrValues" /> to use.</param>
+        /// <param name="intCount">The number of elements of <paramref name="astrValues" /> to use.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns><paramref name="sbdInput" /> with values appended.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<StringBuilder> AppendJoinAsync([NotNull] this StringBuilder sbdInput, string strSeparator, Task<string>[] astrValues, int intStartIndex, int intCount, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (astrValues == null)
+                throw new ArgumentNullException(nameof(astrValues));
+            if (intStartIndex < 0)
+                throw new ArgumentOutOfRangeException(nameof(intStartIndex));
+            if (intCount < 0)
+                throw new ArgumentOutOfRangeException(nameof(intCount));
+            if (intStartIndex + intCount >= astrValues.Length)
+                throw new ArgumentOutOfRangeException(nameof(intStartIndex));
+            for (int i = 0; i < intCount; ++i)
+            {
+                token.ThrowIfCancellationRequested();
+                if (i > 0)
+                    sbdInput.Append(strSeparator);
+                sbdInput.Append(await astrValues[i + intStartIndex].ConfigureAwait(false));
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
+        /// </summary>
+        /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
+        /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
+        /// <param name="astrValues">An array that contains the string to append.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns><paramref name="sbdInput" /> with values appended.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<StringBuilder> AppendJoinAsync([NotNull] this StringBuilder sbdInput, string strSeparator, CancellationToken token = default, params Task<string>[] astrValues)
+        {
+            token.ThrowIfCancellationRequested();
+            if (astrValues == null)
+                throw new ArgumentNullException(nameof(astrValues));
+            for (int i = 0; i < astrValues.Length; ++i)
+            {
+                token.ThrowIfCancellationRequested();
+                if (i > 0)
+                    sbdInput.Append(strSeparator);
+                sbdInput.Append(await astrValues[i].ConfigureAwait(false));
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
+        /// </summary>
+        /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
+        /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
+        /// <param name="aobjValues">An array that contains the objects to append.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns><paramref name="sbdInput" /> with values appended.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<StringBuilder> AppendJoinAsync([NotNull] this StringBuilder sbdInput, string strSeparator, CancellationToken token = default, params Task<object>[] aobjValues)
+        {
+            token.ThrowIfCancellationRequested();
+            if (aobjValues == null)
+                throw new ArgumentNullException(nameof(aobjValues));
+            for (int i = 0; i < aobjValues.Length; ++i)
+            {
+                token.ThrowIfCancellationRequested();
+                if (i > 0)
+                    sbdInput.Append(strSeparator);
+                sbdInput.Append(await aobjValues[i].ConfigureAwait(false));
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Combination of StringBuilder::Append() and static string::Join(), appending a list of strings with a separator.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
+        /// <param name="chrSeparator">The char to use as a separator. <paramref name="chrSeparator" /> is included in the returned string only if value has more than one element.</param>
+        /// <param name="lstValues">A collection that contains the objects to append.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns><paramref name="sbdInput" /> with values appended.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<StringBuilder> AppendJoinAsync<T>([NotNull] this StringBuilder sbdInput, char chrSeparator, IEnumerable<Task<T>> lstValues, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (lstValues == null)
+                throw new ArgumentNullException(nameof(lstValues));
+            bool blnFirst = true;
+            foreach (Task<T> tskValue in lstValues)
+            {
+                token.ThrowIfCancellationRequested();
+                if (!blnFirst)
+                    sbdInput.Append(chrSeparator);
+                sbdInput.Append(await tskValue.ConfigureAwait(false));
+                blnFirst = false;
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Combination of StringBuilder::Append() and static string::Join(), appending a list of strings with a separator.
+        /// </summary>
+        /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
+        /// <param name="chrSeparator">The char to use as a separator. <paramref name="chrSeparator" /> is included in the returned string only if value has more than one element.</param>
+        /// <param name="lstValues">A collection that contains the strings to append.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns><paramref name="sbdInput" /> with values appended.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<StringBuilder> AppendJoinAsync([NotNull] this StringBuilder sbdInput, char chrSeparator, IEnumerable<Task<string>> lstValues, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (lstValues == null)
+                throw new ArgumentNullException(nameof(lstValues));
+            bool blnFirst = true;
+            foreach (Task<string> tskValue in lstValues)
+            {
+                token.ThrowIfCancellationRequested();
+                if (!blnFirst)
+                    sbdInput.Append(chrSeparator);
+                sbdInput.Append(await tskValue.ConfigureAwait(false));
+                blnFirst = false;
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
+        /// </summary>
+        /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
+        /// <param name="chrSeparator">The char to use as a separator. <paramref name="chrSeparator" /> is included in the returned string only if value has more than one element.</param>
+        /// <param name="astrValues">An array that contains the string to append.</param>
+        /// <param name="intStartIndex">The first element in <paramref name="astrValues" /> to use.</param>
+        /// <param name="intCount">The number of elements of <paramref name="astrValues" /> to use.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns><paramref name="sbdInput" /> with values appended.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<StringBuilder> AppendJoinAsync([NotNull] this StringBuilder sbdInput, char chrSeparator, Task<string>[] astrValues, int intStartIndex, int intCount, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (astrValues == null)
+                throw new ArgumentNullException(nameof(astrValues));
+            if (intStartIndex < 0)
+                throw new ArgumentOutOfRangeException(nameof(intStartIndex));
+            if (intCount < 0)
+                throw new ArgumentOutOfRangeException(nameof(intCount));
+            if (intStartIndex + intCount >= astrValues.Length)
+                throw new ArgumentOutOfRangeException(nameof(intStartIndex));
+            for (int i = 0; i < intCount; ++i)
+            {
+                token.ThrowIfCancellationRequested();
+                if (i > 0)
+                    sbdInput.Append(chrSeparator);
+                sbdInput.Append(await astrValues[i + intStartIndex].ConfigureAwait(false));
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
+        /// </summary>
+        /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
+        /// <param name="chrSeparator">The char to use as a separator. <paramref name="chrSeparator" /> is included in the returned string only if value has more than one element.</param>
+        /// <param name="astrValues">An array that contains the string to append.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns><paramref name="sbdInput" /> with values appended.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<StringBuilder> AppendJoinAsync([NotNull] this StringBuilder sbdInput, char chrSeparator, CancellationToken token = default, params Task<string>[] astrValues)
+        {
+            token.ThrowIfCancellationRequested();
+            if (astrValues == null)
+                throw new ArgumentNullException(nameof(astrValues));
+            for (int i = 0; i < astrValues.Length; ++i)
+            {
+                token.ThrowIfCancellationRequested();
+                if (i > 0)
+                    sbdInput.Append(chrSeparator);
+                sbdInput.Append(await astrValues[i].ConfigureAwait(false));
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
+        /// </summary>
+        /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
+        /// <param name="chrSeparator">The char to use as a separator. <paramref name="chrSeparator" /> is included in the returned string only if value has more than one element.</param>
+        /// <param name="aobjValues">An array that contains the objects to append.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns><paramref name="sbdInput" /> with values appended.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<StringBuilder> AppendJoinAsync([NotNull] this StringBuilder sbdInput, char chrSeparator, CancellationToken token = default, params Task<object>[] aobjValues)
+        {
+            token.ThrowIfCancellationRequested();
+            if (aobjValues == null)
+                throw new ArgumentNullException(nameof(aobjValues));
+            for (int i = 0; i < aobjValues.Length; ++i)
+            {
+                token.ThrowIfCancellationRequested();
+                if (i > 0)
+                    sbdInput.Append(chrSeparator);
+                sbdInput.Append(await aobjValues[i].ConfigureAwait(false));
             }
             return sbdInput;
         }

@@ -30,11 +30,12 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Chummer
 {
-    public sealed class NumericUpDownEx : NumericUpDown
+    public class NumericUpDownEx : NumericUpDown
     {
         // reference to the underlying TextBox control
         private readonly TextBox _textbox;
@@ -64,7 +65,6 @@ namespace Chummer
             {
                 throw new ArgumentNullException(GetType().FullName, "Can't find internal TextBox field.");
             }
-            DoubleBuffered = true;
             // add handlers (MouseEnter and MouseLeave events of NumericUpDown
             // are not working properly)
             _textbox.MouseEnter += _mouseEnterLeave;
@@ -80,7 +80,7 @@ namespace Chummer
             DpiChangedAfterParent += OnMarginChanged;
         }
 
-        private bool _blnSkipOnMarginChanged;
+        private int _intSkipOnMarginChanged;
         private float _fltMyDpiX = 96.0f;
         private float _fltMyDpiY = 96.0f;
         private Padding _objSavedMargins;
@@ -88,7 +88,7 @@ namespace Chummer
 
         private void OnMarginChanged(object sender, EventArgs e)
         {
-            if (_blnSkipOnMarginChanged)
+            if (_intSkipOnMarginChanged > 0)
                 return;
             try
             {
@@ -100,8 +100,8 @@ namespace Chummer
                     {
                         if (_blnMarginsSaved)
                         {
-                            _blnSkipOnMarginChanged = true;
-                            this.DoThreadSafe(() => Margin = _objSavedMargins);
+                            Interlocked.Increment(ref _intSkipOnMarginChanged);
+                            Margin = _objSavedMargins;
                         }
                         return;
                     }
@@ -119,14 +119,14 @@ namespace Chummer
                         (Margin.Bottom * _fltMyDpiY / fltOldDpiY).StandardRound());
                     if (objNewMargins.Equals(Margin))
                         return;
-                    _blnSkipOnMarginChanged = true;
-                    this.DoThreadSafe(() => Margin = objNewMargins);
+                    Interlocked.Increment(ref _intSkipOnMarginChanged);
+                    Margin = objNewMargins;
                 }
             }
             finally
             {
                 _objSavedMargins = Margin;
-                _blnSkipOnMarginChanged = false;
+                Interlocked.Decrement(ref _intSkipOnMarginChanged);
                 _blnMarginsSaved = true;
             }
         }
@@ -270,9 +270,9 @@ namespace Chummer
             get => _showUpDownButtons;
             set
             {
-                _showUpDownButtons = value;
-                // update UpDownButtons visibility
-                UpdateUpDownButtonsVisibility();
+                if (InterlockedExtensions.Exchange(ref _showUpDownButtons, value) != value)
+                    // update UpDownButtons visibility
+                    UpdateUpDownButtonsVisibility();
             }
         }
 

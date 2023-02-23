@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
@@ -32,7 +33,8 @@ namespace Chummer
         /// </summary>
         /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
         /// <param name="strLanguage">Language to use.</param>
-        Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage);
+        /// <param name="token">Cancellation token to listen to.</param>
+        Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default);
 
         /// <summary>
         /// Get a slower, writable version of this item's Xml data node in a particular language.
@@ -41,7 +43,8 @@ namespace Chummer
         /// </summary>
         /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
         /// <param name="strLanguage">Language to use.</param>
-        Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage);
+        /// <param name="token">Cancellation token to listen to.</param>
+        Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default);
     }
 
     public static class HasXmlDataNode
@@ -49,65 +52,65 @@ namespace Chummer
         /// <summary>
         /// Get a faster, read-only version of this item's Xml data node in the default Chummer language (English).
         /// </summary>
-        public static XPathNavigator GetNodeXPath(this IHasXmlDataNode objThis)
+        public static XPathNavigator GetNodeXPath(this IHasXmlDataNode objThis, CancellationToken token = default)
         {
-            return objThis.GetNodeXPathCoreAsync(true, GlobalSettings.DefaultLanguage).GetAwaiter().GetResult();
+            return Utils.SafelyRunSynchronously(() => objThis.GetNodeXPathCoreAsync(true, GlobalSettings.DefaultLanguage, token), token);
         }
 
         /// <summary>
         /// Get a faster, read-only version of this item's Xml data node in the default Chummer language (English).
         /// </summary>
-        public static XPathNavigator GetNodeXPath(this IHasXmlDataNode objThis, string strLanguage)
+        public static XPathNavigator GetNodeXPath(this IHasXmlDataNode objThis, string strLanguage, CancellationToken token = default)
         {
-            return objThis.GetNodeXPathCoreAsync(true, strLanguage).GetAwaiter().GetResult();
+            return Utils.SafelyRunSynchronously(() => objThis.GetNodeXPathCoreAsync(true, strLanguage, token), token);
         }
 
         /// <summary>
         /// Get a faster, read-only version of this item's Xml data node in the default Chummer language (English).
         /// </summary>
-        public static Task<XPathNavigator> GetNodeXPathAsync(this IHasXmlDataNode objThis)
+        public static Task<XPathNavigator> GetNodeXPathAsync(this IHasXmlDataNode objThis, CancellationToken token = default)
         {
-            return objThis.GetNodeXPathCoreAsync(false, GlobalSettings.DefaultLanguage);
+            return objThis.GetNodeXPathCoreAsync(false, GlobalSettings.DefaultLanguage, token);
         }
 
         /// <summary>
         /// Get a faster, read-only version of this item's Xml data node in the default Chummer language (English).
         /// </summary>
-        public static Task<XPathNavigator> GetNodeXPathAsync(this IHasXmlDataNode objThis, string strLanguage)
+        public static Task<XPathNavigator> GetNodeXPathAsync(this IHasXmlDataNode objThis, string strLanguage, CancellationToken token = default)
         {
-            return objThis.GetNodeXPathCoreAsync(false, strLanguage);
+            return objThis.GetNodeXPathCoreAsync(false, strLanguage, token);
         }
 
         /// <summary>
         /// Get a slower, writable version of this item's Xml data node in the default Chummer language (English).
         /// </summary>
-        public static XmlNode GetNode(this IHasXmlDataNode objThis)
+        public static XmlNode GetNode(this IHasXmlDataNode objThis, CancellationToken token = default)
         {
-            return objThis.GetNodeCoreAsync(true, GlobalSettings.DefaultLanguage).GetAwaiter().GetResult();
+            return Utils.SafelyRunSynchronously(() => objThis.GetNodeCoreAsync(true, GlobalSettings.DefaultLanguage, token), token);
         }
 
         /// <summary>
         /// Get a slower, writable version of this item's Xml data node in the default Chummer language (English).
         /// </summary>
-        public static XmlNode GetNode(this IHasXmlDataNode objThis, string strLanguage)
+        public static XmlNode GetNode(this IHasXmlDataNode objThis, string strLanguage, CancellationToken token = default)
         {
-            return objThis.GetNodeCoreAsync(true, strLanguage).GetAwaiter().GetResult();
+            return Utils.SafelyRunSynchronously(() => objThis.GetNodeCoreAsync(true, strLanguage, token), token);
         }
 
         /// <summary>
         /// Get a slower, writable version of this item's Xml data node in the default Chummer language (English).
         /// </summary>
-        public static Task<XmlNode> GetNodeAsync(this IHasXmlDataNode objThis)
+        public static Task<XmlNode> GetNodeAsync(this IHasXmlDataNode objThis, CancellationToken token = default)
         {
-            return objThis.GetNodeCoreAsync(false, GlobalSettings.DefaultLanguage);
+            return objThis.GetNodeCoreAsync(false, GlobalSettings.DefaultLanguage, token);
         }
 
         /// <summary>
         /// Get a slower, writable version of this item's Xml data node in the default Chummer language (English).
         /// </summary>
-        public static Task<XmlNode> GetNodeAsync(this IHasXmlDataNode objThis, string strLanguage)
+        public static Task<XmlNode> GetNodeAsync(this IHasXmlDataNode objThis, string strLanguage, CancellationToken token = default)
         {
-            return objThis.GetNodeCoreAsync(false, strLanguage);
+            return objThis.GetNodeCoreAsync(false, strLanguage, token);
         }
     }
 }

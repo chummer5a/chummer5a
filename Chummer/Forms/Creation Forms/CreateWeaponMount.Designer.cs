@@ -13,10 +13,9 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && (components != null))
             {
-                components?.Dispose();
-                Utils.StringHashSetPool.Return(_setBlackMarketMaps);
+                components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -29,7 +28,7 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CreateWeaponMount));
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
             this.lblVisbility = new System.Windows.Forms.Label();
@@ -46,7 +45,7 @@ namespace Chummer
             this.lblCost = new System.Windows.Forms.Label();
             this.lblSlots = new System.Windows.Forms.Label();
             this.lblSlotsLabel = new System.Windows.Forms.Label();
-            this.chkFreeItem = new Chummer.ColorableCheckBox(this.components);
+            this.chkFreeItem = new Chummer.ColorableCheckBox();
             this.nudMarkup = new Chummer.NumericUpDownEx();
             this.lblMarkupPercentLabel = new System.Windows.Forms.Label();
             this.lblMarkupLabel = new System.Windows.Forms.Label();
@@ -55,13 +54,13 @@ namespace Chummer
             this.cmdAddMod = new System.Windows.Forms.Button();
             this.lblSource = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpTopButtons = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpTopButtons = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
             this.flpMarkup = new System.Windows.Forms.FlowLayoutPanel();
             this.flpCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkBlackMarketDiscount = new Chummer.ColorableCheckBox(this.components);
+            this.chkBlackMarketDiscount = new Chummer.ColorableCheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
             this.tlpMain.SuspendLayout();
             this.tlpTopButtons.SuspendLayout();
@@ -78,8 +77,9 @@ namespace Chummer
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cmdCancel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdCancel.Location = new System.Drawing.Point(3, 3);
+            this.cmdCancel.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(50, 23);
+            this.cmdCancel.Size = new System.Drawing.Size(80, 23);
             this.cmdCancel.TabIndex = 19;
             this.cmdCancel.Tag = "String_Cancel";
             this.cmdCancel.Text = "Cancel";
@@ -91,9 +91,10 @@ namespace Chummer
             this.cmdOK.AutoSize = true;
             this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdOK.Location = new System.Drawing.Point(59, 3);
+            this.cmdOK.Location = new System.Drawing.Point(89, 3);
+            this.cmdOK.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdOK.Name = "cmdOK";
-            this.cmdOK.Size = new System.Drawing.Size(50, 23);
+            this.cmdOK.Size = new System.Drawing.Size(80, 23);
             this.cmdOK.TabIndex = 20;
             this.cmdOK.Tag = "String_OK";
             this.cmdOK.Text = "OK";
@@ -351,6 +352,7 @@ namespace Chummer
             this.cmdDeleteMod.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDeleteMod.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdDeleteMod.Location = new System.Drawing.Point(154, 3);
+            this.cmdDeleteMod.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdDeleteMod.Name = "cmdDeleteMod";
             this.cmdDeleteMod.Size = new System.Drawing.Size(146, 23);
             this.cmdDeleteMod.TabIndex = 67;
@@ -365,6 +367,7 @@ namespace Chummer
             this.cmdAddMod.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdAddMod.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdAddMod.Location = new System.Drawing.Point(3, 3);
+            this.cmdAddMod.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdAddMod.Name = "cmdAddMod";
             this.cmdAddMod.Size = new System.Drawing.Size(145, 23);
             this.cmdAddMod.TabIndex = 66;
@@ -458,12 +461,12 @@ namespace Chummer
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
             this.tlpButtons.Controls.Add(this.cmdOK, 1, 0);
-            this.tlpButtons.Location = new System.Drawing.Point(494, 394);
+            this.tlpButtons.Location = new System.Drawing.Point(434, 394);
             this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
-            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpButtons.Size = new System.Drawing.Size(112, 29);
+            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpButtons.Size = new System.Drawing.Size(172, 29);
             this.tlpButtons.TabIndex = 73;
             // 
             // tlpRight
@@ -552,7 +555,7 @@ namespace Chummer
             this.chkBlackMarketDiscount.Visible = false;
             this.chkBlackMarketDiscount.CheckedChanged += new System.EventHandler(this.chkBlackMarketDiscount_CheckedChanged);
             // 
-            // frmCreateWeaponMount
+            // CreateWeaponMount
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
@@ -561,8 +564,12 @@ namespace Chummer
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
-            this.Name = "frmCreateWeaponMount";
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
+            this.Name = "CreateWeaponMount";
             this.Padding = new System.Windows.Forms.Padding(9);
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_CreateWeaponMount";
             this.Text = "Create Weapon Mount";
             this.Load += new System.EventHandler(this.CreateWeaponMount_Load);
@@ -611,11 +618,11 @@ namespace Chummer
         private System.Windows.Forms.Button cmdAddMod;
         private System.Windows.Forms.Label lblSource;
         private System.Windows.Forms.Label lblSourceLabel;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
-        private BufferedTableLayoutPanel tlpTopButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpTopButtons;
         private System.Windows.Forms.FlowLayoutPanel flpMarkup;
-        private BufferedTableLayoutPanel tlpButtons;
-        private BufferedTableLayoutPanel tlpRight;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpRight;
         private System.Windows.Forms.FlowLayoutPanel flpCheckBoxes;
         private ColorableCheckBox chkBlackMarketDiscount;
     }

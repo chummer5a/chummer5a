@@ -18,23 +18,26 @@
  */
 
 using System;
-using System.Collections.Generic;
 using System.Drawing;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.XPath;
 
 namespace Chummer
 {
-    public interface IHasMugshots : IDisposable
+    public interface IHasMugshots : IDisposable, IAsyncDisposable
     {
-        List<Image> Mugshots { get; }
+        ThreadSafeList<Image> Mugshots { get; }
         Image MainMugshot { get; set; }
         int MainMugshotIndex { get; set; }
 
-        void SaveMugshots(XmlTextWriter objWriter);
+        void SaveMugshots(XmlWriter objWriter, CancellationToken token = default);
+
+        Task SaveMugshotsAsync(XmlWriter objWriter, CancellationToken token = default);
 
         void LoadMugshots(XPathNavigator xmlSavedNode);
 
-        void PrintMugshots(XmlTextWriter objWriter);
+        ValueTask PrintMugshots(XmlWriter objWriter, CancellationToken token = default);
     }
 }

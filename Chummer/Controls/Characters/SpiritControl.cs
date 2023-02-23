@@ -20,7 +20,9 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.IO;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
@@ -45,6 +47,9 @@ namespace Chummer
         {
             _objSpirit = objSpirit;
             InitializeComponent();
+
+            Disposed += (sender, args) => UnbindSpiritControl();
+
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
             foreach (ToolStripItem tssItem in cmsSpirit.Items)
@@ -57,50 +62,63 @@ namespace Chummer
         private async void SpiritControl_Load(object sender, EventArgs e)
         {
             bool blnIsSpirit = _objSpirit.EntityType == SpiritType.Spirit;
-            nudForce.DoOneWayDataBinding("Enabled", _objSpirit.CharacterObject, nameof(Character.Created));
-            chkBound.DoDataBinding("Checked", _objSpirit, nameof(Spirit.Bound));
-            chkBound.DoOneWayDataBinding("Enabled", _objSpirit.CharacterObject, nameof(Character.Created));
-            cboSpiritName.DoDataBinding("Text", _objSpirit, nameof(Spirit.Name));
-            txtCritterName.DoDataBinding("Text", _objSpirit, nameof(Spirit.CritterName));
-            txtCritterName.DoOneWayDataBinding("Enabled", _objSpirit, nameof(Spirit.NoLinkedCharacter));
-            nudForce.DoOneWayDataBinding("Maximum", _objSpirit.CharacterObject, blnIsSpirit ? nameof(Character.MaxSpiritForce) : nameof(Character.MaxSpriteLevel));
-            nudServices.DoDataBinding("Value", _objSpirit, nameof(Spirit.ServicesOwed));
-            nudForce.DoDataBinding("Value", _objSpirit, nameof(Spirit.Force));
-            chkFettered.DoOneWayDataBinding("Enabled", _objSpirit, nameof(Spirit.AllowFettering));
-            chkFettered.DoDataBinding("Checked", _objSpirit, nameof(Spirit.Fettered));
+            await nudForce.DoOneWayDataBindingAsync("Enabled", _objSpirit.CharacterObject, nameof(Character.Created)).ConfigureAwait(false);
+            await chkBound.DoDataBindingAsync("Checked", _objSpirit, nameof(Spirit.Bound)).ConfigureAwait(false);
+            await chkBound.DoOneWayDataBindingAsync("Enabled", _objSpirit.CharacterObject, nameof(Character.Created)).ConfigureAwait(false);
+            await cboSpiritName.DoDataBindingAsync("Text", _objSpirit, nameof(Spirit.Name)).ConfigureAwait(false);
+            await txtCritterName.DoDataBindingAsync("Text", _objSpirit, nameof(Spirit.CritterName)).ConfigureAwait(false);
+            await txtCritterName.DoOneWayDataBindingAsync("Enabled", _objSpirit, nameof(Spirit.NoLinkedCharacter)).ConfigureAwait(false);
+            await nudForce.DoOneWayDataBindingAsync("Maximum", _objSpirit.CharacterObject, blnIsSpirit ? nameof(Character.MaxSpiritForce) : nameof(Character.MaxSpriteLevel)).ConfigureAwait(false);
+            await nudServices.DoDataBindingAsync("Value", _objSpirit, nameof(Spirit.ServicesOwed)).ConfigureAwait(false);
+            await nudForce.DoDataBindingAsync("Value", _objSpirit, nameof(Spirit.Force)).ConfigureAwait(false);
+            await chkFettered.DoOneWayDataBindingAsync("Enabled", _objSpirit, nameof(Spirit.AllowFettering)).ConfigureAwait(false);
+            await chkFettered.DoDataBindingAsync("Checked", _objSpirit, nameof(Spirit.Fettered)).ConfigureAwait(false);
             if (blnIsSpirit)
             {
-                lblForce.Text = await LanguageManager.GetStringAsync("Label_Spirit_Force");
-                chkBound.Text = await LanguageManager.GetStringAsync("Checkbox_Spirit_Bound");
-                cmdLink.ToolTipText = await LanguageManager.GetStringAsync(!string.IsNullOrEmpty(_objSpirit.FileName) ? "Tip_Spirit_OpenFile" : "Tip_Spirit_LinkSpirit");
-
-                string strTooltip = await LanguageManager.GetStringAsync("Tip_Spirit_EditNotes");
+                string strText = await LanguageManager.GetStringAsync("Label_Spirit_Force").ConfigureAwait(false);
+                await lblForce.DoThreadSafeAsync(x => x.Text = strText).ConfigureAwait(false);
+                string strText2 = await LanguageManager.GetStringAsync("Checkbox_Spirit_Bound").ConfigureAwait(false);
+                await chkBound.DoThreadSafeAsync(x => x.Text = strText2).ConfigureAwait(false);
+                await cmdLink.SetToolTipTextAsync(await LanguageManager.GetStringAsync(!string.IsNullOrEmpty(_objSpirit.FileName) ? "Tip_Spirit_OpenFile" : "Tip_Spirit_LinkSpirit").ConfigureAwait(false)).ConfigureAwait(false);
+                string strTooltip = await LanguageManager.GetStringAsync("Tip_Spirit_EditNotes").ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(_objSpirit.Notes))
                     strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
-                cmdNotes.ToolTipText = strTooltip.WordWrap();
+                await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap()).ConfigureAwait(false);
             }
             else
             {
-                lblForce.Text = await LanguageManager.GetStringAsync("Label_Sprite_Rating");
-                lblServices.Text = await LanguageManager.GetStringAsync("Label_Sprite_TasksOwed");
-                chkBound.Text = await LanguageManager.GetStringAsync("Label_Sprite_Registered");
-                chkFettered.Text = await LanguageManager.GetStringAsync("Checkbox_Sprite_Pet");
-                cmdLink.ToolTipText = await LanguageManager.GetStringAsync(!string.IsNullOrEmpty(_objSpirit.FileName) ? "Tip_Sprite_OpenFile" : "Tip_Sprite_LinkSpirit");
-
-                string strTooltip = await LanguageManager.GetStringAsync("Tip_Sprite_EditNotes");
+                string strText = await LanguageManager.GetStringAsync("Label_Sprite_Rating").ConfigureAwait(false);
+                await lblForce.DoThreadSafeAsync(x => x.Text = strText).ConfigureAwait(false);
+                string strText2 = await LanguageManager.GetStringAsync("Label_Sprite_TasksOwed").ConfigureAwait(false);
+                await lblServices.DoThreadSafeAsync(x => x.Text = strText2).ConfigureAwait(false);
+                string strText3 = await LanguageManager.GetStringAsync("Label_Sprite_Registered").ConfigureAwait(false);
+                await chkBound.DoThreadSafeAsync(x => x.Text = strText3).ConfigureAwait(false);
+                string strText4 = await LanguageManager.GetStringAsync("Checkbox_Sprite_Pet").ConfigureAwait(false);
+                await chkFettered.DoThreadSafeAsync(x => x.Text = strText4).ConfigureAwait(false);
+                await cmdLink.SetToolTipTextAsync(await LanguageManager.GetStringAsync(!string.IsNullOrEmpty(_objSpirit.FileName) ? "Tip_Sprite_OpenFile" : "Tip_Sprite_LinkSpirit").ConfigureAwait(false)).ConfigureAwait(false);
+                string strTooltip = await LanguageManager.GetStringAsync("Tip_Sprite_EditNotes").ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(_objSpirit.Notes))
                     strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
-                cmdNotes.ToolTipText = strTooltip.WordWrap();
+                await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap()).ConfigureAwait(false);
             }
 
-            _objSpirit.CharacterObject.PropertyChanged += RebuildSpiritListOnTraditionChange;
+            IAsyncDisposable objLocker = await _objSpirit.CharacterObject.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            try
+            {
+                _objSpirit.CharacterObject.PropertyChanged += RebuildSpiritListOnTraditionChange;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
 
             _blnLoading = false;
         }
 
         public void UnbindSpiritControl()
         {
-            _objSpirit.CharacterObject.PropertyChanged -= RebuildSpiritListOnTraditionChange;
+            using (_objSpirit.CharacterObject.LockObject.EnterWriteLock())
+                _objSpirit.CharacterObject.PropertyChanged -= RebuildSpiritListOnTraditionChange;
 
             foreach (Control objControl in Controls)
             {
@@ -163,16 +181,27 @@ namespace Chummer
         {
             if (_objSpirit.LinkedCharacter != null)
             {
-                Character objOpenCharacter = Program.MainForm.OpenCharacters.Contains(_objSpirit.LinkedCharacter)
+                Character objOpenCharacter = await Program.OpenCharacters.ContainsAsync(_objSpirit.LinkedCharacter).ConfigureAwait(false)
                     ? _objSpirit.LinkedCharacter
                     : null;
-                using (new CursorWait(this))
+                CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm).ConfigureAwait(false);
+                try
                 {
-                    if (objOpenCharacter == null || !Program.MainForm.SwitchToOpenCharacter(objOpenCharacter, true))
+                    if (objOpenCharacter == null)
                     {
-                        objOpenCharacter = await Program.MainForm.LoadCharacterAsync(_objSpirit.LinkedCharacter.FileName);
-                        Program.MainForm.OpenCharacter(objOpenCharacter);
+                        using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                               = await Program.CreateAndShowProgressBarAsync(
+                                   _objSpirit.LinkedCharacter.FileName, Character.NumLoadingSections).ConfigureAwait(false))
+                            objOpenCharacter = await Program.LoadCharacterAsync(
+                                _objSpirit.LinkedCharacter.FileName, frmLoadingBar: frmLoadingBar.MyForm).ConfigureAwait(false);
                     }
+
+                    if (!await Program.SwitchToOpenCharacter(objOpenCharacter).ConfigureAwait(false))
+                        await Program.OpenCharacter(objOpenCharacter).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             else
@@ -193,23 +222,37 @@ namespace Chummer
 
                     if (blnError)
                     {
-                        Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_FileNotFound"), _objSpirit.FileName), await LanguageManager.GetStringAsync("MessageTitle_FileNotFound"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        Program.ShowScrollableMessageBox(
+                            string.Format(GlobalSettings.CultureInfo,
+                                          await LanguageManager.GetStringAsync("Message_FileNotFound")
+                                                               .ConfigureAwait(false), _objSpirit.FileName),
+                            await LanguageManager.GetStringAsync("MessageTitle_FileNotFound").ConfigureAwait(false),
+                            MessageBoxButtons.OK, MessageBoxIcon.Error);
                         return;
                     }
                 }
                 string strFile = blnUseRelative ? Path.GetFullPath(_objSpirit.RelativeFileName) : _objSpirit.FileName;
-                System.Diagnostics.Process.Start(strFile);
+                Process.Start(strFile);
             }
         }
 
         private async void tsRemoveCharacter_Click(object sender, EventArgs e)
         {
             // Remove the file association from the Contact.
-            if (Program.MainForm.ShowMessageBox(await LanguageManager.GetStringAsync("Message_RemoveCharacterAssociation"), await LanguageManager.GetStringAsync("MessageTitle_RemoveCharacterAssociation"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes)
+            if (Program.ShowScrollableMessageBox(
+                    await LanguageManager.GetStringAsync("Message_RemoveCharacterAssociation").ConfigureAwait(false),
+                    await LanguageManager.GetStringAsync("MessageTitle_RemoveCharacterAssociation")
+                                         .ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question)
+                == DialogResult.Yes)
             {
                 _objSpirit.FileName = string.Empty;
                 _objSpirit.RelativeFileName = string.Empty;
-                cmdLink.ToolTipText = await LanguageManager.GetStringAsync(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_LinkSpirit" : "Tip_Sprite_LinkSprite");
+                string strText = await LanguageManager.GetStringAsync(
+                                                          _objSpirit.EntityType == SpiritType.Spirit
+                                                              ? "Tip_Spirit_LinkSpirit"
+                                                              : "Tip_Sprite_LinkSprite")
+                                                      .ConfigureAwait(false);
+                await cmdLink.SetToolTipTextAsync(strText).ConfigureAwait(false);
 
                 // Set the relative path.
                 Uri uriApplication = new Uri(Utils.GetStartupPath);
@@ -223,37 +266,53 @@ namespace Chummer
 
         private async void tsAttachCharacter_Click(object sender, EventArgs e)
         {
+            string strFileName = string.Empty;
+            string strFilter = await LanguageManager.GetStringAsync("DialogFilter_Chummer").ConfigureAwait(false) + '|'
+                +
+                await LanguageManager.GetStringAsync("DialogFilter_Chum5").ConfigureAwait(false) + '|' +
+                await LanguageManager.GetStringAsync("DialogFilter_Chum5lz").ConfigureAwait(false) + '|' +
+                await LanguageManager.GetStringAsync("DialogFilter_All").ConfigureAwait(false);
             // Prompt the user to select a save file to associate with this Contact.
-            using (OpenFileDialog openFileDialog = new OpenFileDialog
+            // Prompt the user to select a save file to associate with this Contact.
+            DialogResult eResult = await this.DoThreadSafeFuncAsync(x =>
             {
-                Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' + await LanguageManager.GetStringAsync("DialogFilter_All")
-            })
-            {
-                if (!string.IsNullOrEmpty(_objSpirit.FileName) && File.Exists(_objSpirit.FileName))
+                using (OpenFileDialog dlgOpenFile = new OpenFileDialog())
                 {
-                    openFileDialog.InitialDirectory = Path.GetDirectoryName(_objSpirit.FileName);
-                    openFileDialog.FileName = Path.GetFileName(_objSpirit.FileName);
-                }
+                    dlgOpenFile.Filter = strFilter;
+                    if (!string.IsNullOrEmpty(_objSpirit.FileName) && File.Exists(_objSpirit.FileName))
+                    {
+                        dlgOpenFile.InitialDirectory = Path.GetDirectoryName(_objSpirit.FileName);
+                        dlgOpenFile.FileName = Path.GetFileName(_objSpirit.FileName);
+                    }
 
-                if (openFileDialog.ShowDialog(this) == DialogResult.OK)
-                {
-                    _objSpirit.FileName = openFileDialog.FileName;
-                    cmdLink.ToolTipText = await LanguageManager.GetStringAsync(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile");
-                    ContactDetailChanged?.Invoke(this, e);
+                    DialogResult eReturn = dlgOpenFile.ShowDialog(x);
+                    strFileName = dlgOpenFile.FileName;
+                    return eReturn;
                 }
-            }
+            }).ConfigureAwait(false);
+
+            if (eResult != DialogResult.OK)
+                return;
+            _objSpirit.FileName = strFileName;
+            string strText = await LanguageManager.GetStringAsync(
+                _objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile").ConfigureAwait(false);
+            await cmdLink.SetToolTipTextAsync(strText).ConfigureAwait(false);
+            ContactDetailChanged?.Invoke(this, e);
         }
 
         private async void tsCreateCharacter_Click(object sender, EventArgs e)
         {
-            string strSpiritName = cboSpiritName.SelectedValue?.ToString();
+            string strSpiritName = await cboSpiritName.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strSpiritName))
             {
-                Program.MainForm.ShowMessageBox(await LanguageManager.GetStringAsync("Message_SelectCritterType"), await LanguageManager.GetStringAsync("MessageTitle_SelectCritterType"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.ShowScrollableMessageBox(
+                    await LanguageManager.GetStringAsync("Message_SelectCritterType").ConfigureAwait(false),
+                    await LanguageManager.GetStringAsync("MessageTitle_SelectCritterType").ConfigureAwait(false),
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            await CreateCritter(strSpiritName, nudForce.ValueAsInt);
+            await CreateCritter(strSpiritName, nudForce.ValueAsInt).ConfigureAwait(false);
         }
 
         private void cmdLink_Click(object sender, EventArgs e)
@@ -278,19 +337,18 @@ namespace Chummer
 
         private async void cmdNotes_Click(object sender, EventArgs e)
         {
-            using (EditNotes frmSpritNotes = new EditNotes(_objSpirit.Notes, _objSpirit.NotesColor))
+            using (ThreadSafeForm<EditNotes> frmSpiritNotes = await ThreadSafeForm<EditNotes>.GetAsync(() => new EditNotes(_objSpirit.Notes, _objSpirit.NotesColor)).ConfigureAwait(false))
             {
-                await frmSpritNotes.ShowDialogSafeAsync(this);
-                if (frmSpritNotes.DialogResult != DialogResult.OK)
+                if (await frmSpiritNotes.ShowDialogSafeAsync(_objSpirit.CharacterObject).ConfigureAwait(false) != DialogResult.OK)
                     return;
-                _objSpirit.Notes = frmSpritNotes.Notes;
+                _objSpirit.Notes = frmSpiritNotes.MyForm.Notes;
             }
 
-            string strTooltip = await LanguageManager.GetStringAsync(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_EditNotes" : "Tip_Sprite_EditNotes");
+            string strTooltip = await LanguageManager.GetStringAsync(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_EditNotes" : "Tip_Sprite_EditNotes").ConfigureAwait(false);
 
             if (!string.IsNullOrEmpty(_objSpirit.Notes))
                 strTooltip += Environment.NewLine + Environment.NewLine + _objSpirit.Notes;
-            cmdNotes.ToolTipText = strTooltip.WordWrap();
+            await cmdNotes.SetToolTipTextAsync(strTooltip.WordWrap()).ConfigureAwait(false);
 
             ContactDetailChanged?.Invoke(this, e);
         }
@@ -309,30 +367,30 @@ namespace Chummer
         #region Methods
 
         // Rebuild the list of Spirits/Sprites based on the character's selected Tradition/Stream.
-        public void RebuildSpiritListOnTraditionChange(object sender, PropertyChangedEventArgs e)
+        public async void RebuildSpiritListOnTraditionChange(object sender, PropertyChangedEventArgs e)
         {
             if (e?.PropertyName == nameof(Character.MagicTradition))
             {
-                RebuildSpiritList(_objSpirit.CharacterObject.MagicTradition);
+                await RebuildSpiritList(_objSpirit.CharacterObject.MagicTradition).ConfigureAwait(false);
             }
         }
 
         // Rebuild the list of Spirits/Sprites based on the character's selected Tradition/Stream.
-        public void RebuildSpiritList(Tradition objTradition)
+        public async ValueTask RebuildSpiritList(Tradition objTradition, CancellationToken token = default)
         {
             if (objTradition == null)
                 return;
-            string strCurrentValue = cboSpiritName.SelectedValue?.ToString() ?? _objSpirit.Name;
+            string strCurrentValue = await cboSpiritName.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false) ?? _objSpirit.Name;
 
-            XPathNavigator objXmlDocument = _objSpirit.CharacterObject.LoadDataXPath(_objSpirit.EntityType == SpiritType.Spirit
-                    ? "traditions.xml"
-                    : "streams.xml");
+            XPathNavigator objXmlDocument = await _objSpirit.CharacterObject.LoadDataXPathAsync(_objSpirit.EntityType == SpiritType.Spirit
+                ? "traditions.xml"
+                : "streams.xml", token: token).ConfigureAwait(false);
 
             using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                             out HashSet<string> setLimitCategories))
             {
-                foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
-                             _objSpirit.CharacterObject, Improvement.ImprovementType.LimitSpiritCategory))
+                foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                             _objSpirit.CharacterObject, Improvement.ImprovementType.LimitSpiritCategory, token: token).ConfigureAwait(false))
                 {
                     setLimitCategories.Add(objImprovement.ImprovedName);
                 }
@@ -353,10 +411,11 @@ namespace Chummer
                             XPathNavigator objXmlCritterNode
                                 = objXmlDocument.SelectSingleNode(
                                     "/chummer/spirits/spirit[name = " + strSpiritCombat.CleanXPath() + ']');
-                            lstCritters.Add(new ListItem(strSpiritCombat,
-                                                         objXmlCritterNode
-                                                             ?.SelectSingleNodeAndCacheExpression("translate")
-                                                             ?.Value ?? strSpiritCombat));
+                            string strTranslatedName = objXmlCritterNode != null
+                                ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
+                                  ?? strSpiritCombat
+                                : strSpiritCombat;
+                            lstCritters.Add(new ListItem(strSpiritCombat, strTranslatedName));
                         }
 
                         if ((setLimitCategories.Count == 0 || setLimitCategories.Contains(strSpiritDetection))
@@ -365,10 +424,11 @@ namespace Chummer
                             XPathNavigator objXmlCritterNode
                                 = objXmlDocument.SelectSingleNode(
                                     "/chummer/spirits/spirit[name = " + strSpiritDetection.CleanXPath() + ']');
-                            lstCritters.Add(new ListItem(strSpiritDetection,
-                                                         objXmlCritterNode
-                                                             ?.SelectSingleNodeAndCacheExpression("translate")
-                                                             ?.Value ?? strSpiritDetection));
+                            string strTranslatedName = objXmlCritterNode != null
+                                ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
+                                  ?? strSpiritDetection
+                                : strSpiritDetection;
+                            lstCritters.Add(new ListItem(strSpiritDetection, strTranslatedName));
                         }
 
                         if ((setLimitCategories.Count == 0 || setLimitCategories.Contains(strSpiritHealth))
@@ -377,10 +437,11 @@ namespace Chummer
                             XPathNavigator objXmlCritterNode
                                 = objXmlDocument.SelectSingleNode(
                                     "/chummer/spirits/spirit[name = " + strSpiritHealth.CleanXPath() + ']');
-                            lstCritters.Add(new ListItem(strSpiritHealth,
-                                                         objXmlCritterNode
-                                                             ?.SelectSingleNodeAndCacheExpression("translate")
-                                                             ?.Value ?? strSpiritHealth));
+                            string strTranslatedName = objXmlCritterNode != null
+                                ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
+                                  ?? strSpiritHealth
+                                : strSpiritHealth;
+                            lstCritters.Add(new ListItem(strSpiritHealth, strTranslatedName));
                         }
 
                         if ((setLimitCategories.Count == 0 || setLimitCategories.Contains(strSpiritIllusion))
@@ -389,10 +450,11 @@ namespace Chummer
                             XPathNavigator objXmlCritterNode
                                 = objXmlDocument.SelectSingleNode(
                                     "/chummer/spirits/spirit[name = " + strSpiritIllusion.CleanXPath() + ']');
-                            lstCritters.Add(new ListItem(strSpiritIllusion,
-                                                         objXmlCritterNode
-                                                             ?.SelectSingleNodeAndCacheExpression("translate")
-                                                             ?.Value ?? strSpiritIllusion));
+                            string strTranslatedName = objXmlCritterNode != null
+                                ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
+                                  ?? strSpiritIllusion
+                                : strSpiritIllusion;
+                            lstCritters.Add(new ListItem(strSpiritIllusion, strTranslatedName));
                         }
 
                         if ((setLimitCategories.Count == 0 || setLimitCategories.Contains(strSpiritManipulation))
@@ -401,26 +463,28 @@ namespace Chummer
                             XPathNavigator objXmlCritterNode
                                 = objXmlDocument.SelectSingleNode(
                                     "/chummer/spirits/spirit[name = " + strSpiritManipulation.CleanXPath() + ']');
-                            lstCritters.Add(new ListItem(strSpiritManipulation,
-                                                         objXmlCritterNode
-                                                             ?.SelectSingleNodeAndCacheExpression("translate")
-                                                             ?.Value ?? strSpiritManipulation));
+                            string strTranslatedName = objXmlCritterNode != null
+                                ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
+                                  ?? strSpiritManipulation
+                                : strSpiritManipulation;
+                            lstCritters.Add(new ListItem(strSpiritManipulation, strTranslatedName));
                         }
                     }
                     else
                     {
-                        if (objTradition.GetNodeXPath()?.SelectSingleNode("spirits/spirit[. = \"All\"]") != null)
+                        XPathNavigator objDataNode = await objTradition.GetNodeXPathAsync(token: token).ConfigureAwait(false);
+                        if (objDataNode != null && await objDataNode.SelectSingleNodeAndCacheExpressionAsync("spirits/spirit[. = \"All\"]", token).ConfigureAwait(false) != null)
                         {
                             if (setLimitCategories.Count == 0)
                             {
-                                foreach (XPathNavigator objXmlCritterNode in objXmlDocument.SelectAndCacheExpression(
-                                             "/chummer/spirits/spirit"))
+                                foreach (XPathNavigator objXmlCritterNode in await objXmlDocument.SelectAndCacheExpressionAsync(
+                                             "/chummer/spirits/spirit", token: token).ConfigureAwait(false))
                                 {
-                                    string strSpiritName = objXmlCritterNode.SelectSingleNodeAndCacheExpression("name")
+                                    string strSpiritName = (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))
                                                                             ?.Value;
                                     lstCritters.Add(new ListItem(strSpiritName,
-                                                                 objXmlCritterNode
-                                                                     .SelectSingleNodeAndCacheExpression("translate")
+                                                                 (await objXmlCritterNode
+                                                                        .SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))
                                                                      ?.Value
                                                                  ?? strSpiritName));
                                 }
@@ -432,16 +496,18 @@ namespace Chummer
                                     XPathNavigator objXmlCritterNode
                                         = objXmlDocument.SelectSingleNode(
                                             "/chummer/spirits/spirit[name = " + strSpiritName.CleanXPath() + ']');
-                                    lstCritters.Add(new ListItem(strSpiritName,
-                                                                 objXmlCritterNode
-                                                                     ?.SelectSingleNodeAndCacheExpression("translate")
-                                                                     ?.Value ?? strSpiritName));
+                                    string strTranslatedName = objXmlCritterNode != null
+                                        ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
+                                          ?? strSpiritName
+                                        : strSpiritName;
+                                    lstCritters.Add(new ListItem(strSpiritName, strTranslatedName));
                                 }
                             }
                         }
                         else
                         {
-                            XPathNodeIterator xmlSpiritList = objTradition.GetNodeXPath()?.Select("spirits/*");
+                            XPathNavigator objTraditionNode = await objTradition.GetNodeXPathAsync(token: token).ConfigureAwait(false);
+                            XPathNodeIterator xmlSpiritList = objTraditionNode != null ? await objTraditionNode.SelectAndCacheExpressionAsync("spirits/*", token).ConfigureAwait(false) : null;
                             if (xmlSpiritList != null)
                             {
                                 foreach (XPathNavigator objXmlSpirit in xmlSpiritList)
@@ -453,10 +519,11 @@ namespace Chummer
                                             = objXmlDocument.SelectSingleNode(
                                                 "/chummer/spirits/spirit[name = " + strSpiritName.CleanXPath()
                                                 + ']');
-                                        lstCritters.Add(new ListItem(strSpiritName,
-                                                                     objXmlCritterNode
-                                                                         ?.SelectSingleNodeAndCacheExpression(
-                                                                             "translate")?.Value ?? strSpiritName));
+                                        string strTranslatedName = objXmlCritterNode != null
+                                            ? (await objXmlCritterNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
+                                              ?? strSpiritName
+                                            : strSpiritName;
+                                        lstCritters.Add(new ListItem(strSpiritName, strTranslatedName));
                                     }
                                 }
                             }
@@ -467,8 +534,8 @@ namespace Chummer
 
                     if (_objSpirit.CharacterObject.MAGEnabled)
                     {
-                        foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
-                                     _objSpirit.CharacterObject, Improvement.ImprovementType.AddSpirit))
+                        foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                     _objSpirit.CharacterObject, Improvement.ImprovementType.AddSpirit, token: token).ConfigureAwait(false))
                         {
                             string strImprovedName = objImprovement.ImprovedName;
                             if (!string.IsNullOrEmpty(strImprovedName))
@@ -486,8 +553,8 @@ namespace Chummer
 
                     if (_objSpirit.CharacterObject.RESEnabled)
                     {
-                        foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
-                                     _objSpirit.CharacterObject, Improvement.ImprovementType.AddSprite))
+                        foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                     _objSpirit.CharacterObject, Improvement.ImprovementType.AddSprite, token: token).ConfigureAwait(false))
                         {
                             string strImprovedName = objImprovement.ImprovedName;
                             if (!string.IsNullOrEmpty(strImprovedName))
@@ -503,11 +570,9 @@ namespace Chummer
                         }
                     }
 
-                    cboSpiritName.BeginUpdate();
-                    cboSpiritName.PopulateWithListItems(lstCritters);
+                    await cboSpiritName.PopulateWithListItemsAsync(lstCritters, token: token).ConfigureAwait(false);
                     // Set the control back to its original value.
-                    cboSpiritName.SelectedValue = strCurrentValue;
-                    cboSpiritName.EndUpdate();
+                    await cboSpiritName.DoThreadSafeAsync(x => x.SelectedValue = strCurrentValue, token: token).ConfigureAwait(false);
                 }
             }
         }
@@ -517,64 +582,102 @@ namespace Chummer
         /// </summary>
         /// <param name="strCritterName">Name of the Critter's Metatype.</param>
         /// <param name="intForce">Critter's Force.</param>
-        private async ValueTask CreateCritter(string strCritterName, int intForce)
+        /// <param name="token">Cancellation token to listen to.</param>
+        private async ValueTask CreateCritter(string strCritterName, int intForce, CancellationToken token = default)
         {
             // Code from frmMetatype.
-            XmlDocument objXmlDocument = await _objSpirit.CharacterObject.LoadDataAsync("critters.xml");
+            XmlDocument objXmlDocument = await _objSpirit.CharacterObject.LoadDataAsync("critters.xml", token: token).ConfigureAwait(false);
 
             XmlNode objXmlMetatype = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = " + strCritterName.CleanXPath() + ']');
 
             // If the Critter could not be found, show an error and get out of here.
             if (objXmlMetatype == null)
             {
-                Program.MainForm.ShowMessageBox(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_UnknownCritterType"), strCritterName), await LanguageManager.GetStringAsync("MessageTitle_SelectCritterType"), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Program.ShowScrollableMessageBox(
+                    string.Format(GlobalSettings.CultureInfo,
+                                  await LanguageManager.GetStringAsync("Message_UnknownCritterType", token: token).ConfigureAwait(false),
+                                  strCritterName),
+                    await LanguageManager.GetStringAsync("MessageTitle_SelectCritterType", token: token).ConfigureAwait(false),
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            using (new CursorWait(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm, token: token).ConfigureAwait(false);
+            try
             {
                 // The Critter should use the same settings file as the character.
-                using (Character objCharacter = new Character
+                Character objCharacter = new Character();
+                await objCharacter.SetSettingsKeyAsync(await _objSpirit.CharacterObject.GetSettingsKeyAsync(token).ConfigureAwait(false),
+                                                       token).ConfigureAwait(false);
+                // Override the defaults for the setting.
+                objCharacter.IgnoreRules = true;
+                objCharacter.IsCritter = true;
+                objCharacter.Alias = strCritterName;
+                await objCharacter.SetCreatedAsync(true, token: token).ConfigureAwait(false);
+                try
                 {
-                    SettingsKey = _objSpirit.CharacterObject.SettingsKey,
-                    // Override the defaults for the setting.
-                    IgnoreRules = true,
-                    IsCritter = true,
-                    Alias = strCritterName,
-                    Created = true
-                })
-                {
-                    if (!string.IsNullOrEmpty(txtCritterName.Text))
-                        objCharacter.Name = txtCritterName.Text;
+                    string strCritterCharacterName = await txtCritterName.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
+                    if (!string.IsNullOrEmpty(strCritterCharacterName))
+                        objCharacter.Name = strCritterCharacterName;
 
-                    string strSpace = await LanguageManager.GetStringAsync("String_Space");
-                    using (SaveFileDialog saveFileDialog = new SaveFileDialog
+                    string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                    string strFileName = string.Empty;
+                    string strFilter = await LanguageManager.GetStringAsync("DialogFilter_Chum5", token: token).ConfigureAwait(false) + '|' +
+                        await LanguageManager.GetStringAsync("DialogFilter_Chum5lz", token: token).ConfigureAwait(false) + '|' +
+                        await LanguageManager.GetStringAsync("DialogFilter_All", token: token).ConfigureAwait(false);
+                    string strInputFileName = strCritterName + strSpace + '('
+                                              + await LanguageManager
+                                                      .GetStringAsync(_objSpirit.RatingLabel, token: token)
+                                                      .ConfigureAwait(false) + strSpace
+                                              + _objSpirit.Force.ToString(GlobalSettings.InvariantCultureInfo);
+                    DialogResult eResult = await this.DoThreadSafeFuncAsync(x =>
                     {
-                        Filter = await LanguageManager.GetStringAsync("DialogFilter_Chum5") + '|' + await LanguageManager.GetStringAsync("DialogFilter_All"),
-                        FileName = strCritterName + strSpace + '(' + await LanguageManager.GetStringAsync(_objSpirit.RatingLabel) + strSpace + _objSpirit.Force.ToString(GlobalSettings.InvariantCultureInfo) + ").chum5"
-                    })
-                    {
-                        if (saveFileDialog.ShowDialog(this) != DialogResult.OK)
-                            return;
-                        string strFileName = saveFileDialog.FileName;
-                        objCharacter.FileName = strFileName;
-                    }
+                        using (SaveFileDialog dlgSaveFile = new SaveFileDialog())
+                        {
+                            dlgSaveFile.Filter = strFilter;
+                            dlgSaveFile.FileName = strInputFileName;
+                            DialogResult eReturn = dlgSaveFile.ShowDialog(x);
+                            strFileName = dlgSaveFile.FileName;
+                            return eReturn;
+                        }
+                    }, token: token).ConfigureAwait(false);
 
-                    objCharacter.Create(objXmlMetatype["category"]?.InnerText, objXmlMetatype["id"]?.InnerText, string.Empty, objXmlMetatype, intForce);
+                    if (eResult != DialogResult.OK)
+                        return;
+
+                    if (!strFileName.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
+                        && !strFileName.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                        strFileName += ".chum5";
+                    objCharacter.FileName = strFileName;
+
+                    objCharacter.Create(objXmlMetatype["category"]?.InnerText, objXmlMetatype["id"]?.InnerText,
+                                        string.Empty, objXmlMetatype, intForce, token: token);
                     objCharacter.MetatypeBP = 0;
-                    using (LoadingBar frmProgressBar = ChummerMainForm.CreateAndShowProgressBar())
+                    using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program.CreateAndShowProgressBarAsync(token: token).ConfigureAwait(false))
                     {
-                        frmProgressBar.PerformStep(objCharacter.CharacterName, LoadingBar.ProgressBarTextPatterns.Saving);
-                        if (!objCharacter.Save())
+                        await frmLoadingBar.MyForm.PerformStepAsync(objCharacter.CharacterName,
+                                                                    LoadingBar.ProgressBarTextPatterns.Saving, token).ConfigureAwait(false);
+                        if (!await objCharacter.SaveAsync(token: token).ConfigureAwait(false))
                             return;
                     }
 
                     // Link the newly-created Critter to the Spirit.
-                    cmdLink.ToolTipText = await LanguageManager.GetStringAsync(_objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile");
+                    string strText = await LanguageManager.GetStringAsync(
+                        _objSpirit.EntityType == SpiritType.Spirit ? "Tip_Spirit_OpenFile" : "Tip_Sprite_OpenFile", token: token).ConfigureAwait(false);
+                    await cmdLink.SetToolTipTextAsync(strText, token).ConfigureAwait(false);
                     ContactDetailChanged?.Invoke(this, EventArgs.Empty);
 
-                    Program.MainForm.OpenCharacter(objCharacter);
+                    await Program.OpenCharacter(objCharacter, token: token).ConfigureAwait(false);
                 }
+                finally
+                {
+                    await objCharacter
+                          .DisposeAsync().ConfigureAwait(false); // Fine here because Dispose()/DisposeAsync() code is skipped if the character is open in a form
+                }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 

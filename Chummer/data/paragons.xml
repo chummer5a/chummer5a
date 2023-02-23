@@ -23,7 +23,6 @@
 
   <categories>
     <category>Resonance</category>
-    <category>Resonance</category>
   </categories>
   <mentors>
     <mentor>
@@ -41,6 +40,13 @@
       <category>Resonance</category>
       <advantage>+1 limit and +1 dice pool bonus for Edit actions.</advantage>
       <disadvantage>–1 limit and –1 dice for Snoop actions.</disadvantage>
+      <bonus>
+        <specificskill>
+          <name>Computer</name>
+          <bonus>1</bonus>
+          <condition>Edit File</condition>
+        </specificskill>
+      </bonus>
       <source>KC</source>
       <page>103</page>
     </mentor>
@@ -50,6 +56,13 @@
       <category>Resonance</category>
       <advantage>+1 limit and +1 dice pool bonus for Browse actions and digital legwork.</advantage>
       <disadvantage>–1 limit for Edit actions designed to destroy data.</disadvantage>
+      <bonus>
+        <specificskill>
+          <name>Computer</name>
+          <bonus>1</bonus>
+          <condition>Matrix Search</condition>
+        </specificskill>
+      </bonus>
       <source>KC</source>
       <page>177</page>
     </mentor>
@@ -100,13 +113,16 @@
       <category>Resonance</category>
       <advantage>+1 bonus to dice pool and limit in cybercombat, +1 to firewall.</advantage>
       <disadvantage> –1 dice pool penalty when attacking IC in cybercombat.</disadvantage>
-        <bonus>
-          <livingpersonafirewall>1</livingpersonafirewall>
-          <specificskill>
-              <name>Cybercombat</name>
-              <bonus>1</bonus>
-          </specificskill>
-        </bonus>
+      <bonus>
+        <livingpersona>
+          <firewall>1</firewall>
+        </livingpersona>
+        <specificskill>
+          <name>Cybercombat</name>
+          <bonus>1</bonus>
+          <condition>Not against IC</condition>
+        </specificskill>
+      </bonus>
       <source>KC</source>
       <page>104</page>
     </mentor>
@@ -130,6 +146,58 @@
           <name>Cybercombat</name>
           <bonus>1</bonus>
         </specificskill>
+        <specificskill>
+          <name>Compiling</name>
+          <bonus>-2</bonus>
+        </specificskill>
+        <weaponskillaccuracy>
+          <name>Archery</name>
+          <value>1</value>
+        </weaponskillaccuracy>
+        <weaponskillaccuracy>
+          <name>Automatics</name>
+          <value>1</value>
+        </weaponskillaccuracy>
+        <weaponskillaccuracy>
+          <name>Blades</name>
+          <value>1</value>
+        </weaponskillaccuracy>
+        <weaponskillaccuracy>
+          <name>Clubs</name>
+          <value>1</value>
+        </weaponskillaccuracy>
+        <weaponskillaccuracy>
+          <name>Exotic Melee Weapon</name>
+          <value>1</value>
+        </weaponskillaccuracy>
+        <weaponskillaccuracy>
+          <name>Exotic Ranged Weapon</name>
+          <value>1</value>
+        </weaponskillaccuracy>
+        <weaponskillaccuracy>
+          <name>Gunnery</name>
+          <value>1</value>
+        </weaponskillaccuracy>
+        <weaponskillaccuracy>
+          <name>Heavy Weapons</name>
+          <value>1</value>
+        </weaponskillaccuracy>
+        <weaponskillaccuracy>
+          <name>Longarms</name>
+          <value>1</value>
+        </weaponskillaccuracy>
+        <weaponskillaccuracy>
+          <name>Pistols</name>
+          <value>1</value>
+        </weaponskillaccuracy>
+        <weaponskillaccuracy>
+          <name>Throwing Weapons</name>
+          <value>1</value>
+        </weaponskillaccuracy>
+        <weaponskillaccuracy>
+          <name>Unarmed Combat</name>
+          <value>1</value>
+        </weaponskillaccuracy>
       </bonus>
       <source>KC</source>
       <page>104</page>

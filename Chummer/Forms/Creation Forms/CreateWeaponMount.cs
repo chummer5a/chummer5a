@@ -21,6 +21,8 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -31,20 +33,21 @@ namespace Chummer
     public partial class CreateWeaponMount : Form
     {
         private readonly List<VehicleMod> _lstMods = new List<VehicleMod>(1);
-        private bool _blnLoading = true;
+        private int _intLoading = 1;
         private readonly bool _blnAllowEditOptions;
         private readonly Vehicle _objVehicle;
         private readonly Character _objCharacter;
         private WeaponMount _objMount;
         private readonly XmlDocument _xmlDoc;
         private readonly XPathNavigator _xmlDocXPath;
-        private readonly HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
         private readonly decimal _decOldBaseCost;
 
         public WeaponMount WeaponMount => _objMount;
 
         public CreateWeaponMount(Vehicle objVehicle, Character objCharacter, WeaponMount objWeaponMount = null)
         {
+            Disposed += (sender, args) => Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
             _objVehicle = objVehicle;
             _objMount = objWeaponMount;
             _objCharacter = objCharacter;
@@ -61,11 +64,11 @@ namespace Chummer
             this.TranslateWinForm();
         }
 
-        private void CreateWeaponMount_Load(object sender, EventArgs e)
+        private async void CreateWeaponMount_Load(object sender, EventArgs e)
         {
-            XPathNavigator xmlVehicleNode = _objVehicle.GetNodeXPath();
+            XPathNavigator xmlVehicleNode = await _objVehicle.GetNodeXPathAsync().ConfigureAwait(false);
             // Populate the Weapon Mount Category list.
-            string strSizeFilter = "category = \"Size\" and " + _objCharacter.Settings.BookXPath();
+            string strSizeFilter = "category = \"Size\" and " + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false);
             if (!_objVehicle.IsDrone && _objCharacter.Settings.DroneMods)
                 strSizeFilter += " and not(optionaldrone)";
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSize))
@@ -76,19 +79,19 @@ namespace Chummer
                 {
                     foreach (XPathNavigator xmlSizeNode in xmlSizeNodeList)
                     {
-                        string strId = xmlSizeNode.SelectSingleNodeAndCacheExpression("id")?.Value;
+                        string strId = (await xmlSizeNode.SelectSingleNodeAndCacheExpressionAsync("id").ConfigureAwait(false))?.Value;
                         if (string.IsNullOrEmpty(strId))
                             continue;
 
-                        XPathNavigator xmlTestNode = xmlSizeNode.SelectSingleNodeAndCacheExpression("forbidden/vehicledetails");
-                        if (xmlTestNode != null && xmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
+                        XPathNavigator xmlTestNode = await xmlSizeNode.SelectSingleNodeAndCacheExpressionAsync("forbidden/vehicledetails").ConfigureAwait(false);
+                        if (xmlTestNode != null && await xmlVehicleNode.ProcessFilterOperationNodeAsync(xmlTestNode, false).ConfigureAwait(false))
                         {
                             // Assumes topmost parent is an AND node
                             continue;
                         }
 
-                        xmlTestNode = xmlSizeNode.SelectSingleNodeAndCacheExpression("required/vehicledetails");
-                        if (xmlTestNode != null && !xmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
+                        xmlTestNode = await xmlSizeNode.SelectSingleNodeAndCacheExpressionAsync("required/vehicledetails").ConfigureAwait(false);
+                        if (xmlTestNode != null && !await xmlVehicleNode.ProcessFilterOperationNodeAsync(xmlTestNode, false).ConfigureAwait(false))
                         {
                             // Assumes topmost parent is an AND node
                             continue;
@@ -96,16 +99,14 @@ namespace Chummer
 
                         lstSize.Add(new ListItem(
                                         strId,
-                                        xmlSizeNode.SelectSingleNodeAndCacheExpression("translate")?.Value
-                                        ?? xmlSizeNode.SelectSingleNodeAndCacheExpression("name")?.Value
-                                        ?? LanguageManager.GetString("String_Unknown")));
+                                        (await xmlSizeNode.SelectSingleNodeAndCacheExpressionAsync("translate").ConfigureAwait(false))?.Value
+                                        ?? (await xmlSizeNode.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false))?.Value
+                                        ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false)));
                     }
                 }
 
-                cboSize.BeginUpdate();
-                cboSize.PopulateWithListItems(lstSize);
-                cboSize.Enabled = _blnAllowEditOptions && lstSize.Count > 1;
-                cboSize.EndUpdate();
+                await cboSize.PopulateWithListItemsAsync(lstSize).ConfigureAwait(false);
+                await cboSize.DoThreadSafeAsync(x => x.Enabled = _blnAllowEditOptions && lstSize.Count > 1).ConfigureAwait(false);
             }
 
             if (_objMount != null)
@@ -113,32 +114,41 @@ namespace Chummer
                 TreeNode objModsParentNode = new TreeNode
                 {
                     Tag = "Node_AdditionalMods",
-                    Text = LanguageManager.GetString("Node_AdditionalMods")
+                    Text = await LanguageManager.GetStringAsync("Node_AdditionalMods").ConfigureAwait(false)
                 };
-                treMods.Nodes.Add(objModsParentNode);
-                objModsParentNode.Expand();
-                foreach (VehicleMod objMod in _objMount.Mods)
+                await treMods.DoThreadSafeAsync(x =>
                 {
-                    TreeNode objLoopNode = objMod.CreateTreeNode(null, null, null, null, null, null);
-                    if (objLoopNode != null)
-                        objModsParentNode.Nodes.Add(objLoopNode);
-                }
+                    x.Nodes.Add(objModsParentNode);
+                    objModsParentNode.Expand();
+                    foreach (VehicleMod objMod in _objMount.Mods)
+                    {
+                        TreeNode objLoopNode = objMod.CreateTreeNode(null, null, null, null, null, null);
+                        if (objLoopNode != null)
+                            objModsParentNode.Nodes.Add(objLoopNode);
+                    }
+                }).ConfigureAwait(false);
                 _lstMods.AddRange(_objMount.Mods);
 
-                cboSize.SelectedValue = _objMount.SourceIDString;
+                await cboSize.DoThreadSafeAsync(x => x.SelectedValue = _objMount.SourceIDString).ConfigureAwait(false);
             }
-            if (cboSize.SelectedIndex == -1)
+            if (await cboSize.DoThreadSafeFuncAsync(x => x.SelectedIndex).ConfigureAwait(false) == -1)
             {
-                if (cboSize.Items.Count > 0)
-                    cboSize.SelectedIndex = 0;
+                await cboSize.DoThreadSafeAsync(x =>
+                {
+                    if (x.Items.Count > 0)
+                        x.SelectedIndex = 0;
+                }).ConfigureAwait(false);
             }
             else
-                RefreshComboBoxes();
+                await RefreshComboBoxes().ConfigureAwait(false);
 
-            nudMarkup.Visible = AllowDiscounts || _objMount?.Markup != 0;
-            nudMarkup.Enabled = AllowDiscounts;
-            lblMarkupLabel.Visible = nudMarkup.Visible;
-            lblMarkupPercentLabel.Visible = nudMarkup.Visible;
+            await nudMarkup.DoThreadSafeAsync(x =>
+            {
+                x.Visible = AllowDiscounts || _objMount?.Markup != 0;
+                x.Enabled = AllowDiscounts;
+                lblMarkupLabel.DoThreadSafe(y => y.Visible = x.Visible);
+                lblMarkupPercentLabel.DoThreadSafe(y => y.Visible = x.Visible);
+            }).ConfigureAwait(false);
 
             if (_objMount != null)
             {
@@ -146,41 +156,41 @@ namespace Chummer
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstFlexibility))
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstControl))
                 {
-                    lstVisibility.AddRange(cboVisibility.Items.Cast<ListItem>());
-                    lstFlexibility.AddRange(cboFlexibility.Items.Cast<ListItem>());
-                    lstControl.AddRange(cboControl.Items.Cast<ListItem>());
+                    lstVisibility.AddRange(await cboVisibility.DoThreadSafeFuncAsync(x => x.Items.Cast<ListItem>()).ConfigureAwait(false));
+                    lstFlexibility.AddRange(await cboFlexibility.DoThreadSafeFuncAsync(x => x.Items.Cast<ListItem>()).ConfigureAwait(false));
+                    lstControl.AddRange(await cboControl.DoThreadSafeFuncAsync(x => x.Items.Cast<ListItem>()).ConfigureAwait(false));
                     foreach (string strLoopId in _objMount.WeaponMountOptions.Select(x => x.SourceIDString))
                     {
                         if (lstVisibility.Any(x => x.Value.ToString() == strLoopId))
-                            cboVisibility.SelectedValue = strLoopId;
+                            await cboVisibility.DoThreadSafeAsync(x => x.SelectedValue = strLoopId).ConfigureAwait(false);
                         else if (lstFlexibility.Any(x => x.Value.ToString() == strLoopId))
-                            cboFlexibility.SelectedValue = strLoopId;
+                            await cboFlexibility.DoThreadSafeAsync(x => x.SelectedValue = strLoopId).ConfigureAwait(false);
                         else if (lstControl.Any(x => x.Value.ToString() == strLoopId))
-                            cboControl.SelectedValue = strLoopId;
+                            await cboControl.DoThreadSafeAsync(x => x.SelectedValue = strLoopId).ConfigureAwait(false);
                     }
                 }
             }
 
-            chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
+            await chkBlackMarketDiscount.DoThreadSafeAsync(x => x.Visible = _objCharacter.BlackMarketDiscount).ConfigureAwait(false);
 
-            _blnLoading = false;
-            UpdateInfo();
+            Interlocked.Decrement(ref _intLoading);
+            await UpdateInfo().ConfigureAwait(false);
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object sender, EventArgs e)
         {
             //TODO: THIS IS UGLY AS SHIT, FIX BETTER
 
-            string strSelectedMount = cboSize.SelectedValue?.ToString();
+            string strSelectedMount = await cboSize.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strSelectedMount))
                 return;
-            string strSelectedControl = cboControl.SelectedValue?.ToString();
+            string strSelectedControl = await cboControl.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strSelectedControl))
                 return;
-            string strSelectedFlexibility = cboFlexibility.SelectedValue?.ToString();
+            string strSelectedFlexibility = await cboFlexibility.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strSelectedFlexibility))
                 return;
-            string strSelectedVisibility = cboVisibility.SelectedValue?.ToString();
+            string strSelectedVisibility = await cboVisibility.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strSelectedVisibility))
                 return;
 
@@ -324,14 +334,14 @@ namespace Chummer
                 if (_objMount == null)
                 {
                     _objMount = new WeaponMount(_objCharacter, _objVehicle);
-                    _objMount.Create(xmlSelectedMount, nudMarkup.Value);
+                    _objMount.Create(xmlSelectedMount, await nudMarkup.DoThreadSafeFuncAsync(x => x.Value).ConfigureAwait(false));
                 }
                 else if (_objMount.SourceIDString != strSelectedMount)
                 {
-                    _objMount.Create(xmlSelectedMount, nudMarkup.Value);
+                    _objMount.Create(xmlSelectedMount, await nudMarkup.DoThreadSafeFuncAsync(x => x.Value).ConfigureAwait(false));
                 }
 
-                _objMount.DiscountCost = chkBlackMarketDiscount.Checked;
+                _objMount.DiscountCost = await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false);
 
                 WeaponMountOption objControlOption = new WeaponMountOption(_objCharacter);
                 if (objControlOption.Create(xmlSelectedControl))
@@ -356,28 +366,28 @@ namespace Chummer
             }
 
             List<VehicleMod> lstOldRemovedVehicleMods
-                = _objMount.Mods.Where(x => !x.IncludedInVehicle && !_lstMods.Contains(x)).ToList();
-            _objMount.Mods.RemoveAll(x => lstOldRemovedVehicleMods.Contains(x));
+                = await _objMount.Mods.ToListAsync(x => !x.IncludedInVehicle && !_lstMods.Contains(x)).ConfigureAwait(false);
+            await _objMount.Mods.RemoveAllAsync(x => lstOldRemovedVehicleMods.Contains(x)).ConfigureAwait(false);
             List<VehicleMod> lstNewVehicleMods = new List<VehicleMod>(_lstMods.Count);
             foreach (VehicleMod objMod in _lstMods)
             {
-                if (_objMount.Mods.Contains(objMod))
+                if (await _objMount.Mods.ContainsAsync(objMod).ConfigureAwait(false))
                     continue;
                 lstNewVehicleMods.Add(objMod);
-                _objMount.Mods.Add(objMod);
+                await _objMount.Mods.AddAsync(objMod).ConfigureAwait(false);
             }
 
             if (_objCharacter.Created)
             {
                 bool blnRemoveMountAfterCheck = false;
                 // Check the item's Cost and make sure the character can afford it.
-                if (!chkFreeItem.Checked)
+                if (!await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
                 {
                     // New mount, so temporarily add it to parent vehicle to make sure we can capture everything
                     if (_objMount.Parent == null)
                     {
                         blnRemoveMountAfterCheck = true;
-                        _objVehicle.WeaponMounts.Add(_objMount);
+                        await _objVehicle.WeaponMounts.AddAsync(_objMount).ConfigureAwait(false);
                     }
 
                     decimal decCost = _objVehicle.TotalCost - _decOldBaseCost;
@@ -396,18 +406,18 @@ namespace Chummer
 
                     if (decCost > _objCharacter.Nuyen)
                     {
-                        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_NotEnoughNuyen"),
-                                                        LanguageManager.GetString("MessageTitle_NotEnoughNuyen"),
-                                                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_NotEnoughNuyen").ConfigureAwait(false),
+                                                         await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen").ConfigureAwait(false),
+                                                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                         if (blnRemoveMountAfterCheck)
                         {
-                            _objVehicle.WeaponMounts.Remove(_objMount);
+                            await _objVehicle.WeaponMounts.RemoveAsync(_objMount).ConfigureAwait(false);
                             _objMount = null;
                         }
                         else
                         {
-                            _objMount.Mods.RemoveAll(x => lstNewVehicleMods.Contains(x));
-                            _objMount.Mods.AddRange(lstOldRemovedVehicleMods);
+                            await _objMount.Mods.RemoveAllAsync(x => lstNewVehicleMods.Contains(x)).ConfigureAwait(false);
+                            await _objMount.Mods.AddRangeAsync(lstOldRemovedVehicleMods).ConfigureAwait(false);
                         }
                         return;
                     }
@@ -420,10 +430,10 @@ namespace Chummer
                     if (_objMount.Parent == null)
                     {
                         blnRemoveMountAfterCheck = true;
-                        _objVehicle.WeaponMounts.Add(_objMount);
+                        await _objVehicle.WeaponMounts.AddAsync(_objMount).ConfigureAwait(false);
                     }
                     bool blnOverCapacity;
-                    if (_objCharacter.Settings.BookEnabled("R5"))
+                    if (await _objCharacter.Settings.BookEnabledAsync("R5").ConfigureAwait(false))
                     {
                         if (_objVehicle.IsDrone && _objCharacter.Settings.DroneMods)
                             blnOverCapacity = _objVehicle.DroneModSlotsUsed > _objVehicle.DroneModSlots;
@@ -435,18 +445,18 @@ namespace Chummer
 
                     if (blnOverCapacity)
                     {
-                        Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_CapacityReached"),
-                                                        LanguageManager.GetString("MessageTitle_CapacityReached"),
-                                                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_CapacityReached").ConfigureAwait(false),
+                                                         await LanguageManager.GetStringAsync("MessageTitle_CapacityReached").ConfigureAwait(false),
+                                                         MessageBoxButtons.OK, MessageBoxIcon.Information);
                         if (blnRemoveMountAfterCheck)
                         {
-                            _objVehicle.WeaponMounts.Remove(_objMount);
+                            await _objVehicle.WeaponMounts.RemoveAsync(_objMount).ConfigureAwait(false);
                             _objMount = null;
                         }
                         else
                         {
-                            _objMount.Mods.RemoveAll(x => lstNewVehicleMods.Contains(x));
-                            _objMount.Mods.AddRange(lstOldRemovedVehicleMods);
+                            await _objMount.Mods.RemoveAllAsync(x => lstNewVehicleMods.Contains(x)).ConfigureAwait(false);
+                            await _objMount.Mods.AddRangeAsync(lstOldRemovedVehicleMods).ConfigureAwait(false);
                         }
                         return;
                     }
@@ -454,112 +464,119 @@ namespace Chummer
 
                 if (blnRemoveMountAfterCheck)
                 {
-                    _objVehicle.WeaponMounts.Remove(_objMount);
+                    await _objVehicle.WeaponMounts.RemoveAsync(_objMount).ConfigureAwait(false);
                 }
             }
 
-            _objMount.FreeCost = chkFreeItem.Checked;
+            _objMount.FreeCost = await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false);
 
-            DialogResult = DialogResult.OK;
+            await this.DoThreadSafeAsync(x =>
+            {
+                x.DialogResult = DialogResult.OK;
+                x.Close();
+            }).ConfigureAwait(false);
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
-        private void cboSize_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboSize_SelectedIndexChanged(object sender, EventArgs e)
         {
-            RefreshComboBoxes();
-            treMods.SelectedNode = null;
-            UpdateInfo();
+            await RefreshComboBoxes().ConfigureAwait(false);
+            await treMods.DoThreadSafeAsync(x => x.SelectedNode = null).ConfigureAwait(false);
+            await UpdateInfo().ConfigureAwait(false);
         }
 
-        private void comboBox_SelectedIndexChanged(object sender, EventArgs e)
+        private async void comboBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            treMods.SelectedNode = null;
-            UpdateInfo();
+            await treMods.DoThreadSafeAsync(x => x.SelectedNode = null).ConfigureAwait(false);
+            await UpdateInfo().ConfigureAwait(false);
         }
 
-        private void chkFreeItem_CheckedChanged(object sender, EventArgs e)
+        private async void chkFreeItem_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateInfo();
+            await UpdateInfo().ConfigureAwait(false);
         }
 
-        private void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
+        private async void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateInfo();
+            await UpdateInfo().ConfigureAwait(false);
         }
-
-        public bool FreeCost => chkFreeItem.Checked;
-
-        public decimal Markup => nudMarkup.Value;
 
         public bool AllowDiscounts { get; set; }
 
-        private void nudMarkup_ValueChanged(object sender, EventArgs e)
+        private async void nudMarkup_ValueChanged(object sender, EventArgs e)
         {
-            UpdateInfo();
+            await UpdateInfo().ConfigureAwait(false);
         }
 
-        private void UpdateInfo()
+        private async ValueTask UpdateInfo(CancellationToken token = default)
         {
-            if (_blnLoading)
+            token.ThrowIfCancellationRequested();
+            if (_intLoading > 0)
                 return;
 
             XmlNode xmlSelectedMount = null;
-            string strSelectedMount = cboSize.SelectedValue?.ToString();
+            string strSelectedMount = await cboSize.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strSelectedMount))
-                cmdOK.Enabled = false;
+                await cmdOK.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
             else
             {
                 xmlSelectedMount = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = " + strSelectedMount.CleanXPath() + ']');
                 if (xmlSelectedMount == null)
-                    cmdOK.Enabled = false;
+                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
                 else
                 {
-                    string strSelectedControl = cboControl.SelectedValue?.ToString();
+                    string strSelectedControl = await cboControl.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
                     if (string.IsNullOrEmpty(strSelectedControl))
-                        cmdOK.Enabled = false;
+                        await cmdOK.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
                     else if (_xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = " + strSelectedControl.CleanXPath() + ']') == null)
-                        cmdOK.Enabled = false;
+                        await cmdOK.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
                     else
                     {
-                        string strSelectedFlexibility = cboFlexibility.SelectedValue?.ToString();
+                        string strSelectedFlexibility = await cboFlexibility.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
                         if (string.IsNullOrEmpty(strSelectedFlexibility))
-                            cmdOK.Enabled = false;
+                            await cmdOK.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
                         else if (_xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = " + strSelectedFlexibility.CleanXPath() + ']') == null)
-                            cmdOK.Enabled = false;
+                            await cmdOK.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
                         else
                         {
-                            string strSelectedVisibility = cboVisibility.SelectedValue?.ToString();
+                            string strSelectedVisibility = await cboVisibility.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
                             if (string.IsNullOrEmpty(strSelectedVisibility))
-                                cmdOK.Enabled = false;
+                                await cmdOK.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
                             else if (_xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = " + strSelectedVisibility.CleanXPath() + ']') == null)
-                                cmdOK.Enabled = false;
+                                await cmdOK.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
                             else
-                                cmdOK.Enabled = true;
+                                await cmdOK.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
                         }
                     }
                 }
             }
 
-            string[] astrSelectedValues = { cboVisibility.SelectedValue?.ToString(), cboFlexibility.SelectedValue?.ToString(), cboControl.SelectedValue?.ToString() };
+            string[] astrSelectedValues =
+            {
+                await cboVisibility.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false),
+                await cboFlexibility.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false),
+                await cboControl.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false)
+            };
 
-            cmdDeleteMod.Enabled = false;
-            string strSelectedModId = treMods.SelectedNode?.Tag.ToString();
+            await cmdDeleteMod.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
+            string strSelectedModId = await treMods.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag.ToString(), token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strSelectedModId) && strSelectedModId.IsGuid())
             {
                 VehicleMod objMod = _lstMods.Find(x => x.InternalId == strSelectedModId);
                 if (objMod != null)
                 {
-                    cmdDeleteMod.Enabled = !objMod.IncludedInVehicle;
-                    lblSlots.Text = objMod.CalculatedSlots.ToString(GlobalSettings.InvariantCultureInfo);
-                    lblAvailability.Text = objMod.DisplayTotalAvail;
+                    await cmdDeleteMod.DoThreadSafeAsync(x => x.Enabled = !objMod.IncludedInVehicle, token).ConfigureAwait(false);
+                    await lblSlots.DoThreadSafeAsync(x => x.Text = objMod.CalculatedSlots.ToString(GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
+                    await lblAvailability.DoThreadSafeAsync(x => x.Text = objMod.DisplayTotalAvail, token).ConfigureAwait(false);
 
-                    if (chkFreeItem.Checked)
+                    if (await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
                     {
-                        lblCost.Text = (0.0m).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
+                        await lblCost.DoThreadSafeAsync(x => x.Text = (0.0m).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"), token).ConfigureAwait(false);
                     }
                     else
                     {
@@ -585,26 +602,35 @@ namespace Chummer
                                 continue;
                             intTotalSlots += objLoopMod.CalculatedSlots;
                         }
-                        lblCost.Text = (objMod.TotalCostInMountCreation(intTotalSlots) * (1 + (nudMarkup.Value / 100.0m))).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
+
+                        decimal decMarkup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token).ConfigureAwait(false);
+                        await lblCost.DoThreadSafeAsync(
+                            x => x.Text
+                                = (objMod.TotalCostInMountCreation(intTotalSlots) * (1 + decMarkup / 100.0m))
+                                .ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"), token).ConfigureAwait(false);
                     }
 
-                    objMod.SetSourceDetail(lblSource);
-                    lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);
-                    lblSlotsLabel.Visible = !string.IsNullOrEmpty(lblSlots.Text);
-                    lblAvailabilityLabel.Visible = !string.IsNullOrEmpty(lblAvailability.Text);
-                    lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
+                    await objMod.SetSourceDetailAsync(lblSource, token).ConfigureAwait(false);
+                    string strLoop1 = await lblCost.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false);
+                    await lblCostLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strLoop1), token).ConfigureAwait(false);
+                    string strLoop2 = await lblSlots.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false);
+                    await lblSlotsLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strLoop2), token).ConfigureAwait(false);
+                    string strLoop3 = await lblAvailability.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false);
+                    await lblAvailabilityLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strLoop3), token).ConfigureAwait(false);
+                    string strLoop4 = await lblSource.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false);
+                    await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strLoop4), token).ConfigureAwait(false);
                     return;
                 }
             }
 
             if (xmlSelectedMount == null)
             {
-                lblCost.Text = string.Empty;
-                lblSlots.Text = string.Empty;
-                lblAvailability.Text = string.Empty;
-                lblCostLabel.Visible = false;
-                lblSlotsLabel.Visible = false;
-                lblAvailabilityLabel.Visible = false;
+                await lblCost.DoThreadSafeAsync(x => x.Text = string.Empty, token).ConfigureAwait(false);
+                await lblSlots.DoThreadSafeAsync(x => x.Text = string.Empty, token).ConfigureAwait(false);
+                await lblAvailability.DoThreadSafeAsync(x => x.Text = string.Empty, token).ConfigureAwait(false);
+                await lblCostLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                await lblSlotsLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                await lblAvailabilityLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                 return;
             }
             // Cost.
@@ -612,22 +638,25 @@ namespace Chummer
             {
                 bool blnCanBlackMarketDiscount
                     = _setBlackMarketMaps.Contains(xmlSelectedMount.SelectSingleNode("category")?.Value);
-                chkBlackMarketDiscount.Enabled = blnCanBlackMarketDiscount;
-                if (!chkBlackMarketDiscount.Checked)
+                await chkBlackMarketDiscount.DoThreadSafeAsync(x =>
                 {
-                    chkBlackMarketDiscount.Checked = GlobalSettings.AssumeBlackMarket && blnCanBlackMarketDiscount;
-                }
-                else if (!blnCanBlackMarketDiscount)
-                {
-                    //Prevent chkBlackMarketDiscount from being checked if the category doesn't match.
-                    chkBlackMarketDiscount.Checked = false;
-                }
+                    x.Enabled = blnCanBlackMarketDiscount;
+                    if (!x.Checked)
+                    {
+                        x.Checked = GlobalSettings.AssumeBlackMarket && blnCanBlackMarketDiscount;
+                    }
+                    else if (!blnCanBlackMarketDiscount)
+                    {
+                        //Prevent chkBlackMarketDiscount from being checked if the category doesn't match.
+                        x.Checked = false;
+                    }
+                }, token).ConfigureAwait(false);
             }
             else
-                chkBlackMarketDiscount.Enabled = false;
+                await chkBlackMarketDiscount.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
 
             decimal decCost = 0;
-            if (!chkFreeItem.Checked && _blnAllowEditOptions)
+            if (!await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false) && _blnAllowEditOptions)
                 xmlSelectedMount.TryGetDecFieldQuickly("cost", ref decCost);
             int intSlots = 0;
             xmlSelectedMount.TryGetInt32FieldQuickly("slots", ref intSlots);
@@ -647,7 +676,7 @@ namespace Chummer
                 XmlNode xmlLoopNode = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = " + strSelectedId.CleanXPath() + ']');
                 if (xmlLoopNode == null)
                     continue;
-                if (!chkFreeItem.Checked && _blnAllowEditOptions)
+                if (!await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false) && _blnAllowEditOptions)
                 {
                     decimal decLoopCost = 0;
                     if (xmlLoopNode.TryGetDecFieldQuickly("cost", ref decLoopCost))
@@ -691,7 +720,7 @@ namespace Chummer
                     chrAvailSuffix = 'R';
                 intAvail += objLoopAvail.Value;
             }
-            if (!chkFreeItem.Checked)
+            if (!await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
             {
                 foreach (VehicleMod objMod in _lstMods)
                 {
@@ -701,35 +730,38 @@ namespace Chummer
                 }
             }
 
-            if (chkBlackMarketDiscount.Checked)
+            if (await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
                 decCost *= 0.9m;
 
             string strAvailText = intAvail.ToString(GlobalSettings.CultureInfo);
             switch (chrAvailSuffix)
             {
                 case 'F':
-                    strAvailText += LanguageManager.GetString("String_AvailForbidden");
+                    strAvailText += await LanguageManager.GetStringAsync("String_AvailForbidden", token: token).ConfigureAwait(false);
                     break;
 
                 case 'R':
-                    strAvailText += LanguageManager.GetString("String_AvailRestricted");
+                    strAvailText += await LanguageManager.GetStringAsync("String_AvailRestricted", token: token).ConfigureAwait(false);
                     break;
             }
 
-            decCost *= 1 + (nudMarkup.Value / 100.0m);
+            decCost *= 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token).ConfigureAwait(false) / 100.0m;
 
-            lblCost.Text = decCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-            lblSlots.Text = intSlots.ToString(GlobalSettings.CultureInfo);
-            lblAvailability.Text = strAvailText;
-            lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);
-            lblSlotsLabel.Visible = !string.IsNullOrEmpty(lblSlots.Text);
-            lblAvailabilityLabel.Visible = !string.IsNullOrEmpty(lblAvailability.Text);
-
-            string strSource = xmlSelectedMount["source"]?.InnerText ?? LanguageManager.GetString("String_Unknown");
-            string strPage = xmlSelectedMount["altpage"]?.InnerText ?? xmlSelectedMount["page"]?.InnerText ?? LanguageManager.GetString("String_Unknown");
-            SourceString objSourceString = new SourceString(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter);
-            objSourceString.SetControl(lblSource);
-            lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
+            await lblCost.DoThreadSafeAsync(x => x.Text = decCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"), token).ConfigureAwait(false);
+            await lblSlots.DoThreadSafeAsync(x => x.Text = intSlots.ToString(GlobalSettings.CultureInfo), token).ConfigureAwait(false);
+            await lblAvailability.DoThreadSafeAsync(x => x.Text = strAvailText, token).ConfigureAwait(false);
+            string strSource = xmlSelectedMount["source"]?.InnerText ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
+            string strPage = xmlSelectedMount["altpage"]?.InnerText ?? xmlSelectedMount["page"]?.InnerText ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
+            SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter, token).ConfigureAwait(false);
+            await objSourceString.SetControlAsync(lblSource, token).ConfigureAwait(false);
+            string strLoop5 = await lblCost.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false);
+            await lblCostLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strLoop5), token).ConfigureAwait(false);
+            string strLoop6 = await lblSlots.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false);
+            await lblSlotsLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strLoop6), token).ConfigureAwait(false);
+            string strLoop7 = await lblAvailability.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false);
+            await lblAvailabilityLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strLoop7), token).ConfigureAwait(false);
+            string strLoop8 = await lblSource.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false);
+            await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strLoop8), token).ConfigureAwait(false);
         }
 
         private async void cmdAddMod_Click(object sender, EventArgs e)
@@ -737,14 +769,20 @@ namespace Chummer
             bool blnAddAgain;
 
             XmlNode xmlSelectedMount = null;
-            string strSelectedMount = cboSize.SelectedValue?.ToString();
+            string strSelectedMount = await cboSize.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strSelectedMount))
                 xmlSelectedMount = _xmlDoc.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = " + strSelectedMount.CleanXPath() + ']');
 
             int intSlots = 0;
             xmlSelectedMount.TryGetInt32FieldQuickly("slots", ref intSlots);
 
-            string[] astrSelectedValues = { cboVisibility.SelectedValue?.ToString(), cboFlexibility.SelectedValue?.ToString(), cboControl.SelectedValue?.ToString() };
+            string[] astrSelectedValues =
+            {
+                await cboVisibility.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false),
+                await cboFlexibility.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false),
+                await cboControl.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false)
+            };
+
             foreach (string strSelectedId in astrSelectedValues)
             {
                 if (!string.IsNullOrEmpty(strSelectedId))
@@ -762,35 +800,37 @@ namespace Chummer
                     continue;
                 intSlots += objMod.CalculatedSlots;
             }
-            
-            TreeNode objModsParentNode = treMods.FindNode("Node_AdditionalMods");
+
+            TreeNode objModsParentNode = await treMods.DoThreadSafeFuncAsync(x => x.FindNode("Node_AdditionalMods")).ConfigureAwait(false);
             do
             {
-                using (SelectVehicleMod frmPickVehicleMod = new SelectVehicleMod(_objCharacter, _objVehicle, _objMount?.Mods)
+                int intLoopSlots = intSlots;
+                using (ThreadSafeForm<SelectVehicleMod> frmPickVehicleMod =
+                       await ThreadSafeForm<SelectVehicleMod>.GetAsync(() =>
+                                                                           new SelectVehicleMod(_objCharacter, _objVehicle, _objMount?.Mods)
+                                                                           {
+                                                                               // Pass the selected vehicle on to the form.
+                                                                               VehicleMountMods = true,
+                                                                               WeaponMountSlots = intLoopSlots
+                                                                           }).ConfigureAwait(false))
                 {
-                    // Pass the selected vehicle on to the form.
-                    VehicleMountMods = true,
-                    WeaponMountSlots = intSlots
-                })
-                {
-                    await frmPickVehicleMod.ShowDialogSafeAsync(this);
-
                     // Make sure the dialogue window was not canceled.
-                    if (frmPickVehicleMod.DialogResult == DialogResult.Cancel)
+                    if (await frmPickVehicleMod.ShowDialogSafeAsync(this).ConfigureAwait(false) == DialogResult.Cancel)
                         break;
 
-                    blnAddAgain = frmPickVehicleMod.AddAgain;
-                    XmlDocument objXmlDocument = await _objCharacter.LoadDataAsync("vehicles.xml");
-                    XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/weaponmountmods/mod[id = " + frmPickVehicleMod.SelectedMod.CleanXPath() + ']');
+                    blnAddAgain = frmPickVehicleMod.MyForm.AddAgain;
+                    XmlDocument objXmlDocument = await _objCharacter.LoadDataAsync("vehicles.xml").ConfigureAwait(false);
+                    XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/weaponmountmods/mod[id = " + frmPickVehicleMod.MyForm.SelectedMod.CleanXPath() + ']');
 
                     VehicleMod objMod = new VehicleMod(_objCharacter)
                     {
-                        DiscountCost = frmPickVehicleMod.BlackMarketDiscount
+                        DiscountCost = frmPickVehicleMod.MyForm.BlackMarketDiscount
                     };
-                    objMod.Create(objXmlMod, frmPickVehicleMod.SelectedRating, _objVehicle, frmPickVehicleMod.Markup);
-                    if (frmPickVehicleMod.FreeCost)
+                    objMod.Create(objXmlMod, frmPickVehicleMod.MyForm.SelectedRating, _objVehicle, frmPickVehicleMod.MyForm.Markup);
+                    if (frmPickVehicleMod.MyForm.FreeCost)
                         objMod.Cost = "0";
-                    _objMount?.Mods.Add(objMod);
+                    if (_objMount != null)
+                        await _objMount.Mods.AddAsync(objMod).ConfigureAwait(false);
                     _lstMods.Add(objMod);
                     intSlots += objMod.CalculatedSlots;
 
@@ -801,14 +841,22 @@ namespace Chummer
                         objModsParentNode = new TreeNode
                         {
                             Tag = "Node_AdditionalMods",
-                            Text = await LanguageManager.GetStringAsync("Node_AdditionalMods")
+                            Text = await LanguageManager.GetStringAsync("Node_AdditionalMods").ConfigureAwait(false)
                         };
-                        treMods.Nodes.Add(objModsParentNode);
-                        objModsParentNode.Expand();
+                        TreeNode objLoopNode = objModsParentNode;
+                        await treMods.DoThreadSafeAsync(x =>
+                        {
+                            x.Nodes.Add(objLoopNode);
+                            objLoopNode.Expand();
+                        }).ConfigureAwait(false);
                     }
 
-                    objModsParentNode.Nodes.Add(objNewNode);
-                    treMods.SelectedNode = objNewNode;
+                    TreeNode objLoopNode2 = objModsParentNode;
+                    await treMods.DoThreadSafeAsync(x =>
+                    {
+                        objLoopNode2.Nodes.Add(objNewNode);
+                        x.SelectedNode = objNewNode;
+                    }).ConfigureAwait(false);
                 }
             }
             while (blnAddAgain);
@@ -835,33 +883,33 @@ namespace Chummer
             }
         }
 
-        private void treMods_AfterSelect(object sender, TreeViewEventArgs e)
+        private async void treMods_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            UpdateInfo();
+            await UpdateInfo().ConfigureAwait(false);
         }
 
-        private void RefreshComboBoxes()
+        private async ValueTask RefreshComboBoxes(CancellationToken token = default)
         {
             XPathNavigator xmlRequiredNode = null;
             XPathNavigator xmlForbiddenNode = null;
-            string strSelectedMount = cboSize.SelectedValue?.ToString();
+            string strSelectedMount = await cboSize.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strSelectedMount))
             {
                 XPathNavigator xmlSelectedMount = _xmlDocXPath.SelectSingleNode("/chummer/weaponmounts/weaponmount[id = " + strSelectedMount.CleanXPath() + ']');
                 if (xmlSelectedMount != null)
                 {
-                    xmlForbiddenNode = xmlSelectedMount.SelectSingleNodeAndCacheExpression("forbidden/weaponmountdetails");
-                    xmlRequiredNode = xmlSelectedMount.SelectSingleNodeAndCacheExpression("required/weaponmountdetails");
+                    xmlForbiddenNode = await xmlSelectedMount.SelectSingleNodeAndCacheExpressionAsync("forbidden/weaponmountdetails", token: token).ConfigureAwait(false);
+                    xmlRequiredNode = await xmlSelectedMount.SelectSingleNodeAndCacheExpressionAsync("required/weaponmountdetails", token: token).ConfigureAwait(false);
                 }
             }
 
-            XPathNavigator xmlVehicleNode = _objVehicle.GetNodeXPath();
+            XPathNavigator xmlVehicleNode = await _objVehicle.GetNodeXPathAsync(token: token).ConfigureAwait(false);
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstVisibility))
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstFlexibility))
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstControl))
             {
                 // Populate the Weapon Mount Category list.
-                string strFilter = "category != \"Size\" and " + _objCharacter.Settings.BookXPath();
+                string strFilter = "category != \"Size\" and " + await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false);
                 if (!_objVehicle.IsDrone && _objCharacter.Settings.DroneMods)
                     strFilter += " and not(optionaldrone)";
                 XPathNodeIterator xmlWeaponMountOptionNodeList
@@ -870,32 +918,34 @@ namespace Chummer
                 {
                     foreach (XPathNavigator xmlWeaponMountOptionNode in xmlWeaponMountOptionNodeList)
                     {
-                        string strId = xmlWeaponMountOptionNode.SelectSingleNode("id")?.Value;
+                        string strId = (await xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpressionAsync("id", token).ConfigureAwait(false))?.Value;
                         if (string.IsNullOrEmpty(strId))
                             continue;
 
-                        XPathNavigator xmlTestNode = xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpression("forbidden/vehicledetails");
-                        if (xmlTestNode != null && xmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
+                        XPathNavigator xmlTestNode = await xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpressionAsync("forbidden/vehicledetails", token: token).ConfigureAwait(false);
+                        if (xmlTestNode != null && await xmlVehicleNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token: token).ConfigureAwait(false))
                         {
                             // Assumes topmost parent is an AND node
                             continue;
                         }
 
-                        xmlTestNode = xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpression("required/vehicledetails");
-                        if (xmlTestNode != null && !xmlVehicleNode.ProcessFilterOperationNode(xmlTestNode, false))
+                        xmlTestNode = await xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpressionAsync("required/vehicledetails", token: token).ConfigureAwait(false);
+                        if (xmlTestNode != null && !await xmlVehicleNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token: token).ConfigureAwait(false))
                         {
                             // Assumes topmost parent is an AND node
                             continue;
                         }
 
-                        string strName = xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpression("name")?.Value
-                                         ?? LanguageManager.GetString("String_Unknown");
+                        string strName = (await xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value
+                                         ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                         bool blnAddItem = true;
-                        switch (xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpression("category")?.Value)
+                        switch ((await xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpressionAsync("category", token: token).ConfigureAwait(false))?.Value)
                         {
                             case "Visibility":
                             {
-                                XPathNodeIterator xmlNodeList = xmlForbiddenNode?.Select("visibility");
+                                XPathNodeIterator xmlNodeList = xmlForbiddenNode != null
+                                    ? await xmlForbiddenNode.SelectAndCacheExpressionAsync("visibility", token).ConfigureAwait(false)
+                                    : null;
                                 if (xmlNodeList?.Count > 0)
                                 {
                                     foreach (XPathNavigator xmlLoopNode in xmlNodeList)
@@ -911,7 +961,7 @@ namespace Chummer
                                 if (xmlRequiredNode != null)
                                 {
                                     blnAddItem = false;
-                                    xmlNodeList = xmlRequiredNode.Select("visibility");
+                                    xmlNodeList = await xmlRequiredNode.SelectAndCacheExpressionAsync("visibility", token).ConfigureAwait(false);
                                     if (xmlNodeList.Count > 0)
                                     {
                                         foreach (XPathNavigator xmlLoopNode in xmlNodeList)
@@ -928,21 +978,25 @@ namespace Chummer
                                 if (blnAddItem)
                                     lstVisibility.Add(
                                         new ListItem(
-                                            strId, xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                                            strId, (await xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? strName));
                             }
                                 break;
 
                             case "Flexibility":
                             {
-                                XPathNodeIterator xmlNodeList = xmlForbiddenNode?.SelectAndCacheExpression("flexibility");
-                                if (xmlNodeList?.Count > 0)
+                                if (xmlForbiddenNode != null)
                                 {
-                                    foreach (XPathNavigator xmlLoopNode in xmlNodeList)
+                                    XPathNodeIterator xmlNodeList
+                                        = await xmlForbiddenNode.SelectAndCacheExpressionAsync("flexibility", token: token).ConfigureAwait(false);
+                                    if (xmlNodeList?.Count > 0)
                                     {
-                                        if (xmlLoopNode.Value == strName)
+                                        foreach (XPathNavigator xmlLoopNode in xmlNodeList)
                                         {
-                                            blnAddItem = false;
-                                            break;
+                                            if (xmlLoopNode.Value == strName)
+                                            {
+                                                blnAddItem = false;
+                                                break;
+                                            }
                                         }
                                     }
                                 }
@@ -950,7 +1004,7 @@ namespace Chummer
                                 if (xmlRequiredNode != null)
                                 {
                                     blnAddItem = false;
-                                    xmlNodeList = xmlRequiredNode.SelectAndCacheExpression("flexibility");
+                                    XPathNodeIterator xmlNodeList = await xmlRequiredNode.SelectAndCacheExpressionAsync("flexibility", token: token).ConfigureAwait(false);
                                     if (xmlNodeList?.Count > 0)
                                     {
                                         foreach (XPathNavigator xmlLoopNode in xmlNodeList)
@@ -967,21 +1021,25 @@ namespace Chummer
                                 if (blnAddItem)
                                     lstFlexibility.Add(
                                         new ListItem(
-                                            strId, xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                                            strId, (await xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? strName));
                             }
                                 break;
 
                             case "Control":
                             {
-                                XPathNodeIterator xmlNodeList = xmlForbiddenNode?.SelectAndCacheExpression("control");
-                                if (xmlNodeList?.Count > 0)
+                                if (xmlForbiddenNode != null)
                                 {
-                                    foreach (XPathNavigator xmlLoopNode in xmlNodeList)
+                                    XPathNodeIterator xmlNodeList
+                                        = await xmlForbiddenNode.SelectAndCacheExpressionAsync("control", token: token).ConfigureAwait(false);
+                                    if (xmlNodeList?.Count > 0)
                                     {
-                                        if (xmlLoopNode.Value == strName)
+                                        foreach (XPathNavigator xmlLoopNode in xmlNodeList)
                                         {
-                                            blnAddItem = false;
-                                            break;
+                                            if (xmlLoopNode.Value == strName)
+                                            {
+                                                blnAddItem = false;
+                                                break;
+                                            }
                                         }
                                     }
                                 }
@@ -989,7 +1047,7 @@ namespace Chummer
                                 if (xmlRequiredNode != null)
                                 {
                                     blnAddItem = false;
-                                    xmlNodeList = xmlRequiredNode.SelectAndCacheExpression("control");
+                                    XPathNodeIterator xmlNodeList = await xmlRequiredNode.SelectAndCacheExpressionAsync("control", token: token).ConfigureAwait(false);
                                     if (xmlNodeList?.Count > 0)
                                     {
                                         foreach (XPathNavigator xmlLoopNode in xmlNodeList)
@@ -1006,7 +1064,7 @@ namespace Chummer
                                 if (blnAddItem)
                                     lstControl.Add(
                                         new ListItem(
-                                            strId, xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                                            strId, (await xmlWeaponMountOptionNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? strName));
                             }
                                 break;
 
@@ -1017,45 +1075,58 @@ namespace Chummer
                     }
                 }
 
-                bool blnOldLoading = _blnLoading;
-                _blnLoading = true;
-                string strOldVisibility = cboVisibility.SelectedValue?.ToString();
-                string strOldFlexibility = cboFlexibility.SelectedValue?.ToString();
-                string strOldControl = cboControl.SelectedValue?.ToString();
-                cboVisibility.BeginUpdate();
-                cboVisibility.PopulateWithListItems(lstVisibility);
-                cboVisibility.Enabled = _blnAllowEditOptions && lstVisibility.Count > 1;
-                if (!string.IsNullOrEmpty(strOldVisibility))
-                    cboVisibility.SelectedValue = strOldVisibility;
-                if (cboVisibility.SelectedIndex == -1 && lstVisibility.Count > 0)
-                    cboVisibility.SelectedIndex = 0;
-                cboVisibility.EndUpdate();
-
-                cboFlexibility.BeginUpdate();
-                cboFlexibility.PopulateWithListItems(lstFlexibility);
-                cboFlexibility.Enabled = _blnAllowEditOptions && lstFlexibility.Count > 1;
-                if (!string.IsNullOrEmpty(strOldFlexibility))
-                    cboFlexibility.SelectedValue = strOldFlexibility;
-                if (cboFlexibility.SelectedIndex == -1 && lstFlexibility.Count > 0)
-                    cboFlexibility.SelectedIndex = 0;
-                cboFlexibility.EndUpdate();
-
-                cboControl.BeginUpdate();
-                cboControl.PopulateWithListItems(lstControl);
-                cboControl.Enabled = _blnAllowEditOptions && lstControl.Count > 1;
-                if (!string.IsNullOrEmpty(strOldControl))
-                    cboControl.SelectedValue = strOldControl;
-                if (cboControl.SelectedIndex == -1 && lstControl.Count > 0)
-                    cboControl.SelectedIndex = 0;
-                cboControl.EndUpdate();
-
-                _blnLoading = blnOldLoading;
+                Interlocked.Increment(ref _intLoading);
+                try
+                {
+                    string strOldVisibility = await cboVisibility
+                                                    .DoThreadSafeFuncAsync(
+                                                        x => x.SelectedValue?.ToString(), token: token)
+                                                    .ConfigureAwait(false);
+                    string strOldFlexibility = await cboFlexibility
+                                                     .DoThreadSafeFuncAsync(
+                                                         x => x.SelectedValue?.ToString(), token: token)
+                                                     .ConfigureAwait(false);
+                    string strOldControl = await cboControl
+                                                 .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token)
+                                                 .ConfigureAwait(false);
+                    await cboVisibility.PopulateWithListItemsAsync(lstVisibility, token: token).ConfigureAwait(false);
+                    await cboVisibility.DoThreadSafeAsync(x =>
+                    {
+                        x.Enabled = _blnAllowEditOptions && lstVisibility.Count > 1;
+                        if (!string.IsNullOrEmpty(strOldVisibility))
+                            x.SelectedValue = strOldVisibility;
+                        if (x.SelectedIndex == -1 && lstVisibility.Count > 0)
+                            x.SelectedIndex = 0;
+                    }, token: token).ConfigureAwait(false);
+                    await cboFlexibility.PopulateWithListItemsAsync(lstFlexibility, token: token).ConfigureAwait(false);
+                    await cboFlexibility.DoThreadSafeAsync(x =>
+                    {
+                        x.Enabled = _blnAllowEditOptions && lstFlexibility.Count > 1;
+                        if (!string.IsNullOrEmpty(strOldFlexibility))
+                            x.SelectedValue = strOldFlexibility;
+                        if (x.SelectedIndex == -1 && lstFlexibility.Count > 0)
+                            x.SelectedIndex = 0;
+                    }, token: token).ConfigureAwait(false);
+                    await cboControl.PopulateWithListItemsAsync(lstControl, token: token).ConfigureAwait(false);
+                    await cboControl.DoThreadSafeAsync(x =>
+                    {
+                        x.Enabled = _blnAllowEditOptions && lstControl.Count > 1;
+                        if (!string.IsNullOrEmpty(strOldControl))
+                            x.SelectedValue = strOldControl;
+                        if (x.SelectedIndex == -1 && lstControl.Count > 0)
+                            x.SelectedIndex = 0;
+                    }, token: token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    Interlocked.Decrement(ref _intLoading);
+                }
             }
         }
 
         private async void lblSource_Click(object sender, EventArgs e)
         {
-            await CommonFunctions.OpenPdfFromControl(sender, e);
+            await CommonFunctions.OpenPdfFromControl(sender).ConfigureAwait(false);
         }
     }
 }

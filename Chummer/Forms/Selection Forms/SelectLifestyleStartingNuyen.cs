@@ -19,6 +19,8 @@
 
 using System;
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer.Backend.Equipment;
 
@@ -49,56 +51,104 @@ namespace Chummer
         private void cmdOK_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.OK;
+            Close();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
-        private void SelectLifestyleStartingNuyen_Load(object sender, EventArgs e)
+        private async void SelectLifestyleStartingNuyen_Load(object sender, EventArgs e)
         {
-            RefreshSelectLifestyle();
+            await RefreshSelectLifestyle().ConfigureAwait(false);
         }
 
-        private void nudDiceResult_ValueChanged(object sender, EventArgs e)
+        private async void nudDiceResult_ValueChanged(object sender, EventArgs e)
         {
-            string strSpace = LanguageManager.GetString("String_Space");
-            lblResult.Text = strSpace + '+' + strSpace + Extra.ToString("#,0", GlobalSettings.CultureInfo) + ')' + strSpace + '×'
-                             + strSpace + (SelectedLifestyle?.Multiplier ?? 0).ToString(_objCharacter.Settings.NuyenFormat + '¥', GlobalSettings.CultureInfo)
-                             + strSpace + '=' + strSpace + StartingNuyen.ToString(_objCharacter.Settings.NuyenFormat + '¥', GlobalSettings.CultureInfo);
+            await RefreshResultLabel().ConfigureAwait(false);
         }
 
-        private void cboSelectLifestyle_SelectionChanged(object sender, EventArgs e)
+        private async ValueTask RefreshResultLabel(CancellationToken token = default)
+        {
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            try
+            {
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                await lblResult.DoThreadSafeAsync(x => x.Text = strSpace + '+' + strSpace
+                                                                + Extra.ToString("#,0", GlobalSettings.CultureInfo)
+                                                                + ')' +
+                                                                strSpace + '×'
+                                                                + strSpace + (SelectedLifestyle?.Multiplier ?? 0)
+                                                                .ToString(
+                                                                    _objCharacter.Settings.NuyenFormat
+                                                                    + LanguageManager.GetString("String_NuyenSymbol"),
+                                                                    GlobalSettings.CultureInfo)
+                                                                + strSpace + '=' + strSpace +
+                                                                StartingNuyen.ToString(
+                                                                    _objCharacter.Settings.NuyenFormat
+                                                                    + LanguageManager.GetString("String_NuyenSymbol"),
+                                                                    GlobalSettings.CultureInfo), token: token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        private async void cboSelectLifestyle_SelectionChanged(object sender, EventArgs e)
+        {
+            await RefreshBaseLifestyle().ConfigureAwait(false);
+        }
+
+        private async ValueTask RefreshBaseLifestyle()
         {
             if (_blnIsSelectLifestyleRefreshing)
                 return;
-            if (cboSelectLifestyle.SelectedIndex < 0)
+            if (await cboSelectLifestyle.DoThreadSafeFuncAsync(x => x.SelectedIndex).ConfigureAwait(false) < 0)
                 return;
-            _objLifestyle = ((ListItem)cboSelectLifestyle.SelectedItem).Value as Lifestyle;
-            lblDice.Text = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Label_LifestyleNuyen_ResultOf"), SelectedLifestyle?.Dice ?? 0);
-            RefreshCalculation();
+            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
+            try
+            {
+                _objLifestyle
+                    = ((ListItem) await cboSelectLifestyle.DoThreadSafeFuncAsync(x => x.SelectedItem).ConfigureAwait(false))
+                    .Value as Lifestyle;
+                string strDice = string.Format(GlobalSettings.CultureInfo,
+                                               await LanguageManager.GetStringAsync("Label_LifestyleNuyen_ResultOf").ConfigureAwait(false),
+                                               SelectedLifestyle?.Dice ?? 0);
+                await lblDice.DoThreadSafeAsync(x => x.Text = strDice).ConfigureAwait(false);
+                await RefreshCalculation().ConfigureAwait(false);
+                await cmdRoll.DoThreadSafeAsync(x => x.Enabled = SelectedLifestyle?.Dice > 0).ConfigureAwait(false);
+                await DoRoll().ConfigureAwait(false);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
-        private void RefreshSelectLifestyle()
+        private async ValueTask RefreshSelectLifestyle()
         {
             _blnIsSelectLifestyleRefreshing = true;
-            using (new CursorWait(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
+            try
             {
                 try
                 {
                     Lifestyle objPreferredLifestyle = null;
                     ListItem objPreferredLifestyleItem = default;
-                    Lifestyle objCurrentlySelectedLifestyle = cboSelectLifestyle.SelectedIndex >= 0
-                        ? ((ListItem)cboSelectLifestyle.SelectedItem).Value as Lifestyle
-                        : null;
+                    Lifestyle objCurrentlySelectedLifestyle = await cboSelectLifestyle.DoThreadSafeFuncAsync(
+                        x => x.SelectedIndex >= 0
+                            ? ((ListItem) x.SelectedItem).Value as Lifestyle
+                            : null).ConfigureAwait(false);
                     using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstLifestyleItems))
                     {
                         foreach (Lifestyle objLifestyle in _objCharacter.Lifestyles)
                         {
-                            ListItem objLifestyleItem = new ListItem(objLifestyle, objLifestyle.CurrentDisplayName);
-                            lstLifestyleItems.Add(new ListItem(objLifestyle, objLifestyle.CurrentDisplayName));
+                            ListItem objLifestyleItem = new ListItem(objLifestyle, await objLifestyle.GetCurrentDisplayNameAsync().ConfigureAwait(false));
+                            lstLifestyleItems.Add(objLifestyleItem);
                             // We already selected a lifestyle, so keep the selection if possible despite the refresh
                             if (objCurrentlySelectedLifestyle != null)
                             {
@@ -115,51 +165,81 @@ namespace Chummer
 
                         lstLifestyleItems.Sort(CompareListItems.CompareNames);
 
-                        cboSelectLifestyle.BeginUpdate();
-                        cboSelectLifestyle.PopulateWithListItems(lstLifestyleItems);
-                        cboSelectLifestyle.SelectedItem = objPreferredLifestyleItem;
-                        if (cboSelectLifestyle.SelectedIndex < 0 && lstLifestyleItems.Count > 0)
-                            cboSelectLifestyle.SelectedIndex = 0;
-                        cboSelectLifestyle.Enabled = lstLifestyleItems.Count > 1;
-                        cboSelectLifestyle.EndUpdate();
+                        await cboSelectLifestyle.PopulateWithListItemsAsync(lstLifestyleItems).ConfigureAwait(false);
+                        await cboSelectLifestyle.DoThreadSafeAsync(x =>
+                        {
+                            x.SelectedItem = objPreferredLifestyleItem;
+                            if (x.SelectedIndex < 0 && lstLifestyleItems.Count > 0)
+                                x.SelectedIndex = 0;
+                            x.Enabled = lstLifestyleItems.Count > 1;
+                        }).ConfigureAwait(false);
                     }
                 }
                 finally
                 {
                     _blnIsSelectLifestyleRefreshing = false;
-                    cboSelectLifestyle_SelectionChanged(this, EventArgs.Empty);
-                    cmdRoll.Enabled = SelectedLifestyle?.Dice > 0;
                 }
-            }
-        }
 
-        private void RefreshCalculation()
-        {
-            using (new CursorWait(this))
+                await RefreshBaseLifestyle().ConfigureAwait(false);
+            }
+            finally
             {
-                nudDiceResult.SuspendLayout();
-                nudDiceResult.MinimumAsInt =
-                    int.MinValue; // Temporarily set this to avoid crashing if we shift from something with more than 6 dice to something with less.
-                nudDiceResult.MaximumAsInt = SelectedLifestyle?.Dice * 6 ?? 0;
-                nudDiceResult.MinimumAsInt = SelectedLifestyle?.Dice ?? 0;
-                nudDiceResult.ResumeLayout();
-                nudDiceResult_ValueChanged(this, EventArgs.Empty);
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
-        private void cmdRoll_Click(object sender, EventArgs e)
+        private async ValueTask RefreshCalculation(CancellationToken token = default)
+        {
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            try
+            {
+                await nudDiceResult.DoThreadSafeAsync(x =>
+                {
+                    x.SuspendLayout();
+                    try
+                    {
+                        x.MinimumAsInt =
+                            int.MinValue; // Temporarily set this to avoid crashing if we shift from something with more than 6 dice to something with less.
+                        x.MaximumAsInt = SelectedLifestyle?.Dice * 6 ?? 0;
+                        x.MinimumAsInt = SelectedLifestyle?.Dice ?? 0;
+                    }
+                    finally
+                    {
+                        x.ResumeLayout();
+                    }
+                }, token: token).ConfigureAwait(false);
+                await RefreshResultLabel(token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        private async void cmdRoll_Click(object sender, EventArgs e)
         {
             if (SelectedLifestyle == null)
                 return;
-            using (new CursorWait(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
+            try
             {
-                int intResult = 0;
-                for (int i = 0; i < SelectedLifestyle.Dice; ++i)
-                {
-                    intResult += GlobalSettings.RandomGenerator.NextD6ModuloBiasRemoved();
-                }
-                nudDiceResult.ValueAsInt = intResult;
+                await DoRoll().ConfigureAwait(false);
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        private async ValueTask DoRoll(CancellationToken token = default)
+        {
+            int intResult = 0;
+            for (int i = 0; i < SelectedLifestyle.Dice; ++i)
+            {
+                intResult += await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync(token: token).ConfigureAwait(false);
+            }
+
+            await nudDiceResult.DoThreadSafeAsync(x => x.ValueAsInt = intResult, token: token).ConfigureAwait(false);
         }
 
         #endregion Control Events
@@ -177,7 +257,7 @@ namespace Chummer
         public decimal StartingNuyen => ((nudDiceResult.Value + Extra) * SelectedLifestyle?.Multiplier) ?? 0;
 
         /// <summary>
-        /// The currently selected lifestyl
+        /// The currently selected lifestyle
         /// </summary>
         public Lifestyle SelectedLifestyle => _objLifestyle;
 

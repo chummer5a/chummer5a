@@ -18,6 +18,8 @@
  */
 
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -33,36 +35,64 @@ namespace Chummer
             this.TranslateWinForm();
         }
 
-        private void SelectDiceHits_Load(object sender, EventArgs e)
+        private async void SelectDiceHits_Load(object sender, EventArgs e)
         {
-            string strSpace = LanguageManager.GetString("String_Space");
-            lblDice.Text = LanguageManager.GetString("String_DiceHits_HitsOn") + strSpace + Dice.ToString(GlobalSettings.CultureInfo)
-                           + LanguageManager.GetString("String_D6") + LanguageManager.GetString("String_Colon") + strSpace;
-            nudDiceResult.Maximum = Dice * 6;
-            nudDiceResult.Minimum = 6;
+            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
+            try
+            {
+                string strSpace = await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false);
+                string strText = await LanguageManager.GetStringAsync("String_DiceHits_HitsOn").ConfigureAwait(false) + strSpace
+                    + Dice.ToString(GlobalSettings.CultureInfo)
+                    + await LanguageManager.GetStringAsync("String_D6").ConfigureAwait(false)
+                    + await LanguageManager.GetStringAsync("String_Colon").ConfigureAwait(false) + strSpace;
+                await lblDice.DoThreadSafeAsync(x => x.Text = strText).ConfigureAwait(false);
+                await nudDiceResult.DoThreadSafeAsync(x =>
+                {
+                    x.Maximum = Dice * 6;
+                    x.Minimum = 6;
+                }).ConfigureAwait(false);
+                await DoRoll().ConfigureAwait(false);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.OK;
+            Close();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
-        private void cmdRoll_Click(object sender, EventArgs e)
+        private async void cmdRoll_Click(object sender, EventArgs e)
         {
-            using (new CursorWait(this))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
+            try
             {
-                int intResult = 0;
-                for (int i = 0; i < Dice; ++i)
-                {
-                    intResult += GlobalSettings.RandomGenerator.NextD6ModuloBiasRemoved();
-                }
-                nudDiceResult.ValueAsInt = intResult;
+                await DoRoll().ConfigureAwait(false);
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        private async ValueTask DoRoll(CancellationToken token = default)
+        {
+            int intResult = 0;
+            for (int i = 0; i < Dice; ++i)
+            {
+                intResult += await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync(token: token).ConfigureAwait(false);
+            }
+
+            await nudDiceResult.DoThreadSafeAsync(x => x.ValueAsInt = intResult, token: token).ConfigureAwait(false);
         }
 
         #endregion Control Events
@@ -79,14 +109,20 @@ namespace Chummer
             get => _intDice;
             set
             {
-                if (_intDice == value)
+                if (Interlocked.Exchange(ref _intDice, value) == value)
                     return;
-                _intDice = value;
                 nudDiceResult.SuspendLayout();
-                nudDiceResult.MinimumAsInt = int.MinValue; // Temporarily set this to avoid crashing if we shift from something with more than 6 dice to something with less.
-                nudDiceResult.MaximumAsInt = value * 6;
-                nudDiceResult.MinimumAsInt = value;
-                nudDiceResult.ResumeLayout();
+                try
+                {
+                    nudDiceResult.MinimumAsInt
+                        = int.MinValue; // Temporarily set this to avoid crashing if we shift from something with more than 6 dice to something with less.
+                    nudDiceResult.MaximumAsInt = value * 6;
+                    nudDiceResult.MinimumAsInt = value;
+                }
+                finally
+                {
+                    nudDiceResult.ResumeLayout();
+                }
             }
         }
 

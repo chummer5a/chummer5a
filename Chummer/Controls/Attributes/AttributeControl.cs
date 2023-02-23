@@ -21,6 +21,8 @@ using System;
 using System.ComponentModel;
 using System.Drawing;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer.Annotations;
 using Chummer.Backend.Attributes;
@@ -31,18 +33,21 @@ namespace Chummer.UI.Attributes
     public partial class AttributeControl : UserControl
     {
         public event EventHandler ValueChanged;
-        
+
         private readonly string _strAttributeName;
         private int _oldBase;
         private int _oldKarma;
         private readonly Character _objCharacter;
+
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly BindingSource _dataSource;
 
         private readonly NumericUpDownEx nudKarma;
         private readonly NumericUpDownEx nudBase;
+
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly ButtonWithToolTip cmdBurnEdge;
+
         // ReSharper disable once PrivateFieldCanBeConvertedToLocalVariable
         private readonly ButtonWithToolTip cmdImproveATT;
 
@@ -56,146 +61,217 @@ namespace Chummer.UI.Attributes
 
             InitializeComponent();
 
+            Disposed += (sender, args) => UnbindAttributeControl();
+
             SuspendLayout();
-            //Display
-            lblName.DoOneWayDataBinding("Text", _dataSource, nameof(CharacterAttrib.DisplayNameFormatted));
-            lblValue.DoOneWayDataBinding("Text", _dataSource, nameof(CharacterAttrib.DisplayValue));
-            lblLimits.DoOneWayDataBinding("Text", _dataSource, nameof(CharacterAttrib.AugmentedMetatypeLimits));
-            lblValue.DoOneWayDataBinding("ToolTipText", _dataSource, nameof(CharacterAttrib.ToolTip));
-            if (_objCharacter.Created)
+            try
             {
-                cmdImproveATT = new ButtonWithToolTip
+                // To make sure that the initial load formats the name column properly, we need to set the attribute name in the constructor
+                lblName.Text = attribute.DisplayNameFormatted;
+                //Display
+                if (_objCharacter.Created)
                 {
-                    Anchor = AnchorStyles.Right,
-                    AutoSize = true,
-                    AutoSizeMode = AutoSizeMode.GrowAndShrink,
-                    Padding = new Padding(1),
-                    MinimumSize = new Size(24, 24),
-                    ImageDpi96 = Resources.add,
-                    ImageDpi192 = Resources.add1,
-                    Name = "cmdImproveATT",
-                    UseVisualStyleBackColor = true
-                };
-                cmdImproveATT.Click += cmdImproveATT_Click;
-                cmdImproveATT.DoOneWayDataBinding("ToolTipText", _dataSource, nameof(CharacterAttrib.UpgradeToolTip));
-                cmdImproveATT.DoOneWayDataBinding("Enabled", _dataSource, nameof(CharacterAttrib.CanUpgradeCareer));
-                flpRight.Controls.Add(cmdImproveATT);
-                if (AttributeName == "EDG")
-                {
-                    cmdBurnEdge = new ButtonWithToolTip
+                    cmdImproveATT = new ButtonWithToolTip
                     {
                         Anchor = AnchorStyles.Right,
                         AutoSize = true,
                         AutoSizeMode = AutoSizeMode.GrowAndShrink,
                         Padding = new Padding(1),
                         MinimumSize = new Size(24, 24),
-                        ImageDpi96 = Resources.fire,
-                        ImageDpi192 = Resources.fire1,
-                        Name = "cmdBurnEdge",
-                        ToolTipText = LanguageManager.GetString("Tip_CommonBurnEdge"),
+                        ImageDpi96 = Resources.add,
+                        ImageDpi192 = Resources.add1,
+                        Name = "cmdImproveATT",
                         UseVisualStyleBackColor = true
                     };
-                    cmdBurnEdge.Click += cmdBurnEdge_Click;
-                    flpRight.Controls.Add(cmdBurnEdge);
+                    cmdImproveATT.Click += cmdImproveATT_Click;
+                    flpRight.Controls.Add(cmdImproveATT);
+                    if (AttributeName == "EDG")
+                    {
+                        cmdBurnEdge = new ButtonWithToolTip
+                        {
+                            Anchor = AnchorStyles.Right,
+                            AutoSize = true,
+                            AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                            Padding = new Padding(1),
+                            MinimumSize = new Size(24, 24),
+                            ImageDpi96 = Resources.fire,
+                            ImageDpi192 = Resources.fire1,
+                            Name = "cmdBurnEdge",
+                            ToolTipText = LanguageManager.GetString("Tip_CommonBurnEdge"),
+                            UseVisualStyleBackColor = true
+                        };
+                        cmdBurnEdge.Click += cmdBurnEdge_Click;
+                        flpRight.Controls.Add(cmdBurnEdge);
+                    }
+                }
+                else
+                {
+                    using (EnterReadLock.Enter(AttributeObject))
+                    {
+                        while (AttributeObject.KarmaMaximum < 0 && AttributeObject.Base > 0)
+                            --AttributeObject.Base;
+                        // Very rough fix for when Karma values somehow exceed KarmaMaximum after loading in. This shouldn't happen in the first place, but this ad-hoc patch will help fix crashes.
+                        if (AttributeObject.Karma > AttributeObject.KarmaMaximum)
+                            AttributeObject.Karma = AttributeObject.KarmaMaximum;
+                    }
+
+                    nudKarma = new NumericUpDownEx
+                    {
+                        Anchor = AnchorStyles.Right,
+                        AutoSize = true,
+                        InterceptMouseWheel = GlobalSettings.InterceptMode,
+                        Margin = new Padding(3, 0, 3, 0),
+                        Maximum = new decimal(new[] {99, 0, 0, 0}),
+                        MinimumSize = new Size(35, 0),
+                        Name = "nudKarma"
+                    };
+                    nudKarma.BeforeValueIncrement += nudKarma_BeforeValueIncrement;
+                    nudKarma.ValueChanged += nudKarma_ValueChanged;
+                    nudBase = new NumericUpDownEx
+                    {
+                        Anchor = AnchorStyles.Right,
+                        AutoSize = true,
+                        InterceptMouseWheel = GlobalSettings.InterceptMode,
+                        Margin = new Padding(3, 0, 3, 0),
+                        Maximum = new decimal(new[] {99, 0, 0, 0}),
+                        MinimumSize = new Size(35, 0),
+                        Name = "nudBase"
+                    };
+                    nudBase.BeforeValueIncrement += nudBase_BeforeValueIncrement;
+                    nudBase.ValueChanged += nudBase_ValueChanged;
+
+                    flpRight.Controls.Add(nudKarma);
+                    flpRight.Controls.Add(nudBase);
+                }
+
+                this.UpdateLightDarkMode();
+                this.TranslateWinForm();
+            }
+            finally
+            {
+                ResumeLayout();
+            }
+        }
+
+        private async void AttributeControl_Load(object sender, EventArgs e)
+        {
+            await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
+            try
+            {
+                //Display
+                await lblName.DoOneWayDataBindingAsync("Text", _dataSource,
+                                                       nameof(CharacterAttrib.DisplayNameFormatted)).ConfigureAwait(false);
+                await lblValue.DoOneWayDataBindingAsync("Text", _dataSource, nameof(CharacterAttrib.DisplayValue)).ConfigureAwait(false);
+                await lblLimits.DoOneWayDataBindingAsync("Text", _dataSource,
+                                                         nameof(CharacterAttrib.AugmentedMetatypeLimits)).ConfigureAwait(false);
+                await lblValue.DoOneWayDataBindingAsync("ToolTipText", _dataSource, nameof(CharacterAttrib.ToolTip)).ConfigureAwait(false);
+                if (await _objCharacter.GetCreatedAsync().ConfigureAwait(false))
+                {
+                    await cmdImproveATT.DoOneWayDataBindingAsync("ToolTipText", _dataSource,
+                                                                 nameof(CharacterAttrib.UpgradeToolTip)).ConfigureAwait(false);
+                    await cmdImproveATT.DoOneWayDataBindingAsync("Enabled", _dataSource,
+                                                                 nameof(CharacterAttrib.CanUpgradeCareer)).ConfigureAwait(false);
+                }
+                else
+                {
+                    using (await EnterReadLock.EnterAsync(AttributeObject).ConfigureAwait(false))
+                    {
+                        while (await AttributeObject.GetBaseAsync().ConfigureAwait(false) > 0 &&
+                               await AttributeObject.GetKarmaMaximumAsync().ConfigureAwait(false) < 0)
+                        {
+                            await AttributeObject.ModifyBaseAsync(-1).ConfigureAwait(false);
+                        }
+
+                        // Very rough fix for when Karma values somehow exceed KarmaMaximum after loading in. This shouldn't happen in the first place, but this ad-hoc patch will help fix crashes.
+                        int intKarmaMaximum = await AttributeObject.GetKarmaMaximumAsync().ConfigureAwait(false);
+                        if (await AttributeObject.GetKarmaAsync().ConfigureAwait(false) > intKarmaMaximum)
+                            await AttributeObject.SetKarmaAsync(intKarmaMaximum).ConfigureAwait(false);
+                    }
+
+                    await nudBase.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = y, _objCharacter,
+                                                                 nameof(Character
+                                                                            .EffectiveBuildMethodUsesPriorityTables),
+                                                                 x => x.GetEffectiveBuildMethodUsesPriorityTablesAsync()
+                                                                       .AsTask()).ConfigureAwait(false);
+                    await nudBase.DoOneWayDataBindingAsync("Maximum", _dataSource,
+                                                           nameof(CharacterAttrib.PriorityMaximum)).ConfigureAwait(false);
+                    await nudBase.DoOneWayDataBindingAsync("Enabled", _dataSource,
+                                                           nameof(CharacterAttrib.BaseUnlocked)).ConfigureAwait(false);
+                    await nudKarma.DoOneWayDataBindingAsync("Maximum", _dataSource,
+                                                            nameof(CharacterAttrib.KarmaMaximum)).ConfigureAwait(false);
+                    await nudBase.DoDataBindingAsync("Value", _dataSource, nameof(CharacterAttrib.Base)).ConfigureAwait(false);
+                    await nudKarma.DoDataBindingAsync("Value", _dataSource, nameof(CharacterAttrib.Karma)).ConfigureAwait(false);
                 }
             }
-            else
+            finally
             {
-                while (AttributeObject.KarmaMaximum < 0 && AttributeObject.Base > 0)
-                    --AttributeObject.Base;
-                // Very rough fix for when Karma values somehow exceed KarmaMaximum after loading in. This shouldn't happen in the first place, but this ad-hoc patch will help fix crashes.
-                if (AttributeObject.Karma > AttributeObject.KarmaMaximum)
-                    AttributeObject.Karma = AttributeObject.KarmaMaximum;
-
-                nudKarma = new NumericUpDownEx
-                {
-                    Anchor = AnchorStyles.Right,
-                    AutoSize = true,
-                    InterceptMouseWheel = NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver,
-                    Margin = new Padding(3, 0, 3, 0),
-                    Maximum = new decimal(new[] { 99, 0, 0, 0 }),
-                    MinimumSize = new Size(35, 0),
-                    Name = "nudKarma"
-                };
-                nudKarma.BeforeValueIncrement += nudKarma_BeforeValueIncrement;
-                nudKarma.ValueChanged += nudKarma_ValueChanged;
-                nudBase = new NumericUpDownEx
-                {
-                    Anchor = AnchorStyles.Right,
-                    AutoSize = true,
-                    InterceptMouseWheel = NumericUpDownEx.InterceptMouseWheelMode.WhenMouseOver,
-                    Margin = new Padding(3, 0, 3, 0),
-                    Maximum = new decimal(new[] { 99, 0, 0, 0 }),
-                    MinimumSize = new Size(35, 0),
-                    Name = "nudBase"
-                };
-                nudBase.BeforeValueIncrement += nudBase_BeforeValueIncrement;
-                nudBase.ValueChanged += nudBase_ValueChanged;
-
-                nudBase.DoOneWayDataBinding("Visible", _objCharacter, nameof(Character.EffectiveBuildMethodUsesPriorityTables));
-                nudBase.DoOneWayDataBinding("Maximum", _dataSource, nameof(CharacterAttrib.PriorityMaximum));
-                nudBase.DoDataBinding("Value", _dataSource, nameof(CharacterAttrib.Base));
-                nudBase.DoOneWayDataBinding("Enabled", _dataSource, nameof(CharacterAttrib.BaseUnlocked));
-                nudBase.InterceptMouseWheel = GlobalSettings.InterceptMode;
-
-                nudKarma.DoOneWayDataBinding("Maximum", _dataSource, nameof(CharacterAttrib.KarmaMaximum));
-                nudKarma.DoDataBinding("Value", _dataSource, nameof(CharacterAttrib.Karma));
-                nudKarma.InterceptMouseWheel = GlobalSettings.InterceptMode;
-
-                flpRight.Controls.Add(nudKarma);
-                flpRight.Controls.Add(nudBase);
+                await this.DoThreadSafeAsync(x => x.ResumeLayout(true)).ConfigureAwait(false);
             }
-
-            ResumeLayout();
-
-            this.UpdateLightDarkMode();
-            this.TranslateWinForm();
         }
 
         public void UpdateWidths(int intNameWidth, int intNudKarmaWidth, int intValueWidth, int intLimitsWidth)
         {
-            tlpMain.SuspendLayout();
-
-            if (intNameWidth >= 0)
+            tlpMain.DoThreadSafe(x => x.SuspendLayout());
+            try
             {
-                if (lblName.MinimumSize.Width > intNameWidth)
-                    lblName.MinimumSize = new Size(intNameWidth, lblName.MinimumSize.Height);
-                if (lblName.MaximumSize.Width != intNameWidth)
-                    lblName.MaximumSize = new Size(intNameWidth, lblName.MinimumSize.Height);
-                if (lblName.MinimumSize.Width < intNameWidth)
-                    lblName.MinimumSize = new Size(intNameWidth, lblName.MinimumSize.Height);
-            }
+                if (intNameWidth >= 0)
+                {
+                    lblName.DoThreadSafe(x =>
+                    {
+                        if (x.MinimumSize.Width > intNameWidth)
+                            x.MinimumSize = new Size(intNameWidth, x.MinimumSize.Height);
+                        if (x.MaximumSize.Width != intNameWidth)
+                            x.MaximumSize = new Size(intNameWidth, x.MinimumSize.Height);
+                        if (x.MinimumSize.Width < intNameWidth)
+                            x.MinimumSize = new Size(intNameWidth, x.MinimumSize.Height);
+                    });
+                }
 
-            if (nudKarma?.Visible == true && nudBase?.Visible == true && intNudKarmaWidth >= 0)
+                if (intNudKarmaWidth >= 0 && nudBase?.DoThreadSafeFunc(x => x.Visible) == true)
+                {
+                    nudKarma?.DoThreadSafe(x =>
+                    {
+                        if (x.Visible)
+                        {
+                            x.Margin = new Padding(
+                                x.Margin.Right + Math.Max(intNudKarmaWidth - x.Width, 0),
+                                x.Margin.Top,
+                                x.Margin.Right,
+                                x.Margin.Bottom);
+                        }
+                    });
+                }
+
+                if (intValueWidth >= 0)
+                {
+                    lblValue.DoThreadSafe(x =>
+                    {
+                        if (x.MinimumSize.Width > intValueWidth)
+                            x.MinimumSize = new Size(intValueWidth, x.MinimumSize.Height);
+                        if (x.MaximumSize.Width != intValueWidth)
+                            x.MaximumSize = new Size(intValueWidth, x.MinimumSize.Height);
+                        if (x.MinimumSize.Width < intValueWidth)
+                            x.MinimumSize = new Size(intValueWidth, x.MinimumSize.Height);
+                    });
+                }
+
+                if (intLimitsWidth >= 0)
+                {
+                    lblLimits.DoThreadSafe(x =>
+                    {
+                        if (x.MinimumSize.Width > intLimitsWidth)
+                            x.MinimumSize = new Size(intLimitsWidth, x.MinimumSize.Height);
+                        if (x.MaximumSize.Width != intLimitsWidth)
+                            x.MaximumSize = new Size(intLimitsWidth, x.MinimumSize.Height);
+                        if (x.MinimumSize.Width < intLimitsWidth)
+                            x.MinimumSize = new Size(intLimitsWidth, x.MinimumSize.Height);
+                    });
+                }
+            }
+            finally
             {
-                nudKarma.Margin = new Padding(
-                    nudKarma.Margin.Right + Math.Max(intNudKarmaWidth - nudKarma.Width, 0),
-                    nudKarma.Margin.Top,
-                    nudKarma.Margin.Right,
-                    nudKarma.Margin.Bottom);
+                tlpMain.DoThreadSafe(x => x.ResumeLayout());
             }
-
-            if (intValueWidth >= 0)
-            {
-                if (lblValue.MinimumSize.Width > intValueWidth)
-                    lblValue.MinimumSize = new Size(intValueWidth, lblValue.MinimumSize.Height);
-                if (lblValue.MaximumSize.Width != intValueWidth)
-                    lblValue.MaximumSize = new Size(intValueWidth, lblValue.MinimumSize.Height);
-                if (lblValue.MinimumSize.Width < intValueWidth)
-                    lblValue.MinimumSize = new Size(intValueWidth, lblValue.MinimumSize.Height);
-            }
-
-            if (intLimitsWidth >= 0)
-            {
-                if (lblLimits.MinimumSize.Width > intLimitsWidth)
-                    lblLimits.MinimumSize = new Size(intLimitsWidth, lblLimits.MinimumSize.Height);
-                if (lblLimits.MaximumSize.Width != intLimitsWidth)
-                    lblLimits.MaximumSize = new Size(intLimitsWidth, lblLimits.MinimumSize.Height);
-                if (lblLimits.MinimumSize.Width < intLimitsWidth)
-                    lblLimits.MinimumSize = new Size(intLimitsWidth, lblLimits.MinimumSize.Height);
-            }
-
-            tlpMain.ResumeLayout();
         }
 
         private void UnbindAttributeControl()
@@ -206,85 +282,143 @@ namespace Chummer.UI.Attributes
             }
         }
 
-        private void cmdImproveATT_Click(object sender, EventArgs e)
+        private async void cmdImproveATT_Click(object sender, EventArgs e)
         {
-            int intUpgradeKarmaCost = AttributeObject.UpgradeKarmaCost;
-
-            if (intUpgradeKarmaCost == -1) return; //TODO: more descriptive
-            if (intUpgradeKarmaCost > _objCharacter.Karma)
+            using (await CursorWait.NewAsync(this).ConfigureAwait(false))
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_NotEnoughKarma"), LanguageManager.GetString("MessageTitle_NotEnoughKarma"), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
+                CharacterAttrib objAttribute = await GetAttributeObjectAsync().ConfigureAwait(false);
+                using (await EnterReadLock.EnterAsync(objAttribute).ConfigureAwait(false))
+                {
+                    int intUpgradeKarmaCost = await objAttribute.GetUpgradeKarmaCostAsync().ConfigureAwait(false);
+
+                    if (intUpgradeKarmaCost == -1) return; //TODO: more descriptive
+                    if (intUpgradeKarmaCost > await _objCharacter.GetKarmaAsync().ConfigureAwait(false))
+                    {
+                        Program.ShowScrollableMessageBox(
+                            await LanguageManager.GetStringAsync("Message_NotEnoughKarma").ConfigureAwait(false),
+                            await LanguageManager.GetStringAsync("MessageTitle_NotEnoughKarma").ConfigureAwait(false),
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
+
+                    string confirmstring = string.Format(GlobalSettings.CultureInfo,
+                                                         await LanguageManager
+                                                               .GetStringAsync("Message_ConfirmKarmaExpense")
+                                                               .ConfigureAwait(false),
+                                                         await objAttribute.GetDisplayNameFormattedAsync()
+                                                                           .ConfigureAwait(false),
+                                                         await objAttribute.GetValueAsync().ConfigureAwait(false) + 1,
+                                                         intUpgradeKarmaCost);
+                    if (!await CommonFunctions.ConfirmKarmaExpenseAsync(confirmstring).ConfigureAwait(false))
+                        return;
+
+                    await objAttribute.Upgrade().ConfigureAwait(false);
+                }
+
+                await this.DoThreadSafeAsync(x => x.ValueChanged?.Invoke(this, e)).ConfigureAwait(false);
             }
-
-            string confirmstring = string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_ConfirmKarmaExpense"), AttributeObject.DisplayNameFormatted, AttributeObject.Value + 1, intUpgradeKarmaCost);
-            if (!CommonFunctions.ConfirmKarmaExpense(confirmstring))
-                return;
-
-            AttributeObject.Upgrade();
-            ValueChanged?.Invoke(this, e);
         }
 
-        private void nudBase_ValueChanged(object sender, EventArgs e)
+        private async void nudBase_ValueChanged(object sender, EventArgs e)
         {
-            int intValue = ((NumericUpDownEx)sender).ValueAsInt;
-            if (intValue == _oldBase)
+            int intValue = await ((NumericUpDownEx)sender).DoThreadSafeFuncAsync(x => x.ValueAsInt).ConfigureAwait(false);
+            if (Interlocked.Exchange(ref _oldBase, intValue) == intValue)
                 return;
-            if (!CanBeMetatypeMax(
-                Math.Max(
-                    nudKarma.ValueAsInt + AttributeObject.FreeBase + AttributeObject.RawMinimum +
-                    AttributeObject.AttributeValueModifiers, AttributeObject.TotalMinimum) + intValue))
+            using (await CursorWait.NewAsync(this).ConfigureAwait(false))
             {
-                decimal newValue = Math.Max(nudBase.Value - 1, 0);
-                if (newValue > nudBase.Maximum)
+                CharacterAttrib objAttribute = await GetAttributeObjectAsync().ConfigureAwait(false);
+                using (await EnterReadLock.EnterAsync(objAttribute).ConfigureAwait(false))
                 {
-                    newValue = nudBase.Maximum;
+                    if (!await CanBeMetatypeMax(
+                                Math.Max(
+                                    await nudKarma.DoThreadSafeFuncAsync(x => x.ValueAsInt).ConfigureAwait(false) +
+                                    await objAttribute.GetFreeBaseAsync().ConfigureAwait(false)
+                                    + await objAttribute.GetRawMinimumAsync().ConfigureAwait(false) +
+                                    await objAttribute.GetAttributeValueModifiersAsync().ConfigureAwait(false),
+                                    await objAttribute.GetTotalMinimumAsync().ConfigureAwait(false)) + intValue)
+                            .ConfigureAwait(false))
+                    {
+                        await nudBase.DoThreadSafeAsync(x =>
+                        {
+                            decimal newValue = Math.Max(x.Value - 1, 0);
+                            if (newValue > x.Maximum)
+                            {
+                                newValue = x.Maximum;
+                            }
+
+                            if (newValue < x.Minimum)
+                            {
+                                newValue = x.Minimum;
+                            }
+
+                            x.Value = newValue;
+                        }).ConfigureAwait(false);
+                        return;
+                    }
                 }
-                if (newValue < nudBase.Minimum)
-                {
-                    newValue = nudBase.Minimum;
-                }
-                nudBase.Value = newValue;
-                return;
+
+                await this.DoThreadSafeAsync(x => x.ValueChanged?.Invoke(this, e)).ConfigureAwait(false);
             }
-            ValueChanged?.Invoke(this, e);
-            _oldBase = intValue;
         }
 
-        private void nudKarma_ValueChanged(object sender, EventArgs e)
+        private async void nudKarma_ValueChanged(object sender, EventArgs e)
         {
-            int intValue = ((NumericUpDownEx)sender).ValueAsInt;
-            if (intValue == _oldKarma)
+            int intValue = await ((NumericUpDownEx)sender).DoThreadSafeFuncAsync(x => x.ValueAsInt).ConfigureAwait(false);
+            int intOldKarma = Interlocked.Exchange(ref _oldKarma, intValue);
+            if (intOldKarma == intValue)
                 return;
-            if (!CanBeMetatypeMax(
-                Math.Max(
-                    nudBase.ValueAsInt + AttributeObject.FreeBase + AttributeObject.RawMinimum +
-                    AttributeObject.AttributeValueModifiers, AttributeObject.TotalMinimum) + intValue))
+            using (await CursorWait.NewAsync(this).ConfigureAwait(false))
             {
-                // It's possible that the attribute maximum was reduced by an improvement, so confirm the appropriate value to bounce up/down to.
-                if (_oldKarma > AttributeObject.KarmaMaximum)
+                CharacterAttrib objAttribute = await GetAttributeObjectAsync().ConfigureAwait(false);
+                using (await EnterReadLock.EnterAsync(objAttribute).ConfigureAwait(false))
                 {
-                    _oldKarma = AttributeObject.KarmaMaximum - 1;
-                }
-                if (_oldKarma < 0)
-                {
-                    decimal newValue = Math.Max(nudBase.Value - _oldKarma, 0);
-                    if (newValue > nudBase.Maximum)
+                    if (!await CanBeMetatypeMax(
+                                Math.Max(
+                                    await nudBase.DoThreadSafeFuncAsync(x => x.ValueAsInt).ConfigureAwait(false) +
+                                    await objAttribute.GetFreeBaseAsync().ConfigureAwait(false)
+                                    + await objAttribute.GetRawMinimumAsync().ConfigureAwait(false) +
+                                    await objAttribute.GetAttributeValueModifiersAsync().ConfigureAwait(false),
+                                    await objAttribute.GetTotalMinimumAsync().ConfigureAwait(false)) + intValue)
+                            .ConfigureAwait(false))
                     {
-                        newValue = nudBase.Maximum;
+                        // It's possible that the attribute maximum was reduced by an improvement, so confirm the appropriate value to bounce up/down to.
+                        int intKarmaMaximum = await objAttribute.GetKarmaMaximumAsync().ConfigureAwait(false);
+                        if (intOldKarma > intKarmaMaximum)
+                        {
+                            if (Interlocked.CompareExchange(ref _oldKarma, intKarmaMaximum - 1, intValue) == intValue)
+                                intValue = intKarmaMaximum - 1;
+                            intOldKarma = intKarmaMaximum - 1;
+                        }
+
+                        if (intOldKarma < 0)
+                        {
+                            Interlocked.CompareExchange(ref _oldKarma, 0, intValue);
+                            int intOldKarmaLocal = intOldKarma;
+                            await nudBase.DoThreadSafeAsync(x =>
+                            {
+                                decimal newValue = Math.Max(x.Value - intOldKarmaLocal, 0);
+                                if (newValue > x.Maximum)
+                                {
+                                    newValue = x.Maximum;
+                                }
+
+                                if (newValue < x.Minimum)
+                                {
+                                    newValue = x.Minimum;
+                                }
+
+                                x.Value = newValue;
+                            }).ConfigureAwait(false);
+                            intOldKarma = 0;
+                        }
+
+                        await nudKarma.DoThreadSafeAsync(x => x.Value = intOldKarma).ConfigureAwait(false);
+                        return;
                     }
-                    if (newValue < nudBase.Minimum)
-                    {
-                        newValue = nudBase.Minimum;
-                    }
-                    nudBase.Value = newValue;
-                    _oldKarma = 0;
                 }
-                nudKarma.Value = _oldKarma;
-                return;
+
+                await this.DoThreadSafeAsync(x => x.ValueChanged?.Invoke(this, e)).ConfigureAwait(false);
             }
-            ValueChanged?.Invoke(this, e);
-            _oldKarma = intValue;
         }
 
         /// <summary>
@@ -293,21 +427,26 @@ namespace Chummer.UI.Attributes
         /// attribute at their natural maximum limit; the special attributes of Magic, Edge,
         /// and Resonance are not included in this limitation.
         /// </summary>
-        private bool CanBeMetatypeMax(int intValue)
+        private async ValueTask<bool> CanBeMetatypeMax(int intValue, CancellationToken token = default)
         {
-            int intTotalMaximum = AttributeObject.TotalMaximum;
-            if (intValue < intTotalMaximum || intTotalMaximum == 0)
-                return true;
+            CharacterAttrib objAttribute = await GetAttributeObjectAsync(token).ConfigureAwait(false);
+            using (await EnterReadLock.EnterAsync(objAttribute, token).ConfigureAwait(false))
+            {
+                int intTotalMaximum = await objAttribute.GetTotalMaximumAsync(token).ConfigureAwait(false);
+                if (intValue < intTotalMaximum || intTotalMaximum == 0)
+                    return true;
 
-            if (_objCharacter.AttributeSection.CanRaiseAttributeToMetatypeMax(AttributeObject))
-                return true;
+                if (await _objCharacter.AttributeSection.CanRaiseAttributeToMetatypeMax(objAttribute, token).ConfigureAwait(false))
+                    return true;
 
-            Program.MainForm.ShowMessageBox(
-                string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Message_AttributeMaximum"),
-                              _objCharacter.Settings.MaxNumberMaxAttributesCreate),
-                LanguageManager.GetString("MessageTitle_Attribute"), MessageBoxButtons.OK,
-                MessageBoxIcon.Information);
-            return false;
+                Program.ShowScrollableMessageBox(
+                    string.Format(GlobalSettings.CultureInfo,
+                        await LanguageManager.GetStringAsync("Message_AttributeMaximum", token: token).ConfigureAwait(false),
+                        _objCharacter.Settings.MaxNumberMaxAttributesCreate),
+                    await LanguageManager.GetStringAsync("MessageTitle_Attribute", token: token).ConfigureAwait(false), MessageBoxButtons.OK,
+                    MessageBoxIcon.Information);
+                return false;
+            }
         }
 
         public string AttributeName => _strAttributeName;
@@ -318,24 +457,47 @@ namespace Chummer.UI.Attributes
             _objCachedCharacterAttrib ?? (_objCachedCharacterAttrib =
                 _objCharacter.AttributeSection.GetAttributeByName(AttributeName));
 
+        public async ValueTask<CharacterAttrib> GetAttributeObjectAsync(CancellationToken token = default) =>
+            _objCachedCharacterAttrib ?? (_objCachedCharacterAttrib =
+                await _objCharacter.AttributeSection.GetAttributeByNameAsync(AttributeName, token).ConfigureAwait(false));
+
         [UsedImplicitly]
-        public int NameWidth => lblName.PreferredWidth;
+        public int NameWidth => lblName.DoThreadSafeFunc(x => x.PreferredWidth);
 
-        private void cmdBurnEdge_Click(object sender, EventArgs e)
+        [UsedImplicitly]
+        public Task<int> GetNameWidthAsync(CancellationToken token = default) => lblName.DoThreadSafeFuncAsync(x => x.PreferredWidth, token);
+
+        private async void cmdBurnEdge_Click(object sender, EventArgs e)
         {
-            // Edge cannot go below 1.
-            if (AttributeObject.Value <= 0)
+            using (await CursorWait.NewAsync(this).ConfigureAwait(false))
             {
-                Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_CannotBurnEdge"), LanguageManager.GetString("MessageTitle_CannotBurnEdge"), MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
-                return;
+                // Edge cannot go below 1.
+                CharacterAttrib objAttribute = await GetAttributeObjectAsync().ConfigureAwait(false);
+                using (await EnterReadLock.EnterAsync(objAttribute).ConfigureAwait(false))
+                {
+                    if (await objAttribute.GetValueAsync().ConfigureAwait(false) <= 0)
+                    {
+                        Program.ShowScrollableMessageBox(
+                            await LanguageManager.GetStringAsync("Message_CannotBurnEdge").ConfigureAwait(false),
+                            await LanguageManager.GetStringAsync("MessageTitle_CannotBurnEdge").ConfigureAwait(false),
+                            MessageBoxButtons.OK,
+                            MessageBoxIcon.Exclamation);
+                        return;
+                    }
+
+                    // Verify that the user wants to Burn a point of Edge.
+                    if (Program.ShowScrollableMessageBox(
+                            await LanguageManager.GetStringAsync("Message_BurnEdge").ConfigureAwait(false),
+                            await LanguageManager.GetStringAsync("MessageTitle_BurnEdge").ConfigureAwait(false),
+                            MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Question) == DialogResult.No)
+                        return;
+
+                    await objAttribute.Degrade(1).ConfigureAwait(false);
+                }
+
+                await this.DoThreadSafeAsync(x => x.ValueChanged?.Invoke(this, e)).ConfigureAwait(false);
             }
-
-            // Verify that the user wants to Burn a point of Edge.
-            if (Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_BurnEdge"), LanguageManager.GetString("MessageTitle_BurnEdge"), MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.No)
-                return;
-
-            AttributeObject.Degrade(1);
-            ValueChanged?.Invoke(this, e);
         }
 
         private void nudBase_BeforeValueIncrement(object sender, CancelEventArgs e)
@@ -370,6 +532,7 @@ namespace Chummer.UI.Attributes
         /// I'm not super pleased with how this works, but it's functional so w/e.
         /// The goal is for controls to retain the ability to display tooltips even while disabled. IT DOES NOT WORK VERY WELL.
         /// </summary>
+
         #region ButtonWithToolTip Visibility workaround
 
         private ButtonWithToolTip _activeButton;
@@ -379,13 +542,13 @@ namespace Chummer.UI.Attributes
             get => _activeButton;
             set
             {
-                if (value == ActiveButton)
+                ButtonWithToolTip objOldValue = Interlocked.Exchange(ref _activeButton, value);
+                if (objOldValue == value)
                     return;
-                ActiveButton?.ToolTipObject.Hide(this);
-                _activeButton = value;
-                if (ActiveButton?.Visible == true)
+                objOldValue?.ToolTipObject.Hide(this);
+                if (value?.Visible == true)
                 {
-                    ActiveButton.ToolTipObject.Show(ActiveButton.ToolTipText, this);
+                    value.ToolTipObject.Show(value.ToolTipText, this);
                 }
             }
         }

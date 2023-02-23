@@ -21,6 +21,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Runtime.Serialization;
+using System.Threading;
 
 namespace Chummer
 {
@@ -127,7 +128,7 @@ namespace Chummer
         {
             return _dicUnorderedData.TryGetValue(item.Key, out TValue objValue) && item.Value.Equals(objValue);
         }
-        
+
         public bool Contains(Tuple<TKey, TValue> item)
         {
             (TKey objKey, TValue objValue) = item;
@@ -184,7 +185,7 @@ namespace Chummer
             for (int i = 0; i < Count; ++i)
                 array[i + arrayIndex] = this[i];
         }
-        
+
         public void CopyTo(Tuple<TKey, TValue>[] array, int arrayIndex)
         {
             if (arrayIndex + Count >= array.Length)
@@ -209,7 +210,20 @@ namespace Chummer
         public int Count => _dicUnorderedData.Count;
 
         /// <inheritdoc />
-        public object SyncRoot { get; } = new object();
+        public object SyncRoot
+        {
+            get
+            {
+                if (_objSyncRoot == null)
+                {
+                    Interlocked.CompareExchange<object>(ref _objSyncRoot, new object(), null);
+                }
+
+                return _objSyncRoot;
+            }
+        }
+
+        private object _objSyncRoot;
 
         /// <inheritdoc />
         public bool IsSynchronized => false;

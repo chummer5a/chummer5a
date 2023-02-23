@@ -13,12 +13,9 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && (components != null))
             {
-                components?.Dispose();
-                _objCharacterXmlGeneratorCancellationTokenSource?.Dispose();
-                _objXmlGeneratorCancellationTokenSource?.Dispose();
-                _dicCache.Dispose();
+                components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -31,17 +28,16 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ExportCharacter));
             this.lblExport = new System.Windows.Forms.Label();
             this.cboXSLT = new Chummer.ElasticComboBox();
-            this.cmdCancel = new System.Windows.Forms.Button();
-            this.cmdOK = new System.Windows.Forms.Button();
-            this.SaveFileDialog1 = new System.Windows.Forms.SaveFileDialog();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.cmdExportClose = new System.Windows.Forms.Button();
+            this.dlgSaveFile = new System.Windows.Forms.SaveFileDialog();
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.cboLanguage = new Chummer.ElasticComboBox();
             this.imgSheetLanguageFlag = new System.Windows.Forms.PictureBox();
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
+            this.cmdExport = new System.Windows.Forms.Button();
             this.txtText = new System.Windows.Forms.TextBox();
             this.tlpMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.imgSheetLanguageFlag)).BeginInit();
@@ -60,7 +56,6 @@ namespace Chummer
             this.lblExport.Tag = "Label_ExportTo";
             this.lblExport.Text = "Export to:";
             this.lblExport.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.lblExport.UseWaitCursor = true;
             // 
             // cboXSLT
             // 
@@ -72,40 +67,23 @@ namespace Chummer
             this.cboXSLT.Size = new System.Drawing.Size(177, 21);
             this.cboXSLT.TabIndex = 1;
             this.cboXSLT.TooltipText = "";
-            this.cboXSLT.UseWaitCursor = true;
             this.cboXSLT.SelectedIndexChanged += new System.EventHandler(this.cboXSLT_SelectedIndexChanged);
             // 
-            // cmdCancel
+            // cmdExportClose
             // 
-            this.cmdCancel.AutoSize = true;
-            this.cmdCancel.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
-            this.cmdCancel.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdCancel.Location = new System.Drawing.Point(3, 3);
-            this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(50, 23);
-            this.cmdCancel.TabIndex = 3;
-            this.cmdCancel.Tag = "String_Cancel";
-            this.cmdCancel.Text = "Cancel";
-            this.cmdCancel.UseVisualStyleBackColor = true;
-            this.cmdCancel.UseWaitCursor = true;
-            this.cmdCancel.Click += new System.EventHandler(this.cmdCancel_Click);
-            // 
-            // cmdOK
-            // 
-            this.cmdOK.AutoSize = true;
-            this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdOK.Enabled = false;
-            this.cmdOK.Location = new System.Drawing.Point(59, 3);
-            this.cmdOK.Name = "cmdOK";
-            this.cmdOK.Size = new System.Drawing.Size(50, 23);
-            this.cmdOK.TabIndex = 2;
-            this.cmdOK.Tag = "String_OK";
-            this.cmdOK.Text = "OK";
-            this.cmdOK.UseVisualStyleBackColor = true;
-            this.cmdOK.UseWaitCursor = true;
-            this.cmdOK.Click += new System.EventHandler(this.cmdOK_Click);
+            this.cmdExportClose.AutoSize = true;
+            this.cmdExportClose.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdExportClose.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdExportClose.Enabled = false;
+            this.cmdExportClose.Location = new System.Drawing.Point(106, 3);
+            this.cmdExportClose.MinimumSize = new System.Drawing.Size(80, 0);
+            this.cmdExportClose.Name = "cmdExportClose";
+            this.cmdExportClose.Size = new System.Drawing.Size(97, 23);
+            this.cmdExportClose.TabIndex = 2;
+            this.cmdExportClose.Tag = "String_Export_And_Close";
+            this.cmdExportClose.Text = "Export and Close";
+            this.cmdExportClose.UseVisualStyleBackColor = true;
+            this.cmdExportClose.Click += new System.EventHandler(this.cmdExportClose_Click);
             // 
             // tlpMain
             // 
@@ -132,7 +110,6 @@ namespace Chummer
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpMain.Size = new System.Drawing.Size(446, 263);
             this.tlpMain.TabIndex = 5;
-            this.tlpMain.UseWaitCursor = true;
             // 
             // cboLanguage
             // 
@@ -144,7 +121,6 @@ namespace Chummer
             this.cboLanguage.Size = new System.Drawing.Size(177, 21);
             this.cboLanguage.TabIndex = 107;
             this.cboLanguage.TooltipText = "";
-            this.cboLanguage.UseWaitCursor = true;
             this.cboLanguage.SelectedIndexChanged += new System.EventHandler(this.cboLanguage_SelectedIndexChanged);
             // 
             // imgSheetLanguageFlag
@@ -156,7 +132,6 @@ namespace Chummer
             this.imgSheetLanguageFlag.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
             this.imgSheetLanguageFlag.TabIndex = 106;
             this.imgSheetLanguageFlag.TabStop = false;
-            this.imgSheetLanguageFlag.UseWaitCursor = true;
             // 
             // tlpButtons
             // 
@@ -167,16 +142,31 @@ namespace Chummer
             this.tlpMain.SetColumnSpan(this.tlpButtons, 4);
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
-            this.tlpButtons.Controls.Add(this.cmdOK, 1, 0);
-            this.tlpButtons.Location = new System.Drawing.Point(334, 234);
+            this.tlpButtons.Controls.Add(this.cmdExport, 0, 0);
+            this.tlpButtons.Controls.Add(this.cmdExportClose, 1, 0);
+            this.tlpButtons.Location = new System.Drawing.Point(240, 234);
             this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
-            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpButtons.Size = new System.Drawing.Size(112, 29);
+            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpButtons.Size = new System.Drawing.Size(206, 29);
             this.tlpButtons.TabIndex = 6;
-            this.tlpButtons.UseWaitCursor = true;
+            // 
+            // cmdExport
+            // 
+            this.cmdExport.AutoSize = true;
+            this.cmdExport.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdExport.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdExport.Enabled = false;
+            this.cmdExport.Location = new System.Drawing.Point(3, 3);
+            this.cmdExport.MinimumSize = new System.Drawing.Size(80, 0);
+            this.cmdExport.Name = "cmdExport";
+            this.cmdExport.Size = new System.Drawing.Size(97, 23);
+            this.cmdExport.TabIndex = 4;
+            this.cmdExport.Tag = "String_Export";
+            this.cmdExport.Text = "Export";
+            this.cmdExport.UseVisualStyleBackColor = true;
+            this.cmdExport.Click += new System.EventHandler(this.cmdExport_Click);
             // 
             // txtText
             // 
@@ -192,17 +182,15 @@ namespace Chummer
             this.txtText.TabIndex = 7;
             this.txtText.Tag = "String_Generating_Data";
             this.txtText.Text = "Generating Data...";
-            this.txtText.UseWaitCursor = true;
             this.txtText.Leave += new System.EventHandler(this.txtText_Leave);
             this.txtText.MouseUp += new System.Windows.Forms.MouseEventHandler(this.txtText_MouseUp);
             // 
-            // frmExport
+            // ExportCharacter
             // 
-            this.AcceptButton = this.cmdOK;
+            this.AcceptButton = this.cmdExportClose;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(464, 281);
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
@@ -210,12 +198,12 @@ namespace Chummer
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmExport";
+            this.Name = "ExportCharacter";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
+            this.Tag = "Title_ExportCharacter";
             this.Text = "Export Character";
-            this.UseWaitCursor = true;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.ExportCharacter_FormClosing);
             this.Load += new System.EventHandler(this.ExportCharacter_Load);
             this.tlpMain.ResumeLayout(false);
@@ -232,13 +220,13 @@ namespace Chummer
 
         private System.Windows.Forms.Label lblExport;
         private ElasticComboBox cboXSLT;
-        private System.Windows.Forms.Button cmdCancel;
-        private System.Windows.Forms.Button cmdOK;
-        internal System.Windows.Forms.SaveFileDialog SaveFileDialog1;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
-        private BufferedTableLayoutPanel tlpButtons;
+        private System.Windows.Forms.Button cmdExportClose;
+        internal System.Windows.Forms.SaveFileDialog dlgSaveFile;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
         private System.Windows.Forms.TextBox txtText;
         private System.Windows.Forms.PictureBox imgSheetLanguageFlag;
         private ElasticComboBox cboLanguage;
+        private System.Windows.Forms.Button cmdExport;
     }
 }

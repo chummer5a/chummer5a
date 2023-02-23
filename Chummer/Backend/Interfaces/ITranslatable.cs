@@ -17,10 +17,12 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System.Threading;
+
 namespace Chummer
 {
     public interface ITranslatable
     {
-        void Translate();
+        void Translate(CancellationToken token = default);
     }
 }

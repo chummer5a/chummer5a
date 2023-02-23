@@ -28,7 +28,6 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(DiceRoller));
             this.lblRoll = new System.Windows.Forms.Label();
             this.nudDice = new Chummer.NumericUpDownEx();
@@ -36,21 +35,22 @@ namespace Chummer
             this.cmdRollDice = new System.Windows.Forms.Button();
             this.cboMethod = new Chummer.ElasticComboBox();
             this.cmdReroll = new System.Windows.Forms.Button();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.lblResultsLabel = new System.Windows.Forms.Label();
             this.nudGremlins = new Chummer.NumericUpDownEx();
             this.lblGremlins = new System.Windows.Forms.Label();
             this.nudThreshold = new Chummer.NumericUpDownEx();
-            this.chkRuleOf6 = new Chummer.ColorableCheckBox(this.components);
+            this.chkRuleOf6 = new Chummer.ColorableCheckBox();
             this.lblThreshold = new System.Windows.Forms.Label();
-            this.chkCinematicGameplay = new Chummer.ColorableCheckBox(this.components);
-            this.chkRushJob = new Chummer.ColorableCheckBox(this.components);
-            this.tlpTopBar = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.chkCinematicGameplay = new Chummer.ColorableCheckBox();
+            this.chkRushJob = new Chummer.ColorableCheckBox();
+            this.tlpTopBar = new System.Windows.Forms.TableLayoutPanel();
             this.flpRollParameters = new System.Windows.Forms.FlowLayoutPanel();
             this.flowLayoutPanel2 = new System.Windows.Forms.FlowLayoutPanel();
             this.flpRollControls = new System.Windows.Forms.FlowLayoutPanel();
-            this.chkVariableGlitch = new Chummer.ColorableCheckBox(this.components);
-            this.chkBubbleDie = new Chummer.ColorableCheckBox(this.components);
+            this.bufferedTableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
+            this.chkVariableGlitch = new Chummer.ColorableCheckBox();
+            this.chkBubbleDie = new Chummer.ColorableCheckBox();
             this.pnlResults = new System.Windows.Forms.Panel();
             this.lblResults = new System.Windows.Forms.Label();
             this.lstResults = new System.Windows.Forms.ListView();
@@ -62,6 +62,7 @@ namespace Chummer
             this.tlpTopBar.SuspendLayout();
             this.flpRollParameters.SuspendLayout();
             this.flpRollControls.SuspendLayout();
+            this.bufferedTableLayoutPanel1.SuspendLayout();
             this.pnlResults.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -115,12 +116,13 @@ namespace Chummer
             // 
             // cmdRollDice
             // 
-            this.cmdRollDice.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.cmdRollDice.AutoSize = true;
             this.cmdRollDice.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdRollDice.Location = new System.Drawing.Point(209, 3);
+            this.cmdRollDice.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdRollDice.Location = new System.Drawing.Point(3, 3);
+            this.cmdRollDice.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdRollDice.Name = "cmdRollDice";
-            this.cmdRollDice.Size = new System.Drawing.Size(35, 23);
+            this.cmdRollDice.Size = new System.Drawing.Size(87, 23);
             this.cmdRollDice.TabIndex = 10;
             this.cmdRollDice.Tag = "Button_DiceRoller_Roll";
             this.cmdRollDice.Text = "&Roll";
@@ -141,10 +143,11 @@ namespace Chummer
             // 
             // cmdReroll
             // 
-            this.cmdReroll.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.cmdReroll.AutoSize = true;
             this.cmdReroll.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdReroll.Location = new System.Drawing.Point(250, 3);
+            this.cmdReroll.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdReroll.Location = new System.Drawing.Point(96, 3);
+            this.cmdReroll.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdReroll.Name = "cmdReroll";
             this.cmdReroll.Size = new System.Drawing.Size(87, 23);
             this.cmdReroll.TabIndex = 11;
@@ -355,16 +358,32 @@ namespace Chummer
             this.flpRollControls.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.flpRollControls.AutoSize = true;
             this.flpRollControls.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.flpRollControls.Controls.Add(this.cmdReroll);
-            this.flpRollControls.Controls.Add(this.cmdRollDice);
+            this.flpRollControls.Controls.Add(this.bufferedTableLayoutPanel1);
             this.flpRollControls.Controls.Add(this.cboMethod);
             this.flpRollControls.FlowDirection = System.Windows.Forms.FlowDirection.RightToLeft;
-            this.flpRollControls.Location = new System.Drawing.Point(266, 0);
+            this.flpRollControls.Location = new System.Drawing.Point(214, 0);
             this.flpRollControls.Margin = new System.Windows.Forms.Padding(0);
             this.flpRollControls.Name = "flpRollControls";
-            this.flpRollControls.Size = new System.Drawing.Size(340, 29);
+            this.flpRollControls.Size = new System.Drawing.Size(392, 29);
             this.flpRollControls.TabIndex = 14;
             this.flpRollControls.WrapContents = false;
+            // 
+            // bufferedTableLayoutPanel1
+            // 
+            this.bufferedTableLayoutPanel1.AutoSize = true;
+            this.bufferedTableLayoutPanel1.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.bufferedTableLayoutPanel1.ColumnCount = 2;
+            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.bufferedTableLayoutPanel1.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.bufferedTableLayoutPanel1.Controls.Add(this.cmdReroll, 1, 0);
+            this.bufferedTableLayoutPanel1.Controls.Add(this.cmdRollDice, 0, 0);
+            this.bufferedTableLayoutPanel1.Location = new System.Drawing.Point(206, 0);
+            this.bufferedTableLayoutPanel1.Margin = new System.Windows.Forms.Padding(0);
+            this.bufferedTableLayoutPanel1.Name = "bufferedTableLayoutPanel1";
+            this.bufferedTableLayoutPanel1.RowCount = 1;
+            this.bufferedTableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.bufferedTableLayoutPanel1.Size = new System.Drawing.Size(186, 29);
+            this.bufferedTableLayoutPanel1.TabIndex = 12;
             // 
             // chkVariableGlitch
             // 
@@ -440,7 +459,7 @@ namespace Chummer
             this.columnHeader1.Text = "Results";
             this.columnHeader1.Width = 70;
             // 
-            // frmDiceRoller
+            // DiceRoller
             // 
             this.AcceptButton = this.cmdRollDice;
             this.AutoSize = true;
@@ -457,6 +476,7 @@ namespace Chummer
             this.Tag = "Title_DiceRoller";
             this.Text = "Dice Roller";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DiceRoller_FormClosing);
+            this.Load += new System.EventHandler(this.DiceRoller_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudDice)).EndInit();
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
@@ -468,6 +488,8 @@ namespace Chummer
             this.flpRollParameters.PerformLayout();
             this.flpRollControls.ResumeLayout(false);
             this.flpRollControls.PerformLayout();
+            this.bufferedTableLayoutPanel1.ResumeLayout(false);
+            this.bufferedTableLayoutPanel1.PerformLayout();
             this.pnlResults.ResumeLayout(false);
             this.pnlResults.PerformLayout();
             this.ResumeLayout(false);
@@ -483,7 +505,7 @@ namespace Chummer
         private System.Windows.Forms.Button cmdRollDice;
         private ElasticComboBox cboMethod;
         private System.Windows.Forms.Button cmdReroll;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
         private System.Windows.Forms.Label lblResults;
         private System.Windows.Forms.Label lblResultsLabel;
         private Chummer.NumericUpDownEx nudGremlins;
@@ -494,7 +516,7 @@ namespace Chummer
         private Chummer.ColorableCheckBox chkBubbleDie;
         private Chummer.ColorableCheckBox chkCinematicGameplay;
         private Chummer.ColorableCheckBox chkRushJob;
-        private Chummer.BufferedTableLayoutPanel tlpTopBar;
+        private System.Windows.Forms.TableLayoutPanel tlpTopBar;
         private System.Windows.Forms.FlowLayoutPanel flpRollParameters;
         private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel2;
         private System.Windows.Forms.FlowLayoutPanel flpRollControls;
@@ -502,5 +524,6 @@ namespace Chummer
         private System.Windows.Forms.Panel pnlResults;
         private System.Windows.Forms.ListView lstResults;
         private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.TableLayoutPanel bufferedTableLayoutPanel1;
     }
 }

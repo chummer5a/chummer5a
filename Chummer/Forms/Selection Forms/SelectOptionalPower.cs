@@ -50,6 +50,7 @@ namespace Chummer
                 _strReturnPower = objSelectedItem.Item1;
                 _strReturnExtra = objSelectedItem.Item2;
                 DialogResult = DialogResult.OK;
+                Close();
             }
         }
 
@@ -60,28 +61,39 @@ namespace Chummer
                 foreach ((string strPowerName, string strPowerExtra) in _lstPowerExtraPairs)
                 {
                     string strName = string.IsNullOrEmpty(strPowerExtra)
-                        ? await _objCharacter.TranslateExtraAsync(strPowerName)
-                        : await _objCharacter.TranslateExtraAsync(strPowerName)
-                          + await LanguageManager.GetStringAsync("String_Space") + '('
-                          + await _objCharacter.TranslateExtraAsync(strPowerExtra) + ')';
+                        ? await _objCharacter.TranslateExtraAsync(strPowerName).ConfigureAwait(false)
+                        : await _objCharacter.TranslateExtraAsync(strPowerName).ConfigureAwait(false)
+                          + await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false) + '('
+                          + await _objCharacter.TranslateExtraAsync(strPowerExtra).ConfigureAwait(false) + ')';
                     lstPowerItems.Add(new ListItem(new Tuple<string, string>(strPowerName, strPowerExtra), strName));
                 }
 
-                cboPower.BeginUpdate();
-                cboPower.PopulateWithListItems(lstPowerItems);
-                if (lstPowerItems.Count >= 1)
-                    cboPower.SelectedIndex = 0;
+                await cboPower.PopulateWithListItemsAsync(lstPowerItems).ConfigureAwait(false);
+                if (lstPowerItems.Count > 1)
+                    await cboPower.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);
+                else if (lstPowerItems.Count == 1)
+                {
+                    if (await cboPower.DoThreadSafeFuncAsync(x => x.SelectedValue).ConfigureAwait(false) is
+                        Tuple<string, string> objSelectedItem)
+                    {
+                        _strReturnPower = objSelectedItem.Item1;
+                        _strReturnExtra = objSelectedItem.Item2;
+                        await this.DoThreadSafeAsync(x =>
+                        {
+                            x.DialogResult = DialogResult.OK;
+                            x.Close();
+                        }).ConfigureAwait(false);
+                    }
+                }
                 else
-                    cmdOK.Enabled = false;
-                cboPower.EndUpdate();
-                if (lstPowerItems.Count == 1)
-                    cmdOK_Click(sender, e);
+                    await cmdOK.DoThreadSafeAsync(x => x.Enabled = false).ConfigureAwait(false);
             }
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         #endregion Control Events

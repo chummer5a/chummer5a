@@ -13,10 +13,9 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && (components != null))
             {
-                components?.Dispose();
-                Utils.StringHashSetPool.Return(_setAllowedTechniques);
+                components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -29,19 +28,18 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.lstTechniques = new System.Windows.Forms.ListBox();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOKAdd = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
-            this.tlpTopRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpTopRight = new System.Windows.Forms.TableLayoutPanel();
             this.lblSearchLabel = new System.Windows.Forms.Label();
-            this.lblSource = new System.Windows.Forms.Label();
             this.txtSearch = new System.Windows.Forms.TextBox();
+            this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
+            this.lblSource = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
-            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
             this.tlpMain.SuspendLayout();
             this.tlpButtons.SuspendLayout();
             this.tlpTopRight.SuspendLayout();
@@ -93,12 +91,12 @@ namespace Chummer
             this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
             this.tlpButtons.Controls.Add(this.cmdOKAdd, 1, 0);
             this.tlpButtons.Controls.Add(this.cmdOK, 2, 0);
-            this.tlpButtons.Location = new System.Drawing.Point(372, 394);
+            this.tlpButtons.Location = new System.Drawing.Point(348, 394);
             this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
             this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpButtons.Size = new System.Drawing.Size(234, 29);
+            this.tlpButtons.Size = new System.Drawing.Size(258, 29);
             this.tlpButtons.TabIndex = 75;
             // 
             // cmdCancel
@@ -108,8 +106,9 @@ namespace Chummer
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cmdCancel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdCancel.Location = new System.Drawing.Point(3, 3);
+            this.cmdCancel.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(72, 23);
+            this.cmdCancel.Size = new System.Drawing.Size(80, 23);
             this.cmdCancel.TabIndex = 3;
             this.cmdCancel.Tag = "String_Cancel";
             this.cmdCancel.Text = "Cancel";
@@ -121,9 +120,10 @@ namespace Chummer
             this.cmdOKAdd.AutoSize = true;
             this.cmdOKAdd.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdOKAdd.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdOKAdd.Location = new System.Drawing.Point(81, 3);
+            this.cmdOKAdd.Location = new System.Drawing.Point(89, 3);
+            this.cmdOKAdd.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdOKAdd.Name = "cmdOKAdd";
-            this.cmdOKAdd.Size = new System.Drawing.Size(72, 23);
+            this.cmdOKAdd.Size = new System.Drawing.Size(80, 23);
             this.cmdOKAdd.TabIndex = 2;
             this.cmdOKAdd.Tag = "String_AddMore";
             this.cmdOKAdd.Text = "&Add && More";
@@ -135,9 +135,10 @@ namespace Chummer
             this.cmdOK.AutoSize = true;
             this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdOK.Location = new System.Drawing.Point(159, 3);
+            this.cmdOK.Location = new System.Drawing.Point(175, 3);
+            this.cmdOK.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdOK.Name = "cmdOK";
-            this.cmdOK.Size = new System.Drawing.Size(72, 23);
+            this.cmdOK.Size = new System.Drawing.Size(80, 23);
             this.cmdOK.TabIndex = 1;
             this.cmdOK.Tag = "String_OK";
             this.cmdOK.Text = "OK";
@@ -175,18 +176,6 @@ namespace Chummer
             this.lblSearchLabel.Tag = "Label_Search";
             this.lblSearchLabel.Text = "&Search:";
             // 
-            // lblSource
-            // 
-            this.lblSource.AutoSize = true;
-            this.lblSource.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lblSource.Location = new System.Drawing.Point(53, 6);
-            this.lblSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSource.Name = "lblSource";
-            this.lblSource.Size = new System.Drawing.Size(47, 13);
-            this.lblSource.TabIndex = 5;
-            this.lblSource.Text = "[Source]";
-            this.lblSource.Click += new System.EventHandler(this.OpenSourceFromLabel);
-            // 
             // txtSearch
             // 
             this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
@@ -195,18 +184,6 @@ namespace Chummer
             this.txtSearch.Size = new System.Drawing.Size(247, 20);
             this.txtSearch.TabIndex = 73;
             this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
-            // 
-            // lblSourceLabel
-            // 
-            this.lblSourceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
-            this.lblSourceLabel.AutoSize = true;
-            this.lblSourceLabel.Location = new System.Drawing.Point(3, 6);
-            this.lblSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblSourceLabel.Name = "lblSourceLabel";
-            this.lblSourceLabel.Size = new System.Drawing.Size(44, 13);
-            this.lblSourceLabel.TabIndex = 4;
-            this.lblSourceLabel.Tag = "Label_Source";
-            this.lblSourceLabel.Text = "Source:";
             // 
             // tlpRight
             // 
@@ -226,13 +203,36 @@ namespace Chummer
             this.tlpRight.Size = new System.Drawing.Size(303, 25);
             this.tlpRight.TabIndex = 77;
             // 
-            // frmSelectMartialArtTechnique
+            // lblSource
+            // 
+            this.lblSource.AutoSize = true;
+            this.lblSource.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.lblSource.Location = new System.Drawing.Point(53, 6);
+            this.lblSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSource.Name = "lblSource";
+            this.lblSource.Size = new System.Drawing.Size(47, 13);
+            this.lblSource.TabIndex = 5;
+            this.lblSource.Text = "[Source]";
+            this.lblSource.Click += new System.EventHandler(this.OpenSourceFromLabel);
+            // 
+            // lblSourceLabel
+            // 
+            this.lblSourceLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblSourceLabel.AutoSize = true;
+            this.lblSourceLabel.Location = new System.Drawing.Point(3, 6);
+            this.lblSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblSourceLabel.Name = "lblSourceLabel";
+            this.lblSourceLabel.Size = new System.Drawing.Size(44, 13);
+            this.lblSourceLabel.TabIndex = 4;
+            this.lblSourceLabel.Tag = "Label_Source";
+            this.lblSourceLabel.Text = "Source:";
+            // 
+            // SelectMartialArtTechnique
             // 
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.CancelButton = this.cmdCancel;
             this.ClientSize = new System.Drawing.Size(624, 441);
             this.Controls.Add(this.tlpMain);
@@ -261,16 +261,16 @@ namespace Chummer
 
         #endregion
         private System.Windows.Forms.ListBox lstTechniques;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
-        private BufferedTableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
         private System.Windows.Forms.Button cmdCancel;
         private System.Windows.Forms.Button cmdOKAdd;
         private System.Windows.Forms.Button cmdOK;
-        private BufferedTableLayoutPanel tlpTopRight;
+        private System.Windows.Forms.TableLayoutPanel tlpTopRight;
         private System.Windows.Forms.Label lblSearchLabel;
         private System.Windows.Forms.Label lblSource;
         private System.Windows.Forms.TextBox txtSearch;
         private System.Windows.Forms.Label lblSourceLabel;
-        private BufferedTableLayoutPanel tlpRight;
+        private System.Windows.Forms.TableLayoutPanel tlpRight;
     }
 }

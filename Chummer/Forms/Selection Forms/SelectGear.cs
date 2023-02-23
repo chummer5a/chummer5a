@@ -22,6 +22,8 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -31,7 +33,7 @@ namespace Chummer
 {
     public partial class SelectGear : Form
     {
-        private bool _blnLoading = true;
+        private int _intLoading = 1;
         private string _strSelectedGear = string.Empty;
         private int _intSelectedRating;
         private decimal _decSelectedQty = 1;
@@ -52,10 +54,16 @@ namespace Chummer
         private readonly XPathNavigator _xmlBaseGearDataNode;
         private readonly Character _objCharacter;
 
-        private readonly List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
-        private readonly HashSet<string> _setAllowedCategories = Utils.StringHashSetPool.Get();
-        private readonly HashSet<string> _setAllowedNames = Utils.StringHashSetPool.Get();
-        private readonly HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
+        private List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
+        private HashSet<string> _setAllowedCategories = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setAllowedNames = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setBlackMarketMaps = Utils.StringHashSetPool.Get();
+
+        private CancellationTokenSource _objUpdateGearInfoCancellationTokenSource;
+        private CancellationTokenSource _objDoRefreshListCancellationTokenSource;
+        private CancellationTokenSource _objGearSelectedIndexChangedCancellationTokenSource;
+        private readonly CancellationTokenSource _objGenericCancellationTokenSource = new CancellationTokenSource();
+        private readonly CancellationToken _objGenericToken;
 
         #region Control Events
 
@@ -63,6 +71,33 @@ namespace Chummer
         {
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
+            _objGenericToken = _objGenericCancellationTokenSource.Token;
+            Disposed += (sender, args) =>
+            {
+                CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objUpdateGearInfoCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                objOldCancellationTokenSource = Interlocked.Exchange(ref _objDoRefreshListCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                objOldCancellationTokenSource = Interlocked.Exchange(ref _objGearSelectedIndexChangedCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                _objGenericCancellationTokenSource.Dispose();
+                Utils.ListItemListPool.Return(ref _lstCategory);
+                Utils.StringHashSetPool.Return(ref _setAllowedCategories);
+                Utils.StringHashSetPool.Return(ref _setAllowedNames);
+                Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
+            };
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
@@ -97,202 +132,318 @@ namespace Chummer
             }
         }
 
-        private void SelectGear_Load(object sender, EventArgs e)
+        private async void SelectGear_Load(object sender, EventArgs e)
         {
-            if (_objCharacter.Created)
+            try
             {
-                chkHideOverAvailLimit.Visible = false;
-                chkHideOverAvailLimit.Checked = false;
-            }
-            else
-            {
-                chkHideOverAvailLimit.Text = string.Format(GlobalSettings.CultureInfo, chkHideOverAvailLimit.Text, _objCharacter.Settings.MaximumAvailability);
-                chkHideOverAvailLimit.Checked = GlobalSettings.HideItemsOverAvailLimit;
-            }
-
-            XPathNodeIterator objXmlCategoryList;
-
-            // Populate the Gear Category list.
-            if (_setAllowedCategories.Count > 0)
-            {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdMount))
+                if (_objCharacter.Created)
                 {
-                    foreach (string strAllowedMount in _setAllowedCategories)
+                    await chkHideOverAvailLimit.DoThreadSafeAsync(x =>
                     {
-                        if (!string.IsNullOrEmpty(strAllowedMount))
-                            sbdMount.Append(". = ").Append(strAllowedMount.CleanXPath()).Append(" or ");
-                    }
-
-                    sbdMount.Append(". = \"General\"");
-                    objXmlCategoryList = _xmlBaseGearDataNode.Select("categories/category[" + sbdMount + ']');
-                }
-            }
-            else
-            {
-                objXmlCategoryList = _xmlBaseGearDataNode.SelectAndCacheExpression("categories/category");
-            }
-
-            foreach (XPathNavigator objXmlCategory in objXmlCategoryList)
-            {
-                string strCategory = objXmlCategory.Value;
-                // Make sure the Category isn't in the exclusion list.
-                if (!_setAllowedCategories.Contains(strCategory) && objXmlCategory.SelectSingleNodeAndCacheExpression("@show")?.Value == bool.FalseString)
-                {
-                    continue;
-                }
-                if (_lstCategory.All(x => x.Value.ToString() != strCategory) && AnyItemInList(strCategory))
-                {
-                    _lstCategory.Add(new ListItem(strCategory, objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strCategory));
-                }
-            }
-            _lstCategory.Sort(CompareListItems.CompareNames);
-
-            if (_lstCategory.Count > 0)
-            {
-                _lstCategory.Insert(0, new ListItem("Show All", LanguageManager.GetString("String_ShowAll")));
-            }
-
-            cboCategory.BeginUpdate();
-            cboCategory.PopulateWithListItems(_lstCategory);
-            cboCategory.EndUpdate();
-
-            chkBlackMarketDiscount.Visible = _objCharacter.BlackMarketDiscount;
-
-            if (!string.IsNullOrEmpty(DefaultSearchText))
-            {
-                txtSearch.Text = DefaultSearchText;
-                txtSearch.Enabled = false;
-            }
-
-            _blnLoading = false;
-            // Select the first Category in the list.
-            if (!string.IsNullOrEmpty(_strSelectCategory))
-                cboCategory.SelectedValue = _strSelectCategory;
-            if (cboCategory.SelectedIndex == -1 && cboCategory.Items.Count > 0)
-                cboCategory.SelectedIndex = 0;
-            else
-                RefreshList();
-
-            if (!string.IsNullOrEmpty(_strSelectedGear))
-                lstGear.SelectedValue = _strSelectedGear;
-            // Make sure right-side controls are properly updated depending on how the selections above worked out
-            UpdateGearInfo();
-        }
-
-        private void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (_blnLoading)
-                return;
-
-            // Show the Do It Yourself CheckBox if the Commlink Upgrade category is selected.
-            if (cboCategory.SelectedValue?.ToString() == "Commlink Upgrade")
-                chkDoItYourself.Visible = true;
-            else
-            {
-                chkDoItYourself.Visible = false;
-                chkDoItYourself.Checked = false;
-            }
-
-            RefreshList();
-        }
-
-        private void lstGear_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (_blnLoading)
-                return;
-
-            string strSelectedId = lstGear.SelectedValue?.ToString();
-            if (!string.IsNullOrEmpty(strSelectedId))
-            {
-                // Retireve the information for the selected piece of Gear.
-                XPathNavigator objXmlGear = _xmlBaseGearDataNode.SelectSingleNode("gears/gear[id = " + strSelectedId.CleanXPath() + ']');
-
-                if (objXmlGear != null)
-                {
-                    string strName = objXmlGear.SelectSingleNode("name")?.Value ?? string.Empty;
-
-                    // Quantity.
-                    nudGearQty.Enabled = true;
-                    nudGearQty.Minimum = 1;
-                    string strCostFor = objXmlGear.SelectSingleNode("costfor")?.Value;
-                    if (!string.IsNullOrEmpty(strCostFor))
-                    {
-                        nudGearQty.Value = Convert.ToDecimal(strCostFor, GlobalSettings.InvariantCultureInfo);
-                        nudGearQty.Increment = Convert.ToDecimal(strCostFor, GlobalSettings.InvariantCultureInfo);
-                    }
-                    else
-                    {
-                        nudGearQty.Value = 1;
-                        nudGearQty.Increment = 1;
-                    }
-                    if (strName.StartsWith("Nuyen", StringComparison.Ordinal))
-                    {
-                        int intDecimalPlaces = _objCharacter.Settings.MaxNuyenDecimals;
-                        if (intDecimalPlaces <= 0)
-                        {
-                            nudGearQty.DecimalPlaces = 0;
-                            nudGearQty.Minimum = 1.0m;
-                        }
-                        else
-                        {
-                            nudGearQty.DecimalPlaces = intDecimalPlaces;
-                            decimal decMinimum = 1.0m;
-                            // Need a for loop instead of a power system to maintain exact precision
-                            for (int i = 0; i < intDecimalPlaces; ++i)
-                                decMinimum /= 10.0m;
-                            nudGearQty.Minimum = decMinimum;
-                        }
-                    }
-                    else if (objXmlGear.SelectSingleNode("category")?.Value == "Currency")
-                    {
-                        nudGearQty.DecimalPlaces = 2;
-                        nudGearQty.Minimum = 0.01m;
-                    }
-                    else
-                    {
-                        nudGearQty.DecimalPlaces = 0;
-                        nudGearQty.Minimum = 1.0m;
-                    }
-
-                    nudGearQty.Visible = true;
-                    lblGearQtyLabel.Visible = true;
-                    chkStack.Visible = _objCharacter.Created;
-
-                    string strRatingLabel = objXmlGear.SelectSingleNode("ratinglabel")?.Value;
-                    lblRatingLabel.Text = !string.IsNullOrEmpty(strRatingLabel)
-                        ? string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("Label_RatingFormat"),
-                            LanguageManager.GetString(strRatingLabel))
-                        : LanguageManager.GetString("Label_Rating");
+                        x.Visible = false;
+                        x.Checked = false;
+                    }, _objGenericToken).ConfigureAwait(false);
                 }
                 else
                 {
-                    nudGearQty.Visible = false;
-                    nudGearQty.Enabled = false;
-                    nudGearQty.Value = 1;
-                    lblGearQtyLabel.Visible = false;
-                    chkStack.Visible = false;
+                    await chkHideOverAvailLimit.DoThreadSafeAsync(x =>
+                    {
+                        x.Text = string.Format(
+                            GlobalSettings.CultureInfo, x.Text,
+                            _objCharacter.Settings.MaximumAvailability);
+                        x.Checked = GlobalSettings.HideItemsOverAvailLimit;
+                    }, _objGenericToken).ConfigureAwait(false);
+                }
+
+                XPathNodeIterator objXmlCategoryList;
+
+                // Populate the Gear Category list.
+                if (_setAllowedCategories.Count > 0)
+                {
+                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdMount))
+                    {
+                        foreach (string strAllowedMount in _setAllowedCategories)
+                        {
+                            if (!string.IsNullOrEmpty(strAllowedMount))
+                                sbdMount.Append(". = ").Append(strAllowedMount.CleanXPath()).Append(" or ");
+                        }
+
+                        sbdMount.Append(". = \"General\"");
+                        objXmlCategoryList = _xmlBaseGearDataNode.Select("categories/category[" + sbdMount + ']');
+                    }
+                }
+                else
+                {
+                    objXmlCategoryList = await _xmlBaseGearDataNode.SelectAndCacheExpressionAsync("categories/category", _objGenericToken).ConfigureAwait(false);
+                }
+
+                foreach (XPathNavigator objXmlCategory in objXmlCategoryList)
+                {
+                    string strCategory = objXmlCategory.Value;
+                    // Make sure the Category isn't in the exclusion list.
+                    if (!_setAllowedCategories.Contains(strCategory) && (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@show", _objGenericToken).ConfigureAwait(false))?.Value == bool.FalseString)
+                    {
+                        continue;
+                    }
+                    if (_lstCategory.All(x => x.Value.ToString() != strCategory) && await AnyItemInList(strCategory).ConfigureAwait(false))
+                    {
+                        _lstCategory.Add(new ListItem(strCategory, (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate", _objGenericToken).ConfigureAwait(false))?.Value ?? strCategory));
+                    }
+                }
+                _lstCategory.Sort(CompareListItems.CompareNames);
+
+                if (_lstCategory.Count > 0)
+                {
+                    _lstCategory.Insert(0, new ListItem("Show All", await LanguageManager.GetStringAsync("String_ShowAll", token: _objGenericToken).ConfigureAwait(false)));
+                }
+
+                await cboCategory.PopulateWithListItemsAsync(_lstCategory, _objGenericToken).ConfigureAwait(false);
+
+                await chkBlackMarketDiscount.DoThreadSafeAsync(x => x.Visible = _objCharacter.BlackMarketDiscount, _objGenericToken).ConfigureAwait(false);
+
+                if (!string.IsNullOrEmpty(DefaultSearchText))
+                {
+                    await txtSearch.DoThreadSafeAsync(x =>
+                    {
+                        x.Text = DefaultSearchText;
+                        x.Enabled = false;
+                    }, _objGenericToken).ConfigureAwait(false);
+                }
+
+                Interlocked.Decrement(ref _intLoading);
+                // Select the first Category in the list.
+                bool blnRefreshList = false;
+                await cboCategory.DoThreadSafeAsync(x =>
+                {
+                    if (!string.IsNullOrEmpty(_strSelectCategory))
+                        x.SelectedValue = _strSelectCategory;
+                    if (x.SelectedIndex == -1 && x.Items.Count > 0)
+                        x.SelectedIndex = 0;
+                    else
+                        blnRefreshList = true;
+                }, _objGenericToken).ConfigureAwait(false);
+                if (blnRefreshList)
+                    await RefreshList(token: _objGenericToken).ConfigureAwait(false);
+
+                if (!string.IsNullOrEmpty(_strSelectedGear))
+                    await lstGear.DoThreadSafeAsync(x => x.SelectedValue = _strSelectedGear, _objGenericToken).ConfigureAwait(false);
+                // Make sure right-side controls are properly updated depending on how the selections above worked out
+                await UpdateGearInfo(_objGenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private void SelectGear_Closing(object sender, FormClosingEventArgs e)
+        {
+            CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objUpdateGearInfoCancellationTokenSource, null);
+            if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+            {
+                objOldCancellationTokenSource.Cancel(false);
+                objOldCancellationTokenSource.Dispose();
+            }
+            objOldCancellationTokenSource = Interlocked.Exchange(ref _objDoRefreshListCancellationTokenSource, null);
+            if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+            {
+                objOldCancellationTokenSource.Cancel(false);
+                objOldCancellationTokenSource.Dispose();
+            }
+            objOldCancellationTokenSource = Interlocked.Exchange(ref _objGearSelectedIndexChangedCancellationTokenSource, null);
+            if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+            {
+                objOldCancellationTokenSource.Cancel(false);
+                objOldCancellationTokenSource.Dispose();
+            }
+            _objGenericCancellationTokenSource.Cancel(false);
+        }
+
+        private async void cboCategory_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_intLoading > 0)
+                return;
+
+            try
+            {
+                // Show the Do It Yourself CheckBox if the Commlink Upgrade category is selected.
+                if (await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), _objGenericToken).ConfigureAwait(false) == "Commlink Upgrade")
+                    await chkDoItYourself.DoThreadSafeAsync(x => x.Visible = true, _objGenericToken).ConfigureAwait(false);
+                else
+                {
+                    await chkDoItYourself.DoThreadSafeAsync(x =>
+                    {
+                        x.Visible = false;
+                        x.Checked = false;
+                    }, token: _objGenericToken).ConfigureAwait(false);
+                }
+
+                await RefreshList(token: _objGenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void lstGear_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_intLoading > 0)
+                return;
+            CancellationTokenSource objNewCancellationTokenSource = new CancellationTokenSource();
+            CancellationToken objNewToken = objNewCancellationTokenSource.Token;
+            CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objGearSelectedIndexChangedCancellationTokenSource, objNewCancellationTokenSource);
+            if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+            {
+                objOldCancellationTokenSource.Cancel(false);
+                objOldCancellationTokenSource.Dispose();
+            }
+            using (CancellationTokenSource objJoinedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_objGenericToken, objNewToken))
+            {
+                CancellationToken token = objJoinedCancellationTokenSource.Token;
+                try
+                {
+                    string strSelectedId = await lstGear.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
+                    if (!string.IsNullOrEmpty(strSelectedId))
+                    {
+                        // Retrieve the information for the selected piece of Gear.
+                        XPathNavigator objXmlGear = _xmlBaseGearDataNode.SelectSingleNode("gears/gear[id = " + strSelectedId.CleanXPath() + ']');
+
+                        if (objXmlGear != null)
+                        {
+                            string strName = (await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value ?? string.Empty;
+
+                            // Quantity.
+                            string strCostFor = (await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("costfor", token).ConfigureAwait(false))?.Value;
+                            await nudGearQty.DoThreadSafeAsync(x =>
+                            {
+                                x.Enabled = true;
+                                x.Minimum = 1;
+                            }, token).ConfigureAwait(false);
+                            if (!string.IsNullOrEmpty(strCostFor))
+                            {
+                                decimal decCostFor = Convert.ToDecimal(strCostFor, GlobalSettings.InvariantCultureInfo);
+                                await nudGearQty.DoThreadSafeAsync(x =>
+                                {
+                                    x.Value = decCostFor;
+                                    x.Increment = decCostFor;
+                                }, token).ConfigureAwait(false);
+                            }
+                            else
+                            {
+                                await nudGearQty.DoThreadSafeAsync(x =>
+                                {
+                                    x.Value = 1;
+                                    x.Increment = 1;
+                                }, token).ConfigureAwait(false);
+                            }
+                            if (strName.StartsWith("Nuyen", StringComparison.Ordinal))
+                            {
+                                int intDecimalPlaces = _objCharacter.Settings.MaxNuyenDecimals;
+                                if (intDecimalPlaces <= 0)
+                                {
+                                    await nudGearQty.DoThreadSafeAsync(x =>
+                                    {
+                                        x.DecimalPlaces = 0;
+                                        x.Minimum = 1.0m;
+                                    }, token).ConfigureAwait(false);
+                                }
+                                else
+                                {
+                                    decimal decMinimum = 1.0m;
+                                    // Need a for loop instead of a power system to maintain exact precision
+                                    for (int i = 0; i < intDecimalPlaces; ++i)
+                                        decMinimum /= 10.0m;
+                                    await nudGearQty.DoThreadSafeAsync(x =>
+                                    {
+                                        x.Minimum = decMinimum;
+                                        x.DecimalPlaces = intDecimalPlaces;
+                                    }, token).ConfigureAwait(false);
+                                }
+                            }
+                            else if ((await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("category", token).ConfigureAwait(false))?.Value == "Currency")
+                            {
+                                await nudGearQty.DoThreadSafeAsync(x =>
+                                {
+                                    x.DecimalPlaces = 2;
+                                    x.Minimum = 0.01m;
+                                }, token).ConfigureAwait(false);
+                            }
+                            else
+                            {
+                                await nudGearQty.DoThreadSafeAsync(x =>
+                                {
+                                    x.DecimalPlaces = 0;
+                                    x.Minimum = 1.0m;
+                                }, token).ConfigureAwait(false);
+                            }
+
+                            await nudGearQty.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
+                            await lblGearQtyLabel.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
+                            await chkStack.DoThreadSafeAsync(x => x.Visible = _objCharacter.Created, token: token).ConfigureAwait(false);
+
+                            string strRatingLabel = (await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("ratinglabel", token).ConfigureAwait(false))?.Value;
+                            strRatingLabel = !string.IsNullOrEmpty(strRatingLabel)
+                                ? string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Label_RatingFormat", token: token).ConfigureAwait(false),
+                                                await LanguageManager.GetStringAsync(strRatingLabel, token: token).ConfigureAwait(false))
+                                : await LanguageManager.GetStringAsync("Label_Rating", token: token).ConfigureAwait(false);
+                            await lblRatingLabel.DoThreadSafeAsync(x => x.Text = strRatingLabel, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            await nudGearQty.DoThreadSafeAsync(x =>
+                            {
+                                x.Visible = false;
+                                x.Enabled = false;
+                                x.Value = 1;
+                            }, token).ConfigureAwait(false);
+                            await lblGearQtyLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                            await chkStack.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                        }
+                    }
+                    else
+                    {
+                        await nudGearQty.DoThreadSafeAsync(x =>
+                        {
+                            x.Visible = false;
+                            x.Enabled = false;
+                            x.Value = 1;
+                        }, token).ConfigureAwait(false);
+                        await lblGearQtyLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                        await chkStack.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                    }
+
+                    await UpdateGearInfo(token).ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
                 }
             }
-            else
+        }
+
+        private async void nudRating_ValueChanged(object sender, EventArgs e)
+        {
+            try
             {
-                nudGearQty.Visible = false;
-                nudGearQty.Enabled = false;
-                nudGearQty.Value = 1;
-                lblGearQtyLabel.Visible = false;
-                chkStack.Visible = false;
+                await UpdateGearInfo(_objGenericToken).ConfigureAwait(false);
             }
-
-            UpdateGearInfo();
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
-        private void nudRating_ValueChanged(object sender, EventArgs e)
+        private async void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
         {
-            UpdateGearInfo();
-        }
-
-        private void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
-        {
-            UpdateGearInfo();
+            try
+            {
+                await UpdateGearInfo(_objGenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -304,11 +455,19 @@ namespace Chummer
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
+        private async void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            RefreshList();
+            try
+            {
+                await RefreshList(token: _objGenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void cmdOKAdd_Click(object sender, EventArgs e)
@@ -317,41 +476,78 @@ namespace Chummer
             AcceptForm();
         }
 
-        private void nudGearQty_ValueChanged(object sender, EventArgs e)
+        private async void nudGearQty_ValueChanged(object sender, EventArgs e)
         {
-            UpdateGearInfo();
-        }
-
-        private void chkFreeItem_CheckedChanged(object sender, EventArgs e)
-        {
-            if (chkShowOnlyAffordItems.Checked)
+            try
             {
-                RefreshList();
+                await UpdateGearInfo(_objGenericToken).ConfigureAwait(false);
             }
-            UpdateGearInfo();
-        }
-
-        private void chkDoItYourself_CheckedChanged(object sender, EventArgs e)
-        {
-            if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
+            catch (OperationCanceledException)
             {
-                RefreshList();
+                //swallow this
             }
-            UpdateGearInfo();
         }
 
-        private void nudMarkup_ValueChanged(object sender, EventArgs e)
+        private async void chkFreeItem_CheckedChanged(object sender, EventArgs e)
         {
-            if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
+            try
             {
-                RefreshList();
+                if (await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked, _objGenericToken).ConfigureAwait(false))
+                {
+                    await RefreshList(token: _objGenericToken).ConfigureAwait(false);
+                }
+                await UpdateGearInfo(_objGenericToken).ConfigureAwait(false);
             }
-            UpdateGearInfo();
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
-        private void RefreshCurrentList(object sender, EventArgs e)
+        private async void chkDoItYourself_CheckedChanged(object sender, EventArgs e)
         {
-            RefreshList();
+            try
+            {
+                if (await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked, _objGenericToken).ConfigureAwait(false)
+                    && !await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, _objGenericToken).ConfigureAwait(false))
+                {
+                    await RefreshList(token: _objGenericToken).ConfigureAwait(false);
+                }
+                await UpdateGearInfo(_objGenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void nudMarkup_ValueChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                if (await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked, _objGenericToken).ConfigureAwait(false)
+                    && !await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, _objGenericToken).ConfigureAwait(false))
+                {
+                    await RefreshList(token: _objGenericToken).ConfigureAwait(false);
+                }
+                await UpdateGearInfo(_objGenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void RefreshCurrentList(object sender, EventArgs e)
+        {
+            try
+            {
+                await RefreshList(token: _objGenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
@@ -390,7 +586,7 @@ namespace Chummer
         private void txtSearch_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Up)
-                txtSearch.Select(txtSearch.Text.Length, 0);
+                txtSearch.Select(txtSearch.TextLength, 0);
         }
 
         #endregion Control Events
@@ -534,341 +730,371 @@ namespace Chummer
         /// <summary>
         /// Update the Gear's information based on the Gear selected and current Rating.
         /// </summary>
-        private void UpdateGearInfo()
+        private async ValueTask UpdateGearInfo(CancellationToken token = default)
         {
-            if (_blnLoading)
+            CancellationTokenSource objNewCancellationTokenSource = new CancellationTokenSource();
+            CancellationToken objNewToken = objNewCancellationTokenSource.Token;
+            CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objUpdateGearInfoCancellationTokenSource, objNewCancellationTokenSource);
+            if (objOldCancellationTokenSource?.IsCancellationRequested == false)
             {
-                tlpRight.Visible = false;
-                return;
+                objOldCancellationTokenSource.Cancel(false);
+                objOldCancellationTokenSource.Dispose();
             }
-
-            string strSelectedId = lstGear.SelectedValue?.ToString();
-            if (string.IsNullOrEmpty(strSelectedId))
+            using (CancellationTokenSource objJoinedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(token, objNewToken))
             {
-                tlpRight.Visible = false;
-                return;
-            }
-
-            // Retrieve the information for the selected piece of Gear.
-            XPathNavigator objXmlGear = _xmlBaseGearDataNode.SelectSingleNode("gears/gear[id = " + strSelectedId.CleanXPath() + ']');
-
-            if (objXmlGear == null)
-            {
-                tlpRight.Visible = false;
-                return;
-            }
-
-            SuspendLayout();
-            // Retrieve the information for the selected piece of Cyberware.
-            string strDeviceRating = objXmlGear.SelectSingleNode("devicerating")?.Value ?? string.Empty;
-            lblGearDeviceRating.Text = strDeviceRating;
-            lblGearDeviceRatingLabel.Visible = !string.IsNullOrEmpty(strDeviceRating);
-
-            string strSource = objXmlGear.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
-            string strPage = objXmlGear.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlGear.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-            SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
-                GlobalSettings.CultureInfo, _objCharacter);
-            lblSource.Text = objSource.ToString();
-            lblSource.SetToolTip(objSource.LanguageBookTooltip);
-            lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
-            lblAvail.Text = new AvailabilityValue(Convert.ToInt32(nudRating.Value), objXmlGear.SelectSingleNode("avail")?.Value).ToString();
-            lblAvailLabel.Visible = !string.IsNullOrEmpty(lblAvail.Text);
-
-            decimal decMultiplier = nudGearQty.Value / nudGearQty.Increment;
-            if (chkDoItYourself.Checked)
-                decMultiplier *= 0.5m;
-
-            // Cost.
-            bool blnCanBlackMarketDiscount = _setBlackMarketMaps.Contains(objXmlGear.SelectSingleNode("category")?.Value);
-            chkBlackMarketDiscount.Enabled = blnCanBlackMarketDiscount;
-            if (!chkBlackMarketDiscount.Checked)
-            {
-                chkBlackMarketDiscount.Checked = GlobalSettings.AssumeBlackMarket && blnCanBlackMarketDiscount;
-            }
-            else if (!blnCanBlackMarketDiscount)
-            {
-                //Prevent chkBlackMarketDiscount from being checked if the category doesn't match.
-                chkBlackMarketDiscount.Checked = false;
-            }
-
-            decimal decItemCost = 0.0m;
-            bool blnIsSuccess;
-            object objProcess;
-            if (chkFreeItem.Checked)
-            {
-                lblCost.Text = (0.0m).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-            }
-            else
-            {
-                XPathNavigator objCostNode = objXmlGear.SelectSingleNode("cost");
-                if (objCostNode == null)
+                token = objJoinedCancellationTokenSource.Token;
+                if (_intLoading > 0)
                 {
-                    int intHighestCostNode = 0;
-                    foreach (XmlNode objLoopNode in objXmlGear.SelectChildren(XPathNodeType.Element))
-                    {
-                        if (!objLoopNode.Name.StartsWith("cost", StringComparison.Ordinal))
-                            continue;
-                        string strLoopCostString = objLoopNode.Name.Substring(4);
-                        if (int.TryParse(strLoopCostString, out int intTmp))
-                        {
-                            intHighestCostNode = Math.Max(intHighestCostNode, intTmp);
-                        }
-                    }
-                    objCostNode = objXmlGear.SelectSingleNode("cost" + intHighestCostNode);
-                    for (int i = nudRating.ValueAsInt; i <= intHighestCostNode; ++i)
-                    {
-                        XPathNavigator objLoopNode = objXmlGear.SelectSingleNode("cost" + i.ToString(GlobalSettings.InvariantCultureInfo));
-                        if (objLoopNode != null)
-                        {
-                            objCostNode = objLoopNode;
-                            break;
-                        }
-                    }
+                    await tlpRight.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
+                    return;
                 }
-                if (objCostNode != null)
+
+                string strSelectedId = await lstGear.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(strSelectedId))
                 {
-                    try
-                    {
-                        objProcess = CommonFunctions.EvaluateInvariantXPath(objCostNode.Value.Replace("Rating", nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo)), out blnIsSuccess);
-                        decimal decCost = blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo) * decMultiplier : 0;
-                        decCost *= 1 + (nudMarkup.Value / 100.0m);
-                        if (chkBlackMarketDiscount.Checked)
-                            decCost *= 0.9m;
-                        lblCost.Text = (decCost * _intCostMultiplier).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-                        decItemCost = decCost;
-                    }
-                    catch (XPathException)
-                    {
-                        lblCost.Text = objCostNode.Value;
-                        if (decimal.TryParse(objCostNode.Value, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decTemp))
-                        {
-                            decItemCost = decTemp;
-                            lblCost.Text = (decItemCost * _intCostMultiplier).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-                        }
-                    }
-
-                    if (objCostNode.Value.StartsWith("FixedValues(", StringComparison.Ordinal))
-                    {
-                        string strCost = "0";
-                        if (nudRating.Value > 0)
-                        {
-                            strCost = objCostNode.Value.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
-                                                 .SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
-                                                 .ElementAt(nudRating.ValueAsInt - 1).Trim('[', ']');
-                        }
-
-                        decimal decCost = Convert.ToDecimal(strCost, GlobalSettings.InvariantCultureInfo) * decMultiplier;
-                        decCost *= 1 + (nudMarkup.Value / 100.0m);
-                        if (chkBlackMarketDiscount.Checked)
-                            decCost *= 0.9m;
-                        lblCost.Text = (decCost * _intCostMultiplier).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + "¥+";
-                        decItemCost = decCost;
-                    }
-                    else if (objCostNode.Value.StartsWith("Variable(", StringComparison.Ordinal))
-                    {
-                        decimal decMin;
-                        decimal decMax = decimal.MaxValue;
-                        string strCost = objCostNode.Value.TrimStartOnce("Variable(", true).TrimEndOnce(')');
-                        if (strCost.Contains('-'))
-                        {
-                            string[] strValues = strCost.Split('-');
-                            decMin = Convert.ToDecimal(strValues[0], GlobalSettings.InvariantCultureInfo);
-                            decMax = Convert.ToDecimal(strValues[1], GlobalSettings.InvariantCultureInfo);
-                        }
-                        else
-                            decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalSettings.InvariantCultureInfo);
-
-                        if (decMax == decimal.MaxValue)
-                            lblCost.Text = decMin.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + "¥+";
-                        else
-                        {
-                            string strSpace = LanguageManager.GetString("String_Space");
-                            lblCost.Text = decMin.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
-                                           + strSpace + '-' + strSpace
-                                           + decMax.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + '¥';
-                        }
-
-                        decItemCost = decMin;
-                    }
+                    await tlpRight.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
+                    return;
                 }
-            }
-            lblCostLabel.Visible = !string.IsNullOrEmpty(lblCost.Text);
 
-            // Update the Avail Test Label.
-            lblTest.Text = _objCharacter.AvailTest(decItemCost * _intCostMultiplier, lblAvail.Text);
-            lblTestLabel.Visible = true;
+                // Retrieve the information for the selected piece of Gear.
+                XPathNavigator objXmlGear = _xmlBaseGearDataNode.SelectSingleNode("gears/gear[id = " + strSelectedId.CleanXPath() + ']');
 
-            // Capacity.
-
-            if (_eCapacityStyle == CapacityStyle.Zero)
-                lblCapacity.Text = '[' + 0.ToString(GlobalSettings.CultureInfo) + ']';
-            else
-            {
-                // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
-                string strCapacityField = ShowArmorCapacityOnly ? "armorcapacity" : "capacity";
-                string strCapacityText = objXmlGear.SelectSingleNode(strCapacityField)?.Value;
-                if (!string.IsNullOrEmpty(strCapacityText))
+                if (objXmlGear == null)
                 {
-                    int intPos = strCapacityText.IndexOf("/[", StringComparison.Ordinal);
-                    string strCapacity;
-                    if (intPos != -1)
+                    await tlpRight.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
+                    return;
+                }
+
+                await this.DoThreadSafeAsync(x => x.SuspendLayout(), token: token).ConfigureAwait(false);
+                try
+                {
+                    int intRatingValue = await nudRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token).ConfigureAwait(false);
+                    // Retrieve the information for the selected piece of Cyberware.
+                    string strDeviceRating = (await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("devicerating", token).ConfigureAwait(false))?.Value ?? string.Empty;
+                    await lblGearDeviceRating.DoThreadSafeFuncAsync(x => x.Text = strDeviceRating, token: token).ConfigureAwait(false);
+                    await lblGearDeviceRatingLabel.DoThreadSafeFuncAsync(x => x.Visible = !string.IsNullOrEmpty(strDeviceRating), token: token).ConfigureAwait(false);
+
+                    string strSource = (await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("source", token).ConfigureAwait(false))?.Value
+                                       ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
+                    string strPage = (await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token).ConfigureAwait(false))?.Value
+                                     ?? (await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("page", token).ConfigureAwait(false))?.Value
+                                     ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
+                    SourceString objSource = await SourceString.GetSourceStringAsync(
+                        strSource, strPage, GlobalSettings.Language,
+                        GlobalSettings.CultureInfo, _objCharacter, token: token).ConfigureAwait(false);
+                    await objSource.SetControlAsync(lblSource, token: token).ConfigureAwait(false);
+                    await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(objSource.ToString()), token: token).ConfigureAwait(false);
+                    string strAvail = new AvailabilityValue(intRatingValue,
+                                                            (await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("avail", token).ConfigureAwait(false))?.Value).ToString();
+                    await lblAvail.DoThreadSafeAsync(x => x.Text = strAvail, token: token).ConfigureAwait(false);
+                    await lblAvailLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAvail), token: token).ConfigureAwait(false);
+
+                    decimal decMultiplier = await nudGearQty.DoThreadSafeFuncAsync(x => x.Value / x.Increment, token: token).ConfigureAwait(false);
+                    if (await chkDoItYourself.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
+                        decMultiplier *= 0.5m;
+
+                    // Cost.
+                    bool blnCanBlackMarketDiscount
+                        = _setBlackMarketMaps.Contains((await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("category", token).ConfigureAwait(false))?.Value);
+                    await chkBlackMarketDiscount.DoThreadSafeAsync(x =>
                     {
-                        string strFirstHalf = strCapacityText.Substring(0, intPos);
-                        string strSecondHalf = strCapacityText.Substring(intPos + 1, strCapacityText.Length - intPos - 1);
-
-                        if (strFirstHalf == "[*]")
-                            lblCapacity.Text = "*";
-                        else
+                        x.Enabled = blnCanBlackMarketDiscount;
+                        if (!x.Checked)
                         {
-                            bool blnSquareBrackets = strFirstHalf.StartsWith('[');
-                            strCapacity = strFirstHalf;
-                            if (blnSquareBrackets && strCapacity.Length > 2)
-                                strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
+                            x.Checked = GlobalSettings.AssumeBlackMarket && blnCanBlackMarketDiscount;
+                        }
+                        else if (!blnCanBlackMarketDiscount)
+                        {
+                            //Prevent chkBlackMarketDiscount from being checked if the category doesn't match.
+                            x.Checked = false;
+                        }
+                    }, token: token).ConfigureAwait(false);
 
-                            if (strCapacity.StartsWith("FixedValues(", StringComparison.Ordinal))
+                    decimal decItemCost = 0.0m;
+                    bool blnIsSuccess;
+                    object objProcess;
+                    if (await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
+                    {
+                        await lblCost.DoThreadSafeAsync(
+                            x => x.Text = (0.0m).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
+                                          + LanguageManager.GetString("String_NuyenSymbol"), token: token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        XPathNavigator objCostNode = await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("cost", token).ConfigureAwait(false);
+                        if (objCostNode == null)
+                        {
+                            int intHighestCostNode = 0;
+                            foreach (XmlNode objLoopNode in objXmlGear.SelectChildren(XPathNodeType.Element))
                             {
-                                string[] strValues = strCapacity.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                                if (strValues.Length >= nudRating.ValueAsInt)
-                                    lblCapacity.Text = strValues[nudRating.ValueAsInt - 1];
+                                if (!objLoopNode.Name.StartsWith("cost", StringComparison.Ordinal))
+                                    continue;
+                                string strLoopCostString = objLoopNode.Name.Substring(4);
+                                if (int.TryParse(strLoopCostString, out int intTmp))
+                                {
+                                    intHighestCostNode = Math.Max(intHighestCostNode, intTmp);
+                                }
+                            }
+
+                            objCostNode = objXmlGear.SelectSingleNode("cost" + intHighestCostNode);
+                            for (int i = intRatingValue; i <= intHighestCostNode; ++i)
+                            {
+                                XPathNavigator objLoopNode
+                                    = objXmlGear.SelectSingleNode("cost" + i.ToString(GlobalSettings.InvariantCultureInfo));
+                                if (objLoopNode != null)
+                                {
+                                    objCostNode = objLoopNode;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (objCostNode != null)
+                        {
+                            string strCost = objCostNode.Value;
+
+                            if (strCost.StartsWith("FixedValues(", StringComparison.Ordinal) && intRatingValue > 0)
+                            {
+                                strCost = strCost.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
+                                                 .SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
+                                                 .ElementAt(intRatingValue - 1).Trim('[', ']');
+                            }
+
+                            if (strCost.StartsWith("Variable(", StringComparison.Ordinal))
+                            {
+                                decimal decMin;
+                                decimal decMax = decimal.MaxValue;
+                                strCost = strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
+                                if (strCost.Contains('-'))
+                                {
+                                    string[] strValues = strCost.Split('-');
+                                    decMin = Convert.ToDecimal(strValues[0], GlobalSettings.InvariantCultureInfo);
+                                    decMax = Convert.ToDecimal(strValues[1], GlobalSettings.InvariantCultureInfo);
+                                }
+                                else
+                                    decMin = Convert.ToDecimal(strCost.FastEscape('+'),
+                                                               GlobalSettings.InvariantCultureInfo);
+
+                                if (decMax == decimal.MaxValue)
+                                    await lblCost.DoThreadSafeAsync(x => x.Text
+                                                                        = decMin.ToString(_objCharacter.Settings.NuyenFormat,
+                                                                              GlobalSettings.CultureInfo)
+                                                                          + LanguageManager.GetString("String_NuyenSymbol") + '+', token: token).ConfigureAwait(false);
                                 else
                                 {
-                                    try
-                                    {
-                                        objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo)), out blnIsSuccess);
-                                        lblCapacity.Text = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo) : strCapacity;
-                                    }
-                                    catch (XPathException)
-                                    {
-                                        lblCapacity.Text = strCapacity;
-                                    }
-                                    catch (OverflowException) // Result is text and not a double
-                                    {
-                                        lblCapacity.Text = strCapacity;
-                                    }
-                                    catch (InvalidCastException) // Result is text and not a double
-                                    {
-                                        lblCapacity.Text = strCapacity;
-                                    }
+                                    string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+                                    await lblCost.DoThreadSafeAsync(x => x.Text
+                                                                        = decMin.ToString(_objCharacter.Settings.NuyenFormat,
+                                                                              GlobalSettings.CultureInfo)
+                                                                          + strSpace + '-' + strSpace
+                                                                          + decMax.ToString(
+                                                                              _objCharacter.Settings.NuyenFormat,
+                                                                              GlobalSettings.CultureInfo)
+                                                                          + LanguageManager.GetString("String_NuyenSymbol"), token: token).ConfigureAwait(false);
                                 }
+
+                                decItemCost = decMin;
                             }
                             else
                             {
                                 try
                                 {
-                                    objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo)), out blnIsSuccess);
-                                    lblCapacity.Text = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo) : strCapacity;
+                                    (blnIsSuccess, objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
+                                        strCost.Replace(
+                                            "Rating", intRatingValue.ToString(GlobalSettings.InvariantCultureInfo)), token).ConfigureAwait(false);
+                                    decimal decCost = blnIsSuccess
+                                        ? Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo) * decMultiplier
+                                        : 0;
+                                    decCost *= 1 + (await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m);
+                                    if (await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
+                                        decCost *= 0.9m;
+                                    await lblCost.DoThreadSafeAsync(x => x.Text
+                                                                        = (decCost * _intCostMultiplier).ToString(
+                                                                              _objCharacter.Settings.NuyenFormat,
+                                                                              GlobalSettings.CultureInfo)
+                                                                          + LanguageManager.GetString("String_NuyenSymbol"), token: token).ConfigureAwait(false);
+                                    decItemCost = decCost;
                                 }
                                 catch (XPathException)
                                 {
-                                    lblCapacity.Text = strCapacity;
-                                }
-                                catch (OverflowException) // Result is text and not a double
-                                {
-                                    lblCapacity.Text = strCapacity;
-                                }
-                                catch (InvalidCastException) // Result is text and not a double
-                                {
-                                    lblCapacity.Text = strCapacity;
+                                    await lblCost.DoThreadSafeAsync(x => x.Text = strCost, token: token).ConfigureAwait(false);
+                                    if (decimal.TryParse(strCost, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decTemp))
+                                    {
+                                        decItemCost = decTemp;
+                                        await lblCost.DoThreadSafeAsync(x => x.Text
+                                                                            = (decItemCost * _intCostMultiplier).ToString(
+                                                                                _objCharacter.Settings.NuyenFormat,
+                                                                                GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"), token: token).ConfigureAwait(false);
+                                    }
                                 }
                             }
-
-                            if (blnSquareBrackets)
-                                lblCapacity.Text = '[' + lblCapacity.Text + ']';
                         }
-
-                        lblCapacity.Text += '/' + strSecondHalf;
                     }
-                    else if (strCapacityText == "[*]")
-                        lblCapacity.Text = "*";
+
+                    bool blnShowCost = !string.IsNullOrEmpty(await lblCost.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false));
+                    await lblCostLabel.DoThreadSafeAsync(x => x.Visible = blnShowCost, token: token).ConfigureAwait(false);
+
+                    // Update the Avail Test Label.
+                    string strTest = await _objCharacter.AvailTestAsync(decItemCost * _intCostMultiplier, strAvail, token).ConfigureAwait(false);
+                    await lblTest.DoThreadSafeAsync(x => x.Text = strTest, token: token).ConfigureAwait(false);
+                    await lblTestLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strTest), token: token).ConfigureAwait(false);
+
+                    // Capacity.
+
+                    if (_eCapacityStyle == CapacityStyle.Zero)
+                        await lblCapacity.DoThreadSafeAsync(x => x.Text = '[' + 0.ToString(GlobalSettings.CultureInfo) + ']', token: token).ConfigureAwait(false);
                     else
                     {
-                        bool blnSquareBrackets = strCapacityText.StartsWith('[');
-                        strCapacity = strCapacityText;
-                        if (blnSquareBrackets && strCapacity.Length > 2)
-                            strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                        if (strCapacityText.StartsWith("FixedValues(", StringComparison.Ordinal))
+                        // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
+                        string strCapacityField = ShowArmorCapacityOnly ? "armorcapacity" : "capacity";
+                        string strCapacityText = objXmlGear.SelectSingleNode(strCapacityField)?.Value;
+                        if (!string.IsNullOrEmpty(strCapacityText))
                         {
-                            string[] strValues = strCapacityText.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                            lblCapacity.Text = strValues[Math.Max(Math.Min(nudRating.ValueAsInt, strValues.Length) - 1, 0)];
+                            int intPos = strCapacityText.IndexOf("/[", StringComparison.Ordinal);
+                            string strCapacity;
+                            if (intPos != -1)
+                            {
+                                string strFirstHalf = strCapacityText.Substring(0, intPos);
+                                string strSecondHalf
+                                    = strCapacityText.Substring(intPos + 1, strCapacityText.Length - intPos - 1);
+
+                                if (strFirstHalf == "[*]")
+                                    await lblCapacity.DoThreadSafeAsync(x => x.Text = "*", token: token).ConfigureAwait(false);
+                                else
+                                {
+                                    bool blnSquareBrackets = strFirstHalf.StartsWith('[');
+                                    strCapacity = strFirstHalf;
+                                    if (blnSquareBrackets && strCapacity.Length > 2)
+                                        strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
+
+                                    if (strCapacity.StartsWith("FixedValues(", StringComparison.Ordinal))
+                                    {
+                                        string[] strValues = strCapacity.TrimStartOnce("FixedValues(", true)
+                                                                        .TrimEndOnce(')')
+                                                                        .Split(',', StringSplitOptions.RemoveEmptyEntries);
+                                        if (strValues.Length >= intRatingValue)
+                                            await lblCapacity.DoThreadSafeAsync(x => x.Text = strValues[intRatingValue - 1], token: token).ConfigureAwait(false);
+                                        else
+                                        {
+                                            try
+                                            {
+                                                (bool blnIsSuccess2, object objProcess2) = await CommonFunctions.EvaluateInvariantXPathAsync(
+                                                    strCapacity.Replace(
+                                                        "Rating",
+                                                        intRatingValue.ToString(GlobalSettings.InvariantCultureInfo)), token: token).ConfigureAwait(false);
+                                                await lblCapacity.DoThreadSafeAsync(x => x.Text = blnIsSuccess2
+                                                    ? ((double)objProcess2).ToString("#,0.##", GlobalSettings.CultureInfo)
+                                                    : strCapacity, token: token).ConfigureAwait(false);
+                                            }
+                                            catch (XPathException)
+                                            {
+                                                await lblCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token: token).ConfigureAwait(false);
+                                            }
+                                            catch (OverflowException) // Result is text and not a double
+                                            {
+                                                await lblCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token: token).ConfigureAwait(false);
+                                            }
+                                            catch (InvalidCastException) // Result is text and not a double
+                                            {
+                                                await lblCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token: token).ConfigureAwait(false);
+                                            }
+                                        }
+                                    }
+                                    else
+                                    {
+                                        try
+                                        {
+                                            (bool blnIsSuccess2, object objProcess2) = await CommonFunctions.EvaluateInvariantXPathAsync(
+                                                strCapacity.Replace(
+                                                    "Rating",
+                                                    intRatingValue.ToString(GlobalSettings.InvariantCultureInfo)), token: token).ConfigureAwait(false);
+                                            await lblCapacity.DoThreadSafeAsync(x => x.Text = blnIsSuccess2
+                                                                                    ? ((double)objProcess2).ToString("#,0.##", GlobalSettings.CultureInfo)
+                                                                                    : strCapacity, token: token).ConfigureAwait(false);
+                                        }
+                                        catch (XPathException)
+                                        {
+                                            await lblCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token: token).ConfigureAwait(false);
+                                        }
+                                        catch (OverflowException) // Result is text and not a double
+                                        {
+                                            await lblCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token: token).ConfigureAwait(false);
+                                        }
+                                        catch (InvalidCastException) // Result is text and not a double
+                                        {
+                                            await lblCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token: token).ConfigureAwait(false);
+                                        }
+                                    }
+
+                                    if (blnSquareBrackets)
+                                        await lblCapacity.DoThreadSafeAsync(x => x.Text = '[' + x.Text + ']', token: token).ConfigureAwait(false);
+                                }
+
+                                await lblCapacity.DoThreadSafeAsync(x => x.Text += '/' + strSecondHalf, token: token).ConfigureAwait(false);
+                            }
+                            else if (strCapacityText == "[*]")
+                                await lblCapacity.DoThreadSafeAsync(x => x.Text = "*", token: token).ConfigureAwait(false);
+                            else
+                            {
+                                bool blnSquareBrackets = strCapacityText.StartsWith('[');
+                                strCapacity = strCapacityText;
+                                if (blnSquareBrackets && strCapacity.Length > 2)
+                                    strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
+                                if (strCapacityText.StartsWith("FixedValues(", StringComparison.Ordinal))
+                                {
+                                    string[] strValues = strCapacityText.TrimStartOnce("FixedValues(", true)
+                                                                        .TrimEndOnce(')')
+                                                                        .Split(',', StringSplitOptions.RemoveEmptyEntries);
+                                    lblCapacity.Text
+                                        = strValues[Math.Max(Math.Min(intRatingValue, strValues.Length) - 1, 0)];
+                                }
+                                else
+                                {
+                                    try
+                                    {
+                                        (bool blnIsSuccess2, object objProcess2) = await CommonFunctions.EvaluateInvariantXPathAsync(
+                                            strCapacity.Replace(
+                                                "Rating", intRatingValue.ToString(GlobalSettings.InvariantCultureInfo)), token: token).ConfigureAwait(false);
+                                        await lblCapacity.DoThreadSafeAsync(x => x.Text = blnIsSuccess2
+                                                                                ? ((double)objProcess2).ToString("#,0.##", GlobalSettings.CultureInfo)
+                                                                                : strCapacity, token: token).ConfigureAwait(false);
+                                    }
+                                    catch (OverflowException) // Result is text and not a double
+                                    {
+                                        await lblCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token: token).ConfigureAwait(false);
+                                    }
+                                    catch (InvalidCastException) // Result is text and not a double
+                                    {
+                                        await lblCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token: token).ConfigureAwait(false);
+                                    }
+                                }
+
+                                if (blnSquareBrackets)
+                                    await lblCapacity.DoThreadSafeAsync(x => x.Text = '[' + lblCapacity.Text + ']', token: token).ConfigureAwait(false);
+                            }
                         }
                         else
                         {
-                            try
-                            {
-                                objProcess = CommonFunctions.EvaluateInvariantXPath(strCapacity.Replace("Rating", nudRating.Value.ToString(GlobalSettings.InvariantCultureInfo)), out blnIsSuccess);
-                                lblCapacity.Text = blnIsSuccess ? ((double)objProcess).ToString("#,0.##", GlobalSettings.CultureInfo) : strCapacity;
-                            }
-                            catch (OverflowException) // Result is text and not a double
-                            {
-                                lblCapacity.Text = strCapacity;
-                            }
-                            catch (InvalidCastException) // Result is text and not a double
-                            {
-                                lblCapacity.Text = strCapacity;
-                            }
+                            await lblCapacity.DoThreadSafeAsync(x => x.Text = 0.ToString(GlobalSettings.CultureInfo), token: token).ConfigureAwait(false);
                         }
-                        if (blnSquareBrackets)
-                            lblCapacity.Text = '[' + lblCapacity.Text + ']';
                     }
-                }
-                else
-                {
-                    lblCapacity.Text = 0.ToString(GlobalSettings.CultureInfo);
-                }
-            }
-            lblCapacityLabel.Visible = !string.IsNullOrEmpty(lblCapacity.Text);
 
-            // Rating.
-            string strExpression = objXmlGear.SelectSingleNode("rating")?.Value ?? string.Empty;
-            if (strExpression == "0")
-                strExpression = string.Empty;
-            int intRating = int.MaxValue;
-            if (!string.IsNullOrEmpty(strExpression))
-            {
-                if (strExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strExpression = strValues[Math.Max(Math.Min(nudRating.ValueAsInt, strValues.Length) - 1, 0)].Trim('[', ']');
-                }
+                    bool blnShowCapacity = !string.IsNullOrEmpty(await lblCapacity.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false));
+                    await lblCapacityLabel.DoThreadSafeAsync(x => x.Visible = blnShowCapacity, token: token).ConfigureAwait(false);
 
-                if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
-                {
-                    using (new FetchSafelyFromPool<StringBuilder>(
-                               Utils.StringBuilderPool, out StringBuilder sbdValue))
-                    {
-                        sbdValue.Append(strExpression);
-                        sbdValue.Replace(
-                            "{Rating}", nudRating.ValueAsInt.ToString(GlobalSettings.InvariantCultureInfo));
-                        sbdValue.CheapReplace(strExpression, "{Parent Rating}",
-                                              () => (_objGearParent as IHasRating)?.Rating.ToString(
-                                                        GlobalSettings.InvariantCultureInfo)
-                                                    ?? int.MaxValue.ToString(GlobalSettings.InvariantCultureInfo));
-                        _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
-
-                        // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                        objProcess = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString(), out blnIsSuccess);
-                        intRating = blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
-                    }
-                }
-                else if (!int.TryParse(strExpression, out intRating))
-                    intRating = 0;
-            }
-
-            if (intRating > 0 && intRating != int.MaxValue)
-            {
-                nudRating.Maximum = intRating;
-                XPathNavigator xmlMinRatingNode = objXmlGear.SelectSingleNode("minrating");
-                if (xmlMinRatingNode != null)
-                {
-                    decimal decOldMinimum = nudRating.Minimum;
-                    strExpression = xmlMinRatingNode.Value;
-                    int intMinimumRating = 0;
+                    // Rating.
+                    string strExpression = (await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("rating", token).ConfigureAwait(false))?.Value ?? string.Empty;
+                    if (strExpression == "0")
+                        strExpression = string.Empty;
+                    int intRating = int.MaxValue;
                     if (!string.IsNullOrEmpty(strExpression))
                     {
                         if (strExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
                         {
-                            string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                            strExpression = strValues[Math.Max(Math.Min(nudRating.ValueAsInt, strValues.Length) - 1, 0)].Trim('[', ']');
+                            string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
+                                                              .Split(',', StringSplitOptions.RemoveEmptyEntries);
+                            strExpression = strValues[Math.Max(Math.Min(intRatingValue, strValues.Length) - 1, 0)]
+                                .Trim('[', ']');
                         }
 
                         if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1 || strExpression.Contains("div"))
@@ -878,103 +1104,181 @@ namespace Chummer
                             {
                                 sbdValue.Append(strExpression);
                                 sbdValue.Replace(
-                                    "{Rating}", nudRating.ValueAsInt.ToString(GlobalSettings.InvariantCultureInfo));
-                                sbdValue.CheapReplace(strExpression, "{Parent Rating}",
-                                                      () => (_objGearParent as IHasRating)?.Rating.ToString(
-                                                          GlobalSettings.InvariantCultureInfo) ?? "0");
-                                _objCharacter.AttributeSection.ProcessAttributesInXPath(sbdValue, strExpression);
+                                    "{Rating}", intRatingValue.ToString(GlobalSettings.InvariantCultureInfo));
+                                await sbdValue.CheapReplaceAsync(strExpression, "{Parent Rating}",
+                                                                 () => (_objGearParent as IHasRating)?.Rating.ToString(
+                                                                           GlobalSettings.InvariantCultureInfo)
+                                                                       ?? int.MaxValue.ToString(
+                                                                           GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
 
                                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
-                                objProcess = CommonFunctions.EvaluateInvariantXPath(
-                                    sbdValue.ToString(), out blnIsSuccess);
-                                intMinimumRating = blnIsSuccess ? ((double) objProcess).StandardRound() : 0;
+                                (blnIsSuccess, objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(sbdValue.ToString(), token).ConfigureAwait(false);
+                                intRating = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
                             }
                         }
-                        else if (!int.TryParse(strExpression, out intMinimumRating))
-                            intMinimumRating = 0;
+                        else if (!int.TryParse(strExpression, out intRating))
+                            intRating = 0;
                     }
-                    nudRating.Minimum = intMinimumRating;
-                    if (decOldMinimum > nudRating.Minimum)
-                    {
-                        nudRating.Value -= decOldMinimum - nudRating.Minimum;
-                    }
-                }
-                else
-                {
-                    nudRating.Minimum = 1;
-                }
-                if (chkHideOverAvailLimit.Checked)
-                {
-                    while (nudRating.Maximum > nudRating.Minimum && !objXmlGear.CheckAvailRestriction(_objCharacter, nudRating.MaximumAsInt, _intAvailModifier))
-                    {
-                        --nudRating.Maximum;
-                    }
-                }
 
-                if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
-                {
-                    decimal decCostMultiplier = nudGearQty.Value / nudGearQty.Increment;
-                    if (chkDoItYourself.Checked)
-                        decCostMultiplier *= 0.5m;
-                    decCostMultiplier *= 1 + (nudMarkup.Value / 100.0m);
-                    if (_setBlackMarketMaps.Contains(objXmlGear.SelectSingleNode("category")?.Value))
-                        decCostMultiplier *= 0.9m;
-                    while (nudRating.Maximum > nudRating.Minimum && !objXmlGear.CheckNuyenRestriction(_objCharacter.Nuyen, decCostMultiplier, nudRating.MaximumAsInt))
+                    if (intRating > 0 && intRating != int.MaxValue)
                     {
-                        --nudRating.Maximum;
-                    }
-                }
+                        await nudRating.DoThreadSafeAsync(x => x.Maximum = intRating, token: token).ConfigureAwait(false);
+                        XPathNavigator xmlMinRatingNode = await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("minrating", token).ConfigureAwait(false);
+                        if (xmlMinRatingNode != null)
+                        {
+                            decimal decOldMinimum = await nudRating.DoThreadSafeFuncAsync(x => x.Minimum, token: token).ConfigureAwait(false);
+                            strExpression = xmlMinRatingNode.Value;
+                            int intMinimumRating = 0;
+                            if (!string.IsNullOrEmpty(strExpression))
+                            {
+                                if (strExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
+                                {
+                                    string[] strValues = strExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
+                                                                      .Split(',', StringSplitOptions.RemoveEmptyEntries);
+                                    strExpression
+                                        = strValues[Math.Max(Math.Min(intRatingValue, strValues.Length) - 1, 0)]
+                                            .Trim('[', ']');
+                                }
 
-                lblRatingLabel.Visible = true;
-                nudRating.Enabled = nudRating.Minimum != nudRating.Maximum;
-                nudRating.Visible = true;
-                lblRatingNALabel.Visible = false;
+                                if (strExpression.IndexOfAny('{', '+', '-', '*', ',') != -1
+                                    || strExpression.Contains("div"))
+                                {
+                                    using (new FetchSafelyFromPool<StringBuilder>(
+                                               Utils.StringBuilderPool, out StringBuilder sbdValue))
+                                    {
+                                        sbdValue.Append(strExpression);
+                                        sbdValue.Replace(
+                                            "{Rating}", intRatingValue.ToString(GlobalSettings.InvariantCultureInfo));
+                                        await sbdValue.CheapReplaceAsync(strExpression, "{Parent Rating}",
+                                                                         () => (_objGearParent as IHasRating)?.Rating
+                                                                               .ToString(
+                                                                                   GlobalSettings.InvariantCultureInfo)
+                                                                               ?? "0", token: token).ConfigureAwait(false);
+                                        await _objCharacter.AttributeSection.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+
+                                        // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                                        (blnIsSuccess, objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
+                                            sbdValue.ToString(), token).ConfigureAwait(false);
+                                        intMinimumRating = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
+                                    }
+                                }
+                                else if (!int.TryParse(strExpression, out intMinimumRating))
+                                    intMinimumRating = 0;
+                            }
+
+                            await nudRating.DoThreadSafeAsync(x =>
+                            {
+                                x.Minimum = intMinimumRating;
+                                if (decOldMinimum > x.Minimum)
+                                {
+                                    x.Value -= decOldMinimum - x.Minimum;
+                                }
+                            }, token: token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            await nudRating.DoThreadSafeAsync(x => x.Minimum = 1, token: token).ConfigureAwait(false);
+                        }
+
+                        if (await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
+                        {
+                            int intMinimum = await nudRating.DoThreadSafeFuncAsync(x => x.MinimumAsInt, token: token).ConfigureAwait(false);
+                            int intMaximum = await nudRating.DoThreadSafeFuncAsync(x => x.MaximumAsInt, token: token).ConfigureAwait(false);
+                            while (intMaximum > intMinimum && !await objXmlGear.CheckAvailRestrictionAsync(_objCharacter, intMaximum, _intAvailModifier, token: token).ConfigureAwait(false))
+                            {
+                                --intMaximum;
+                            }
+                            await nudRating.DoThreadSafeAsync(x => x.Maximum = intMaximum, token: token).ConfigureAwait(false);
+                        }
+
+                        if (chkShowOnlyAffordItems.Checked && !chkFreeItem.Checked)
+                        {
+                            decimal decCostMultiplier = await nudGearQty.DoThreadSafeFuncAsync(x => x.Value / x.Increment, token: token).ConfigureAwait(false);
+                            if (await chkDoItYourself.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
+                                decCostMultiplier *= 0.5m;
+                            decCostMultiplier *= 1 + (await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m);
+                            if (_setBlackMarketMaps.Contains((await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("category", token).ConfigureAwait(false))?.Value))
+                                decCostMultiplier *= 0.9m;
+                            int intMinimum = await nudRating.DoThreadSafeFuncAsync(x => x.MinimumAsInt, token: token).ConfigureAwait(false);
+                            int intMaximum = await nudRating.DoThreadSafeFuncAsync(x => x.MaximumAsInt, token: token).ConfigureAwait(false);
+                            while (intMaximum > intMinimum && !await objXmlGear.CheckNuyenRestrictionAsync(_objCharacter.Nuyen, decCostMultiplier, intMaximum, token).ConfigureAwait(false))
+                            {
+                                --intMaximum;
+                            }
+                            await nudRating.DoThreadSafeAsync(x => x.Maximum = intMaximum, token: token).ConfigureAwait(false);
+                        }
+
+                        await lblRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
+                        await nudRating.DoThreadSafeAsync(x =>
+                        {
+                            x.Enabled = x.Minimum != x.Maximum;
+                            x.Visible = true;
+                        }, token: token).ConfigureAwait(false);
+                        await lblRatingNALabel.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await lblRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
+                        await lblRatingNALabel.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
+                        await nudRating.DoThreadSafeAsync(x =>
+                        {
+                            x.Minimum = 0;
+                            x.Maximum = 0;
+                            x.Enabled = false;
+                            x.Visible = false;
+                        }, token: token).ConfigureAwait(false);
+                    }
+
+                    await tlpRight.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await this.DoThreadSafeAsync(x => x.ResumeLayout(), token: token).ConfigureAwait(false);
+                }
             }
-            else
+        }
+
+        private ValueTask<bool> AnyItemInList(string strCategory = "", CancellationToken token = default)
+        {
+            return RefreshList(strCategory, false, token);
+        }
+
+        private async ValueTask<bool> RefreshList(string strCategory = "", CancellationToken token = default)
+        {
+            CancellationTokenSource objNewCancellationTokenSource = new CancellationTokenSource();
+            CancellationToken objNewToken = objNewCancellationTokenSource.Token;
+            CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objDoRefreshListCancellationTokenSource, objNewCancellationTokenSource);
+            if (objOldCancellationTokenSource?.IsCancellationRequested == false)
             {
-                lblRatingLabel.Visible = true;
-                lblRatingNALabel.Visible = true;
-                nudRating.Minimum = 0;
-                nudRating.Maximum = 0;
-                nudRating.Enabled = false;
-                nudRating.Visible = false;
+                objOldCancellationTokenSource.Cancel(false);
+                objOldCancellationTokenSource.Dispose();
             }
-            tlpRight.Visible = true;
-            ResumeLayout();
+            using (CancellationTokenSource objJoinedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(token, objNewToken))
+                return await RefreshList(strCategory, true, objJoinedCancellationTokenSource.Token);
         }
 
-        private bool AnyItemInList(string strCategory = "")
+        private async ValueTask<bool> RefreshList(string strCategory, bool blnDoUIUpdate, CancellationToken token = default)
         {
-            RefreshList(out bool blnReturn, strCategory, false);
-            return blnReturn;
-        }
-
-        private void RefreshList(string strCategory = "")
-        {
-            RefreshList(out bool _, strCategory, true);
-        }
-
-        private void RefreshList(out bool blnAnyItem, string strCategory, bool blnDoUIUpdate)
-        {
-            blnAnyItem = false;
+            bool blnAnyItem = false;
             if (string.IsNullOrEmpty(strCategory))
-                strCategory = cboCategory.SelectedValue?.ToString();
+                strCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
             string strFilter = string.Empty;
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
-                sbdFilter.Append('(').Append(_objCharacter.Settings.BookXPath()).Append(')');
+                sbdFilter.Append('(').Append(await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false)).Append(')');
 
                 // Only add in category filter if we either are not searching or we have the option set to only search in categories
                 if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All"
                                                        && (GlobalSettings.SearchInCategoryOnly
-                                                           || txtSearch.TextLength == 0))
+                                                           || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength, token: token).ConfigureAwait(false) == 0))
                     sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
                 else if (_setAllowedCategories.Count > 0)
                 {
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdCategoryFilter))
                     {
-                        foreach (string strItem in _lstCategory.Select(x => x.Value))
+                        foreach (string strItem in _lstCategory.Select(x => x.Value.ToString()))
                         {
                             sbdCategoryFilter.Append("category = ").Append(strItem.CleanXPath()).Append(" or ");
                         }
@@ -1017,8 +1321,10 @@ namespace Chummer
                     sbdFilter.Append(" and not(requireparent)");
                 if (!string.IsNullOrEmpty(ForceItemAmmoForWeaponType))
                     sbdFilter.Append(" and ammoforweapontype = ").Append(ForceItemAmmoForWeaponType.CleanXPath());
-                if (!string.IsNullOrEmpty(txtSearch.Text))
-                    sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+
+                string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(strSearch))
+                    sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(strSearch));
 
                 if (sbdFilter.Length > 0)
                     strFilter = '[' + sbdFilter.ToString() + ']';
@@ -1028,32 +1334,39 @@ namespace Chummer
             List<ListItem> lstGears = blnDoUIUpdate ? Utils.ListItemListPool.Get() : null;
             try
             {
+                decimal decBaseCostMultiplier = await nudGearQty.DoThreadSafeFuncAsync(x => x.Value / x.Increment, token: token).ConfigureAwait(false);
+                if (await chkDoItYourself.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
+                    decBaseCostMultiplier *= 0.5m;
+                decBaseCostMultiplier *= 1 + (await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m);
+                bool blnHideOverAvailLimit = await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
+                bool blnFreeItem = await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
+                bool blnShowOnlyAffordItems = await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
                 foreach (XPathNavigator objXmlGear in _xmlBaseGearDataNode.Select("gears/gear" + strFilter))
                 {
                     XPathNavigator xmlTestNode
-                        = objXmlGear.SelectSingleNodeAndCacheExpression("forbidden/parentdetails");
-                    if (xmlTestNode != null && _objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
+                        = await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("forbidden/parentdetails", token: token).ConfigureAwait(false);
+                    if (xmlTestNode != null && await _objParentNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token: token).ConfigureAwait(false))
                     {
                         // Assumes topmost parent is an AND node
                         continue;
                     }
 
-                    xmlTestNode = objXmlGear.SelectSingleNodeAndCacheExpression("required/parentdetails");
-                    if (xmlTestNode != null && !_objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
+                    xmlTestNode = await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("required/parentdetails", token: token).ConfigureAwait(false);
+                    if (xmlTestNode != null && !await _objParentNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token: token).ConfigureAwait(false))
                     {
                         // Assumes topmost parent is an AND node
                         continue;
                     }
 
-                    xmlTestNode = objXmlGear.SelectSingleNodeAndCacheExpression("forbidden/geardetails");
-                    if (xmlTestNode != null && _objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
+                    xmlTestNode = await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("forbidden/geardetails", token: token).ConfigureAwait(false);
+                    if (xmlTestNode != null && await _objParentNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token: token).ConfigureAwait(false))
                     {
                         // Assumes topmost parent is an AND node
                         continue;
                     }
 
-                    xmlTestNode = objXmlGear.SelectSingleNodeAndCacheExpression("required/geardetails");
-                    if (xmlTestNode != null && !_objParentNode.ProcessFilterOperationNode(xmlTestNode, false))
+                    xmlTestNode = await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("required/geardetails", token: token).ConfigureAwait(false);
+                    if (xmlTestNode != null && !await _objParentNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token: token).ConfigureAwait(false))
                     {
                         // Assumes topmost parent is an AND node
                         continue;
@@ -1068,24 +1381,21 @@ namespace Chummer
                         break;
                     }
 
-                    decimal decCostMultiplier = nudGearQty.Value / nudGearQty.Increment;
-                    if (chkDoItYourself.Checked)
-                        decCostMultiplier *= 0.5m;
-                    decCostMultiplier *= 1 + (nudMarkup.Value / 100.0m);
-                    if (_setBlackMarketMaps.Contains(objXmlGear.SelectSingleNodeAndCacheExpression("category")?.Value))
+                    decimal decCostMultiplier = decBaseCostMultiplier;
+                    if (_setBlackMarketMaps.Contains((await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("category", token: token).ConfigureAwait(false))?.Value))
                         decCostMultiplier *= 0.9m;
-                    if (!chkHideOverAvailLimit.Checked
-                              || objXmlGear.CheckAvailRestriction(_objCharacter, 1, _intAvailModifier)
-                              && (chkFreeItem.Checked || !chkShowOnlyAffordItems.Checked
-                                                      || objXmlGear.CheckNuyenRestriction(
-                                                          _objCharacter.Nuyen, decCostMultiplier)))
+                    if (!blnHideOverAvailLimit
+                              || await objXmlGear.CheckAvailRestrictionAsync(_objCharacter, 1, _intAvailModifier, token).ConfigureAwait(false)
+                              && (blnFreeItem || !blnShowOnlyAffordItems
+                                              || await objXmlGear.CheckNuyenRestrictionAsync(
+                                                  _objCharacter.Nuyen, decCostMultiplier, token: token).ConfigureAwait(false)))
                     {
                         blnAnyItem = true;
-                        string strDisplayName = objXmlGear.SelectSingleNodeAndCacheExpression("translate")?.Value
-                                                ?? objXmlGear.SelectSingleNodeAndCacheExpression("name")?.Value
-                                                ?? LanguageManager.GetString("String_Unknown");
+                        string strDisplayName = (await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
+                                                ?? (await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value
+                                                ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                         lstGears.Add(new ListItem(
-                                         objXmlGear.SelectSingleNodeAndCacheExpression("id")?.Value ?? string.Empty,
+                                         (await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("id", token: token).ConfigureAwait(false))?.Value ?? string.Empty,
                                          strDisplayName));
                     }
                     else
@@ -1098,7 +1408,7 @@ namespace Chummer
                     // But only if it's even possible for the list to have multiple items from different categories
                     if (lstGears.Count > 1)
                     {
-                        string strSelectCategory = cboCategory.SelectedValue?.ToString();
+                        string strSelectCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
                         if (!GlobalSettings.SearchInCategoryOnly || string.IsNullOrEmpty(strSelectCategory) ||
                             strSelectCategory == "Show All")
                         {
@@ -1122,7 +1432,7 @@ namespace Chummer
 
                                 if (setDuplicateNames.Count > 0)
                                 {
-                                    string strSpace = LanguageManager.GetString("String_Space");
+                                    string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
                                     for (int i = 0; i < lstGears.Count; ++i)
                                     {
                                         ListItem objLoopItem = lstGears[i];
@@ -1135,7 +1445,7 @@ namespace Chummer
                                         if (objXmlGear == null)
                                             continue;
                                         string strLoopCategory
-                                            = objXmlGear.SelectSingleNodeAndCacheExpression("category")?.Value;
+                                            = (await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("category", token: token).ConfigureAwait(false))?.Value;
                                         if (string.IsNullOrEmpty(strLoopCategory))
                                             continue;
                                         ListItem objFoundItem
@@ -1158,29 +1468,38 @@ namespace Chummer
                         // Add after sort so that it's always at the end
                         lstGears.Add(new ListItem(string.Empty,
                                                   string.Format(GlobalSettings.CultureInfo,
-                                                                LanguageManager.GetString(
-                                                                    "String_RestrictedItemsHidden"),
+                                                                await LanguageManager.GetStringAsync(
+                                                                    "String_RestrictedItemsHidden", token: token).ConfigureAwait(false),
                                                                 intOverLimit)));
                     }
 
-                    lstGear.BeginUpdate();
-                    string strOldSelected = lstGear.SelectedValue?.ToString();
-                    bool blnOldLoading = _blnLoading;
-                    _blnLoading = true;
-                    lstGear.PopulateWithListItems(lstGears);
-                    _blnLoading = blnOldLoading;
-                    if (string.IsNullOrEmpty(strOldSelected))
-                        lstGear.SelectedIndex = -1;
-                    else
-                        lstGear.SelectedValue = strOldSelected;
-                    lstGear.EndUpdate();
+                    string strOldSelected = await lstGear.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
+                    Interlocked.Increment(ref _intLoading);
+                    try
+                    {
+                        await lstGear.PopulateWithListItemsAsync(lstGears, token: token).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        Interlocked.Decrement(ref _intLoading);
+                    }
+
+                    await lstGear.DoThreadSafeAsync(x =>
+                    {
+                        if (string.IsNullOrEmpty(strOldSelected))
+                            x.SelectedIndex = -1;
+                        else
+                            x.SelectedValue = strOldSelected;
+                    }, token: token).ConfigureAwait(false);
                 }
             }
             finally
             {
                 if (lstGears != null)
-                    Utils.ListItemListPool.Return(lstGears);
+                    Utils.ListItemListPool.Return(ref lstGears);
             }
+
+            return blnAnyItem;
         }
 
         /// <summary>
@@ -1201,12 +1520,20 @@ namespace Chummer
                 _decMarkup = nudMarkup.Value;
 
                 DialogResult = DialogResult.OK;
+                Close();
             }
         }
 
         private async void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            await CommonFunctions.OpenPdfFromControl(sender, e);
+            try
+            {
+                await CommonFunctions.OpenPdfFromControl(sender, _objGenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         #endregion Methods

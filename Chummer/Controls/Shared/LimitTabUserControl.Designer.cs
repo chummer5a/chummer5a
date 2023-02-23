@@ -13,11 +13,9 @@ namespace Chummer.UI.Shared
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && (components != null))
             {
-                components?.Dispose();
-                if (_blnDisposeCharacterOnDispose)
-                    _objCharacter?.Dispose();
+                components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -34,9 +32,9 @@ namespace Chummer.UI.Shared
             this.treLimit = new System.Windows.Forms.TreeView();
             this.cmdAddLimitModifier = new System.Windows.Forms.Button();
             this.cmdDeleteLimitModifier = new System.Windows.Forms.Button();
-            this.tlpParent = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpRight = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpParent = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
             this.lblAstral = new Chummer.LabelWithToolTip();
             this.lblPhysicalLimitLabel = new System.Windows.Forms.Label();
             this.lblSocial = new Chummer.LabelWithToolTip();
@@ -46,10 +44,10 @@ namespace Chummer.UI.Shared
             this.lblPhysical = new Chummer.LabelWithToolTip();
             this.lblMental = new Chummer.LabelWithToolTip();
             this.cmsLimitModifier = new System.Windows.Forms.ContextMenuStrip(this.components);
+            this.tssLimitModifierEdit = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tssLimitModifierNotes = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsLimitModifierNotesOnly = new System.Windows.Forms.ContextMenuStrip(this.components);
-            this.tssLimitModifierEdit = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tssLimitModifierNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
-            this.tssLimitModifierNotesOnlyNotes = new Chummer.DpiFriendlyToolStripMenuItem(this.components);
+            this.tssLimitModifierNotesOnlyNotes = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tlpParent.SuspendLayout();
             this.tlpButtons.SuspendLayout();
             this.tlpRight.SuspendLayout();
@@ -77,6 +75,7 @@ namespace Chummer.UI.Shared
             this.cmdAddLimitModifier.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdAddLimitModifier.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdAddLimitModifier.Location = new System.Drawing.Point(3, 3);
+            this.cmdAddLimitModifier.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdAddLimitModifier.Name = "cmdAddLimitModifier";
             this.cmdAddLimitModifier.Size = new System.Drawing.Size(100, 23);
             this.cmdAddLimitModifier.TabIndex = 80;
@@ -92,6 +91,7 @@ namespace Chummer.UI.Shared
             this.cmdDeleteLimitModifier.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdDeleteLimitModifier.Enabled = false;
             this.cmdDeleteLimitModifier.Location = new System.Drawing.Point(109, 3);
+            this.cmdDeleteLimitModifier.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdDeleteLimitModifier.Name = "cmdDeleteLimitModifier";
             this.cmdDeleteLimitModifier.Size = new System.Drawing.Size(100, 23);
             this.cmdDeleteLimitModifier.TabIndex = 78;
@@ -271,13 +271,6 @@ namespace Chummer.UI.Shared
             this.cmsLimitModifier.Name = "cmsLimitModifier";
             this.cmsLimitModifier.Size = new System.Drawing.Size(106, 48);
             // 
-            // cmsLimitModifierNotesOnly
-            // 
-            this.cmsLimitModifierNotesOnly.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tssLimitModifierNotesOnlyNotes});
-            this.cmsLimitModifierNotesOnly.Name = "cmsLimitModifier";
-            this.cmsLimitModifierNotesOnly.Size = new System.Drawing.Size(106, 26);
-            // 
             // tssLimitModifierEdit
             // 
             this.tssLimitModifierEdit.Image = global::Chummer.Properties.Resources.house_edit;
@@ -308,6 +301,13 @@ namespace Chummer.UI.Shared
             this.tssLimitModifierNotes.Text = "&Notes";
             this.tssLimitModifierNotes.Click += new System.EventHandler(this.tssLimitModifierNotes_Click);
             // 
+            // cmsLimitModifierNotesOnly
+            // 
+            this.cmsLimitModifierNotesOnly.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.tssLimitModifierNotesOnlyNotes});
+            this.cmsLimitModifierNotesOnly.Name = "cmsLimitModifier";
+            this.cmsLimitModifierNotesOnly.Size = new System.Drawing.Size(106, 26);
+            // 
             // tssLimitModifierNotesOnlyNotes
             // 
             this.tssLimitModifierNotesOnlyNotes.Image = global::Chummer.Properties.Resources.note_edit;
@@ -318,7 +318,7 @@ namespace Chummer.UI.Shared
             this.tssLimitModifierNotesOnlyNotes.ImageDpi384 = null;
             this.tssLimitModifierNotesOnlyNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
             this.tssLimitModifierNotesOnlyNotes.Name = "tssLimitModifierNotesOnlyNotes";
-            this.tssLimitModifierNotesOnlyNotes.Size = new System.Drawing.Size(180, 22);
+            this.tssLimitModifierNotesOnlyNotes.Size = new System.Drawing.Size(105, 22);
             this.tssLimitModifierNotesOnlyNotes.Tag = "Menu_Notes";
             this.tssLimitModifierNotesOnlyNotes.Text = "&Notes";
             this.tssLimitModifierNotesOnlyNotes.Click += new System.EventHandler(this.tssLimitModifierNotes_Click);
@@ -352,7 +352,7 @@ namespace Chummer.UI.Shared
         private System.Windows.Forms.TreeView treLimit;
         private System.Windows.Forms.Button cmdAddLimitModifier;
         private System.Windows.Forms.Button cmdDeleteLimitModifier;
-        private Chummer.BufferedTableLayoutPanel tlpParent;
+        private System.Windows.Forms.TableLayoutPanel tlpParent;
         private System.Windows.Forms.Label lblMentalLimitLabel;
         private System.Windows.Forms.Label lblSocialLimitLabel;
         private System.Windows.Forms.Label lblPhysicalLimitLabel;
@@ -363,8 +363,8 @@ namespace Chummer.UI.Shared
         private System.Windows.Forms.Label lblAstralLabel;
         private System.Windows.Forms.ContextMenuStrip cmsLimitModifier;
         private System.Windows.Forms.ContextMenuStrip cmsLimitModifierNotesOnly;
-        private BufferedTableLayoutPanel tlpButtons;
-        private BufferedTableLayoutPanel tlpRight;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpRight;
         private DpiFriendlyToolStripMenuItem tssLimitModifierEdit;
         private DpiFriendlyToolStripMenuItem tssLimitModifierNotes;
         private DpiFriendlyToolStripMenuItem tssLimitModifierNotesOnlyNotes;

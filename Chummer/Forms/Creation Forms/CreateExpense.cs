@@ -25,7 +25,7 @@ namespace Chummer
 {
     public sealed partial class CreateExpense : Form
     {
-        private ExpenseType _objMode = ExpenseType.Karma;
+        private ExpenseType _eMode = ExpenseType.Karma;
         private readonly CharacterSettings _objCharacterSettings;
 
         #region Control Events
@@ -55,27 +55,35 @@ namespace Chummer
             }
 
             datDate.Value = DateTime.Now;
-
-            txtDescription.Text = LanguageManager.GetString("String_ExpenseDefault");
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object sender, EventArgs e)
         {
-            if (KarmaNuyenExchange && _objMode == ExpenseType.Nuyen && nudAmount.Value % _objCharacterSettings.NuyenPerBPWftP != 0)
+            if (KarmaNuyenExchange && _eMode == ExpenseType.Nuyen && await nudAmount.DoThreadSafeFuncAsync(x => x.Value).ConfigureAwait(false) % _objCharacterSettings.NuyenPerBPWftP != 0)
             {
-                Program.MainForm.ShowMessageBox(this, LanguageManager.GetString("Message_KarmaNuyenExchange"),
-                    LanguageManager.GetString("MessageTitle_KarmaNuyenExchange"), MessageBoxButtons.OK,
+                Program.ShowScrollableMessageBox(
+                    this,
+                    string.Format(GlobalSettings.CultureInfo,
+                                  await LanguageManager.GetStringAsync("Message_KarmaNuyenExchange").ConfigureAwait(false),
+                                  _objCharacterSettings.NuyenPerBPWftP.ToString(
+                                      _objCharacterSettings.NuyenFormat, GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_NuyenSymbol").ConfigureAwait(false)),
+                    await LanguageManager.GetStringAsync("MessageTitle_KarmaNuyenExchange").ConfigureAwait(false), MessageBoxButtons.OK,
                     MessageBoxIcon.Information);
             }
             else
             {
-                DialogResult = DialogResult.OK;
+                await this.DoThreadSafeAsync(x =>
+                {
+                    x.DialogResult = DialogResult.OK;
+                    x.Close();
+                }).ConfigureAwait(false);
             }
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         #endregion Control Events
@@ -90,7 +98,7 @@ namespace Chummer
             get
             {
                 decimal decReturn = nudAmount.Value;
-                if (_objMode == ExpenseType.Nuyen)
+                if (_eMode == ExpenseType.Nuyen)
                     decReturn *= (nudPercent.Value / 100.0m);
                 return decReturn;
             }
@@ -147,6 +155,8 @@ namespace Chummer
         {
             set
             {
+                if (InterlockedExtensions.Exchange(ref _eMode, value) == value)
+                    return;
                 if (value == ExpenseType.Nuyen)
                 {
                     lblKarma.Text = LanguageManager.GetString("Label_Expense_NuyenAmount");
@@ -162,12 +172,13 @@ namespace Chummer
                     nudPercent.Visible = false;
                     lblPercent.Visible = false;
                 }
-                _objMode = value;
             }
         }
 
         public bool KarmaNuyenExchange { get; set; }
         public string KarmaNuyenExchangeString { get; set; }
+
+        public bool IsInEditMode { get; set; }
 
         #endregion Properties
 
@@ -195,7 +206,7 @@ namespace Chummer
                 txtDescription.Text = KarmaNuyenExchangeString;
             }
 
-            if (chkKarmaNuyenExchange.Checked && _objMode == ExpenseType.Nuyen)
+            if (chkKarmaNuyenExchange.Checked && _eMode == ExpenseType.Nuyen)
             {
                 nudAmount.Increment = _objCharacterSettings.NuyenPerBPWftP;
                 nudAmount.Value = _objCharacterSettings.NuyenPerBPWftP;
@@ -213,11 +224,19 @@ namespace Chummer
             KarmaNuyenExchange = chkKarmaNuyenExchange.Checked;
         }
 
-        private void CreateExpanse_Load(object sender, EventArgs e)
+        private async void CreateExpanse_Load(object sender, EventArgs e)
         {
-            chkKarmaNuyenExchange.Visible = !string.IsNullOrWhiteSpace(KarmaNuyenExchangeString);
-            chkKarmaNuyenExchange.Text = KarmaNuyenExchangeString;
-            chkForceCareerVisible.Enabled = chkKarmaNuyenExchange.Checked;
+            if (!IsInEditMode)
+            {
+                string strText = await LanguageManager.GetStringAsync("String_ExpenseDefault").ConfigureAwait(false);
+                await txtDescription.DoThreadSafeAsync(x => x.Text = strText).ConfigureAwait(false);
+            }
+            await chkKarmaNuyenExchange.DoThreadSafeAsync(x =>
+            {
+                x.Visible = !string.IsNullOrWhiteSpace(KarmaNuyenExchangeString);
+                x.Text = KarmaNuyenExchangeString;
+            }).ConfigureAwait(false);
+            await chkForceCareerVisible.DoThreadSafeAsync(x => x.Enabled = chkKarmaNuyenExchange.Checked).ConfigureAwait(false);
         }
     }
 }

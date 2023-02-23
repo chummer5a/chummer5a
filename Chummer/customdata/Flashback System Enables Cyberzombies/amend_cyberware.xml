@@ -20,9 +20,9 @@
 <chummer>
   <cyberwares>
     <cyberware>
-      <name>Flashback System</name>
-      <bonus>
-        <enablecyberzombie  amendoperation="addnode" />
+      <id>7b2accbc-7f6b-4362-ba7f-52a76fccf043</id>
+      <bonus addifnotfound="True">
+        <enablecyberzombie amendoperation="addnode">True</enablecyberzombie>
       </bonus>
     </cyberware>
   </cyberwares>

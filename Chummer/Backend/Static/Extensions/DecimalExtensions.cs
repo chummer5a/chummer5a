@@ -98,7 +98,7 @@ namespace Chummer
                     return 0;
 
                 case decimal.MinusOne:
-                    return 1 - 2 * (Math.Abs(intPower) & 1);
+                    return (Math.Abs(intPower) & 1) == 0 ? 1 : -1;
             }
             // Handle negative powers by dividing by the result of the positive power right before we return
             bool blnNegativePower = intPower < 0;

@@ -21,6 +21,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
 
@@ -48,75 +50,75 @@ namespace Chummer
             _xmlBasePowerDataNode = _objCharacter.LoadDataXPath("powers.xml").SelectSingleNodeAndCacheExpression("/chummer");
         }
 
-        private void SelectPower_Load(object sender, EventArgs e)
+        private async void SelectPower_Load(object sender, EventArgs e)
         {
+            await cmdOKAdd.DoThreadSafeAsync(x => x.Visible = !ForBonus);
             _blnLoading = false;
-
-            BuildPowerList();
+            await BuildPowerList().ConfigureAwait(false);
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object sender, EventArgs e)
         {
             AddAgain = false;
-            AcceptForm();
+            await AcceptForm().ConfigureAwait(false);
         }
 
-        private void lstPowers_SelectedIndexChanged(object sender, EventArgs e)
+        private async void lstPowers_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (_blnLoading)
                 return;
 
-            string strSelectedId = lstPowers.SelectedValue?.ToString();
+            string strSelectedId = await lstPowers.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false);
             XPathNavigator objXmlPower = null;
             if (!string.IsNullOrEmpty(strSelectedId))
                 objXmlPower = _xmlBasePowerDataNode.SelectSingleNode("powers/power[id = " + strSelectedId.CleanXPath() + ']');
 
             if (objXmlPower != null)
             {
-                string strSpace = LanguageManager.GetString("String_Space");
+                string strSpace = await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false);
                 // Display the information for the selected Power.
-                string strPowerPointsText = objXmlPower.SelectSingleNode("points")?.Value ?? string.Empty;
-                if (objXmlPower.SelectSingleNode("levels")?.Value == bool.TrueString)
+                string strPowerPointsText = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("points").ConfigureAwait(false))?.Value ?? string.Empty;
+                if ((await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("levels").ConfigureAwait(false))?.Value == bool.TrueString)
                 {
-                    strPowerPointsText += strSpace + '/' + strSpace + LanguageManager.GetString("Label_Power_Level");
+                    strPowerPointsText += strSpace + '/' + strSpace + await LanguageManager.GetStringAsync("Label_Power_Level").ConfigureAwait(false);
                 }
-                string strExtrPointCost = objXmlPower.SelectSingleNode("extrapointcost")?.Value;
+                string strExtrPointCost = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("extrapointcost").ConfigureAwait(false))?.Value;
                 if (!string.IsNullOrEmpty(strExtrPointCost))
                 {
                     strPowerPointsText = strExtrPointCost + strSpace + '+' + strSpace + strPowerPointsText;
                 }
-                lblPowerPoints.Text = strPowerPointsText;
+                await lblPowerPoints.DoThreadSafeAsync(x => x.Text = strPowerPointsText).ConfigureAwait(false);
 
-                string strSource = objXmlPower.SelectSingleNode("source")?.Value ?? LanguageManager.GetString("String_Unknown");
-                string strPage = objXmlPower.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlPower.SelectSingleNode("page")?.Value ?? LanguageManager.GetString("String_Unknown");
-                SourceString objSource = new SourceString(strSource, strPage, GlobalSettings.Language,
-                    GlobalSettings.CultureInfo, _objCharacter);
-                lblSource.Text = objSource.ToString();
-                lblSource.SetToolTip(objSource.LanguageBookTooltip);
-                lblPowerPointsLabel.Visible = !string.IsNullOrEmpty(lblPowerPoints.Text);
-                lblSourceLabel.Visible = !string.IsNullOrEmpty(lblSource.Text);
-                tlpRight.Visible = true;
+                string strSource = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("source").ConfigureAwait(false))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
+                string strPage = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("altpage").ConfigureAwait(false))?.Value ?? (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("page").ConfigureAwait(false))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
+                SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
+                    GlobalSettings.CultureInfo, _objCharacter).ConfigureAwait(false);
+                await objSource.SetControlAsync(lblSource).ConfigureAwait(false);
+                await lblPowerPointsLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strPowerPointsText)).ConfigureAwait(false);
+                await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(objSource.ToString())).ConfigureAwait(false);
+                await tlpRight.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
             }
             else
             {
-                tlpRight.Visible = false;
+                await tlpRight.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
             }
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
-        private void cmdOKAdd_Click(object sender, EventArgs e)
+        private async void cmdOKAdd_Click(object sender, EventArgs e)
         {
             AddAgain = true;
-            AcceptForm();
+            await AcceptForm().ConfigureAwait(false);
         }
 
-        private void txtSearch_TextChanged(object sender, EventArgs e)
+        private async void txtSearch_TextChanged(object sender, EventArgs e)
         {
-            BuildPowerList();
+            await BuildPowerList().ConfigureAwait(false);
         }
 
         private void txtSearch_KeyDown(object sender, KeyEventArgs e)
@@ -155,7 +157,7 @@ namespace Chummer
         private void txtSearch_KeyUp(object sender, KeyEventArgs e)
         {
             if (e.KeyCode == Keys.Up)
-                txtSearch.Select(txtSearch.Text.Length, 0);
+                txtSearch.Select(txtSearch.TextLength, 0);
         }
 
         #endregion Control Events
@@ -171,6 +173,11 @@ namespace Chummer
         /// Whether or not we should ignore how many of a given power may be taken. Generally used when bonding Qi Foci.
         /// </summary>
         public bool IgnoreLimits { get; set; }
+
+        /// <summary>
+        /// Whether this window is being shown to select a power for a bonus node or to just select a power for a character traditionally
+        /// </summary>
+        public bool ForBonus { get; set; }
 
         /// <summary>
         /// Power that was selected in the dialogue.
@@ -202,12 +209,12 @@ namespace Chummer
 
         #region Methods
 
-        private void BuildPowerList()
+        private async ValueTask BuildPowerList(CancellationToken token = default)
         {
             if (_blnLoading)
                 return;
 
-            string strFilter = '(' + _objCharacter.Settings.BookXPath() + ')';
+            string strFilter = '(' + await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false) + ')';
             if (!string.IsNullOrEmpty(_strLimitToPowers))
             {
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
@@ -223,19 +230,20 @@ namespace Chummer
                 }
             }
 
-            if (!string.IsNullOrEmpty(txtSearch.Text))
-                strFilter += " and " + CommonFunctions.GenerateSearchXPath(txtSearch.Text);
+            string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
+            if (!string.IsNullOrEmpty(strSearch))
+                strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
 
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstPower))
             {
                 foreach (XPathNavigator objXmlPower in _xmlBasePowerDataNode.Select("powers/power[" + strFilter + ']'))
                 {
                     decimal decPoints
-                        = Convert.ToDecimal(objXmlPower.SelectSingleNodeAndCacheExpression("points")?.Value,
+                        = Convert.ToDecimal((await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("points", token: token).ConfigureAwait(false))?.Value,
                                             GlobalSettings.InvariantCultureInfo);
-                    string strExtraPointCost = objXmlPower.SelectSingleNodeAndCacheExpression("extrapointcost")?.Value;
-                    string strName = objXmlPower.SelectSingleNodeAndCacheExpression("name")?.Value
-                                     ?? LanguageManager.GetString("String_Unknown");
+                    string strExtraPointCost = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("extrapointcost", token: token).ConfigureAwait(false))?.Value;
+                    string strName = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value
+                                     ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                     if (!string.IsNullOrEmpty(strExtraPointCost)
                         && !_objCharacter.Powers.Any(power => power.Name == strName && power.TotalRating > 0))
                     {
@@ -248,51 +256,61 @@ namespace Chummer
                         continue;
                     }
 
-                    if (!objXmlPower.RequirementsMet(_objCharacter, null, string.Empty, string.Empty, string.Empty,
-                                                     string.Empty, IgnoreLimits))
+                    bool blnIgnoreLimit = IgnoreLimits || (ForBonus
+                                                           && (await objXmlPower
+                                                                     .SelectSingleNodeAndCacheExpressionAsync(
+                                                                         "levels", token: token).ConfigureAwait(false))
+                                                           ?.Value == bool.TrueString);
+
+                    if (!objXmlPower.RequirementsMet(_objCharacter, blnIgnoreLimit: blnIgnoreLimit))
                         continue;
 
                     lstPower.Add(new ListItem(
-                                     objXmlPower.SelectSingleNodeAndCacheExpression("id")?.Value ?? string.Empty,
-                                     objXmlPower.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
+                                     (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("id", token: token).ConfigureAwait(false))?.Value ?? string.Empty,
+                                     (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? strName));
                 }
 
                 lstPower.Sort(CompareListItems.CompareNames);
                 _blnLoading = true;
-                string strOldSelected = lstPowers.SelectedValue?.ToString();
-                lstPowers.BeginUpdate();
-                lstPowers.PopulateWithListItems(lstPower);
+                string strOldSelected = await lstPowers.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
+                await lstPowers.PopulateWithListItemsAsync(lstPower, token: token).ConfigureAwait(false);
                 _blnLoading = false;
-                if (!string.IsNullOrEmpty(strOldSelected))
-                    lstPowers.SelectedValue = strOldSelected;
-                else
-                    lstPowers.SelectedIndex = -1;
-                lstPowers.EndUpdate();
+                await lstPowers.DoThreadSafeAsync(x =>
+                {
+                    if (!string.IsNullOrEmpty(strOldSelected))
+                        x.SelectedValue = strOldSelected;
+                    else
+                        x.SelectedIndex = -1;
+                }, token: token).ConfigureAwait(false);
             }
         }
 
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private void AcceptForm()
+        private async ValueTask AcceptForm(CancellationToken token = default)
         {
-            string strSelectedId = lstPowers.SelectedValue?.ToString();
+            string strSelectedId = await lstPowers.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Check to see if the user needs to select anything for the Power.
                 XPathNavigator objXmlPower = _xmlBasePowerDataNode.SelectSingleNode("powers/power[id = " + strSelectedId.CleanXPath() + ']');
 
-                if (objXmlPower.RequirementsMet(_objCharacter, null, LanguageManager.GetString("String_Power"), string.Empty, string.Empty, string.Empty, IgnoreLimits))
+                if (objXmlPower.RequirementsMet(_objCharacter, null, await LanguageManager.GetStringAsync("String_Power", token: token).ConfigureAwait(false), string.Empty, string.Empty, string.Empty, IgnoreLimits))
                 {
                     SelectedPower = strSelectedId;
-                    DialogResult = DialogResult.OK;
+                    await this.DoThreadSafeAsync(x =>
+                    {
+                        x.DialogResult = DialogResult.OK;
+                        x.Close();
+                    }, token: token).ConfigureAwait(false);
                 }
             }
         }
 
         private async void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            await CommonFunctions.OpenPdfFromControl(sender, e);
+            await CommonFunctions.OpenPdfFromControl(sender).ConfigureAwait(false);
         }
 
         #endregion Methods

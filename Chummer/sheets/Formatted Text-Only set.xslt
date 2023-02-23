@@ -876,8 +876,17 @@
     <xsl:template name="lifestyle">
         <xsl:for-each select="lifestyles/lifestyle">
             <xsl:sort select="name" />
-            <br /><xsl:value-of select="name" />
-            (<xsl:value-of select="baselifestyle" />)
+            <br /><xsl:value-of select="name" /> (
+            <xsl:value-of select="baselifestyle" />
+            <xsl:if test="borough != ''">
+              <xsl:text>, </xsl:text><xsl:value-of select="borough" />
+            </xsl:if>
+            <xsl:if test="district != ''">
+              <xsl:text>, </xsl:text><xsl:value-of select="district" />
+            </xsl:if>
+            <xsl:if test="city != ''">
+              <xsl:text>, </xsl:text><xsl:value-of select="city" />
+            </xsl:if><xsl:text>) </xsl:text>
             <xsl:value-of select="months" /><xsl:text> </xsl:text>
           <xsl:choose>
             <xsl:when test="increment = 'Day'">

@@ -13,9 +13,9 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && (components != null))
             {
-                components?.Dispose();
+                components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -28,7 +28,6 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(SelectMetatypePriority));
             this.cboCategory = new Chummer.ElasticComboBox();
             this.cmdCancel = new System.Windows.Forms.Button();
@@ -54,14 +53,14 @@ namespace Chummer
             this.lstMetatypes = new System.Windows.Forms.ListBox();
             this.lblSpecialAttributes = new System.Windows.Forms.Label();
             this.lblMetavariantKarma = new System.Windows.Forms.Label();
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.lblMetatypeSkillSelection = new System.Windows.Forms.Label();
             this.cboSkill1 = new Chummer.ElasticComboBox();
             this.cboSkill2 = new Chummer.ElasticComboBox();
             this.cboSkill3 = new Chummer.ElasticComboBox();
             this.lblSpecialAttributesLabel = new System.Windows.Forms.Label();
             this.cboTalents = new Chummer.ElasticComboBox();
-            this.tlpTopHalf = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpTopHalf = new System.Windows.Forms.TableLayoutPanel();
             this.lblHeritageLabel = new System.Windows.Forms.Label();
             this.lblAttributesLabel = new System.Windows.Forms.Label();
             this.cboResources = new Chummer.ElasticComboBox();
@@ -73,16 +72,16 @@ namespace Chummer
             this.lblSkillsLabel = new System.Windows.Forms.Label();
             this.cboHeritage = new Chummer.ElasticComboBox();
             this.lblSumtoTen = new System.Windows.Forms.Label();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.lblMetavariantQualitiesLabel = new System.Windows.Forms.Label();
             this.pnlQualities = new System.Windows.Forms.Panel();
             this.lblMetavariantKarmaLabel = new System.Windows.Forms.Label();
-            this.tlpSpirits = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.chkPossessionBased = new Chummer.ColorableCheckBox(this.components);
+            this.tlpSpirits = new System.Windows.Forms.TableLayoutPanel();
+            this.chkPossessionBased = new Chummer.ColorableCheckBox();
             this.cboPossessionMethod = new Chummer.ElasticComboBox();
             this.lblForceLabel = new System.Windows.Forms.Label();
             this.nudForce = new Chummer.NumericUpDownEx();
-            this.tlpMetavariant = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMetavariant = new System.Windows.Forms.TableLayoutPanel();
             this.lblMetavariantLabel = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
             this.lblSource = new System.Windows.Forms.Label();
@@ -115,8 +114,9 @@ namespace Chummer
             this.cmdCancel.DialogResult = System.Windows.Forms.DialogResult.Cancel;
             this.cmdCancel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdCancel.Location = new System.Drawing.Point(3, 3);
+            this.cmdCancel.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdCancel.Name = "cmdCancel";
-            this.cmdCancel.Size = new System.Drawing.Size(50, 23);
+            this.cmdCancel.Size = new System.Drawing.Size(80, 23);
             this.cmdCancel.TabIndex = 12;
             this.cmdCancel.Tag = "String_Cancel";
             this.cmdCancel.Text = "Cancel";
@@ -153,9 +153,10 @@ namespace Chummer
             this.cmdOK.AutoSize = true;
             this.cmdOK.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdOK.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdOK.Location = new System.Drawing.Point(59, 3);
+            this.cmdOK.Location = new System.Drawing.Point(89, 3);
+            this.cmdOK.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdOK.Name = "cmdOK";
-            this.cmdOK.Size = new System.Drawing.Size(50, 23);
+            this.cmdOK.Size = new System.Drawing.Size(80, 23);
             this.cmdOK.TabIndex = 11;
             this.cmdOK.Tag = "String_OK";
             this.cmdOK.Text = "OK";
@@ -404,12 +405,12 @@ namespace Chummer
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
             this.tlpButtons.Controls.Add(this.cmdOK, 1, 0);
-            this.tlpButtons.Location = new System.Drawing.Point(654, 514);
+            this.tlpButtons.Location = new System.Drawing.Point(594, 514);
             this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
-            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpButtons.Size = new System.Drawing.Size(112, 29);
+            this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpButtons.Size = new System.Drawing.Size(172, 29);
             this.tlpButtons.TabIndex = 80;
             // 
             // lblMetatypeSkillSelection
@@ -921,15 +922,16 @@ namespace Chummer
             this.lblSource.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.lblSource.Click += new System.EventHandler(this.OpenSourceFromLabel);
             // 
-            // frmPriorityMetatype
+            // SelectMetatypePriority
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(784, 561);
-            this.ControlBox = false;
             this.Controls.Add(this.tlpMain);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "SelectMetatypePriority";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
@@ -985,7 +987,7 @@ namespace Chummer
         private ElasticComboBox cboSkill1;
         private ElasticComboBox cboSkill2;
         private ElasticComboBox cboSkill3;
-        private Chummer.BufferedTableLayoutPanel tlpTopHalf;
+        private System.Windows.Forms.TableLayoutPanel tlpTopHalf;
         private System.Windows.Forms.Label lblHeritageLabel;
         private System.Windows.Forms.Label lblAttributesLabel;
         private ElasticComboBox cboResources;
@@ -997,18 +999,18 @@ namespace Chummer
         private System.Windows.Forms.Label lblSkillsLabel;
         private ElasticComboBox cboHeritage;
         private System.Windows.Forms.Label lblSumtoTen;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
-        private BufferedTableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
         internal System.Windows.Forms.Label lblMetavariantKarmaLabel;
         private System.Windows.Forms.Label lblMetavariantLabel;
         private System.Windows.Forms.Label lblMetavariantQualitiesLabel;
         private System.Windows.Forms.Panel pnlQualities;
-        private BufferedTableLayoutPanel tlpSpirits;
+        private System.Windows.Forms.TableLayoutPanel tlpSpirits;
         private ColorableCheckBox chkPossessionBased;
         private ElasticComboBox cboPossessionMethod;
         private System.Windows.Forms.Label lblForceLabel;
         private NumericUpDownEx nudForce;
-        private BufferedTableLayoutPanel tlpMetavariant;
+        private System.Windows.Forms.TableLayoutPanel tlpMetavariant;
         internal System.Windows.Forms.Label lblSourceLabel;
         internal System.Windows.Forms.Label lblSource;
     }

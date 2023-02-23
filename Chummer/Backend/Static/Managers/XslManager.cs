@@ -19,6 +19,8 @@
 
 using System;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Xml.Xsl;
 
 namespace Chummer
@@ -40,27 +42,67 @@ namespace Chummer
         /// <returns>The compiled Xsl transform of <paramref name="strXslFilePath"/>.</returns>
         public static XslCompiledTransform GetTransformForFile(string strXslFilePath)
         {
+            return Utils.SafelyRunSynchronously(() => GetTransformForFileCoreAsync(true, strXslFilePath));
+        }
+
+        /// <summary>
+        /// Get the compiled Xsl Transform of an Xsl file. Will throw exceptions if anything goes awry.
+        /// If we've already compiled the same Xsl Transform before, we'll fetch the cached version of that transform instead of repeating it.
+        /// </summary>
+        /// <param name="strXslFilePath">Absolute path to the Xsl file to be transformed.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The compiled Xsl transform of <paramref name="strXslFilePath"/>.</returns>
+        public static Task<XslCompiledTransform> GetTransformForFileAsync(string strXslFilePath, CancellationToken token = default)
+        {
+            return GetTransformForFileCoreAsync(false, strXslFilePath, token);
+        }
+
+        /// <summary>
+        /// Get the compiled Xsl Transform of an Xsl file. Will throw exceptions if anything goes awry.
+        /// If we've already compiled the same Xsl Transform before, we'll fetch the cached version of that transform instead of repeating it.
+        /// Uses flag hack method design outlined here to avoid locking:
+        /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development
+        /// </summary>
+        /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
+        /// <param name="strXslFilePath">Absolute path to the Xsl file to be transformed.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The compiled Xsl transform of <paramref name="strXslFilePath"/>.</returns>
+        private static async Task<XslCompiledTransform> GetTransformForFileCoreAsync(bool blnSync, string strXslFilePath, CancellationToken token = default)
+        {
             if (!File.Exists(strXslFilePath))
                 throw new FileNotFoundException(nameof(strXslFilePath));
 
             DateTime datLastWriteTimeUtc = File.GetLastWriteTimeUtc(strXslFilePath);
 
             XslCompiledTransform objReturn;
+            bool blnSuccess;
+            Tuple<DateTime, XslCompiledTransform> tupCachedData;
+            if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverload
+                blnSuccess = s_dicCompiledTransforms.TryGetValue(strXslFilePath, out tupCachedData);
+            else
+                (blnSuccess, tupCachedData) = await s_dicCompiledTransforms.TryGetValueAsync(strXslFilePath, token).ConfigureAwait(false);
 
-            if (!s_dicCompiledTransforms.TryGetValue(
-                    strXslFilePath, out Tuple<DateTime, XslCompiledTransform> tupCachedData)
-                || tupCachedData.Item1 <= datLastWriteTimeUtc)
+            if (!blnSuccess || tupCachedData.Item1 <= datLastWriteTimeUtc)
             {
 #if DEBUG
                 objReturn = new XslCompiledTransform(true);
 #else
                 objReturn = new XslCompiledTransform();
 #endif
-                objReturn.Load(strXslFilePath);
-
-                s_dicCompiledTransforms.Remove(strXslFilePath);
-                s_dicCompiledTransforms.TryAdd(
-                    strXslFilePath, new Tuple<DateTime, XslCompiledTransform>(datLastWriteTimeUtc, objReturn));
+                if (blnSync)
+                {
+                    objReturn.Load(strXslFilePath);
+                    Tuple<DateTime, XslCompiledTransform> tupNewValue = new Tuple<DateTime, XslCompiledTransform>(datLastWriteTimeUtc, objReturn);
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                    s_dicCompiledTransforms.AddOrUpdate(strXslFilePath, tupNewValue, (x, y) => tupNewValue);
+                }
+                else
+                {
+                    await Task.Run(() => objReturn.Load(strXslFilePath), token).ConfigureAwait(false);
+                    Tuple<DateTime, XslCompiledTransform> tupNewValue = new Tuple<DateTime, XslCompiledTransform>(datLastWriteTimeUtc, objReturn);
+                    await s_dicCompiledTransforms.AddOrUpdateAsync(strXslFilePath, tupNewValue, (x, y) => tupNewValue, token).ConfigureAwait(false);
+                }
             }
             else
                 objReturn = tupCachedData.Item2;

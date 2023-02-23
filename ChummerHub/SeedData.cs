@@ -1,3 +1,21 @@
+/*  This file is part of Chummer5a.
+ *
+ *  Chummer5a is free software: you can redistribute it and/or modify
+ *  it under the terms of the GNU General Public License as published by
+ *  the Free Software Foundation, either version 3 of the License, or
+ *  (at your option) any later version.
+ *
+ *  Chummer5a is distributed in the hope that it will be useful,
+ *  but WITHOUT ANY WARRANTY; without even the implied warranty of
+ *  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ *  GNU General Public License for more details.
+ *
+ *  You should have received a copy of the GNU General Public License
+ *  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+ *
+ *  You can obtain the full source code for Chummer5a at
+ *  https://github.com/chummer5a/chummer5a
+ */
 using ChummerHub.API;
 using ChummerHub.Data;
 using Microsoft.AspNetCore.Hosting;
@@ -11,15 +29,11 @@ using System.Threading.Tasks;
 
 namespace ChummerHub
 {
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SeedData'
     public class SeedData
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SeedData'
     {
 
         #region snippet_Initialize
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SeedData.Initialize(IServiceProvider, string, IHostingEnvironment)'
         public static async Task Initialize(IServiceProvider serviceProvider, string testUserPw, IHostEnvironment env)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SeedData.Initialize(IServiceProvider, string, IHostingEnvironment)'
         {
             using (var context = new ApplicationDbContext(
                 serviceProvider.GetRequiredService<DbContextOptions<ApplicationDbContext>>(), env))
@@ -37,9 +51,9 @@ namespace ChummerHub
                 foreach (var user in Config.GetAdminUsers())
                 {
                     var userID = await EnsureUser(serviceProvider, user, testUserPw);
-                    await EnsureRole(serviceProvider, user.Id, Authorizarion.Constants.AdministratorsRole, null, null);
-                    await EnsureRole(serviceProvider, user.Id, Authorizarion.Constants.UserRoleRegistered, null, null);
-                    await EnsureRole(serviceProvider, user.Id, Authorizarion.Constants.UserRoleArchetype, null, null);
+                    await EnsureRole(serviceProvider, user.Id, API.Authorization.Constants.UserRoleAdmin, null, null);
+                    await EnsureRole(serviceProvider, user.Id, API.Authorization.Constants.UserRoleRegistered, null, null);
+                    await EnsureRole(serviceProvider, user.Id, API.Authorization.Constants.UserRoleArchetypeAdmin, null, null);
                 }
 
                 CreateViews(context);
@@ -110,9 +124,7 @@ namespace ChummerHub
 
         }
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'SeedData.EnsureRole(IServiceProvider, Guid, string, RoleManager<ApplicationRole>, UserManager<ApplicationUser>)'
         public static async Task<IdentityResult> EnsureRole(IServiceProvider serviceProvider,
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'SeedData.EnsureRole(IServiceProvider, Guid, string, RoleManager<ApplicationRole>, UserManager<ApplicationUser>)'
                                                                       Guid uid, string role, RoleManager<ApplicationRole> roleManager, UserManager<ApplicationUser> userManager)
         {
             IdentityResult IR = null;

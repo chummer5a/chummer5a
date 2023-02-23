@@ -47,6 +47,10 @@
       <text>Chummer5 encountered an error while saving the character.</text>
     </string>
     <string>
+      <key>Message_Export_Error_Warning</key>
+      <text>Chummer5 encountered an error while attempting to generate the necessary information for the character.</text>
+    </string>
+    <string>
       <key>Message_Prompt_Delete_Existing_File</key>
       <text>Chummer5 has detected that the following file already exists at this location that is outside of the Chummer base directory:\n{0}\n\nAre you sure you wish to remove the old file?</text>
     </string>
@@ -65,8 +69,16 @@
     <!-- End Region -->
     <!-- Region File Dialog Filter Strings -->
     <string>
+      <key>DialogFilter_Chummer</key>
+      <text>Chummer5 Files (*.chum5;*.chum5lz)|*.chum5;*.chum5lz</text>
+    </string>
+    <string>
       <key>DialogFilter_Chum5</key>
-      <text>Chummer5 Files (*.chum5)|*.chum5</text>
+      <text>Raw Chummer5 Saves (*.chum5)|*.chum5</text>
+    </string>
+    <string>
+      <key>DialogFilter_Chum5lz</key>
+      <text>Compressed Chummer5 Saves (*.chum5lz)|*.chum5lz</text>
     </string>
     <string>
       <key>DialogFilter_Xml</key>
@@ -253,6 +265,10 @@
     <string>
       <key>Label_Round</key>
       <text>Round</text>
+    </string>
+    <string>
+      <key>Label_Loaded</key>
+      <text>Loaded: {0}</text>
     </string>
     <string>
       <key>Label_Vehicles</key>
@@ -475,6 +491,10 @@
       <text>:</text>
     </string>
     <string>
+      <key>String_NuyenSymbol</key>
+      <text>¥</text>
+    </string>
+    <string>
       <key>String_Remaining</key>
       <text>remaining</text>
     </string>
@@ -547,6 +567,10 @@
       <text>Only show Commlinks</text>
     </string>
     <string>
+      <key>Checkbox_HideAmmo</key>
+      <text>Hide loaded ammo</text>
+    </string>
+    <string>
       <key>Checkbox_ActiveCommlink</key>
       <text>Active Commlink</text>
     </string>
@@ -564,19 +588,19 @@
     </string>
     <string>
       <key>Label_LP</key>
-      <text>LP:</text>
+      <text>Lifestyle Points:</text>
     </string>
     <string>
       <key>Label_BonusLP</key>
-      <text>Bonus LP:</text>
+      <text>Bonus Lifestyle Points:</text>
     </string>
     <string>
       <key>Label_QualityLP</key>
-      <text>Quality LP:</text>
+      <text>Quality Lifestyle Point Cost:</text>
     </string>
     <string>
       <key>Label_QualityCost</key>
-      <text>Quality Cost:</text>
+      <text>Quality Nuyen Cost:</text>
     </string>
     <string>
       <key>Label_QualitySource</key>
@@ -869,6 +893,10 @@
     <string>
       <key>String_Quality</key>
       <text>Quality</text>
+    </string>
+    <string>
+      <key>String_Lifestyle</key>
+      <text>Lifestyle</text>
     </string>
     <string>
       <key>Label_Metavariant</key>
@@ -1439,6 +1467,14 @@
       <text>&amp;Open</text>
     </string>
     <string>
+      <key>Menu_Main_OpenForPrinting</key>
+      <text>Open for P&amp;rinting</text>
+    </string>
+    <string>
+      <key>Menu_Main_OpenForExport</key>
+      <text>Open for E&amp;xport</text>
+    </string>
+    <string>
       <key>Menu_Main_PrintMultiple</key>
       <text>Print &amp;Multiple</text>
     </string>
@@ -1471,6 +1507,10 @@
       <text>&amp;New Window</text>
     </string>
     <string>
+      <key>Menu_Main_CloseWindow</key>
+      <text>&amp;Close Window</text>
+    </string>
+    <string>
       <key>Menu_Main_CloseAll</key>
       <text>C&amp;lose All</text>
     </string>
@@ -1501,6 +1541,14 @@
     <string>
       <key>Menu_Main_HeroLabImporter</key>
       <text>&amp;Hero Lab Importer</text>
+    </string>
+    <string>
+      <key>Menu_Main_MasterIndex</key>
+      <text>&amp;Master Index</text>
+    </string>
+    <string>
+      <key>Menu_Main_CharacterRoster</key>
+      <text>Ch&amp;aracter Roster</text>
     </string>
     <string>
       <key>String_MetatypeLoadError</key>
@@ -2895,10 +2943,6 @@
       <text>Too many Language Knowledge Skills listed as Native. Current: {0} Maximum: {1}</text>
     </string>
     <string>
-      <key>Message_UnderLanguageLimit</key>
-      <text>Too few Language Knowledge Skills listed as Native. Current: {0} Minimum: {1}</text>
-    </string>
-    <string>
       <key>Message_OverPositiveMetagenicQualities</key>
       <text>Too many positive Metagenic qualities. Current: {0} Maximum: {1}</text>
     </string>
@@ -2949,6 +2993,14 @@
     <string>
       <key>Message_NoExtraKarma</key>
       <text>You have {0} Karma remaining but are not allowed to carry any over to your career.\nAre you sure you want to lose this extra Karma?</text>
+    </string>
+    <string>
+      <key>MessageTitle_ExtraNativeLanguages</key>
+      <text>Extra Native Languages</text>
+    </string>
+    <string>
+      <key>Message_ExtraNativeLanguages</key>
+      <text>You have {0} more native languages that you can get for this character.\nAre you sure you want to proceed out of character creation without choosing any more?</text>
     </string>
     <string>
       <key>Message_SumtoTen</key>
@@ -3296,11 +3348,23 @@
     </string>
     <string>
       <key>Message_ConfirmReapplyImprovements</key>
-      <text>Chummer will attempt to re-locate your characters Improvable items and re-apply any Improvements they grant. This may result in your character's Attributes, Skills, and other numbers changing if any of the Improvements these items grant have changed. It is recommended that you save your character before performing this action in case you are not satisfied with the changes. Are you sure you want to re-apply Improvements?</text>
+      <text>Chummer will attempt to re-locate your character's Improvable items and re-apply any Improvements they grant. This may result in your character's Attributes, Skills, and other numbers changing if any of the Improvements these items grant have changed. It is recommended that you save your character before performing this action in case you are not satisfied with the changes.\n\nAre you sure you want to re-apply Improvements?</text>
     </string>
     <string>
       <key>MessageTitle_ConfirmReapplyImprovements</key>
       <text>Re-apply Improvements</text>
+    </string>
+    <string>
+      <key>Message_ConfirmReapplySpecificImprovements</key>
+      <text>Chummer will attempt to re-apply any Improvements granted by {0}. This may result in your character's Attributes, Skills, and other numbers changing if any of the Improvements granted by {0} have changed. Depending on how dramatic these Improvements are, it is recommended that you save your character before performing this action in case you are not satisfied with the changes.\n\nAre you sure you want to re-apply the Improvements of {0}?</text>
+    </string>
+    <string>
+      <key>MessageTitle_ConfirmReapplySpecificImprovements</key>
+      <text>Re-apply Specific Improvements</text>
+    </string>
+    <string>
+      <key>String_SelectedItem</key>
+      <text>Selected Item</text>
     </string>
     <string>
       <key>Message_ReapplyImprovementsFoundOutdatedItems_Top</key>
@@ -3902,6 +3966,10 @@
     <string>
       <key>String_DamageRocket</key>
       <text>Rocket</text>
+    </string>
+    <string>
+      <key>String_DamageTorpedo</key>
+      <text>Torpedo</text>
     </string>
     <string>
       <key>String_DamageAsDrugToxin</key>
@@ -4744,7 +4812,7 @@
     </string>
     <string>
       <key>Tip_SpellsSelectedSpells</key>
-      <text>Each Spell costs {0} Karma.</text>
+      <text>Each Spell costs {0} Karma.\n Mastery Qualities use 1 Free Spell Point per 5 Karma (MP).</text>
     </string>
     <string>
       <key>Tip_SpellsSpirits</key>
@@ -5256,6 +5324,10 @@
       <text>Reload</text>
     </string>
     <string>
+      <key>Button_Unload</key>
+      <text>Unload</text>
+    </string>
+    <string>
       <key>Tip_BuyAmmo</key>
       <text>Buy additional Ammo for this Weapon</text>
     </string>
@@ -5639,7 +5711,7 @@
     </string>
     <string>
       <key>Message_KarmaNuyenExchange</key>
-      <text>Nuyen can only be exchanged in multiples of 2,000¥.</text>
+      <text>Nuyen can only be exchanged in multiples of {0}.</text>
     </string>
     <string>
       <key>MessageTitle_KarmaNuyenExchange</key>
@@ -5873,7 +5945,7 @@
     </string>
     <string>
       <key>Checkbox_Options_AllowHoverIncrement</key>
-      <text>Allow incrementing values of NumericUpDown controls by hovering over the control</text>
+      <text>Scrolling the mouse while hovering it over a spinner changes the spinner's values</text>
     </string>
     <string>
       <key>Checkbox_Options_UseLifeModule</key>
@@ -5958,6 +6030,10 @@
     <string>
       <key>Checkbox_Options_IncreasedImprovedAbilityModifier</key>
       <text>Improved Ability is capped by Learned Rating x 1.5 instead of 0.5</text>
+    </string>
+    <string>
+      <key>Checkbox_Options_InsertPdfNotesIfAvailable</key>
+      <text>Add scraped text from available PDFs as Notes for newly added items </text>
     </string>
     <string>
       <key>String_SelectBP_LifeModuleSummary</key>
@@ -6939,12 +7015,20 @@
       <text>Glitch with {0} Hits</text>
     </string>
     <string>
+      <key>String_DiceRoller_Glitch_Singular</key>
+      <text>Glitch with {0} Hit</text>
+    </string>
+    <string>
       <key>String_DiceRoller_CriticalGlitch</key>
       <text>Critical Glitch</text>
     </string>
     <string>
       <key>String_DiceRoller_Hits</key>
       <text>{0} Hits</text>
+    </string>
+    <string>
+      <key>String_DiceRoller_Hit</key>
+      <text>{0} Hit</text>
     </string>
     <string>
       <key>String_DiceRoller_Standard</key>
@@ -7603,6 +7687,10 @@
       <text>Use Skill Points on broken groups</text>
     </string>
     <string>
+      <key>Checkbox_Options_SpecializationsBreakSkillGroups</key>
+      <text>Specializations break skill groups</text>
+    </string>
+    <string>
       <key>Checkbox_Options_AllowInitiation</key>
       <text>Allow Initiation/Submersion in Create mode</text>
     </string>
@@ -7649,6 +7737,10 @@
     <string>
       <key>Checkbox_Options_EssenceLossReducesMaximum</key>
       <text>Essence loss only reduces MAG/RES maximum</text>
+    </string>
+    <string>
+      <key>Checkbox_Options_UncappedArmorAccessoryBonuses</key>
+      <text>No Cap on Armor Bonuses from Armor Accessories</text>
     </string>
     <string>
       <key>Checkbox_Options_NoArmorEncumbrance</key>
@@ -7708,7 +7800,7 @@
     </string>
     <string>
       <key>Checkbox_Options_SpecialKarmaCost</key>
-      <text>Karma cost for increasing Special Attributes is not reduced with Essence Loss</text>
+      <text>Karma costs for increasing Special Attributes (including Mystic Adept PPs) are not reduced with Essence Loss</text>
     </string>
     <string>
       <key>Checkbox_Options_IgnoreComplexFormLimit</key>
@@ -7851,6 +7943,10 @@
       <text>Number of decimal places to round Essence to:</text>
     </string>
     <string>
+      <key>Label_Options_EssenceModifierPostExpression</key>
+      <text>Post-Process Essence Modifiers as:</text>
+    </string>
+    <string>
       <key>Checkbox_Option_DontRoundEssenceInternally</key>
       <text>Only round Essence for display purposes, not for internal calculations</text>
     </string>
@@ -7991,6 +8087,10 @@
       <text>Available Plugins</text>
     </string>
     <string>
+      <key>Label_Options_Chum5lzCompressionLevel</key>
+      <text>Chum5lz Compression Level:</text>
+    </string>
+    <string>
       <key>Label_Options_MugshotCompression</key>
       <text>Mugshot Storage Format:</text>
     </string>
@@ -8009,6 +8109,18 @@
     <string>
       <key>String_Lossy_Manual_Compression_Option</key>
       <text>Lossy (JPG, Manual)</text>
+    </string>
+    <string>
+      <key>String_Fast_Option</key>
+      <text>Fast</text>
+    </string>
+    <string>
+      <key>String_Balanced_Option</key>
+      <text>Balanced</text>
+    </string>
+    <string>
+      <key>String_Thorough_Option</key>
+      <text>Thorough</text>
     </string>
     <!-- End Region-->
     <!-- Region Character Options -->
@@ -8280,7 +8392,7 @@
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_UnusedLP</key>
-      <text>Unused LP:</text>
+      <text>Unused Lifestyle Points:</text>
     </string>
     <string>
       <key>Message_SelectAdvancedLifestyle_LifestyleName</key>
@@ -8296,7 +8408,7 @@
     </string>
     <string>
       <key>MessageTitle_SelectAdvancedLifestyle_OverLPLimit</key>
-      <text>Over LP Limit</text>
+      <text>Over Lifestyle Points Limit</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_TrustFund</key>
@@ -8308,7 +8420,7 @@
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_LPContribution</key>
-      <text>Contributes to Lifestyle Points</text>
+      <text>Use Lifestyle Points to Pay for Quality</text>
     </string>
     <string>
       <key>Label_Options_KarmaMysticAdeptPowerPoint</key>
@@ -9082,6 +9194,10 @@
       <text>Spell Points</text>
     </string>
     <string>
+      <key>String_MasteryPointsAcronym</key>
+      <text>MP</text>
+    </string>
+    <string>
       <key>Tip_SelectSpell_MasteryQuality</key>
       <text>Mastery Qualities will spend Spell Points before they spend Karma. [FA 31]</text>
     </string>
@@ -9361,6 +9477,10 @@
       <key>Message_Viewer_PDFPrinterError</key>
       <text>An error was encountered while attempting to open up the printing dialog for "{0}". Chummer5a will now proceed with its built-in PDF file saving system.</text>
     </string>
+    <string>
+      <key>String_Sheet_Blank</key>
+      <text>Sheet {0}</text>
+    </string>
     <!-- End Region-->
     <!-- Region Create Improvement Window -->
     <string>
@@ -9446,6 +9566,18 @@
     <string>
       <key>String_Generating_Data</key>
       <text>Generating Data...</text>
+    </string>
+    <string>
+      <key>String_Export</key>
+      <text>Export</text>
+    </string>
+    <string>
+      <key>String_Export_And_Close</key>
+      <text>Export and Close</text>
+    </string>
+    <string>
+      <key>String_Export_Blank</key>
+      <text>Export {0}</text>
     </string>
     <!-- End Region-->
     <!-- Region Create Spell Window -->
@@ -9748,6 +9880,14 @@
       <text>Loaded Settings File Has Different Books and/or Custom Data Directories</text>
     </string>
     <string>
+      <key>Message_CharacterOptions_DesyncFromHashCode</key>
+      <text>A settings file was found with the same name as the one used to save this character ({0}), but the settings are not the same.\n\nModify the settings file that this character will use (Yes)?\nOtherwise, the character will continue to be loaded with this settings file (No).</text>
+    </string>
+    <string>
+      <key>MessageTitle_CharacterOptions_DesyncFromHashCode</key>
+      <text>Loaded Settings File Different from One Used to Create This Save</text>
+    </string>
+    <string>
       <key>Message_CharacterOptions_OpenCharacterOnBuildMethodChange</key>
       <text>Due to technical limitations, Chummer cannot change the build method of an existing setting that is being used by an open character in Create mode. Please save your changes as a new setting or close the following characters first:\n\n</text>
     </string>
@@ -9965,7 +10105,7 @@
     </string>
     <string>
       <key>String_MetersPerHit</key>
-      <text>m/ hit</text>
+      <text>m / hit</text>
     </string>
     <string>
       <key>String_SuppressedBy</key>
@@ -10583,6 +10723,14 @@
     <string>
       <key>LimitCondition_SportsRivals</key>
       <text>Rivals of Sports Team</text>
+    </string>
+    <string>
+      <key>LimitCondition_SoldierParagon</key>
+      <text>Only for attack actions</text>
+    </string>
+    <string>
+      <key>LimitCondition_SkillsActiveLeadership</key>
+      <text>Only for Leadership</text>
     </string>
     <!-- End Region -->
     <string>

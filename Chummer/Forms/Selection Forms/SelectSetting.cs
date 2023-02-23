@@ -20,7 +20,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
@@ -40,22 +39,18 @@ namespace Chummer
             this.TranslateWinForm();
         }
 
-        private void SelectSetting_Load(object sender, EventArgs e)
+        private async void SelectSetting_Load(object sender, EventArgs e)
         {
             // Build the list of XML files found in the settings directory.
-            string settingsDirectoryPath = Path.Combine(Utils.GetStartupPath, "settings");
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSettings))
             {
-                foreach (string strFileName in Directory.GetFiles(settingsDirectoryPath, "*.xml"))
+                foreach (string strFileName in Directory.EnumerateFiles(Utils.GetSettingsFolderPath, "*.xml"))
                 {
                     // Load the file so we can get the Setting name.
                     XPathDocument objXmlDocument;
                     try
                     {
-                        using (StreamReader objStreamReader = new StreamReader(strFileName, Encoding.UTF8, true))
-                        using (XmlReader objXmlReader
-                               = XmlReader.Create(objStreamReader, GlobalSettings.SafeXmlReaderSettings))
-                            objXmlDocument = new XPathDocument(objXmlReader);
+                        objXmlDocument = await XPathDocumentExtensions.LoadStandardFromFileAsync(strFileName).ConfigureAwait(false);
                     }
                     catch (IOException)
                     {
@@ -67,30 +62,33 @@ namespace Chummer
                     }
 
                     lstSettings.Add(new ListItem(Path.GetFileName(strFileName),
-                                                 objXmlDocument.CreateNavigator().SelectSingleNode("/settings/name")
-                                                               ?.Value ?? LanguageManager.GetString("String_Unknown")));
+                                                 (await objXmlDocument.CreateNavigator().SelectSingleNodeAndCacheExpressionAsync("/settings/name").ConfigureAwait(false))
+                                                               ?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false)));
                 }
 
                 lstSettings.Sort(CompareListItems.CompareNames);
-                cboSetting.BeginUpdate();
-                cboSetting.PopulateWithListItems(lstSettings);
+                await cboSetting.PopulateWithListItemsAsync(lstSettings).ConfigureAwait(false);
                 // Attempt to make default.xml the default one. If it could not be found in the list, select the first item instead.
-                cboSetting.SelectedIndex = cboSetting.FindStringExact("Default Settings");
-                if (cboSetting.SelectedIndex == -1)
-                    cboSetting.SelectedIndex = 0;
-                cboSetting.EndUpdate();
+                await cboSetting.DoThreadSafeAsync(x =>
+                {
+                    x.SelectedIndex = x.FindStringExact("Default Settings");
+                    if (x.SelectedIndex == -1)
+                        x.SelectedIndex = 0;
+                }).ConfigureAwait(false);
             }
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
+            Close();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
             _strSettingsFile = cboSetting.SelectedValue.ToString();
             DialogResult = DialogResult.OK;
+            Close();
         }
 
         #endregion Control Events

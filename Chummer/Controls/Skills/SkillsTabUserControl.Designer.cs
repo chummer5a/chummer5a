@@ -15,17 +15,10 @@ namespace Chummer.UI.Skills
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && (components != null))
             {
-                components?.Dispose();
-                _lstActiveSkills?.Dispose();
-                _lstSkillGroups?.Dispose();
-                _lstKnowledgeSkills?.Dispose();
-                UnbindSkillsTabUserControl();
-                if (_blnDisposeCharacterOnDispose)
-                    _objCharacter?.Dispose();
+                components.Dispose();
             }
-
             base.Dispose(disposing);
         }
 
@@ -37,30 +30,29 @@ namespace Chummer.UI.Skills
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.splitSkills = new System.Windows.Forms.SplitContainer();
-            this.tlpTopPanel = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpSkillGroups = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpTopPanel = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpSkillGroups = new System.Windows.Forms.TableLayoutPanel();
             this.lblGroupsSp = new System.Windows.Forms.Label();
             this.lblGroupKarma = new System.Windows.Forms.Label();
             this.lblSkillGroups = new System.Windows.Forms.Label();
-            this.tlpActiveSkills = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpActiveSkills = new System.Windows.Forms.TableLayoutPanel();
             this.lblActiveSp = new System.Windows.Forms.Label();
             this.lblActiveSkills = new System.Windows.Forms.Label();
             this.lblActiveKarma = new System.Windows.Forms.Label();
             this.lblBuyWithKarma = new System.Windows.Forms.Label();
             this.btnResetCustomDisplayAttribute = new System.Windows.Forms.Button();
-            this.tlpActiveSkillsButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpActiveSkillsButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cboSort = new Chummer.ElasticComboBox();
             this.cboDisplayFilter = new Chummer.ElasticComboBox();
             this.btnExotic = new System.Windows.Forms.Button();
-            this.tlpBottomPanel = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpBottomPanel = new System.Windows.Forms.TableLayoutPanel();
             this.lblKnoSp = new System.Windows.Forms.Label();
             this.lblKnowledgeSkills = new System.Windows.Forms.Label();
             this.lblKnoKarma = new System.Windows.Forms.Label();
             this.lblKnoBwk = new System.Windows.Forms.Label();
             this.lblCustomKnowledgeSkillsReminder = new System.Windows.Forms.Label();
-            this.tlpKnowledgeSkillsHeader = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpKnowledgeSkillsHeader = new System.Windows.Forms.TableLayoutPanel();
             this.cboDisplayFilterKnowledge = new Chummer.ElasticComboBox();
             this.cboSortKnowledge = new Chummer.ElasticComboBox();
             this.btnKnowledge = new System.Windows.Forms.Button();
@@ -256,13 +248,14 @@ namespace Chummer.UI.Skills
             // 
             // btnResetCustomDisplayAttribute
             // 
+            this.btnResetCustomDisplayAttribute.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
             this.btnResetCustomDisplayAttribute.AutoSize = true;
             this.btnResetCustomDisplayAttribute.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnResetCustomDisplayAttribute.Dock = System.Windows.Forms.DockStyle.Fill;
             this.btnResetCustomDisplayAttribute.Location = new System.Drawing.Point(155, 29);
             this.btnResetCustomDisplayAttribute.Margin = new System.Windows.Forms.Padding(0);
+            this.btnResetCustomDisplayAttribute.MinimumSize = new System.Drawing.Size(80, 0);
             this.btnResetCustomDisplayAttribute.Name = "btnResetCustomDisplayAttribute";
-            this.btnResetCustomDisplayAttribute.Size = new System.Drawing.Size(59, 23);
+            this.btnResetCustomDisplayAttribute.Size = new System.Drawing.Size(80, 23);
             this.btnResetCustomDisplayAttribute.TabIndex = 53;
             this.btnResetCustomDisplayAttribute.Tag = "Button_ResetAll";
             this.btnResetCustomDisplayAttribute.Text = "Reset All";
@@ -324,6 +317,7 @@ namespace Chummer.UI.Skills
             this.btnExotic.AutoSize = true;
             this.btnExotic.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnExotic.Location = new System.Drawing.Point(428, 3);
+            this.btnExotic.MinimumSize = new System.Drawing.Size(80, 0);
             this.btnExotic.Name = "btnExotic";
             this.btnExotic.Size = new System.Drawing.Size(90, 23);
             this.btnExotic.TabIndex = 2;
@@ -455,9 +449,9 @@ namespace Chummer.UI.Skills
             this.cboDisplayFilterKnowledge.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboDisplayFilterKnowledge.FormattingEnabled = true;
             this.cboDisplayFilterKnowledge.IntegralHeight = false;
-            this.cboDisplayFilterKnowledge.Location = new System.Drawing.Point(265, 4);
+            this.cboDisplayFilterKnowledge.Location = new System.Drawing.Point(278, 4);
             this.cboDisplayFilterKnowledge.Name = "cboDisplayFilterKnowledge";
-            this.cboDisplayFilterKnowledge.Size = new System.Drawing.Size(291, 21);
+            this.cboDisplayFilterKnowledge.Size = new System.Drawing.Size(278, 21);
             this.cboDisplayFilterKnowledge.TabIndex = 54;
             this.cboDisplayFilterKnowledge.TooltipText = "";
             this.cboDisplayFilterKnowledge.SelectedIndexChanged += new System.EventHandler(this.cboDisplayFilterKnowledge_SelectedIndexChanged);
@@ -469,9 +463,9 @@ namespace Chummer.UI.Skills
             this.cboSortKnowledge.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
             this.cboSortKnowledge.FormattingEnabled = true;
             this.cboSortKnowledge.IntegralHeight = false;
-            this.cboSortKnowledge.Location = new System.Drawing.Point(67, 4);
+            this.cboSortKnowledge.Location = new System.Drawing.Point(89, 4);
             this.cboSortKnowledge.Name = "cboSortKnowledge";
-            this.cboSortKnowledge.Size = new System.Drawing.Size(192, 21);
+            this.cboSortKnowledge.Size = new System.Drawing.Size(183, 21);
             this.cboSortKnowledge.TabIndex = 55;
             this.cboSortKnowledge.TooltipText = "";
             this.cboSortKnowledge.SelectedIndexChanged += new System.EventHandler(this.cboSortKnowledge_SelectedIndexChanged);
@@ -482,8 +476,9 @@ namespace Chummer.UI.Skills
             this.btnKnowledge.AutoSize = true;
             this.btnKnowledge.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnKnowledge.Location = new System.Drawing.Point(3, 3);
+            this.btnKnowledge.MinimumSize = new System.Drawing.Size(80, 0);
             this.btnKnowledge.Name = "btnKnowledge";
-            this.btnKnowledge.Size = new System.Drawing.Size(58, 23);
+            this.btnKnowledge.Size = new System.Drawing.Size(80, 23);
             this.btnKnowledge.TabIndex = 0;
             this.btnKnowledge.Tag = "Button_AddSkill";
             this.btnKnowledge.Text = "&Add Skill";
@@ -563,12 +558,12 @@ namespace Chummer.UI.Skills
         private System.Windows.Forms.Label lblCustomKnowledgeSkillsReminder;
         private ElasticComboBox cboSortKnowledge;
         private ElasticComboBox cboDisplayFilterKnowledge;
-        private Chummer.BufferedTableLayoutPanel tlpSkillGroups;
-        private Chummer.BufferedTableLayoutPanel tlpActiveSkills;
-        private BufferedTableLayoutPanel tlpTopPanel;
-        private BufferedTableLayoutPanel tlpBottomPanel;
-        private BufferedTableLayoutPanel tlpKnowledgeSkillsHeader;
-        private BufferedTableLayoutPanel tlpActiveSkillsButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpSkillGroups;
+        private System.Windows.Forms.TableLayoutPanel tlpActiveSkills;
+        private System.Windows.Forms.TableLayoutPanel tlpTopPanel;
+        private System.Windows.Forms.TableLayoutPanel tlpBottomPanel;
+        private System.Windows.Forms.TableLayoutPanel tlpKnowledgeSkillsHeader;
+        private System.Windows.Forms.TableLayoutPanel tlpActiveSkillsButtons;
         private ElasticComboBox cboSort;
         private ElasticComboBox cboDisplayFilter;
         private System.Windows.Forms.Button btnExotic;

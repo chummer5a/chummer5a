@@ -22,6 +22,8 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 
@@ -53,7 +55,9 @@ namespace Chummer
             _objCharacter = objCharacter;
         }
 
+        /// <summary>
         /// Create an Initiation Grade from an XmlNode.
+        /// </summary>
         /// <param name="intGrade">Grade number.</param>
         /// <param name="blnTechnomancer">Whether or not the character is a Technomancer.</param>
         /// <param name="blnGroup">Whether or not a Group was used.</param>
@@ -93,7 +97,7 @@ namespace Chummer
         /// Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
-        public void Save(XmlTextWriter objWriter)
+        public void Save(XmlWriter objWriter)
         {
             if (objWriter == null)
                 return;
@@ -104,7 +108,7 @@ namespace Chummer
             objWriter.WriteElementString("group", _blnGroup.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("ordeal", _blnOrdeal.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("schooling", _blnSchooling.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("notes", System.Text.RegularExpressions.Regex.Replace(_strNotes, @"[\u0000-\u0008\u000B\u000C\u000E-\u001F]", ""));
+            objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteEndElement();
         }
@@ -136,20 +140,29 @@ namespace Chummer
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print</param>
-        public void Print(XmlTextWriter objWriter, CultureInfo objCulture)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
-            objWriter.WriteStartElement("initiationgrade");
-            objWriter.WriteElementString("guid", InternalId);
-            objWriter.WriteElementString("grade", Grade.ToString(objCulture));
-            objWriter.WriteElementString("group", Group.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("ordeal", Ordeal.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("schooling", Schooling.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("technomancer", Technomancer.ToString(GlobalSettings.InvariantCultureInfo));
-            if (GlobalSettings.PrintNotes)
-                objWriter.WriteElementString("notes", Notes);
-            objWriter.WriteEndElement();
+            // <initiationgrade>
+            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("initiationgrade", token).ConfigureAwait(false);
+            try
+            {
+                await objWriter.WriteElementStringAsync("guid", InternalId, token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("grade", Grade.ToString(objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("group", Group.ToString(GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("ordeal", Ordeal.ToString(GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("schooling", Schooling.ToString(GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("technomancer", Technomancer.ToString(GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
+                if (GlobalSettings.PrintNotes)
+                    await objWriter.WriteElementStringAsync("notes", Notes, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                // </initiationgrade>
+                await objBaseElement.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         #endregion Constructor, Create, Save, and Load Methods
@@ -350,9 +363,9 @@ namespace Chummer
             {
                 if (Grade != _objCharacter.InitiateGrade && blnPerformGradeCheck)
                 {
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_DeleteGrade"),
-                        LanguageManager.GetString("MessageTitle_DeleteGrade"), MessageBoxButtons.OK,
-                        MessageBoxIcon.Error);
+                    Program.ShowScrollableMessageBox(LanguageManager.GetString("Message_DeleteGrade"),
+                                                     LanguageManager.GetString("MessageTitle_DeleteGrade"), MessageBoxButtons.OK,
+                                                     MessageBoxIcon.Error);
                     return false;
                 }
 
@@ -363,9 +376,9 @@ namespace Chummer
             {
                 if (Grade != _objCharacter.SubmersionGrade && blnPerformGradeCheck)
                 {
-                    Program.MainForm.ShowMessageBox(LanguageManager.GetString("Message_DeleteGrade"),
-                        LanguageManager.GetString("MessageTitle_DeleteGrade"), MessageBoxButtons.OK,
-                        MessageBoxIcon.Error);
+                    Program.ShowScrollableMessageBox(LanguageManager.GetString("Message_DeleteGrade"),
+                                                     LanguageManager.GetString("MessageTitle_DeleteGrade"), MessageBoxButtons.OK,
+                                                     MessageBoxIcon.Error);
                     return false;
                 }
 
@@ -414,6 +427,108 @@ namespace Chummer
                 if (objLoop.Grade == Grade)
                     objLoop.Remove(false);
             }
+            return true;
+        }
+
+        public ValueTask<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
+        {
+            return RemoveAsync(blnConfirmDelete, true, token);
+        }
+
+        public async ValueTask<bool> RemoveAsync(bool blnConfirmDelete, bool blnPerformGradeCheck,
+                                                 CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // Stop if this isn't the highest grade
+            if (await _objCharacter.GetMAGEnabledAsync(token).ConfigureAwait(false))
+            {
+                if (Grade != await _objCharacter.GetInitiateGradeAsync(token).ConfigureAwait(false)
+                    && blnPerformGradeCheck)
+                {
+                    Program.ShowScrollableMessageBox(
+                        await LanguageManager.GetStringAsync("Message_DeleteGrade", token: token).ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("MessageTitle_DeleteGrade", token: token)
+                                             .ConfigureAwait(false), MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                    return false;
+                }
+
+                if (blnConfirmDelete && !await CommonFunctions
+                                               .ConfirmDeleteAsync(
+                                                   await LanguageManager
+                                                         .GetStringAsync("Message_DeleteInitiateGrade", token: token)
+                                                         .ConfigureAwait(false), token).ConfigureAwait(false))
+                    return false;
+            }
+            else if (await _objCharacter.GetRESEnabledAsync(token).ConfigureAwait(false))
+            {
+                if (Grade != await _objCharacter.GetSubmersionGradeAsync(token).ConfigureAwait(false)
+                    && blnPerformGradeCheck)
+                {
+                    Program.ShowScrollableMessageBox(
+                        await LanguageManager.GetStringAsync("Message_DeleteGrade", token: token).ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("MessageTitle_DeleteGrade", token: token)
+                                             .ConfigureAwait(false), MessageBoxButtons.OK,
+                        MessageBoxIcon.Error);
+                    return false;
+                }
+
+                if (blnConfirmDelete && !await CommonFunctions
+                                               .ConfirmDeleteAsync(
+                                                   await LanguageManager
+                                                         .GetStringAsync("Message_DeleteSubmersionGrade", token: token)
+                                                         .ConfigureAwait(false), token).ConfigureAwait(false))
+                    return false;
+
+                await ImprovementManager
+                      .RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.CyberadeptDaemon,
+                                               InternalId, token).ConfigureAwait(false);
+            }
+            else
+                return false;
+
+            await _objCharacter.InitiationGrades.RemoveAsync(this, token).ConfigureAwait(false);
+            // Remove the child objects (arts, metamagics, enhancements, enchantments, rituals)
+            // Arts
+            for (int i = await _objCharacter.Arts.GetCountAsync(token).ConfigureAwait(false) - 1; i > 0; --i)
+            {
+                Art objLoop = await _objCharacter.Arts.GetValueAtAsync(i, token).ConfigureAwait(false);
+                if (objLoop.Grade == Grade)
+                    await objLoop.RemoveAsync(false, token).ConfigureAwait(false);
+            }
+
+            // Metamagics
+            for (int i = await _objCharacter.Metamagics.GetCountAsync(token).ConfigureAwait(false) - 1; i > 0; --i)
+            {
+                Metamagic objLoop = await _objCharacter.Metamagics.GetValueAtAsync(i, token).ConfigureAwait(false);
+                if (objLoop.Grade == Grade)
+                    await objLoop.RemoveAsync(false, token).ConfigureAwait(false);
+            }
+
+            // Enhancements
+            for (int i = await _objCharacter.Enhancements.GetCountAsync(token).ConfigureAwait(false) - 1; i > 0; --i)
+            {
+                Enhancement objLoop = await _objCharacter.Enhancements.GetValueAtAsync(i, token).ConfigureAwait(false);
+                if (objLoop.Grade == Grade)
+                    await objLoop.RemoveAsync(false, token).ConfigureAwait(false);
+            }
+
+            // Spells
+            for (int i = await _objCharacter.Spells.GetCountAsync(token).ConfigureAwait(false) - 1; i > 0; --i)
+            {
+                Spell objLoop = await _objCharacter.Spells.GetValueAtAsync(i, token).ConfigureAwait(false);
+                if (objLoop.Grade == Grade)
+                    await objLoop.RemoveAsync(false, token).ConfigureAwait(false);
+            }
+
+            // Complex Forms
+            for (int i = await _objCharacter.ComplexForms.GetCountAsync(token).ConfigureAwait(false) - 1; i > 0; --i)
+            {
+                ComplexForm objLoop = await _objCharacter.ComplexForms.GetValueAtAsync(i, token).ConfigureAwait(false);
+                if (objLoop.Grade == Grade)
+                    await objLoop.RemoveAsync(false, token).ConfigureAwait(false);
+            }
+
             return true;
         }
 

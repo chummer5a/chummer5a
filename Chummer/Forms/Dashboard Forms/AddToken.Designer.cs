@@ -13,11 +13,9 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && (components != null))
             {
-                components?.Dispose();
-                if (!_blnCharacterAdded)
-                    _character?.Dispose();
+                components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -40,7 +38,7 @@ namespace Chummer
             this.lbld6 = new System.Windows.Forms.Label();
             this.btnCancel = new System.Windows.Forms.Button();
             this.btnOK = new System.Windows.Forms.Button();
-            this.chkAutoRollInit = new Chummer.ColorableCheckBox(this.components);
+            this.chkAutoRollInit = new Chummer.ColorableCheckBox();
             this.nudInitStart = new Chummer.NumericUpDownEx();
             this.lblStartingInit = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nudInit)).BeginInit();

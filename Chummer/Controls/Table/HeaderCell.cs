@@ -19,6 +19,7 @@
 
 using System;
 using System.Drawing;
+using System.Threading;
 using System.Windows.Forms;
 
 namespace Chummer.UI.Table
@@ -30,51 +31,61 @@ namespace Chummer.UI.Table
         private SortOrder _eSortType = SortOrder.None;
         private const int _intLabelPadding = 3;
 
-        public HeaderCell()
+        public HeaderCell(CancellationToken token = default)
         {
             InitializeComponent();
-            this.UpdateLightDarkMode();
+            this.UpdateLightDarkMode(token: token);
             Sortable = false;
             Layout += ResizeControl;
         }
 
         public override string Text
         {
-            get => _lblCellText.Text;
+            get => _lblCellText.DoThreadSafeFunc(x => x.Text);
             set
             {
-                _lblCellText.Text = value;
+                _lblCellText.DoThreadSafe(x => x.Text = value);
                 ResizeControl(this, null);
             }
         }
 
         private void ResizeControl(object sender, LayoutEventArgs e)
         {
-            SuspendLayout();
-            using (Graphics g = CreateGraphics())
+            this.DoThreadSafe(x => x.SuspendLayout());
+            try
             {
-                if (Sortable)
+                using (Graphics g = this.DoThreadSafeFunc(x => x.CreateGraphics()))
                 {
-                    int intArrowSize = 2 * ArrowPadding + ArrowSize;
-                    int intMinWidth = (int)((intArrowSize + _intLabelPadding) * g.DpiX / 96.0f) +
-                                      _lblCellText.Width;
-                    int intMinHeight =
-                        Math.Max(_lblCellText.Height + (int)(2 * _intLabelPadding * g.DpiY / 96.0f),
-                            (int)(intArrowSize * g.DpiY / 96.0f));
-                    MinimumSize = new Size(intMinWidth, intMinHeight);
-                }
-                else
-                {
-                    int intMinWidth = _lblCellText.Width + (int)(_intLabelPadding * g.DpiX / 96.0f);
-                    int intMinHeight = _lblCellText.Height + (int)(2 * _intLabelPadding * g.DpiY / 96.0f);
-                    MinimumSize = new Size(intMinWidth, intMinHeight);
-                }
+                    if (Sortable)
+                    {
+                        int intArrowSize = 2 * ArrowPadding + ArrowSize;
+                        int intMinWidth = (int)((intArrowSize + _intLabelPadding) * g.DpiX / 96.0f) +
+                                          _lblCellText.DoThreadSafeFunc(x => x.Width);
+                        int intMinHeight =
+                            Math.Max(_lblCellText.DoThreadSafeFunc(x => x.Height) + (int)(2 * _intLabelPadding * g.DpiY / 96.0f),
+                                (int)(intArrowSize * g.DpiY / 96.0f));
+                        this.DoThreadSafe(x => x.MinimumSize = new Size(intMinWidth, intMinHeight));
+                    }
+                    else
+                    {
+                        int intMinWidth = _lblCellText.DoThreadSafeFunc(x => x.Width) + (int)(_intLabelPadding * g.DpiX / 96.0f);
+                        int intMinHeight = _lblCellText.DoThreadSafeFunc(x => x.Height) + (int)(2 * _intLabelPadding * g.DpiY / 96.0f);
+                        this.DoThreadSafe(x => x.MinimumSize = new Size(intMinWidth, intMinHeight));
+                    }
 
-                _lblCellText.Location = new Point((int)(_intLabelPadding * g.DpiX / 96.0f),
-                    (MinimumSize.Height - _lblCellText.Height) / 2);
+                    // ReSharper disable once AccessToDisposedClosure
+                    _lblCellText.DoThreadSafe(x => x.Location = new Point((int)(_intLabelPadding * g.DpiX / 96.0f),
+                                                                          (MinimumSize.Height - _lblCellText.Height) / 2));
+                }
             }
-            ResumeLayout(false);
-            Invalidate();
+            finally
+            {
+                this.DoThreadSafe(x =>
+                {
+                    x.ResumeLayout(false);
+                    x.Invalidate();
+                });
+            }
         }
 
         private int ArrowSize
@@ -86,8 +97,9 @@ namespace Chummer.UI.Table
                 {
                     throw new ArgumentOutOfRangeException(nameof(ArrowSize));
                 }
-                _intArrowSize = value;
-                ResizeControl(this, null);
+
+                if (Interlocked.Exchange(ref _intArrowSize, value) != value)
+                    ResizeControl(this, null);
             }
         }
 
@@ -100,8 +112,9 @@ namespace Chummer.UI.Table
                 {
                     throw new ArgumentOutOfRangeException(nameof(ArrowPadding));
                 }
-                _intArrowPadding = value;
-                ResizeControl(this, null);
+
+                if (Interlocked.Exchange(ref _intArrowPadding, value) != value)
+                    ResizeControl(this, null);
             }
         }
 
@@ -110,15 +123,15 @@ namespace Chummer.UI.Table
             get => _eSortType;
             set
             {
-                _eSortType = value;
-                Invalidate();
+                if (InterlockedExtensions.Exchange(ref _eSortType, value) != value)
+                    this.DoThreadSafe(x => x.Invalidate());
             }
         }
 
         public object TextTag
         {
-            get => _lblCellText.Tag;
-            set => _lblCellText.Tag = value;
+            get => _lblCellText.DoThreadSafeFunc(x => x.Tag);
+            set => _lblCellText.DoThreadSafe(x => x.Tag = value);
         }
 
         internal bool Sortable { get; set; }
@@ -127,13 +140,13 @@ namespace Chummer.UI.Table
         {
             add
             {
-                Click += value;
-                _lblCellText.Click += value;
+                this.DoThreadSafe(x => x.Click += value);
+                _lblCellText.DoThreadSafe(x => x.Click += value);
             }
             remove
             {
-                Click -= value;
-                _lblCellText.Click -= value;
+                this.DoThreadSafe(x => x.Click -= value);
+                _lblCellText.DoThreadSafe(x => x.Click -= value);
             }
         }
 
@@ -165,9 +178,9 @@ namespace Chummer.UI.Table
             base.OnPaint(e);
         }
 
-        public void Translate()
+        public void Translate(CancellationToken token = default)
         {
-            this.TranslateWinForm();
+            this.DoThreadSafe((x, y) => x.TranslateWinForm(token: y), token);
         }
     }
 }

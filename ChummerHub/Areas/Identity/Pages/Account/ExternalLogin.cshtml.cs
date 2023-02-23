@@ -1,74 +1,64 @@
+﻿using System;
+using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
+using System.Linq;
+using System.Security.Claims;
+using System.Text;
+using System.Text.Encodings.Web;
+using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.Logging;
-using System.ComponentModel.DataAnnotations;
-using System.Security.Claims;
-using System.Threading.Tasks;
 
 namespace ChummerHub.Areas.Identity.Pages.Account
 {
     [AllowAnonymous]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginModel'
     public class ExternalLoginModel : PageModel
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginModel'
     {
         private readonly SignInManager<ApplicationUser> _signInManager;
         private readonly UserManager<ApplicationUser> _userManager;
+        private readonly IEmailSender _emailSender;
         private readonly ILogger<ExternalLoginModel> _logger;
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginModel.ExternalLoginModel(SignInManager<ApplicationUser>, UserManager<ApplicationUser>, ILogger<ExternalLoginModel>)'
         public ExternalLoginModel(
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginModel.ExternalLoginModel(SignInManager<ApplicationUser>, UserManager<ApplicationUser>, ILogger<ExternalLoginModel>)'
             SignInManager<ApplicationUser> signInManager,
             UserManager<ApplicationUser> userManager,
-            ILogger<ExternalLoginModel> logger)
+            ILogger<ExternalLoginModel> logger,
+            IEmailSender emailSender)
         {
             _signInManager = signInManager;
             _userManager = userManager;
             _logger = logger;
+            _emailSender = emailSender;
         }
 
         [BindProperty]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginModel.Input'
         public InputModel Input { get; set; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginModel.Input'
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginModel.LoginProvider'
-        public string LoginProvider { get; set; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginModel.LoginProvider'
+        public string ProviderDisplayName { get; set; }
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginModel.ReturnUrl'
         public string ReturnUrl { get; set; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginModel.ReturnUrl'
 
         [TempData]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginModel.ErrorMessage'
         public string ErrorMessage { get; set; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginModel.ErrorMessage'
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginModel.InputModel'
         public class InputModel
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginModel.InputModel'
         {
             [Required]
             [EmailAddress]
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginModel.InputModel.Email'
             public string Email { get; set; }
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginModel.InputModel.Email'
         }
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginModel.OnGetAsync()'
         public IActionResult OnGetAsync()
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginModel.OnGetAsync()'
         {
             return RedirectToPage("./Login");
         }
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginModel.OnPost(string, string)'
         public IActionResult OnPost(string provider, string returnUrl = null)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginModel.OnPost(string, string)'
         {
             // Request a redirect to the external login provider.
             var redirectUrl = Url.Page("./ExternalLogin", pageHandler: "Callback", values: new { returnUrl });
@@ -76,15 +66,13 @@ namespace ChummerHub.Areas.Identity.Pages.Account
             return new ChallengeResult(provider, properties);
         }
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginModel.OnGetCallbackAsync(string, string)'
         public async Task<IActionResult> OnGetCallbackAsync(string returnUrl = null, string remoteError = null)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginModel.OnGetCallbackAsync(string, string)'
         {
             returnUrl = returnUrl ?? Url.Content("~/");
             if (remoteError != null)
             {
                 ErrorMessage = $"Error from external provider: {remoteError}";
-                return RedirectToPage("./Login", new { ReturnUrl = returnUrl });
+                return RedirectToPage("./Login", new {ReturnUrl = returnUrl });
             }
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
@@ -94,10 +82,10 @@ namespace ChummerHub.Areas.Identity.Pages.Account
             }
 
             // Sign in the user with this external login provider if the user already has a login.
-            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
+            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor : true);
             if (result.Succeeded)
             {
-                _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity?.Name ?? string.Empty, info.LoginProvider);
+                _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", info.Principal.Identity.Name, info.LoginProvider);
                 return LocalRedirect(returnUrl);
             }
             if (result.IsLockedOut)
@@ -108,7 +96,7 @@ namespace ChummerHub.Areas.Identity.Pages.Account
             {
                 // If the user does not have an account, then ask the user to create an account.
                 ReturnUrl = returnUrl;
-                LoginProvider = info.LoginProvider;
+                ProviderDisplayName = info.ProviderDisplayName;
                 if (info.Principal.HasClaim(c => c.Type == ClaimTypes.Email))
                 {
                     Input = new InputModel
@@ -120,9 +108,7 @@ namespace ChummerHub.Areas.Identity.Pages.Account
             }
         }
 
-#pragma warning disable CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginModel.OnPostConfirmationAsync(string)'
         public async Task<IActionResult> OnPostConfirmationAsync(string returnUrl = null)
-#pragma warning restore CS1591 // Missing XML comment for publicly visible type or member 'ExternalLoginModel.OnPostConfirmationAsync(string)'
         {
             returnUrl = returnUrl ?? Url.Content("~/");
             // Get the information about the user from the external login provider
@@ -136,14 +122,35 @@ namespace ChummerHub.Areas.Identity.Pages.Account
             if (ModelState.IsValid)
             {
                 var user = new ApplicationUser { UserName = Input.Email, Email = Input.Email };
+
                 var result = await _userManager.CreateAsync(user);
                 if (result.Succeeded)
                 {
                     result = await _userManager.AddLoginAsync(user, info);
                     if (result.Succeeded)
                     {
-                        await _signInManager.SignInAsync(user, isPersistent: false);
                         _logger.LogInformation("User created an account using {Name} provider.", info.LoginProvider);
+
+                        var userId = await _userManager.GetUserIdAsync(user);
+                        var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                        code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                        var callbackUrl = Url.Page(
+                            "/Account/ConfirmEmail",
+                            pageHandler: null,
+                            values: new { area = "Identity", userId = userId, code = code },
+                            protocol: Request.Scheme);
+
+                        await _emailSender.SendEmailAsync(Input.Email, "Confirm your email",
+                            $"Please confirm your account by <a href='{HtmlEncoder.Default.Encode(callbackUrl)}'>clicking here</a>.");
+
+                        // If account confirmation is required, we need to show the link if we don't have a real email sender
+                        if (_userManager.Options.SignIn.RequireConfirmedAccount)
+                        {
+                            return RedirectToPage("./RegisterConfirmation", new { Email = Input.Email });
+                        }
+
+                        await _signInManager.SignInAsync(user, isPersistent: false, info.LoginProvider);
+
                         return LocalRedirect(returnUrl);
                     }
                 }
@@ -153,7 +160,7 @@ namespace ChummerHub.Areas.Identity.Pages.Account
                 }
             }
 
-            LoginProvider = info.LoginProvider;
+            ProviderDisplayName = info.ProviderDisplayName;
             ReturnUrl = returnUrl;
             return Page();
         }

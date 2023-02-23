@@ -24,5 +24,7 @@ namespace Chummer
         bool Stolen { get; set; }
 
         decimal StolenTotalCost { get; }
+
+        decimal NonStolenTotalCost { get; }
     }
 }

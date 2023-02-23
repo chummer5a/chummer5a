@@ -13,11 +13,9 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && (components != null))
             {
-                components?.Dispose();
-                _frmPrintView?.Dispose();
-                _objPrinterCancellationTokenSource?.Dispose();
+                components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -30,7 +28,6 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(PrintMultipleCharacters));
             this.dlgOpenFile = new System.Windows.Forms.OpenFileDialog();
             this.cmdSelectCharacter = new System.Windows.Forms.Button();
@@ -38,17 +35,16 @@ namespace Chummer
             this.cmdDelete = new System.Windows.Forms.Button();
             this.treCharacters = new System.Windows.Forms.TreeView();
             this.prgProgress = new System.Windows.Forms.ProgressBar();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
-            this.tlpButtons = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.tlpMain.SuspendLayout();
             this.tlpButtons.SuspendLayout();
             this.SuspendLayout();
             // 
             // dlgOpenFile
             // 
-            this.dlgOpenFile.Filter = "Chummer5 Files (*.chum5)|*.chum5";
+            this.dlgOpenFile.Filter = "Chummer5 Files (*.chum5;*.chum5lz)|*.chum5;*.chum5lz";
             this.dlgOpenFile.Multiselect = true;
-            this.dlgOpenFile.Title = "Select Character(s)";
             // 
             // cmdSelectCharacter
             // 
@@ -56,6 +52,7 @@ namespace Chummer
             this.cmdSelectCharacter.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdSelectCharacter.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdSelectCharacter.Location = new System.Drawing.Point(3, 3);
+            this.cmdSelectCharacter.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdSelectCharacter.Name = "cmdSelectCharacter";
             this.cmdSelectCharacter.Size = new System.Drawing.Size(106, 23);
             this.cmdSelectCharacter.TabIndex = 1;
@@ -70,6 +67,7 @@ namespace Chummer
             this.cmdPrint.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdPrint.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdPrint.Location = new System.Drawing.Point(3, 61);
+            this.cmdPrint.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdPrint.Name = "cmdPrint";
             this.cmdPrint.Size = new System.Drawing.Size(106, 23);
             this.cmdPrint.TabIndex = 3;
@@ -84,6 +82,7 @@ namespace Chummer
             this.cmdDelete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdDelete.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdDelete.Location = new System.Drawing.Point(3, 32);
+            this.cmdDelete.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdDelete.Name = "cmdDelete";
             this.cmdDelete.Size = new System.Drawing.Size(106, 23);
             this.cmdDelete.TabIndex = 2;
@@ -154,10 +153,11 @@ namespace Chummer
             this.tlpButtons.Size = new System.Drawing.Size(112, 87);
             this.tlpButtons.TabIndex = 5;
             // 
-            // frmPrintMultiple
+            // PrintMultipleCharacters
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AutoSize = true;
             this.ClientSize = new System.Drawing.Size(464, 281);
             this.Controls.Add(this.tlpMain);
             this.DoubleBuffered = true;
@@ -165,13 +165,14 @@ namespace Chummer
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MaximizeBox = false;
             this.MinimizeBox = false;
-            this.Name = "frmPrintMultiple";
+            this.Name = "PrintMultipleCharacters";
             this.Padding = new System.Windows.Forms.Padding(9);
             this.ShowInTaskbar = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_PrintMultiple";
             this.Text = "Select Characters to Print";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.PrintMultipleCharacters_FormClosing);
+            this.Load += new System.EventHandler(this.PrintMultipleCharacters_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
             this.tlpButtons.ResumeLayout(false);
@@ -189,7 +190,7 @@ namespace Chummer
         private System.Windows.Forms.Button cmdDelete;
         private System.Windows.Forms.TreeView treCharacters;
         private System.Windows.Forms.ProgressBar prgProgress;
-        private Chummer.BufferedTableLayoutPanel tlpMain;
-        private BufferedTableLayoutPanel tlpButtons;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpButtons;
     }
 }

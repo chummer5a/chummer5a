@@ -13,10 +13,9 @@ namespace Chummer.UI.Attributes
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && (components != null))
             {
-                components?.Dispose();
-                UnbindAttributeControl();
+                components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -29,12 +28,11 @@ namespace Chummer.UI.Attributes
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.lblName = new Chummer.LabelWithToolTip();
             this.flpRight = new System.Windows.Forms.FlowLayoutPanel();
             this.lblLimits = new Chummer.LabelWithToolTip();
             this.lblValue = new Chummer.LabelWithToolTip();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.flpRight.SuspendLayout();
             this.tlpMain.SuspendLayout();
             this.SuspendLayout();
@@ -126,6 +124,7 @@ namespace Chummer.UI.Attributes
             this.MinimumSize = new System.Drawing.Size(0, 24);
             this.Name = "AttributeControl";
             this.Size = new System.Drawing.Size(194, 25);
+            this.Load += new System.EventHandler(this.AttributeControl_Load);
             this.MouseLeave += new System.EventHandler(this.OnMouseLeave);
             this.MouseMove += new System.Windows.Forms.MouseEventHandler(this.OnMouseMove);
             this.flpRight.ResumeLayout(false);
@@ -143,6 +142,6 @@ namespace Chummer.UI.Attributes
         private LabelWithToolTip lblName;
         private LabelWithToolTip lblLimits;
         private System.Windows.Forms.FlowLayoutPanel flpRight;
-        private BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
     }
 }

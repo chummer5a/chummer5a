@@ -13,11 +13,9 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing)
+            if (disposing && (components != null))
             {
-                components?.Dispose();
-                _objCharacter?.Dispose();
-                Utils.StringBuilderPool.Return(_sbdOutputBuilder);
+                components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -30,13 +28,12 @@ namespace Chummer
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             this.cboTest = new Chummer.ElasticComboBox();
             this.cmdTest = new System.Windows.Forms.Button();
             this.txtOutput = new System.Windows.Forms.TextBox();
             this.pgbProgress = new System.Windows.Forms.ProgressBar();
             this.chkAddExceptionInfoToErrors = new Chummer.ColorableCheckBox();
-            this.tlpMain = new Chummer.BufferedTableLayoutPanel(this.components);
+            this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.tlpMain.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -68,8 +65,9 @@ namespace Chummer
             this.cmdTest.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdTest.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdTest.Location = new System.Drawing.Point(199, 6);
+            this.cmdTest.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdTest.Name = "cmdTest";
-            this.cmdTest.Size = new System.Drawing.Size(38, 23);
+            this.cmdTest.Size = new System.Drawing.Size(80, 23);
             this.cmdTest.TabIndex = 1;
             this.cmdTest.Text = "&Test";
             this.cmdTest.UseVisualStyleBackColor = true;
@@ -101,7 +99,8 @@ namespace Chummer
             // 
             this.chkAddExceptionInfoToErrors.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkAddExceptionInfoToErrors.AutoSize = true;
-            this.chkAddExceptionInfoToErrors.Location = new System.Drawing.Point(243, 9);
+            this.chkAddExceptionInfoToErrors.DefaultColorScheme = true;
+            this.chkAddExceptionInfoToErrors.Location = new System.Drawing.Point(285, 9);
             this.chkAddExceptionInfoToErrors.Name = "chkAddExceptionInfoToErrors";
             this.chkAddExceptionInfoToErrors.Size = new System.Drawing.Size(253, 17);
             this.chkAddExceptionInfoToErrors.TabIndex = 4;
@@ -132,13 +131,13 @@ namespace Chummer
             this.tlpMain.Size = new System.Drawing.Size(784, 561);
             this.tlpMain.TabIndex = 5;
             // 
-            // frmTest
+            // TestDataEntries
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(784, 561);
             this.Controls.Add(this.tlpMain);
-            this.Name = "frmTest";
+            this.Name = "TestDataEntries";
             this.ShowIcon = false;
             this.Text = "XML Test";
             this.tlpMain.ResumeLayout(false);
@@ -155,6 +154,6 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtOutput;
         private System.Windows.Forms.ProgressBar pgbProgress;
         private Chummer.ColorableCheckBox chkAddExceptionInfoToErrors;
-        private BufferedTableLayoutPanel tlpMain;
+        private System.Windows.Forms.TableLayoutPanel tlpMain;
     }
 }
