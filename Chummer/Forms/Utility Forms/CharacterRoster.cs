@@ -464,10 +464,9 @@ namespace Chummer
                 objTemp.Dispose();
             }
 
-            Task tskTemp;
+            Task tskTemp = Interlocked.Exchange(ref _tskWatchFolderRefresh, null);
             try
             {
-                tskTemp = Interlocked.Exchange(ref _tskWatchFolderRefresh, null);
                 if (tskTemp != null)
                     await tskTemp.ConfigureAwait(false);
             }
@@ -570,10 +569,9 @@ namespace Chummer
             }
             token.ThrowIfCancellationRequested();
 
-            Task tskTemp;
+            Task tskTemp = Interlocked.Exchange(ref _tskMostRecentlyUsedsRefresh, null);
             try
             {
-                tskTemp = Interlocked.Exchange(ref _tskMostRecentlyUsedsRefresh, null);
                 if (tskTemp != null)
                     await tskTemp.ConfigureAwait(false);
             }

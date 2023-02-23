@@ -127,23 +127,38 @@ namespace Chummer
                 objTemp.Cancel(false);
                 objTemp.Dispose();
             }
+            Task tskOld = Interlocked.Exchange(ref _tskChangelogDownloader, null);
             try
             {
-                if (_tskChangelogDownloader?.IsCompleted == false)
-                    await _tskChangelogDownloader.ConfigureAwait(false);
+                if (tskOld?.IsCompleted == false)
+                    await tskOld.ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
                 // Swallow this
             }
-            if (_tskConnectionLoader == null || (_tskConnectionLoader.IsCompleted && (_tskConnectionLoader.IsCanceled ||
-                _tskConnectionLoader.IsFaulted)))
+            Task tskConnectionLoader = _tskConnectionLoader;
+            if (tskConnectionLoader == null || (tskConnectionLoader.IsCompleted && (tskConnectionLoader.IsCanceled ||
+                tskConnectionLoader.IsFaulted)))
             {
                 CancellationToken objToken = objNewChangelogSource.Token;
-                _tskChangelogDownloader = Task.Run(() => DownloadChangelog(objToken), objToken);
+                Task tskNew = Task.Run(() => DownloadChangelog(objToken), objToken);
+                if (Interlocked.CompareExchange(ref _tskChangelogDownloader, tskNew, null) != null)
+                {
+                    Interlocked.CompareExchange(ref _objChangelogDownloaderCancellationTokenSource, null,
+                                            objNewChangelogSource);
+                    try
+                    {
+                        objNewChangelogSource.Cancel(false);
+                    }
+                    finally
+                    {
+                        objNewChangelogSource.Dispose();
+                    }
+                }
                 try
                 {
-                    await _tskChangelogDownloader.ConfigureAwait(false);
+                    await tskNew.ConfigureAwait(false);
                 }
                 catch (OperationCanceledException)
                 {
@@ -220,21 +235,29 @@ namespace Chummer
             }
             _clientDownloader.CancelAsync();
             _clientChangelogDownloader.CancelAsync();
-            try
+            Task tskOld = Interlocked.Exchange(ref _tskChangelogDownloader, null);
+            if (tskOld != null)
             {
-                await _tskChangelogDownloader.ConfigureAwait(false);
+                try
+                {
+                    await tskOld.ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
             }
-            catch (OperationCanceledException)
+            tskOld = Interlocked.Exchange(ref _tskConnectionLoader, null);
+            if (tskOld != null)
             {
-                //swallow this
-            }
-            try
-            {
-                await _tskConnectionLoader.ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                //swallow this
+                try
+                {
+                    await tskOld.ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
             }
             _objGenericFormClosingCancellationTokenSource?.Cancel(false);
         }
@@ -261,10 +284,12 @@ namespace Chummer
                 objNewSource.Dispose();
                 throw;
             }
+
+            Task tskOld = Interlocked.Exchange(ref _tskConnectionLoader, null);
             try
             {
-                if (_tskConnectionLoader?.IsCompleted == false)
-                    await _tskConnectionLoader.ConfigureAwait(false);
+                if (tskOld?.IsCompleted == false)
+                    await tskOld.ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -276,11 +301,31 @@ namespace Chummer
                 objNewSource.Dispose();
                 throw;
             }
-            _tskConnectionLoader = Task.Run(async () =>
+            Task tskNew = Task.Run(async () =>
             {
                 await LoadConnection(objToken).ConfigureAwait(false);
                 await PopulateChangelog(objToken).ConfigureAwait(false);
             }, objToken);
+            if (Interlocked.CompareExchange(ref _tskConnectionLoader, tskNew, null) != null)
+            {
+                Interlocked.CompareExchange(ref _objConnectionLoaderCancellationTokenSource, null, objNewSource);
+                try
+                {
+                    objNewSource.Cancel(false);
+                }
+                finally
+                {
+                    objNewSource.Dispose();
+                }
+                try
+                {
+                    await tskNew.ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
+            }
         }
 
         private async ValueTask PopulateChangelog(CancellationToken token = default)
@@ -521,10 +566,39 @@ namespace Chummer
                         objTemp.Cancel(false);
                         objTemp.Dispose();
                     }
-                    if ((_tskConnectionLoader == null || (_tskConnectionLoader.IsCompleted && (_tskConnectionLoader.IsCanceled ||
-                                                                                               _tskConnectionLoader.IsFaulted))) && _tskChangelogDownloader?.IsCompleted != false)
+                    Task tskConnectionLoader = _tskConnectionLoader;
+                    if ((tskConnectionLoader == null || (tskConnectionLoader.IsCompleted && (tskConnectionLoader.IsCanceled || tskConnectionLoader.IsFaulted))))
                     {
-                        _tskChangelogDownloader = Task.Run(() => DownloadChangelog(objToken), objToken);
+                        Task tskOld = Interlocked.Exchange(ref _tskChangelogDownloader, null);
+                        if (tskOld?.IsCompleted == false)
+                        {
+                            Interlocked.CompareExchange(ref _objChangelogDownloaderCancellationTokenSource, null,
+                                                    objNewSource);
+                            objNewSource.Dispose();
+                            return;
+                        }
+                        Task tskNew = Task.Run(() => DownloadChangelog(objToken), objToken);
+                        if (Interlocked.CompareExchange(ref _tskChangelogDownloader, tskNew, null) != null)
+                        {
+                            Interlocked.CompareExchange(ref _objChangelogDownloaderCancellationTokenSource, null,
+                                                    objNewSource);
+                            try
+                            {
+                                objNewSource.Cancel(false);
+                            }
+                            finally
+                            {
+                                objNewSource.Dispose();
+                            }
+                            try
+                            {
+                                Utils.SafelyRunSynchronously(() => tskNew);
+                            }
+                            catch (OperationCanceledException)
+                            {
+                                //swallow this
+                            }
+                        }
                     }
                     else
                     {
@@ -633,14 +707,15 @@ namespace Chummer
                 objTemp.Cancel(false);
                 objTemp.Dispose();
             }
+            Task tskOld = Interlocked.Exchange(ref _tskChangelogDownloader, null);
             try
             {
-                if (_tskChangelogDownloader?.IsCompleted == false)
-                    await _tskChangelogDownloader.ConfigureAwait(false);
+                if (tskOld?.IsCompleted == false)
+                    await tskOld.ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
-                // Swallow this
+                //swallow this
             }
             if (_blnIsConnected)
             {
@@ -660,30 +735,47 @@ namespace Chummer
                 }
                 catch (OperationCanceledException)
                 {
-                    // Swallow this
-                }
-            }
-            else if (_tskConnectionLoader == null || (_tskConnectionLoader.IsCompleted
-                                                      && (_tskConnectionLoader.IsCanceled ||
-                                                          _tskConnectionLoader.IsFaulted)))
-            {
-                CancellationToken objToken = objNewChangelogSource.Token;
-                await cmdUpdate.DoThreadSafeAsync(x => x.Enabled = false, objToken).ConfigureAwait(false);
-                _tskChangelogDownloader = Task.Run(() => DownloadChangelog(objToken), objToken);
-                try
-                {
-                    await _tskChangelogDownloader.ConfigureAwait(false);
-                }
-                catch (OperationCanceledException)
-                {
-                    // Swallow this
+                    //swallow this
                 }
             }
             else
             {
-                Interlocked.CompareExchange(ref _objChangelogDownloaderCancellationTokenSource, null,
-                                            objNewChangelogSource);
-                objNewChangelogSource.Dispose();
+                Task tskConnectionLoader = _tskConnectionLoader;
+                if (tskConnectionLoader == null || (tskConnectionLoader.IsCompleted
+                                                      && (tskConnectionLoader.IsCanceled ||
+                                                          tskConnectionLoader.IsFaulted)))
+                {
+                    CancellationToken objToken = objNewChangelogSource.Token;
+                    await cmdUpdate.DoThreadSafeAsync(x => x.Enabled = false, objToken).ConfigureAwait(false);
+                    Task tskNew = Task.Run(() => DownloadChangelog(objToken), objToken);
+                    if (Interlocked.CompareExchange(ref _tskChangelogDownloader, tskNew, null) != null)
+                    {
+                        Interlocked.CompareExchange(ref _objChangelogDownloaderCancellationTokenSource, null,
+                                                objNewChangelogSource);
+                        try
+                        {
+                            objNewChangelogSource.Cancel(false);
+                        }
+                        finally
+                        {
+                            objNewChangelogSource.Dispose();
+                        }
+                    }
+                    try
+                    {
+                        await tskNew.ConfigureAwait(false);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        //swallow this
+                    }
+                }
+                else
+                {
+                    Interlocked.CompareExchange(ref _objChangelogDownloaderCancellationTokenSource, null,
+                                                objNewChangelogSource);
+                    objNewChangelogSource.Dispose();
+                }
             }
         }
 

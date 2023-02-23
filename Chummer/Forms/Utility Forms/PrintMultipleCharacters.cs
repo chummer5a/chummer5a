@@ -88,10 +88,20 @@ namespace Chummer
                 objTemp.Cancel(false);
                 objTemp.Dispose();
             }
+            Task tskOld = Interlocked.Exchange(ref _tskPrinter, null);
+            if (tskOld?.IsCompleted == false)
+            {
+                try
+                {
+                    await tskOld.ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
+            }
             try
             {
-                if (_tskPrinter?.IsCompleted == false)
-                    await _tskPrinter.ConfigureAwait(false);
                 await cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken).ConfigureAwait(false);
                 await prgProgress.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken).ConfigureAwait(false);
 
@@ -114,7 +124,27 @@ namespace Chummer
 
             if (_frmPrintView != null)
             {
-                _tskPrinter = Task.Run(() => DoPrint(objToken), objToken);
+                Task tskNew = Task.Run(() => DoPrint(objToken), objToken);
+                if (Interlocked.CompareExchange(ref _tskPrinter, tskNew, null) != null)
+                {
+                    Interlocked.CompareExchange(ref _objPrinterCancellationTokenSource, null, objNewSource);
+                    try
+                    {
+                        objNewSource.Cancel(false);
+                    }
+                    finally
+                    {
+                        objNewSource.Dispose();
+                    }
+                    try
+                    {
+                        await tskNew.ConfigureAwait(false);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        //swallow this
+                    }
+                }
             }
             else
             {
@@ -140,10 +170,20 @@ namespace Chummer
                         objTemp.Cancel(false);
                         objTemp.Dispose();
                     }
+                    Task tskOld = Interlocked.Exchange(ref _tskPrinter, null);
+                    if (tskOld?.IsCompleted == false)
+                    {
+                        try
+                        {
+                            await tskOld.ConfigureAwait(false);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            //swallow this
+                        }
+                    }
                     try
                     {
-                        if (_tskPrinter?.IsCompleted == false)
-                            await _tskPrinter.ConfigureAwait(false);
                         await cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken).ConfigureAwait(false);
                         await prgProgress.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken).ConfigureAwait(false);
                         await treCharacters.DoThreadSafeAsync(() => objSelectedNode.Remove(), _objGenericToken).ConfigureAwait(false);
@@ -160,9 +200,30 @@ namespace Chummer
                         objNewSource.Dispose();
                         throw;
                     }
+
                     if (_frmPrintView != null)
                     {
-                        _tskPrinter = Task.Run(() => DoPrint(objToken), objToken);
+                        Task tskNew = Task.Run(() => DoPrint(objToken), objToken);
+                        if (Interlocked.CompareExchange(ref _tskPrinter, tskNew, null) != null)
+                        {
+                            Interlocked.CompareExchange(ref _objPrinterCancellationTokenSource, null, objNewSource);
+                            try
+                            {
+                                objNewSource.Cancel(false);
+                            }
+                            finally
+                            {
+                                objNewSource.Dispose();
+                            }
+                            try
+                            {
+                                await tskNew.ConfigureAwait(false);
+                            }
+                            catch (OperationCanceledException)
+                            {
+                                //swallow this
+                            }
+                        }
                     }
                     else
                     {
@@ -187,10 +248,20 @@ namespace Chummer
                 objTemp.Cancel(false);
                 objTemp.Dispose();
             }
+            Task tskOld = Interlocked.Exchange(ref _tskPrinter, null);
+            if (tskOld?.IsCompleted == false)
+            {
+                try
+                {
+                    await tskOld.ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
+            }
             try
             {
-                if (_tskPrinter?.IsCompleted == false)
-                    await _tskPrinter.ConfigureAwait(false);
                 await cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, _objGenericToken).ConfigureAwait(false);
                 await prgProgress.DoThreadSafeAsync(x => x.Value = 0, _objGenericToken).ConfigureAwait(false);
             }
@@ -206,7 +277,27 @@ namespace Chummer
                 objNewSource.Dispose();
                 throw;
             }
-            _tskPrinter = Task.Run(() => DoPrint(objToken), objToken);
+            Task tskNew = Task.Run(() => DoPrint(objToken), objToken);
+            if (Interlocked.CompareExchange(ref _tskPrinter, tskNew, null) != null)
+            {
+                Interlocked.CompareExchange(ref _objPrinterCancellationTokenSource, null, objNewSource);
+                try
+                {
+                    objNewSource.Cancel(false);
+                }
+                finally
+                {
+                    objNewSource.Dispose();
+                }
+                try
+                {
+                    await tskNew.ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
+            }
         }
 
         private async Task DoPrint(CancellationToken token = default)

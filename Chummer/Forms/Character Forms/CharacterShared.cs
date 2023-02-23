@@ -8763,13 +8763,33 @@ namespace Chummer
                         objOldSource.Dispose();
                     }
                     token.ThrowIfCancellationRequested();
-                    Task tskNewTask = Task.Run(() => DoUpdateCharacterInfo(objToken), objToken);
-                    Task tskOldTask = Interlocked.Exchange(ref _tskUpdateCharacterInfo, tskNewTask);
-                    if (tskOldTask != null)
+                    Task tskOld = Interlocked.Exchange(ref _tskUpdateCharacterInfo, null);
+                    if (tskOld?.IsCompleted == false)
                     {
                         try
                         {
-                            await tskOldTask.ConfigureAwait(false);
+                            await tskOld.ConfigureAwait(false);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            //swallow this
+                        }
+                    }
+                    Task tskNew = Task.Run(() => DoUpdateCharacterInfo(objToken), objToken);
+                    if (Interlocked.CompareExchange(ref _tskUpdateCharacterInfo, tskNew, null) != null)
+                    {
+                        Interlocked.CompareExchange(ref _objUpdateCharacterInfoCancellationTokenSource, null, objNewSource);
+                        try
+                        {
+                            objNewSource.Cancel(false);
+                        }
+                        finally
+                        {
+                            objNewSource.Dispose();
+                        }
+                        try
+                        {
+                            await tskNew.ConfigureAwait(false);
                         }
                         catch (OperationCanceledException)
                         {
@@ -8777,7 +8797,7 @@ namespace Chummer
                         }
                     }
 
-                    return tskNewTask;
+                    return tskNew;
                 }
                 finally
                 {
@@ -8790,8 +8810,16 @@ namespace Chummer
             }
         }
 
-        public bool IsCharacterUpdateRequested => _objUpdateCharacterInfoSemaphoreSlim.CurrentCount == 0
-                                                  || _tskUpdateCharacterInfo?.IsCompleted == false;
+        public bool IsCharacterUpdateRequested
+        {
+            get
+            {
+                if (_objUpdateCharacterInfoSemaphoreSlim.CurrentCount == 0)
+                    return true;
+                Task tskTemp = _tskUpdateCharacterInfo; // Need to do this in case the task gets swapped out by an interlock in between the null check and the IsCompleted check
+                return tskTemp?.IsCompleted == false;
+            }
+        }
 
         protected Task UpdateCharacterInfoTask => _tskUpdateCharacterInfo;
 

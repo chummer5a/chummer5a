@@ -369,21 +369,29 @@ namespace Chummer
             // ReSharper disable once MethodSupportsCancellation
             await Utils.SafeDeleteDirectoryAsync(Path.Combine(Utils.GetStartupPath, "mugshots"), token: CancellationToken.None).ConfigureAwait(false);
 
-            try
+            Task tskOld = Interlocked.Exchange(ref _tskRefresher, null);
+            if (tskOld != null)
             {
-                await _tskRefresher.ConfigureAwait(false);
+                try
+                {
+                    await tskOld.ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
             }
-            catch (OperationCanceledException)
+            tskOld = Interlocked.Exchange(ref _tskOutputGenerator, null);
+            if (tskOld != null)
             {
-                //swallow this
-            }
-            try
-            {
-                await _tskOutputGenerator.ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                //swallow this
+                try
+                {
+                    await tskOld.ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
             }
             objTempTokenSource = Interlocked.Exchange(ref _objGenericFormClosingCancellationTokenSource, null);
             if (objTempTokenSource?.IsCancellationRequested == false)
@@ -681,10 +689,11 @@ namespace Chummer
                 throw;
             }
 
+            Task tskOld = Interlocked.Exchange(ref _tskRefresher, null);
             try
             {
-                if (_tskRefresher?.IsCompleted == false)
-                    await _tskRefresher.ConfigureAwait(false);
+                if (tskOld?.IsCompleted == false)
+                    await tskOld.ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -697,7 +706,26 @@ namespace Chummer
                 throw;
             }
 
-            _tskRefresher = Task.Run(() => RefreshCharacterXml(objToken), objToken);
+            Task tskNew = Task.Run(() => RefreshCharacterXml(objToken), objToken);
+            if (Interlocked.CompareExchange(ref _tskRefresher, tskNew, null) != null)
+            {
+                try
+                {
+                    objNewSource.Cancel(false);
+                }
+                finally
+                {
+                    objNewSource.Dispose();
+                }
+                try
+                {
+                    await tskNew.ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
+            }
         }
 
         /// <summary>
@@ -726,10 +754,11 @@ namespace Chummer
                 throw;
             }
 
+            Task tskOld = Interlocked.Exchange(ref _tskOutputGenerator, null);
             try
             {
-                if (_tskOutputGenerator?.IsCompleted == false)
-                    await _tskOutputGenerator.ConfigureAwait(false);
+                if (tskOld?.IsCompleted == false)
+                    await tskOld.ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -742,7 +771,26 @@ namespace Chummer
                 throw;
             }
 
-            _tskOutputGenerator = Task.Run(() => AsyncGenerateOutput(objToken), objToken);
+            Task tskNew = Task.Run(() => AsyncGenerateOutput(objToken), objToken);
+            if (Interlocked.CompareExchange(ref _tskOutputGenerator, tskNew, null) != null)
+            {
+                try
+                {
+                    objNewSource.Cancel(false);
+                }
+                finally
+                {
+                    objNewSource.Dispose();
+                }
+                try
+                {
+                    await tskNew.ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
+            }
         }
 
         /// <summary>

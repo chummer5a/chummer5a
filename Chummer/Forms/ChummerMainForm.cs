@@ -1256,15 +1256,17 @@ namespace Chummer
                     }
                 }
 
+                Task tskOld;
                 try
                 {
-                    if (_tskVersionUpdate != null)
+                    tskOld = Interlocked.Exchange(ref _tskVersionUpdate, null);
+                    if (tskOld != null)
                     {
-                        while (!_tskVersionUpdate.IsCompleted)
+                        while (!tskOld.IsCompleted)
                             // ReSharper disable once MethodSupportsCancellation
                             Utils.SafeSleep(token);
-                        if (_tskVersionUpdate.Exception != null)
-                            throw _tskVersionUpdate.Exception;
+                        if (tskOld.Exception != null)
+                            throw tskOld.Exception;
                     }
                 }
                 catch (OperationCanceledException)
@@ -1286,7 +1288,7 @@ namespace Chummer
                     throw;
                 }
 
-                _tskVersionUpdate = Task.Run(async () =>
+                Task tskNew = Task.Run(async () =>
                 {
                     while (true)
                     {
@@ -1327,6 +1329,26 @@ namespace Chummer
                     }
                     // ReSharper disable once FunctionNeverReturns
                 }, objNewToken);
+                if (Interlocked.CompareExchange(ref _tskVersionUpdate, tskNew, null) != null)
+                {
+                    Interlocked.CompareExchange(ref _objVersionUpdaterCancellationTokenSource, null, objNewSource);
+                    try
+                    {
+                        objNewSource.Cancel(false);
+                    }
+                    finally
+                    {
+                        objNewSource.Dispose();
+                    }
+                    try
+                    {
+                        await tskNew.ConfigureAwait(false);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        //swallow this
+                    }
+                }
             }
             finally
             {
@@ -2526,13 +2548,17 @@ namespace Chummer
                 objTemp.Dispose();
             }
 
-            try
+            Task tskOld = Interlocked.Exchange(ref _tskVersionUpdate, null);
+            if (tskOld != null)
             {
-                await _tskVersionUpdate;
-            }
-            catch (OperationCanceledException)
-            {
-                //swallow this
+                try
+                {
+                    await tskOld;
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
             }
 #endif
             for (int i = await _lstOpenCharacterEditorForms.GetCountAsync(CancellationToken.None).ConfigureAwait(false) - 1; i >= 0; --i)

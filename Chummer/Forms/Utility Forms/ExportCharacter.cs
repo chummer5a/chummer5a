@@ -267,22 +267,30 @@ namespace Chummer
                 await objInnerLocker.DisposeAsync().ConfigureAwait(false);
             }
 
-            try
+            Task tskOld = Interlocked.Exchange(ref _tskXmlGenerator, null);
+            if (tskOld != null)
             {
-                await _tskXmlGenerator.ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                // Swallow this
+                try
+                {
+                    await tskOld.ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    // Swallow this
+                }
             }
 
-            try
+            tskOld = Interlocked.Exchange(ref _tskCharacterXmlGenerator, null);
+            if (tskOld != null)
             {
-                await _tskCharacterXmlGenerator.ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                // Swallow this
+                try
+                {
+                    await tskOld.ConfigureAwait(false);
+                }
+                catch (OperationCanceledException)
+                {
+                    // Swallow this
+                }
             }
 
             _objGenericFormClosingCancellationTokenSource?.Cancel(false);
@@ -442,10 +450,11 @@ namespace Chummer
                                     throw;
                                 }
 
+                                Task tskOld = Interlocked.Exchange(ref _tskXmlGenerator, null);
                                 try
                                 {
-                                    if (_tskXmlGenerator?.IsCompleted == false)
-                                        await _tskXmlGenerator.ConfigureAwait(false);
+                                    if (tskOld?.IsCompleted == false)
+                                        await tskOld.ConfigureAwait(false);
                                 }
                                 catch (OperationCanceledException)
                                 {
@@ -458,9 +467,29 @@ namespace Chummer
                                     throw;
                                 }
 
-                                _tskXmlGenerator = _strXslt == "JSON"
+                                Task tskNew = _strXslt == "JSON"
                                     ? Task.Run(() => GenerateJson(objToken), objToken)
                                     : Task.Run(() => GenerateXml(objToken), objToken);
+                                if (Interlocked.CompareExchange(ref _tskXmlGenerator, tskNew, null) != null)
+                                {
+                                    Interlocked.CompareExchange(ref _objXmlGeneratorCancellationTokenSource, null, objNewSource);
+                                    try
+                                    {
+                                        objNewSource.Cancel(false);
+                                    }
+                                    finally
+                                    {
+                                        objNewSource.Dispose();
+                                    }
+                                    try
+                                    {
+                                        await tskNew.ConfigureAwait(false);
+                                    }
+                                    catch (OperationCanceledException)
+                                    {
+                                        //swallow this
+                                    }
+                                }
                             }
                         }
                         finally
@@ -494,10 +523,11 @@ namespace Chummer
                         throw;
                     }
 
+                    Task tskOld = Interlocked.Exchange(ref _tskCharacterXmlGenerator, null);
                     try
                     {
-                        if (_tskCharacterXmlGenerator?.IsCompleted == false)
-                            await _tskCharacterXmlGenerator.ConfigureAwait(false);
+                        if (tskOld?.IsCompleted == false)
+                            await tskOld.ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {
@@ -510,7 +540,27 @@ namespace Chummer
                         throw;
                     }
 
-                    _tskCharacterXmlGenerator = Task.Run(() => GenerateCharacterXml(objToken), objToken);
+                    Task tskNew = Task.Run(() => GenerateCharacterXml(objToken), objToken);
+                    if (Interlocked.CompareExchange(ref _tskCharacterXmlGenerator, tskNew, null) != null)
+                    {
+                        Interlocked.CompareExchange(ref _objCharacterXmlGeneratorCancellationTokenSource, null, objNewSource);
+                        try
+                        {
+                            objNewSource.Cancel(false);
+                        }
+                        finally
+                        {
+                            objNewSource.Dispose();
+                        }
+                        try
+                        {
+                            await tskNew.ConfigureAwait(false);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            //swallow this
+                        }
+                    }
                 }
             }
         }

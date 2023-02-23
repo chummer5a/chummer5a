@@ -593,7 +593,22 @@ namespace Chummer
                 objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
-                _tskRunningDownloadTask = null;
+                Task<string> tskOld = Interlocked.Exchange(ref _tskRunningDownloadTask, null);
+                if (tskOld != null)
+                {
+                    try
+                    {
+                        if (blnSync)
+                            Utils.SafelyRunSynchronously(() => tskOld, token);
+                        else
+                            await tskOld.ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        Interlocked.CompareExchange(ref _tskRunningDownloadTask, tskOld, null);
+                        throw;
+                    }
+                }
                 string strErrorText = string.Empty;
                 XPathNavigator xmlSourceNode;
                 if (!File.Exists(strFile))
