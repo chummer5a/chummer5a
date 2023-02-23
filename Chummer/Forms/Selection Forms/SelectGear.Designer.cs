@@ -785,6 +785,7 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectGear";
             this.Text = "Select Gear";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SelectGear_Closing);
             this.Load += new System.EventHandler(this.SelectGear_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudRating)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudGearQty)).EndInit();
