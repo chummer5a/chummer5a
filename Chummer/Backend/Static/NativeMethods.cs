@@ -23,6 +23,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Windows.Forms;
 
 namespace Chummer
 {
@@ -542,6 +543,8 @@ namespace Chummer
             Continue = 10
         }
 
+        internal static readonly string[] DefaultSystemString = { "OK", "Cancel", "Abort", "Retry", "Ignore", "Yes", "No", "Close", "Help", "TryAgain", "Continue" };
+
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)]
         internal static extern IntPtr MB_GetString(int strId);
@@ -554,7 +557,14 @@ namespace Chummer
         {
             if (intSystemStringId < 0 || intSystemStringId > 10)
                 throw new ArgumentOutOfRangeException(nameof(intSystemStringId));
-            return Marshal.PtrToStringAuto(MB_GetString(intSystemStringId));
+            try
+            {
+                return Marshal.PtrToStringAuto(MB_GetString(intSystemStringId));
+            } // MB_GetString is not implemented in WINE, so this is a workaround
+            catch (System.EntryPointNotFoundException e)
+            {
+                return DefaultSystemString[intSystemStringId];
+            }
         }
 
         /// <summary>
@@ -563,7 +573,14 @@ namespace Chummer
         /// <param name="eSystemStringId">Id of the system string to use.</param>
         internal static string GetSystemString(SystemString eSystemStringId)
         {
-            return Marshal.PtrToStringAuto(MB_GetString((int)eSystemStringId));
+            try
+            {
+                return Marshal.PtrToStringAuto(MB_GetString((int)eSystemStringId));
+            } // MB_GetString is not implemented in WINE, so this is a workaround
+            catch (System.EntryPointNotFoundException e)
+            {
+                return DefaultSystemString[(int)eSystemStringId];
+            }
         }
 
         internal enum SHSTOCKICONID : uint
@@ -769,7 +786,7 @@ namespace Chummer
             /// <summary>High definition DVD media in the HD DVD format.</summary>
             SIID_MEDIAHDDVD = 89,
 
-            /// <summary>High definition DVD media in the Blu-ray Disc™ format.</summary>
+            /// <summary>High definition DVD media in the Blu-ray Discâ„¢ format.</summary>
             SIID_MEDIABLURAY = 90,
 
             /// <summary>Video CD (VCD) media.</summary>
@@ -901,7 +918,14 @@ namespace Chummer
                 cbSize = (uint)Marshal.SizeOf(typeof(SHSTOCKICONINFO))
             };
             Marshal.ThrowExceptionForHR(SHGetStockIconInfo(eIconId, SHGSI.SHGSI_ICON, ref sii));
-            return Icon.FromHandle(sii.hIcon);
+            try
+            {
+                return Icon.FromHandle(sii.hIcon);
+            } // However, Icon.FromHandle is semi-stub in WINE so here is a backup.
+            catch (System.ArgumentException e)
+            {
+                return SystemIcons.Exclamation;
+            }
         }
     }
 }
