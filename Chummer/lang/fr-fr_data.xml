@@ -32,7 +32,7 @@
         <id>31c68476-6328-476a-ae8a-94f65d505a04</id>
         <name>Clothing</name>
         <translate>Vêtements</translate>
-        <altpage>439</altpage>
+        <altpage>438</altpage>
       </armor>
       <armor>
         <id>5a650844-8f24-48e7-829f-0443d9ff5cf7</id>
@@ -86,541 +86,541 @@
         <id>ef42a5ce-3423-4018-b84f-5cc84238ccaf</id>
         <name>Armanté Suit</name>
         <translate>Costume Armanté</translate>
-        <altpage>57</altpage>
+        <altpage>77</altpage>
       </armor>
       <armor>
         <id>d2d13b9e-dcc9-4427-96e5-65348f4f2766</id>
         <name>Armanté Dress</name>
         <translate>Robe Armanté</translate>
-        <altpage>57</altpage>
+        <altpage>77</altpage>
       </armor>
       <armor>
         <id>e95b254f-c95d-41c4-b618-7c68c3456112</id>
         <name>Mortimer of London: Berwick Suit</name>
         <translate>Mortimer of London : Costume Berwick</translate>
-        <altpage>58</altpage>
+        <altpage>78</altpage>
       </armor>
       <armor>
         <id>998a55b0-2307-45db-99fc-ae2d1501f6dc</id>
         <name>Mortimer of London: Berwick Dress</name>
         <translate>Mortimer of London : Robe Berwick</translate>
-        <altpage>58</altpage>
+        <altpage>78</altpage>
       </armor>
       <armor>
         <id>39a446e4-694a-44e2-bc47-bbfe722c7c68</id>
         <name>Mortimer of London: Crimson Sky Suit</name>
         <translate>Mortimer of London : Costume Crimson Sky</translate>
-        <altpage>58</altpage>
+        <altpage>78</altpage>
       </armor>
       <armor>
         <id>328fb32e-9c69-49ea-a15d-aa50dd169209</id>
         <name>Mortimer of London: Summit Suit</name>
         <translate>Mortimer of London : Costume Summit</translate>
-        <altpage>58</altpage>
+        <altpage>78</altpage>
       </armor>
       <armor>
         <id>de7aa792-a274-46dc-a89a-970d08afa814</id>
         <name>Mortimer of London: Summit Dress</name>
         <translate>Mortimer of London : Robe Summit</translate>
-        <altpage>58</altpage>
+        <altpage>78</altpage>
       </armor>
       <armor>
         <id>446ec9ad-9a52-46fe-8f27-873a51ef6291</id>
         <name>Mortimer of London: Greatcoat Coat</name>
         <translate>Mortimer of London : Manteau Greatcoat</translate>
-        <altpage>58</altpage>
+        <altpage>78</altpage>
       </armor>
       <armor>
         <id>994c7cfb-54a1-4a47-8ca5-9d5381ba2994</id>
         <name>Mortimer of London: Ulysses Coat</name>
         <translate>Mortimer of London : Manteau Ulysses</translate>
-        <altpage>58</altpage>
+        <altpage>78</altpage>
       </armor>
       <armor>
         <id>dceda713-a138-4161-8bd2-b909ffed7f85</id>
         <name>Mortimer of London: Argentum Coat</name>
         <translate>Mortimer of London : Manteau Argentum</translate>
-        <altpage>58</altpage>
+        <altpage>78</altpage>
       </armor>
       <armor>
         <id>bedcc69e-1b7b-44bf-b916-22821696c3b0</id>
         <name>Vashon Island: Ace of Cups</name>
-        <translate>Vashon Island : As de Coupe</translate>
-        <altpage>58</altpage>
+        <translate>Vashon Island : Ace of Cups</translate>
+        <altpage>80</altpage>
       </armor>
       <armor>
         <id>4b2502ef-03e4-4cf5-b8f5-375b7aa4ddb9</id>
         <name>Vashon Island: Ace of Swords</name>
-        <translate>Vashon Island : As d​'Épée</translate>
-        <altpage>58</altpage>
+        <translate>Vashon Island : Ace of Swords</translate>
+        <altpage>80</altpage>
       </armor>
       <armor>
         <id>87f81743-37ca-4030-a588-07d109a31f75</id>
         <name>Vashon Island: Ace of Wands</name>
-        <translate>Vashon Island : As de Bâton</translate>
-        <altpage>58</altpage>
+        <translate>Vashon Island : Ace of Wands</translate>
+        <altpage>80</altpage>
       </armor>
       <armor>
         <id>cf582ec4-0e5d-4ddb-a38e-4c6be954c514</id>
         <name>Vashon Island: Ace of Coins</name>
-        <translate>Vashon Island : As de Pièce</translate>
-        <altpage>58</altpage>
+        <translate>Vashon Island : Ace of Coins</translate>
+        <altpage>80</altpage>
       </armor>
       <armor>
         <id>00ca9c50-383c-47ed-9347-b7733d62c3bd</id>
         <name>Vashon Island: Ace of Spades</name>
-        <translate>Vashon Island : As de Pique</translate>
-        <altpage>58</altpage>
+        <translate>Vashon Island : Ace of Spades</translate>
+        <altpage>80</altpage>
       </armor>
       <armor>
         <id>f12794c9-3600-4fc6-aeae-748eb3b324a0</id>
         <name>Vashon Island: Ace of Clubs</name>
-        <translate>Vashon Island : As de Trèfle</translate>
-        <altpage>58</altpage>
+        <translate>Vashon Island : Ace of Clubs</translate>
+        <altpage>80</altpage>
       </armor>
       <armor>
         <id>7d046fdf-5c71-462d-bd51-e6ed718dd4fb</id>
         <name>Vashon Island: Ace of Hearts</name>
-        <translate>Vashon Island : As de Coeur</translate>
-        <altpage>58</altpage>
+        <translate>Vashon Island : Ace of Hearts</translate>
+        <altpage>80</altpage>
       </armor>
       <armor>
         <id>f90b52b6-1a4e-400f-b32f-9af5d7d932cd</id>
         <name>Vashon Island: Ace of Diamonds</name>
-        <translate>Vashon Island : As de Carreau</translate>
-        <altpage>58</altpage>
+        <translate>Vashon Island : Ace of Diamonds</translate>
+        <altpage>80</altpage>
       </armor>
       <armor>
         <id>164ad072-4e3a-4398-9d43-b47d9ee9083b</id>
         <name>Vashon Island: Steampunk</name>
-        <translate>Vashon Island : Costume Steampunk</translate>
-        <altpage>58</altpage>
+        <translate>Vashon Island : Steampunk</translate>
+        <altpage>80</altpage>
       </armor>
       <armor>
         <id>6db86bf0-0d3f-4e51-88cb-867b7247dbfb</id>
         <name>Vashon Island: Synergist Business Line</name>
-        <translate>Vashon Island : Costume Synergist Business</translate>
-        <altpage>58</altpage>
+        <translate>Vashon Island : Synergist Business Line</translate>
+        <altpage>80</altpage>
       </armor>
       <armor>
         <id>cb1e1f7e-a711-44a7-8ed7-a8fc50802c62</id>
         <name>Vashon Island: Synergist Business Line Longcoat</name>
-        <translate>Vashon Island : Manteau long Synergist Business</translate>
-        <altpage>58</altpage>
+        <translate>Vashon Island : Manteau long Synergist Business Line</translate>
+        <altpage>80</altpage>
       </armor>
       <armor>
         <id>fc8fd2e8-4856-4830-b241-a5128a08f902</id>
         <name>Vashon Island: Sleeping Tiger</name>
-        <translate>Vashon Island : Costume Sleeping Tiger</translate>
-        <altpage>58</altpage>
+        <translate>Vashon Island : Sleeping Tiger</translate>
+        <altpage>80</altpage>
       </armor>
       <armor>
         <id>5341cfd0-5cd7-49d5-8a95-0266355f391a</id>
         <name>Zoé: Executive Suite</name>
-        <translate>Zoé: Costume élégant</translate>
-        <altpage>61</altpage>
+        <translate>Zoé : Executive Suite</translate>
+        <altpage>81</altpage>
       </armor>
       <armor>
         <id>30d98329-8e2b-46f4-bf2d-d36a2b5fa702</id>
         <name>Zoé: Heritage 4</name>
-        <translate>Zoé: Héritage 4</translate>
-        <altpage>61</altpage>
+        <translate>Zoé : Heritage 4</translate>
+        <altpage>81</altpage>
       </armor>
       <armor>
         <id>7863f434-df16-46ab-9aeb-eba1d4e9f036</id>
         <name>Zoé: Heritage 6</name>
-        <translate>Zoé: Héritage 6</translate>
-        <altpage>61</altpage>
+        <translate>Zoé : Heritage 6</translate>
+        <altpage>81</altpage>
       </armor>
       <armor>
         <id>cd5144e6-cad3-45ba-85c1-fb5edf2a8074</id>
         <name>Zoé: Heritage 8</name>
-        <translate>Zoé: Héritage 8</translate>
-        <altpage>61</altpage>
+        <translate>Zoé : Heritage 8</translate>
+        <altpage>81</altpage>
       </armor>
       <armor>
         <id>35598cd3-17cb-4d9e-b02f-3f5b00f1f140</id>
         <name>Zoé: Heritage 10</name>
-        <translate>Zoé: Héritage 10</translate>
-        <altpage>61</altpage>
+        <translate>Zoé : Heritage 10</translate>
+        <altpage>81</altpage>
       </armor>
       <armor>
         <id>d4804f1b-4443-4e97-a7d2-9c1659732c6b</id>
         <name>Zoé: Heritage 12</name>
-        <translate>Zoé: Héritage 12</translate>
-        <altpage>61</altpage>
+        <translate>Zoé : Heritage 12</translate>
+        <altpage>81</altpage>
       </armor>
       <armor translated="True">
         <id>1bb248fd-7a8f-4e5c-8aea-222546e70282</id>
         <name>Zoé: Nightshade/Moonsilver</name>
-        <translate>Zoé: Nightshade/Moonsilver</translate>
-        <altpage>62</altpage>
+        <translate>Zoé : Nightshade / Moonsilver</translate>
+        <altpage>81</altpage>
       </armor>
       <armor translated="True">
         <id>739b029d-b2a0-48cb-ac2e-51636fc495c2</id>
         <name>Zoé: Second Skin</name>
-        <translate>Zoé: Seconde peau</translate>
-        <altpage>63</altpage>
+        <translate>Zoé : Second Skin</translate>
+        <altpage>81</altpage>
       </armor>
       <armor>
         <id>90b0ab96-661b-417c-9933-8113ab6d52d2</id>
         <name>Ares Victory: Globetrotter Jacket</name>
         <translate>Ares Victory : Veste Globetrotter</translate>
-        <altpage>63</altpage>
+        <altpage>82</altpage>
       </armor>
       <armor>
         <id>21c8ae9d-3d08-4908-814f-ae195e4ea03d</id>
         <name>Ares Victory: Globetrotter Vest</name>
         <translate>Ares Victory : Gilet Globetrotter</translate>
-        <altpage>63</altpage>
+        <altpage>82</altpage>
       </armor>
       <armor>
         <id>2de9a781-0b44-43a4-bfdf-2ca3c1e90bc0</id>
         <name>Ares Victory: Globetrotter Clothing</name>
         <translate>Ares Victory : Vêtements Globetrotter</translate>
-        <altpage>63</altpage>
+        <altpage>82</altpage>
       </armor>
       <armor>
         <id>401891e4-293c-4308-bd95-bdfb1eb08a72</id>
         <name>Ares Victory: Wild Hunt</name>
-        <translate>Ares Victory : Chasse sauvage</translate>
-        <altpage>63</altpage>
+        <translate>Ares Victory : Wild Hunt</translate>
+        <altpage>82</altpage>
       </armor>
       <armor>
         <id>3d0f09b9-2e73-4c10-9d44-184395be7aa2</id>
         <name>Ares Victory: Industrious</name>
-        <translate>Ares Victory : Industriel</translate>
-        <altpage>64</altpage>
+        <translate>Ares Victory : Industrious</translate>
+        <altpage>82</altpage>
       </armor>
       <armor>
         <id>a71e62ca-bf6f-43d0-bacf-454908d92fbb</id>
         <name>Ares Victory: Big Game Hunter</name>
-        <translate>Ares Victory : Chasseur de fauve</translate>
-        <altpage>64</altpage>
+        <translate>Ares Victory : Big Game Hunter</translate>
+        <altpage>82</altpage>
       </armor>
       <armor>
         <id>e6c9f9cb-fa30-445f-b6c7-b2017f63cbdd</id>
         <name>Ares Victory: Rapid Transit</name>
-        <translate>Ares Victory : Transit rapide</translate>
-        <altpage>64</altpage>
+        <translate>Ares Victory : Rapid Transit</translate>
+        <altpage>82</altpage>
       </armor>
       <armor>
         <id>790918b5-93fe-461e-8973-23d445bfaf93</id>
         <name>Form-Fitting Body Armor</name>
-        <translate>Armure corporelle moulante</translate>
-        <altpage>65</altpage>
+        <translate>Armure moulante corporelle</translate>
+        <altpage>84</altpage>
       </armor>
       <armor>
         <id>93d7a7d9-02d7-418d-a30e-e31cbb21c103</id>
         <name>Pneumatic Anti-Shock Garments</name>
-        <translate>Vêtements Pneumatiques Anti-Choc</translate>
+        <translate>Vêtements pneumatiques antichocs</translate>
         <altpage>23</altpage>
       </armor>
       <armor>
         <id>e11b7746-40e2-493a-b35d-87b0dec5f3ca</id>
         <name>Hardened Mil-Spec Battle Armor: Light</name>
-        <translate>Armure Militaire : Légère</translate>
-        <altpage>66</altpage>
+        <translate>Armure militaire renforcée légère</translate>
+        <altpage>85</altpage>
       </armor>
       <armor>
         <id>1c5ad9bc-35af-4079-b27c-f29a75ffe02f</id>
         <name>Hardened Mil-Spec Battle Armor: Medium</name>
-        <translate>Armure Militaire : Moyenne</translate>
-        <altpage>66</altpage>
+        <translate>Armure militaire renforcée moyenne</translate>
+        <altpage>85</altpage>
       </armor>
       <armor>
         <id>5542ff34-3eb7-4482-806f-d5a1cd56064f</id>
         <name>Hardened Mil-Spec Battle Armor: Heavy</name>
-        <translate>Armure Militaire : Lourd</translate>
-        <altpage>66</altpage>
+        <translate>Armure militaire renforcée lourde</translate>
+        <altpage>85</altpage>
       </armor>
       <armor>
         <id>eba04b96-c253-4fe0-8431-988d5a45d456</id>
         <name>Hardened Mil-Spec Battle Armor: Helmet</name>
-        <translate>Armure Militaire : Casque</translate>
-        <altpage>66</altpage>
+        <translate>Casque pour armure militaire renforcée</translate>
+        <altpage>85</altpage>
       </armor>
       <armor>
         <id>2c5b1217-c36a-4386-8f98-6657518ba91d</id>
         <name>Security Armor: Light</name>
-        <translate>Armure de sécurité: Légère</translate>
-        <altpage>67</altpage>
+        <translate>Armure de sécurité légère</translate>
+        <altpage>86</altpage>
       </armor>
       <armor>
         <id>20606e03-592a-4bb8-938b-3985054505fa</id>
         <name>Security Armor: Medium</name>
-        <translate>Armure de sécurité: Moyenne</translate>
-        <altpage>67</altpage>
+        <translate>Armure de sécurité moyenne</translate>
+        <altpage>86</altpage>
       </armor>
       <armor>
         <id>d553f4be-85cb-48b9-b7bd-4eea8a67418d</id>
         <name>Security Armor: Heavy</name>
-        <translate>Armure de sécurité: Lourd</translate>
-        <altpage>67</altpage>
+        <translate>Armure de sécurité lourde</translate>
+        <altpage>86</altpage>
       </armor>
       <armor>
         <id>7270c272-fef6-4b93-ae78-aa4906d9dbd5</id>
         <name>Security Armor: Helmet</name>
-        <translate>Armure de sécurité: Casque</translate>
-        <altpage>67</altpage>
+        <translate>Casque pour armure de sécurité</translate>
+        <altpage>86</altpage>
       </armor>
       <armor>
         <id>8f0c06ee-9915-415f-bf5b-26a4e3e517ea</id>
         <name>Bike Racing Armor</name>
-        <translate>Combinaison de moto</translate>
-        <altpage>68</altpage>
+        <translate>Combinaison de moto de course</translate>
+        <altpage>86</altpage>
       </armor>
       <armor>
         <id>43119c33-3c4a-4c71-acf4-71a277aa8118</id>
         <name>Bike Racing Helmet</name>
         <translate>Casque de moto</translate>
-        <altpage>68</altpage>
+        <altpage>86</altpage>
       </armor>
       <armor>
         <id>acc71656-e891-4bb2-a8ef-fb077bb5eefd</id>
         <name>Bunker Gear</name>
         <translate>Combinaison de pompier</translate>
-        <altpage>69</altpage>
+        <altpage>87</altpage>
       </armor>
       <armor>
         <id>5116893c-8102-4397-b7b8-f568f50560ab</id>
         <name>Bunker Gear Helmet</name>
         <translate>Casque de pompier</translate>
-        <altpage>69</altpage>
+        <altpage>87</altpage>
       </armor>
       <armor>
         <id>4cf22984-065a-4959-ab6c-2bf1b826f493</id>
         <name>Riot Control Armor</name>
         <translate>Armure anti-émeutes</translate>
-        <altpage>69</altpage>
+        <altpage>87</altpage>
       </armor>
       <armor>
         <id>9c03e0c2-251a-496b-902b-d0c6743568fd</id>
         <name>Riot Control Helmet</name>
         <translate>Casque anti-émeutes</translate>
-        <altpage>69</altpage>
+        <altpage>87</altpage>
       </armor>
       <armor>
         <id>c6b7ed25-c5ff-464c-a6e1-776d9cdb7ac7</id>
         <name>SWAT Armor</name>
         <translate>Armure SWAT</translate>
-        <altpage>70</altpage>
+        <altpage>88</altpage>
       </armor>
       <armor>
         <id>8408b3e7-87ff-4b6e-bfdc-19433ba356da</id>
         <name>SWAT Helmet</name>
         <translate>Casque SWAT</translate>
-        <altpage>70</altpage>
+        <altpage>88</altpage>
       </armor>
       <armor>
         <id>0997c43e-d59b-433f-b213-4de1cc5ab83a</id>
         <name>Securetech PPP: Arms Kit</name>
-        <translate>SecureTech PPP : Bras</translate>
-        <altpage>70</altpage>
+        <translate>Système SecureTech PPP pour bras</translate>
+        <altpage>88</altpage>
       </armor>
       <armor>
         <id>9bf19d62-ff32-49df-8e70-f1b1f8e8d769</id>
         <name>Securetech PPP: Legs Kit</name>
-        <translate>SecureTech PPP : Cuisses</translate>
-        <altpage>70</altpage>
+        <translate>Système SecureTech PPP  jambes</translate>
+        <altpage>88</altpage>
       </armor>
       <armor>
         <id>f3e262d5-c6ec-4e2e-9081-21d160d8c21b</id>
         <name>Securetech PPP: Vitals Kit</name>
-        <translate>SecureTech PPP : Vitals</translate>
-        <altpage>70</altpage>
+        <translate>Système SecureTech PPP pour organes vitaux</translate>
+        <altpage>88</altpage>
       </armor>
       <armor>
         <id>b4a000b6-b256-48c1-a008-541eb13acf4b</id>
         <name>Body Armor Bag</name>
         <translate>Armure corporelle en sac</translate>
-        <altpage>70</altpage>
+        <altpage>88</altpage>
       </armor>
       <armor>
         <id>3134bbd7-350b-4d10-8902-25cb156e094f</id>
         <name>Chain Mail</name>
         <translate>Cotte de mailles</translate>
-        <altpage>71</altpage>
+        <altpage>89</altpage>
       </armor>
       <armor>
         <id>deef9bf9-b4a5-4084-baea-98045cdb4389</id>
         <name>Padded Leather</name>
-        <translate>Cuir rembourré</translate>
-        <altpage>72</altpage>
+        <translate>Armure rembourrée en cuir</translate>
+        <altpage>89</altpage>
       </armor>
       <armor translated="True">
         <id>d90a8823-7387-4c50-bc47-3d63f0ffd543</id>
         <name>Ares FlaShield</name>
-        <translate>Bouclier flash Ares</translate>
-        <altpage>72</altpage>
+        <translate>Ares FlaShield</translate>
+        <altpage>89</altpage>
       </armor>
       <armor>
         <id>31675672-3476-4a2f-8acf-605702ae4c66</id>
         <name>Murder Armor</name>
-        <translate>Armure du mort</translate>
-        <altpage>72</altpage>
+        <translate>Armure macabre</translate>
+        <altpage>90</altpage>
       </armor>
       <armor>
         <id>1c5f484a-996c-4518-bf23-677a506b2ea5</id>
         <name>Forearm Guards</name>
         <translate>Protections d​'avant-bras</translate>
-        <altpage>73</altpage>
+        <altpage>90</altpage>
       </armor>
       <armor>
         <id>9f88a210-9ec6-4fc5-ad91-ffb7e7051447</id>
         <name>Ballistic Mask</name>
         <translate>Masque balistique</translate>
-        <altpage>74</altpage>
+        <altpage>91</altpage>
       </armor>
       <armor>
         <id>3b4717da-bdbf-4ca6-8399-85399afeafa6</id>
         <name>Ghillie Suit</name>
-        <translate>Combinaison de camouflage</translate>
-        <altpage>75</altpage>
+        <translate>Tenue Ghillie</translate>
+        <altpage>91</altpage>
       </armor>
       <armor>
         <id>54ce4431-5cbe-461b-bd52-16e9236f0694</id>
         <name>Ares Armored Survivalist</name>
-        <translate>Armure Ares de survivaliste</translate>
-        <altpage>75</altpage>
+        <translate>Ares Armored Survivalist</translate>
+        <altpage>91</altpage>
       </armor>
       <armor>
         <id>984a0c2e-d3e1-4137-bbc7-8a7f9009eac4</id>
         <name>Desert Suit</name>
-        <translate>Combinaison désertique</translate>
-        <altpage>75</altpage>
+        <translate>Tenue désert</translate>
+        <altpage>92</altpage>
       </armor>
       <armor>
         <id>541acec2-bd2f-4684-b0f8-c85bb45d1e8d</id>
         <name>Snake Mesh Socks</name>
-        <translate>Chaussette anti-serpent</translate>
-        <altpage>76</altpage>
+        <translate>Chaussette anti-serpents</translate>
+        <altpage>93</altpage>
       </armor>
       <armor>
         <id>a13859be-0889-4554-84b4-7f62a513233e</id>
         <name>Coldsuit</name>
-        <translate>Combinaison anti-Froid</translate>
-        <altpage>76</altpage>
+        <translate>Combinaison contre le froid</translate>
+        <altpage>93</altpage>
       </armor>
       <armor>
         <id>fa5c069b-416c-4938-adf5-62e155455161</id>
         <name>Polar Survival Suit</name>
         <translate>Combinaison de survie polaire</translate>
-        <altpage>76</altpage>
+        <altpage>93</altpage>
       </armor>
       <armor>
         <id>28c1d806-5db7-4d22-8ce2-66bc8778a29b</id>
         <name>Ares Arctic Forces Suit</name>
-        <translate>Armure Ares Forces Artiques</translate>
-        <altpage>77</altpage>
+        <translate>Combinaison Ares Arctic Forces</translate>
+        <altpage>93</altpage>
       </armor>
       <armor>
         <id>e76e2b43-e81e-49df-90a6-6f1a466a4009</id>
         <name>Ares Armored Coldsuit</name>
-        <translate>Combinaison anti-Froid renforcée Ares</translate>
-        <altpage>78</altpage>
+        <translate>Combinaison contre le froid blindée Ares</translate>
+        <altpage>94</altpage>
       </armor>
       <armor>
         <id>1b1c717f-740a-41e0-b0fc-605e38575c91</id>
         <name>Ares Polar Sneak Suit</name>
-        <translate>Combinaison polaire furtive Ares</translate>
-        <altpage>78</altpage>
+        <translate>Combinaison de camouflage polaire Ares</translate>
+        <altpage>94</altpage>
       </armor>
       <armor>
         <id>025f360f-f143-46a5-bfc7-e4e7ec5af37c</id>
         <name>Enclosed Breathing Helmet</name>
-        <translate>Casque respiratoire clos</translate>
-        <altpage>79</altpage>
+        <translate>Casque intégral de plongée</translate>
+        <altpage>94</altpage>
       </armor>
       <armor>
         <id>feb98de4-5e5b-473f-a31a-a73ca36d0e1d</id>
         <name>Full Face Mask</name>
-        <translate>Masque complet</translate>
-        <altpage>79</altpage>
+        <translate>Masque de plongée</translate>
+        <altpage>95</altpage>
       </armor>
       <armor>
         <id>b53bd60a-2687-4554-ae10-8309ee3c2991</id>
         <name>Drysuit</name>
-        <translate>Combinaison étanche</translate>
-        <altpage>79</altpage>
+        <translate>Combinaison de plongée étanche</translate>
+        <altpage>95</altpage>
       </armor>
       <armor>
         <id>f2aab6fa-645a-4d39-a612-91d3ee9e6bce</id>
         <name>Diving Armor</name>
         <translate>Armure de plongée</translate>
-        <altpage>80</altpage>
+        <altpage>95</altpage>
       </armor>
       <armor>
         <id>321a8d8f-5bbd-46cf-b6f9-3c79e662c311</id>
         <name>Arctic Diving Suit</name>
-        <translate>Armure de plongée Arctique</translate>
-        <altpage>80</altpage>
+        <translate>Combinaison de plongeur arctique</translate>
+        <altpage>95</altpage>
       </armor>
       <armor>
         <id>81fdc8a3-7106-4b08-a1f4-c72140bc90fc</id>
         <name>Evo HEL Suit</name>
         <translate>Combinaison Evo HEL</translate>
-        <altpage>81</altpage>
+        <altpage>96</altpage>
       </armor>
       <armor>
         <id>ff733b15-c489-467d-b8cf-ac5e24639ed3</id>
         <name>Spacesuit</name>
-        <translate>Scaphandre spatial</translate>
-        <altpage>81</altpage>
+        <translate>Combinaison spatiale</translate>
+        <altpage>96</altpage>
       </armor>
       <armor>
         <id>ed958de6-17e6-47e6-8374-815ae2cba02a</id>
         <name>Security Spacesuit</name>
-        <translate>Scaphandre spatial de sécurité</translate>
-        <altpage>81</altpage>
+        <translate>Combinaison spatiale de sécurité</translate>
+        <altpage>96</altpage>
       </armor>
       <armor>
         <id>5f6058e9-d026-492e-8f3f-0da6a54d90d6</id>
         <name>Magnetic Boots</name>
         <translate>Bottes magnétiques</translate>
-        <altpage>83</altpage>
+        <altpage>97</altpage>
       </armor>
       <armor>
         <id>6189e85c-e944-40bf-bad7-4e2c2eb881cd</id>
         <name>Survival Bubble, Rating 1</name>
-        <translate>Bulle de Survie, indice 1</translate>
-        <altpage>83</altpage>
+        <translate>Bulle de Survie, Indice 1</translate>
+        <altpage>98</altpage>
       </armor>
       <armor>
         <id>05c38a2d-237d-49ba-94b8-e549bdfb5f84</id>
         <name>Survival Bubble, Rating 2</name>
-        <translate>Bulle de Survie, indice 2</translate>
-        <altpage>83</altpage>
+        <translate>Bulle de Survie, Indice 2</translate>
+        <altpage>98</altpage>
       </armor>
       <armor>
         <id>6f23a99f-40a1-41e0-ac15-f768c04beb82</id>
         <name>Survival Bubble, Rating 3</name>
-        <translate>Bulle de Survie, indice 3</translate>
-        <altpage>83</altpage>
+        <translate>Bulle de Survie, Indice 3</translate>
+        <altpage>98</altpage>
       </armor>
       <armor>
         <id>cbce4c66-d75e-4fea-8b6a-0564f5ef01c0</id>
         <name>Survival Bubble, Rating 4</name>
-        <translate>Bulle de Survie, indice 4</translate>
-        <altpage>83</altpage>
+        <translate>Bulle de Survie, Indice 4</translate>
+        <altpage>98</altpage>
       </armor>
       <armor>
         <id>6c773f91-8be3-4610-94f9-bfef1bc1c91d</id>
         <name>Survival Bubble, Rating 5</name>
-        <translate>Bulle de Survie, indice 5</translate>
-        <altpage>83</altpage>
+        <translate>Bulle de Survie, Indice 5</translate>
+        <altpage>98</altpage>
       </armor>
       <armor>
         <id>5b95ee2b-2e3c-405a-8f56-ee1d78ad4d51</id>
         <name>Survival Bubble, Rating 6</name>
-        <translate>Bulle de Survie, indice 6</translate>
-        <altpage>83</altpage>
+        <translate>Bulle de Survie, Indice 6</translate>
+        <altpage>98</altpage>
       </armor>
       <armor>
         <id>c9861472-4784-44bf-ab25-8d71c03954e6</id>
         <name>MCT EE Suit</name>
-        <translate>Uniforme MCT EE</translate>
-        <altpage>83</altpage>
+        <translate>Combinaison Mitsuhama EE</translate>
+        <altpage>98</altpage>
       </armor>
       <armor>
         <id>fd6e194b-89ea-4030-9203-87341442eadb</id>
@@ -643,14 +643,14 @@
       <armor>
         <id>608d5c68-aba1-40e5-8100-d2615a39a2f3</id>
         <name>Custom Ballistic Mask</name>
-        <translate>Masque pare-balle personnalisé</translate>
-        <altpage>74</altpage>
+        <translate>Masque balistique personnalisé</translate>
+        <altpage>91</altpage>
       </armor>
       <armor>
         <id>8c47595f-b22c-44b7-8191-a5fd04f6a07a</id>
         <name>Evo Armadillo Armored Spacesuit</name>
-        <translate>Scaphandre spécial blindé Evo Armadillo</translate>
-        <altpage>82</altpage>
+        <translate>Combinaison spatiale blindée Evo Armadillo</translate>
+        <altpage>97</altpage>
       </armor>
       <armor>
         <id>e3ab6aec-a4ef-4a04-92fe-ffca02ebd92a</id>
@@ -679,266 +679,266 @@
       <armor>
         <id>76770acb-ec35-4e8b-ba8c-f757c34ca47f</id>
         <name>One-Use Shoes</name>
-        <translate>Chaussures jetables</translate>
-        <altpage>253</altpage>
+        <translate>Chaussures à usage unique</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>7fdd5a97-2608-4f5e-b377-744b8001942e</id>
         <name>One-Use Pants</name>
-        <translate>Pantalon jetable</translate>
-        <altpage>253</altpage>
+        <translate>Pantalon à usage unique</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>cd46bf71-1cc1-4a0c-af75-60f1c91d7daf</id>
         <name>One-Use Shirt</name>
-        <translate>T-shirt jetable</translate>
-        <altpage>253</altpage>
+        <translate>Chemise à usage unique</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>d34a47eb-6f2d-449a-ac81-5a450c776c4a</id>
         <name>One-Use Skirt</name>
-        <translate>Jupe jetable</translate>
-        <altpage>253</altpage>
+        <translate>Jupe à usage unique</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>dc78601d-7171-470e-8d7d-2e772cbcbfb2</id>
         <name>Cheap Shoes</name>
-        <translate>Chaussures bon marché</translate>
-        <altpage>253</altpage>
+        <translate>Chaussures pas cher</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>024cca53-0d3a-4c89-bb73-a885b7d6111e</id>
         <name>Cheap Pants</name>
-        <translate>Pantalon bon marché</translate>
-        <altpage>253</altpage>
+        <translate>Pantalon pas cher</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>fe363b10-a801-4049-9d5b-1908c6a6b9fc</id>
         <name>Cheap Shirt</name>
-        <translate>T-shirt bon marché</translate>
-        <altpage>253</altpage>
+        <translate>Chemise pas cher</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>9a680b0f-adcc-42a1-9ab5-417f51cf6b2f</id>
         <name>Cheap Skirt</name>
-        <translate>Jupe bon marché</translate>
-        <altpage>253</altpage>
+        <translate>Jupe pas cher</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>99912fac-51df-4afb-88d1-1ff1a2c6fd2a</id>
         <name>Good Shoes</name>
-        <translate>Bonnes chaussures</translate>
-        <altpage>253</altpage>
+        <translate>Chaussures de bonne qualité</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>da996700-0e80-48a0-88fa-407828efc902</id>
         <name>Good Pants</name>
-        <translate>Bon pantalon</translate>
-        <altpage>253</altpage>
+        <translate>Pantalon de bonne qualité</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>f07da344-b605-4756-9a2e-ec6a40520d09</id>
         <name>Good Shirt</name>
-        <translate>Bon t--shirt</translate>
-        <altpage>253</altpage>
+        <translate>Chemise de bonne qualité</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>f354f55c-17c2-480b-88d2-f2b84ddd5b6f</id>
         <name>Good Skirt</name>
-        <translate>Bonne jupe</translate>
-        <altpage>253</altpage>
+        <translate>Jupe de bonne qualité</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>b7d83159-2840-4a10-985f-4ef346715c80</id>
         <name>Nice Shoes</name>
-        <translate>Chaussures sympas</translate>
-        <altpage>253</altpage>
+        <translate>Chaussures haut de gamme</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>4f17f85d-1dbb-446c-b531-56b2b12997f4</id>
         <name>Nice Pants</name>
-        <translate>Pantalon sympa</translate>
-        <altpage>253</altpage>
+        <translate>Pantalon haut de gamme</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>473a06bb-e675-439b-bf60-51849402662d</id>
         <name>Nice Shirt</name>
-        <translate>T-shirt sympa</translate>
-        <altpage>253</altpage>
+        <translate>Chemise haut de gamme</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>2665c5dd-cb7b-40f6-afc3-ea820136948b</id>
         <name>Nice Skirt</name>
-        <translate>Jupe sympa</translate>
-        <altpage>253</altpage>
+        <translate>Jupe haut de gamme</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>d0ff6dbc-e089-4ad0-88e3-79db8ff9f5b1</id>
         <name>Cheap Dress</name>
-        <translate>Robe bon marché</translate>
-        <altpage>253</altpage>
+        <translate>Robe pas cher</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>a2deaf94-855d-4d90-a711-07d590e22618</id>
         <name>Cheap Suit</name>
-        <translate>Costume bon marché</translate>
-        <altpage>253</altpage>
+        <translate>Costume pas cher</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>fdcdc666-a830-4b5c-8215-c61aae183d95</id>
         <name>Good Dress</name>
-        <translate>Bonne robe</translate>
-        <altpage>253</altpage>
+        <translate>Robe de bonne qualité</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>3a2a9343-7c56-480a-90c8-e510be2ea80f</id>
         <name>Good Suit</name>
-        <translate>Bon costume</translate>
-        <altpage>253</altpage>
+        <translate>Costume de bonne qualité</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>0f452a31-054c-48f2-9021-9b430c07301e</id>
         <name>Nice Dress</name>
-        <translate>Robe sympa</translate>
-        <altpage>253</altpage>
+        <translate>Robe haut de gamme</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>9414386d-cc22-4dd9-9a0a-ce94c79d4f09</id>
         <name>Nice Suit</name>
-        <translate>Costume sympa</translate>
-        <altpage>253</altpage>
+        <translate>Costume haut de gamme</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>7c2bb0b3-ae60-4c27-a720-561ad6953e83</id>
         <name>Tuxedo Rental</name>
-        <translate>Costard de location</translate>
-        <altpage>253</altpage>
+        <translate>Location d’un smoking</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>2b09566c-ece5-497d-bafd-600f9cec9763</id>
         <name>Hat</name>
         <translate>Chapeau</translate>
-        <altpage>253</altpage>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>ec3b8987-f7d2-470d-ab08-72325b2c6a12</id>
         <name>Ski Mask</name>
         <translate>Masque de ski</translate>
-        <altpage>253</altpage>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>040b3f4b-014c-46fa-bdf8-1a96334ecc27</id>
         <name>Coveralls</name>
         <translate>Combinaison</translate>
-        <altpage>253</altpage>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>1e440489-b800-4e5f-904b-98ef1591402b</id>
         <name>Cheap Socks</name>
-        <translate>Chaussettes bon marché</translate>
-        <altpage>253</altpage>
+        <translate>Chaussettes pas cher</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>7e13ee6d-5698-4b1e-bf93-7735bec4c0bc</id>
         <name>Cheap Undergarments</name>
-        <translate>Sous-vêtements bon marché</translate>
-        <altpage>253</altpage>
+        <translate>Sous-vêtements pas cher</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>079d6bd6-d778-4bff-a2fb-23e849e74ec4</id>
         <name>Good Socks</name>
-        <translate>Bonne chaussettes</translate>
-        <altpage>253</altpage>
+        <translate>Chaussettes de bonne qualité</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>68eabf76-7e06-41a7-8717-2fdce3be8082</id>
         <name>Good Undergarments</name>
-        <translate>Bons sous-vêtements</translate>
-        <altpage>253</altpage>
+        <translate>Sous-vêtements de bonne qualité</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>5293b8a8-32fd-4df4-ae86-6b909b952432</id>
         <name>Nice Socks</name>
-        <translate>Chaussettes sympas</translate>
-        <altpage>253</altpage>
+        <translate>Chaussettes haut de gamme</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>675b4735-227e-4395-8f62-bd9a62670474</id>
         <name>Nice Undergarments</name>
-        <translate>Sous-vêtements sympas</translate>
-        <altpage>253</altpage>
+        <translate>Sous-vêtements haut de gamme</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>bc259ccc-e96b-48b4-a3ac-0ff67b35b24f</id>
         <name>One-Use Gloves</name>
-        <translate>Gants jetables</translate>
-        <altpage>253</altpage>
+        <translate>Gants à usage unique</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>d8016291-050d-413d-8896-0ee1bc1063a6</id>
         <name>Cheap Gloves</name>
-        <translate>Gants bon marché</translate>
-        <altpage>253</altpage>
+        <translate>Gants pas cher</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>f93ceb9d-1736-4e51-b550-0275822c4d3e</id>
         <name>Cheap Watch</name>
-        <translate>Montre bon marché</translate>
-        <altpage>253</altpage>
+        <translate>Montre pas cher</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>fd904a19-c1d3-4926-90a8-697dc77ea42b</id>
         <name>Cheap Jewelry</name>
-        <translate>Verroterie</translate>
-        <altpage>253</altpage>
+        <translate>Bijou pas cher</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>feff1c2b-deab-4280-bc98-55e9b856bb42</id>
         <name>Good Gloves</name>
-        <translate>Bon gants</translate>
-        <altpage>253</altpage>
+        <translate>Gants de bonne qualité</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>86a9692a-ad7c-4c37-bd52-aac1680c91a0</id>
         <name>Good Watch</name>
-        <translate>Bonne montre</translate>
-        <altpage>253</altpage>
+        <translate>Montre de bonne qualité</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>4a2e90f7-487a-4fa2-a51d-1d9695e0f66f</id>
         <name>Good Jewelry</name>
-        <translate>Bijoux fantasie</translate>
-        <altpage>253</altpage>
+        <translate>Bijou de bonne qualité</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>e98c2113-306a-4596-abcb-46607c432cfb</id>
         <name>Nice Gloves</name>
-        <translate>Gants sympas</translate>
-        <altpage>253</altpage>
+        <translate>Gants haut de gamme</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>7e081824-e64e-4d7a-8621-eba30197362a</id>
         <name>Nice Watch</name>
-        <translate>Montre sympa</translate>
-        <altpage>253</altpage>
+        <translate>Montre haut de gamme</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>9fc5642a-1670-4907-82cb-179a441d11f0</id>
         <name>Nice Jewelry</name>
-        <translate>Bijoux classes</translate>
-        <altpage>253</altpage>
+        <translate>Bijou haut de gamme</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>f3cc02db-5049-462c-957b-75859e852408</id>
         <name>Decent Diamond Ring</name>
-        <translate>Joli diamant serti</translate>
-        <altpage>253</altpage>
+        <translate>Bague en diamant de taille normale</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>5bdb85d7-41b9-4885-a37c-fc27f6b2c2e0</id>
         <name>Large Diamond Ring</name>
-        <translate>Énorme diamant serti</translate>
-        <altpage>253</altpage>
+        <translate>Grande bague en diamant</translate>
+        <altpage>246</altpage>
       </armor>
       <armor>
         <id>beae253f-bd4f-495e-89ab-63a07ef8d82a</id>
@@ -967,7 +967,7 @@
       <armor>
         <id>b9554fe8-fc04-4746-8f5f-32d5ee9053be</id>
         <name>Ares Briefcase Shield</name>
-        <translate>Bouclier porte-documents Ares</translate>
+        <translate>Bouclier attaché-case Ares</translate>
         <altpage>136</altpage>
       </armor>
       <armor translated="True">
@@ -1165,13 +1165,13 @@
       <armor>
         <id>7f7cfaaf-d28c-4cd2-b1c2-55ece741732f</id>
         <name>Urban Explorer Daedalus: Helmet</name>
-        <translate>Urban Explorer Daedalus: Casque</translate>
+        <translate>Casque pour Urban Explorer Daedalus</translate>
         <altpage>48</altpage>
       </armor>
       <armor>
         <id>40cf0da9-29d7-4a7b-8ef0-822ba05917b7</id>
         <name>Ares Arms Bug Stomper Custom Armor</name>
-        <translate>Armure Ares Firewatch Écrase-Insectes</translate>
+        <translate>Armure Ares Bug Stomper</translate>
         <altpage>130</altpage>
       </armor>
       <armor>
@@ -1245,7 +1245,7 @@
       <mod translated="True">
         <id>9ee8e6ad-2472-485d-ae42-d1978749b456</id>
         <name>Electrochromic Clothing</name>
-        <translate>Revêtement électrochrome</translate>
+        <translate>Modification électrochrome</translate>
         <altpage>439</altpage>
       </mod>
       <mod>
@@ -1258,55 +1258,55 @@
         <id>142031f9-ab13-4dd0-a5a4-2cc4d06055ea</id>
         <name>(Synth)Leather</name>
         <translate>(Synthé)Cuir</translate>
-        <altpage>439</altpage>
+        <altpage>440</altpage>
       </mod>
       <mod>
         <id>38168e21-833e-4ab3-8e5c-186468b70ef9</id>
         <name>Custom Fit</name>
-        <translate>[Personnalisé]</translate>
-        <altpage>59</altpage>
+        <translate>Sur-mesure</translate>
+        <altpage>79</altpage>
       </mod>
       <mod>
         <id>0d74f2f6-74bf-4c7e-afdf-d44f24c3ac12</id>
         <name>Custom Fit (Stack)</name>
-        <translate>[Personnalisé (empilable)]</translate>
-        <altpage>59</altpage>
+        <translate>Sur-mesure (cumulable)</translate>
+        <altpage>79</altpage>
       </mod>
       <mod>
         <id>6a4274bb-307d-433d-a1a7-75be52eacb93</id>
         <name>Gear Access</name>
-        <translate>Accès facile</translate>
-        <altpage>59</altpage>
+        <translate>Accès à l'équipement</translate>
+        <altpage>79</altpage>
       </mod>
       <mod translated="True">
         <id>13835ff2-7b9e-47c3-9d8b-7b9a2dbe499d</id>
         <name>Newest Model</name>
-        <translate>Nouveau modèle</translate>
-        <altpage>59</altpage>
+        <translate>Dernier modèle</translate>
+        <altpage>78</altpage>
       </mod>
       <mod translated="True">
         <id>a164ac4e-4225-4d82-9785-02ffd39f6566</id>
         <name>Illuminating</name>
-        <translate>Éclairant</translate>
-        <altpage>59</altpage>
+        <translate>Éclairage</translate>
+        <altpage>78</altpage>
       </mod>
       <mod translated="True">
         <id>8be2bd6a-5fe5-4931-8d6e-9cb95a0b959f</id>
         <name>Restrictive</name>
-        <translate>Restrictif</translate>
-        <altpage>59</altpage>
+        <translate>Encombrant</translate>
+        <altpage>79</altpage>
       </mod>
       <mod translated="True">
         <id>ebabbd5f-6fd9-4b9a-9350-a251e8652b4b</id>
         <name>Padded</name>
         <translate>Rembourré</translate>
-        <altpage>59</altpage>
+        <altpage>79</altpage>
       </mod>
       <mod>
         <id>6226742c-d950-46af-af1a-fc483e14be5c</id>
         <name>Concealability</name>
         <translate>Dissimulation</translate>
-        <altpage>59</altpage>
+        <altpage>78</altpage>
       </mod>
       <mod>
         <id>480b7c5d-758b-4833-8bfd-9487e2455f7d</id>
@@ -1336,7 +1336,7 @@
         <id>0cfb049a-a1bd-4daa-96be-9468c37d9c3c</id>
         <name>Nonconductivity</name>
         <translate>Protection électrique</translate>
-        <altpage>440</altpage>
+        <altpage>439</altpage>
       </mod>
       <mod>
         <id>ba32a6e9-4e6f-47fe-8fd7-c3194a5174d6</id>
@@ -1347,229 +1347,229 @@
       <mod>
         <id>dbdaf817-9bfa-4938-a195-b53c63b53e7c</id>
         <name>Shock Frills</name>
-        <translate>Vrilles électrifiées</translate>
+        <translate>Vrilles électriques</translate>
         <altpage>440</altpage>
       </mod>
       <mod>
         <id>b3965c7d-3e19-4aad-9dc0-1ec5b62daea5</id>
         <name>Liner - Fire Resistance (4)</name>
-        <translate>Collection- Protection ignifuge (4)</translate>
+        <translate>Liner - Protection ignifuge (4)</translate>
         <altpage>439</altpage>
       </mod>
       <mod>
         <id>ca385470-fdfb-4ac2-bb4d-f88de768541b</id>
         <name>Liner - Chemical Protection (4)</name>
-        <translate>Collection- Protection chimique (4)</translate>
+        <translate>Liner - Protection chimique (4)</translate>
         <altpage>439</altpage>
       </mod>
       <mod>
         <id>a0043353-1825-42cb-94b2-ddf35b3089b5</id>
         <name>Liner - Insulation (4)</name>
-        <translate>Collection- Protection thermique (4)</translate>
+        <translate>Liner - Protection thermique (4)</translate>
         <altpage>440</altpage>
       </mod>
       <mod>
         <id>f22cd9de-78ce-4ec1-9485-932c47638f52</id>
         <name>Liner - Fire Resistance (3)</name>
-        <translate>Collection- Protection ignifuge (3)</translate>
+        <translate>Liner - Protection ignifuge (3)</translate>
         <altpage>439</altpage>
       </mod>
       <mod>
         <id>ba6e7ab8-9e19-41ea-b124-bad6c8d1a515</id>
         <name>Liner - Chemical Protection (3)</name>
-        <translate>Collection- Protection chimique (3)</translate>
+        <translate>Liner - Protection chimique (3)</translate>
         <altpage>439</altpage>
       </mod>
       <mod>
         <id>cee9f035-3668-4736-b0f2-7607d7156995</id>
         <name>Liner - Insulation (3)</name>
-        <translate>Collection- Protection thermique (3)</translate>
+        <translate>Liner - Protection thermique (3)</translate>
         <altpage>440</altpage>
       </mod>
       <mod>
         <id>8a119129-4c6f-40ab-9832-a61295ee715f</id>
         <name>Liner - Fire Resistance (2)</name>
-        <translate>Collection- Protection ignifuge (2)</translate>
+        <translate>Liner - Protection ignifuge (2)</translate>
         <altpage>439</altpage>
       </mod>
       <mod>
         <id>fed9e56c-c1b8-4c68-a16a-4bceb011bc62</id>
         <name>Liner - Chemical Protection (2)</name>
-        <translate>Collection- Protection chimique (2)</translate>
+        <translate>Liner - Protection chimique (2)</translate>
         <altpage>439</altpage>
       </mod>
       <mod>
         <id>1bff09e4-ea20-4705-ac7b-5bea4a03d925</id>
         <name>Liner - Insulation (2)</name>
-        <translate>Collection- Protection thermique (2)</translate>
+        <translate>Liner - Protection thermique (2)</translate>
         <altpage>440</altpage>
       </mod>
       <mod>
         <id>84c3dbd2-6d47-4045-a5d6-7dc926b3ff42</id>
         <name>Liner - Fire Resistance (6)</name>
-        <translate>Collection- Protection ignifuge (6)</translate>
+        <translate>Liner - Protection ignifuge (6)</translate>
         <altpage>439</altpage>
       </mod>
       <mod>
         <id>0cbf733c-1fd0-48ae-be2c-b3afe0036fd0</id>
         <name>Liner - Chemical Protection (6)</name>
-        <translate>Collection- Protection chimique (6)</translate>
+        <translate>Liner - Protection chimique (6)</translate>
         <altpage>439</altpage>
       </mod>
       <mod>
         <id>af3208a9-05b5-47bb-92a1-f3d2ea82f6f0</id>
         <name>Liner - Insulation (6)</name>
-        <translate>Collection- Protection thermique (6)</translate>
+        <translate>Liner - Protection thermique (6)</translate>
         <altpage>440</altpage>
       </mod>
       <mod>
         <id>53a61bf1-65c3-4c28-b47f-026de40973a4</id>
         <name>Rapid Transit: Elite</name>
-        <translate>Rapid Transit : Élite</translate>
-        <altpage>65</altpage>
+        <translate>Rapid Transit : Elite</translate>
+        <altpage>83</altpage>
       </mod>
       <mod>
         <id>a071b454-8a50-4c76-a162-8e086b0ec001</id>
         <name>Rapid Transit: Platinum</name>
-        <translate>Rapid Transit : Platine</translate>
-        <altpage>65</altpage>
+        <translate>Rapid Transit : Platinum</translate>
+        <altpage>83</altpage>
       </mod>
       <mod>
         <id>9a1a569f-4c0c-4291-af5b-89e1334e95b4</id>
         <name>Rapid Transit: Diamond</name>
-        <translate>Rapid Transit : Diamant</translate>
-        <altpage>65</altpage>
+        <translate>Rapid Transit : Diamond</translate>
+        <altpage>83</altpage>
       </mod>
       <mod>
         <id>a7d97d66-1f6e-4521-a283-907ca1cd7436</id>
         <name>Nightshade IR and Contacts</name>
-        <translate>Eclairant (contacts et diode)</translate>
-        <altpage>62</altpage>
+        <translate>Éclairage (infrarouge et lentilles associées)</translate>
+        <altpage>81</altpage>
       </mod>
       <mod>
         <id>8b1bc34c-4de9-4111-a5f6-bae7fa35b8af</id>
         <name>Ballistic Mask</name>
-        <translate>Masque Balistique</translate>
-        <altpage>62</altpage>
+        <translate>Masque balistique personnalisé</translate>
+        <altpage>91</altpage>
       </mod>
       <mod>
         <id>5a0965bd-759c-4e41-8c47-2b87c9de06d6</id>
         <name>Auto-Injector</name>
-        <translate>Auto injecteur</translate>
-        <altpage>84</altpage>
+        <translate>Auto-injecteur</translate>
+        <altpage>98</altpage>
       </mod>
       <mod>
         <id>1a76f859-9511-42cc-85a7-560b813f6a92</id>
         <name>Fresnel Fabric</name>
         <translate>Tissu Fresnel</translate>
-        <altpage>84</altpage>
+        <altpage>100</altpage>
       </mod>
       <mod>
         <id>6c18ff9b-7b46-4311-ac4b-a57733d01df7</id>
         <name>Pulse Weave</name>
-        <translate>Stroboscopique</translate>
-        <altpage>84</altpage>
+        <translate>Fibres pulsantes</translate>
+        <altpage>99</altpage>
       </mod>
       <mod>
         <id>13047906-3ea3-425c-a3ff-4666cb1a05f5</id>
         <name>Shock Weave</name>
-        <translate>Electrochoc</translate>
-        <altpage>84</altpage>
+        <translate>Fibres électrisées</translate>
+        <altpage>99</altpage>
       </mod>
       <mod>
         <id>c5a66977-3a0b-489f-b7e5-e30965171f8b</id>
         <name>Universal Mirror Material</name>
-        <translate>Matière réfléchissante universelle</translate>
-        <altpage>84</altpage>
+        <translate>Matériau miroir universel</translate>
+        <altpage>99</altpage>
       </mod>
       <mod>
         <id>cf8accf5-4117-4419-ab73-957489038ab9</id>
         <name>YNT Softweave Armor</name>
-        <translate>Armure souple YNT</translate>
-        <altpage>84</altpage>
+        <translate>Armure YNT Softweave</translate>
+        <altpage>98</altpage>
       </mod>
       <mod>
         <id>63f94362-9778-47a6-8317-f306b199277e</id>
         <name>Ruthenium Polymer Coating</name>
-        <translate>Revêtement en polymère de ruthénium</translate>
-        <altpage>85</altpage>
+        <translate>Revêtement en polymères de ruthénium</translate>
+        <altpage>99</altpage>
       </mod>
       <mod>
         <id>b5283cb0-3676-44d3-a7e9-dee099416295</id>
         <name>Radiation Shielding</name>
         <translate>Protection antiradiations</translate>
-        <altpage>84</altpage>
+        <altpage>99</altpage>
       </mod>
       <mod>
         <id>ed43ded4-1b2f-410a-9322-166c39306d03</id>
         <name>Gel Packs</name>
-        <translate>Packs gel</translate>
-        <altpage>85</altpage>
+        <translate>Poches de gel</translate>
+        <altpage>99</altpage>
       </mod>
       <mod>
         <id>a523fbcf-58d5-4727-9dd5-6fbe6b4acbdf</id>
         <name>Responsive Interface Gear: Armor</name>
-        <translate>RIG : Armure</translate>
-        <altpage>85</altpage>
+        <translate>Équipement à interface réactive (EIR) : Armure</translate>
+        <altpage>98</altpage>
       </mod>
       <mod>
         <id>a9c0aeb2-e7c5-4cc3-819e-f865545c7b66</id>
         <name>Responsive Interface Gear: Helmet</name>
-        <translate>RIG : Casque</translate>
-        <altpage>85</altpage>
+        <translate>Équipement à interface réactive (EIR) : Casqu</translate>
+        <altpage>98</altpage>
       </mod>
       <mod>
         <id>9e96176f-1a4d-45dd-94d4-fba00ccffcf2</id>
         <name>Pneumatic Anti-Shock Garment</name>
-        <translate>Vêtement Pneumatique Antichoc</translate>
+        <translate>Vêtements pneumatiques antichocs</translate>
         <altpage>23</altpage>
       </mod>
       <mod>
         <id>aec187e5-5eca-4f27-9181-b39991579d76</id>
         <name>Drag Handle</name>
-        <translate>Poignée de déplacement </translate>
+        <translate>Poignée de tractage</translate>
         <altpage>23</altpage>
       </mod>
       <mod>
         <id>69423033-a7f8-4b80-96c6-0c4a91cd32aa</id>
         <name>Full Body Armor: Chemical Seal</name>
-        <translate>Armure complète : Sceau chimique</translate>
-        <altpage>437</altpage>
+        <translate>Armure corporelle intégrale : isolation chimique</translate>
+        <altpage>439</altpage>
       </mod>
       <mod>
         <id>ab16b276-00b3-402e-8629-b38e2905e12f</id>
         <name>Full Body Armor: Environment Adaptation</name>
-        <translate>Armure complète : Adaptation environnementale</translate>
-        <altpage>437</altpage>
+        <translate>Armure corporelle intégrale : adaptation environnementale</translate>
+        <altpage>439</altpage>
       </mod>
       <mod>
         <id>71c20b15-de11-49eb-93fe-f4d7491283e3</id>
         <name>Full Body Armor: Helmet</name>
-        <translate>Armure complète : Casque</translate>
-        <altpage>437</altpage>
+        <translate>Armure corporelle intégrale : casque</translate>
+        <altpage>439</altpage>
       </mod>
       <mod>
         <id>812a7926-3980-4c26-9935-5f1b66abacda</id>
         <name>Urban Explorer Jumpsuit: Helmet</name>
-        <translate>Tenue d​'Urbex ; Casque</translate>
-        <altpage>437</altpage>
+        <translate>Combinaison Urban Explorer : casque</translate>
+        <altpage>439</altpage>
       </mod>
       <mod>
         <id>4e673143-6a61-4075-95c6-1950b9eda8e0</id>
         <name>Concealed Pocket</name>
-        <translate>Poche scellée</translate>
+        <translate>Poche dissimulée</translate>
         <altpage>185</altpage>
       </mod>
       <mod>
         <id>49addc2c-ee9b-4f97-9c4b-4d49259734bc</id>
         <name>Attachable Gear Access</name>
-        <translate>Porte-accessoire</translate>
+        <translate>Accès sà l'équipement</translate>
         <altpage>185</altpage>
       </mod>
       <mod>
         <id>c3ea670b-45e7-4b75-a85d-1801c91d1c8c</id>
         <name>Faraday Pocket</name>
-        <translate>Poche Faraday</translate>
+        <translate>Poche de Faraday</translate>
         <altpage>185</altpage>
       </mod>
       <mod>
