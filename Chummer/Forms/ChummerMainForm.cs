@@ -1342,7 +1342,7 @@ namespace Chummer
                     }
                     try
                     {
-                        await tskNew.ConfigureAwait(false);
+                        Utils.SafelyRunSynchronously(() => tskNew, token);
                     }
                     catch (OperationCanceledException)
                     {
