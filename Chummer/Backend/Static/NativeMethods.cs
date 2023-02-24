@@ -786,7 +786,7 @@ namespace Chummer
             /// <summary>High definition DVD media in the HD DVD format.</summary>
             SIID_MEDIAHDDVD = 89,
 
-            /// <summary>High definition DVD media in the Blu-ray Discâ„¢ format.</summary>
+            /// <summary>High definition DVD media in the Blu-ray Disc™ format.</summary>
             SIID_MEDIABLURAY = 90,
 
             /// <summary>Video CD (VCD) media.</summary>
