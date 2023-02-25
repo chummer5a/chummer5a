@@ -622,17 +622,31 @@
                 <td style="text-align: center;">
                   <xsl:if test="qualities/quality">
                     <div class="block" id="QualitiesBlock">
-                    <table class="tablestyle">
-                      <tr>
-                        <th width="80%" style="text-align: left">
-                          <xsl:value-of select="$lang.Quality" />
-                        </th>
-                        <th width="10%" />
-                        <th width="10%" />
-                      </tr>
-                      <xsl:call-template name="Qualities" />
-                    </table>
-                  </div>
+                      <table class="tablestyle">
+                        <tr>
+                          <th width="80%" style="text-align: left">
+                            <xsl:value-of select="$lang.Qualities" />: 
+                            <xsl:value-of select="$lang.Positive" />
+                          </th>
+                          <th width="10%" />
+                          <th width="10%" />
+                        </tr>
+                        <xsl:call-template name="Qualities">
+                          <xsl:with-param name="quality_type" select="'Positive'" />
+                        </xsl:call-template>
+                        <tr>
+                          <th width="80%" style="text-align: left">
+                            <xsl:value-of select="$lang.Qualities" />: 
+                            <xsl:value-of select="$lang.Negative" />
+                          </th>
+                          <th width="10%" />
+                          <th width="10%" />
+                        </tr>
+                        <xsl:call-template name="Qualities">
+                          <xsl:with-param name="quality_type" select="'Negative'" />
+                        </xsl:call-template>
+                      </table>
+                    </div>
                     <xsl:call-template name="RowSummary">
                       <xsl:with-param name="text" select="$lang.Qualities" />
                       <xsl:with-param name="blockname" select="'QualitiesBlock'" />
@@ -2924,12 +2938,15 @@
   </xsl:template>
 
   <xsl:template name="gear1">
-    <xsl:variable name="halfcut" select="number(round(count(gears/gear) div 3))" />
+    <xsl:variable name="halfcut" select="number(round((count(gears/gear) + count(gears/gear/children) + count(gears/gear/notes)) div 3))" />
     <xsl:variable name="sortedcopy">
       <xsl:for-each select="gears/gear">
         <xsl:sort select="location" />
         <xsl:sort select="name" />
-        <xsl:if test="position() &lt;= $halfcut">
+        <xsl:variable name="endpoint" select="number(position())"/>
+        <xsl:variable name="subgears" select="../gear[position() &lt; $endpoint]"/>
+        <xsl:variable name="countrows" select="number(count($subgears) + count($subgears/children) + count($subgears/notes))"/>
+        <xsl:if test="$countrows &lt;= $halfcut">
           <xsl:copy-of select="current()" />
         </xsl:if>
       </xsl:for-each>
@@ -2940,12 +2957,15 @@
   </xsl:template>
 
   <xsl:template name="gear2">
-    <xsl:variable name="halfcut" select="number(round(count(gears/gear) div 3))" />
+    <xsl:variable name="halfcut" select="number(round((count(gears/gear) + count(gears/gear/children) + count(gears/gear/notes)) div 3))" />
     <xsl:variable name="sortedcopy">
       <xsl:for-each select="gears/gear">
         <xsl:sort select="location" />
         <xsl:sort select="name" />
-        <xsl:if test="position() &gt; $halfcut and position() &lt;= $halfcut * 2">
+        <xsl:variable name="endpoint" select="number(position())"/>
+        <xsl:variable name="subgears" select="../gear[position() &lt; $endpoint]"/>
+        <xsl:variable name="countrows" select="number(count($subgears) + count($subgears/children) + count($subgears/notes))"/>
+        <xsl:if test="$countrows &gt; $halfcut and $countrows &lt;= $halfcut * 2">
           <xsl:copy-of select="current()" />
         </xsl:if>
       </xsl:for-each>
@@ -2956,12 +2976,15 @@
   </xsl:template>
 
   <xsl:template name="gear3">
-    <xsl:variable name="halfcut" select="number(round(count(gears/gear) div 3))" />
+    <xsl:variable name="halfcut" select="number(round((count(gears/gear) + count(gears/gear/children) + count(gears/gear/notes)) div 3))" />
     <xsl:variable name="sortedcopy">
       <xsl:for-each select="gears/gear">
         <xsl:sort select="location" />
         <xsl:sort select="name" />
-        <xsl:if test="position() &gt; $halfcut * 2">
+        <xsl:variable name="endpoint" select="number(position())"/>
+        <xsl:variable name="subgears" select="../gear[position() &lt; $endpoint]"/>
+        <xsl:variable name="countrows" select="number(count($subgears) + count($subgears/children) + count($subgears/notes))"/>
+        <xsl:if test="$countrows &gt; $halfcut * 2">
           <xsl:copy-of select="current()" />
         </xsl:if>
       </xsl:for-each>
@@ -3017,6 +3040,17 @@
           <xsl:value-of select="page" />
         </td>
       </tr>
+
+      <xsl:if test="notes != ''">
+        <tr>
+          <xsl:if test="position() mod 2 != 1">
+            <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>
+          </xsl:if>
+          <td colspan="100%" class="indent">
+            <xsl:value-of select="notes" />
+          </td>
+        </tr>
+      </xsl:if>
 
       <xsl:if test="iscommlink != 'True' and children/gear">
         <tr>
