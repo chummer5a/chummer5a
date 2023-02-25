@@ -86,7 +86,6 @@ namespace Chummer
             this.lblTestLabel = new System.Windows.Forms.Label();
             this.lblTest = new System.Windows.Forms.Label();
             this.tabBrowse = new System.Windows.Forms.TabPage();
-            this.tmrSearch = new System.Windows.Forms.Timer(this.components);
             this.dataGridViewTextBoxColumnTranslated1 = new Chummer.DataGridViewTextBoxColumnTranslated();
             this.dataGridViewTextBoxColumnTranslated2 = new Chummer.DataGridViewTextBoxColumnTranslated();
             this.dataGridViewTextBoxColumnTranslated3 = new Chummer.DataGridViewTextBoxColumnTranslated();
@@ -355,7 +354,7 @@ namespace Chummer
             this.tabControl.SelectedIndex = 0;
             this.tabControl.Size = new System.Drawing.Size(766, 487);
             this.tabControl.TabIndex = 39;
-            this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tmrSearch_Tick);
+            this.tabControl.SelectedIndexChanged += new System.EventHandler(this.RefreshCurrentList);
             // 
             // tabListDetail
             // 
@@ -808,10 +807,6 @@ namespace Chummer
             this.tabBrowse.Tag = "Title_Browse";
             this.tabBrowse.Text = "Browse";
             // 
-            // tmrSearch
-            // 
-            this.tmrSearch.Interval = 250;
-            // 
             // dataGridViewTextBoxColumnTranslated1
             // 
             this.dataGridViewTextBoxColumnTranslated1.AutoSizeMode = System.Windows.Forms.DataGridViewAutoSizeColumnMode.AllCells;
@@ -952,6 +947,7 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectArmor";
             this.Text = "Select Armor";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SelectArmor_Closing);
             this.Load += new System.EventHandler(this.SelectArmor_Load);
             ((System.ComponentModel.ISupportInitialize)(this.dgvArmor)).EndInit();
             this.tabControl.ResumeLayout(false);
@@ -1010,7 +1006,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblAvail;
         private System.Windows.Forms.Label lblAvailLabel;
         private System.Windows.Forms.ListBox lstArmor;
-        private System.Windows.Forms.Timer tmrSearch;
         private System.Windows.Forms.DataGridViewTextBoxColumn Guid;
         private DataGridViewTextBoxColumnTranslated ArmorName;
         private DataGridViewTextBoxColumnTranslated Armor;

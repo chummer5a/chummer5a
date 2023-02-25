@@ -1169,6 +1169,7 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Tag = "Title_SelectVehicle";
             this.Text = "Select a Vehicle";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SelectVehicle_Closing);
             this.Load += new System.EventHandler(this.SelectVehicle_Load);
             this.tabViews.ResumeLayout(false);
             this.tabListView.ResumeLayout(false);

@@ -34,7 +34,6 @@ namespace Chummer
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle3 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle4 = new System.Windows.Forms.DataGridViewCellStyle();
             System.Windows.Forms.DataGridViewCellStyle dataGridViewCellStyle5 = new System.Windows.Forms.DataGridViewCellStyle();
-            this.tmrSearch = new System.Windows.Forms.Timer(this.components);
             this.cmdOK = new System.Windows.Forms.Button();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
@@ -119,10 +118,6 @@ namespace Chummer
             this.tlpButtons.SuspendLayout();
             this.SuspendLayout();
             // 
-            // tmrSearch
-            // 
-            this.tmrSearch.Interval = 250;
-            // 
             // cmdOK
             // 
             this.cmdOK.AutoSize = true;
@@ -191,7 +186,7 @@ namespace Chummer
             this.tabControl.SelectedIndex = 0;
             this.tabControl.Size = new System.Drawing.Size(766, 487);
             this.tabControl.TabIndex = 38;
-            this.tabControl.SelectedIndexChanged += new System.EventHandler(this.tmrSearch_Tick);
+            this.tabControl.SelectedIndexChanged += new System.EventHandler(this.RefreshCurrentList);
             // 
             // tabListView
             // 
@@ -1124,6 +1119,7 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectWeapon";
             this.Text = "Select Weapon";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(SelectWeapon_Closing);
             this.Load += new System.EventHandler(this.SelectWeapon_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
@@ -1194,7 +1190,6 @@ namespace Chummer
         private System.Windows.Forms.Label lblWeaponDamage;
         private System.Windows.Forms.Label lblWeaponDamageLabel;
         private System.Windows.Forms.ListBox lstWeapon;
-        private System.Windows.Forms.Timer tmrSearch;
         private Chummer.ColorableCheckBox chkHideOverAvailLimit;
         private System.Windows.Forms.TableLayoutPanel tlpWeapon;
         private Chummer.ColorableCheckBox chkShowOnlyAffordItems;

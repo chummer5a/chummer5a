@@ -1070,16 +1070,16 @@ namespace Chummer
 
                         // Cost.
                         decimal decItemCost = 0;
+                        string strCost;
                         if (await chkFree.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
                         {
-                            await lblCost.DoThreadSafeAsync(
-                                x => x.Text = (0.0m).ToString(_objCharacter.Settings.NuyenFormat,
+                            strCost = (0.0m).ToString(_objCharacter.Settings.NuyenFormat,
                                                               GlobalSettings.CultureInfo)
-                                              + LanguageManager.GetString("String_NuyenSymbol"), token: token).ConfigureAwait(false);
+                                              + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                         }
                         else
                         {
-                            string strCost = (await objXmlCyberware.SelectSingleNodeAndCacheExpressionAsync("cost", token).ConfigureAwait(false))?.Value;
+                            strCost = (await objXmlCyberware.SelectSingleNodeAndCacheExpressionAsync("cost", token).ConfigureAwait(false))?.Value;
                             if (!string.IsNullOrEmpty(strCost))
                             {
                                 if (strCost.StartsWith("FixedValues(", StringComparison.Ordinal))
@@ -1113,14 +1113,14 @@ namespace Chummer
                                         decMin = Convert.ToDecimal(strCost.FastEscape('+'),
                                                                    GlobalSettings.InvariantCultureInfo);
 
-                                    await lblCost.DoThreadSafeAsync(x => x.Text = decMax == decimal.MaxValue
+                                    strCost = decMax == decimal.MaxValue
                                                                         ? decMin.ToString(_objCharacter.Settings.NuyenFormat,
                                                                               GlobalSettings.CultureInfo)
-                                                                          + LanguageManager.GetString("String_NuyenSymbol") + '+'
+                                                                          + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false) + '+'
                                                                         : decMin.ToString(_objCharacter.Settings.NuyenFormat,
                                                                               GlobalSettings.CultureInfo)
                                                                           + " - " + decMax.ToString(_objCharacter.Settings.NuyenFormat,
-                                                                              GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"), token: token).ConfigureAwait(false);
+                                                                              GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
 
                                     decItemCost = decMin;
                                 }
@@ -1158,22 +1158,21 @@ namespace Chummer
                                             decItemCost *= 0.9m;
                                         }
 
-                                        await lblCost.DoThreadSafeAsync(x => x.Text
-                                                                            = decItemCost.ToString(_objCharacter.Settings.NuyenFormat,
-                                                                                GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol"), token: token).ConfigureAwait(false);
+                                        strCost = decItemCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
+                                            + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                                     }
                                     else
                                     {
-                                        await lblCost.DoThreadSafeAsync(x => x.Text = strCost + LanguageManager.GetString("String_NuyenSymbol"), token: token).ConfigureAwait(false);
+                                        strCost += await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                                     }
                                 }
                             }
                             else
-                                await lblCost.DoThreadSafeAsync(x => x.Text
-                                                                    = (0.0m).ToString(_objCharacter.Settings.NuyenFormat,
+                                strCost = (0.0m).ToString(_objCharacter.Settings.NuyenFormat,
                                                                           GlobalSettings.CultureInfo)
-                                                                      + LanguageManager.GetString("String_NuyenSymbol"), token: token).ConfigureAwait(false);
+                                                                      + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                         }
+                        await lblCost.DoThreadSafeAsync(x => x.Text = strCost, token: token).ConfigureAwait(false);
 
                         bool blnShowCost = !string.IsNullOrEmpty(await lblCost.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false));
                         await lblCostLabel.DoThreadSafeAsync(x => x.Visible = blnShowCost, token: token).ConfigureAwait(false);

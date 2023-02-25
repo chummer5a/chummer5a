@@ -605,7 +605,7 @@ namespace Chummer
                     }
                     catch
                     {
-                        Interlocked.CompareExchange(ref _tskRunningDownloadTask, tskOld, null);
+                        _ = Interlocked.CompareExchange(ref _tskRunningDownloadTask, tskOld, null);
                         throw;
                     }
                 }

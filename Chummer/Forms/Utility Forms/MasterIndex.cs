@@ -331,19 +331,25 @@ namespace Chummer
                 objOldCancellationTokenSource.Cancel(false);
                 objOldCancellationTokenSource.Dispose();
             }
-            _objGenericFormClosingCancellationTokenSource?.Cancel(false);
-            // ReSharper disable once MethodSupportsCancellation
-            foreach (Task<string> tskLoop in await _dicCachedNotes.GetValuesAsync().ConfigureAwait(false))
+            try
             {
-                try
+                foreach (Task<string> tskLoop in await _dicCachedNotes.GetValuesAsync(_objGenericToken).ConfigureAwait(false))
                 {
-                    await tskLoop.ConfigureAwait(false);
-                }
-                catch (OperationCanceledException)
-                {
-                    //swallow this
+                    try
+                    {
+                        await tskLoop.ConfigureAwait(false);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        //swallow this
+                    }
                 }
             }
+            catch (OperationCanceledException)
+            {
+                return;
+            }
+            _objGenericFormClosingCancellationTokenSource.Cancel(false);
         }
 
         private async void OnSelectedSettingChanged(object sender, PropertyChangedEventArgs e)
@@ -483,8 +489,9 @@ namespace Chummer
             using (CancellationTokenSource objJoinedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(token, objNewToken))
             {
                 token = objJoinedCancellationTokenSource.Token;
-                using (CustomActivity opLoadMasterindex = await Timekeeper.StartSyncronAsync("op_load_frm_masterindex", null,
-                           CustomActivity.OperationType.RequestOperation, null, token).ConfigureAwait(false))
+                CustomActivity opLoadMasterindex = await Timekeeper.StartSyncronAsync("op_load_frm_masterindex", null,
+                           CustomActivity.OperationType.RequestOperation, null, token).ConfigureAwait(false);
+                try
                 {
                     Interlocked.Decrement(ref _intIsFinishedLoading);
                     try
@@ -743,6 +750,10 @@ namespace Chummer
                         Interlocked.Decrement(ref _intSkipRefresh);
                         Interlocked.Increment(ref _intIsFinishedLoading);
                     }
+                }
+                finally
+                {
+                    await opLoadMasterindex.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }
