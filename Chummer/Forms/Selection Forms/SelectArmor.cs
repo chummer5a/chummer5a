@@ -383,7 +383,7 @@ namespace Chummer
             }
         }
 
-        private void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
+        private async void chkBlackMarketDiscount_CheckedChanged(object sender, EventArgs e)
         {
             try
             {
@@ -395,7 +395,7 @@ namespace Chummer
             }
         }
 
-        private void nudRating_ValueChanged(object sender, EventArgs e)
+        private async void nudRating_ValueChanged(object sender, EventArgs e)
         {
             try
             {
