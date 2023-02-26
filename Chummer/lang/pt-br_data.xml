@@ -38704,8 +38704,8 @@
       </weapon>
       <weapon>
         <id>dfec9209-7bf7-49fa-b816-da173fad9963</id>
-        <name>Mortimer of London ‘Belgrave’ Sword Cane</name>
-        <translate>Mortimer of London ‘Belgrave’ Sword Cane</translate>
+        <name>Mortimer of London 'Belgrave' Sword Cane</name>
+        <translate>Mortimer of London 'Belgrave' Sword Cane</translate>
         <altpage>132</altpage>
       </weapon>
       <weapon>
@@ -41404,7 +41404,7 @@
         </choices>
         <altpage>177</altpage>
         <altadvantage>+2 dice to all Crash Tests</altadvantage>
-        <altdisadvantage>An Abort technomancer must make a Willpower + Charisma (3) Test to take any other action in cybercombat except for trying to crash his opponent’s software.</altdisadvantage>
+        <altdisadvantage>An Abort technomancer must make a Willpower + Charisma (3) Test to take any other action in cybercombat except for trying to crash his opponent's software.</altdisadvantage>
       </mentor>
       <mentor>
         <id>6f709558-5cf8-4b4d-898c-d7d4b1fc0c80</id>
@@ -41519,7 +41519,7 @@
         </choices>
         <altpage>150</altpage>
         <altadvantage>+2 dice to all Encryption and Decryption Tests</altadvantage>
-        <altdisadvantage>Technomancers who follow Cryptome don’t surrender secrets easily and never to unreliable sources. The technomancer must make a Willpower + Logic (3) Test to share a secret or important information with someone he does not completely trust … and such trust is rare.</altdisadvantage>
+        <altdisadvantage>Technomancers who follow Cryptome don't surrender secrets easily and never to unreliable sources. The technomancer must make a Willpower + Logic (3) Test to share a secret or important information with someone he does not completely trust … and such trust is rare.</altdisadvantage>
       </mentor>
       <mentor>
         <id>fa271f4e-608f-4cdc-a118-54d714b68a85</id>
@@ -41565,7 +41565,7 @@
         </choices>
         <altpage>151</altpage>
         <altadvantage>+2 dice for Analyze Tests</altadvantage>
-        <altdisadvantage>Delphi technomancers don’t adapt easily to unexpected situations. They must make a Willpower + Logic (3) Test to make any quick decisions in situations they have not planned for.</altdisadvantage>
+        <altdisadvantage>Delphi technomancers don't adapt easily to unexpected situations. They must make a Willpower + Logic (3) Test to make any quick decisions in situations they have not planned for.</altdisadvantage>
       </mentor>
       <mentor>
         <id>df42911f-0542-4fae-80d1-39573547ff68</id>
@@ -41895,7 +41895,7 @@
         <name>Bear</name>
         <translate>Urso</translate>
         <altadvantage>All: +2 dice for tests to resist damage (not including drain).</altadvantage>
-        <altdisadvantage>You might go berserk when you take Physical damage in combat or if someone under your care is badly injured. Make a Simple Charisma + Willpower Test (wound modifiers apply). You go berserk for 3 turns minus 1 turn per hit, so 3 or more hits averts the berserk rage entirely. If you’re already going berserk, increase the duration. When you’re berserk, you go after your attacker(s) without regard for your own safety. If you incapacitate the target(s) before the time is up, the berserk fury dissipates.</altdisadvantage>
+        <altdisadvantage>You might go berserk when you take Physical damage in combat or if someone under your care is badly injured. Make a Simple Charisma + Willpower Test (wound modifiers apply). You go berserk for 3 turns minus 1 turn per hit, so 3 or more hits averts the berserk rage entirely. If you're already going berserk, increase the duration. When you're berserk, you go after your attacker(s) without regard for your own safety. If you incapacitate the target(s) before the time is up, the berserk fury dissipates.</altdisadvantage>
         <altpage>324</altpage>
         <choices>
           <choice>
@@ -41993,7 +41993,7 @@
         <name>Fire-Bringer</name>
         <translate>Portador da Chama</translate>
         <altadvantage>All: +2 dice to Artisan skill tests or Alchemy skill tests (choose one).</altadvantage>
-        <altdisadvantage>When someone sincerely asks you for help, you can’t refuse without succeeding in a Simple Charisma + Willpower (3) Test.</altdisadvantage>
+        <altdisadvantage>When someone sincerely asks you for help, you can't refuse without succeeding in a Simple Charisma + Willpower (3) Test.</altdisadvantage>
         <altpage>323</altpage>
         <choices>
           <choice>
@@ -42055,7 +42055,7 @@
         <name>Raven</name>
         <translate>Corvo</translate>
         <altadvantage>All: +2 dice for Con tests.</altadvantage>
-        <altdisadvantage>You must make a Charisma + Willpower (3) Test to avoid exploiting someone else’s misfortune to your own advantage or to pull a clever trick or prank even if it’s to the disadvantage of your friends.</altdisadvantage>
+        <altdisadvantage>You must make a Charisma + Willpower (3) Test to avoid exploiting someone else's misfortune to your own advantage or to pull a clever trick or prank even if it's to the disadvantage of your friends.</altdisadvantage>
         <altpage>321</altpage>
         <choices>
           <choice>
@@ -42073,7 +42073,7 @@
         <name>Raven (German)</name>
         <translate>Raven (German)</translate>
         <altadvantage>All: +2 dice for Con tests.</altadvantage>
-        <altdisadvantage>You must make a Charisma + Willpower (3) Test to avoid exploiting someone else’s misfortune to your own advantage or to pull a clever trick or prank even if it’s to the disadvantage of your friends.</altdisadvantage>
+        <altdisadvantage>You must make a Charisma + Willpower (3) Test to avoid exploiting someone else's misfortune to your own advantage or to pull a clever trick or prank even if it's to the disadvantage of your friends.</altdisadvantage>
         <altpage>323</altpage>
         <choices>
           <choice>
@@ -42131,7 +42131,7 @@
         <name>Shark</name>
         <translate>Tubarão</translate>
         <altadvantage>All: +2 dice to Unarmed Combat tests.</altadvantage>
-        <altdisadvantage>You might go berserk when you take Physical damage in combat. Every time it happens, make a Simple Charisma + Willpower Test (wound modifiers apply). You go berserk for 3 turns minus 1 turn per hit, so 3 or more hits averts the berserk rage entirely. If you’re already going berserk, increase the duration. When you’re berserk, you go after your attacker(s) without regard for your own safety. If you run out of targets before the time’s up, you keep attacking their bodies.</altdisadvantage>
+        <altdisadvantage>You might go berserk when you take Physical damage in combat. Every time it happens, make a Simple Charisma + Willpower Test (wound modifiers apply). You go berserk for 3 turns minus 1 turn per hit, so 3 or more hits averts the berserk rage entirely. If you're already going berserk, increase the duration. When you're berserk, you go after your attacker(s) without regard for your own safety. If you run out of targets before the time's up, you keep attacking their bodies.</altdisadvantage>
         <altpage>324</altpage>
         <choices>
           <choice>
@@ -42229,7 +42229,7 @@
         <name>Berserker</name>
         <translate>Berserker</translate>
         <altadvantage>All: +2 dice pool modifier for Composure Tests</altadvantage>
-        <altdisadvantage>Berserker’s followers have very short fuses. Whenever someone strongly disagrees with you (gamemaster’s discretion), you must pass a Charisma + Willpower (3) Test to keep from striking out against the offender. If the test fails, the attack can be in any form you choose (fist, spell, etc.), but it must have the intent to cause damage.</altdisadvantage>
+        <altdisadvantage>Berserker's followers have very short fuses. Whenever someone strongly disagrees with you (gamemaster's discretion), you must pass a Charisma + Willpower (3) Test to keep from striking out against the offender. If the test fails, the attack can be in any form you choose (fist, spell, etc.), but it must have the intent to cause damage.</altdisadvantage>
         <altpage>199</altpage>
         <choices>
           <choice>
@@ -42255,7 +42255,7 @@
         <name>Chaos</name>
         <translate>Chaos</translate>
         <altadvantage>All: +2 dice pool modifier for Con Tests</altadvantage>
-        <altdisadvantage>You are an inveterate gossip trying to stir up trouble, especially between friends, and thus cannot keep damaging secrets to yourself. Also, anytime you encounter a public situation deemed too quiet or stable (gamemaster’s discretion), make a Willpower + Intuition (3) Test. Failure means that you are compelled to stir the pot in any way you desire, be it attacking, telling lies, or throwing a drink on someone nearby.</altdisadvantage>
+        <altdisadvantage>You are an inveterate gossip trying to stir up trouble, especially between friends, and thus cannot keep damaging secrets to yourself. Also, anytime you encounter a public situation deemed too quiet or stable (gamemaster's discretion), make a Willpower + Intuition (3) Test. Failure means that you are compelled to stir the pot in any way you desire, be it attacking, telling lies, or throwing a drink on someone nearby.</altdisadvantage>
         <altpage>200</altpage>
         <choices>
           <choice>
@@ -42291,7 +42291,7 @@
         <name>Oracle</name>
         <translate>Oracle</translate>
         <altadvantage>All: +2 dice pool modifier for Arcana Tests</altadvantage>
-        <altdisadvantage>You hate mysteries with a passion and can disappear for days trying to track down the answer. When confronted by a particularly haunting question (gamemaster’s discretion), you must take a Willpower + Intuition (3) Test. Failure means you must undertake an Intuition + Logic [Mental] (5, 1 hour) Extended Test to try researching the answer. Completion of the Extended Test does not necessarily mean you found the answer, but it at least silences the question in your mind for the time being. When a follower of Oracle becomes a Grade 1 initiate, she must choose Divination for her first metamagic rather than a Power Point or any other benefit.</altdisadvantage>
+        <altdisadvantage>You hate mysteries with a passion and can disappear for days trying to track down the answer. When confronted by a particularly haunting question (gamemaster's discretion), you must take a Willpower + Intuition (3) Test. Failure means you must undertake an Intuition + Logic [Mental] (5, 1 hour) Extended Test to try researching the answer. Completion of the Extended Test does not necessarily mean you found the answer, but it at least silences the question in your mind for the time being. When a follower of Oracle becomes a Grade 1 initiate, she must choose Divination for her first metamagic rather than a Power Point or any other benefit.</altdisadvantage>
         <altpage>200</altpage>
         <choices>
           <choice>
@@ -42415,7 +42415,7 @@
         <name>The Adversary</name>
         <translate>The Adversary</translate>
         <altadvantage>All: +2 dice to demolitions tests.</altadvantage>
-        <altdisadvantage>Because of their deep-seated hatred for authority, a teammate’s use of leadership skill is counterproductive to followers of Adversary, invoking either a negative dice penalty or loss of initiative. If the plan doesn’t go the way that the adversary follower wants it to go, it takes a Charisma + Willpower (3) Test for him to get him to cooperate.</altdisadvantage>
+        <altdisadvantage>Because of their deep-seated hatred for authority, a teammate's use of leadership skill is counterproductive to followers of Adversary, invoking either a negative dice penalty or loss of initiative. If the plan doesn't go the way that the adversary follower wants it to go, it takes a Charisma + Willpower (3) Test for him to get him to cooperate.</altdisadvantage>
         <altpage>136</altpage>
         <choices>
           <choice>
@@ -42469,7 +42469,7 @@
         <name>Monkey</name>
         <translate>Monkey</translate>
         <altadvantage>All: +2 dice to gymnastics tests involving climbing.</altadvantage>
-        <altdisadvantage>Because Monkey is not an assassin, the magician must succeed in a Charisma + Willpower (3) Test in order to strike a surprised opponent. Monkey must be able to watch his prank go off or see the look on the opponent’s face after taunting them, otherwise he suffers –1 to all Magic tests until the next sunrise/sunset.</altdisadvantage>
+        <altdisadvantage>Because Monkey is not an assassin, the magician must succeed in a Charisma + Willpower (3) Test in order to strike a surprised opponent. Monkey must be able to watch his prank go off or see the look on the opponent's face after taunting them, otherwise he suffers –1 to all Magic tests until the next sunrise/sunset.</altdisadvantage>
         <altpage>137</altpage>
         <choices>
           <choice>
@@ -42487,7 +42487,7 @@
         <name>Coyote</name>
         <translate>Coyote</translate>
         <altadvantage>All: +2 dice pool to all Con tests.</altadvantage>
-        <altdisadvantage>Coyote has a hard time with head-on attacks or brute force methods, unless it’s part of a larger con or misdirection. Anytime he is forced into such actions, he must make a Willpower + Charisma [Mental] (4) Test. If he fails, then he decides to do things another way, which means he may exit a combat instead of participating in it.</altdisadvantage>
+        <altdisadvantage>Coyote has a hard time with head-on attacks or brute force methods, unless it's part of a larger con or misdirection. Anytime he is forced into such actions, he must make a Willpower + Charisma [Mental] (4) Test. If he fails, then he decides to do things another way, which means he may exit a combat instead of participating in it.</altdisadvantage>
         <altpage>24</altpage>
         <choices>
           <choice>
@@ -42689,7 +42689,7 @@
         <name>Boar</name>
         <translate>Boar</translate>
         <altadvantage>All: Home Ground Quality is gained for free.</altadvantage>
-        <altdisadvantage>A follower of Boar does not like it if there are others intruding in his space or disrupting his routine. At best, the follower protects the bar and employees of the bar he always goes to. At worst, he will start a fight for a specific table or stool that he thinks is his. A warning is optional and usually proffered by the follower’s friends. It takes a Charisma + Willpower (3) Test for a follower of Boar to leave his home, safehouse, or routine permanently, otherwise he will keep coming back, even at the risk of his own safety. If the Boar does leave, he receives a –1 penalty to all active skill tests for three weeks until he finally settles into a new place and routine.</altdisadvantage>
+        <altdisadvantage>A follower of Boar does not like it if there are others intruding in his space or disrupting his routine. At best, the follower protects the bar and employees of the bar he always goes to. At worst, he will start a fight for a specific table or stool that he thinks is his. A warning is optional and usually proffered by the follower's friends. It takes a Charisma + Willpower (3) Test for a follower of Boar to leave his home, safehouse, or routine permanently, otherwise he will keep coming back, even at the risk of his own safety. If the Boar does leave, he receives a –1 penalty to all active skill tests for three weeks until he finally settles into a new place and routine.</altdisadvantage>
         <altpage>41</altpage>
         <choices>
           <choice>
@@ -42759,7 +42759,7 @@
         <name>Whale</name>
         <translate>Whale</translate>
         <altadvantage>All: +2 dice to Swimming or Pilot Watercraft skill tests (choose one)</altadvantage>
-        <altdisadvantage>Because of their personal sense of ethics, followers of the whale must honor any agreement they enter into. This can be an oath to an organization or a verbal contract with a corporation. Failing to honor the contract or oath results in a loss of a point of Magic. The Whale mentor spirit understands if circumstances to complete the contract are out of the Awakened’s hands. For everything else, the follower can attempt to atone, but at the gamemaster’s discretion.</altdisadvantage>
+        <altdisadvantage>Because of their personal sense of ethics, followers of the whale must honor any agreement they enter into. This can be an oath to an organization or a verbal contract with a corporation. Failing to honor the contract or oath results in a loss of a point of Magic. The Whale mentor spirit understands if circumstances to complete the contract are out of the Awakened's hands. For everything else, the follower can attempt to atone, but at the gamemaster's discretion.</altdisadvantage>
         <altpage>43</altpage>
         <choices>
           <choice>
@@ -42785,7 +42785,7 @@
         <name>Horse</name>
         <translate>Horse</translate>
         <altadvantage>All: +2 dice to Running or Pilot Ground Craft tests (choose one)</altadvantage>
-        <altdisadvantage>Followers of the Horse can’t sit still for long nor be confined indoors. They must spend at least four hours a day outside and be able to run or drive around (any method of travel faster than walking). If followers are not able to meet this condition, they suffer –1 die to all action skill tests. This penalty is cumulative, meaning if the follower is stuck at a desk all day (indoors and not moving around) for two days in a a row, they suffer –2 to all actions until they get that free time in.</altdisadvantage>
+        <altdisadvantage>Followers of the Horse can't sit still for long nor be confined indoors. They must spend at least four hours a day outside and be able to run or drive around (any method of travel faster than walking). If followers are not able to meet this condition, they suffer –1 die to all action skill tests. This penalty is cumulative, meaning if the follower is stuck at a desk all day (indoors and not moving around) for two days in a a row, they suffer –2 to all actions until they get that free time in.</altdisadvantage>
         <altpage>46</altpage>
         <choices>
           <choice>
@@ -42865,7 +42865,7 @@
         <name>Lion</name>
         <translate>Lion</translate>
         <altadvantage>All: +2 dice pool modifier for Survival Tests, Running Tests, or Tracking Tests (Choose One)</altadvantage>
-        <altdisadvantage>In combat situations, a Lion will never leave a comrade behind, and will fght to the death to protect an ally. Unless you succeed in a Charisma + Willpower Test (3), you cannot flee combat before your team members are safe. Further, whenever taking actions that don’t beneft the team somehow, your physical and mental limits are reduced by 2.</altdisadvantage>
+        <altdisadvantage>In combat situations, a Lion will never leave a comrade behind, and will fght to the death to protect an ally. Unless you succeed in a Charisma + Willpower Test (3), you cannot flee combat before your team members are safe. Further, whenever taking actions that don't beneft the team somehow, your physical and mental limits are reduced by 2.</altdisadvantage>
         <altpage>129</altpage>
         <choices>
           <choice>
@@ -42883,7 +42883,7 @@
         <name>Raven (Alt)</name>
         <translate>Raven (Alt)</translate>
         <altadvantage>All: +2 dice pool modifier for knowledge skill tests.</altadvantage>
-        <altdisadvantage>Followers of Raven share their mentor’s love of collecting. When presented with data, knowledge, or other gear that would be valuable (gamemaster’s discretion), you must pass a Charisma + Willpower Test (3), or be unable to resist trying to acquiring it.</altdisadvantage>
+        <altdisadvantage>Followers of Raven share their mentor's love of collecting. When presented with data, knowledge, or other gear that would be valuable (gamemaster's discretion), you must pass a Charisma + Willpower Test (3), or be unable to resist trying to acquiring it.</altdisadvantage>
         <altpage>121</altpage>
         <choices>
           <choice>
@@ -42891,8 +42891,8 @@
             <translate>Magician: +2 dice to Detection spells, preparations, and rituals.</translate>
           </choice>
           <choice>
-            <name>Magician: +2 dice to summoning spirits if summoner also has Code of Honor: Harmony with Nature, The Shaman’s Code and bargains with the summoned spirit.</name>
-            <translate>Magician: +2 dice to summoning spirits if summoner also has Code of Honor: Harmony with Nature, The Shaman’s Code and bargains with the summoned spirit.</translate>
+            <name>Magician: +2 dice to summoning spirits if summoner also has Code of Honor: Harmony with Nature, The Shaman's Code and bargains with the summoned spirit.</name>
+            <translate>Magician: +2 dice to summoning spirits if summoner also has Code of Honor: Harmony with Nature, The Shaman's Code and bargains with the summoned spirit.</translate>
           </choice>
           <choice>
             <name>Adept: 2 free levels of Enhanced Perception.</name>
@@ -42923,7 +42923,7 @@
         <name>Planar Entity</name>
         <translate>Planar Entity</translate>
         <altadvantage>All: Determined by spirit type and gamemaster approval.</altadvantage>
-        <altdisadvantage>Taking on an extraplanar entity into one’s soul is not without its drawbacks. Much of their mental ability is taken up keeping themselves from losing their identity as a result of their shared existence. Mages suffer a –2 dice pool penalty when making tests involving Willpower</altdisadvantage>
+        <altdisadvantage>Taking on an extraplanar entity into one's soul is not without its drawbacks. Much of their mental ability is taken up keeping themselves from losing their identity as a result of their shared existence. Mages suffer a –2 dice pool penalty when making tests involving Willpower</altdisadvantage>
         <altpage>95</altpage>
         <choices>
           <choice>
@@ -43161,7 +43161,7 @@
         <name>Spider (Alt)</name>
         <translate>Spider (Alt)</translate>
         <altadvantage>All: +2 dice pool modifier for tests using the Stealth skill group.</altadvantage>
-        <altdisadvantage>When not following a plan or a plan doesn’t go according to plan, followers of Spider must pass a Charisma + Willpower (4) Test or suffer –2 to all rolls until a new plan is established.</altdisadvantage>
+        <altdisadvantage>When not following a plan or a plan doesn't go according to plan, followers of Spider must pass a Charisma + Willpower (4) Test or suffer –2 to all rolls until a new plan is established.</altdisadvantage>
         <altpage>100</altpage>
         <choices>
           <choice>

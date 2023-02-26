@@ -127,7 +127,7 @@
         <version>
           <id>b332fa10-e0f5-43aa-bb38-52cdb0060da1</id>
           <name>Seattle</name>
-          <story>$real was born in the UCAS exclave of Seattle, the UCAS’s only pacific port.</story>
+          <story>$real was born in the UCAS exclave of Seattle, the UCAS's only pacific port.</story>
           <bonus>
             <attributelevel>
               <name>REA</name>
@@ -851,7 +851,7 @@
           <name>[Corporation]</name>
         </knowledgeskilllevel>
       </bonus>
-      <story>$real was  $LUCK  enough to be the child of wageslaves, who via endless hours of toil managed to keep a roof over $real ’s head.</story>
+      <story>$real was  $LUCK  enough to be the child of wageslaves, who via endless hours of toil managed to keep a roof over $real 's head.</story>
       <source>RF</source>
       <page>68</page>
     </module>
@@ -1887,7 +1887,7 @@
           <!--<addquality>Enemy</addquality>-->
         </addqualities>
       </bonus>
-      <story>$real graduated summa cum laude from the school of hard knocks, with a major in $STREETDESC and a minor in women’s studies.</story>
+      <story>$real graduated summa cum laude from the school of hard knocks, with a major in $STREETDESC and a minor in women's studies.</story>
       <source>RF</source>
       <page>72</page>
     </module>
@@ -2324,7 +2324,7 @@
           <source>R5</source>
         </version>
       </versions>
-      <story>$real wanted to get something that resembled higher education, but couldn’t afford to go to a real college. The solution: community college.</story>
+      <story>$real wanted to get something that resembled higher education, but couldn't afford to go to a real college. The solution: community college.</story>
       <source>RF</source>
       <page>72</page>
     </module>
@@ -3729,7 +3729,7 @@
           <addquality>Guts</addquality>
         </addqualities>
       </bonus>
-      <story>$real decided that muckraking with the Corp’s filth was too likely to get them silenced, so they decided to go for an easier job: covering foreign wars.</story>
+      <story>$real decided that muckraking with the Corp's filth was too likely to get them silenced, so they decided to go for an easier job: covering foreign wars.</story>
       <source>RF</source>
       <page>76</page>
     </module>
@@ -4107,7 +4107,7 @@
           <addquality>Sense of Direction</addquality>
         </addqualities>
       </bonus>
-      <story>$real decided getting a job just wasn’t for them, instead choosing to couchsurf, or possibly live in their mother’s basement.</story>
+      <story>$real decided getting a job just wasn't for them, instead choosing to couchsurf, or possibly live in their mother's basement.</story>
       <source>RF</source>
       <page>77</page>
     </module>
@@ -4169,7 +4169,7 @@
           <addquality>SINner (Criminal)</addquality>
         </addqualities>
       </bonus>
-      <story>$real became a criminal, their main income coming from selling other people’s cyber-VCRs, and occasionally mugging people and stealing the money they got by selling cyber-VCRs.</story>
+      <story>$real became a criminal, their main income coming from selling other people's cyber-VCRs, and occasionally mugging people and stealing the money they got by selling cyber-VCRs.</story>
       <source>RF</source>
       <page>78</page>
     </module>
@@ -4229,7 +4229,7 @@
           <addquality>SINner (National)</addquality>
         </addqualities>
       </bonus>
-      <story>$real somehow managed to get a job with one of the few government organizations that hasn’t yet been privatized. Be it with the FBI, MI5, NSA, TAO, Unit 61398, or some other organization, they get to be paid less than normal people in return for working longer hours and being hated by everyone.</story>
+      <story>$real somehow managed to get a job with one of the few government organizations that hasn't yet been privatized. Be it with the FBI, MI5, NSA, TAO, Unit 61398, or some other organization, they get to be paid less than normal people in return for working longer hours and being hated by everyone.</story>
       <source>RF</source>
       <page>78</page>
     </module>
@@ -4966,7 +4966,7 @@
           </bonus>
         </version>
       </versions>
-      <story>$real is more than a criminal for hire: they’re a very expensive criminal for hire, with multiple break-ins, kidnappings, and assassinations on their resume.</story>
+      <story>$real is more than a criminal for hire: they're a very expensive criminal for hire, with multiple break-ins, kidnappings, and assassinations on their resume.</story>
       <source>RF</source>
       <page>80</page>
     </module>
@@ -6991,7 +6991,7 @@
           <val>3</val>
         </knowledgeskilllevel>
       </bonus>
-      <story>$real ‘s parents were shadowrunners. At a young age, $real was learning important skills such as $SHADOWCHILD .</story>
+      <story>$real 's parents were shadowrunners. At a young age, $real was learning important skills such as $SHADOWCHILD .</story>
       <source>CF</source>
       <page>61</page>
     </module>
@@ -7078,7 +7078,7 @@
         <nuyenamt>15000</nuyenamt>
       </bonus>
       <!--todo: Special: 15,000 nuyen in cyberlimbs-->
-      <story>$real was a child laborer in one of the few factories that hadn’t fully mechanized. Their pay almost managed to pay for limbs to replace those they lost via work. Almost.</story>
+      <story>$real was a child laborer in one of the few factories that hadn't fully mechanized. Their pay almost managed to pay for limbs to replace those they lost via work. Almost.</story>
       <source>CF</source>
       <page>61</page>
     </module>
@@ -12214,7 +12214,7 @@
         <random>
           <zog>managed to hack into Zurich-Orbital Gemeinschaft Bank and transfer themselves an absurd amount of nuyen</zog>
           <god>killed an entire division of GOD operatives</god>
-          <kfc>stole KFC’s original secret mix of herbs and spices</kfc>
+          <kfc>stole KFC's original secret mix of herbs and spices</kfc>
         </random>
       </hackdesc>
       <matrixhide>
@@ -12277,7 +12277,7 @@
       <farmtask>
         <random>
           <cube>stacking CubeHens TM</cube>
-          <butter>churning I Can’t Believe It’s Not Butter TM</butter>
+          <butter>churning I Can't Believe It's Not Butter TM</butter>
           <meat>maintaining the chlorine tanks on the meat sterilizer</meat>
         </random>
       </farmtask>
@@ -12322,7 +12322,7 @@
           <s3>Spinrad Global</s3>
           <w>Wuxing</w>
           <aa>a AA corp, such as Monobe International or Docwagon</aa>
-          <a>a single A corp, such as The People’s Republic of Vietnam</a>
+          <a>a single A corp, such as The People's Republic of Vietnam</a>
         </random>
       </employer>
       <streetdesc>
@@ -12337,11 +12337,11 @@
         <tv> appeared in a reality trideo</tv>
         <sports> moved a ball slightly better than all the other players</sports>
         <chu> won on jeopardy</chu>
-        <kim>… to be honest, we aren’t really sure why</kim>
+        <kim>… to be honest, we aren't really sure why</kim>
       </famousdesc>
       <copdesc>
         <random>
-          <justice>’s great belief in justice drove them to join with the physical embodiment of that: the police.</justice>
+          <justice>'s great belief in justice drove them to join with the physical embodiment of that: the police.</justice>
           <real> realized that cops get to murder innocents with impunity and thought “Get me some of that!”</real>
         </random>
       </copdesc>
@@ -12375,7 +12375,7 @@
           <jap>extreme racism is good for national unity</jap>
           <unem>unemployment is a good thing</unem>
           <gw>global warming is really a communist hoax</gw>
-          <polut>pollution isn’t really that big of a deal</polut>
+          <polut>pollution isn't really that big of a deal</polut>
           <link>megacorps keeping material links of all their employees keeps people safe</link>
           <azzie>human sacrifice is good for national unity</azzie>
         </random>

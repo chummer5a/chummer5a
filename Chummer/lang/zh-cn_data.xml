@@ -11016,7 +11016,7 @@
             <translate>法师：+2骰池到涉及侦测系的法术、制剂以及仪式上</translate>
           </choice>
           <choice>
-            <name>Magician: +2 dice to summoning spirits if summoner also has Code of Honor: Harmony with Nature, The Shaman’s Code and bargains with the summoned spirit.</name>
+            <name>Magician: +2 dice to summoning spirits if summoner also has Code of Honor: Harmony with Nature, The Shaman's Code and bargains with the summoned spirit.</name>
             <translate>法师：若召唤者具有荣誉守则：自然和谐特质，以及萨满守则且与所召唤精魂达成协定，+2骰池到〈召唤精魂〉的检定上。</translate>
           </choice>
           <choice>
@@ -21455,7 +21455,7 @@
       </weapon>
       <weapon>
         <id>dfec9209-7bf7-49fa-b816-da173fad9963</id>
-        <name>Mortimer of London ‘Belgrave’ Sword Cane</name>
+        <name>Mortimer of London 'Belgrave' Sword Cane</name>
         <translate>伦敦莫蒂默·“贝尔格雷夫”剑杖 </translate>
       </weapon>
       <weapon>

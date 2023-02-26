@@ -23523,7 +23523,7 @@
             <translate>Zauberer: +2 Würfel für Zauber, Rituale und Alchemische Erzeugnisse der Kategorie Wahrnehmung</translate>
           </choice>
           <choice>
-            <name>Magician: +2 dice to summoning spirits if summoner also has Code of Honor: Harmony with Nature, The Shaman’s Code and bargains with the summoned spirit.</name>
+            <name>Magician: +2 dice to summoning spirits if summoner also has Code of Honor: Harmony with Nature, The Shaman's Code and bargains with the summoned spirit.</name>
             <translate>Zauberer: +2 Würfel für das Herbeirufen von Geistern, wenn der Charakter auch den Nachteil Ehrenkodex: Harmonie mit der Natur - der Kodex des Schamanen hat und mit dem herbeigerufenen Geist feilscht</translate>
           </choice>
           <choice>
@@ -35894,7 +35894,7 @@
           <spec translate="Desert Wars">Desert Wars</spec>
           <spec translate="Dessert Wars">Dessert Wars</spec>
           <spec translate="Dis is Uz">Dis is Uz</spec>
-          <spec translate="Granny Sweetspell’s Magical Kitchen">Granny Sweetspell’s Magical Kitchen</spec>
+          <spec translate="Granny Sweetspell's Magical Kitchen">Granny Sweetspell's Magical Kitchen</spec>
           <spec translate="Karl Kombatmage">Karl Kombatmage</spec>
           <spec translate="Reloaded">Reloaded</spec>
           <spec translate="The Master Wizard">The Master Wizard</spec>
@@ -35905,7 +35905,7 @@
           <spec translate="On Point">On Point</spec>
           <spec translate="Ork and Mindy">Ork and Mindy</spec>
           <spec translate="Polar Wars">Polar Wars</spec>
-          <spec translate="Porky’s Landing">Porky’s Landing</spec>
+          <spec translate="Porky's Landing">Porky's Landing</spec>
           <spec translate="Red Samurai Run">Red Samurai Run</spec>
           <spec translate="The Runners">The Runners</spec>
           <spec translate="Seas of Death: The Tale of Kane">Seas of Death: The Tale of Kane</spec>
@@ -46255,7 +46255,7 @@
       </weapon>
       <weapon>
         <id>dfec9209-7bf7-49fa-b816-da173fad9963</id>
-        <name>Mortimer of London ‘Belgrave’ Sword Cane</name>
+        <name>Mortimer of London 'Belgrave' Sword Cane</name>
         <translate>Mortimer of London "Belgrave" Stockschwert</translate>
         <altpage>135</altpage>
       </weapon>

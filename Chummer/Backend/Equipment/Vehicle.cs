@@ -2561,7 +2561,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                //Drone’s attributes can never by higher than twice their starting value (R5, p123)
+                //Drone's attributes can never by higher than twice their starting value (R5, p123)
                 //When you need to use a 0 for the math, use 0.5 instead
                 if (IsDrone && !_objCharacter.IgnoreRules)
                 {
@@ -2578,7 +2578,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                //Drone’s attributes can never by higher than twice their starting value (R5, p123)
+                //Drone's attributes can never by higher than twice their starting value (R5, p123)
                 //When you need to use a 0 for the math, use 0.5 instead
                 if (IsDrone && !_objCharacter.IgnoreRules)
                 {
@@ -2595,7 +2595,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                //Drone’s attributes can never by higher than twice their starting value (R5, p123)
+                //Drone's attributes can never by higher than twice their starting value (R5, p123)
                 //When you need to use a 0 for the math, use 0.5 instead
                 if (IsDrone && !_objCharacter.IgnoreRules)
                 {
@@ -2612,7 +2612,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                //Drone’s attributes can never by higher than twice their starting value (R5, p123)
+                //Drone's attributes can never by higher than twice their starting value (R5, p123)
                 //When you need to use a 0 for the math, use 0.5 instead
                 if (IsDrone && !_objCharacter.IgnoreRules)
                 {
@@ -2629,7 +2629,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                //Drone’s attributes can never by higher than twice their starting value (R5, p123)
+                //Drone's attributes can never by higher than twice their starting value (R5, p123)
                 //When you need to use a 0 for the math, use 0.5 instead
                 if (IsDrone && !_objCharacter.IgnoreRules && _objCharacter.Settings.DroneModsMaximumPilot)
                 {
