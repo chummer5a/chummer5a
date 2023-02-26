@@ -144,7 +144,7 @@ namespace Chummer
             this.txtSearch.Name = "txtSearch";
             this.txtSearch.Size = new System.Drawing.Size(359, 20);
             this.txtSearch.TabIndex = 114;
-            this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
+            this.txtSearch.TextChanged += new System.EventHandler(this.RefreshMetatypesControl);
             // 
             // lblSearchLabel
             // 
@@ -184,7 +184,7 @@ namespace Chummer
             this.cboCategory.Size = new System.Drawing.Size(303, 21);
             this.cboCategory.TabIndex = 66;
             this.cboCategory.TooltipText = "";
-            this.cboCategory.SelectedIndexChanged += new System.EventHandler(this.cboCategory_SelectedIndexChanged);
+            this.cboCategory.SelectedIndexChanged += new System.EventHandler(this.RefreshMetatypesControl);
             // 
             // lblQualitiesLabel
             // 
@@ -662,6 +662,7 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_Metatype";
             this.Text = "Select a Metatype";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SelectMetatypeKarma_Closing);
             this.Load += new System.EventHandler(this.SelectMetatypeKarma_Load);
             this.tlpMetatypes.ResumeLayout(false);
             this.tlpMetatypes.PerformLayout();
