@@ -8729,8 +8729,13 @@ namespace Chummer
         {
             if (IsLoading)
                 return _tskUpdateCharacterInfo;
+            token.ThrowIfCancellationRequested();
             CancellationTokenSource objSource = null;
-            if (token != GenericToken)
+            if (token == CancellationToken.None)
+            {
+                token = GenericToken;
+            }
+            else if (token != GenericToken)
             {
                 objSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
                 token = objSource.Token;
@@ -8880,8 +8885,13 @@ namespace Chummer
         /// </summary>
         protected async Task UpdateWindowTitleAsync(bool blnCanSkip, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             CancellationTokenSource objSource = null;
-            if (token != GenericToken)
+            if (token == CancellationToken.None)
+            {
+                token = GenericToken;
+            }
+            else if (token != GenericToken)
             {
                 objSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
                 token = objSource.Token;
@@ -8910,8 +8920,13 @@ namespace Chummer
         /// </summary>
         public virtual async ValueTask<bool> SaveCharacter(bool blnNeedConfirm = true, bool blnDoCreated = false, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             CancellationTokenSource objSource = null;
-            if (token != GenericToken)
+            if (token == CancellationToken.None)
+            {
+                token = GenericToken;
+            }
+            else if (token != GenericToken)
             {
                 objSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
                 token = objSource.Token;
@@ -8977,8 +8992,13 @@ namespace Chummer
         /// </summary>
         public virtual async ValueTask<bool> SaveCharacterAs(bool blnDoCreated = false, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             CancellationTokenSource objSource = null;
-            if (token != GenericToken)
+            if (token == CancellationToken.None)
+            {
+                token = GenericToken;
+            }
+            else if (token != GenericToken)
             {
                 objSource = CancellationTokenSource.CreateLinkedTokenSource(token, GenericToken);
                 token = objSource.Token;
