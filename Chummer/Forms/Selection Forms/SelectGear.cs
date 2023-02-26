@@ -69,8 +69,7 @@ namespace Chummer
 
         public SelectGear(Character objCharacter, int intAvailModifier = 0, int intCostMultiplier = 1, object objGearParent = null, string strAllowedCategories = "", string strAllowedNames = "")
         {
-            if (objCharacter == null)
-                throw new ArgumentNullException(nameof(objCharacter));
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _objGenericToken = _objGenericCancellationTokenSource.Token;
             Disposed += (sender, args) =>
             {
@@ -106,7 +105,6 @@ namespace Chummer
             lblMarkupPercentLabel.Visible = objCharacter.Created;
             _intAvailModifier = intAvailModifier;
             _intCostMultiplier = intCostMultiplier;
-            _objCharacter = objCharacter;
             _objGearParent = objGearParent;
             _objParentNode = (_objGearParent as IHasXmlDataNode)?.GetNodeXPath();
             // Stack Checkbox is only available in Career Mode.

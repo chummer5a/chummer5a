@@ -544,6 +544,7 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_SelectBP";
             this.Text = "Select Build Method";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.SelectBuildMethod_Closing);
             this.Load += new System.EventHandler(this.SelectBuildMethod_Load);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();

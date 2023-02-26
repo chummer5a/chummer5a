@@ -288,7 +288,7 @@ namespace Chummer
             this.chkFreeItem.Tag = "Checkbox_Free";
             this.chkFreeItem.Text = "Free!";
             this.chkFreeItem.UseVisualStyleBackColor = true;
-            this.chkFreeItem.CheckedChanged += new System.EventHandler(this.chkFreeItem_CheckedChanged);
+            this.chkFreeItem.CheckedChanged += new System.EventHandler(this.DoUpdateInfo);
             // 
             // nudMarkup
             // 
@@ -309,7 +309,7 @@ namespace Chummer
             this.nudMarkup.Name = "nudMarkup";
             this.nudMarkup.Size = new System.Drawing.Size(56, 20);
             this.nudMarkup.TabIndex = 63;
-            this.nudMarkup.ValueChanged += new System.EventHandler(this.nudMarkup_ValueChanged);
+            this.nudMarkup.ValueChanged += new System.EventHandler(this.DoUpdateInfo);
             // 
             // lblMarkupPercentLabel
             // 
@@ -344,7 +344,7 @@ namespace Chummer
             this.tlpMain.SetRowSpan(this.treMods, 2);
             this.treMods.Size = new System.Drawing.Size(297, 388);
             this.treMods.TabIndex = 65;
-            this.treMods.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treMods_AfterSelect);
+            this.treMods.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.DoUpdateInfo);
             // 
             // cmdDeleteMod
             // 
@@ -553,7 +553,7 @@ namespace Chummer
             this.chkBlackMarketDiscount.Text = "Black Market Discount (10%)";
             this.chkBlackMarketDiscount.UseVisualStyleBackColor = true;
             this.chkBlackMarketDiscount.Visible = false;
-            this.chkBlackMarketDiscount.CheckedChanged += new System.EventHandler(this.chkBlackMarketDiscount_CheckedChanged);
+            this.chkBlackMarketDiscount.CheckedChanged += new System.EventHandler(this.DoUpdateInfo);
             // 
             // CreateWeaponMount
             // 
@@ -572,6 +572,7 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_CreateWeaponMount";
             this.Text = "Create Weapon Mount";
+            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CreateWeaponMount_Closing);
             this.Load += new System.EventHandler(this.CreateWeaponMount_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).EndInit();
             this.tlpMain.ResumeLayout(false);
