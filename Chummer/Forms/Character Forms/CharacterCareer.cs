@@ -18738,21 +18738,7 @@ namespace Chummer
             }
         }
 
-        private async void tabCharacterTabs_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (IsRefreshing)
-                return;
-            try
-            {
-                await RefreshPasteStatus(GenericToken).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                //swallow this
-            }
-        }
-
-        private async void tabStreetGearTabs_SelectedIndexChanged(object sender, EventArgs e)
+        private async void ProcessSelectedTabChanged(object sender, EventArgs e)
         {
             if (IsRefreshing)
                 return;
