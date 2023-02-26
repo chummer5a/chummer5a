@@ -811,7 +811,7 @@
       <armor>
         <id>7c2bb0b3-ae60-4c27-a720-561ad6953e83</id>
         <name>Tuxedo Rental</name>
-        <translate>Location d’un smoking</translate>
+        <translate>Location d​'un smoking</translate>
         <altpage>246</altpage>
       </armor>
       <armor>
@@ -1275,7 +1275,7 @@
       <mod>
         <id>6a4274bb-307d-433d-a1a7-75be52eacb93</id>
         <name>Gear Access</name>
-        <translate>Accès à l'équipement</translate>
+        <translate>Accès à l​'équipement</translate>
         <altpage>79</altpage>
       </mod>
       <mod translated="True">
@@ -1563,7 +1563,7 @@
       <mod>
         <id>49addc2c-ee9b-4f97-9c4b-4d49259734bc</id>
         <name>Attachable Gear Access</name>
-        <translate>Accès sà l'équipement</translate>
+        <translate>Accès sà l​'équipement</translate>
         <altpage>185</altpage>
       </mod>
       <mod>
@@ -7366,7 +7366,7 @@
       <metatype>
         <id>5d8606b7-e4f8-47ab-b09b-fd4685e8ee21</id>
         <name>Shadow Hound</name>
-        <translate>Chien de l’ombre</translate>
+        <translate>Chien de l​'ombre</translate>
         <altpage>156</altpage>
       </metatype>
       <metatype translated="True">
@@ -11868,7 +11868,7 @@
       <gear translated="True">
         <id>d90a58cd-f89c-486d-b785-991d2fecf32f</id>
         <name>Cellular Glove Molder</name>
-        <translate>Mouleur d’empreintes</translate>
+        <translate>Mouleur d​'empreintes</translate>
         <altpage>451</altpage>
       </gear>
       <gear>
@@ -12024,7 +12024,7 @@
       <gear translated="True">
         <id>a17cae86-4d6f-4e00-acb6-03f0ccfb2807</id>
         <name>Climbing Gear</name>
-        <translate>Matériel d’escalade</translate>
+        <translate>Matériel d​'escalade</translate>
         <altpage>452</altpage>
       </gear>
       <gear translated="True">
@@ -12138,7 +12138,7 @@
       <gear translated="True">
         <id>082b52f1-9109-40aa-bf0e-8cb364fa2f8c</id>
         <name>Binding Focus</name>
-        <translate>Focus de lien d’esprits</translate>
+        <translate>Focus de lien d​'esprits</translate>
         <altpage>322</altpage>
       </gear>
       <gear translated="True">
@@ -12150,7 +12150,7 @@
       <gear translated="True">
         <id>469f16ea-fe25-4f01-b663-166442850018</id>
         <name>Summoning Focus</name>
-        <translate>Focus d’invocation</translate>
+        <translate>Focus d​'invocation</translate>
         <altpage>322</altpage>
       </gear>
       <gear translated="True">
@@ -12192,7 +12192,7 @@
       <gear>
         <id>0bf4113c-dedb-411d-8981-7b6af169f056</id>
         <name>Ammo: Assault Cannon</name>
-        <translate>Mun. : Obus de canon d’assaut</translate>
+        <translate>Mun. : Obus de canon d​'assaut</translate>
         <altpage>323</altpage>
       </gear>
       <gear translated="True">
@@ -15155,7 +15155,7 @@
       </gear>
       <gear>
         <id>c0cf0e8f-386e-4b6d-8f7d-971a4cd0b56b</id>
-        <name>Several Days' Worth of Ration Bars</name>
+        <name>Several Days​' Worth of Ration Bars</name>
         <translate>Rations de survie (20 barres-repas)</translate>
         <altpage>452</altpage>
       </gear>
@@ -19704,7 +19704,7 @@
       <gear>
         <id>A4DCE79A-AF2D-4AC1-9CBB-F5A54B143C15</id>
         <name>Summoning Focus, Individualized, Partial</name>
-        <translate>Focus d’invocation séparé (Partiel)</translate>
+        <translate>Focus d​'invocation séparé (Partiel)</translate>
         <altpage>230</altpage>
       </gear>
       <gear>
@@ -19716,7 +19716,7 @@
       <gear>
         <id>D329D94D-9649-4B0B-8C7C-8299A288822A</id>
         <name>Binding Focus, Individualized, Partial</name>
-        <translate>Focus de lien d’esprits séparé (Partiel)</translate>
+        <translate>Focus de lien d​'esprits séparé (Partiel)</translate>
         <altpage>230</altpage>
       </gear>
       <gear>
@@ -19896,7 +19896,7 @@
       <gear>
         <id>7E63B243-6AB9-40AA-8FD3-429C6A85F3FB</id>
         <name>Summoning Focus, Individualized, Complete</name>
-        <translate>Focus d’invocation séparé (Complet)</translate>
+        <translate>Focus d​'invocation séparé (Complet)</translate>
         <altpage>230</altpage>
       </gear>
       <gear>
@@ -19908,7 +19908,7 @@
       <gear>
         <id>A50A38E7-C46A-4EA9-A0DA-F6FFA11090BF</id>
         <name>Binding Focus, Individualized, Complete</name>
-        <translate>Focus de lien d’esprits séparé (Complet)</translate>
+        <translate>Focus de lien d​'esprits séparé (Complet)</translate>
         <altpage>230</altpage>
       </gear>
       <gear>
@@ -20213,7 +20213,7 @@
         <name>Power Points, Free Spirit</name>
         <translate>Points de pouvoir, esprit libre</translate>
         <altpage>
-          Ajuste le nombre de points de pouvoir qu'un esprit libre reçoit pour les
+          Ajuste le nombre de points de pouvoir qu​'un esprit libre reçoit pour les
           pouvoirs de créature par la valeur entrée. Les nombres positifs augmentent le
           nombre de points de pouvoir. Les nombres négatifs réduisent le nombre de points
           de pouvoir. Pas d​'effet sur un personnage non esprit libre.
@@ -20224,7 +20224,7 @@
         <name>Power Points, Adept</name>
         <translate>Points de pouvoir, adepte</translate>
         <altpage>
-          Ajuste le nombre de points de pouvoir qu'un adepte reçoit pour les pouvoirs
+          Ajuste le nombre de points de pouvoir qu​'un adepte reçoit pour les pouvoirs
           d​'adepte par la valeur entrée. Les nombres positifs augmentent le nombre de
           points de pouvoir. Les nombres négatifs réduisent le nombre de points de
           pouvoir. Pas d​'effet sur un personnage non adepte.
@@ -20340,7 +20340,7 @@
         <name>Skillsoft Access</name>
         <translate>Accès aux skillsofts</translate>
         <altpage>
-          Le perosnnage peut utiliser les Knowsofts et Linguasofts comme s'il avait une
+          Le perosnnage peut utiliser les Knowsofts et Linguasofts comme s​'il avait une
           interface neurale directe.
         </altpage>
       </improvement>
@@ -22560,13 +22560,13 @@
           Dommages physiques.
         </altadvantage>
         <altdisadvantage>
-          Les magiciens Ours peuvent devenir enragés lorsqu’ils sont blessés
-          (Dommages physiques) en combat ou si quelqu’un sous leur garde est gravement
+          Les magiciens Ours peuvent devenir enragés lorsqu​'ils sont blessés
+          (Dommages physiques) en combat ou si quelqu​'un sous leur garde est gravement
           blessé. Effectuez un Test de Volonté + Charisme (les modificateurs de blessure
-          s’appliquent). Le personnage devient enragé pendant 3 tours, moins 1 tour par
+          s​'appliquent). Le personnage devient enragé pendant 3 tours, moins 1 tour par
           succès ; avec au moins 3 succès la rage du magicien est totalement contenue. Un
-          magicien enragé s’en prendra à l’attaquant sans se soucier de sa propre
-          sécurité. Si le magicien met hors combat une cible avant que la durée n’arrive à
+          magicien enragé s​'en prendra à l​'attaquant sans se soucier de sa propre
+          sécurité. Si le magicien met hors combat une cible avant que la durée n​'arrive à
           son terme, la rage se dissipe.
         </altdisadvantage>
         <altpage>201</altpage>
@@ -22722,13 +22722,13 @@
           </choice>
         </choices>
         <altadvantage>
-          +2 dés aux sorts d’Illusion, +2 dés soit aux Test de Gymnastique soit à
-          ceux d’Infiltration (le personnage doit choisir entre les deux
+          +2 dés aux sorts d​'Illusion, +2 dés soit aux Test de Gymnastique soit à
+          ceux d​'Infiltration (le personnage doit choisir entre les deux
           compétences).
         </altadvantage>
         <altdisadvantage>
           Les magiciens Chat jouent avec leur proie. À moins que le magicien ne
-          réussisse un Test de Volonté + Charisme (3), il ne peut pas faire d’attaque qui
+          réussisse un Test de Volonté + Charisme (3), il ne peut pas faire d​'attaque qui
           mettra hors combat sa cible (par exemple, un sort de Combat doit être lancé avec
           une Puissance qui ne terrassera pas sa victime). Si le magicien est blessé, ce
           petit jeu prend fin.
@@ -22815,11 +22815,11 @@
         </choices>
         <altadvantage>
           +2 dés aux sorts de Détection, +2 dés pour les esprits de
-          l’Homme.
+          l​'Homme.
         </altadvantage>
         <altdisadvantage>
           Un magicien Chien est obstinément loyal. Il ne peut jamais abandonner
-          quelqu’un, trahir ses camarades ou laisser quelqu’un d’autre se sacrifier à sa
+          quelqu​'un, trahir ses camarades ou laisser quelqu​'un d​'autre se sacrifier à sa
           place sans avoir réussi un Test de Volonté + Charisme (3).
         </altdisadvantage>
         <altpage>200</altpage>
@@ -22975,13 +22975,13 @@
           </choice>
         </choices>
         <altadvantage>
-          +2 dés pour les esprits toxiques Guides ou de l’Homme (au choix), +2 dés
-          aux tests d’Escroquerie.
+          +2 dés pour les esprits toxiques Guides ou de l​'Homme (au choix), +2 dés
+          aux tests d​'Escroquerie.
         </altadvantage>
         <altdisadvantage>
           Persuadés que la fin du monde est proche, les hérauts de Fatalité ne
-          voient aucun intérêt à maintenir des relations, à porter de l’intérêt à certains
-          sujets ou à conserver des biens qui n’ont pas d’utilité dans leurs plans
+          voient aucun intérêt à maintenir des relations, à porter de l​'intérêt à certains
+          sujets ou à conserver des biens qui n​'ont pas d​'utilité dans leurs plans
           apocalyptiques. De tels magiciens doivent réussir un Test de Volonté + Charisme
           (3) pour entreprendre une action qui maintiendrait des attachements
           inutiles.
@@ -23072,8 +23072,8 @@
         </altadvantage>
         <altdisadvantage>
           Si un magicien Tueurs de dragons rompt une promesse, que ce soit par
-          choix ou par accident, il subit un malus de −1 dé à toutes ses actions jusqu’à
-          ce qu’il tienne sa promesse ou qu’il ne se rachète de son erreur.
+          choix ou par accident, il subit un malus de −1 dé à toutes ses actions jusqu​'à
+          ce qu​'il tienne sa promesse ou qu​'il ne se rachète de son erreur.
         </altdisadvantage>
         <altpage>202</altpage>
       </mentor>
@@ -23155,7 +23155,7 @@
             <translate>Adepte : 1 free level of Combat Sense</translate>
           </choice>
         </choices>
-        <altadvantage>+2 dés aux sorts de Détection, +2 pour les esprits de l’Air.</altadvantage>
+        <altadvantage>+2 dés aux sorts de Détection, +2 pour les esprits de l​'Air.</altadvantage>
         <altdisadvantage>
           Les magiciens Aigle reçoivent le Défaut Allergie (Polluants, Légère).
           Voir p. 93 (ils ne reçoivent pas de PC en contrepartie).
@@ -23313,7 +23313,7 @@
           </choice>
         </choices>
         <altadvantage>+2 aux sorts de Manipulation, +2 pour les esprits du Feu.</altadvantage>
-        <altdisadvantage>−1 dé aux sorts d’Illusion.</altdisadvantage>
+        <altdisadvantage>−1 dé aux sorts d​'Illusion.</altdisadvantage>
         <altpage>202</altpage>
       </mentor>
       <mentor translated="True">
@@ -23468,7 +23468,7 @@
         </choices>
         <altadvantage>
           +2 dés aux sorts de Santé, +2 dés aux esprits de la Terre ou des Plantes
-          (le joueur doit choisir l’un des deux).
+          (le joueur doit choisir l​'un des deux).
         </altadvantage>
         <altdisadvantage>−1 dé aux sorts de Combat.</altdisadvantage>
         <altpage>174</altpage>
@@ -23556,10 +23556,10 @@
           Terre.
         </altadvantage>
         <altdisadvantage>
-          Lorsqu’un magicien Montagne établit un plan, il s’y tient. Le magicien
+          Lorsqu​'un magicien Montagne établit un plan, il s​'y tient. Le magicien
           doit réussir un Test de Volonté + Charisme (3) pour abandonner une tactique en
-          faveur d’une autre. S’il échoue, il fera tout son possible pour poursuivre son
-          plan d’origine, même si ça signifie continuer seul.
+          faveur d​'une autre. S​'il échoue, il fera tout son possible pour poursuivre son
+          plan d​'origine, même si ça signifie continuer seul.
         </altdisadvantage>
         <altpage>201</altpage>
       </mentor>
@@ -23642,14 +23642,14 @@
           </choice>
         </choices>
         <altadvantage>
-          +2 dés pour les esprits toxiques de l’Homme ou de la Bête (au choix), +2
+          +2 dés pour les esprits toxiques de l​'Homme ou de la Bête (au choix), +2
           dés aux sorts de Santé.
         </altadvantage>
         <altdisadvantage>
           Les disciples de Mutation méprisent la faiblesse. Si un magicien est
           amené à faire preuve de faiblesse ou à se révéler inférieur à quiconque, il
-          souffre alors d’un modificateur de réserve de dés de −1 à toutes ses actions,
-          jusqu’à ce qu’il puisse, d’une façon ou d’une autre, compenser cette faiblesse
+          souffre alors d​'un modificateur de réserve de dés de −1 à toutes ses actions,
+          jusqu​'à ce qu​'il puisse, d​'une façon ou d​'une autre, compenser cette faiblesse
           ou écraser son rival (ce qui conduit beaucoup de magiciens à acquérir de
           nouveaux implants ou de nouvelles améliorations).
         </altdisadvantage>
@@ -23734,13 +23734,13 @@
           </choice>
         </choices>
         <altadvantage>
-          +2 dés pour les esprits toxiques de l’Eau, de l’Air ou de la Terre (au
+          +2 dés pour les esprits toxiques de l​'Eau, de l​'Air ou de la Terre (au
           choix), +2 dés pour résister aux pathogènes et aux toxines.
         </altadvantage>
         <altdisadvantage>
           Un magicien de Pollution doit réussir un Test de Volonté + Charisme
-          (3) pour résister à l’envie de souiller ou de polluer tout environnement
-          préservé qu’il trouve sur son chemin.
+          (3) pour résister à l​'envie de souiller ou de polluer tout environnement
+          préservé qu​'il trouve sur son chemin.
         </altdisadvantage>
         <altpage>138</altpage>
       </mentor>
@@ -23823,13 +23823,13 @@
           </choice>
         </choices>
         <altadvantage>
-          +2 dés aux Tests d’Infiltration, +2 dés pour résister à la maladie et aux
+          +2 dés aux Tests d​'Infiltration, +2 dés pour résister à la maladie et aux
           poisons.
         </altadvantage>
         <altdisadvantage>
           Un magicien Rat doit réussir un Test de Volonté + Charisme (3) pour ne
           pas fuir (ou au moins se mettre à couvert) immédiatement dans toute situation de
-          combat où il est impliqué. S’il n’y a nulle part où s’enfuir, alors il sera
+          combat où il est impliqué. S​'il n​'y a nulle part où s​'enfuir, alors il sera
           forcé de combattre.
         </altdisadvantage>
         <altpage>202</altpage>
@@ -23914,11 +23914,11 @@
         </choices>
         <altadvantage>
           +2 dés aux sorts de Manipulation, +2 dés pour les esprits de
-          l’Air.
+          l​'Air.
         </altadvantage>
         <altdisadvantage>
           Un magicien Corbeau doit réussir un Test de Volonté + Charisme (3)
-          pour ne pas exploiter l’infortune de quelqu’un à son avantage.
+          pour ne pas exploiter l​'infortune de quelqu​'un à son avantage.
         </altdisadvantage>
         <altpage>200</altpage>
       </mentor>
@@ -24001,7 +24001,7 @@
           </choice>
         </choices>
         <altadvantage>
-          +2 dés pour les esprits de l’eau, +2 dés aux Tests de
+          +2 dés pour les esprits de l​'eau, +2 dés aux Tests de
           Natation.
         </altadvantage>
         <altdisadvantage>−1 dé aux Tests de Négociation.</altdisadvantage>
@@ -24091,9 +24091,9 @@
         </altadvantage>
         <altdisadvantage>
           Les magiciens peuvent devenir enragés en combat (comme les magiciens
-          Ours) lorsqu’ils sont blessés ou quand ils blessent un adversaire (voir p. 201).
+          Ours) lorsqu​'ils sont blessés ou quand ils blessent un adversaire (voir p. 201).
           Un magicien Requin enragé peut continuer à attaquer le corps de sa dernière
-          victime au lieu d’attaquer une nouvelle cible, si le joueur le
+          victime au lieu d​'attaquer une nouvelle cible, si le joueur le
           décide.
         </altdisadvantage>
         <altpage>202</altpage>
@@ -24178,7 +24178,7 @@
         </choices>
         <altadvantage>
           +2 dés aux sorts de Détection, +2 dés aux Tests de Contrôle
-          d’esprits.
+          d​'esprits.
         </altadvantage>
         <altdisadvantage>−1 dé aux sorts de Combat.</altdisadvantage>
         <altpage>202</altpage>
@@ -24266,12 +24266,12 @@
           </choice>
         </choices>
         <altadvantage>
-          +2 dés pour les esprits de l’Air, +2 dés aux Tests
-          d’Intimidation.
+          +2 dés pour les esprits de l​'Air, +2 dés aux Tests
+          d​'Intimidation.
         </altadvantage>
         <altdisadvantage>
           Un magicien Oiseau-tonnerre doit réussir un Test de Volonté + Charisme
-          (3) pour ne pas « aller au contact » de ceux qui l’ont insulté.
+          (3) pour ne pas « aller au contact » de ceux qui l​'ont insulté.
         </altdisadvantage>
         <altpage>201</altpage>
       </mentor>
@@ -24427,7 +24427,7 @@
         </choices>
         <altadvantage>+2 dés aux sorts de Combat et de Détection.</altadvantage>
         <altdisadvantage>
-          −1 dé tous les tests après un acte déshonorant, jusqu’à ce que le
+          −1 dé tous les tests après un acte déshonorant, jusqu​'à ce que le
           personnage ait racheté sa faute.
         </altdisadvantage>
         <altpage>202</altpage>
@@ -28595,7 +28595,7 @@
       <power>
         <id>ddcca815-d6fe-41ed-b174-2e7255320f17</id>
         <name>Attribute Boost</name>
-        <translate>Augmentation d’attribut</translate>
+        <translate>Augmentation d​'attribut</translate>
         <altpage>312</altpage>
       </power>
       <power translated="True">
@@ -32865,7 +32865,7 @@
       <quality>
         <id>32a4d207-a67b-4cdb-a0c8-731320f85ffc</id>
         <name>Better to be Feared Than Loved</name>
-        <translate>Plutôt craint qu'aimé</translate>
+        <translate>Plutôt craint qu​'aimé</translate>
         <altpage>54</altpage>
         <altnameonpage></altnameonpage>
       </quality>
@@ -35189,7 +35189,7 @@
           <spec translate="Explosifs">Explosives</spec>
           <spec translate="Armes à feu">Firearms</spec>
           <spec translate="Armes lourdes">Heavy Weapons</spec>
-          <spec translate="Accessoires d’armes">Weapon Accessories</spec>
+          <spec translate="Accessoires d​'armes">Weapon Accessories</spec>
           <spec translate="Armes de mêlée">Melee Weapons</spec>
         </specs>
         <altpage>146</altpage>
@@ -35214,7 +35214,7 @@
         <name>Assensing</name>
         <translate>Observation astrale</translate>
         <specs>
-          <spec translate="Lecture d’aura">Aura Reading</spec>
+          <spec translate="Lecture d​'aura">Aura Reading</spec>
           <spec translate="Signatures astrales">Astral Signatures</spec>
           <spec translate="[Type d​'aura]">[Aura Type]</spec>
           <spec translate="Psychométrie">Psychometry</spec>
@@ -35239,7 +35239,7 @@
         <name>Automatics</name>
         <translate>Armes automatiques</translate>
         <specs>
-          <spec translate="Fusils d’assaut">Assault Rifles</spec>
+          <spec translate="Fusils d​'assaut">Assault Rifles</spec>
           <spec translate="Pistolets-mitrailleurs">Machine Pistols</spec>
           <spec translate="Mitraillettes">Submachine Guns</spec>
           <spec translate="Cyber-Implantées">Cyber-Implant</spec>
@@ -35263,7 +35263,7 @@
         <name>Banishing</name>
         <translate>Bannissement</translate>
         <specs>
-          <spec translate="Esprits de l’air">Spirits of Air</spec>
+          <spec translate="Esprits de l​'air">Spirits of Air</spec>
           <spec translate="Esprits de la bête">Spirits of Beasts</spec>
           <spec translate="Esprits de la terre">Spirits of Earth</spec>
           <spec translate="Esprits du feu">Spirits of Fire</spec>
@@ -35281,7 +35281,7 @@
         <name>Binding</name>
         <translate>Lien d​'esprits</translate>
         <specs>
-          <spec translate="Esprits de l’air">Spirits of Air</spec>
+          <spec translate="Esprits de l​'air">Spirits of Air</spec>
           <spec translate="Esprits de la bête">Spirits of Beasts</spec>
           <spec translate="Esprits de la terre">Spirits of Earth</spec>
           <spec translate="Esprits du feu">Spirits of Fire</spec>
@@ -35604,7 +35604,7 @@
           <spec translate="Hydraulique">Hydraulics</spec>
           <spec translate="Structurelle">Structural</spec>
           <spec translate="Soudure">Welding</spec>
-          <spec translate="Systèmes d’alimentation électrique">Electrical Power Systems</spec>
+          <spec translate="Systèmes d​'alimentation électrique">Electrical Power Systems</spec>
           <spec translate="CVAC">HVAC</spec>
           <spec translate="Robotique industrielle">Industrial Robotics</spec>
         </specs>
@@ -35727,7 +35727,7 @@
         <specs>
           <spec translate="Prestidigitation">Legerdemain</spec>
           <spec translate="Pickpocket">Pickpocket</spec>
-          <spec translate="Vol à l’étalage">Pilfering</spec>
+          <spec translate="Vol à l​'étalage">Pilfering</spec>
         </specs>
         <altpage>135</altpage>
       </skill>
@@ -35877,7 +35877,7 @@
         <name>Summoning</name>
         <translate>Invocation</translate>
         <specs>
-          <spec translate="Esprits de l’air">Spirits of Air</spec>
+          <spec translate="Esprits de l​'air">Spirits of Air</spec>
           <spec translate="Esprits de la bête">Spirits of Beasts</spec>
           <spec translate="Esprits de la terre">Spirits of Earth</spec>
           <spec translate="Esprits du feu">Spirits of Fire</spec>
@@ -36058,7 +36058,7 @@
         <name>Performance</name>
         <translate>Représentation</translate>
         <specs>
-          <spec translate="Jeu d’acteur">Acting</spec>
+          <spec translate="Jeu d​'acteur">Acting</spec>
           <spec translate="Comédie">Comedy</spec>
           <spec translate="Présentation">Presentation</spec>
           <spec translate="[Instrument de musique]">[Musical Instrument]</spec>
@@ -45820,7 +45820,7 @@
       <weapon translated="True">
         <id>4ca64aa3-f172-4f0b-8c6d-954ddd1133b1</id>
         <name>Forearm Snap-Blades</name>
-        <translate>Lames d’avant-bras (Brassard)</translate>
+        <translate>Lames d​'avant-bras (Brassard)</translate>
         <altpage>425</altpage>
       </weapon>
       <weapon translated="True">
@@ -45952,7 +45952,7 @@
       <weapon translated="True">
         <id>60f52b1f-6376-49fc-a746-b811c54197e7</id>
         <name>Pole Arm</name>
-        <translate>Arme d’hast</translate>
+        <translate>Arme d​'hast</translate>
         <altpage>425</altpage>
       </weapon>
       <weapon>
