@@ -543,7 +543,7 @@ namespace Chummer
             Continue = 10
         }
 
-        internal static readonly string[] DefaultSystemString = { "OK", "Cancel", "Abort", "Retry", "Ignore", "Yes", "No", "Close", "Help", "TryAgain", "Continue" };
+        private static readonly string[] DefaultSystemString = { "OK", "Cancel", "Abort", "Retry", "Ignore", "Yes", "No", "Close", "Help", "Try Again", "Continue" };
 
         [DllImport("user32.dll", SetLastError = true, CharSet = CharSet.Unicode)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)]
@@ -561,7 +561,7 @@ namespace Chummer
             {
                 return Marshal.PtrToStringAuto(MB_GetString(intSystemStringId));
             } // MB_GetString is not implemented in WINE, so this is a workaround
-            catch (System.EntryPointNotFoundException e)
+            catch (EntryPointNotFoundException)
             {
                 return DefaultSystemString[intSystemStringId];
             }
@@ -577,7 +577,7 @@ namespace Chummer
             {
                 return Marshal.PtrToStringAuto(MB_GetString((int)eSystemStringId));
             } // MB_GetString is not implemented in WINE, so this is a workaround
-            catch (System.EntryPointNotFoundException e)
+            catch (EntryPointNotFoundException)
             {
                 return DefaultSystemString[(int)eSystemStringId];
             }
@@ -922,9 +922,25 @@ namespace Chummer
             {
                 return Icon.FromHandle(sii.hIcon);
             } // However, Icon.FromHandle is semi-stub in WINE so here is a backup.
-            catch (System.ArgumentException e)
+            catch (ArgumentException)
             {
-                return SystemIcons.Exclamation;
+                switch (eIconId)
+                {
+                    case SHSTOCKICONID.SIID_APPLICATION:
+                        return SystemIcons.Application;
+                    case SHSTOCKICONID.SIID_ERROR:
+                        return SystemIcons.Error;
+                    case SHSTOCKICONID.SIID_WARNING:
+                        return SystemIcons.Warning;
+                    case SHSTOCKICONID.SIID_HELP:
+                        return SystemIcons.Question;
+                    case SHSTOCKICONID.SIID_INFO:
+                        return SystemIcons.Information;
+                    case SHSTOCKICONID.SIID_SHIELD:
+                        return SystemIcons.Shield;
+                    default:
+                        return SystemIcons.Exclamation;
+                }
             }
         }
     }
