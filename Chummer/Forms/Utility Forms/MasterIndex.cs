@@ -480,7 +480,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             CancellationTokenSource objNewCancellationTokenSource = new CancellationTokenSource();
             CancellationToken objNewToken = objNewCancellationTokenSource.Token;
-            CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objPopulateCharacterSettingsCancellationTokenSource, objNewCancellationTokenSource);
+            CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objLoadContentCancellationTokenSource, objNewCancellationTokenSource);
             if (objOldCancellationTokenSource?.IsCancellationRequested == false)
             {
                 objOldCancellationTokenSource.Cancel(false);
