@@ -596,6 +596,8 @@ namespace Chummer
                                    .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("qualitysource", OriginSource.ToString(), token: token)
                                    .ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("metagenic", Metagenic.ToString(), token: token)
+                                   .ConfigureAwait(false);
                     await objWriter
                           .WriteElementStringAsync(
                               "source",
