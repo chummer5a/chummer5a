@@ -1563,7 +1563,7 @@
       <mod>
         <id>49addc2c-ee9b-4f97-9c4b-4d49259734bc</id>
         <name>Attachable Gear Access</name>
-        <translate>Accès sà l​'équipement</translate>
+        <translate>Accès amovible à l​'équipement</translate>
         <altpage>185</altpage>
       </mod>
       <mod>
@@ -1634,37 +1634,37 @@
         <id>f0a67dc0-6b0a-43fa-b389-a110ba1dd59d</id>
         <name>Standard</name>
         <translate>Standard</translate>
-        <altpage>451</altpage>
+        <altpage>454</altpage>
       </grade>
       <grade>
         <id>c2c6a3cc-c4bf-42c8-9260-868fd44d34ce</id>
         <name>Alphaware</name>
         <translate>Alphaware</translate>
-        <altpage>451</altpage>
+        <altpage>454</altpage>
       </grade>
       <grade>
         <id>9e24f0ce-b41e-496f-844a-82805fcb65a9</id>
         <name>Betaware</name>
         <translate>Betaware</translate>
-        <altpage>451</altpage>
+        <altpage>454</altpage>
       </grade>
       <grade>
         <id>2b599ecd-4e80-4669-a78e-4db232c80a83</id>
         <name>Deltaware</name>
         <translate>Deltaware</translate>
-        <altpage>451</altpage>
+        <altpage>454</altpage>
       </grade>
       <grade>
         <id>9166244c-440b-44a1-8795-4917b53e6101</id>
         <name>Standard (Burnout's Way)</name>
-        <translate>Standard (Voie du Grillé)</translate>
-        <altpage>177</altpage>
+        <translate>Standard (Voie du grillé)</translate>
+        <altpage>178</altpage>
       </grade>
       <grade>
         <id>c4bbffe4-5818-4055-bc5e-f44562bde855</id>
         <name>Used</name>
         <translate>D​'occasion</translate>
-        <altpage>451</altpage>
+        <altpage>454</altpage>
       </grade>
       <grade>
         <id>ee71d4f8-0fd0-4992-8b4e-70ef4dfbcce1</id>
@@ -1676,435 +1676,435 @@
         <id>0c86e85c-7e3e-4b6f-aa4b-26d8b379a7c9</id>
         <name>Gammaware</name>
         <translate>Gammaware</translate>
-        <altpage>72</altpage>
+        <altpage>74</altpage>
       </grade>
       <grade translated="True">
         <id>a6fba72c-9fbe-41dc-8310-cd047b50c81e</id>
         <name>Omegaware</name>
         <translate>Omegaware</translate>
-        <altpage>71</altpage>
+        <altpage>73</altpage>
       </grade>
     </grades>
     <categories>
-      <category translate="Basique">Basic</category>
-      <category translate="Cultivé">Cultured</category>
-      <category translate="Biosculpting" translated="True">Biosculpting</category>
-      <category translate="Bio-Armes">Bio-Weapons</category>
-      <category translate="Modifications des glandes">Chemical Gland Modifications</category>
+      <category translate="Standard">Basic</category>
+      <category translate="De culture">Cultured</category>
+      <category translate="Biosculpture">Biosculpting</category>
+      <category translate="Armement biologique">Bio-Weapons</category>
+      <category translate="Glandes chimiques">Chemical Gland Modifications</category>
       <category translate="Bioware cosmétique">Cosmetic Bioware</category>
       <category translate="Modifications génétiques">Genemods</category>
-      <category translate="Améliorations d​'orthoderme">Orthoskin Upgrades</category>
-      <category translate="Symbiotes" translated="True">Symbionts</category>
-      <category translate="Thérapie génique">Genetic Restoration</category>
+      <category translate="Augmentations orthodermiques">Orthoskin Upgrades</category>
+      <category translate="Symbiontes">Symbionts</category>
+      <category translate="Restauration génétique">Genetic Restoration</category>
     </categories>
     <biowares>
       <bioware>
         <id>ae0bb365-e40c-4aa2-9c30-0be902d992ac</id>
         <name>Adrenaline Pump</name>
         <translate>Pompe à adrénaline</translate>
-        <altpage>346</altpage>
+        <altpage>463</altpage>
       </bioware>
       <bioware>
         <id>b04871a1-6b7b-4a78-89fc-af8ec69bdd3d</id>
         <name>Bone Density Augmentation</name>
         <translate>Augmentation de densité osseuse</translate>
-        <altpage>345</altpage>
+        <altpage>462</altpage>
       </bioware>
       <bioware>
         <id>f038260b-f2de-4a9a-9507-5602d0e64a22</id>
         <name>Cat's Eyes</name>
         <translate>Yeux de chat</translate>
-        <altpage>347</altpage>
+        <altpage>464</altpage>
       </bioware>
       <bioware>
         <id>81b40aa8-98d1-4a5d-89d6-9b6d438006da</id>
         <name>Cerebral Booster</name>
-        <translate>Booster cérébral</translate>
-        <altpage>347</altpage>
+        <translate>Amplificateur cérébral</translate>
+        <altpage>464</altpage>
       </bioware>
       <bioware>
         <id>c46fbaba-d941-44b5-9bdc-643c5c6f4b24</id>
         <name>Damage Compensators</name>
         <translate>Compensateur de dommages</translate>
-        <altpage>347</altpage>
+        <altpage>464</altpage>
       </bioware>
       <bioware>
         <id>dfada66f-73f7-4648-aff4-6b6bce25f84c</id>
         <name>Enhanced Articulation</name>
         <translate>Articulations améliorées</translate>
-        <altpage>345</altpage>
+        <altpage>462</altpage>
       </bioware>
       <bioware>
         <id>b2289ebe-4bb0-49d0-a151-38fc1261bba8</id>
         <name>Mnemonic Enhancer</name>
         <translate>Amélioration mnémonique</translate>
-        <altpage>347</altpage>
+        <altpage>464</altpage>
       </bioware>
       <bioware>
         <id>841572d6-0785-4a8d-acd3-e106fb464781</id>
         <name>Muscle Augmentation</name>
         <translate>Renforcement musculaire</translate>
-        <altpage>347</altpage>
+        <altpage>463</altpage>
       </bioware>
       <bioware>
         <id>69ab0255-a76b-4190-a8be-0473fed231ef</id>
         <name>Muscle Toner</name>
         <translate>Tonification musculaire</translate>
-        <altpage>347</altpage>
+        <altpage>464</altpage>
       </bioware>
       <bioware>
         <id>96e4809a-71e6-4b98-9740-c6c44bc33aa9</id>
         <name>Orthoskin</name>
         <translate>Orthoderme</translate>
-        <altpage>346</altpage>
+        <altpage>462</altpage>
       </bioware>
       <bioware>
         <id>add913d1-6174-41d6-8021-b8bf35345e7a</id>
         <name>Pain Editor</name>
         <translate>Filtre antalgique</translate>
-        <altpage>348</altpage>
+        <altpage>464</altpage>
       </bioware>
       <bioware>
         <id>5bd98093-6620-4b0a-8f2c-61727d5c38a6</id>
         <name>Pathogenic Defense</name>
-        <translate>Défense pathogène</translate>
-        <altpage>345</altpage>
+        <translate>Défenses immunitaires optimisées</translate>
+        <altpage>462</altpage>
       </bioware>
       <bioware>
         <id>8c75648c-19d2-4734-b107-c04bb0e1904a</id>
         <name>Platelet Factories</name>
         <translate>Producteurs de plaquettes</translate>
-        <altpage>346</altpage>
+        <altpage>463</altpage>
       </bioware>
       <bioware>
         <id>17a6ba49-c21c-461b-9830-3beae8a237fc</id>
         <name>Reflex Recorder</name>
         <translate>Fixateur de réflexes</translate>
-        <altpage>348</altpage>
+        <altpage>464</altpage>
       </bioware>
       <bioware>
         <id>3fd172b8-0ff5-46ee-a468-91edd4cdc448</id>
         <name>Skin Pocket</name>
         <translate>Poche corporelle</translate>
-        <altpage>346</altpage>
+        <altpage>462</altpage>
       </bioware>
       <bioware>
         <id>5ffb0e03-c281-4aee-bc13-639576d932ab</id>
         <name>Sleep Regulator</name>
         <translate>Régulateur de sommeil</translate>
-        <altpage>348</altpage>
+        <altpage>464</altpage>
       </bioware>
       <bioware>
         <id>d1a314d9-3b83-4d62-854d-90e3788eea83</id>
         <name>Suprathyroid Gland</name>
         <translate>Glande suprathyroïdienne</translate>
-        <altpage>346</altpage>
+        <altpage>462</altpage>
       </bioware>
-      <bioware translated="True">
+      <bioware>
         <id>a08ce525-4788-42d8-b5d6-35a378f71776</id>
         <name>Symbiotes</name>
         <translate>Symbiotes</translate>
-        <altpage>347</altpage>
+        <altpage>463</altpage>
       </bioware>
       <bioware>
         <id>4a4e1079-5872-4f3f-a450-48c30a5504f3</id>
         <name>Synaptic Booster</name>
-        <translate>Booster synaptique</translate>
-        <altpage>347</altpage>
+        <translate>Amplificateur synaptique</translate>
+        <altpage>464</altpage>
       </bioware>
       <bioware>
         <id>109b0a32-320f-41c5-9acb-c49308525ce0</id>
         <name>Synthacardium</name>
         <translate>Synthécarde</translate>
-        <altpage>347</altpage>
+        <altpage>464</altpage>
       </bioware>
       <bioware>
         <id>2faac78a-ab32-4541-ad9c-3ef6c1b2cd84</id>
         <name>Tailored Pheromones</name>
-        <translate>Phéromones adaptatives</translate>
-        <altpage>346</altpage>
+        <translate>Phéromones optimisées</translate>
+        <altpage>462</altpage>
       </bioware>
       <bioware>
         <id>4acd62c6-fe89-44f3-a880-2751b1cf5512</id>
         <name>Toxin Extractor</name>
         <translate>Extracteur de toxines</translate>
-        <altpage>345</altpage>
+        <altpage>462</altpage>
       </bioware>
       <bioware>
         <id>988cf8a6-cfa0-4a62-8f64-b2065feffc02</id>
         <name>Tracheal Filter</name>
         <translate>Filtre trachéal</translate>
-        <altpage>345</altpage>
+        <altpage>462</altpage>
       </bioware>
       <bioware>
         <id>abdbc210-c1fa-45f1-9840-4f78d9eb8867</id>
         <name>Chemical Gland (Internal Release or Gradual Release)</name>
-        <translate>Glande corporelle (Interne, par dose ou continue)</translate>
-        <altpage>112</altpage>
+        <translate>Glande chimique (Libération interne, par dose ou progressive)</translate>
+        <altpage>117</altpage>
       </bioware>
       <bioware>
         <id>87453396-197f-4f7a-a6a3-6087d299bbd7</id>
         <name>Chemical Gland (Exhalation Sprayer)</name>
-        <translate>Glande corporelle (Aérosol nucal)</translate>
-        <altpage>112</altpage>
+        <translate>Glande corporelle (Exhalation)</translate>
+        <altpage>117</altpage>
       </bioware>
       <bioware>
         <id>47608117-a4af-4dfe-81bb-0dc8c6c5122d</id>
         <name>Chemical Gland (Spitter)</name>
-        <translate>Glande corporelle (Cracheur)</translate>
-        <altpage>112</altpage>
+        <translate>Glande corporelle (Crachat)</translate>
+        <altpage>117</altpage>
       </bioware>
       <bioware>
         <id>915b1458-e33c-4010-a093-47d40cfa11de</id>
         <name>Chemical Gland (Weapon Reservoir)</name>
-        <translate>Glande corporelle (Arme implantée)</translate>
-        <altpage>112</altpage>
+        <translate>Glande corporelle (Réservoir d​'arme)</translate>
+        <altpage>117</altpage>
       </bioware>
       <bioware>
         <id>d2064cf2-e9f7-479f-92cc-7da7c6024121</id>
         <name>Chemical Gland Expanded Reservoir</name>
-        <translate>Glande corporelle - Capacité augmentée</translate>
-        <altpage>112</altpage>
+        <translate>Glande corporelle (Réservoir supplémentaire)</translate>
+        <altpage>117</altpage>
       </bioware>
       <bioware>
         <id>ce9a6ed6-1307-4565-a6c9-c8fabde5255f</id>
         <name>Chemical Repulsion</name>
-        <translate>Peau étanche</translate>
-        <altpage>116</altpage>
+        <translate>Répulsion chimique</translate>
+        <altpage>122</altpage>
       </bioware>
       <bioware>
         <id>8aa2590f-1fc5-4706-a7b9-9eec3db4fab9</id>
         <name>Dragon Hide</name>
-        <translate>Peau de dragon</translate>
-        <altpage>116</altpage>
+        <translate>Cuir de dragon</translate>
+        <altpage>121</altpage>
       </bioware>
       <bioware>
         <id>857bbf66-3fab-466b-9c2c-f302340e3788</id>
         <name>Insulation</name>
         <translate>Isolation</translate>
-        <altpage>116</altpage>
+        <altpage>121</altpage>
       </bioware>
       <bioware>
         <id>b4ac7427-8d1d-4da7-b8dc-fd3f6cb0d433</id>
         <name>Electroshock</name>
         <translate>Électrochoc</translate>
-        <altpage>116</altpage>
+        <altpage>121</altpage>
       </bioware>
       <bioware>
         <id>33f7ea1c-1f3a-4b32-a0b4-5ffa48735bfa</id>
         <name>Penguin Blubber</name>
-        <translate>Peau de pingouin</translate>
-        <altpage>116</altpage>
+        <translate>Graisse de manchot</translate>
+        <altpage>121</altpage>
       </bioware>
       <bioware>
         <id>927e5c2b-fd62-4aa7-8911-d5f4468a9ff8</id>
         <name>Sealskin</name>
         <translate>Peau de phoque</translate>
-        <altpage>116</altpage>
+        <altpage>122</altpage>
       </bioware>
       <bioware>
         <id>f84dc64d-a158-45bd-b81c-0a8c98f77415</id>
         <name>Sharkskin</name>
         <translate>Peau de requin</translate>
-        <altpage>116</altpage>
+        <altpage>122</altpage>
       </bioware>
       <bioware>
         <id>6423d6b2-fcea-4eb0-b1cf-ea343cfc2f93</id>
         <name>Elastic Joints</name>
-        <translate>Articulations souples</translate>
-        <altpage>112</altpage>
+        <translate>Articulations élastiques</translate>
+        <altpage>115</altpage>
       </bioware>
       <bioware>
         <id>0958e1d4-36d0-4246-b955-541a4993ec91</id>
         <name>Gills</name>
         <translate>Branchies</translate>
-        <altpage>113</altpage>
+        <altpage>116</altpage>
       </bioware>
       <bioware>
         <id>4a939488-bd12-42f9-847f-1034fc3b4154</id>
         <name>Hand and Foot Webbing (Hands)</name>
-        <translate>Mains palmées</translate>
-        <altpage>113</altpage>
+        <translate>Pieds et mains palmés (mains)</translate>
+        <altpage>119</altpage>
       </bioware>
       <bioware>
         <id>c60d9b5f-080b-4209-8a8e-19a76eca7a5b</id>
         <name>Hand and Foot Webbing (Feet)</name>
-        <translate>Pieds palmés</translate>
-        <altpage>113</altpage>
+        <translate>Pieds et mains palmés (pieds)</translate>
+        <altpage>119</altpage>
       </bioware>
       <bioware>
         <id>e9c07c59-96c8-4ac7-955b-2474ff81381e</id>
         <name>Hearing Enhancement</name>
         <translate>Amélioration de l​'ouïe</translate>
-        <altpage>113</altpage>
+        <altpage>115</altpage>
       </bioware>
       <bioware>
         <id>0f6391e3-cf60-4ac0-91b8-44a990753120</id>
         <name>Hearing Expansion</name>
-        <translate>Amplification de l​'ouïe</translate>
-        <altpage>113</altpage>
+        <translate>Expansion de spectre auditif</translate>
+        <altpage>116</altpage>
       </bioware>
       <bioware>
         <id>8b57132f-507f-4624-a892-2ec4b14b7be8</id>
         <name>Joint Replacement</name>
         <translate>Remplacement d​'articulation</translate>
-        <altpage>113</altpage>
+        <altpage>119</altpage>
       </bioware>
       <bioware>
         <id>02e4af5e-22a6-4ebc-a3dd-05d71448be64</id>
         <name>Spidersilk Gland</name>
-        <translate>Glande séricigène</translate>
-        <altpage>114</altpage>
+        <translate>Glande à soies d’araignée</translate>
+        <altpage>116</altpage>
       </bioware>
       <bioware>
         <id>c5069f19-dae1-45f3-a1d4-b57d02534efa</id>
         <name>Spinal Realignment</name>
         <translate>Réalignement spinal</translate>
-        <altpage>114</altpage>
+        <altpage>119</altpage>
       </bioware>
       <bioware>
         <id>1f843110-0f53-4675-918f-855b1379181b</id>
         <name>Tactile Sensitivity</name>
         <translate>Sensibilité tactile</translate>
-        <altpage>114</altpage>
+        <altpage>120</altpage>
       </bioware>
       <bioware>
         <id>bac3eaa6-c1d3-457e-a319-1ce141baef37</id>
         <name>Tail</name>
         <translate>Queue</translate>
-        <altpage>115</altpage>
+        <altpage>119</altpage>
       </bioware>
       <bioware>
         <id>ada5468c-e350-4323-be31-29d0fe545c9e</id>
         <name>Tail, Prehensile</name>
-        <translate>Queue préhensile</translate>
-        <altpage>115</altpage>
+        <translate>Queue préhensible</translate>
+        <altpage>119</altpage>
       </bioware>
       <bioware>
         <id>11e000de-eaef-445f-88fb-6b679b5e57ab</id>
         <name>Troll Eyes</name>
-        <translate>Yeux de troll</translate>
-        <altpage>115</altpage>
+        <translate>Yeux de trolls</translate>
+        <altpage>120</altpage>
       </bioware>
       <bioware>
         <id>a923c0c8-1ac8-455a-9674-9af0072673ac</id>
         <name>Vocal Range Enhancer</name>
-        <translate>Amélioration de la tessiture vocale</translate>
+        <translate>Augmentation de spectre vocal</translate>
         <altpage>115</altpage>
       </bioware>
       <bioware>
         <id>70bd2c89-3432-4270-8e4c-d8d979114148</id>
         <name>Vocal Range Expander</name>
-        <translate>Amplification de la tessiture vocale</translate>
+        <translate>Extension de spectre vocal</translate>
         <altpage>115</altpage>
       </bioware>
       <bioware>
         <id>4f3f0651-6e1b-4dc3-b25a-33f62874cba8</id>
         <name>Nephritic screen</name>
-        <translate>Filtre néphritique</translate>
-        <altpage>113</altpage>
+        <translate>Bouclier rénal</translate>
+        <altpage>116</altpage>
       </bioware>
       <bioware>
         <id>3d9e763c-fcda-4fcd-96cc-4f02e4e6661a</id>
         <name>Nictitating Membranes</name>
-        <translate>Membrane nictitante</translate>
-        <altpage>113</altpage>
+        <translate>Membrane nictitante (par paire)</translate>
+        <altpage>117</altpage>
       </bioware>
       <bioware>
         <id>8f12d662-9fc6-475f-8435-a11829c14956</id>
         <name>Tailored Critter Pheremones</name>
-        <translate>Phéromones animales</translate>
-        <altpage>115</altpage>
+        <translate>Phéromones de créatures optimisées</translate>
+        <altpage>118</altpage>
       </bioware>
       <bioware>
         <id>c75c8286-2673-48a0-8e9b-cbfeec5c6bc1</id>
         <name>Expanded Volume</name>
-        <translate>Capacité pulmonaire quintuplée</translate>
-        <altpage>112</altpage>
+        <translate>Volume respiratoire étendu</translate>
+        <altpage>120</altpage>
       </bioware>
       <bioware>
         <id>82636229-f784-489d-8981-6a1479f0056c</id>
         <name>Amplified Immune System</name>
         <translate>Système immunitaire amplifié</translate>
-        <altpage>111</altpage>
+        <altpage>120</altpage>
       </bioware>
       <bioware>
         <id>3645B67A-F19E-4566-B257-4056D2848B2C</id>
         <name>Minor Biosculpting Modification</name>
         <translate>Biosculpture mineure</translate>
-        <altpage>107</altpage>
+        <altpage>111</altpage>
       </bioware>
       <bioware>
         <id>0e54ccda-6ba9-4668-b100-0442efd56221</id>
         <name>Moderate Biosculpting Modification</name>
         <translate>Biosculpture modérée</translate>
-        <altpage>107</altpage>
+        <altpage>111</altpage>
       </bioware>
       <bioware>
         <id>a4ca355b-6188-42c1-88c7-93947f233314</id>
         <name>Severe Biosculpting Modification</name>
-        <translate>Biosculpture avancée</translate>
-        <altpage>107</altpage>
+        <translate>Biosculpture importante</translate>
+        <altpage>111</altpage>
       </bioware>
       <bioware>
         <id>aa347008-38f1-4cb4-a919-bc705a8efe71</id>
         <name>Troll Reduction</name>
-        <translate>Dégobelinisation (Troll)</translate>
-        <altpage>108</altpage>
+        <translate>Réduction de troll (troll)</translate>
+        <altpage>112</altpage>
       </bioware>
       <bioware>
         <id>C24D24C6-5F00-41F2-A6AC-0289A0BC5DF7</id>
         <name>Troll Reduction (Ork)</name>
-        <translate>Dégobelinisation (Ork)</translate>
-        <altpage>108</altpage>
+        <translate>Réduction de troll (ork)</translate>
+        <altpage>112</altpage>
       </bioware>
       <bioware>
         <id>af01e25f-1e95-4c1a-a937-8cbe922529ca</id>
         <name>Ethnicity/Sex Change</name>
-        <translate>Changement de sexe/d​'ethnie</translate>
-        <altpage>107</altpage>
+        <translate>Changement de sexe / d​'ethnie</translate>
+        <altpage>111</altpage>
       </bioware>
       <bioware>
         <id>4c6458ec-082e-423c-b3df-ed57a62561f4</id>
         <name>Metatype Modification</name>
-        <translate>Modification cosmétique du métatype</translate>
-        <altpage>107</altpage>
+        <translate>Modification de métatype</translate>
+        <altpage>111</altpage>
       </bioware>
       <bioware>
         <id>dfd48ff5-3ecf-47b4-81fd-62b1ff3f74e4</id>
         <name>Claws</name>
         <translate>Griffes</translate>
-        <altpage>120</altpage>
+        <altpage>126</altpage>
       </bioware>
       <bioware>
         <id>885aa282-e624-4f8d-94e6-afafe672b3af</id>
         <name>Claws (Retractable)</name>
-        <translate>Griffes rétractiles</translate>
-        <altpage>120</altpage>
+        <translate>Griffes rétractables</translate>
+        <altpage>126</altpage>
       </bioware>
       <bioware>
         <id>8832f6ac-0082-4b9b-9e1c-7f90874a23a1</id>
         <name>Striking Callus</name>
-        <translate>Cals de frappe</translate>
-        <altpage>121</altpage>
+        <translate>Ceste calleux</translate>
+        <altpage>125</altpage>
       </bioware>
       <bioware>
         <id>f56ee63d-7ed3-4b5f-bde9-5b581eca9220</id>
         <name>Tusk(s), Small</name>
-        <translate>Défense(s) (Petites)</translate>
-        <altpage>121</altpage>
+        <translate>Défense(s) (normale)</translate>
+        <altpage>126</altpage>
       </bioware>
       <bioware>
         <id>3caa7752-63ee-40c9-ba3f-d11aef038812</id>
         <name>Tusk(s), Medium</name>
-        <translate>Défense(s) (Moyennes)</translate>
-        <altpage>121</altpage>
+        <translate>Défense(s) (moyenne)</translate>
+        <altpage>126</altpage>
       </bioware>
       <bioware>
         <id>d5e4c407-58e4-4b24-ba11-65c45d256f97</id>
         <name>Tusk(s), Large</name>
-        <translate>Défense(s) (Grandes)</translate>
-        <altpage>121</altpage>
+        <translate>Défense(s) (grande)</translate>
+        <altpage>126</altpage>
       </bioware>
       <bioware>
         <id>c0dedc5f-2c75-4dcb-9fc3-86fc44adea58</id>
@@ -2115,698 +2115,698 @@
       <bioware>
         <id>df52299c-321c-4cf8-9f38-038c5a44d455</id>
         <name>Claws, Retractable (Hands)</name>
-        <translate>Griffes rétractiles aux mains</translate>
-        <altpage>120</altpage>
+        <translate>Griffes rétractables aux mains</translate>
+        <altpage>126</altpage>
       </bioware>
       <bioware>
         <id>da38afc5-fe4c-4dfa-8f9f-e9e88adcb357</id>
         <name>Claws, Fixed (Feet)</name>
         <translate>Griffes aux pieds</translate>
-        <altpage>120</altpage>
+        <altpage>126</altpage>
       </bioware>
       <bioware>
         <id>ea389d15-539a-4d7b-aa2f-33ea6cf0d40b</id>
         <name>Claws, Retractable (Feet)</name>
-        <translate>Griffes rétractiles aux pieds</translate>
-        <altpage>120</altpage>
+        <translate>Griffes rétractables aux pieds</translate>
+        <altpage>126</altpage>
       </bioware>
       <bioware>
         <id>ccd4b880-cf85-4b96-9de0-211dc6fb48e2</id>
         <name>Striking Callus (Hands)</name>
-        <translate>Cals de frappe (Mains)</translate>
-        <altpage>121</altpage>
+        <translate>Cestes calleux (mains)</translate>
+        <altpage>125</altpage>
       </bioware>
       <bioware>
         <id>56f6c403-3d29-4055-a323-a7b67acb607d</id>
         <name>Striking Callus (Feet)</name>
-        <translate>Cals de frappe (Pieds)</translate>
-        <altpage>121</altpage>
+        <translate>Cestes calleux (pieds)</translate>
+        <altpage>125</altpage>
       </bioware>
       <bioware>
         <id>ee1d31e8-f5c9-4326-8139-3e591003f736</id>
         <name>Tusk(s), Small</name>
-        <translate>Défense(s) (Petites)</translate>
-        <altpage>121</altpage>
+        <translate>Défense(s) (normale)</translate>
+        <altpage>126</altpage>
       </bioware>
       <bioware>
         <id>34310f59-55d5-4e95-8966-a97b20a388ce</id>
         <name>Tusk(s), Medium</name>
-        <translate>Défense(s) (Moyennes)</translate>
-        <altpage>121</altpage>
+        <translate>Défense(s) (moyenne)</translate>
+        <altpage>126</altpage>
       </bioware>
       <bioware>
         <id>715d0e82-9fbf-42d6-94a6-efbb03540435</id>
         <name>Tusk(s), Large</name>
-        <translate>Défense(s) (Grandes)</translate>
-        <altpage>121</altpage>
+        <translate>Défense(s) (grande)</translate>
+        <altpage>126</altpage>
       </bioware>
       <bioware>
         <id>1c919d10-72ae-4cd9-bad2-6b4a23ae48b0</id>
         <name>Replacement Tusk(s), Small</name>
-        <translate>Défense(s) de remplacement (Petites)</translate>
-        <altpage>121</altpage>
+        <translate>Défense(s) de remplacement (normale)</translate>
+        <altpage>126</altpage>
       </bioware>
       <bioware>
         <id>f97ba92a-bba5-4b52-ab4c-28102c67acd7</id>
         <name>Replacement Tusk(s), Medium</name>
-        <translate>Défense(s) de remplacement (Moyennes)</translate>
-        <altpage>121</altpage>
+        <translate>Défense(s) de remplacement (moyenne)</translate>
+        <altpage>126</altpage>
       </bioware>
       <bioware>
         <id>787ff755-16f5-4dfa-9cf8-49b8399103e6</id>
         <name>Electrical Discharge</name>
-        <translate>Décharge électrique</translate>
-        <altpage>120</altpage>
+        <translate>Arme à décharge électrique</translate>
+        <altpage>125</altpage>
       </bioware>
       <bioware>
         <id>82780b5b-41dd-49ae-964f-c14ca91a0f14</id>
         <name>Fangs</name>
         <translate>Crocs</translate>
-        <altpage>120</altpage>
+        <altpage>125</altpage>
       </bioware>
       <bioware>
         <id>3f0fda69-a098-4c9a-855e-5dd2d46ae3da</id>
         <name>Fangs (Retractable)</name>
-        <translate>Crocs rétractiles</translate>
-        <altpage>120</altpage>
+        <translate>Crocs rétractables</translate>
+        <altpage>125</altpage>
       </bioware>
       <bioware>
         <id>cbe09df9-556d-44d4-9d68-073415850deb</id>
         <name>Horns</name>
         <translate>Cornes</translate>
-        <altpage>120</altpage>
+        <altpage>125</altpage>
       </bioware>
       <bioware>
         <id>605b82f9-9f12-4a14-b567-091dd5fcde80</id>
         <name>Muzzle</name>
         <translate>Museau</translate>
-        <altpage>121</altpage>
+        <altpage>125</altpage>
       </bioware>
       <bioware>
         <id>828ca5e9-4409-42aa-a6df-87fc907fede2</id>
         <name>Sprayer</name>
-        <translate>Cracheur</translate>
-        <altpage>121</altpage>
+        <translate>Pulvérisateur</translate>
+        <altpage>127</altpage>
       </bioware>
       <bioware>
         <id>b9085cbe-8e67-4205-8e49-603e31f9d6f7</id>
         <name>Stinger, Tiny</name>
-        <translate>Dard (Petit)</translate>
-        <altpage>121</altpage>
+        <translate>Dard (minuscule)</translate>
+        <altpage>126</altpage>
       </bioware>
       <bioware>
         <id>77bcbea4-fc69-42e6-b4e3-0debe6c08596</id>
         <name>Stinger, Medium</name>
-        <translate>Dard (Moyen)</translate>
-        <altpage>121</altpage>
+        <translate>Dard (moyen)</translate>
+        <altpage>126</altpage>
       </bioware>
       <bioware>
         <id>c466a6cf-bf31-4300-b53e-0f83af141342</id>
         <name>Stinger, Large</name>
-        <translate>Dard (Grand)</translate>
-        <altpage>121</altpage>
+        <translate>Dard (grand)</translate>
+        <altpage>126</altpage>
       </bioware>
       <bioware>
         <id>f8195e35-fed4-463a-bd09-b559a6e05803</id>
         <name>Bio-Tattoos</name>
-        <translate>Bio-tatouage</translate>
-        <altpage>109</altpage>
+        <translate>Bio-tatouages</translate>
+        <altpage>112</altpage>
       </bioware>
       <bioware>
         <id>ebf3f1ed-700f-4b37-b61a-0b262937dea6</id>
         <name>Chameleon Skin</name>
         <translate>Peau de caméléon</translate>
-        <altpage>109</altpage>
+        <altpage>113</altpage>
       </bioware>
       <bioware>
         <id>98ae7b28-33ab-47ab-aa7b-5e1f4a90b8ce</id>
         <name>Chameleon Skin (Dynamic)</name>
         <translate>Peau de caméléon (dynamique)</translate>
-        <altpage>109</altpage>
+        <altpage>113</altpage>
       </bioware>
       <bioware>
         <id>e3897bf8-0961-4b77-863a-4fbc4c0860f2</id>
         <name>Clean Metabolism</name>
         <translate>Métabolisme propre</translate>
-        <altpage>109</altpage>
+        <altpage>113</altpage>
       </bioware>
       <bioware>
         <id>a2ff0680-3083-40c4-9f8b-5677aacdeaa8</id>
         <name>Chloroplast Skin</name>
-        <translate>Peau chloroplastique</translate>
-        <altpage>109</altpage>
+        <translate>Peau à chloroplastes</translate>
+        <altpage>113</altpage>
       </bioware>
-      <bioware translated="True">
+      <bioware>
         <id>458010b9-f07f-4976-bd5b-7053c4837b79</id>
         <name>Dietware</name>
-        <translate>Dietware</translate>
-        <altpage>109</altpage>
+        <translate>Régimeware</translate>
+        <altpage>114</altpage>
       </bioware>
       <bioware>
         <id>89137e94-5bf3-4c6d-93d9-571c96fc5b2f</id>
         <name>Hair Growth</name>
-        <translate>Pousse capillaire</translate>
-        <altpage>109</altpage>
+        <translate>Croissance capillaire</translate>
+        <altpage>112</altpage>
       </bioware>
       <bioware>
         <id>a3e4a944-6463-4cd9-b3bc-6b940c6427f3</id>
         <name>Hair Growth (Full-Body)</name>
-        <translate>Pousse capillaire (corps entier)</translate>
-        <altpage>109</altpage>
+        <translate>Croissance capillaire sur tout le corps</translate>
+        <altpage>112</altpage>
       </bioware>
       <bioware>
         <id>9f86544d-da24-4312-b4d5-6ab47956b7fa</id>
         <name>Perfect Eyes</name>
-        <translate>Vision parfaite</translate>
-        <altpage>109</altpage>
+        <translate>Yeux parfaits</translate>
+        <altpage>115</altpage>
       </bioware>
       <bioware>
         <id>e53383b8-ed64-4840-a2bf-baaa8885c61b</id>
         <name>Sensitive Skin</name>
-        <translate>Peau hypersensible</translate>
-        <altpage>110</altpage>
+        <translate>Peau sensible</translate>
+        <altpage>113</altpage>
       </bioware>
       <bioware>
         <id>98e8f46f-e742-4456-95b7-f6f3eaa7d795</id>
         <name>Silky Skin</name>
-        <translate>Peau douce</translate>
-        <altpage>110</altpage>
+        <translate>Peau soyeuse</translate>
+        <altpage>114</altpage>
       </bioware>
       <bioware>
         <id>487ba675-b689-48e0-bd45-e6729d671a51</id>
         <name>Skin Pigmentation</name>
-        <translate>Pigmentation de la peau</translate>
-        <altpage>111</altpage>
+        <translate>Pigmentation dermique</translate>
+        <altpage>114</altpage>
       </bioware>
       <bioware>
         <id>9cd588c4-c93f-4fef-b216-9da2707066f7</id>
         <name>Skin Pigmentation (Permanent)</name>
-        <translate>Pigmentation de la peau (permanente)</translate>
-        <altpage>111</altpage>
+        <translate>Pigmentation dermique permanente</translate>
+        <altpage>114</altpage>
       </bioware>
       <bioware>
         <id>afbf823f-3116-4967-93d2-0e334bb35d3a</id>
         <name>Cerebellum Booster</name>
-        <translate>Boost du cervelet</translate>
-        <altpage>118</altpage>
+        <translate>Cervelet amplifié</translate>
+        <altpage>122</altpage>
       </bioware>
       <bioware>
         <id>1abeac7c-79c5-4774-ad45-cd355ebc1476</id>
         <name>Boosted Reflexes</name>
-        <translate>Boost des réflexes</translate>
-        <altpage>118</altpage>
+        <translate>Réflexes amplifiés</translate>
+        <altpage>124</altpage>
       </bioware>
       <bioware>
         <id>aece83ad-cec8-4117-adbd-3ec5e2049372</id>
         <name>Knowledge Infusion</name>
-        <translate>Injection de connaissances</translate>
-        <altpage>118</altpage>
+        <translate>Injection de connaissance</translate>
+        <altpage>123</altpage>
       </bioware>
       <bioware>
         <id>19000eeb-099e-4d63-9e1f-39a321569abe</id>
         <name>Limb replacement (Finger/Toe)</name>
-        <translate>Régénération de membre (Doigt/orteil)</translate>
-        <altpage>118</altpage>
+        <translate>Remplacement d’un membre (doigt / orteil)</translate>
+        <altpage>124</altpage>
       </bioware>
       <bioware>
         <id>7346dc96-af61-48f4-a98c-3bbe5fa64005</id>
         <name>Limb replacement (Hand/foot)</name>
-        <translate>Régénération de membre (Main/pied)</translate>
-        <altpage>118</altpage>
+        <translate>Remplacement d’un membre (main / pied)</translate>
+        <altpage>124</altpage>
       </bioware>
       <bioware>
         <id>4a61e7db-b4e2-48e3-8744-6a44bff453a7</id>
         <name>Limb replacement (Half arm/leg)</name>
-        <translate>Régénération de membre (Moitié de bras/jambe)</translate>
-        <altpage>118</altpage>
+        <translate>Remplacement d’un membre (avant-bras/mollet)</translate>
+        <altpage>124</altpage>
       </bioware>
       <bioware>
         <id>67be6b07-11e4-49e6-8f6f-6931a3f8bf1f</id>
         <name>Limb replacement (Full arm/leg)</name>
-        <translate>Régénération de membre (Bras/Jambe complète)</translate>
-        <altpage>118</altpage>
+        <translate>Remplacement d’un membre (bras / jambe)</translate>
+        <altpage>124</altpage>
       </bioware>
       <bioware>
         <id>f0aa87d0-2d86-482c-808d-667f1078f357</id>
         <name>Neuro Retention Amplification</name>
-        <translate>Amélioration de la neuro-rétention</translate>
-        <altpage>118</altpage>
+        <translate>Accroissement de la neuro-rétention</translate>
+        <altpage>122</altpage>
       </bioware>
       <bioware>
         <id>0dc21074-6b2c-446a-aadc-e8304c9c124f</id>
         <name>Reproductive Replacement, Male</name>
-        <translate>Phalloplastie</translate>
-        <altpage>118</altpage>
+        <translate>Remplacement des organes reproducteurs - homme</translate>
+        <altpage>124</altpage>
       </bioware>
       <bioware>
         <id>31b609ee-6856-44bb-b1f5-19066c0a74c0</id>
         <name>Reproductive Replacement, Female</name>
-        <translate>Hystéroplastie</translate>
-        <altpage>118</altpage>
+        <translate>Remplacement des organes reproducteurs - femme</translate>
+        <altpage>124</altpage>
       </bioware>
       <bioware>
         <id>e99097a1-84d5-4038-8525-761d199c58a7</id>
         <name>Trauma Damper</name>
-        <translate>Atténuateur de traumas</translate>
-        <altpage>119</altpage>
+        <translate>Réducteur de trauma</translate>
+        <altpage>123</altpage>
       </bioware>
       <bioware>
         <id>e78a9465-d399-4e94-bea8-7e98c8fc960d</id>
         <name>Tremor Reducer</name>
-        <translate>Stabilisation des mains</translate>
-        <altpage>119</altpage>
+        <translate>Réducteur de tremblements</translate>
+        <altpage>123</altpage>
       </bioware>
       <bioware>
         <id>5f2c33a4-3472-4643-a0bb-9a6e52554c2f</id>
         <name>Reception Enhancer</name>
-        <translate>Cerveau multitâche</translate>
-        <altpage>118</altpage>
+        <translate>Accroissement de traitement sensoriel</translate>
+        <altpage>122</altpage>
       </bioware>
       <bioware>
         <id>4e9c11ed-730a-478f-a53d-d36220040506</id>
         <name>Genewipe</name>
-        <translate>Autodestruction génomique</translate>
-        <altpage>157</altpage>
+        <translate>Stérilisation génétique</translate>
+        <altpage>163</altpage>
       </bioware>
       <bioware>
         <id>163a1d28-9f0d-414f-8b8f-473f78a3740d</id>
         <name>Masque</name>
         <translate>Masque ADN</translate>
-        <altpage>157</altpage>
+        <altpage>162</altpage>
       </bioware>
       <bioware>
         <id>5f3da0ce-261f-4d1a-87a7-1e0614d65ef0</id>
         <name>Reprint</name>
-        <translate>Nouvelles empreintes</translate>
-        <altpage>157</altpage>
+        <translate>Réécriture</translate>
+        <altpage>163</altpage>
       </bioware>
       <bioware>
         <id>0f9ebf2e-d949-49f2-8f30-4e8413e92e39</id>
         <name>Shuffle</name>
-        <translate>Gènes aléatoires</translate>
-        <altpage>157</altpage>
+        <translate>Mélange ADN</translate>
+        <altpage>163</altpage>
       </bioware>
       <bioware>
         <id>6bd96ba6-1e0c-4de1-89e7-01b6973e1115</id>
         <name>Elastic Stomach</name>
-        <translate>Estomac extensible</translate>
-        <altpage>158</altpage>
+        <translate>Estomac élastique</translate>
+        <altpage>163</altpage>
       </bioware>
       <bioware>
         <id>4a529d50-45cd-4f2d-8766-4ecd7c15f292</id>
         <name>Hyperthymesia</name>
         <translate>Hypermnésie</translate>
-        <altpage>159</altpage>
+        <altpage>163</altpage>
       </bioware>
       <bioware>
         <id>f3e1922e-cd73-4567-983c-7409e755f30a</id>
         <name>Lung Expansion</name>
-        <translate>Poumons élastiques</translate>
-        <altpage>159</altpage>
+        <translate>Expansion de poumon</translate>
+        <altpage>163</altpage>
       </bioware>
       <bioware>
         <id>b111b7c3-d44f-40b5-bba2-7d805cf9fd4c</id>
         <name>Increased Myelination</name>
-        <translate>Myélinisation augmentée</translate>
-        <altpage>159</altpage>
+        <translate>Myélinisation accrue</translate>
+        <altpage>164</altpage>
       </bioware>
       <bioware>
         <id>1b6713f7-f5b6-49fb-a89a-68322c06f38d</id>
-        <name>Myostatin Inhibitor</name>
+        <name>Inhibiteur de myostatine</name>
         <translate>Inhibiteur de myostatine</translate>
-        <altpage>159</altpage>
+        <altpage>164</altpage>
       </bioware>
-      <bioware translated="True">
+      <bioware>
         <id>92a00ca4-7e2b-47ca-ac02-1d58e4932d0a</id>
         <name>Narco</name>
         <translate>Narco</translate>
-        <altpage>159</altpage>
+        <altpage>164</altpage>
       </bioware>
       <bioware>
         <id>8d57009b-86c8-4fde-b8b5-1cf64942f517</id>
         <name>Selective Hearing</name>
         <translate>Ouïe sélective</translate>
-        <altpage>160</altpage>
+        <altpage>164</altpage>
       </bioware>
       <bioware>
         <id>a2acbc5a-187c-4e6f-95e5-c015f1aab56b</id>
         <name>Thickened Digestive Tract Lining</name>
-        <translate>Tube digestif renforcé</translate>
-        <altpage>160</altpage>
+        <translate>Paroi digestive renforcée</translate>
+        <altpage>165</altpage>
       </bioware>
       <bioware>
         <id>3f8b9030-662e-4212-8f30-5aa394a41568</id>
         <name>Adapsin</name>
         <translate>Adapsine</translate>
-        <altpage>160</altpage>
+        <altpage>165</altpage>
       </bioware>
       <bioware>
         <id>6a62e21f-f291-4e93-b109-df9c56c938f9</id>
         <name>Dareadrenaline</name>
-        <translate>Mégadrénaline</translate>
-        <altpage>160</altpage>
+        <translate>Dareadrénaline</translate>
+        <altpage>166</altpage>
       </bioware>
       <bioware>
         <id>04bea47c-85f3-4efa-b058-72def7d0d73b</id>
         <name>Double Elastin</name>
-        <translate>Double plèbre</translate>
-        <altpage>160</altpage>
+        <translate>Double élastine</translate>
+        <altpage>166</altpage>
       </bioware>
       <bioware>
         <id>cd0d68d6-34e5-440e-9d78-5400008a5f71</id>
         <name>Hyper Glucagon</name>
-        <translate>Hyper-glucagon</translate>
-        <altpage>160</altpage>
+        <translate>Hyper-Glucagon</translate>
+        <altpage>166</altpage>
       </bioware>
       <bioware>
         <id>ef4a3bfe-5698-43ae-a4ff-8056aec4095d</id>
         <name>Magnesense</name>
-        <translate>Magnétosensibilité</translate>
-        <altpage>160</altpage>
+        <translate>Magnesense</translate>
+        <altpage>166</altpage>
       </bioware>
       <bioware>
         <id>bd4aade6-a0f2-40af-8073-f1e62ae4b3f9</id>
         <name>Neo-EPO</name>
-        <translate>Néo-érythropoïétine</translate>
-        <altpage>160</altpage>
+        <translate>Neo-EPO</translate>
+        <altpage>166</altpage>
       </bioware>
       <bioware>
         <id>2c988cbe-e6e6-4c22-ae3c-14ad6e1fff1f</id>
         <name>PuSHed</name>
-        <translate>Protéine HyDenPS</translate>
-        <altpage>160</altpage>
+        <translate>PuSHed</translate>
+        <altpage>167</altpage>
       </bioware>
       <bioware translated="True">
         <id>b110516e-36e8-4c69-a682-066e91c02351</id>
         <name>Qualia</name>
         <translate>Qualia</translate>
-        <altpage>161</altpage>
+        <altpage>167</altpage>
       </bioware>
       <bioware>
         <id>eb25dd41-2649-4e75-b0fb-dc47df3a7daa</id>
         <name>Reakt</name>
-        <translate>Réakt</translate>
-        <altpage>161</altpage>
+        <translate>Reakt</translate>
+        <altpage>167</altpage>
       </bioware>
       <bioware>
         <id>afea1a35-d8ca-4cab-9555-7a7d5df1390d</id>
         <name>Skeletal Pneumaticity</name>
-        <translate>Squelette creux</translate>
-        <altpage>161</altpage>
+        <translate>Pneumaticité squelettique</translate>
+        <altpage>167</altpage>
       </bioware>
       <bioware translated="True">
         <id>e1cf23c7-9c79-4007-a2e8-ff872ee212e2</id>
         <name>Solus</name>
         <translate>Solus</translate>
-        <altpage>161</altpage>
+        <altpage>167</altpage>
       </bioware>
       <bioware>
         <id>92b4c2a4-10a3-486a-8ab6-1e00d40dd69a</id>
         <name>Synaptic Acceleration</name>
         <translate>Accélération synaptique</translate>
-        <altpage>162</altpage>
+        <altpage>165</altpage>
       </bioware>
       <bioware translated="True">
         <id>89d6f0e2-f618-4a5f-b24f-e42603100fc3</id>
         <name>Synch</name>
         <translate>Synch</translate>
-        <altpage>162</altpage>
+        <altpage>167</altpage>
       </bioware>
       <bioware>
         <id>6aa86a49-d947-47ac-bf04-e1578c029333</id>
         <name>Tetrachromatic Vision</name>
         <translate>Vision tétrachromatique</translate>
-        <altpage>162</altpage>
+        <altpage>168</altpage>
       </bioware>
       <bioware>
         <id>ae1d7612-7805-4962-8f9a-beb17619762d</id>
         <name>Vasocon</name>
-        <translate>Vasoconstriction</translate>
-        <altpage>162</altpage>
+        <translate>Vasocon</translate>
+        <altpage>168</altpage>
       </bioware>
       <bioware>
         <id>7aad79ff-7722-440d-a9c6-5b33b4ad7440</id>
         <name>Allergen Tolerance</name>
         <translate>Tolérance aux allergènes</translate>
-        <altpage>163</altpage>
+        <altpage>169</altpage>
       </bioware>
       <bioware>
         <id>d4f12de1-29bc-4d6e-9ef2-d395b446c9e4</id>
         <name>Cold Adaptation</name>
         <translate>Adaptation au froid</translate>
-        <altpage>163</altpage>
+        <altpage>169</altpage>
       </bioware>
       <bioware>
         <id>f5b67712-1609-4f76-bb61-ad83d3d3e926</id>
         <name>Cryo Tolerance</name>
         <translate>Cryotolérance</translate>
-        <altpage>163</altpage>
+        <altpage>169</altpage>
       </bioware>
       <bioware>
         <id>7b5bfe60-c7f6-4df2-9e53-56a76a4e8a8e</id>
         <name>Heat Adaptation</name>
         <translate>Adaptation à la chaleur</translate>
-        <altpage>163</altpage>
+        <altpage>168</altpage>
       </bioware>
       <bioware>
         <id>0453cf1e-3224-46ce-82bb-fde03ef6e451</id>
         <name>Low Oxygen Adaptation</name>
-        <translate>Consommation d​'oxygène réduite</translate>
-        <altpage>163</altpage>
+        <translate>Tolérance à l’hypoxie</translate>
+        <altpage>169</altpage>
       </bioware>
       <bioware>
         <id>4c67dc6a-eafb-40c7-88a1-b32518800db2</id>
         <name>Microgravity Adaptation</name>
         <translate>Adaptation à la microgravité</translate>
-        <altpage>163</altpage>
+        <altpage>168</altpage>
       </bioware>
       <bioware>
         <id>5b3d3dce-2cd2-4720-84ae-4445092a4245</id>
         <name>Pollution Tolerance</name>
         <translate>Tolérance à la pollution</translate>
-        <altpage>163</altpage>
+        <altpage>169</altpage>
       </bioware>
       <bioware>
         <id>3550fe0d-453d-431f-bd84-d9cd50581f39</id>
         <name>Radiation Tolerance</name>
         <translate>Tolérance aux radiations</translate>
-        <altpage>164</altpage>
+        <altpage>170</altpage>
       </bioware>
       <bioware>
         <id>5c277258-ea34-46a3-b10a-323e0eed4dfa</id>
         <name>Control Rig Optimization</name>
-        <translate>Optimisation du contrôle de Rigger</translate>
-        <altpage>165</altpage>
+        <translate>Optimisation du câblage de contrôle</translate>
+        <altpage>172</altpage>
       </bioware>
       <bioware>
         <id>dc3dbcd5-dc86-44db-8b99-ae69a8b60a1d</id>
         <name>Reaction Optimization</name>
-        <translate>Optimisation de la réactivité</translate>
-        <altpage>165</altpage>
+        <translate>Optimisation d’accroissement de réaction</translate>
+        <altpage>171</altpage>
       </bioware>
       <bioware>
         <id>afe25e41-8d6c-4476-9d18-ecd23219207c</id>
         <name>Reflex Recorder Optimization</name>
-        <translate>Optimisation des réflexes induits</translate>
-        <altpage>165</altpage>
+        <translate>Optimisation de fixateur de réflexes</translate>
+        <altpage>172</altpage>
       </bioware>
       <bioware>
         <id>99c04ae8-e1c0-4455-8f76-ff77edfb790f</id>
         <name>Wired Reflex Optimization</name>
         <translate>Optimisation des réflexes câblés</translate>
-        <altpage>165</altpage>
+        <altpage>172</altpage>
       </bioware>
       <bioware>
         <id>b6682632-5566-4156-8dab-4187e13901d8</id>
         <name>Adrenaline Pump Optimization</name>
-        <translate>Optimisation du contrôle de la pompe d​'adrénaline</translate>
-        <altpage>165</altpage>
+        <translate>Optimisation de la pompe à adrénaline</translate>
+        <altpage>172</altpage>
       </bioware>
       <bioware>
         <id>f0a72240-00e0-4b4f-b25f-b38f19e51a38</id>
         <name>Enhanced Symbiosis</name>
         <translate>Symbiose améliorée</translate>
-        <altpage>165</altpage>
+        <altpage>172</altpage>
       </bioware>
       <bioware>
         <id>c0c9314e-1fa2-4bd7-a02d-70beaf99def2</id>
         <name>Genetic Optimization (Body)</name>
         <translate>Optimisation génétique (CON)</translate>
-        <altpage>157</altpage>
+        <altpage>163</altpage>
       </bioware>
       <bioware>
         <id>70552613-23ca-4e53-bf8f-83f87f134b05</id>
         <name>Genetic Optimization (Agility)</name>
         <translate>Optimisation génétique (AGI)</translate>
-        <altpage>157</altpage>
+        <altpage>163</altpage>
       </bioware>
       <bioware>
         <id>da01f3fc-e77a-419f-8cad-907fe7e995d5</id>
         <name>Genetic Optimization (Reaction)</name>
         <translate>Optimisation génétique (RÉA)</translate>
-        <altpage>157</altpage>
+        <altpage>163</altpage>
       </bioware>
       <bioware>
         <id>4b10adbe-567f-4e7d-affd-70c312efdb22</id>
         <name>Genetic Optimization (Strength)</name>
         <translate>Optimisation génétique (FOR)</translate>
-        <altpage>157</altpage>
+        <altpage>163</altpage>
       </bioware>
       <bioware>
         <id>aeab29b0-4ac1-47cc-980e-36cfb562ac17</id>
         <name>Genetic Optimization (Charisma)</name>
         <translate>Optimisation génétique (CHA)</translate>
-        <altpage>157</altpage>
+        <altpage>163</altpage>
       </bioware>
       <bioware>
         <id>5ec34679-27d6-4bb7-b408-1ca1b2f81bd0</id>
         <name>Genetic Optimization (Intuition)</name>
         <translate>Optimisation génétique (INT)</translate>
-        <altpage>157</altpage>
+        <altpage>163</altpage>
       </bioware>
       <bioware>
         <id>c388537e-e533-48c3-a101-c57be8426295</id>
         <name>Genetic Optimization (Logic)</name>
         <translate>Optimisation génétique (LOG)</translate>
-        <altpage>157</altpage>
+        <altpage>163</altpage>
       </bioware>
       <bioware>
         <id>19142a2e-1078-4b23-9996-313cb57daa07</id>
         <name>Genetic Optimization (Willpower)</name>
         <translate>Optimisation génétique (VOL)</translate>
-        <altpage>157</altpage>
+        <altpage>163</altpage>
       </bioware>
       <bioware>
         <id>da62e249-cb11-4907-98d3-edc50e7efc2a</id>
         <name>Cosmetic Alteration</name>
-        <translate>Altération cosmétique</translate>
-        <altpage>158</altpage>
+        <translate>Altération esthétique</translate>
+        <altpage>162</altpage>
       </bioware>
       <bioware>
         <id>cd268d9e-52c7-4f02-913c-ff37bdd14e6e</id>
         <name>Print Removal</name>
-        <translate>Effacement des empreintes</translate>
-        <altpage>158</altpage>
+        <translate>Effacement d​'empreintes</translate>
+        <altpage>162</altpage>
       </bioware>
       <bioware>
         <id>d23aac11-8e3c-4739-9da5-b8322f81d64c</id>
         <name>Metaposeur</name>
-        <translate>Métaposeur</translate>
-        <altpage>158</altpage>
+        <translate>Poseur méta</translate>
+        <altpage>162</altpage>
       </bioware>
       <bioware>
         <id>181f09c2-af17-4676-bb6a-62706c4fc521</id>
         <name>Immunization</name>
         <translate>Immunisation</translate>
-        <altpage>164</altpage>
+        <altpage>170</altpage>
       </bioware>
       <bioware>
         <id>9a3cf302-b2bb-402f-93e2-7872eca63d31</id>
         <name>Therapeutic Genetics</name>
         <translate>Génétique thérapeutique</translate>
-        <altpage>156</altpage>
+        <altpage>161</altpage>
       </bioware>
       <bioware>
         <id>669926ea-55ec-4365-adcf-f8028a464124</id>
         <name>Leónization</name>
         <translate>Léonisation</translate>
-        <altpage>156</altpage>
+        <altpage>162</altpage>
       </bioware>
       <bioware>
         <id>78797e7f-020d-4e4a-a08b-207890f73fc5</id>
         <name>Lifespan Extension</name>
-        <translate>Extension de la durée de vie</translate>
-        <altpage>157</altpage>
+        <translate>Extension de l’espérance de vie</translate>
+        <altpage>161</altpage>
       </bioware>
       <bioware>
         <id>11e5627e-aeff-4910-bf06-b8817b46f786</id>
         <name>Physical Vigor</name>
         <translate>Vigueur physique</translate>
-        <altpage>156</altpage>
+        <altpage>162</altpage>
       </bioware>
       <bioware>
         <id>aa42b990-04db-4cae-81e3-a93bce93616f</id>
         <name>Augmented Healing</name>
-        <translate>Guérison rapide</translate>
-        <altpage>156</altpage>
+        <translate>Guérison augmentée</translate>
+        <altpage>162</altpage>
       </bioware>
       <bioware>
         <id>3af9942f-6e6c-4c0d-a962-a6cf30504a00</id>
         <name>Cellular Repair</name>
-        <translate>Régénération cellulaire</translate>
-        <altpage>156</altpage>
+        <translate>Réparation cellulaire</translate>
+        <altpage>162</altpage>
       </bioware>
       <bioware>
         <id>b69a23aa-4543-4e8a-95a1-4a0f9f5250e9</id>
         <name>Revitilization</name>
         <translate>Revitalisation</translate>
-        <altpage>157</altpage>
+        <altpage>162</altpage>
       </bioware>
       <bioware>
         <id>738c15f8-49ea-417e-9728-b4c78bc72c18</id>
         <name>Cleaner Leech</name>
-        <translate>Sangsue Nettoyeuse</translate>
-        <altpage>123</altpage>
+        <translate>Symbionte sangsue nettoyeur</translate>
+        <altpage>127</altpage>
       </bioware>
       <bioware>
         <id>573b2541-9e9a-4b9d-b219-27fb6c808d40</id>
         <name>Booster Endosont</name>
-        <translate>Endosymbiote boosteur</translate>
-        <altpage>123</altpage>
+        <translate>Endosonte coup-de-fouet</translate>
+        <altpage>128</altpage>
       </bioware>
       <bioware>
         <id>f829a2e5-ab36-499a-8c7d-9bd44a7284f3</id>
         <name>Digester Endosont</name>
-        <translate>Endosymbiote digéreur</translate>
-        <altpage>123</altpage>
+        <translate>Endosonte digesteur</translate>
+        <altpage>128</altpage>
       </bioware>
       <bioware>
         <id>5025417f-2a14-4b6f-8d53-52445bc16c31</id>
         <name>Electroreceptor Endosont</name>
-        <translate>Endosymbiote électrorécepteur</translate>
-        <altpage>123</altpage>
+        <translate>Endosonte électrorécepteur</translate>
+        <altpage>128</altpage>
       </bioware>
       <bioware>
         <id>c2700f31-a361-4ea2-974e-dd5bde62913a</id>
         <name>Mild Allergy Resistance</name>
-        <translate>Résistance à une allergie faible</translate>
-        <altpage>123</altpage>
+        <translate>Résistances aux allergies légères</translate>
+        <altpage>129</altpage>
       </bioware>
       <bioware>
         <id>982290e5-2c21-41c0-9847-e47eb455c2f7</id>
         <name>Moderate Allergy Resistance</name>
-        <translate>Résistance à une allergie modérée</translate>
-        <altpage>123</altpage>
+        <translate>Résistances aux allergies modérées</translate>
+        <altpage>129</altpage>
       </bioware>
       <bioware>
         <id>3d2ee994-be0c-4e07-a2ce-b616a37d8ee8</id>
         <name>Severe Allergy Resistance</name>
-        <translate>Résistance à une allergie grave</translate>
-        <altpage>123</altpage>
+        <translate>Résistances aux allergies sévères</translate>
+        <altpage>129</altpage>
       </bioware>
       <bioware>
         <id>6207437b-a8f9-420b-81de-970d832cba6d</id>
         <name>Lactose Tolerance</name>
         <translate>Tolérance au lactose</translate>
-        <altpage>123</altpage>
+        <altpage>129</altpage>
       </bioware>
       <bioware>
         <id>ac744186-59f6-4105-a08a-0e8c7fd3c847</id>
         <name>Mender Endosont</name>
-        <translate>Endosymbiote infirmier</translate>
-        <altpage>124</altpage>
+        <translate>Endosonte réparateur</translate>
+        <altpage>128</altpage>
       </bioware>
       <bioware>
         <id>91031d35-50e6-4b67-8dea-8c2ceda5278b</id>
         <name>Slimworm</name>
-        <translate>Ver solitaire intelligent</translate>
-        <altpage>124</altpage>
+        <translate>Ver minceur</translate>
+        <altpage>129</altpage>
       </bioware>
       <bioware>
         <id>81396157-9981-42f2-bee9-540c6a175648</id>
         <name>Stalwart Endosont</name>
-        <translate>Endosymbiote encourageant</translate>
-        <altpage>124</altpage>
+        <translate>Endosonte téméraire</translate>
+        <altpage>129</altpage>
       </bioware>
       <bioware>
         <id>6289a426-e381-4ed6-a69d-3b94430efb2c</id>
@@ -2955,8 +2955,8 @@
       <bioware>
         <id>a950129b-00a6-4445-a1b6-d82f158e83dc</id>
         <name>Transgenic Alteration</name>
-        <translate>Altération Transgénique</translate>
-        <altpage>164</altpage>
+        <translate>Altération transgénique</translate>
+        <altpage>170</altpage>
       </bioware>
       <bioware>
         <id>b5af679d-e70d-43f3-9aa4-f3638796e948</id>
@@ -2983,7 +2983,7 @@
       <book>
         <id>289bc41d-6dd5-4216-9bc7-e6f0cabae9ac</id>
         <name>Assassin's Primer</name>
-        <translate>Assassin's Primer</translate>
+        <translate>Manuel de l​'assassin</translate>
         <altcode>AP</altcode>
       </book>
       <book>
@@ -2995,7 +2995,7 @@
       <book>
         <id>5d6626a2-2400-44b5-b777-d7dac6cb512f</id>
         <name>Run and Gun</name>
-        <translate>Run and Gun</translate>
+        <translate>Run &amp; Gun</translate>
         <altcode>RG</altcode>
       </book>
       <book>
@@ -3013,7 +3013,7 @@
       <book>
         <id>d7b60868-41ee-4970-b9f2-f1a2a81b6d1a</id>
         <name>Bullets &amp; Bandages</name>
-        <translate>Bullets &amp; Bandages</translate>
+        <translate>Balles &amp; pansements</translate>
         <altcode>BB</altcode>
       </book>
       <book>
@@ -3109,7 +3109,7 @@
       <book>
         <id>6b37230a-dd55-4c3f-882d-0a1c6324a457</id>
         <name>Splintered State</name>
-        <translate>Splintered State</translate>
+        <translate>Fragmentation</translate>
         <altcode>SPS</altcode>
       </book>
       <book>
