@@ -1953,7 +1953,7 @@
       <bioware>
         <id>02e4af5e-22a6-4ebc-a3dd-05d71448be64</id>
         <name>Spidersilk Gland</name>
-        <translate>Glande à soies d’araignée</translate>
+        <translate>Glande à soies d​'araignée</translate>
         <altpage>116</altpage>
       </bioware>
       <bioware>
@@ -2325,25 +2325,25 @@
       <bioware>
         <id>19000eeb-099e-4d63-9e1f-39a321569abe</id>
         <name>Limb replacement (Finger/Toe)</name>
-        <translate>Remplacement d’un membre (doigt / orteil)</translate>
+        <translate>Remplacement d​'un membre (doigt / orteil)</translate>
         <altpage>124</altpage>
       </bioware>
       <bioware>
         <id>7346dc96-af61-48f4-a98c-3bbe5fa64005</id>
         <name>Limb replacement (Hand/foot)</name>
-        <translate>Remplacement d’un membre (main / pied)</translate>
+        <translate>Remplacement d​'un membre (main / pied)</translate>
         <altpage>124</altpage>
       </bioware>
       <bioware>
         <id>4a61e7db-b4e2-48e3-8744-6a44bff453a7</id>
         <name>Limb replacement (Half arm/leg)</name>
-        <translate>Remplacement d’un membre (avant-bras/mollet)</translate>
+        <translate>Remplacement d​'un membre (avant-bras/mollet)</translate>
         <altpage>124</altpage>
       </bioware>
       <bioware>
         <id>67be6b07-11e4-49e6-8f6f-6931a3f8bf1f</id>
         <name>Limb replacement (Full arm/leg)</name>
-        <translate>Remplacement d’un membre (bras / jambe)</translate>
+        <translate>Remplacement d​'un membre (bras / jambe)</translate>
         <altpage>124</altpage>
       </bioware>
       <bioware>
@@ -2571,7 +2571,7 @@
       <bioware>
         <id>0453cf1e-3224-46ce-82bb-fde03ef6e451</id>
         <name>Low Oxygen Adaptation</name>
-        <translate>Tolérance à l’hypoxie</translate>
+        <translate>Tolérance à l​'hypoxie</translate>
         <altpage>169</altpage>
       </bioware>
       <bioware>
@@ -2601,7 +2601,7 @@
       <bioware>
         <id>dc3dbcd5-dc86-44db-8b99-ae69a8b60a1d</id>
         <name>Reaction Optimization</name>
-        <translate>Optimisation d’accroissement de réaction</translate>
+        <translate>Optimisation d​'accroissement de réaction</translate>
         <altpage>171</altpage>
       </bioware>
       <bioware>
@@ -2715,7 +2715,7 @@
       <bioware>
         <id>78797e7f-020d-4e4a-a08b-207890f73fc5</id>
         <name>Lifespan Extension</name>
-        <translate>Extension de l’espérance de vie</translate>
+        <translate>Extension de l​'espérance de vie</translate>
         <altpage>161</altpage>
       </bioware>
       <bioware>
