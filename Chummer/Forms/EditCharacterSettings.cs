@@ -1754,6 +1754,14 @@ namespace Chummer
                   .DoDataBindingAsync("Value", _objCharacterSettings,
                                       nameof(CharacterSettings.MaxKnowledgeSkillRatingCreate), token)
                   .ConfigureAwait(false);
+            await nudMaxMartialArts
+                .DoDataBindingAsync("Value", _objCharacterSettings,
+                    nameof(CharacterSettings.MaximumMartialArts), token)
+                .ConfigureAwait(false);
+            await nudMaxMartialTechniques
+                .DoDataBindingAsync("Value", _objCharacterSettings,
+                    nameof(CharacterSettings.MaximumMartialTechniques), token)
+                .ConfigureAwait(false);
             await nudMaxSkillRatingCreate
                   .DoDataBindingAsync("Maximum", _objCharacterSettings, nameof(CharacterSettings.MaxSkillRating), token)
                   .ConfigureAwait(false);

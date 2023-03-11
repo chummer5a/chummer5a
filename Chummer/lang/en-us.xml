@@ -2471,6 +2471,18 @@
       <text>Apply an additional Wound Modifier of</text>
     </string>
     <string>
+      <key>Label_Options_MaximumMartialArts</key>
+      <text>Maximum number of Martial Arts at character creation</text>
+    </string>
+    <string>
+      <key>Label_Options_MaximumMartialTechniques</key>
+      <text>Max Martial Art Techniques on one Martial Art at character creation</text>
+    </string>
+    <string>
+      <key>Label_CharacterOptions_CharacterCreation</key>
+      <text>Character Creation</text>
+    </string>
+    <string>
       <key>Message_CannotRemoveCyberware</key>
       <text>This item cannot be removed because it is included as a base feature for a piece of Cyberware.</text>
     </string>

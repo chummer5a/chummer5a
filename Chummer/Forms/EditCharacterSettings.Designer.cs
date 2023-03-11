@@ -366,6 +366,14 @@ namespace Chummer
             this.cmdRestoreDefaults = new System.Windows.Forms.Button();
             this.cmdSave = new System.Windows.Forms.Button();
             this.cmdSaveAs = new System.Windows.Forms.Button();
+            this.grpHouseRulesCharacterCreation = new System.Windows.Forms.GroupBox();
+            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
+            this.flowLayoutPanel3 = new System.Windows.Forms.FlowLayoutPanel();
+            this.label3 = new System.Windows.Forms.Label();
+            this.nudMaxMartialTechniques = new Chummer.NumericUpDownEx();
+            this.flowLayoutPanel4 = new System.Windows.Forms.FlowLayoutPanel();
+            this.label4 = new System.Windows.Forms.Label();
+            this.nudMaxMartialArts = new Chummer.NumericUpDownEx();
             this.tlpOptions.SuspendLayout();
             this.tabOptions.SuspendLayout();
             this.tabBasicOptions.SuspendLayout();
@@ -495,6 +503,12 @@ namespace Chummer
             this.flpKarmaGainedFromEnemies.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaGainedFromEnemies)).BeginInit();
             this.tlpButtons.SuspendLayout();
+            this.grpHouseRulesCharacterCreation.SuspendLayout();
+            this.tableLayoutPanel2.SuspendLayout();
+            this.flowLayoutPanel3.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxMartialTechniques)).BeginInit();
+            this.flowLayoutPanel4.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxMartialArts)).BeginInit();
             this.SuspendLayout();
             // 
             // tlpOptions
@@ -4865,6 +4879,7 @@ namespace Chummer
             this.flpHouseRules.Controls.Add(this.gpbHouseRulesCombat);
             this.flpHouseRules.Controls.Add(this.gpbHouseRulesMagicResonance);
             this.flpHouseRules.Controls.Add(this.gpbHouseRules4eAdaptations);
+            this.flpHouseRules.Controls.Add(this.grpHouseRulesCharacterCreation);
             this.flpHouseRules.Dock = System.Windows.Forms.DockStyle.Fill;
             this.flpHouseRules.Location = new System.Drawing.Point(9, 9);
             this.flpHouseRules.Margin = new System.Windows.Forms.Padding(0);
@@ -5976,6 +5991,137 @@ namespace Chummer
             this.cmdSaveAs.UseVisualStyleBackColor = true;
             this.cmdSaveAs.Click += new System.EventHandler(this.cmdSaveAs_Click);
             // 
+            // grpHouseRulesCharacterCreation
+            // 
+            this.grpHouseRulesCharacterCreation.AutoSize = true;
+            this.grpHouseRulesCharacterCreation.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.grpHouseRulesCharacterCreation.Controls.Add(this.tableLayoutPanel2);
+            this.grpHouseRulesCharacterCreation.Location = new System.Drawing.Point(3, 707);
+            this.grpHouseRulesCharacterCreation.Name = "grpHouseRulesCharacterCreation";
+            this.grpHouseRulesCharacterCreation.Size = new System.Drawing.Size(402, 65);
+            this.grpHouseRulesCharacterCreation.TabIndex = 8;
+            this.grpHouseRulesCharacterCreation.TabStop = false;
+            this.grpHouseRulesCharacterCreation.Tag = "Label_CharacterOptions_CharacterCreation";
+            this.grpHouseRulesCharacterCreation.Text = "Character Creation";
+            // 
+            // tableLayoutPanel2
+            // 
+            this.tableLayoutPanel2.AutoSize = true;
+            this.tableLayoutPanel2.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.tableLayoutPanel2.ColumnCount = 1;
+            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tableLayoutPanel2.Controls.Add(this.flowLayoutPanel3, 0, 3);
+            this.tableLayoutPanel2.Controls.Add(this.flowLayoutPanel4, 0, 2);
+            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tableLayoutPanel2.Location = new System.Drawing.Point(3, 16);
+            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
+            this.tableLayoutPanel2.RowCount = 4;
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(396, 46);
+            this.tableLayoutPanel2.TabIndex = 0;
+            // 
+            // flowLayoutPanel3
+            // 
+            this.flowLayoutPanel3.AutoSize = true;
+            this.flowLayoutPanel3.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flowLayoutPanel3.Controls.Add(this.label3);
+            this.flowLayoutPanel3.Controls.Add(this.nudMaxMartialTechniques);
+            this.flowLayoutPanel3.Location = new System.Drawing.Point(20, 26);
+            this.flowLayoutPanel3.Margin = new System.Windows.Forms.Padding(20, 0, 0, 0);
+            this.flowLayoutPanel3.Name = "flowLayoutPanel3";
+            this.flowLayoutPanel3.Size = new System.Drawing.Size(376, 20);
+            this.flowLayoutPanel3.TabIndex = 51;
+            // 
+            // label3
+            // 
+            this.label3.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.label3.AutoSize = true;
+            this.label3.Location = new System.Drawing.Point(3, 6);
+            this.label3.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.label3.Name = "label3";
+            this.label3.Size = new System.Drawing.Size(323, 13);
+            this.label3.TabIndex = 48;
+            this.label3.Tag = "Label_Options_MaximumMartialTechniques";
+            this.label3.Text = "Max Martial Art Techniques on one Martial Art at character creation";
+            this.label3.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // nudMaxMartialTechniques
+            // 
+            this.nudMaxMartialTechniques.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudMaxMartialTechniques.AutoSize = true;
+            this.nudMaxMartialTechniques.Location = new System.Drawing.Point(332, 3);
+            this.nudMaxMartialTechniques.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudMaxMartialTechniques.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudMaxMartialTechniques.Name = "nudMaxMartialTechniques";
+            this.nudMaxMartialTechniques.Size = new System.Drawing.Size(41, 20);
+            this.nudMaxMartialTechniques.TabIndex = 49;
+            this.nudMaxMartialTechniques.Value = new decimal(new int[] {
+            5,
+            0,
+            0,
+            0});
+            // 
+            // flowLayoutPanel4
+            // 
+            this.flowLayoutPanel4.AutoSize = true;
+            this.flowLayoutPanel4.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.flowLayoutPanel4.Controls.Add(this.label4);
+            this.flowLayoutPanel4.Controls.Add(this.nudMaxMartialArts);
+            this.flowLayoutPanel4.Location = new System.Drawing.Point(20, 0);
+            this.flowLayoutPanel4.Margin = new System.Windows.Forms.Padding(20, 0, 0, 0);
+            this.flowLayoutPanel4.Name = "flowLayoutPanel4";
+            this.flowLayoutPanel4.Size = new System.Drawing.Size(310, 26);
+            this.flowLayoutPanel4.TabIndex = 50;
+            // 
+            // label4
+            // 
+            this.label4.Anchor = System.Windows.Forms.AnchorStyles.Right;
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(3, 6);
+            this.label4.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(257, 13);
+            this.label4.TabIndex = 48;
+            this.label4.Tag = "Label_Options_MaximumMartialArts";
+            this.label4.Text = "Maximum number of Martial Arts at character creation";
+            this.label4.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // nudMaxMartialArts
+            // 
+            this.nudMaxMartialArts.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.nudMaxMartialArts.AutoSize = true;
+            this.nudMaxMartialArts.Location = new System.Drawing.Point(266, 3);
+            this.nudMaxMartialArts.Maximum = new decimal(new int[] {
+            100,
+            0,
+            0,
+            0});
+            this.nudMaxMartialArts.Minimum = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
+            this.nudMaxMartialArts.Name = "nudMaxMartialArts";
+            this.nudMaxMartialArts.Size = new System.Drawing.Size(41, 20);
+            this.nudMaxMartialArts.TabIndex = 49;
+            this.nudMaxMartialArts.Value = new decimal(new int[] {
+            1,
+            0,
+            0,
+            0});
+            // 
             // EditCharacterSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -6172,6 +6318,16 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudKarmaGainedFromEnemies)).EndInit();
             this.tlpButtons.ResumeLayout(false);
             this.tlpButtons.PerformLayout();
+            this.grpHouseRulesCharacterCreation.ResumeLayout(false);
+            this.grpHouseRulesCharacterCreation.PerformLayout();
+            this.tableLayoutPanel2.ResumeLayout(false);
+            this.tableLayoutPanel2.PerformLayout();
+            this.flowLayoutPanel3.ResumeLayout(false);
+            this.flowLayoutPanel3.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxMartialTechniques)).EndInit();
+            this.flowLayoutPanel4.ResumeLayout(false);
+            this.flowLayoutPanel4.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaxMartialArts)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -6516,5 +6672,13 @@ namespace Chummer
         private ColorableCheckBox chkUncappedArmorAccessoryBonuses;
         private System.Windows.Forms.Label lblEssenceModifierPostExpression;
         private System.Windows.Forms.TextBox txtEssenceModifierPostExpression;
+        private System.Windows.Forms.GroupBox grpHouseRulesCharacterCreation;
+        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel3;
+        private System.Windows.Forms.Label label3;
+        private NumericUpDownEx nudMaxMartialTechniques;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel4;
+        private System.Windows.Forms.Label label4;
+        private NumericUpDownEx nudMaxMartialArts;
     }
 }

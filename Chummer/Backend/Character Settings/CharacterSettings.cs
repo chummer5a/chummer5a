@@ -259,6 +259,8 @@ namespace Chummer
         private int _intSumtoTen = 10;
         private decimal _decNuyenMaximumBP = 10;
         private int _intAvailability = 12;
+        private int _intMaxMartialArts = 1;
+        private int _intMaxMartialTechniques = 5;
 
         // Dictionary of id (or names) of custom data directories, ordered by load order with the second value element being whether or not it's enabled
         private readonly LockingTypedOrderedDictionary<string, bool> _dicCustomDataDirectoryKeys = new LockingTypedOrderedDictionary<string, bool>();
@@ -959,6 +961,8 @@ namespace Chummer
                 hashCode = (hashCode * 397) ^ _intSumtoTen;
                 hashCode = (hashCode * 397) ^ _decNuyenMaximumBP.GetHashCode();
                 hashCode = (hashCode * 397) ^ _intAvailability;
+                hashCode = (hashCode * 397) ^ _intMaxMartialArts;
+                hashCode = (hashCode * 397) ^ _intMaxMartialTechniques;
                 hashCode = (hashCode * 397) ^ (_dicCustomDataDirectoryKeys?.GetEnsembleHashCode() ?? 0);
                 hashCode = (hashCode * 397) ^ (_setEnabledCustomDataDirectories?.GetEnsembleHashCode() ?? 0);
                 hashCode = (hashCode * 397)
@@ -1646,6 +1650,12 @@ namespace Chummer
                         // <availability />
                         objWriter.WriteElementString("availability",
                                                      _intAvailability.ToString(GlobalSettings.InvariantCultureInfo));
+                        // <maxmartialarts />
+                        objWriter.WriteElementString("maxmartialarts",
+                            _intMaxMartialArts.ToString(GlobalSettings.InvariantCultureInfo));
+                        // <maxmartialtechniques />
+                        objWriter.WriteElementString("maxmartialtechniques",
+                            _intMaxMartialTechniques.ToString(GlobalSettings.InvariantCultureInfo));
                         // <nuyenmaxbp />
                         objWriter.WriteElementString("nuyenmaxbp",
                                                      _decNuyenMaximumBP.ToString(GlobalSettings.InvariantCultureInfo));
@@ -2415,6 +2425,10 @@ namespace Chummer
                 objXmlNode.TryGetInt32FieldQuickly("sumtoten", ref _intSumtoTen);
                 if (!objXmlNode.TryGetInt32FieldQuickly("availability", ref _intAvailability))
                     xmlDefaultBuildNode?.TryGetInt32FieldQuickly("availability", ref _intAvailability);
+                if (!objXmlNode.TryGetInt32FieldQuickly("maxmartialarts", ref (_intMaxMartialArts)))
+                    xmlDefaultBuildNode?.TryGetInt32FieldQuickly("maxmartialarts", ref _intMaxMartialArts);
+                if (!objXmlNode.TryGetInt32FieldQuickly("maxmartialtechniques", ref _intMaxMartialTechniques))
+                    xmlDefaultBuildNode?.TryGetInt32FieldQuickly("maxmartialtechniques", ref _intMaxMartialTechniques);
                 objXmlNode.TryGetDecFieldQuickly("nuyenmaxbp", ref _decNuyenMaximumBP);
 
                 _setBannedWareGrades.Clear();
@@ -3175,6 +3189,10 @@ namespace Chummer
                 objXmlNode.TryGetInt32FieldQuickly("sumtoten", ref _intSumtoTen);
                 if (!objXmlNode.TryGetInt32FieldQuickly("availability", ref _intAvailability))
                     xmlDefaultBuildNode?.TryGetInt32FieldQuickly("availability", ref _intAvailability);
+                if (!objXmlNode.TryGetInt32FieldQuickly("maxmartialarts", ref (_intMaxMartialArts)))
+                    xmlDefaultBuildNode?.TryGetInt32FieldQuickly("maxmartialarts", ref _intMaxMartialArts);
+                if (!objXmlNode.TryGetInt32FieldQuickly("maxmartialtechniques", ref _intMaxMartialTechniques))
+                    xmlDefaultBuildNode?.TryGetInt32FieldQuickly("maxmartialtechniques", ref _intMaxMartialTechniques);
                 objXmlNode.TryGetDecFieldQuickly("nuyenmaxbp", ref _decNuyenMaximumBP);
 
                 _setBannedWareGrades.Clear();
@@ -3389,6 +3407,46 @@ namespace Chummer
                 using (EnterReadLock.Enter(LockObject))
                 {
                     if (Interlocked.Exchange(ref _intAvailability, value) != value)
+                        OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Maximum number of martial arts that for new characters.
+        /// </summary>
+        public int MaximumMartialArts
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intMaxMartialArts;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (Interlocked.Exchange(ref _intMaxMartialArts, value) != value)
+                        OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Maximum number of martial techniques on a martial art for new characters.
+        /// </summary>
+        public int MaximumMartialTechniques
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _intMaxMartialTechniques;
+            }
+            set
+            {
+                using (EnterReadLock.Enter(LockObject))
+                {
+                    if (Interlocked.Exchange(ref _intMaxMartialTechniques, value) != value)
                         OnPropertyChanged();
                 }
             }

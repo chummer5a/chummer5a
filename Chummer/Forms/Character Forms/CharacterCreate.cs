@@ -19463,10 +19463,10 @@ namespace Chummer
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
                 try
                 {
-                    // Check if the character has more than 1 Martial Art, not counting qualities. TODO: Make the OTP check an optional rule. Make the Martial Arts limit an optional rule.
+                    // Check if the character has more than 1 Martial Art, not counting qualities.
                     int intMartialArts = await (await CharacterObject.GetMartialArtsAsync(token).ConfigureAwait(false))
                                                .CountAsync(objArt => !objArt.IsQuality, token).ConfigureAwait(false);
-                    if (intMartialArts > 1)
+                    if (intMartialArts > CharacterObjectSettings.MaximumMartialArts)
                     {
                         blnValid = false;
                         sbdMessage.AppendLine().Append('\t')
@@ -19474,7 +19474,7 @@ namespace Chummer
                                                 await LanguageManager
                                                       .GetStringAsync("Message_InvalidPointExcess", token: token)
                                                       .ConfigureAwait(false),
-                                                intMartialArts - 1)
+                                                intMartialArts - CharacterObjectSettings.MaximumMartialArts)
                                   .Append(await LanguageManager.GetStringAsync("String_Space", token: token)
                                                                .ConfigureAwait(false))
                                   .Append(await LanguageManager.GetStringAsync("String_MartialArtsCount", token: token)
@@ -19488,7 +19488,7 @@ namespace Chummer
                         int intTechniques
                             = await (await CharacterObject.GetMartialArtsAsync(token).ConfigureAwait(false)).SumAsync(
                                 x => x.Techniques.GetCountAsync(token).AsTask(), token).ConfigureAwait(false);
-                        if (intTechniques > 5)
+                        if (intTechniques > CharacterObjectSettings.MaximumMartialTechniques)
                         {
                             blnValid = false;
                             sbdMessage.AppendLine().Append('\t')
@@ -19496,7 +19496,7 @@ namespace Chummer
                                                     await LanguageManager
                                                           .GetStringAsync("Message_InvalidPointExcess", token: token)
                                                           .ConfigureAwait(false),
-                                                    intTechniques - 5)
+                                                    intTechniques - CharacterObjectSettings.MaximumMartialTechniques)
                                       .Append(await LanguageManager.GetStringAsync("String_Space", token: token)
                                                                    .ConfigureAwait(false))
                                       .Append(await LanguageManager
