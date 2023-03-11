@@ -8627,6 +8627,186 @@
          <page>91</page>
       </metatype>
       <metatype>
+         <id>1f81ddc4-d62d-4e5f-878a-1d3868ffade0</id>
+         <name>Bone Spirit</name>
+         <category>Spirits</category>
+         <forcecreature />
+         <karma>0</karma>
+         <bodmin>F+3</bodmin>
+         <bodmax>F+3</bodmax>
+         <bodaug>F+3</bodaug>
+         <agimin>F</agimin>
+         <agimax>F</agimax>
+         <agiaug>F</agiaug>
+         <reamin>F</reamin>
+         <reamax>F</reamax>
+         <reaaug>F</reaaug>
+         <strmin>F+2</strmin>
+         <strmax>F+2</strmax>
+         <straug>F+2</straug>
+         <chamin>F-1</chamin>
+         <chamax>F-1</chamax>
+         <chaaug>F-1</chaaug>
+         <intmin>F-1</intmin>
+         <intmax>F-1</intmax>
+         <intaug>F-1</intaug>
+         <logmin>F</logmin>
+         <logmax>F</logmax>
+         <logaug>F</logaug>
+         <wilmin>F</wilmin>
+         <wilmax>F</wilmax>
+         <wilaug>F</wilaug>
+         <inimin>(F*2)</inimin>
+         <inimax>(F*2)</inimax>
+         <iniaug>(F*2)</iniaug>
+         <edgmin>F/2</edgmin>
+         <edgmax>F/2</edgmax>
+         <edgaug>F/2</edgaug>
+         <magmin>F</magmin>
+         <magmax>F</magmax>
+         <magaug>F</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>0</essmin>
+         <essmax>F</essmax>
+         <essaug>F</essaug>
+         <walk>2/1/0</walk>
+         <run>4/0/0</run>
+         <sprint>2/1/0</sprint>
+         <bonus>
+            <enableattribute>
+               <name>MAG</name>
+               <min>F</min>
+               <max>F</max>
+               <aug>F</aug>
+               <val>F</val>
+            </enableattribute>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+            <initiativepass>1</initiativepass>
+            <optionalpowers count="floor({MAG} div 3)">
+               <optionalpower select="Hearing, Low-Light Vision, Thermographic Vision">Enhanced Senses</optionalpower>
+               <optionalpower>Guard</optionalpower>
+               <optionalpower>Noxious Breath</optionalpower>
+            </optionalpowers>
+         </bonus>
+         <powers>
+            <power>Astral Form</power>
+            <power>Engulf</power>
+            <power select="DV {STR}P, AP -1">Natural Weapon</power>
+            <power select="Bones">Possession</power>
+            <power>Sapience</power>
+         </powers>
+         <skills>
+            <skill rating="F">Assensing</skill>
+            <skill rating="F">Astral Combat</skill>
+            <skill rating="F">Perception</skill>
+            <skill rating="F">Unarmed Combat</skill>
+         </skills>
+         <source>FA</source>
+         <page>134</page>
+      </metatype>
+      <metatype>
+         <id>991176b4-e43c-4dee-92bb-c67ca912d94e</id>
+         <name>Blood Shade</name>
+         <category>Spirits</category>
+         <forcecreature />
+         <karma>0</karma>
+         <bodmin>F</bodmin>
+         <bodmax>F</bodmax>
+         <bodaug>F</bodaug>
+         <agimin>F+2</agimin>
+         <agimax>F+2</agimax>
+         <agiaug>F+2</agiaug>
+         <reamin>F+2</reamin>
+         <reamax>F+2</reamax>
+         <reaaug>F+2</reaaug>
+         <strmin>F-1</strmin>
+         <strmax>F-1</strmax>
+         <straug>F-1</straug>
+         <chamin>F+1</chamin>
+         <chamax>F+1</chamax>
+         <chaaug>F+1</chaaug>
+         <intmin>(F</intmin>
+         <intmax>F</intmax>
+         <intaug>F</intaug>
+         <logmin>F</logmin>
+         <logmax>F</logmax>
+         <logaug>F</logaug>
+         <wilmin>F</wilmin>
+         <wilmax>F</wilmax>
+         <wilaug>F</wilaug>
+         <inimin>(F*2)+2</inimin>
+         <inimax>(F*2)+2</inimax>
+         <iniaug>(F*2)+2</iniaug>
+         <edgmin>F/2</edgmin>
+         <edgmax>F/2</edgmax>
+         <edgaug>F/2</edgaug>
+         <magmin>F</magmin>
+         <magmax>F</magmax>
+         <magaug>F</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>0</essmin>
+         <essmax>F</essmax>
+         <essaug>F</essaug>
+         <walk>2/1/0</walk>
+         <run>4/0/0</run>
+         <sprint>2/1/0</sprint>
+         <bonus>
+            <enableattribute>
+               <name>MAG</name>
+               <min>F</min>
+               <max>F</max>
+               <aug>F</aug>
+               <val>F</val>
+            </enableattribute>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+            <initiativepass>1</initiativepass>
+            <optionalpowers count="floor({MAG} div 3)">
+               <optionalpower>Accident</optionalpower>
+               <optionalpower>Banishing Resistance</optionalpower>
+               <optionalpower>Compulsion</optionalpower>
+               <optionalpower>Paralyzing Touch</optionalpower>
+               <optionalpower>Search</optionalpower>
+            </optionalpowers>
+         </bonus>
+         <powers>
+            <power>Evanescence</power>
+            <power>Astral Form</power>
+            <power>Aura Masking</power>
+            <power>Deathly Aura</power>
+            <power select="Essence">Energy Drain</power>
+            <power>Fear</power>
+            <power> Magical Guard</power>
+            <power>Mimicry</power>
+            <power select="Bones">Possession</power>
+            <power>Realistic Form</power>
+            <power>Sapience</power>
+         </powers>
+         <skills>
+            <skill rating="F">Assensing</skill>
+            <skill rating="F">Astral Combat</skill>
+            <skill rating="F">Counterspelling</skill>
+            <skill rating="F">Impersonation</skill>
+            <skill rating="F">Perception</skill>
+            <skill rating="F">Unarmed Combat</skill>
+         </skills>
+         <source>FA</source>
+         <page>135</page>
+      </metatype>
+      <metatype>
          <id>06c44cd2-528e-48ef-ad60-cfc943a4af9d</id>
          <name>Abomination Spirit</name>
          <category>Toxic Spirits</category>
@@ -9549,6 +9729,347 @@
          </skills>
          <source>FA</source>
          <page>180</page>
+      </metatype>
+      <metatype>
+         <id>1e2219a6-d0dc-4c90-a6e3-4aa004e62a2c</id>
+         <name>Ship Spirit</name>
+         <category>Spirits</category>
+         <forcecreature />
+         <karma>0</karma>
+         <bodmin>F+4</bodmin>
+         <bodmax>F+4</bodmax>
+         <bodaug>F+4</bodaug>
+         <agimin>F-1</agimin>
+         <agimax>F-1</agimax>
+         <agiaug>F-1</agiaug>
+         <reamin>F-1</reamin>
+         <reamax>F-1</reamax>
+         <reaaug>F-1</reaaug>
+         <strmin>F+2</strmin>
+         <strmax>F+2</strmax>
+         <straug>F+2</straug>
+         <chamin>F</chamin>
+         <chamax>F</chamax>
+         <chaaug>F</chaaug>
+         <intmin>F</intmin>
+         <intmax>F</intmax>
+         <intaug>F</intaug>
+         <logmin>F-2</logmin>
+         <logmax>F-2</logmax>
+         <logaug>F-2</logaug>
+         <wilmin>F</wilmin>
+         <wilmax>F</wilmax>
+         <wilaug>F</wilaug>
+         <inimin>(F*2)-1</inimin>
+         <inimax>(F*2)-1</inimax>
+         <iniaug>(F*2)-1</iniaug>
+         <edgmin>F/2</edgmin>
+         <edgmax>F/2</edgmax>
+         <edgaug>F/2</edgaug>
+         <magmin>F</magmin>
+         <magmax>F</magmax>
+         <magaug>F</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>0</essmin>
+         <essmax>F</essmax>
+         <essaug>F</essaug>
+         <walk>2/2/2</walk>
+         <run>4/4/4</run>
+         <sprint>2/2/2</sprint>
+        <armor>F</armor>
+         <bonus>
+            <enableattribute>
+               <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+            <initiativepass>1</initiativepass>
+            <optionalpowers count="floor({MAG} div 3)">
+               <optionalpower>Aura Masking</optionalpower>
+               <optionalpower>Haunt</optionalpower>
+               <optionalpower select="Any Cannon or Launcher">Natural Weapon</optionalpower>
+               <optionalpower>Storm</optionalpower>
+            </optionalpowers>
+            <unlockskills>Magician</unlockskills>
+         </bonus>
+         <qualities>
+            <positive>
+               <quality>Toughness</quality>
+            </positive>
+         </qualities>
+         <powers>
+            <power>Materialization</power>
+            <power>Sapience</power>
+         </powers>
+         <skills>
+            <skill rating="F">Navigation</skill>
+            <skill rating="F">Perception</skill>
+            <skill rating="F">Pilot Watercraft</skill>
+            <skill rating="F">Survival</skill>
+            <skill rating="F">Swimming</skill>
+            <skill rating="F">Unarmed Combat</skill>
+         </skills>
+         <source>FA</source>
+         <page>180</page>
+      </metatype>
+      <metatype>
+         <id>5fdabe38-2413-4748-b535-f2679231a3de</id>
+         <name>Train Spirit</name>
+         <category>Spirits</category>
+         <forcecreature />
+         <karma>0</karma>
+         <bodmin>F+3</bodmin>
+         <bodmax>F+3</bodmax>
+         <bodaug>F+3</bodaug>
+         <agimin>F-1</agimin>
+         <agimax>F-1</agimax>
+         <agiaug>F-1</agiaug>
+         <reamin>F-1</reamin>
+         <reamax>F-1</reamax>
+         <reaaug>F-1</reaaug>
+         <strmin>F+2</strmin>
+         <strmax>F+2</strmax>
+         <straug>F+2</straug>
+         <chamin>F</chamin>
+         <chamax>F</chamax>
+         <chaaug>F</chaaug>
+         <intmin>F</intmin>
+         <intmax>F</intmax>
+         <intaug>F</intaug>
+         <logmin>F-2</logmin>
+         <logmax>F-2</logmax>
+         <logaug>F-2</logaug>
+         <wilmin>F+1</wilmin>
+         <wilmax>F+1</wilmax>
+         <wilaug>F+1</wilaug>
+         <inimin>(F*2)-1</inimin>
+         <inimax>(F*2)-1</inimax>
+         <iniaug>(F*2)-1</iniaug>
+         <edgmin>F/2</edgmin>
+         <edgmax>F/2</edgmax>
+         <edgaug>F/2</edgaug>
+         <magmin>F</magmin>
+         <magmax>F</magmax>
+         <magaug>F</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>0</essmin>
+         <essmax>F</essmax>
+         <essaug>F</essaug>
+         <walk>2/2/2</walk>
+         <run>4/4/4</run>
+         <sprint>2/2/2</sprint>
+        <armor>F</armor>
+         <bonus>
+            <enableattribute>
+               <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+            <initiativepass>1</initiativepass>
+            <optionalpowers count="floor({MAG} div 3)">
+               <optionalpower>Aura Masking</optionalpower>
+               <optionalpower>Haunt</optionalpower>
+               <optionalpower select="Any Cannon or Launcher">Natural Weapon</optionalpower>
+               <optionalpower>Reinforcement</optionalpower>
+            </optionalpowers>
+            <unlockskills>Magician</unlockskills>
+         </bonus>
+         <powers>
+            <power>Accident</power>
+            <power>Sapience</power>
+            <power>Materialization</power>
+         </powers>
+         <skills>
+            <skill rating="F">Intimidation</skill>
+            <skill rating="F">Navigation</skill>
+            <skill rating="F">Perception</skill>
+            <skill rating="F">Pilot Ground Craft</skill>
+            <skill rating="F">Unarmed Combat</skill>
+         </skills>
+         <source>FA</source>
+         <page>181</page>
+      </metatype>
+      <metatype>
+         <id>e6ef537f-48b6-420e-9407-80035267b673</id>
+         <name>Automotive Spirit</name>
+         <category>Spirits</category>
+         <forcecreature />
+         <karma>0</karma>
+         <bodmin>F+1</bodmin>
+         <bodmax>F+1</bodmax>
+         <bodaug>F+1</bodaug>
+         <agimin>F+2</agimin>
+         <agimax>F+2</agimax>
+         <agiaug>F+2</agiaug>
+         <reamin>F+1</reamin>
+         <reamax>F+1</reamax>
+         <reaaug>F+1</reaaug>
+         <strmin>F</strmin>
+         <strmax>F</strmax>
+         <straug>F</straug>
+         <chamin>F</chamin>
+         <chamax>F</chamax>
+         <chaaug>F</chaaug>
+         <intmin>F</intmin>
+         <intmax>F</intmax>
+         <intaug>F</intaug>
+         <logmin>F-2</logmin>
+         <logmax>F-2</logmax>
+         <logaug>F-2</logaug>
+         <wilmin>F</wilmin>
+         <wilmax>F</wilmax>
+         <wilaug>F</wilaug>
+         <inimin>(F*2)+1</inimin>
+         <inimax>(F*2)+1</inimax>
+         <iniaug>(F*2)+1</iniaug>
+         <edgmin>F/2</edgmin>
+         <edgmax>F/2</edgmax>
+         <edgaug>F/2</edgaug>
+         <magmin>F</magmin>
+         <magmax>F</magmax>
+         <magaug>F</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>0</essmin>
+         <essmax>F</essmax>
+         <essaug>F</essaug>
+         <walk>2/2/2</walk>
+         <run>4/4/4</run>
+         <sprint>2/2/2</sprint>
+        <armor>0</armor>
+         <bonus>
+            <enableattribute>
+               <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+            <initiativepass>1</initiativepass>
+            <optionalpowers count="floor({MAG} div 3)">
+               <optionalpower>Aura Masking</optionalpower>
+               <optionalpower>Haunt</optionalpower>
+               <optionalpower select="Any Machine Gun; Motorcycles and lighter vehicles can only have LMGs">Natural Weapon</optionalpower>
+            </optionalpowers>
+            <unlockskills>Magician</unlockskills>
+         </bonus>
+         <powers>
+            <power>Accident</power>
+            <power>Evasion</power>
+            <power>Maneuvering</power>
+            <power>Materialization</power>
+            <power>Sapience</power>
+         </powers>
+         <skills>
+            <skill rating="F">Navigation</skill>
+            <skill rating="F">Perception</skill>
+            <skill rating="F">Pilot Ground Craft</skill>
+            <skill rating="F">Running</skill>
+            <skill rating="F">Unarmed Combat</skill>
+         </skills>
+         <source>FA</source>
+         <page>181</page>
+      </metatype>
+      <metatype>
+         <id>11daf2fe-7cf4-4d4e-b79f-737392bebed5</id>
+         <name>Aircraft Spirit</name>
+         <category>Spirits</category>
+         <forcecreature />
+         <karma>0</karma>
+         <bodmin>F+2</bodmin>
+         <bodmax>F+2</bodmax>
+         <bodaug>F+2</bodaug>
+         <agimin>F+1</agimin>
+         <agimax>F+1</agimax>
+         <agiaug>F+1</agiaug>
+         <reamin>F</reamin>
+         <reamax>F</reamax>
+         <reaaug>F</reaaug>
+         <strmin>F+1</strmin>
+         <strmax>F+1</strmax>
+         <straug>F+1</straug>
+         <chamin>F</chamin>
+         <chamax>F</chamax>
+         <chaaug>F</chaaug>
+         <intmin>F</intmin>
+         <intmax>F</intmax>
+         <intaug>F</intaug>
+         <logmin>F-2</logmin>
+         <logmax>F-2</logmax>
+         <logaug>F-2</logaug>
+         <wilmin>F</wilmin>
+         <wilmax>F</wilmax>
+         <wilaug>F</wilaug>
+         <inimin>(F*2)</inimin>
+         <inimax>(F*2)</inimax>
+         <iniaug>(F*2)</iniaug>
+         <edgmin>F/2</edgmin>
+         <edgmax>F/2</edgmax>
+         <edgaug>F/2</edgaug>
+         <magmin>F</magmin>
+         <magmax>F</magmax>
+         <magaug>F</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>0</essmin>
+         <essmax>F</essmax>
+         <essaug>F</essaug>
+         <walk>2/2/2</walk>
+         <run>4/4/4</run>
+         <sprint>2/2/2</sprint>
+        <armor>0</armor>
+         <bonus>
+            <enableattribute>
+               <name>MAG</name>
+            </enableattribute>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+            <initiativepass>1</initiativepass>
+            <optionalpowers count="floor({MAG} div 3)">
+               <optionalpower>Aura Masking</optionalpower>
+               <optionalpower>Dive Attack</optionalpower>
+               <optionalpower>Haunt</optionalpower>
+               <optionalpower select="Any Cannon or Launcher">Natural Weapon</optionalpower>
+              <optionalpower>Search</optionalpower>
+            </optionalpowers>
+            <unlockskills>Magician</unlockskills>
+         </bonus>
+         <powers>
+            <power>Evasion</power>
+            <power>Maneuvering</power>
+            <power>Materialization</power>
+            <power>Sapience</power>
+            <power>Stealth</power>
+         </powers>
+         <skills>
+            <skill rating="F">Free-fall</skill>
+            <skill rating="F">Navigation</skill>
+            <skill rating="F">Perception</skill>
+            <skill rating="F">Pilot Aircraft</skill>
+            <skill rating="F">Unarmed Combat</skill>
+         </skills>
+         <source>FA</source>
+         <page>181</page>
       </metatype>
       <metatype>
          <id>a29dbdbd-d20f-4b8e-b273-7913f32e0b04</id>
