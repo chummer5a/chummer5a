@@ -16,7 +16,7 @@ Application Changes:
 - Adding or removing improvements or improvement sources that modify the Essence cost of Geneware specifically now properly updates relevant Essence costs.
 - The character option to apply wound modifiers from encumbrance now shows properly in the character settings editing menu.
 - When selecting new cyberware or bioware to add that is forced to be at a specific grade (including None), said 'ware no longer still uses the availability and cost modifiers of the previously selected grade.
-- Added new house rule settings to configure how many martial arts and techniques a character may have at character creation. 
+- Added new house rule settings to configure how many martial arts and techniques a character may have at character creation.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.
@@ -36,7 +36,6 @@ Changed/New Strings:
 - Checkbox_Options_InsertPdfNotesIfAvailable
 - Label_Options_MaximumMartialArts
 - Label_Options_MaximumMartialTechniques
-- Label_CharacterOptions_CharacterCreation
 
 Build 225
 Application Changes:

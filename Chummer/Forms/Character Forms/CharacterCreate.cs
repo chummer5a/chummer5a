@@ -19483,7 +19483,7 @@ namespace Chummer
 
                     // Check if the character has more than 5 Techniques in a Martial Art
                     if (await (await CharacterObject.GetMartialArtsAsync(token).ConfigureAwait(false))
-                              .GetCountAsync(token).ConfigureAwait(false) > 0)
+                              .AnyAsync(token).ConfigureAwait(false))
                     {
                         int intTechniques
                             = await (await CharacterObject.GetMartialArtsAsync(token).ConfigureAwait(false)).SumAsync(
