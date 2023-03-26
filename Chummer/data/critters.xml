@@ -5918,7 +5918,7 @@
          <sprint>1/1/0</sprint>
          <armor>0</armor>
          <skills>
-            <skill rating="4" spec="Climbing">Gymnastics</skill>
+            <skill rating="6">Gymnastics</skill>
             <skill rating="8">Sneaking</skill>
          </skills>
          <powers>
@@ -6474,7 +6474,7 @@
             <power select="Sight">Reduced Senses</power>
          </powers>
          <skills>
-            <skill rating="1" spec="Climbing">Gymnastics</skill>
+            <skill rating="3">Gymnastics</skill>
             <skill rating="4">Flight</skill>
             <skill rating="4">Perception</skill>
             <skill rating="4">Sneaking</skill>
@@ -27136,7 +27136,7 @@
             <skill rating="6">Astral Combat</skill>
             <skill rating="6" select="Noxious Breath">Exotic Ranged Weapon</skill>
             <skill rating="6" spec="Harness Updraft">Flight</skill>
-            <skill rating="3" spec="Climbing">Gymnastics</skill>
+            <skill rating="5">Gymnastics</skill>
             <skill rating="4">Sneaking</skill>
             <skill rating="6" spec="Sight">Perception</skill>
             <skill rating="8">Unarmed Combat</skill>
@@ -27586,7 +27586,7 @@
             <power>Paralyzing Touch</power>
          </powers>
          <skills>
-            <skill rating="2" spec="Climbing">Gymnastics</skill>
+            <skill rating="4">Gymnastics</skill>
             <skill rating="5">Perception</skill>
             <skill rating="4">Unarmed Combat</skill>
          </skills>
