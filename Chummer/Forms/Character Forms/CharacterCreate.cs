@@ -12337,12 +12337,11 @@ namespace Chummer
                         break;
                     }
                 }
-                await lblMetamagicSourceLabel
-                    .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblMetamagicSource.Text.ToString()),
-                        token: token).ConfigureAwait(false);
-                await lblMetamagicSource
-                    .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblMetamagicSource.Text.ToString()),
-                        token: token).ConfigureAwait(false);
+                bool blnVisible = await lblMetamagicSource
+                                        .DoThreadSafeFuncAsync(x => x.Visible = !string.IsNullOrEmpty(x.Text),
+                                                               token: token).ConfigureAwait(false);
+                await lblMetamagicSourceLabel.DoThreadSafeAsync(x => x.Visible = blnVisible, token: token)
+                                             .ConfigureAwait(false);
             }
             finally
             {

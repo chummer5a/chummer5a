@@ -50,15 +50,19 @@ namespace Chummer
             }
 
             s_ObjSettingsFolderWatcher = new FileSystemWatcher(strSettingsPath, "*.xml");
+            s_ObjSettingsFolderWatcher.BeginInit();
             s_ObjSettingsFolderWatcher.Created += ObjSettingsFolderWatcherOnChanged;
             s_ObjSettingsFolderWatcher.Deleted += ObjSettingsFolderWatcherOnChanged;
             s_ObjSettingsFolderWatcher.Changed += ObjSettingsFolderWatcherOnChanged;
             s_ObjSettingsFolderWatcher.Renamed += ObjSettingsFolderWatcherOnChanged;
+            s_ObjSettingsFolderWatcher.EnableRaisingEvents = true;
+            s_ObjSettingsFolderWatcher.EndInit();
         }
 
         private static async void ObjSettingsFolderWatcherOnChanged(object sender, FileSystemEventArgs e)
         {
-            using (await CursorWait.NewAsync().ConfigureAwait(false))
+            CursorWait objCursorWait = await CursorWait.NewAsync().ConfigureAwait(false);
+            try
             {
                 switch (e.ChangeType)
                 {
@@ -75,6 +79,10 @@ namespace Chummer
                         await ReloadSpecificCustomCharacterSetting(Path.GetFileName(e.FullPath)).ConfigureAwait(false);
                         break;
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 

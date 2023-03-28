@@ -1216,7 +1216,7 @@ namespace Chummer
                     {
                         try
                         {
-                            await Utils.SafeDeleteFileAsync(strToDelete, false, token: token).ConfigureAwait(false);
+                            await Utils.SafeDeleteFileAsync(strToDelete, token: token).ConfigureAwait(false);
                         }
                         catch (IOException)
                         {
@@ -1237,7 +1237,7 @@ namespace Chummer
                         {
                             string strOriginal = Path.GetFileNameWithoutExtension(strBackupFileName);
                             if (File.Exists(strOriginal)
-                                && !await Utils.SafeDeleteFileAsync(strOriginal, false, token: token)
+                                && !await Utils.SafeDeleteFileAsync(strOriginal, token: token)
                                                .ConfigureAwait(false))
                                 continue;
                             File.Move(strBackupFileName, strOriginal);
