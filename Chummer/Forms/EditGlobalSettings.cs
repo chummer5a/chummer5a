@@ -2542,7 +2542,7 @@ namespace Chummer
             for (int intPage = 1; intPage <= 10; intPage++)
             {
                 token.ThrowIfCancellationRequested();
-                string text = GetPageTextFromPDF(fileInfo, intPage);
+                string text = await GetPageTextFromPDF(fileInfo, intPage).ConfigureAwait(false);
                 if (string.IsNullOrEmpty(text))
                     continue;
 
@@ -2573,7 +2573,7 @@ namespace Chummer
 
             return null;
 
-            string GetPageTextFromPDF(FileSystemInfo objInnerFileInfo, int intPage)
+            async ValueTask<string> GetPageTextFromPDF(FileSystemInfo objInnerFileInfo, int intPage)
             {
                 PdfReader objPdfReader = null;
                 PdfDocument objPdfDocument = null;
@@ -2613,11 +2613,9 @@ namespace Chummer
                         // each page should have its own text extraction strategy for it to work properly
                         // this way we don't need to check for previous page appearing in the current page
                         // https://stackoverflow.com/questions/35911062/why-are-gettextfrompage-from-itextsharp-returning-longer-and-longer-strings
-                        string strPageText = iText.Kernel.Pdf.Canvas.Parser.PdfTextExtractor.GetTextFromPage(
-                                                      objPdfDocument.GetPage(intPage),
-                                                      new SimpleTextExtractionStrategy())
-                                                  .CleanStylisticLigatures().NormalizeWhiteSpace()
-                                                  .NormalizeLineEndings().CleanOfInvalidUnicodeChars();
+                        string strPageText = await CommonFunctions.GetPdfTextFromPageSafeAsync(objPdfDocument, intPage, token).ConfigureAwait(false);
+                        strPageText = strPageText.CleanStylisticLigatures().NormalizeWhiteSpace()
+                                                 .NormalizeLineEndings().CleanOfInvalidUnicodeChars();
                         token.ThrowIfCancellationRequested();
                         // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
                         lstStringFromPdf.AddRange(

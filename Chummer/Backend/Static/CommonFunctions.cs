@@ -1817,6 +1817,69 @@ namespace Chummer
             return GetTextFromPdfCoreAsync(false, strSource, strText, objCharacter, token);
         }
 
+        private static readonly ConcurrentHashSet<PdfDocument> _setDocumentsProcessing = new ConcurrentHashSet<PdfDocument>();
+        private static readonly ConcurrentStack<Tuple<SimpleTextExtractionStrategy, PdfCanvasProcessor>> _stkPdfReaders
+            = new ConcurrentStack<Tuple<SimpleTextExtractionStrategy, PdfCanvasProcessor>>();
+
+        public static Tuple<SimpleTextExtractionStrategy, PdfCanvasProcessor> GetPdfReaderUtilsTuple()
+        {
+            Tuple<SimpleTextExtractionStrategy, PdfCanvasProcessor> tupReturn;
+            if (!_stkPdfReaders.TryPop(out tupReturn))
+            {
+                SimpleTextExtractionStrategy objNewExtractionStrategy = new SimpleTextExtractionStrategy();
+                PdfCanvasProcessor objNewCanvasProcessor
+                    = new PdfCanvasProcessor(objNewExtractionStrategy, new Dictionary<string, IContentOperator>());
+                tupReturn = new Tuple<SimpleTextExtractionStrategy, PdfCanvasProcessor>(
+                    objNewExtractionStrategy, objNewCanvasProcessor);
+                _stkPdfReaders.Push(tupReturn);
+            }
+            return tupReturn;
+        }
+
+        public static string GetPdfTextFromPageSafe(PdfDocument objDocument, int intPage, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            (SimpleTextExtractionStrategy objStrategy, PdfCanvasProcessor objCanvasProcessor) = GetPdfReaderUtilsTuple();
+            token.ThrowIfCancellationRequested();
+            // Very hacky implementation of a locker, but we need it because iText's Pdf document readers are not thread-safe
+            while (!_setDocumentsProcessing.TryAdd(objDocument))
+                Utils.SafeSleep(token);
+            try
+            {
+                PdfPage objPage = objDocument.GetPage(intPage);
+                token.ThrowIfCancellationRequested();
+                objCanvasProcessor.ProcessPageContent(objPage);
+                token.ThrowIfCancellationRequested();
+                return objStrategy.GetResultantText();
+            }
+            finally
+            {
+                _setDocumentsProcessing.Remove(objDocument);
+            }
+        }
+
+        public static async ValueTask<string> GetPdfTextFromPageSafeAsync(PdfDocument objDocument, int intPage, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            (SimpleTextExtractionStrategy objStrategy, PdfCanvasProcessor objCanvasProcessor) = GetPdfReaderUtilsTuple();
+            token.ThrowIfCancellationRequested();
+            // Very hacky implementation of a locker, but we need it because iText's Pdf document readers are not thread-safe
+            while (!_setDocumentsProcessing.TryAdd(objDocument))
+                await Utils.SafeSleepAsync(token).ConfigureAwait(false);
+            try
+            {
+                PdfPage objPage = objDocument.GetPage(intPage);
+                token.ThrowIfCancellationRequested();
+                objCanvasProcessor.ProcessPageContent(objPage);
+                token.ThrowIfCancellationRequested();
+                return objStrategy.GetResultantText();
+            }
+            finally
+            {
+                _setDocumentsProcessing.Remove(objDocument);
+            }
+        }
+
         /// <summary>
         /// Gets a textblock from a given PDF document.
         /// Uses flag hack method design outlined here to avoid locking:
@@ -1830,6 +1893,7 @@ namespace Chummer
         /// <returns></returns>
         private static async Task<string> GetTextFromPdfCoreAsync(bool blnSync, string strSource, string strText, Character objCharacter, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strText) || string.IsNullOrEmpty(strSource))
                 return strText;
 
@@ -1843,11 +1907,15 @@ namespace Chummer
             if (intPage < 1)
                 return string.Empty;
 
+            token.ThrowIfCancellationRequested();
+
             // Revert the sourcebook code to the one from the XML file if necessary.
             string strBook = blnSync
                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                 ? LanguageBookCodeFromAltCode(strTemp[0], string.Empty, objCharacter)
                 : await LanguageBookCodeFromAltCodeAsync(strTemp[0], string.Empty, objCharacter, token).ConfigureAwait(false);
+
+            token.ThrowIfCancellationRequested();
 
             // Retrieve the sourcebook information including page offset and PDF application name.
             bool blnSuccess;
@@ -1860,6 +1928,7 @@ namespace Chummer
             if (!blnSuccess || objBookInfo == null)
                 return string.Empty;
 
+            token.ThrowIfCancellationRequested();
             Uri uriPath;
             try
             {
@@ -1873,6 +1942,9 @@ namespace Chummer
             // Check if the file actually exists.
             if (!File.Exists(uriPath.LocalPath))
                 return string.Empty;
+
+            token.ThrowIfCancellationRequested();
+
             intPage += objBookInfo.Offset;
 
             // due to the tag <nameonpage> for the qualities those variants are no longer needed,
@@ -1885,6 +1957,8 @@ namespace Chummer
                 strTextToSearch = strTextToSearch.Substring(0, intPos);
             strTextToSearch = strTextToSearch.Trim().TrimEndOnce(" I", " II", " III", " IV");
 
+            token.ThrowIfCancellationRequested();
+
             List<string> lstStringFromPdf = new List<string>(30);
             int intTitleIndex = -1;
             int intBlockEndIndex = -1;
@@ -1894,14 +1968,16 @@ namespace Chummer
 
             async Task<string> FetchTexts()
             {
+                token.ThrowIfCancellationRequested();
                 PdfDocument objPdfDocument = objBookInfo.CachedPdfDocument;
                 if (objPdfDocument == null)
                     return string.Empty;
-
+                token.ThrowIfCancellationRequested();
                 int intMaxPagesToRead = 3; // parse at most 3 pages of content
                 // Loop through each page, starting at the listed page + offset.
                 for (; intPage <= objPdfDocument.GetNumberOfPages(); ++intPage)
                 {
+                    token.ThrowIfCancellationRequested();
                     // failsafe if something goes wrong, I guess no description takes more than two full pages?
                     if (intMaxPagesToRead-- == 0)
                         break;
@@ -1911,21 +1987,44 @@ namespace Chummer
                     // this way we don't need to check for previous page appearing in the current page
                     // https://stackoverflow.com/questions/35911062/why-are-gettextfrompage-from-itextsharp-returning-longer-and-longer-strings
 
-                    string strPageText;
+                    token.ThrowIfCancellationRequested();
+                    string strPageText = string.Empty;
                     try
                     {
-                        strPageText = PdfTextExtractor.GetTextFromPage(objPdfDocument.GetPage(intPage),
-                                                                       new SimpleTextExtractionStrategy())
-                                                      .CleanStylisticLigatures().NormalizeWhiteSpace()
-                                                      .NormalizeLineEndings().CleanOfInvalidUnicodeChars();
+                        strPageText = blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? GetPdfTextFromPageSafe(objPdfDocument, intPage, token)
+                            : await GetPdfTextFromPageSafeAsync(objPdfDocument, intPage, token).ConfigureAwait(false);
                     }
                     catch (IndexOutOfRangeException)
                     {
+                        token.ThrowIfCancellationRequested();
                         return blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? LanguageManager.GetString("Error_Message_PDF_IndexOutOfBounds", false, token)
-                            : await LanguageManager.GetStringAsync("Error_Message_PDF_IndexOutOfBounds", false, token).ConfigureAwait(false);
+                            : await LanguageManager.GetStringAsync("Error_Message_PDF_IndexOutOfBounds", false, token)
+                                                   .ConfigureAwait(false);
                     }
+                    catch (OperationCanceledException)
+                    {
+                        // Don't generate a new canceled exception if the one we generated originates from our token
+                        if (token.IsCancellationRequested)
+                            throw;
+                        token.ThrowIfCancellationRequested();
+                    }
+                    // All sorts of weird things can happen when we hammer I/O from constantly running tasks, and there's no good way of handling these without this very broad try-catch
+                    catch (Exception e)
+                    {
+                        // Make sure we throw the cancellation token if it was triggered first
+                        token.ThrowIfCancellationRequested();
+                        Utils.BreakIfDebug();
+                        return string.Empty;
+                    }
+                    token.ThrowIfCancellationRequested();
+
+                    strPageText = strPageText.CleanStylisticLigatures().NormalizeWhiteSpace()
+                                             .NormalizeLineEndings().CleanOfInvalidUnicodeChars();
+                    token.ThrowIfCancellationRequested();
 
                     // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
                     lstStringFromPdf.AddRange(strPageText
@@ -1934,12 +2033,14 @@ namespace Chummer
 
                     for (int i = intProcessedStrings; i < lstStringFromPdf.Count; i++)
                     {
+                        token.ThrowIfCancellationRequested();
                         // failsafe for languages that don't have case distinction (chinese, japanese, etc)
                         // there not much to be done for those languages, so stop after 10 continuous lines of uppercase text after our title
                         if (intExtraAllCapsInfo > 10)
                             break;
 
                         string strCurrentLine = lstStringFromPdf[i];
+                        token.ThrowIfCancellationRequested();
                         // we still haven't found anything
                         if (intTitleIndex == -1)
                         {
@@ -1950,6 +2051,7 @@ namespace Chummer
                                 // if the line is smaller first check if it contains the start of the text, before parsing the rest
                                 if (strTextToSearch.StartsWith(strCurrentLine, StringComparison.OrdinalIgnoreCase))
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     // now just add more lines to it until it is enough
                                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                out StringBuilder sbdCurrentLine))
@@ -1958,6 +2060,7 @@ namespace Chummer
                                         while (sbdCurrentLine.Length < intTextToSearchLength
                                                && (i + intTitleExtraLines + 1) < lstStringFromPdf.Count)
                                         {
+                                            token.ThrowIfCancellationRequested();
                                             intTitleExtraLines++;
                                             // add the content plus a space
                                             sbdCurrentLine.Append(' ').Append(lstStringFromPdf[i + intTitleExtraLines]);
@@ -2013,6 +2116,7 @@ namespace Chummer
                             // it is something in all caps we need to verify what it is
                             if (strCurrentLine.IsAllLettersUpperCase())
                             {
+                                token.ThrowIfCancellationRequested();
                                 // if it is header or footer information just remove it
                                 // do we also include lines with just numbers as probably page numbers??
                                 if (strCurrentLine.All(char.IsDigit) || strCurrentLine.Contains(">>") ||
@@ -2057,27 +2161,35 @@ namespace Chummer
                 return string.Empty;
             }
 
+            token.ThrowIfCancellationRequested();
+
             // we have our textblock, lets format it and be done with it
             if (string.IsNullOrEmpty(strReturn) && intBlockEndIndex != -1)
             {
+                token.ThrowIfCancellationRequested();
                 string[] strArray = lstStringFromPdf.ToArray();
+                token.ThrowIfCancellationRequested();
                 // if it is a "paragraph title" just concatenate everything
                 if (blnTitleWithColon)
                     return string.Join(" ", strArray, intTitleIndex, intBlockEndIndex - intTitleIndex);
+                token.ThrowIfCancellationRequested();
                 // add the title
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdResultContent))
                 {
+                    token.ThrowIfCancellationRequested();
                     sbdResultContent.AppendLine(strArray[intTitleIndex]);
                     // if we have extra info add it keeping the line breaks
                     if (intExtraAllCapsInfo > 0)
                         sbdResultContent
                             .AppendJoin(Environment.NewLine, strArray, intTitleIndex + 1, intExtraAllCapsInfo)
                             .AppendLine();
+                    token.ThrowIfCancellationRequested();
                     int intContentStartIndex = intTitleIndex + intExtraAllCapsInfo + 1;
                     // this is the best we can do for now, it will still mangle spell blocks a bit
                     for (int i = intContentStartIndex; i < intBlockEndIndex; i++)
                     {
+                        token.ThrowIfCancellationRequested();
                         string strContentString = strArray[i];
                         if (strContentString.Length > 0)
                         {
@@ -2110,6 +2222,7 @@ namespace Chummer
                         }
                     }
 
+                    token.ThrowIfCancellationRequested();
                     strReturn = sbdResultContent.ToString().Trim();
                 }
             }

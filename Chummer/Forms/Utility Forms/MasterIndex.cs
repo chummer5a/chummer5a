@@ -541,6 +541,13 @@ namespace Chummer
                                 {
                                     ConcurrentBag<ListItem> lstFileNamesWithItemsForLoading = new ConcurrentBag<ListItem>();
                                     // Prevents locking the UI thread while still benefiting from static scheduling of Parallel.ForEach
+                                    // Preload all data first to prevent weird locking issues with the rest of the program
+                                    await Task.WhenAll(_astrFileNames.Select(
+                                                           x => Task.Run(
+                                                               async () => await XmlManager.LoadXPathAsync(
+                                                                   x,
+                                                                   _objSelectedSetting.EnabledCustomDataDirectoryPaths,
+                                                                   token: token), token)));
                                     await Task.WhenAll(_astrFileNames.Select(strFileName => Task.Run(async () =>
                                     {
                                         XPathNavigator xmlBaseNode
