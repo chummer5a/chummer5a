@@ -2038,10 +2038,7 @@
     </rule>
     <rule>
       <id>5226A5F7-C086-4C23-B285-AE51A3CDBF93</id>
-      <name>
-        Defender Inside
-        A Moving Vehicle
-      </name>
+      <name>Defender Inside A Moving Vehicle</name>
       <source>SR5</source>
       <page>188</page>
     </rule>
