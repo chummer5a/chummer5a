@@ -1839,13 +1839,14 @@ namespace Chummer
         public static string GetPdfTextFromPageSafe(PdfDocument objDocument, int intPage, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            (SimpleTextExtractionStrategy objStrategy, PdfCanvasProcessor objCanvasProcessor) = GetPdfReaderUtilsTuple();
-            token.ThrowIfCancellationRequested();
             // Very hacky implementation of a locker, but we need it because iText's Pdf document readers are not thread-safe
             while (!_setDocumentsProcessing.TryAdd(objDocument))
                 Utils.SafeSleep(token);
             try
             {
+                token.ThrowIfCancellationRequested();
+                (SimpleTextExtractionStrategy objStrategy, PdfCanvasProcessor objCanvasProcessor) = GetPdfReaderUtilsTuple();
+                token.ThrowIfCancellationRequested();
                 PdfPage objPage = objDocument.GetPage(intPage);
                 token.ThrowIfCancellationRequested();
                 objCanvasProcessor.ProcessPageContent(objPage);
@@ -1861,13 +1862,14 @@ namespace Chummer
         public static async ValueTask<string> GetPdfTextFromPageSafeAsync(PdfDocument objDocument, int intPage, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            (SimpleTextExtractionStrategy objStrategy, PdfCanvasProcessor objCanvasProcessor) = GetPdfReaderUtilsTuple();
-            token.ThrowIfCancellationRequested();
             // Very hacky implementation of a locker, but we need it because iText's Pdf document readers are not thread-safe
             while (!_setDocumentsProcessing.TryAdd(objDocument))
                 await Utils.SafeSleepAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
+                (SimpleTextExtractionStrategy objStrategy, PdfCanvasProcessor objCanvasProcessor) = GetPdfReaderUtilsTuple();
+                token.ThrowIfCancellationRequested();
                 PdfPage objPage = objDocument.GetPage(intPage);
                 token.ThrowIfCancellationRequested();
                 objCanvasProcessor.ProcessPageContent(objPage);
