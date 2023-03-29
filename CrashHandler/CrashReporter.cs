@@ -95,19 +95,24 @@ namespace CrashHandler
             {
                 try
                 {
-                    foreach (CharacterShared objOpenCharacterForm in Chummer.Program.MainForm
-                                                                            .OpenCharacterEditorForms)
+                    ThreadSafeObservableCollection<CharacterShared> lstForms = Chummer.Program.MainForm
+                        .OpenCharacterEditorForms;
+                    if (lstForms != null)
                     {
-                        try
+                        foreach (CharacterShared objOpenCharacterForm in lstForms)
                         {
-                            sbdArguments.Append('\"').Append(objOpenCharacterForm.CharacterObject.FileName)
-                                    .Append("\" ");
-                        }
-                        catch (Exception ex)
-                        {
-                            // Swallow any exceptions
-                            Log.Info(ex);
-                            Utils.BreakIfDebug();
+                            try
+                            {
+                                string strLoopFileName = objOpenCharacterForm.CharacterObject?.FileName ?? string.Empty;
+                                if (!string.IsNullOrEmpty(strLoopFileName))
+                                    sbdArguments.Append('\"').Append(strLoopFileName).Append("\" ");
+                            }
+                            catch (Exception ex)
+                            {
+                                // Swallow any exceptions
+                                Log.Info(ex);
+                                Utils.BreakIfDebug();
+                            }
                         }
                     }
                 }

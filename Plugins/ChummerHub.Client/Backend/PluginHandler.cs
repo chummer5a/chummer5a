@@ -83,8 +83,8 @@ namespace Chummer.Plugins
             if (objNode.ContextMenuStrip == null)
             {
                 string strTag = objNode.Tag?.ToString() ?? string.Empty;
-                objNode.ContextMenuStrip = MainForm.CharacterRoster.CreateContextMenuStrip(strTag.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
-                                                                                           && MainForm.OpenCharacterEditorForms.Any(x => x.CharacterObject?.FileName == strTag));
+                objNode.ContextMenuStrip = MainForm?.CharacterRoster.CreateContextMenuStrip(strTag.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
+                    && MainForm?.OpenCharacterEditorForms?.Any(x => x.CharacterObject?.FileName == strTag) == true);
             }
 
             ContextMenuStrip cmsRoster = objNode.ContextMenuStrip ?? new ContextMenuStrip();
@@ -490,10 +490,16 @@ namespace Chummer.Plugins
                         }
 
                         TabPage tabPage = null;
-                        CharacterShared found = await MainForm.OpenCharacterEditorForms.FirstOrDefaultAsync(x => x.CharacterObject == input, token: token);
-                        switch (found)
+                        ThreadSafeObservableCollection<CharacterShared>
+                            lstToProcess = MainForm.OpenCharacterEditorForms;
+                        if (lstToProcess != null)
                         {
-                            case CharacterCreate frm when frm.TabCharacterTabs.TabPages.ContainsKey("SINners"):
+                            CharacterShared found
+                                = await lstToProcess.FirstOrDefaultAsync(
+                                    x => x.CharacterObject == input, token: token);
+                            switch (found)
+                            {
+                                case CharacterCreate frm when frm.TabCharacterTabs.TabPages.ContainsKey("SINners"):
                                 {
                                     await Utils.RunOnMainThreadAsync(() =>
                                     {
@@ -502,7 +508,7 @@ namespace Chummer.Plugins
                                     }, token);
                                     break;
                                 }
-                            case CharacterCareer frm2 when frm2.TabCharacterTabs.TabPages.ContainsKey("SINners"):
+                                case CharacterCareer frm2 when frm2.TabCharacterTabs.TabPages.ContainsKey("SINners"):
                                 {
                                     await Utils.RunOnMainThreadAsync(() =>
                                     {
@@ -511,6 +517,7 @@ namespace Chummer.Plugins
                                     }, token);
                                     break;
                                 }
+                            }
                         }
 
                         if (tabPage == null)
@@ -550,9 +557,10 @@ namespace Chummer.Plugins
         private static async Task<CharacterExtended> GetMyCeCoreAsync(bool blnSync, Character input, CancellationToken token = default)
         {
             CharacterShared found = null;
-            if (MainForm?.OpenCharacterEditorForms != null)
+            ThreadSafeObservableCollection<CharacterShared> lstForms = MainForm?.OpenCharacterEditorForms;
+            if (lstForms != null)
             {
-                foreach (CharacterShared a in MainForm.OpenCharacterEditorForms)
+                foreach (CharacterShared a in lstForms)
                 {
                     if (a?.CharacterObject != input)
                         continue;

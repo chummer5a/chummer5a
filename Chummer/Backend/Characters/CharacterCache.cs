@@ -883,14 +883,14 @@ namespace Chummer
             if (blnAddMarkerIfOpen && Program.MainForm != null)
             {
                 string strMarker = string.Empty;
-                if (Program.MainForm.OpenCharacterEditorForms.Any(
-                        x => !x.CharacterObject.IsDisposed && x.CharacterObject.FileName == FilePath))
+                if (Program.MainForm.OpenCharacterEditorForms?.Any(
+                        x => !x.CharacterObject.IsDisposed && x.CharacterObject.FileName == FilePath) == true)
                     strMarker += '*';
-                if (Program.MainForm.OpenCharacterSheetViewers.Any(
-                        x => x.CharacterObjects.Any(y => !y.IsDisposed && y.FileName == FilePath)))
+                if (Program.MainForm.OpenCharacterSheetViewers?.Any(
+                        x => x.CharacterObjects.Any(y => !y.IsDisposed && y.FileName == FilePath)) == true)
                     strMarker += '^';
-                if (Program.MainForm.OpenCharacterExportForms.Any(
-                        x => !x.CharacterObject.IsDisposed && x.CharacterObject.FileName == FilePath))
+                if (Program.MainForm.OpenCharacterExportForms?.Any(
+                        x => !x.CharacterObject.IsDisposed && x.CharacterObject.FileName == FilePath) == true)
                     strMarker += '\'';
                 if (!string.IsNullOrEmpty(strMarker))
                     strReturn = strMarker + strSpace + strReturn;
@@ -933,14 +933,29 @@ namespace Chummer
             if (blnAddMarkerIfOpen && Program.MainForm != null)
             {
                 string strMarker = string.Empty;
-                if (await Program.MainForm.OpenCharacterEditorForms.AnyAsync(
-                        x => !x.CharacterObject.IsDisposed && x.CharacterObject.FileName == FilePath, token).ConfigureAwait(false))
+                ThreadSafeObservableCollection<CharacterShared> lstToProcess1
+                    = Program.MainForm.OpenCharacterEditorForms;
+                if (lstToProcess1 != null && await lstToProcess1
+                                                   .AnyAsync(
+                                                       x => !x.CharacterObject.IsDisposed
+                                                            && x.CharacterObject.FileName == FilePath, token)
+                                                   .ConfigureAwait(false))
                     strMarker += '*';
-                if (await Program.MainForm.OpenCharacterSheetViewers.AnyAsync(
-                        x => x.CharacterObjects.Any(y => !y.IsDisposed && y.FileName == FilePath), token).ConfigureAwait(false))
+                ThreadSafeObservableCollection<CharacterSheetViewer> lstToProcess2
+                    = Program.MainForm.OpenCharacterSheetViewers;
+                if (lstToProcess1 != null && await lstToProcess2
+                                                   .AnyAsync(
+                                                       x => x.CharacterObjects.Any(
+                                                           y => !y.IsDisposed && y.FileName == FilePath), token)
+                                                   .ConfigureAwait(false))
                     strMarker += '^';
-                if (await Program.MainForm.OpenCharacterExportForms.AnyAsync(
-                        x => !x.CharacterObject.IsDisposed && x.CharacterObject.FileName == FilePath, token).ConfigureAwait(false))
+                ThreadSafeObservableCollection<ExportCharacter> lstToProcess3
+                    = Program.MainForm.OpenCharacterExportForms;
+                if (lstToProcess1 != null && await lstToProcess3
+                                                   .AnyAsync(
+                                                       x => !x.CharacterObject.IsDisposed
+                                                            && x.CharacterObject.FileName == FilePath, token)
+                                                   .ConfigureAwait(false))
                     strMarker += '\'';
                 if (!string.IsNullOrEmpty(strMarker))
                     strReturn = strMarker + strSpace + strReturn;

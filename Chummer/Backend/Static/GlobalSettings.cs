@@ -1289,26 +1289,38 @@ namespace Chummer
                 // Set default cultures based on the currently set language
                 CultureInfo.DefaultThreadCurrentCulture = _objLanguageCultureInfo;
                 CultureInfo.DefaultThreadCurrentUICulture = _objLanguageCultureInfo;
-                if (Program.MainForm != null)
+                ChummerMainForm frmMain = Program.MainForm;
+                if (frmMain == null)
+                    return;
+                frmMain.TranslateWinForm();
+                IReadOnlyCollection<Form> lstToProcess = frmMain.OpenCharacterEditorForms;
+                if (lstToProcess != null)
                 {
-                    Program.MainForm.TranslateWinForm();
-                    foreach (CharacterShared frmLoop in Program.MainForm.OpenCharacterEditorForms)
+                    foreach (Form frmLoop in lstToProcess)
                     {
                         frmLoop.TranslateWinForm();
                     }
-                    foreach (CharacterSheetViewer frmLoop in Program.MainForm.OpenCharacterSheetViewers)
-                    {
-                        frmLoop.TranslateWinForm();
-                    }
-                    foreach (ExportCharacter frmLoop in Program.MainForm.OpenCharacterExportForms)
-                    {
-                        frmLoop.TranslateWinForm();
-                    }
-                    Program.MainForm.PrintMultipleCharactersForm?.TranslateWinForm();
-                    Program.MainForm.CharacterRoster?.TranslateWinForm();
-                    Program.MainForm.MasterIndex?.TranslateWinForm();
-                    Program.MainForm.RefreshAllTabTitles();
                 }
+                lstToProcess = frmMain.OpenCharacterSheetViewers;
+                if (lstToProcess != null)
+                {
+                    foreach (Form frmLoop in lstToProcess)
+                    {
+                        frmLoop.TranslateWinForm();
+                    }
+                }
+                lstToProcess = frmMain.OpenCharacterExportForms;
+                if (lstToProcess != null)
+                {
+                    foreach (Form frmLoop in lstToProcess)
+                    {
+                        frmLoop.TranslateWinForm();
+                    }
+                }
+                frmMain.PrintMultipleCharactersForm?.TranslateWinForm();
+                frmMain.CharacterRoster?.TranslateWinForm();
+                frmMain.MasterIndex?.TranslateWinForm();
+                frmMain.RefreshAllTabTitles();
             }
         }
 
@@ -1327,28 +1339,44 @@ namespace Chummer
             // Set default cultures based on the currently set language
             CultureInfo.DefaultThreadCurrentCulture = _objLanguageCultureInfo;
             CultureInfo.DefaultThreadCurrentUICulture = _objLanguageCultureInfo;
-            if (Program.MainForm != null)
+            ChummerMainForm frmMain = Program.MainForm;
+            if (frmMain != null)
             {
-                await Program.MainForm.TranslateWinFormAsync(token: token).ConfigureAwait(false);
-                foreach (CharacterShared frmLoop in Program.MainForm.OpenCharacterEditorForms)
+                await frmMain.TranslateWinFormAsync(token: token).ConfigureAwait(false);
+                IReadOnlyCollection<Form> lstToProcess = frmMain.OpenCharacterEditorForms;
+                if (lstToProcess != null)
                 {
-                    await frmLoop.TranslateWinFormAsync(token: token).ConfigureAwait(false);
+                    foreach (Form frmLoop in lstToProcess)
+                    {
+                        await frmLoop.TranslateWinFormAsync(token: token).ConfigureAwait(false);
+                    }
                 }
-                foreach (CharacterSheetViewer frmLoop in Program.MainForm.OpenCharacterSheetViewers)
+                lstToProcess = frmMain.OpenCharacterSheetViewers;
+                if (lstToProcess != null)
                 {
-                    await frmLoop.TranslateWinFormAsync(token: token).ConfigureAwait(false);
+                    foreach (Form frmLoop in lstToProcess)
+                    {
+                        await frmLoop.TranslateWinFormAsync(token: token).ConfigureAwait(false);
+                    }
                 }
-                foreach (ExportCharacter frmLoop in Program.MainForm.OpenCharacterExportForms)
+                lstToProcess = frmMain.OpenCharacterExportForms;
+                if (lstToProcess != null)
                 {
-                    await frmLoop.TranslateWinFormAsync(token: token).ConfigureAwait(false);
+                    foreach (Form frmLoop in lstToProcess)
+                    {
+                        await frmLoop.TranslateWinFormAsync(token: token).ConfigureAwait(false);
+                    }
                 }
-                if (Program.MainForm.PrintMultipleCharactersForm != null)
-                    await Program.MainForm.PrintMultipleCharactersForm.TranslateWinFormAsync(token: token).ConfigureAwait(false);
-                if (Program.MainForm.CharacterRoster != null)
-                    await Program.MainForm.CharacterRoster.TranslateWinFormAsync(token: token).ConfigureAwait(false);
-                if (Program.MainForm.MasterIndex != null)
-                    await Program.MainForm.MasterIndex.TranslateWinFormAsync(token: token).ConfigureAwait(false);
-                await Program.MainForm.RefreshAllTabTitlesAsync(token).ConfigureAwait(false);
+                Form frmToProcess = frmMain.PrintMultipleCharactersForm;
+                if (frmToProcess != null)
+                    await frmToProcess.TranslateWinFormAsync(token: token).ConfigureAwait(false);
+                frmToProcess = frmMain.CharacterRoster;
+                if (frmToProcess != null)
+                    await frmToProcess.TranslateWinFormAsync(token: token).ConfigureAwait(false);
+                frmToProcess = frmMain.MasterIndex;
+                if (frmToProcess != null)
+                    await frmToProcess.TranslateWinFormAsync(token: token).ConfigureAwait(false);
+                await frmMain.RefreshAllTabTitlesAsync(token).ConfigureAwait(false);
             }
         }
 

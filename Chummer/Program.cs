@@ -893,11 +893,11 @@ namespace Chummer
                 return null;
             if (objCharacter == null)
                 return MainForm;
-            return MainForm.OpenCharacterEditorForms.FirstOrDefault(
+            return MainForm.OpenCharacterEditorForms?.FirstOrDefault(
                        x => ReferenceEquals(x.CharacterObject, objCharacter)) as Form
-                   ?? MainForm.OpenCharacterSheetViewers.FirstOrDefault(x => x.CharacterObjects.Contains(objCharacter))
+                   ?? MainForm.OpenCharacterSheetViewers?.FirstOrDefault(x => x.CharacterObjects.Contains(objCharacter))
                        as Form
-                   ?? MainForm.OpenCharacterExportForms.FirstOrDefault(
+                   ?? MainForm.OpenCharacterExportForms?.FirstOrDefault(
                            x => ReferenceEquals(x.CharacterObject, objCharacter))
                        as Form
                    ?? MainForm;
@@ -915,14 +915,32 @@ namespace Chummer
             return objCharacter == null ? Task.FromResult<Form>(MainForm) : InnerMethod();
             async Task<Form> InnerMethod()
             {
-                return await MainForm.OpenCharacterEditorForms.FirstOrDefaultAsync(
-                           x => ReferenceEquals(x.CharacterObject, objCharacter), token: token).ConfigureAwait(false) as Form
-                       ?? await MainForm.OpenCharacterSheetViewers.FirstOrDefaultAsync(
-                           x => x.CharacterObjects.Contains(objCharacter), token: token).ConfigureAwait(false) as Form
-                       ?? await MainForm.OpenCharacterExportForms.FirstOrDefaultAsync(
-                               x => ReferenceEquals(x.CharacterObject, objCharacter), token: token).ConfigureAwait(false)
-                           as Form
-                       ?? MainForm;
+                Form frmReturn;
+                IAsyncEnumerable<CharacterShared> lstForms1 = MainForm.OpenCharacterEditorForms;
+                if (lstForms1 != null)
+                {
+                    frmReturn = await lstForms1.FirstOrDefaultAsync(
+                        x => ReferenceEquals(x.CharacterObject, objCharacter), token: token).ConfigureAwait(false);
+                    if (frmReturn != null)
+                        return frmReturn;
+                }
+                IAsyncEnumerable<CharacterSheetViewer> lstForms2 = MainForm.OpenCharacterSheetViewers;
+                if (lstForms2 != null)
+                {
+                    frmReturn = await lstForms2.FirstOrDefaultAsync(
+                        x => x.CharacterObjects.Contains(objCharacter), token: token).ConfigureAwait(false);
+                    if (frmReturn != null)
+                        return frmReturn;
+                }
+                IAsyncEnumerable<ExportCharacter> lstForms3 = MainForm.OpenCharacterExportForms;
+                if (lstForms3 != null)
+                {
+                    frmReturn = await lstForms1.FirstOrDefaultAsync(
+                        x => ReferenceEquals(x.CharacterObject, objCharacter), token: token).ConfigureAwait(false);
+                    if (frmReturn != null)
+                        return frmReturn;
+                }
+                return MainForm;
             }
         }
 

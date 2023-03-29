@@ -75,7 +75,7 @@ namespace Chummer
                 _objCharacter.PropertyChanged += CharacterPropertyChanged;
             dlgSaveFile = new SaveFileDialog();
             Load += OnLoad;
-            Program.MainForm.OpenCharacterEditorForms.Add(this);
+            Program.MainForm.OpenCharacterEditorForms?.Add(this);
             string name = "Show_Form_" + GetType();
             PageViewTelemetry pvt = new PageViewTelemetry(name)
             {

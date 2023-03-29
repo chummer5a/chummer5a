@@ -118,14 +118,32 @@ namespace Chummer
 
         public async ValueTask SetMyEventHandlers(bool deleteThem = false, CancellationToken token = default)
         {
+            ThreadSafeObservableCollection<CharacterShared>
+                lstToProcess1 = Program.MainForm.OpenCharacterEditorForms;
+            ThreadSafeObservableCollection<CharacterSheetViewer>
+                lstToProcess2 = Program.MainForm.OpenCharacterSheetViewers;
+            ThreadSafeObservableCollection<ExportCharacter>
+                lstToProcess3 = Program.MainForm.OpenCharacterExportForms;
             if (!deleteThem)
             {
-                Program.MainForm.OpenCharacterEditorForms.BeforeClearCollectionChanged += OpenCharacterEditorFormsOnBeforeClearCollectionChanged;
-                Program.MainForm.OpenCharacterEditorForms.CollectionChanged += OpenCharacterEditorFormsOnCollectionChanged;
-                Program.MainForm.OpenCharacterSheetViewers.BeforeClearCollectionChanged += OpenCharacterSheetViewersOnBeforeClearCollectionChanged;
-                Program.MainForm.OpenCharacterSheetViewers.CollectionChanged += OpenCharacterSheetViewersOnCollectionChanged;
-                Program.MainForm.OpenCharacterExportForms.BeforeClearCollectionChanged += OpenCharacterExportFormsOnBeforeClearCollectionChanged;
-                Program.MainForm.OpenCharacterExportForms.CollectionChanged += OpenCharacterExportFormsOnCollectionChanged;
+                if (lstToProcess1 != null)
+                {
+                    lstToProcess1.BeforeClearCollectionChanged
+                        += OpenCharacterEditorFormsOnBeforeClearCollectionChanged;
+                    lstToProcess1.CollectionChanged += OpenCharacterEditorFormsOnCollectionChanged;
+                }
+                if (lstToProcess2 != null)
+                {
+                    lstToProcess2.BeforeClearCollectionChanged
+                        += OpenCharacterSheetViewersOnBeforeClearCollectionChanged;
+                    lstToProcess2.CollectionChanged += OpenCharacterSheetViewersOnCollectionChanged;
+                }
+                if (lstToProcess3 != null)
+                {
+                    lstToProcess3.BeforeClearCollectionChanged
+                        += OpenCharacterExportFormsOnBeforeClearCollectionChanged;
+                    lstToProcess3.CollectionChanged += OpenCharacterExportFormsOnCollectionChanged;
+                }
                 GlobalSettings.MruChanged += RefreshMruLists;
                 await treCharacterList.DoThreadSafeAsync(x =>
                 {
@@ -150,12 +168,24 @@ namespace Chummer
             }
             else
             {
-                Program.MainForm.OpenCharacterEditorForms.BeforeClearCollectionChanged -= OpenCharacterEditorFormsOnBeforeClearCollectionChanged;
-                Program.MainForm.OpenCharacterEditorForms.CollectionChanged -= OpenCharacterEditorFormsOnCollectionChanged;
-                Program.MainForm.OpenCharacterSheetViewers.BeforeClearCollectionChanged -= OpenCharacterSheetViewersOnBeforeClearCollectionChanged;
-                Program.MainForm.OpenCharacterSheetViewers.CollectionChanged -= OpenCharacterSheetViewersOnCollectionChanged;
-                Program.MainForm.OpenCharacterExportForms.BeforeClearCollectionChanged -= OpenCharacterExportFormsOnBeforeClearCollectionChanged;
-                Program.MainForm.OpenCharacterExportForms.CollectionChanged -= OpenCharacterExportFormsOnCollectionChanged;
+                if (lstToProcess1 != null)
+                {
+                    lstToProcess1.BeforeClearCollectionChanged
+                        -= OpenCharacterEditorFormsOnBeforeClearCollectionChanged;
+                    lstToProcess1.CollectionChanged -= OpenCharacterEditorFormsOnCollectionChanged;
+                }
+                if (lstToProcess2 != null)
+                {
+                    lstToProcess2.BeforeClearCollectionChanged
+                        -= OpenCharacterSheetViewersOnBeforeClearCollectionChanged;
+                    lstToProcess2.CollectionChanged -= OpenCharacterSheetViewersOnCollectionChanged;
+                }
+                if (lstToProcess3 != null)
+                {
+                    lstToProcess3.BeforeClearCollectionChanged
+                        -= OpenCharacterExportFormsOnBeforeClearCollectionChanged;
+                    lstToProcess3.CollectionChanged -= OpenCharacterExportFormsOnCollectionChanged;
+                }
                 GlobalSettings.MruChanged -= RefreshMruLists;
                 await treCharacterList.DoThreadSafeAsync(x =>
                 {

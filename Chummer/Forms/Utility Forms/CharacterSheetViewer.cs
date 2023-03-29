@@ -89,7 +89,7 @@ namespace Chummer
                     objTempTokenSource.Dispose();
                 }
             };
-            Program.MainForm.OpenCharacterSheetViewers.Add(this);
+            Program.MainForm.OpenCharacterSheetViewers?.Add(this);
             if (_strSelectedSheet.StartsWith("Shadowrun 4", StringComparison.Ordinal))
             {
                 _strSelectedSheet = GlobalSettings.DefaultCharacterSheetDefaultValue;

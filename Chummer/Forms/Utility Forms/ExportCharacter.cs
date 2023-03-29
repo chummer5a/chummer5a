@@ -75,7 +75,7 @@ namespace Chummer
                 _objCharacterXmlGeneratorCancellationTokenSource?.Dispose();
             };
             _objCharacter = objCharacter;
-            Program.MainForm.OpenCharacterExportForms.Add(this);
+            Program.MainForm.OpenCharacterExportForms?.Add(this);
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
