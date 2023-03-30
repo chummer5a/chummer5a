@@ -16941,10 +16941,10 @@ namespace Chummer
                         if (strKey.EndsWith("Left", StringComparison.Ordinal))
                         {
                             strKey = strKey.TrimEndOnce("Left", true);
-                            intValue = dicDisallowedMounts.ContainsKey(strKey + "Right")
-                                ? 2 * Math.Min(intValue, dicDisallowedMounts[strKey + "Right"])
+                            intValue = dicDisallowedMounts.TryGetValue(strKey + "Right", out int intExistingValue)
+                                ? 2 * Math.Min(intValue, intExistingValue)
                                 : 0;
-                            if (dicDisallowedMounts.TryGetValue(strKey, out int intExistingValue))
+                            if (dicDisallowedMounts.TryGetValue(strKey, out intExistingValue))
                                 intValue += intExistingValue;
                         }
 
@@ -16970,10 +16970,10 @@ namespace Chummer
                         if (strKey.EndsWith("Left", StringComparison.Ordinal))
                         {
                             strKey = strKey.TrimEndOnce("Left", true);
-                            intValue = dicHasMounts.ContainsKey(strKey + "Right")
-                                ? 2 * Math.Min(intValue, dicHasMounts[strKey + "Right"])
+                            intValue = dicHasMounts.TryGetValue(strKey + "Right", out int intExistingValue)
+                                ? 2 * Math.Min(intValue, intExistingValue)
                                 : 0;
-                            if (dicHasMounts.TryGetValue(strKey, out int intExistingValue))
+                            if (dicHasMounts.TryGetValue(strKey, out intExistingValue))
                                 intValue += intExistingValue;
                         }
 
