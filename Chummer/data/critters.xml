@@ -5918,7 +5918,7 @@
          <sprint>1/1/0</sprint>
          <armor>0</armor>
          <skills>
-            <skill rating="6">Climbing</skill>
+            <skill rating="6">Gymnastics</skill>
             <skill rating="8">Sneaking</skill>
          </skills>
          <powers>
@@ -6474,7 +6474,7 @@
             <power select="Sight">Reduced Senses</power>
          </powers>
          <skills>
-            <skill rating="1" spec="Climbing">Gymnastics</skill>
+            <skill rating="3">Gymnastics</skill>
             <skill rating="4">Flight</skill>
             <skill rating="4">Perception</skill>
             <skill rating="4">Sneaking</skill>
@@ -7521,8 +7521,6 @@
          <page>106</page>
       </metatype>
       <!-- End Region Toxic/Mutant Critters -->
-      <!-- Region Extraplaner Travelers -->
-      <!-- End Region Extraplaner Travelers -->
       <!-- End Region Howling Shadows -->
       <!-- Region Spirits -->
       <metatype>
@@ -27138,7 +27136,7 @@
             <skill rating="6">Astral Combat</skill>
             <skill rating="6" select="Noxious Breath">Exotic Ranged Weapon</skill>
             <skill rating="6" spec="Harness Updraft">Flight</skill>
-            <skill rating="3" spec="Climbing">Gymnastics</skill>
+            <skill rating="5">Gymnastics</skill>
             <skill rating="4">Sneaking</skill>
             <skill rating="6" spec="Sight">Perception</skill>
             <skill rating="8">Unarmed Combat</skill>
@@ -27459,5 +27457,290 @@
          <page>207</page>
       </metatype>
       <!-- End Region Schattenhandbuch -->
+      <!-- Region Hard Targets -->
+      <metatype>
+         <id>21c2e55e-f5ce-4160-a01b-eb96c1f4b2be</id>
+         <name>Chickcharney</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>5</bodmin>
+         <bodmax>5</bodmax>
+         <bodaug>5</bodaug>
+         <agimin>5</agimin>
+         <agimax>5</agimax>
+         <agiaug>5</agiaug>
+         <reamin>6</reamin>
+         <reamax>6</reamax>
+         <reaaug>6</reaaug>
+         <strmin>6</strmin>
+         <strmax>6</strmax>
+         <straug>6</straug>
+         <chamin>5</chamin>
+         <chamax>5</chamax>
+         <chaaug>5</chaaug>
+         <intmin>3</intmin>
+         <intmax>3</intmax>
+         <intaug>3</intaug>
+         <logmin>5</logmin>
+         <logmax>5</logmax>
+         <logaug>5</logaug>
+         <wilmin>5</wilmin>
+         <wilmax>5</wilmax>
+         <wilaug>5</wilaug>
+         <inimin>7</inimin>
+         <inimax>7</inimax>
+         <iniaug>7</iniaug>
+         <edgmin>1</edgmin>
+         <edgmax>1</edgmax>
+         <edgaug>1</edgaug>
+         <magmin>5</magmin>
+         <magmax>5</magmax>
+         <magaug>5</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>0</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>2/0/0</walk>
+         <run>6/0/0</run>
+         <sprint>2/0/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <skills>
+            <skill rating="3">Perception</skill>
+            <skill rating="2">Running</skill>
+            <skill rating="3">Sneaking</skill>
+            <skill rating="3">Unarmed Combat</skill>
+         </skills>
+         <source>HT</source>
+         <page>132</page>
+      </metatype>
+      <metatype>
+         <id>3c5c6778-b877-44b5-a3a3-b45c68d4c432</id>
+         <name>Chupacabra</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>8</bodmin>
+         <bodmax>8</bodmax>
+         <bodaug>8</bodaug>
+         <agimin>8</agimin>
+         <agimax>8</agimax>
+         <agiaug>8</agiaug>
+         <reamin>6</reamin>
+         <reamax>6</reamax>
+         <reaaug>6</reaaug>
+         <strmin>6</strmin>
+         <strmax>6</strmax>
+         <straug>6</straug>
+         <chamin>2</chamin>
+         <chamax>2</chamax>
+         <chaaug>2</chaaug>
+         <intmin>5</intmin>
+         <intmax>5</intmax>
+         <intaug>5</intaug>
+         <logmin>3</logmin>
+         <logmax>3</logmax>
+         <logaug>3</logaug>
+         <wilmin>6</wilmin>
+         <wilmax>6</wilmax>
+         <wilaug>6</wilaug>
+         <inimin>8</inimin>
+         <inimax>8</inimax>
+         <iniaug>8</iniaug>
+         <edgmin>2</edgmin>
+         <edgmax>2</edgmax>
+         <edgaug>2</edgaug>
+         <magmin>5</magmin>
+         <magmax>5</magmax>
+         <magaug>5</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>0</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>2/0/0</walk>
+         <run>8/0/0</run>
+         <sprint>3/0/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power select="Self Only">Concealment</power>
+            <power rating="4">Armor</power>
+            <power>Essence Drain</power>
+            <power select="Pathogens, Toxins">Immunity</power>
+            <power select="Claws/Bite: DV 6P, AP –1, Reach –1">Natural Weapon</power>
+            <power>Paralyzing Touch</power>
+         </powers>
+         <skills>
+            <skill rating="4">Gymnastics</skill>
+            <skill rating="5">Perception</skill>
+            <skill rating="4">Unarmed Combat</skill>
+         </skills>
+         <source>HT</source>
+         <page>132</page>
+      </metatype>
+      <metatype>
+         <id>17d70588-e4f2-4a76-b45e-91c39383db9a</id>
+         <name>Magui</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>6</bodmin>
+         <bodmax>6</bodmax>
+         <bodaug>6</bodaug>
+         <agimin>6</agimin>
+         <agimax>6</agimax>
+         <agiaug>6</agiaug>
+         <reamin>3</reamin>
+         <reamax>3</reamax>
+         <reaaug>3</reaaug>
+         <strmin>12</strmin>
+         <strmax>12</strmax>
+         <straug>12</straug>
+         <chamin>3</chamin>
+         <chamax>3</chamax>
+         <chaaug>3</chaaug>
+         <intmin>6</intmin>
+         <intmax>6</intmax>
+         <intaug>6</intaug>
+         <logmin>4</logmin>
+         <logmax>4</logmax>
+         <logaug>4</logaug>
+         <wilmin>2</wilmin>
+         <wilmax>2</wilmax>
+         <wilaug>2</wilaug>
+         <inimin>9</inimin>
+         <inimax>9</inimax>
+         <iniaug>9</iniaug>
+         <edgmin>2</edgmin>
+         <edgmax>2</edgmax>
+         <edgaug>2</edgaug>
+         <magmin>6</magmin>
+         <magmax>6</magmax>
+         <magaug>6</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>0</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>2/0/0</walk>
+         <run>8/0/0</run>
+         <sprint>3/0/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+         </bonus>
+         <powers>
+            <power select="Thermal">Enhanced Senses</power>
+            <power rating="2">Armor</power>
+            <power select="Bite: DV 6P, AP –">Natural Weapon</power>
+            <power select="Horns: DV 6P, AP 1, Reach 1">Natural Weapon</power>
+         </powers>
+         <skills>
+            <skill rating="2" spec="Climbing">Gymnastics</skill>
+            <skill rating="4">Sneaking</skill>
+            <skill rating="4">Perception</skill>
+            <skill rating="4">Tracking</skill>
+            <skill rating="6">Unarmed Combat</skill>
+         </skills>
+         <source>HT</source>
+         <page>133</page>
+      </metatype>
+      <metatype>
+         <id>d6e26a17-1b0f-4c7c-b91e-e1be32e75c48</id>
+         <name>Night Manta</name>
+         <category>Paranormal Critters</category>
+         <karma>0</karma>
+         <bodmin>9</bodmin>
+         <bodmax>9</bodmax>
+         <bodaug>9</bodaug>
+         <agimin>9</agimin>
+         <agimax>9</agimax>
+         <agiaug>9</agiaug>
+         <reamin>6</reamin>
+         <reamax>6</reamax>
+         <reaaug>6</reaaug>
+         <strmin>9</strmin>
+         <strmax>9</strmax>
+         <straug>9</straug>
+         <chamin>5</chamin>
+         <chamax>5</chamax>
+         <chaaug>5</chaaug>
+         <intmin>3</intmin>
+         <intmax>3</intmax>
+         <intaug>3</intaug>
+         <logmin>6</logmin>
+         <logmax>6</logmax>
+         <logaug>6</logaug>
+         <wilmin>2</wilmin>
+         <wilmax>2</wilmax>
+         <wilaug>2</wilaug>
+         <inimin>7</inimin>
+         <inimax>7</inimax>
+         <iniaug>7</iniaug>
+         <edgmin>3</edgmin>
+         <edgmax>3</edgmax>
+         <edgaug>3</edgaug>
+         <magmin>5</magmin>
+         <magmax>5</magmax>
+         <magaug>5</magaug>
+         <resmin>0</resmin>
+         <resmax>0</resmax>
+         <resaug>0</resaug>
+         <depmin>0</depmin>
+         <depmax>0</depmax>
+         <depaug>0</depaug>
+         <essmin>0</essmin>
+         <essmax>6</essmax>
+         <essaug>6</essaug>
+         <walk>2/0/0</walk>
+         <run>8/0/0</run>
+         <sprint>3/0/0</sprint>
+         <bonus>
+            <enabletab>
+               <name>critter</name>
+            </enabletab>
+            <reach>1</reach>
+         </bonus>
+         <powers>
+            <power rating="6">Armor</power>
+            <power>Dual Natured</power>
+            <power select="Levitate">Innate Spell</power>
+            <power select="Sting: DV 2P, AP –">Natural Weapon</power>
+            <power select="Bite: DV 4P, AP -">Natural Weapon</power>
+            <power>Shadow Cloak</power>
+            <power>Silence</power>
+            <power select="Vector: Injection, Speed 1 Combat Turn, Power: 6, Effect: Physical Damage">Venom</power>
+         </powers>
+         <skills>
+            <skill rating="3" spec="Tail Spikes">Exotic Ranged Weapon</skill>
+            <skill rating="2">Perception</skill>
+            <skill rating="2">Sneaking</skill>
+            <skill rating="4">Spellcasting</skill>
+            <skill rating="2">Swimming</skill>
+            <skill rating="3">Unarmed Combat</skill>
+         </skills>
+         <source>HT</source>
+         <page>134</page>
+      </metatype>
+      <!-- End Region Hard Targets -->
    </metatypes>
 </chummer>
