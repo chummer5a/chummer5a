@@ -1821,21 +1821,21 @@ namespace Chummer
         private static readonly ConcurrentStack<Tuple<SimpleTextExtractionStrategy, PdfCanvasProcessor>> _stkPdfReaders
             = new ConcurrentStack<Tuple<SimpleTextExtractionStrategy, PdfCanvasProcessor>>();
 
+        [CLSCompliant(false)]
         public static Tuple<SimpleTextExtractionStrategy, PdfCanvasProcessor> GetPdfReaderUtilsTuple()
         {
-            Tuple<SimpleTextExtractionStrategy, PdfCanvasProcessor> tupReturn;
-            if (!_stkPdfReaders.TryPop(out tupReturn))
-            {
-                SimpleTextExtractionStrategy objNewExtractionStrategy = new SimpleTextExtractionStrategy();
-                PdfCanvasProcessor objNewCanvasProcessor
-                    = new PdfCanvasProcessor(objNewExtractionStrategy, new Dictionary<string, IContentOperator>());
-                tupReturn = new Tuple<SimpleTextExtractionStrategy, PdfCanvasProcessor>(
-                    objNewExtractionStrategy, objNewCanvasProcessor);
-                _stkPdfReaders.Push(tupReturn);
-            }
+            if (_stkPdfReaders.TryPop(out Tuple<SimpleTextExtractionStrategy, PdfCanvasProcessor> tupReturn))
+                return tupReturn;
+            SimpleTextExtractionStrategy objNewExtractionStrategy = new SimpleTextExtractionStrategy();
+            PdfCanvasProcessor objNewCanvasProcessor
+                = new PdfCanvasProcessor(objNewExtractionStrategy, new Dictionary<string, IContentOperator>());
+            tupReturn = new Tuple<SimpleTextExtractionStrategy, PdfCanvasProcessor>(
+                objNewExtractionStrategy, objNewCanvasProcessor);
+            _stkPdfReaders.Push(tupReturn);
             return tupReturn;
         }
 
+        [CLSCompliant(false)]
         public static string GetPdfTextFromPageSafe(PdfDocument objDocument, int intPage, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -1859,6 +1859,7 @@ namespace Chummer
             }
         }
 
+        [CLSCompliant(false)]
         public static async ValueTask<string> GetPdfTextFromPageSafeAsync(PdfDocument objDocument, int intPage, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
