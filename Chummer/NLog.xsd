@@ -1715,15 +1715,16 @@
           <xs:element name="footer" type="Layout" minOccurs="0" maxOccurs="1" />
           <xs:element name="replaceNewlineWithBrTagInHtml" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="priority" type="Layout" minOccurs="0" maxOccurs="1" />
+          <xs:element name="mailheader" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.MethodCallParameter" />
           <xs:element name="encoding" type="xs:string" minOccurs="0" maxOccurs="1" default="utf-8" />
           <xs:element name="bcc" type="Layout" minOccurs="0" maxOccurs="1" />
-          <xs:element name="cc" type="Layout" minOccurs="0" maxOccurs="1" />
           <xs:element name="addNewLines" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
+          <xs:element name="to" type="Layout" minOccurs="1" maxOccurs="1" />
           <xs:element name="html" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="from" type="Layout" minOccurs="1" maxOccurs="1" />
           <xs:element name="body" type="Layout" minOccurs="0" maxOccurs="1" />
           <xs:element name="subject" type="Layout" minOccurs="0" maxOccurs="1" />
-          <xs:element name="to" type="Layout" minOccurs="1" maxOccurs="1" />
+          <xs:element name="cc" type="Layout" minOccurs="0" maxOccurs="1" />
           <xs:element name="deliveryMethod" type="System.Net.Mail.SmtpDeliveryMethod" minOccurs="0" maxOccurs="1" default="Network" />
           <xs:element name="smtpServer" type="Layout" minOccurs="0" maxOccurs="1" />
           <xs:element name="smtpAuthentication" type="NLog.Targets.SmtpAuthenticationMode" minOccurs="0" maxOccurs="1" default="None" />
@@ -1775,14 +1776,14 @@
             <xs:documentation>BCC email addresses separated by semicolons (e.g. john@domain.com;jane@domain.com).</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="cc" type="SimpleLayoutAttribute">
-          <xs:annotation>
-            <xs:documentation>CC email addresses separated by semicolons (e.g. john@domain.com;jane@domain.com).</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
         <xs:attribute name="addNewLines" type="xs:boolean">
           <xs:annotation>
             <xs:documentation>Indicates whether to add new lines between log entries.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="to" type="SimpleLayoutAttribute">
+          <xs:annotation>
+            <xs:documentation>Recipients' email addresses separated by semicolons (e.g. john@domain.com;jane@domain.com).</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="html" type="xs:boolean">
@@ -1805,9 +1806,9 @@
             <xs:documentation>Mail subject.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="to" type="SimpleLayoutAttribute">
+        <xs:attribute name="cc" type="SimpleLayoutAttribute">
           <xs:annotation>
-            <xs:documentation>Recipients' email addresses separated by semicolons (e.g. john@domain.com;jane@domain.com).</xs:documentation>
+            <xs:documentation>CC email addresses separated by semicolons (e.g. john@domain.com;jane@domain.com).</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="deliveryMethod" type="System.Net.Mail.SmtpDeliveryMethod">
@@ -1877,6 +1878,34 @@
       <xs:enumeration value="Ntlm" />
     </xs:restriction>
   </xs:simpleType>
+  <xs:complexType name="NLog.Targets.MethodCallParameter">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="layout" type="Layout" minOccurs="1" maxOccurs="1" />
+      <xs:element name="defaultValue" type="Layout" minOccurs="0" maxOccurs="1" />
+      <xs:element name="parameterType" type="xs:string" minOccurs="0" maxOccurs="1" default="System.String" />
+    </xs:choice>
+    <xs:attribute name="name" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>Name of the parameter.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="layout" type="SimpleLayoutAttribute">
+      <xs:annotation>
+        <xs:documentation>Layout that should be use to calculate the value for the parameter.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="defaultValue" type="SimpleLayoutAttribute">
+      <xs:annotation>
+        <xs:documentation>Fallback value when result value is not available</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="parameterType" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>Type of the parameter.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
   <xs:complexType name="Memory">
     <xs:complexContent>
       <xs:extension base="Target">
@@ -1941,34 +1970,6 @@
         </xs:attribute>
       </xs:extension>
     </xs:complexContent>
-  </xs:complexType>
-  <xs:complexType name="NLog.Targets.MethodCallParameter">
-    <xs:choice minOccurs="0" maxOccurs="unbounded">
-      <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
-      <xs:element name="layout" type="Layout" minOccurs="1" maxOccurs="1" />
-      <xs:element name="defaultValue" type="Layout" minOccurs="0" maxOccurs="1" />
-      <xs:element name="parameterType" type="xs:string" minOccurs="0" maxOccurs="1" default="System.String" />
-    </xs:choice>
-    <xs:attribute name="name" type="xs:string">
-      <xs:annotation>
-        <xs:documentation>Name of the parameter.</xs:documentation>
-      </xs:annotation>
-    </xs:attribute>
-    <xs:attribute name="layout" type="SimpleLayoutAttribute">
-      <xs:annotation>
-        <xs:documentation>Layout that should be use to calculate the value for the parameter.</xs:documentation>
-      </xs:annotation>
-    </xs:attribute>
-    <xs:attribute name="defaultValue" type="SimpleLayoutAttribute">
-      <xs:annotation>
-        <xs:documentation>Fallback value when result value is not available</xs:documentation>
-      </xs:annotation>
-    </xs:attribute>
-    <xs:attribute name="parameterType" type="xs:string">
-      <xs:annotation>
-        <xs:documentation>Type of the parameter.</xs:documentation>
-      </xs:annotation>
-    </xs:attribute>
   </xs:complexType>
   <xs:complexType name="Network">
     <xs:complexContent>
