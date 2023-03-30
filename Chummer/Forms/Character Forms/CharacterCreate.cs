@@ -13167,26 +13167,22 @@ namespace Chummer
                 // Factor in any qualities that can be bought with spell points.
                 // It is only karma-efficient to use spell points for Mastery qualities if real spell karma cost is not greater than unmodified spell karma cost
                 int intKarmaSpell = await CharacterObjectSettings.GetKarmaSpellAsync(token).ConfigureAwait(false);
-                if (spellCost <= intKarmaSpell && intFreeSpells > 0)
+                if (spellCost <= intKarmaSpell && intFreeSpells > 0 && intKarmaSpell != 0)
                 {
-                    intQualityKarmaToSpellPoints = intKarmaSpell;
-                    if (intQualityKarmaToSpellPoints != 0)
+                    // Assume that every [spell cost] karma spent on a Mastery quality is paid for with a priority-given spell point instead, as that is the most karma-efficient.
+                    int intMasteryQualityKarmaUsed = await lstQualities.SumAsync(
+                                                                           objQuality =>
+                                                                               objQuality.CanBuyWithSpellPoints,
+                                                                           objQuality => objQuality.BP, token)
+                                                                       .ConfigureAwait(false);
+                    if (intMasteryQualityKarmaUsed != 0)
                     {
-                        // Assume that every [spell cost] karma spent on a Mastery quality is paid for with a priority-given spell point instead, as that is the most karma-efficient.
-                        int intMasteryQualityKarmaUsed = await lstQualities.SumAsync(
-                                                                               objQuality =>
-                                                                                   objQuality.CanBuyWithSpellPoints,
-                                                                               objQuality => objQuality.BP, token)
-                                                                           .ConfigureAwait(false);
-                        if (intMasteryQualityKarmaUsed != 0)
-                        {
-                            intQualityKarmaToSpellPoints
-                                = Math.Min(
-                                    intFreeSpells,
-                                    intMasteryQualityKarmaUsed * intKarmaQuality
-                                    / intKarmaSpell);
-                            spells += intQualityKarmaToSpellPoints;
-                        }
+                        intQualityKarmaToSpellPoints
+                            = Math.Min(
+                                intFreeSpells,
+                                intMasteryQualityKarmaUsed * intKarmaQuality
+                                / intKarmaSpell);
+                        spells += intQualityKarmaToSpellPoints;
                     }
                 }
 
@@ -13313,10 +13309,17 @@ namespace Chummer
                                        + strSpace + '=' + strSpace + "{2}" + strSpace + await LanguageManager
                                            .GetStringAsync("String_Karma", token: token).ConfigureAwait(false);
                     if (lblSpellsBP != null)
-                        await lblSpellsBP
-                              .SetToolTipAsync(
-                                  string.Format(GlobalSettings.CultureInfo, strFormat, spells, spellCost,
-                                                intSpellPointsUsed), token).ConfigureAwait(false);
+                    {
+                        string strTooltip = string.Format(GlobalSettings.CultureInfo, strFormat, spells, spellCost,
+                                                          intSpellPointsUsed);
+                        if (intQualityKarmaToSpellPoints != 0)
+                            strTooltip += Environment.NewLine + await LanguageManager
+                                                                      .GetStringAsync(
+                                                                          "Tip_SelectSpell_MasteryQuality",
+                                                                          token: token).ConfigureAwait(false);
+                        await lblSpellsBP.SetToolTipAsync(strTooltip, token).ConfigureAwait(false);
+                    }
+
                     if (lblBuildRitualsBP != null)
                         await lblBuildRitualsBP
                               .SetToolTipAsync(
@@ -13343,20 +13346,24 @@ namespace Chummer
 
                         if (lblSpellsBP != null)
                         {
-                            string strText = string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}",
-                                                           prepPoints + spellPoints + ritualPoints
-                                                           - 2 * (intFreeSpells + intLimitMod), strOf,
-                                                           prepPoints + ritualPoints - (intFreeSpells + intLimitMod));
+                            string strText;
+                            if (intQualityKarmaToSpellPoints != 0)
+                                strText = string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}({3})",
+                                                        prepPoints + spellPoints + ritualPoints
+                                                        - 2 * (intFreeSpells + intLimitMod), strOf,
+                                                        prepPoints + ritualPoints - (intFreeSpells + intLimitMod),
+                                                        string.Format(GlobalSettings.CultureInfo, await LanguageManager
+                                                            .GetStringAsync(
+                                                                "String_MasteryPointsAcronym", token: token)
+                                                            .ConfigureAwait(false), intQualityKarmaToSpellPoints));
+                            else
+                                strText = string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}",
+                                                        prepPoints + spellPoints + ritualPoints
+                                                        - 2 * (intFreeSpells + intLimitMod), strOf,
+                                                        prepPoints + ritualPoints - (intFreeSpells + intLimitMod));
                             if (intSpellPointsUsed > 0)
                                 strText += string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}{1}{3}", strColon,
                                                          strSpace, intSpellPointsUsed, strPoints);
-                            if (intQualityKarmaToSpellPoints > 0)
-                                strText += string.Format(GlobalSettings.CultureInfo, "{0}{1}{2}{1}{3}", strColon,
-                                                         strSpace, intQualityKarmaToSpellPoints,
-                                                         await LanguageManager
-                                                               .GetStringAsync(
-                                                                   "String_MasteryPointsAcronym", token: token)
-                                                               .ConfigureAwait(false));
                             await lblSpellsBP.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
                         }
 

@@ -9203,7 +9203,7 @@
     </string>
     <string>
       <key>String_MasteryPointsAcronym</key>
-      <text>MP</text>
+      <text>{0} on Masteries</text>
     </string>
     <string>
       <key>Tip_SelectSpell_MasteryQuality</key>
