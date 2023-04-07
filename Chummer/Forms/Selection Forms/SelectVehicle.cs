@@ -572,11 +572,11 @@ namespace Chummer
             using (CancellationTokenSource objJoinedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(token, objNewToken))
             {
                 token = objJoinedCancellationTokenSource.Token;
-                string strCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString() ?? string.Empty, token);
+                string strCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString() ?? string.Empty, token).ConfigureAwait(false);
                 string strFilter = string.Empty;
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                 {
-                    sbdFilter.Append('(').Append(_objCharacter.Settings.BookXPath()).Append(')');
+                    sbdFilter.Append('(').Append(await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false)).Append(')');
                     if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All"
                                                            && (GlobalSettings.SearchInCategoryOnly
                                                                || txtSearch.TextLength == 0))
@@ -606,7 +606,7 @@ namespace Chummer
                     if (sbdFilter.Length > 0)
                         strFilter = '[' + sbdFilter.ToString() + ']';
                 }
-                await BuildVehicleList(_xmlBaseVehicleDataNode.Select("vehicles/vehicle" + strFilter), token);
+                await BuildVehicleList(_xmlBaseVehicleDataNode.Select("vehicles/vehicle" + strFilter), token).ConfigureAwait(false);
             }
         }
 

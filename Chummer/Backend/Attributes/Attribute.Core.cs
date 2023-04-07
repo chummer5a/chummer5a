@@ -1957,8 +1957,7 @@ namespace Chummer.Backend.Attributes
                                                                          && objImprovement.ImprovedName == Abbrev)
                                 {
                                     // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-                                    if (!setUniqueNames.Contains(strUniqueName))
-                                        setUniqueNames.Add(strUniqueName);
+                                    setUniqueNames.Add(strUniqueName);
 
                                     // Add the values to the UniquePair List so we can check them later.
                                     lstUniquePair.Add(new Tuple<string, decimal, string>(
@@ -2076,8 +2075,7 @@ namespace Chummer.Backend.Attributes
                                 if (!string.IsNullOrEmpty(strUniqueName))
                                 {
                                     // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
-                                    if (!setUniqueNames.Contains(strUniqueName))
-                                        setUniqueNames.Add(strUniqueName);
+                                    setUniqueNames.Add(strUniqueName);
 
                                     // Add the values to the UniquePair List so we can check them later.
                                     lstUniquePair.Add(new Tuple<string, decimal, string>(

@@ -2903,7 +2903,7 @@ namespace Chummer
             _objCharacter.LimitModifiers.Add(objLimitModifier);
 
             CreateImprovement(objLimitModifier.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.LimitModifier,
-                _strUnique, decBonus, 0, 0, 0, 0, 0, string.Empty, false, strCondition: strCondition);
+                _strUnique, decBonus, 0, 0, 0, 0, 0, string.Empty, strCondition: strCondition);
         }
 
         // The Improvement adjusts a Skill Category.

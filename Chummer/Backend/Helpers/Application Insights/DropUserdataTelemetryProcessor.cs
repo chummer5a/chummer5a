@@ -79,7 +79,6 @@ namespace Chummer
                 && !Utils.IsMilestoneVersion)
             {
                 Next.Process(item);
-                return;
             }
         }
 

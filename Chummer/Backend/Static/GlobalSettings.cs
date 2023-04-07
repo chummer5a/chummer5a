@@ -821,9 +821,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             try
             {
-                RegistryKey objRegistry = s_ObjBaseChummerKey;
-                if (objRegistry == null)
-                    throw new InvalidOperationException(nameof(Registry));
+                RegistryKey objRegistry = s_ObjBaseChummerKey ?? throw new InvalidOperationException(nameof(Registry));
                 objRegistry.SetValue("autoupdate", AutomaticUpdate.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("livecustomdata", LiveCustomData.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("liveupdatecleancharacterfiles",

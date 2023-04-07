@@ -8771,13 +8771,11 @@ namespace Chummer.Backend.Equipment
                     {
                         foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(','))
                         {
-                            if (!setDisallowedMounts.Contains(strLoop + objLoopCyberware.Location))
-                                setDisallowedMounts.Add(strLoop + objLoopCyberware.Location);
+                            setDisallowedMounts.Add(strLoop + objLoopCyberware.Location);
                         }
 
                         strLoopHasModularMount = objLoopCyberware.HasModularMount;
-                        if (string.IsNullOrEmpty(strLoopHasModularMount)) continue;
-                        if (!setHasMounts.Contains(strLoopHasModularMount))
+                        if (!string.IsNullOrEmpty(strLoopHasModularMount))
                             setHasMounts.Add(strLoopHasModularMount);
                     }
 

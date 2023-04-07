@@ -31,7 +31,6 @@ using System.Xml;
 using System.Xml.XPath;
 using Chummer.Plugins;
 using iText.Kernel.Pdf;
-using iText.Kernel.Pdf.Canvas.Parser.Listener;
 #if DEBUG
 using Microsoft.IO;
 #endif

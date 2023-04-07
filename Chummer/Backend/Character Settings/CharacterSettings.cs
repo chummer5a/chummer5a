@@ -3926,8 +3926,7 @@ namespace Chummer
 
                     if (objInfoToAdd != null)
                     {
-                        if (!_setEnabledCustomDataDirectoryGuids.Contains(objInfoToAdd.Guid))
-                            _setEnabledCustomDataDirectoryGuids.Add(objInfoToAdd.Guid);
+                        _setEnabledCustomDataDirectoryGuids.Add(objInfoToAdd.Guid);
                         _setEnabledCustomDataDirectories.Add(objInfoToAdd);
                         _lstEnabledCustomDataDirectoryPaths.Add(objInfoToAdd.DirectoryPath);
                     }
@@ -3991,8 +3990,7 @@ namespace Chummer
 
                     if (objInfoToAdd != null)
                     {
-                        if (!_setEnabledCustomDataDirectoryGuids.Contains(objInfoToAdd.Guid))
-                            _setEnabledCustomDataDirectoryGuids.Add(objInfoToAdd.Guid);
+                        _setEnabledCustomDataDirectoryGuids.Add(objInfoToAdd.Guid);
                         _setEnabledCustomDataDirectories.Add(objInfoToAdd);
                         _lstEnabledCustomDataDirectoryPaths.Add(objInfoToAdd.DirectoryPath);
                     }

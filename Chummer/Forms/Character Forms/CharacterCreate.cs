@@ -8103,13 +8103,11 @@ namespace Chummer
                                         foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(
                                                      ',', StringSplitOptions.RemoveEmptyEntries))
                                         {
-                                            if (!setDisallowedMounts.Contains(strLoop + objLoopCyberware.Location))
-                                                setDisallowedMounts.Add(strLoop + objLoopCyberware.Location);
+                                            setDisallowedMounts.Add(strLoop + objLoopCyberware.Location);
                                         }
 
                                         string strLoopHasModularMount = objLoopCyberware.HasModularMount;
-                                        if (!string.IsNullOrEmpty(strLoopHasModularMount)
-                                            && !setHasMounts.Contains(strLoopHasModularMount))
+                                        if (!string.IsNullOrEmpty(strLoopHasModularMount))
                                             setHasMounts.Add(strLoopHasModularMount);
                                     }
 
@@ -8184,13 +8182,11 @@ namespace Chummer
                                         foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(
                                                      ',', StringSplitOptions.RemoveEmptyEntries))
                                         {
-                                            if (!setDisallowedMounts.Contains(strLoop + objLoopCyberware.Location))
-                                                setDisallowedMounts.Add(strLoop + objLoopCyberware.Location);
+                                            setDisallowedMounts.Add(strLoop + objLoopCyberware.Location);
                                         }
 
                                         strLoopHasModularMount = objLoopCyberware.HasModularMount;
-                                        if (!string.IsNullOrEmpty(strLoopHasModularMount)
-                                            && !setHasMounts.Contains(strLoopHasModularMount))
+                                        if (!string.IsNullOrEmpty(strLoopHasModularMount))
                                             setHasMounts.Add(strLoopHasModularMount);
                                     }
 

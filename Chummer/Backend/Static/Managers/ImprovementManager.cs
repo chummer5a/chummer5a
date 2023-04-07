@@ -998,8 +998,7 @@ namespace Chummer
                                 // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
                                 if (dicUniqueNames.TryGetValue(strLoopImprovedName, out HashSet<string> setUniqueNames))
                                 {
-                                    if (!setUniqueNames.Contains(strUniqueName))
-                                        setUniqueNames.Add(strUniqueName);
+                                    setUniqueNames.Add(strUniqueName);
                                 }
                                 else
                                 {
@@ -1182,8 +1181,7 @@ namespace Chummer
                                 // If this has a UniqueName, run through the current list of UniqueNames seen. If it is not already in the list, add it.
                                 if (dicUniqueNames.TryGetValue(strLoopImprovedName, out HashSet<string> setUniqueNames))
                                 {
-                                    if (!setUniqueNames.Contains(strUniqueName))
-                                        setUniqueNames.Add(strUniqueName);
+                                    setUniqueNames.Add(strUniqueName);
                                 }
                                 else
                                 {
