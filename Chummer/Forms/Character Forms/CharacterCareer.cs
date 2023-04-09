@@ -18903,7 +18903,7 @@ namespace Chummer
         /// <param name="check">Whether or not to check the checkbox when finished processing. Expected to only be called on load.</param>
         /// <param name="value">Tag value of the checkbox to enable when using the check parameter. Expected to be the StunCMFilled or PhysicalCMFilled properties.</param>
         /// <param name="token">Cancellation token to use.</param>
-        private static async ValueTask ProcessCharacterConditionMonitorBoxDisplays(
+        private async ValueTask ProcessCharacterConditionMonitorBoxDisplays(
             Control pnlConditionMonitorPanel, int intConditionMax, int intThreshold, int intThresholdOffset,
             int intOverflow, EventHandler button_Click, bool check = false, int value = 0,
             CancellationToken token = default)
