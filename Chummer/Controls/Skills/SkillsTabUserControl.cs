@@ -68,15 +68,16 @@ namespace Chummer.UI.Skills
             _lstSortKnowledgeSkills = GenerateKnowledgeSortList();
         }
 
-        private void UpdateKnoSkillRemaining()
+        private void UpdateKnoSkillRemaining(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             string strText =
                 _objCharacter.SkillsSection.KnowledgeSkillPointsRemain.ToString(GlobalSettings.CultureInfo) +
-                LanguageManager.GetString("String_Of") +
+                LanguageManager.GetString("String_Of", token: token) +
                 _objCharacter.SkillsSection.KnowledgeSkillPoints.ToString(GlobalSettings.CultureInfo);
             int intSkillPointsSpentOnKnoSkills = _objCharacter.SkillsSection.SkillPointsSpentOnKnoskills;
             if (intSkillPointsSpentOnKnoSkills != 0)
-                strText += string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_PlusSkillPointsSpent"), intSkillPointsSpentOnKnoSkills);
+                strText += string.Format(GlobalSettings.CultureInfo, LanguageManager.GetString("String_PlusSkillPointsSpent", token: token), intSkillPointsSpentOnKnoSkills);
             lblKnowledgeSkillPoints.Text = strText;
         }
 

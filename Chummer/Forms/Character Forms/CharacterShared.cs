@@ -9125,6 +9125,7 @@ namespace Chummer
         /// </summary>
         public ValueTask DisposeAsync()
         {
+            GC.SuppressFinalize(this);
             return DisposeAsync(true);
         }
 
