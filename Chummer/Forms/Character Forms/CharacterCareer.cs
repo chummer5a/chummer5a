@@ -14987,7 +14987,7 @@ namespace Chummer
             }
             finally
             {
-                await tlpCommonLeftSide.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                await tlpCommonLeftSide.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
             }
         }
 
@@ -19078,7 +19078,7 @@ namespace Chummer
             }
             finally
             {
-                await pnlConditionMonitorPanel.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                await pnlConditionMonitorPanel.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
             }
         }
 
@@ -19174,7 +19174,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    await pnlConditionMonitorPanel.DoThreadSafeAsync(x => x.ResumeLayout(), token)
+                    await pnlConditionMonitorPanel.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken)
                                                   .ConfigureAwait(false);
                 }
             }
@@ -19271,7 +19271,7 @@ namespace Chummer
                     }
                     finally
                     {
-                        await pnlConditionMonitorPanel.DoThreadSafeAsync(x => x.ResumeLayout(), token)
+                        await pnlConditionMonitorPanel.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken)
                                                       .ConfigureAwait(false);
                     }
 
@@ -19490,7 +19490,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    await flpDrugs.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                    await flpDrugs.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
                 }
             }
             finally
@@ -20077,7 +20077,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    await flpCyberware.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                    await flpCyberware.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
                 }
             }
             finally
@@ -21146,7 +21146,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    await flpWeapons.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                    await flpWeapons.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
                 }
             }
             finally
@@ -21718,7 +21718,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    await flpArmor.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                    await flpArmor.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
                 }
             }
             finally
@@ -22014,7 +22014,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    await flpGear.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                    await flpGear.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
                 }
             }
             finally
@@ -23205,7 +23205,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    await flpLifestyleDetails.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                    await flpLifestyleDetails.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
                 }
             }
             finally
@@ -24709,7 +24709,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    await flpVehicles.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                    await flpVehicles.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
                 }
             }
             finally
@@ -24972,7 +24972,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    await chtKarma.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                    await chtKarma.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
                 }
             }
             finally
@@ -25084,7 +25084,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    await chtNuyen.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                    await chtNuyen.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
                 }
             }
             finally
@@ -25400,7 +25400,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    await gpbMagicianSpell.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                    await gpbMagicianSpell.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
                 }
             }
             finally
@@ -25629,7 +25629,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    await gpbTechnomancerComplexForm.DoThreadSafeAsync(x => x.ResumeLayout(), token)
+                    await gpbTechnomancerComplexForm.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken)
                                                     .ConfigureAwait(false);
                 }
             }

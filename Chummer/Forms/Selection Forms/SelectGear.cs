@@ -1225,7 +1225,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    await this.DoThreadSafeAsync(x => x.ResumeLayout(), token: token).ConfigureAwait(false);
+                    await this.DoThreadSafeAsync(x => x.ResumeLayout(), _objGenericToken).ConfigureAwait(false);
                 }
             }
         }

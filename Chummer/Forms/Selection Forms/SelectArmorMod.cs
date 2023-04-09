@@ -319,12 +319,13 @@ namespace Chummer
                     }
                 }, token: token).ConfigureAwait(false);
 
+                string strNuyenSymbol = await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                 object objProcess;
                 bool blnIsSuccess;
                 if (await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
                 {
                     await lblCost.DoThreadSafeAsync(x => x.Text = (0.0m).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
-                                                                  + LanguageManager.GetString("String_NuyenSymbol"), token: token).ConfigureAwait(false);
+                                                                  + strNuyenSymbol, token: token).ConfigureAwait(false);
                     string strTest = await _objCharacter.AvailTestAsync(0, strAvail, token).ConfigureAwait(false);
                     await lblTest.DoThreadSafeAsync(x => x.Text = strTest, token: token).ConfigureAwait(false);
                 }
@@ -386,7 +387,7 @@ namespace Chummer
                         decCost *= 1 + (await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m);
 
                         await lblCost.DoThreadSafeAsync(x => x.Text = decCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
-                                                                      + LanguageManager.GetString("String_NuyenSymbol"), token: token).ConfigureAwait(false);
+                                                                      + strNuyenSymbol, token: token).ConfigureAwait(false);
                         string strTest = await _objCharacter.AvailTestAsync(decCost, strAvail, token).ConfigureAwait(false);
                         await lblTest.DoThreadSafeAsync(x => x.Text = strTest, token: token).ConfigureAwait(false);
                     }
@@ -449,7 +450,7 @@ namespace Chummer
             }
             finally
             {
-                await this.DoThreadSafeAsync(x => x.ResumeLayout(), token: token).ConfigureAwait(false);
+                await this.DoThreadSafeAsync(x => x.ResumeLayout(), CancellationToken.None).ConfigureAwait(false);
             }
         }
 

@@ -700,7 +700,7 @@ namespace Chummer
             }
             finally
             {
-                await this.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                await this.DoThreadSafeAsync(x => x.ResumeLayout(), _objGenericToken).ConfigureAwait(false);
             }
             token.ThrowIfCancellationRequested();
             try
@@ -1818,7 +1818,7 @@ namespace Chummer
                     }
                     finally
                     {
-                        await tlpRight.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                        await tlpRight.DoThreadSafeAsync(x => x.ResumeLayout(), _objGenericToken).ConfigureAwait(false);
                     }
                 }
                 finally

@@ -3931,7 +3931,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    await menuStrip.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                    await menuStrip.DoThreadSafeAsync(x => x.ResumeLayout(), _objGenericToken).ConfigureAwait(false);
                 }
             }
             finally

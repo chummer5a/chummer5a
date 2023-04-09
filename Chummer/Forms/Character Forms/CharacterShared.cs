@@ -3155,7 +3155,7 @@ namespace Chummer
                     }
                     finally
                     {
-                        await treWeapons.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                        await treWeapons.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
                     }
                 }
                 else
@@ -3380,7 +3380,7 @@ namespace Chummer
                     }
                     finally
                     {
-                        await treArmor.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                        await treArmor.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
                     }
                 }
                 else
@@ -3807,7 +3807,7 @@ namespace Chummer
                     }
                     finally
                     {
-                        await treGear.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                        await treGear.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
                     }
                 }
                 else
@@ -3980,7 +3980,7 @@ namespace Chummer
                     }
                     finally
                     {
-                        await treGear.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                        await treGear.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
                     }
                 }
                 else
@@ -4112,7 +4112,7 @@ namespace Chummer
                     }
                     finally
                     {
-                        await treCyberware.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                        await treCyberware.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
                     }
                 }
                 else
@@ -4552,7 +4552,7 @@ namespace Chummer
                     }
                     finally
                     {
-                        await treVehicles.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                        await treVehicles.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
                     }
                 }
                 else
@@ -5178,7 +5178,7 @@ namespace Chummer
                     }
                     finally
                     {
-                        await treFoci.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                        await treFoci.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
                     }
                 }
                 else
@@ -5572,7 +5572,7 @@ namespace Chummer
                     }
                     finally
                     {
-                        await treMartialArts.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                        await treMartialArts.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
                     }
                 }
                 else
@@ -5907,7 +5907,7 @@ namespace Chummer
                     }
                     finally
                     {
-                        await treImprovements.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                        await treImprovements.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
                     }
                 }
                 else
@@ -6265,7 +6265,7 @@ namespace Chummer
                     }
                     finally
                     {
-                        await treLifestyles.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                        await treLifestyles.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
                     }
                 }
                 else
@@ -6432,7 +6432,7 @@ namespace Chummer
                     }
                     finally
                     {
-                        await lstCalendar.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                        await lstCalendar.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
                     }
                 }
                 else
@@ -6629,11 +6629,11 @@ namespace Chummer
                     finally
                     {
                         if (panContacts != null)
-                            await panContacts.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                            await panContacts.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
                         if (panEnemies != null)
-                            await panEnemies.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                            await panEnemies.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
                         if (panPets != null)
-                            await panPets.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                            await panPets.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
                     }
                 }
                 else
@@ -7970,9 +7970,9 @@ namespace Chummer
                     finally
                     {
                         if (panSpirits != null)
-                            await panSpirits.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                            await panSpirits.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
                         if (panSprites != null)
-                            await panSprites.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                            await panSprites.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
                     }
                 }
                 else

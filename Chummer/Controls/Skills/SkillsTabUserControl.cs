@@ -1074,7 +1074,7 @@ namespace Chummer.UI.Skills
                 }
                 finally
                 {
-                    await _lstActiveSkills.DoThreadSafeAsync(x => x.ResumeLayout(), token: MyToken)
+                    await _lstActiveSkills.DoThreadSafeAsync(x => x.ResumeLayout(), MyToken)
                                           .ConfigureAwait(false);
                 }
             }

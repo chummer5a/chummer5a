@@ -1335,7 +1335,7 @@ namespace Chummer
                 finally
                 {
                     if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
-                        await this.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                        await this.DoThreadSafeAsync(x => x.ResumeLayout(), CancellationToken.None).ConfigureAwait(false);
                 }
             }
             finally

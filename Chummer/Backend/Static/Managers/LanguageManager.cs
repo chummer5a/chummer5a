@@ -194,9 +194,9 @@ namespace Chummer
                 if (blnSync)
                     // ReSharper disable once MethodHasAsyncOverload
                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                    objObject.DoThreadSafe((x, y) => x.ResumeLayout(), token);
+                    objObject.DoThreadSafe((x, y) => x.ResumeLayout(), CancellationToken.None);
                 else
-                    await objObject.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
+                    await objObject.DoThreadSafeAsync(x => x.ResumeLayout(), CancellationToken.None).ConfigureAwait(false);
             }
         }
 
