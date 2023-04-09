@@ -522,7 +522,9 @@ namespace Chummer
 
             //Populate District and Borough ComboBox for the first time
             await RefreshDistrictList().ConfigureAwait(false);
+            await cboDistrict.DoDataBindingAsync("SelectedValue", _objLifestyle, nameof(Lifestyle.District)).ConfigureAwait(false);
             await RefreshBoroughList().ConfigureAwait(false);
+            await cboBorough.DoDataBindingAsync("SelectedValue", _objLifestyle, nameof(Lifestyle.Borough)).ConfigureAwait(false);
 
             Interlocked.Decrement(ref _intSkipRefresh);
             await RefreshSelectedLifestyle().ConfigureAwait(false);

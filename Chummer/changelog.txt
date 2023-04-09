@@ -19,6 +19,7 @@ Application Changes:
 - Added new house rule settings to configure how many martial arts and techniques a character may have at character creation.
 - Fixed and clarified display language of spell points used for mastery qualities at character creation.
 - Gear whose device rating depends on the gear's rating now displays that variable device rating properly in the screen for purchasing new gear.
+- Lifestyles with specified cities, districts, and/or boroughs no longer have the corresponding boxes cleared whenever they are edited.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.

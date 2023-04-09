@@ -183,6 +183,9 @@ namespace Chummer
                 }).ConfigureAwait(false);
                 await chkPrimaryTenant.DoThreadSafeAsync(x => x.Checked = _objSourceLifestyle.PrimaryTenant).ConfigureAwait(false);
                 await chkTrustFund.DoThreadSafeAsync(x => x.Checked = _objSourceLifestyle.TrustFund).ConfigureAwait(false);
+                await cboCity.DoThreadSafeFuncAsync(x => x.SelectedValue = _objSourceLifestyle.City).ConfigureAwait(false);
+                await cboDistrict.DoThreadSafeFuncAsync(x => x.SelectedValue = _objSourceLifestyle.District).ConfigureAwait(false);
+                await cboBorough.DoThreadSafeFuncAsync(x => x.SelectedValue = _objSourceLifestyle.Borough).ConfigureAwait(false);
             }
 
             _blnSkipRefresh = false;
@@ -523,10 +526,11 @@ namespace Chummer
 
             decimal decNuyen = decBaseCost + decBaseCost * decMod + decCost;
 
+            string strNuyenSymbol = await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
             await lblCost
                   .DoThreadSafeAsync(
                       x => x.Text = decNuyen.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
-                                    + LanguageManager.GetString("String_NuyenSymbol"), token: token)
+                                    + strNuyenSymbol, token: token)
                   .ConfigureAwait(false);
             decimal decPercentage
                 = await nudPercentage.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
@@ -548,7 +552,7 @@ namespace Chummer
                           x => x.Text += strSpace + '('
                                                   + decDiscount.ToString(
                                                       _objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
-                                                  + LanguageManager.GetString("String_NuyenSymbol") + ')', token: token)
+                                                  + strNuyenSymbol + ')', token: token)
                       .ConfigureAwait(false);
             }
 
