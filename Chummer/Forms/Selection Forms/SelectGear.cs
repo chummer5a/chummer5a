@@ -769,6 +769,11 @@ namespace Chummer
                     int intRatingValue = await nudRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token).ConfigureAwait(false);
                     // Retrieve the information for the selected piece of Cyberware.
                     string strDeviceRating = (await objXmlGear.SelectSingleNodeAndCacheExpressionAsync("devicerating", token).ConfigureAwait(false))?.Value ?? string.Empty;
+                    strDeviceRating = await strDeviceRating.CheapReplaceAsync("{Rating}", () => intRatingValue.ToString(), token: token).ConfigureAwait(false);
+                    (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(
+                        strDeviceRating, token).ConfigureAwait(false);
+                    if (blnIsSuccess)
+                        strDeviceRating = objProcess.ToString();
                     await lblGearDeviceRating.DoThreadSafeFuncAsync(x => x.Text = strDeviceRating, token: token).ConfigureAwait(false);
                     await lblGearDeviceRatingLabel.DoThreadSafeFuncAsync(x => x.Visible = !string.IsNullOrEmpty(strDeviceRating), token: token).ConfigureAwait(false);
 
@@ -809,8 +814,6 @@ namespace Chummer
                     }, token: token).ConfigureAwait(false);
 
                     decimal decItemCost = 0.0m;
-                    bool blnIsSuccess;
-                    object objProcess;
                     if (await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
                     {
                         string strCost = (0.0m).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
