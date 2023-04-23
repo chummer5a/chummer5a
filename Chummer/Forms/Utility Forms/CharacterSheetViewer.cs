@@ -685,7 +685,18 @@ namespace Chummer
             catch (OperationCanceledException)
             {
                 Interlocked.CompareExchange(ref _objRefresherCancellationTokenSource, null, objNewSource);
-                objNewSource.Dispose();
+                try
+                {
+                    objNewSource.Cancel(false);
+                }
+                catch (ObjectDisposedException)
+                {
+                    //swallow this
+                }
+                finally
+                {
+                    objNewSource.Dispose();
+                }
                 throw;
             }
 
@@ -702,7 +713,18 @@ namespace Chummer
             catch
             {
                 Interlocked.CompareExchange(ref _objRefresherCancellationTokenSource, null, objNewSource);
-                objNewSource.Dispose();
+                try
+                {
+                    objNewSource.Cancel(false);
+                }
+                catch (ObjectDisposedException)
+                {
+                    //swallow this
+                }
+                finally
+                {
+                    objNewSource.Dispose();
+                }
                 throw;
             }
 
@@ -712,6 +734,10 @@ namespace Chummer
                 try
                 {
                     objNewSource.Cancel(false);
+                }
+                catch (ObjectDisposedException)
+                {
+                    //swallow this
                 }
                 finally
                 {
@@ -750,7 +776,18 @@ namespace Chummer
             catch (OperationCanceledException)
             {
                 Interlocked.CompareExchange(ref _objOutputGeneratorCancellationTokenSource, null, objNewSource);
-                objNewSource.Dispose();
+                try
+                {
+                    objNewSource.Cancel(false);
+                }
+                catch (ObjectDisposedException)
+                {
+                    //swallow this
+                }
+                finally
+                {
+                    objNewSource.Dispose();
+                }
                 throw;
             }
 
@@ -767,7 +804,18 @@ namespace Chummer
             catch
             {
                 Interlocked.CompareExchange(ref _objOutputGeneratorCancellationTokenSource, null, objNewSource);
-                objNewSource.Dispose();
+                try
+                {
+                    objNewSource.Cancel(false);
+                }
+                catch (ObjectDisposedException)
+                {
+                    //swallow this
+                }
+                finally
+                {
+                    objNewSource.Dispose();
+                }
                 throw;
             }
 
@@ -777,6 +825,10 @@ namespace Chummer
                 try
                 {
                     objNewSource.Cancel(false);
+                }
+                catch (ObjectDisposedException)
+                {
+                    //swallow this
                 }
                 finally
                 {
