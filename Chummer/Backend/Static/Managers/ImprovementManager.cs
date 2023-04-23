@@ -1760,9 +1760,7 @@ namespace Chummer
                                 + objCharacter.Settings.BookXPath() + ")]";
                 }
 
-                XPathNavigator xmlSkillNode = objCharacter.LoadDataXPath("skills.xml").SelectSingleNode(strFilter);
-                if (xmlSkillNode == null)
-                    throw new AbortedException();
+                XPathNavigator xmlSkillNode = objCharacter.LoadDataXPath("skills.xml").SelectSingleNode(strFilter) ?? throw new AbortedException();
                 int intMinimumRating = 0;
                 string strMinimumRating = xmlBonusNode.Attributes?["minimumrating"]?.InnerText;
                 if (!string.IsNullOrWhiteSpace(strMinimumRating))
@@ -2071,21 +2069,23 @@ namespace Chummer
                             }
                             else if (nodBonus["selecttext"].Attributes.Count == 0)
                             {
+                                string strSelectText = blnSync
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? LanguageManager.GetString("String_Improvement_SelectText", token: token)
+                                    : await LanguageManager.GetStringAsync("String_Improvement_SelectText", token: token).ConfigureAwait(false);
                                 using (ThreadSafeForm<SelectText> frmPickText
                                        = blnSync
                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                            ? ThreadSafeForm<SelectText>.Get(() => new SelectText
                                            {
                                                Description = string.Format(GlobalSettings.CultureInfo,
-                                                                           LanguageManager.GetString(
-                                                                               "String_Improvement_SelectText"),
+                                                                           strSelectText,
                                                                            strFriendlyName)
                                            })
                                            : await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
                                            {
                                                Description = string.Format(GlobalSettings.CultureInfo,
-                                                                           LanguageManager.GetString(
-                                                                               "String_Improvement_SelectText"),
+                                                                           strSelectText,
                                                                            strFriendlyName)
                                            }, token).ConfigureAwait(false))
                                 {
@@ -2225,21 +2225,24 @@ namespace Chummer
                                         return false;
                                     }
 
+                                    string strSelectText = blnSync
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        ? LanguageManager.GetString("String_Improvement_SelectText", token: token)
+                                        : await LanguageManager.GetStringAsync("String_Improvement_SelectText", token: token).ConfigureAwait(false);
+
                                     using (ThreadSafeForm<SelectItem> frmSelect
                                            = blnSync
                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                ? ThreadSafeForm<SelectItem>.Get(() => new SelectItem
                                                {
                                                    Description = string.Format(GlobalSettings.CultureInfo,
-                                                                               LanguageManager.GetString(
-                                                                                   "String_Improvement_SelectText"),
+                                                                               strSelectText,
                                                                                strFriendlyName)
                                                })
                                                : await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
                                                {
                                                    Description = string.Format(GlobalSettings.CultureInfo,
-                                                                               LanguageManager.GetString(
-                                                                                   "String_Improvement_SelectText"),
+                                                                               strSelectText,
                                                                                strFriendlyName)
                                                }, token).ConfigureAwait(false))
                                     {

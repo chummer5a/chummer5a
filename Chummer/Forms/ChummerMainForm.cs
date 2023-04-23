@@ -625,9 +625,10 @@ namespace Chummer
                     = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
                 try
                 {
-                    using (CustomActivity opFrmChummerMain = await Timekeeper.StartSyncronAsync(
-                               "frmChummerMain_Load", null, CustomActivity.OperationType.DependencyOperation,
-                               _strCurrentVersion, _objGenericToken).ConfigureAwait(false))
+                    CustomActivity opFrmChummerMain = await Timekeeper.StartSyncronAsync(
+                        "frmChummerMain_Load", null, CustomActivity.OperationType.DependencyOperation,
+                        _strCurrentVersion, _objGenericToken).ConfigureAwait(false)
+                    try
                     {
                         try
                         {
@@ -819,7 +820,8 @@ namespace Chummer
 
                                         if (setFilesToLoad.Count > 0)
                                         {
-                                            ConcurrentStringHashSet setNewCharactersToOpen = new ConcurrentStringHashSet();
+                                            ConcurrentStringHashSet setNewCharactersToOpen
+                                                = new ConcurrentStringHashSet();
                                             ConcurrentStringHashSet setCharactersToOpen
                                                 = Interlocked.CompareExchange(
                                                     ref _setCharactersToOpen, setNewCharactersToOpen, null);
@@ -844,7 +846,8 @@ namespace Chummer
                                 MasterIndex frmMasterIndex = MasterIndex;
                                 if (frmMasterIndex != null)
                                 {
-                                    await frmMasterIndex.DoThreadSafeAsync(x => x.Show(), token: _objGenericToken).ConfigureAwait(false);
+                                    await frmMasterIndex.DoThreadSafeAsync(x => x.Show(), token: _objGenericToken)
+                                                        .ConfigureAwait(false);
                                 }
 
                                 await frmLoadingBar.MyForm.PerformStepAsync(
@@ -855,7 +858,8 @@ namespace Chummer
                                 CharacterRoster frmCharacterRoster = CharacterRoster;
                                 if (frmCharacterRoster != null)
                                 {
-                                    await frmCharacterRoster.DoThreadSafeAsync(x => x.Show(), token: _objGenericToken).ConfigureAwait(false);
+                                    await frmCharacterRoster.DoThreadSafeAsync(x => x.Show(), token: _objGenericToken)
+                                                            .ConfigureAwait(false);
                                 }
 
                                 if (GlobalSettings.AllowEasterEggs)
@@ -893,6 +897,7 @@ namespace Chummer
                                         },
                                         token: _objGenericToken).ConfigureAwait(false);
                                 }
+
                                 if (frmCharacterRoster != null)
                                 {
                                     await frmCharacterRoster.DoThreadSafeAsync(
@@ -1006,6 +1011,10 @@ namespace Chummer
                         if (!Utils.IsUnitTest && GlobalSettings.StartupFullscreen)
                             await this.DoThreadSafeAsync(x => x.WindowState = FormWindowState.Maximized,
                                                          token: _objGenericToken).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await opFrmChummerMain.DisposeAsync().ConfigureAwait(false);
                     }
 
                     if (Utils.IsUnitTestForUI)
