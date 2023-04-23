@@ -284,7 +284,8 @@ namespace Chummer.UI.Attributes
 
         private async void cmdImproveATT_Click(object sender, EventArgs e)
         {
-            using (await CursorWait.NewAsync(this).ConfigureAwait(false))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
+            try
             {
                 CharacterAttrib objAttribute = await GetAttributeObjectAsync().ConfigureAwait(false);
                 using (await EnterReadLock.EnterAsync(objAttribute).ConfigureAwait(false))
@@ -317,6 +318,10 @@ namespace Chummer.UI.Attributes
 
                 await this.DoThreadSafeAsync(x => x.ValueChanged?.Invoke(this, e)).ConfigureAwait(false);
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         private async void nudBase_ValueChanged(object sender, EventArgs e)
@@ -324,7 +329,8 @@ namespace Chummer.UI.Attributes
             int intValue = await ((NumericUpDownEx)sender).DoThreadSafeFuncAsync(x => x.ValueAsInt).ConfigureAwait(false);
             if (Interlocked.Exchange(ref _oldBase, intValue) == intValue)
                 return;
-            using (await CursorWait.NewAsync(this).ConfigureAwait(false))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
+            try
             {
                 CharacterAttrib objAttribute = await GetAttributeObjectAsync().ConfigureAwait(false);
                 using (await EnterReadLock.EnterAsync(objAttribute).ConfigureAwait(false))
@@ -359,6 +365,10 @@ namespace Chummer.UI.Attributes
 
                 await this.DoThreadSafeAsync(x => x.ValueChanged?.Invoke(this, e)).ConfigureAwait(false);
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         private async void nudKarma_ValueChanged(object sender, EventArgs e)
@@ -367,7 +377,8 @@ namespace Chummer.UI.Attributes
             int intOldKarma = Interlocked.Exchange(ref _oldKarma, intValue);
             if (intOldKarma == intValue)
                 return;
-            using (await CursorWait.NewAsync(this).ConfigureAwait(false))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
+            try
             {
                 CharacterAttrib objAttribute = await GetAttributeObjectAsync().ConfigureAwait(false);
                 using (await EnterReadLock.EnterAsync(objAttribute).ConfigureAwait(false))
@@ -419,6 +430,10 @@ namespace Chummer.UI.Attributes
 
                 await this.DoThreadSafeAsync(x => x.ValueChanged?.Invoke(this, e)).ConfigureAwait(false);
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <summary>
@@ -469,7 +484,8 @@ namespace Chummer.UI.Attributes
 
         private async void cmdBurnEdge_Click(object sender, EventArgs e)
         {
-            using (await CursorWait.NewAsync(this).ConfigureAwait(false))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
+            try
             {
                 // Edge cannot go below 1.
                 CharacterAttrib objAttribute = await GetAttributeObjectAsync().ConfigureAwait(false);
@@ -497,6 +513,10 @@ namespace Chummer.UI.Attributes
                 }
 
                 await this.DoThreadSafeAsync(x => x.ValueChanged?.Invoke(this, e)).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 

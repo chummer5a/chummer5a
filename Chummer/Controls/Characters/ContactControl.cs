@@ -702,7 +702,8 @@ namespace Chummer
                 }
             }
 
-            using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            try
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                 try
@@ -730,6 +731,10 @@ namespace Chummer
                 {
                     await this.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -797,7 +802,8 @@ namespace Chummer
 
         private async ValueTask CreateSecondRowAsync(CancellationToken token = default)
         {
-            using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            try
             {
                 await this.DoThreadSafeAsync(x =>
                 {
@@ -814,10 +820,10 @@ namespace Chummer
                     {
                         Anchor = AnchorStyles.Left | AnchorStyles.Right,
                         AutoSize = true,
-                        Maximum = new decimal(new[] { 12, 0, 0, 0 }),
-                        Minimum = new decimal(new[] { 1, 0, 0, 0 }),
+                        Maximum = new decimal(new[] {12, 0, 0, 0}),
+                        Minimum = new decimal(new[] {1, 0, 0, 0}),
                         Name = "nudConnection",
-                        Value = new decimal(new[] { 1, 0, 0, 0 })
+                        Value = new decimal(new[] {1, 0, 0, 0})
                     };
                     x.lblLoyalty = new Label
                     {
@@ -832,10 +838,10 @@ namespace Chummer
                     {
                         Anchor = AnchorStyles.Left | AnchorStyles.Right,
                         AutoSize = true,
-                        Maximum = new decimal(new[] { 6, 0, 0, 0 }),
-                        Minimum = new decimal(new[] { 1, 0, 0, 0 }),
+                        Maximum = new decimal(new[] {6, 0, 0, 0}),
+                        Minimum = new decimal(new[] {1, 0, 0, 0}),
                         Name = "nudLoyalty",
-                        Value = new decimal(new[] { 1, 0, 0, 0 })
+                        Value = new decimal(new[] {1, 0, 0, 0})
                     };
                     x.chkFree = new ColorableCheckBox
                     {
@@ -882,7 +888,7 @@ namespace Chummer
                         Anchor = AnchorStyles.Right,
                         AutoSize = true,
                         AutoSizeMode = AutoSizeMode.GrowAndShrink,
-                        FlatAppearance = { BorderSize = 0 },
+                        FlatAppearance = {BorderSize = 0},
                         FlatStyle = FlatStyle.Flat,
                         Padding = new Padding(1),
                         MinimumSize = new Size(24, 24),
@@ -905,46 +911,67 @@ namespace Chummer
                     //We don't actually pay for contacts in play so everyone is free
                     //Don't present a useless field
                     if (_objContact.CharacterObject != null)
-                        await chkFree.DoThreadSafeAsync(x => x.Visible = !_objContact.CharacterObject.Created, token).ConfigureAwait(false);
+                        await chkFree.DoThreadSafeAsync(x => x.Visible = !_objContact.CharacterObject.Created, token)
+                                     .ConfigureAwait(false);
                     else
                         await chkFree.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
-                    await chkGroup.DoDataBindingAsync("Checked", _objContact, nameof(Contact.IsGroup), token).ConfigureAwait(false);
-                    await chkFree.DoDataBindingAsync("Checked", _objContact, nameof(Contact.Free), token).ConfigureAwait(false);
-                    await chkFamily.DoDataBindingAsync("Checked", _objContact, nameof(Contact.Family), token).ConfigureAwait(false);
-                    await chkFamily.DoOneWayNegatableDataBindingAsync("Visible", _objContact, nameof(Contact.IsEnemy), token).ConfigureAwait(false);
-                    await chkBlackmail.DoDataBindingAsync("Checked", _objContact, nameof(Contact.Blackmail), token).ConfigureAwait(false);
-                    await chkBlackmail.DoOneWayNegatableDataBindingAsync("Visible", _objContact, nameof(Contact.IsEnemy), token).ConfigureAwait(false);
-                    await nudLoyalty.DoDataBindingAsync("Value", _objContact, nameof(Contact.Loyalty), token).ConfigureAwait(false);
-                    await nudConnection.DoDataBindingAsync("Value", _objContact, nameof(Contact.Connection), token).ConfigureAwait(false);
-                    await nudConnection.DoOneWayNegatableDataBindingAsync("Enabled", _objContact, nameof(Contact.ReadOnly), token).ConfigureAwait(false);
+                    await chkGroup.DoDataBindingAsync("Checked", _objContact, nameof(Contact.IsGroup), token)
+                                  .ConfigureAwait(false);
+                    await chkFree.DoDataBindingAsync("Checked", _objContact, nameof(Contact.Free), token)
+                                 .ConfigureAwait(false);
+                    await chkFamily.DoDataBindingAsync("Checked", _objContact, nameof(Contact.Family), token)
+                                   .ConfigureAwait(false);
+                    await chkFamily
+                          .DoOneWayNegatableDataBindingAsync("Visible", _objContact, nameof(Contact.IsEnemy), token)
+                          .ConfigureAwait(false);
+                    await chkBlackmail.DoDataBindingAsync("Checked", _objContact, nameof(Contact.Blackmail), token)
+                                      .ConfigureAwait(false);
+                    await chkBlackmail
+                          .DoOneWayNegatableDataBindingAsync("Visible", _objContact, nameof(Contact.IsEnemy), token)
+                          .ConfigureAwait(false);
+                    await nudLoyalty.DoDataBindingAsync("Value", _objContact, nameof(Contact.Loyalty), token)
+                                    .ConfigureAwait(false);
+                    await nudConnection.DoDataBindingAsync("Value", _objContact, nameof(Contact.Connection), token)
+                                       .ConfigureAwait(false);
+                    await nudConnection
+                          .DoOneWayNegatableDataBindingAsync("Enabled", _objContact, nameof(Contact.ReadOnly), token)
+                          .ConfigureAwait(false);
                     await chkGroup.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objContact,
-                                                                  nameof(Contact.GroupEnabled),
-                                                                  // ReSharper disable once MethodSupportsCancellation
-                                                                  x => x.GetGroupEnabledAsync().AsTask(), token: token).ConfigureAwait(false);
-                    await chkFree.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objContact,
-                                                                 nameof(Contact.FreeEnabled),
-                                                                 // ReSharper disable once MethodSupportsCancellation
-                                                                 x => x.GetFreeEnabledAsync().AsTask(), token: token).ConfigureAwait(false);
-                    await nudLoyalty.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objContact,
-                                                                    nameof(Contact.LoyaltyEnabled),
-                                                                    // ReSharper disable once MethodSupportsCancellation
-                                                                    x => x.GetLoyaltyEnabledAsync().AsTask(), token: token).ConfigureAwait(false);
-                    await nudConnection.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Maximum = y, _objContact,
-                                                                       nameof(Contact.ConnectionMaximum),
+                                                                       nameof(Contact.GroupEnabled),
                                                                        // ReSharper disable once MethodSupportsCancellation
-                                                                       x => x.GetConnectionMaximumAsync().AsTask(), token: token).ConfigureAwait(false);
+                                                                       x => x.GetGroupEnabledAsync().AsTask(),
+                                                                       token: token).ConfigureAwait(false);
+                    await chkFree.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objContact,
+                                                                      nameof(Contact.FreeEnabled),
+                                                                      // ReSharper disable once MethodSupportsCancellation
+                                                                      x => x.GetFreeEnabledAsync().AsTask(),
+                                                                      token: token).ConfigureAwait(false);
+                    await nudLoyalty.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Enabled = y, _objContact,
+                                                                         nameof(Contact.LoyaltyEnabled),
+                                                                         // ReSharper disable once MethodSupportsCancellation
+                                                                         x => x.GetLoyaltyEnabledAsync().AsTask(),
+                                                                         token: token).ConfigureAwait(false);
+                    await nudConnection.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Maximum = y, _objContact,
+                                                                            nameof(Contact.ConnectionMaximum),
+                                                                            // ReSharper disable once MethodSupportsCancellation
+                                                                            x => x.GetConnectionMaximumAsync().AsTask(),
+                                                                            token: token).ConfigureAwait(false);
                     string strToolTipText;
                     if (_objContact.IsEnemy)
                     {
                         strToolTipText = !string.IsNullOrEmpty(_objContact.FileName)
-                            ? await LanguageManager.GetStringAsync("Tip_Enemy_OpenLinkedEnemy", token: token).ConfigureAwait(false)
-                            : await LanguageManager.GetStringAsync("Tip_Enemy_LinkEnemy", token: token).ConfigureAwait(false);
+                            ? await LanguageManager.GetStringAsync("Tip_Enemy_OpenLinkedEnemy", token: token)
+                                                   .ConfigureAwait(false)
+                            : await LanguageManager.GetStringAsync("Tip_Enemy_LinkEnemy", token: token)
+                                                   .ConfigureAwait(false);
                     }
                     else
                     {
                         strToolTipText = !string.IsNullOrEmpty(_objContact.FileName)
-                            ? await LanguageManager.GetStringAsync("Tip_Contact_OpenLinkedContact", token: token).ConfigureAwait(false)
-                            : await LanguageManager.GetStringAsync("Tip_Contact_LinkContact", token: token).ConfigureAwait(false);
+                            ? await LanguageManager.GetStringAsync("Tip_Contact_OpenLinkedContact", token: token)
+                                                   .ConfigureAwait(false)
+                            : await LanguageManager.GetStringAsync("Tip_Contact_LinkContact", token: token)
+                                                   .ConfigureAwait(false);
                     }
 
                     await cmdLink.DoThreadSafeAsync(x => x.ToolTipText = strToolTipText, token).ConfigureAwait(false);
@@ -980,6 +1007,10 @@ namespace Chummer
                         x.ResumeLayout(true);
                     }
                 }, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1228,7 +1259,8 @@ namespace Chummer
         /// </summary>
         private async ValueTask CreateStatBlockAsync(CancellationToken token = default)
         {
-            using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            try
             {
                 await this.DoThreadSafeAsync(x =>
                 {
@@ -1239,11 +1271,11 @@ namespace Chummer
                         Name = "cboMetatype"
                     };
                     x.cboGender = new ElasticComboBox
-                        { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboGender" };
+                        {Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboGender"};
                     x.cboAge = new ElasticComboBox
-                        { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboAge" };
+                        {Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboAge"};
                     x.cboType = new ElasticComboBox
-                        { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboType" };
+                        {Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboType"};
                     x.cboPersonalLife = new ElasticComboBox
                     {
                         Anchor = AnchorStyles.Left | AnchorStyles.Right,
@@ -1423,46 +1455,56 @@ namespace Chummer
                         x.cboPreferredPayment.SelectedValue = strPreferredPayment;
                         x.cboHobbiesVice.SelectedValue = strHobbiesVice;
                     }, token: token).ConfigureAwait(false);
-                    if (await cboMetatype.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token).ConfigureAwait(false) < 0)
+                    if (await cboMetatype.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token)
+                                         .ConfigureAwait(false) < 0)
                     {
                         string strTemp = await _objContact.GetDisplayMetatypeAsync(token).ConfigureAwait(false);
                         await cboMetatype.DoThreadSafeAsync(x => x.Text = strTemp, token: token).ConfigureAwait(false);
                     }
 
-                    if (await cboGender.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token).ConfigureAwait(false) < 0)
+                    if (await cboGender.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token).ConfigureAwait(false)
+                        < 0)
                     {
                         string strTemp = await _objContact.GetDisplayGenderAsync(token).ConfigureAwait(false);
                         await cboGender.DoThreadSafeAsync(x => x.Text = strTemp, token: token).ConfigureAwait(false);
                     }
 
-                    if (await cboAge.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token).ConfigureAwait(false) < 0)
+                    if (await cboAge.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token).ConfigureAwait(false)
+                        < 0)
                     {
                         string strTemp = await _objContact.GetDisplayAgeAsync(token).ConfigureAwait(false);
                         await cboAge.DoThreadSafeAsync(x => x.Text = strTemp, token: token).ConfigureAwait(false);
                     }
 
-                    if (await cboPersonalLife.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token).ConfigureAwait(false) < 0)
+                    if (await cboPersonalLife.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token)
+                                             .ConfigureAwait(false) < 0)
                     {
                         string strTemp = await _objContact.GetDisplayPersonalLifeAsync(token).ConfigureAwait(false);
-                        await cboPersonalLife.DoThreadSafeAsync(x => x.Text = strTemp, token: token).ConfigureAwait(false);
+                        await cboPersonalLife.DoThreadSafeAsync(x => x.Text = strTemp, token: token)
+                                             .ConfigureAwait(false);
                     }
 
-                    if (await cboType.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token).ConfigureAwait(false) < 0)
+                    if (await cboType.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token).ConfigureAwait(false)
+                        < 0)
                     {
                         string strTemp = await _objContact.GetDisplayTypeAsync(token).ConfigureAwait(false);
                         await cboType.DoThreadSafeAsync(x => x.Text = strTemp, token: token).ConfigureAwait(false);
                     }
 
-                    if (await cboPreferredPayment.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token).ConfigureAwait(false) < 0)
+                    if (await cboPreferredPayment.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token)
+                                                 .ConfigureAwait(false) < 0)
                     {
                         string strTemp = await _objContact.GetDisplayTypeAsync(token).ConfigureAwait(false);
-                        await cboPreferredPayment.DoThreadSafeAsync(x => x.Text = strTemp, token: token).ConfigureAwait(false);
+                        await cboPreferredPayment.DoThreadSafeAsync(x => x.Text = strTemp, token: token)
+                                                 .ConfigureAwait(false);
                     }
 
-                    if (await cboHobbiesVice.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token).ConfigureAwait(false) < 0)
+                    if (await cboHobbiesVice.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token)
+                                            .ConfigureAwait(false) < 0)
                     {
                         string strTemp = await _objContact.GetDisplayTypeAsync(token).ConfigureAwait(false);
-                        await cboHobbiesVice.DoThreadSafeAsync(x => x.Text = strTemp, token: token).ConfigureAwait(false);
+                        await cboHobbiesVice.DoThreadSafeAsync(x => x.Text = strTemp, token: token)
+                                            .ConfigureAwait(false);
                     }
                 }
 
@@ -1485,6 +1527,10 @@ namespace Chummer
                 Interlocked.Decrement(ref _intUpdatingPersonalLife);
                 Interlocked.Decrement(ref _intUpdatingPreferredPayment);
                 Interlocked.Decrement(ref _intUpdatingHobbiesVice);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 

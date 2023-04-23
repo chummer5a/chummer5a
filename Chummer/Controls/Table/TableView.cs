@@ -245,7 +245,8 @@ namespace Chummer.UI.Table
 
         private async ValueTask ItemPropertyChanged(int intIndex, T objItem, string strProperty, CancellationToken token = default)
         {
-            using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            try
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                 try
@@ -276,6 +277,10 @@ namespace Chummer.UI.Table
                 {
                     await this.DoThreadSafeAsync(x => x.ResumeLayout(true), token).ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -357,7 +362,8 @@ namespace Chummer.UI.Table
 
         private async ValueTask CreateCellsForColumn(int insertIndex, TableColumn<T> column, CancellationToken token = default)
         {
-            using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            try
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                 try
@@ -454,6 +460,10 @@ namespace Chummer.UI.Table
                     await this.DoThreadSafeAsync(x => x.ResumeLayout(false), token).ConfigureAwait(false);
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         internal async ValueTask ColumnAdded(TableColumn<T> column, CancellationToken token = default)
@@ -494,7 +504,8 @@ namespace Chummer.UI.Table
         {
             if (Items == null)
                 return;
-            using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            try
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                 try
@@ -531,6 +542,10 @@ namespace Chummer.UI.Table
                     await this.DoThreadSafeAsync(x => x.RestartLayout(performLayout), token).ConfigureAwait(false);
                 }
             }
+            finally
+            {
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         private void RestartLayout(bool performLayout)
@@ -560,7 +575,8 @@ namespace Chummer.UI.Table
                     T item = await Items.GetValueAtAsync(e.NewIndex).ConfigureAwait(false);
                     if (e.PropertyDescriptor == null)
                     {
-                        using (await CursorWait.NewAsync(this).ConfigureAwait(false))
+                        CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
+                        try
                         {
                             await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
                             try
@@ -586,6 +602,10 @@ namespace Chummer.UI.Table
                                 await this.DoThreadSafeAsync(x => x.RestartLayout(true)).ConfigureAwait(false);
                             }
                         }
+                        finally
+                        {
+                            await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                     else
                     {
@@ -610,7 +630,8 @@ namespace Chummer.UI.Table
 
                     TableRow row = await this.DoThreadSafeFuncAsync(x => x.CreateRow()).ConfigureAwait(false);
                     _lstRowCells.Insert(e.NewIndex, row);
-                    using (await CursorWait.NewAsync(this).ConfigureAwait(false))
+                    CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
+                    try
                     {
                         await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
                         try
@@ -641,6 +662,10 @@ namespace Chummer.UI.Table
                             await this.DoThreadSafeAsync(x => x.RestartLayout(true)).ConfigureAwait(false);
                         }
                     }
+                    finally
+                    {
+                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                    }
 
                     break;
                 }
@@ -652,7 +677,8 @@ namespace Chummer.UI.Table
                         cells.RemoveAt(e.NewIndex);
                     }
 
-                    using (await CursorWait.NewAsync(this).ConfigureAwait(false))
+                    CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
+                    try
                     {
                         await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
                         try
@@ -676,6 +702,10 @@ namespace Chummer.UI.Table
                         {
                             await this.DoThreadSafeAsync(x => x.RestartLayout(true)).ConfigureAwait(false);
                         }
+                    }
+                    finally
+                    {
+                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
                     }
 
                     break;
