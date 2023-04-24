@@ -627,7 +627,7 @@ namespace Chummer
                 {
                     CustomActivity opFrmChummerMain = await Timekeeper.StartSyncronAsync(
                         "frmChummerMain_Load", null, CustomActivity.OperationType.DependencyOperation,
-                        _strCurrentVersion, _objGenericToken).ConfigureAwait(false)
+                        _strCurrentVersion, _objGenericToken).ConfigureAwait(false);
                     try
                     {
                         try
