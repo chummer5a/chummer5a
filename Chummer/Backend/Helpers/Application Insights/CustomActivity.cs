@@ -27,7 +27,7 @@ using Microsoft.ApplicationInsights.DataContracts;
 namespace Chummer
 {
     [CLSCompliant(false)]
-    public sealed class CustomActivity : Activity, IAsyncDisposable
+    public sealed class CustomActivity : Activity
     {
         [CLSCompliant(false)]
         //public IOperationHolder<DependencyTelemetry> myOperationDependencyHolder { get; set; }
@@ -141,34 +141,6 @@ namespace Chummer
                 return;
 
             Timekeeper.Finish(OperationName);
-            switch (MyOperationType)
-            {
-                case OperationType.DependencyOperation:
-                    MyDependencyTelemetry.Duration = DateTimeOffset.UtcNow - MyDependencyTelemetry.Timestamp;
-                    if (MyDependencyTelemetry.ResultCode == "not disposed")
-                        MyDependencyTelemetry.ResultCode = "OK";
-                    MyTelemetryClient.TrackDependency(MyDependencyTelemetry);
-                    break;
-
-                case OperationType.RequestOperation:
-                    MyRequestTelemetry.Duration = DateTimeOffset.UtcNow - MyRequestTelemetry.Timestamp;
-                    if (MyRequestTelemetry.ResponseCode == "not disposed")
-                        MyRequestTelemetry.ResponseCode = "OK";
-                    MyTelemetryClient.TrackRequest(MyRequestTelemetry);
-                    break;
-
-                default:
-                    throw new NotImplementedException("Implement OperationType " + OperationName);
-            }
-        }
-
-        /// <inheritdoc />
-        public async ValueTask DisposeAsync()
-        {
-            if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
-                return;
-
-            await Timekeeper.FinishAsync(OperationName).ConfigureAwait(false);
             switch (MyOperationType)
             {
                 case OperationType.DependencyOperation:

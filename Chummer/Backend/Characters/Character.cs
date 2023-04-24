@@ -5520,23 +5520,13 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 LoadAsDirty = false;
-                using (CustomActivity loadActivity = blnSync
-                           // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                           ? Timekeeper.StartSyncron("clsCharacter.Load", null,
-                                                     CustomActivity.OperationType
-                                                                   .DependencyOperation, strFileName)
-                           : await Timekeeper.StartSyncronAsync("clsCharacter.Load", null,
-                                                                CustomActivity.OperationType
-                                                                              .DependencyOperation, strFileName, token)
-                                             .ConfigureAwait(false))
+                using (CustomActivity loadActivity = Timekeeper.StartSyncron("clsCharacter.Load", null,
+                                                                             CustomActivity.OperationType
+                                                                                 .DependencyOperation, strFileName))
                 {
                     try
                     {
-                        using (_ = blnSync
-                                   // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                   ? Timekeeper.StartSyncron("upload_AI_options", loadActivity)
-                                   : await Timekeeper.StartSyncronAsync("upload_AI_options", loadActivity, token)
-                                                     .ConfigureAwait(false))
+                        using (_ = Timekeeper.StartSyncron("upload_AI_options", loadActivity))
                         {
                             UploadObjectAsMetric.UploadObject(TelemetryClient, Settings);
                         }
@@ -5555,11 +5545,7 @@ namespace Chummer
                                 await frmLoadingForm.PerformStepAsync("XML", token: token).ConfigureAwait(false);
                         }
 
-                        using (_ = blnSync
-                                   // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                   ? Timekeeper.StartSyncron("load_xml", loadActivity)
-                                   : await Timekeeper.StartSyncronAsync("load_xml", loadActivity, token)
-                                                     .ConfigureAwait(false))
+                        using (_ = Timekeeper.StartSyncron("load_xml", loadActivity))
                         {
                             bool blnKeepLoading = blnSync
                                 ? LoadSaveFileDocument()
@@ -5729,11 +5715,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_misc", loadActivity)
-                                       : await Timekeeper.StartSyncronAsync("load_char_misc", loadActivity, token)
-                                                         .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_misc", loadActivity))
                             {
                                 _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strFileName);
 
@@ -6784,12 +6766,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_mentorspirit", loadActivity)
-                                       : await Timekeeper
-                                               .StartSyncronAsync("load_char_mentorspirit", loadActivity, token)
-                                               .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_mentorspirit", loadActivity))
                             {
                                 // Improvements.
                                 using (objXmlNodeList = objXmlCharacter.SelectNodes("mentorspirits/mentorspirit"))
@@ -6831,11 +6808,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_imp", loadActivity)
-                                       : await Timekeeper.StartSyncronAsync("load_char_imp", loadActivity, token)
-                                                         .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_imp", loadActivity))
                             {
                                 // Improvements.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("improvements/improvement");
@@ -6974,11 +6947,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_contacts", loadActivity)
-                                       : await Timekeeper.StartSyncronAsync("load_char_contacts", loadActivity, token)
-                                                         .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_contacts", loadActivity))
                             {
                                 // Contacts.
                                 foreach (XPathNavigator xmlContact in
@@ -7015,11 +6984,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_quality", loadActivity)
-                                       : await Timekeeper.StartSyncronAsync("load_char_quality", loadActivity, token)
-                                                         .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_quality", loadActivity))
                             {
                                 // Qualities
 
@@ -7489,11 +7454,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_attributes", loadActivity)
-                                       : await Timekeeper.StartSyncronAsync("load_char_attributes", loadActivity, token)
-                                                         .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_attributes", loadActivity))
                             {
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
@@ -7517,11 +7478,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_misc2", loadActivity)
-                                       : await Timekeeper.StartSyncronAsync("load_char_misc2", loadActivity, token)
-                                                         .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_misc2", loadActivity))
                             {
                                 // Attempt to load the split MAG CharacterAttribute information for Mystic Adepts.
                                 if (_blnAdeptEnabled && _blnMagicianEnabled)
@@ -7754,11 +7711,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_skills", loadActivity)
-                                       : await Timekeeper.StartSyncronAsync("load_char_skills", loadActivity, token)
-                                                         .ConfigureAwait(false)) //slightly messy
+                            using (_ = Timekeeper.StartSyncron("load_char_skills", loadActivity)) //slightly messy
                             {
                                 _oldSkillsBackup = objXmlCharacter.SelectSingleNode("skills")?.Clone();
                                 _oldSkillGroupBackup = objXmlCharacter.SelectSingleNode("skillgroups")?.Clone();
@@ -7806,11 +7759,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_loc", loadActivity)
-                                       : await Timekeeper.StartSyncronAsync("load_char_loc", loadActivity, token)
-                                                         .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_loc", loadActivity))
                             {
                                 // Locations.
                                 objXmlLocationList = objXmlCharacter.SelectNodes("gearlocations/gearlocation");
@@ -7837,11 +7786,7 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_loc");
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_abundle", loadActivity)
-                                       : await Timekeeper.StartSyncronAsync("load_char_abundle", loadActivity, token)
-                                                         .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_abundle", loadActivity))
                             {
                                 // Armor Bundles.
                                 objXmlLocationList = objXmlCharacter.SelectNodes("armorbundles/armorbundle");
@@ -7868,11 +7813,7 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_abundle");
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_vloc", loadActivity)
-                                       : await Timekeeper.StartSyncronAsync("load_char_vloc", loadActivity, token)
-                                                         .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_vloc", loadActivity))
                             {
                                 // Vehicle Locations.
                                 XmlNodeList objXmlVehicleLocationList =
@@ -7894,11 +7835,7 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_vloc");
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_wloc", loadActivity)
-                                       : await Timekeeper.StartSyncronAsync("load_char_wloc", loadActivity, token)
-                                                         .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_wloc", loadActivity))
                             {
                                 // Weapon Locations.
                                 XmlNodeList objXmlWeaponLocationList =
@@ -7919,11 +7856,7 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_wloc");
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_sfoci", loadActivity)
-                                       : await Timekeeper.StartSyncronAsync("load_char_sfoci", loadActivity, token)
-                                                         .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_sfoci", loadActivity))
                             {
                                 // Stacked Foci.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("stackedfoci/stackedfocus");
@@ -7955,11 +7888,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_armor", loadActivity)
-                                       : await Timekeeper.StartSyncronAsync("load_char_armor", loadActivity, token)
-                                                         .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_armor", loadActivity))
                             {
                                 // Armor.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("armors/armor");
@@ -7991,11 +7920,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_drugs", loadActivity)
-                                       : await Timekeeper.StartSyncronAsync("load_char_drugs", loadActivity, token)
-                                                         .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_drugs", loadActivity))
                             {
                                 // Drugs.
                                 objXmlNodeList = objXmlDocument.SelectNodes("/character/drugs/drug");
@@ -8028,11 +7953,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_ware", loadActivity)
-                                       : await Timekeeper.StartSyncronAsync("load_char_ware", loadActivity, token)
-                                                         .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_ware", loadActivity))
                             {
                                 // Cyberware/Bioware.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("cyberwares/cyberware");
@@ -8384,11 +8305,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_spells", loadActivity)
-                                       : await Timekeeper.StartSyncronAsync("load_char_spells", loadActivity, token)
-                                                         .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_spells", loadActivity))
                             {
                                 // Spells.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("spells/spell");
@@ -8419,11 +8336,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_powers", loadActivity)
-                                       : await Timekeeper.StartSyncronAsync("load_char_powers", loadActivity, token)
-                                                         .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_powers", loadActivity))
                             {
                                 // Powers.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("powers/power");
@@ -8502,11 +8415,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_spirits", loadActivity)
-                                       : await Timekeeper.StartSyncronAsync("load_char_spirits", loadActivity, token)
-                                                         .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_spirits", loadActivity))
                             {
                                 // Spirits/Sprites.
                                 foreach (XPathNavigator xmlSpirit in (blnSync
@@ -8557,11 +8466,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_complex", loadActivity)
-                                       : await Timekeeper.StartSyncronAsync("load_char_complex", loadActivity, token)
-                                                         .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_complex", loadActivity))
                             {
                                 // Complex Forms/Technomancer Programs.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("complexforms/complexform");
@@ -8594,13 +8499,9 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_aiprogram", loadActivity)
-                                       : await Timekeeper.StartSyncronAsync("load_char_aiprogram", loadActivity, token)
-                                                         .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_aiprogram", loadActivity))
                             {
-                                // Compex Forms/Technomancer Programs.
+                                // Complex Forms/Technomancer Programs.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("aiprograms/aiprogram");
                                 foreach (XmlNode objXmlProgram in objXmlNodeList)
                                 {
@@ -8631,12 +8532,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_martialarts", loadActivity)
-                                       : await Timekeeper
-                                               .StartSyncronAsync("load_char_martialarts", loadActivity, token)
-                                               .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_martialarts", loadActivity))
                             {
                                 // Martial Arts.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("martialarts/martialart");
@@ -8668,11 +8564,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_mod", loadActivity)
-                                       : await Timekeeper.StartSyncronAsync("load_char_mod", loadActivity, token)
-                                                         .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_mod", loadActivity))
                             {
                                 // Limit Modifiers.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("limitmodifiers/limitmodifier");
@@ -8704,11 +8596,7 @@ namespace Chummer
                                               .ConfigureAwait(false), token: token).ConfigureAwait(false);
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_lifestyle", loadActivity)
-                                       : await Timekeeper.StartSyncronAsync("load_char_lifestyle", loadActivity, token)
-                                                         .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_lifestyle", loadActivity))
                             {
                                 // Lifestyles.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("lifestyles/lifestyle");
@@ -8740,11 +8628,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_gear", loadActivity)
-                                       : await Timekeeper.StartSyncronAsync("load_char_gear", loadActivity, token)
-                                                         .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_gear", loadActivity))
                             {
                                 // <gears>
                                 objXmlNodeList = objXmlCharacter.SelectNodes("gears/gear");
@@ -8908,11 +8792,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_car", loadActivity)
-                                       : await Timekeeper.StartSyncronAsync("load_char_car", loadActivity, token)
-                                                         .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_car", loadActivity))
                             {
                                 // Vehicles.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("vehicles/vehicle");
@@ -8944,11 +8824,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_weapons", loadActivity)
-                                       : await Timekeeper.StartSyncronAsync("load_char_weapons", loadActivity, token)
-                                                         .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_weapons", loadActivity))
                             {
                                 // Weapons.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("weapons/weapon");
@@ -8981,11 +8857,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_metamagics", loadActivity)
-                                       : await Timekeeper.StartSyncronAsync("load_char_metamagics", loadActivity, token)
-                                                         .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_metamagics", loadActivity))
                             {
                                 // Metamagics/Echoes.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("metamagics/metamagic");
@@ -9017,11 +8889,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_arts", loadActivity)
-                                       : await Timekeeper.StartSyncronAsync("load_char_arts", loadActivity, token)
-                                                         .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_arts", loadActivity))
                             {
                                 // Arts
                                 objXmlNodeList = objXmlCharacter.SelectNodes("arts/art");
@@ -9054,12 +8922,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_enhancements", loadActivity)
-                                       : await Timekeeper
-                                               .StartSyncronAsync("load_char_enhancements", loadActivity, token)
-                                               .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_enhancements", loadActivity))
                             {
                                 // Enhancements
                                 objXmlNodeList = objXmlCharacter.SelectNodes("enhancements/enhancement");
@@ -9091,12 +8954,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_critterpowers", loadActivity)
-                                       : await Timekeeper
-                                               .StartSyncronAsync("load_char_critterpowers", loadActivity, token)
-                                               .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_critterpowers", loadActivity))
                             {
                                 // Critter Powers.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("critterpowers/critterpower");
@@ -9129,11 +8987,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_foci", loadActivity)
-                                       : await Timekeeper.StartSyncronAsync("load_char_foci", loadActivity, token)
-                                                         .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_foci", loadActivity))
                             {
                                 // Foci.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("foci/focus");
@@ -9167,11 +9021,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_init", loadActivity)
-                                       : await Timekeeper.StartSyncronAsync("load_char_init", loadActivity, token)
-                                                         .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_init", loadActivity))
                             {
                                 // Initiation Grades.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("initiationgrades/initiationgrade");
@@ -9208,11 +9058,7 @@ namespace Chummer
                             // they shouldn't get loaded in create mode because they shouldn't be there.
                             if (Created)
                             {
-                                using (_ = blnSync
-                                           // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                           ? Timekeeper.StartSyncron("load_char_elog", loadActivity)
-                                           : await Timekeeper.StartSyncronAsync("load_char_elog", loadActivity, token)
-                                                             .ConfigureAwait(false))
+                                using (_ = Timekeeper.StartSyncron("load_char_elog", loadActivity))
                                 {
                                     // Expense Log Entries.
                                     XmlNodeList objXmlExpenseList = objXmlCharacter.SelectNodes("expenses/expense");
@@ -9254,12 +9100,7 @@ namespace Chummer
                             }
 
                             // Need to load these after everything else so that we can properly link them up during loading
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_sustainedobjects", loadActivity)
-                                       : await Timekeeper
-                                               .StartSyncronAsync("load_char_sustainedobjects", loadActivity, token)
-                                               .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_sustainedobjects", loadActivity))
                             {
                                 objXmlNodeList = objXmlCharacter.SelectNodes("sustainedobjects");
                                 foreach (XmlNode objXmlSustained in objXmlNodeList)
@@ -9294,11 +9135,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_igroup", loadActivity)
-                                       : await Timekeeper.StartSyncronAsync("load_char_igroup", loadActivity, token)
-                                                         .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_igroup", loadActivity))
                             {
                                 // Improvement Groups.
                                 XmlNodeList objXmlGroupList =
@@ -9337,11 +9174,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_calendar", loadActivity)
-                                       : await Timekeeper.StartSyncronAsync("load_char_calendar", loadActivity, token)
-                                                         .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_calendar", loadActivity))
                             {
                                 // Calendar.
                                 XmlNodeList objXmlWeekList = objXmlCharacter.SelectNodes("calendar/week");
@@ -9384,11 +9217,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_unarmed", loadActivity)
-                                       : await Timekeeper.StartSyncronAsync("load_char_unarmed", loadActivity, token)
-                                                         .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_unarmed", loadActivity))
                             {
                                 // Look for the unarmed attack
                                 bool blnFoundUnarmed = false;
@@ -9427,11 +9256,7 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_unarmed");
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_dwarffix", loadActivity)
-                                       : await Timekeeper.StartSyncronAsync("load_char_dwarffix", loadActivity, token)
-                                                         .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_dwarffix", loadActivity))
                             {
                                 // converting from old dwarven resistance to new dwarven resistance
                                 if (Metatype.Equals("dwarf", StringComparison.OrdinalIgnoreCase))
@@ -9503,12 +9328,7 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_dwarffix");
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_cyberadeptfix", loadActivity)
-                                       : await Timekeeper
-                                               .StartSyncronAsync("load_char_cyberadeptfix", loadActivity, token)
-                                               .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_cyberadeptfix", loadActivity))
                             {
                                 //Sweep through grades if we have any cyberadept improvements that need reassignment
                                 if (lstCyberadeptSweepGrades.Count > 0)
@@ -9550,12 +9370,7 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_cyberadeptfix");
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_mentorspiritfix", loadActivity)
-                                       : await Timekeeper
-                                               .StartSyncronAsync("load_char_mentorspiritfix", loadActivity, token)
-                                               .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_mentorspiritfix", loadActivity))
                             {
                                 Quality objMentorQuality = Qualities.FirstOrDefault(q => q.Name == "Mentor Spirit");
                                 // This character doesn't have any improvements tied to a cached Mentor Spirit value, so re-apply the improvement that adds the Mentor spirit
@@ -9586,11 +9401,7 @@ namespace Chummer
                             }
 
                             //Plugins
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_plugins", loadActivity)
-                                       : await Timekeeper.StartSyncronAsync("load_char_plugins", loadActivity, token)
-                                                         .ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_plugins", loadActivity))
                             {
                                 foreach (IPlugin plugin in (blnSync
                                              ? Program.PluginLoader.MyActivePlugins
@@ -9634,12 +9445,7 @@ namespace Chummer
                         }
 
                         // Refresh certain improvements
-                        using (_ = blnSync
-                                   // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                   ? Timekeeper.StartSyncron("load_char_improvementrefreshers1", loadActivity)
-                                   : await Timekeeper
-                                           .StartSyncronAsync("load_char_improvementrefreshers1", loadActivity, token)
-                                           .ConfigureAwait(false))
+                        using (_ = Timekeeper.StartSyncron("load_char_improvementrefreshers1", loadActivity))
                         {
                             // Process all events related to improvements
                             using (new FetchSafelyFromPool<
@@ -34322,14 +34128,9 @@ namespace Chummer
                 XPathNavigator xmlStatBlockDocument = null;
                 XPathNavigator xmlLeadsDocument = null;
                 List<string> lstTextStatBlockLines = null;
-                using (CustomActivity op_load = blnSync
-                           // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                           ? Timekeeper.StartSyncron("LoadFromHeroLabFile", null,
-                                                     CustomActivity.OperationType
-                                                                   .DependencyOperation, strPorFile)
-                           : await Timekeeper.StartSyncronAsync("LoadFromHeroLabFile", null,
-                                                                CustomActivity.OperationType
-                                                                              .DependencyOperation, strPorFile, token: token).ConfigureAwait(false))
+                using (CustomActivity op_load = Timekeeper.StartSyncron("LoadFromHeroLabFile", null,
+                                                                        CustomActivity.OperationType
+                                                                            .DependencyOperation, strPorFile))
                 {
                     try
                     {
@@ -34581,10 +34382,7 @@ namespace Chummer
                             XPathNavigator xmlStatBlockBaseNode;
                             XPathNavigator xmlLeadsBaseNode;
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_misc", op_load)
-                                       : await Timekeeper.StartSyncronAsync("load_char_misc", op_load, token: token).ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_misc", op_load))
                             {
                                 _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strPorFile);
 
@@ -35242,10 +35040,7 @@ namespace Chummer
                             List<Weapon> lstWeapons = new List<Weapon>(1);
                             List<Vehicle> lstVehicles = new List<Vehicle>(1);
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_quality", op_load)
-                                       : await Timekeeper.StartSyncronAsync("load_char_quality", op_load, token: token).ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_quality", op_load))
                             {
                                 string[] astrLevelLabels =
                                 {
@@ -35502,10 +35297,7 @@ namespace Chummer
                             }
 
                             AttributeSection.LoadFromHeroLab(xmlStatBlockBaseNode, op_load, token);
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_misc2", op_load)
-                                       : await Timekeeper.StartSyncronAsync("load_char_misc2", op_load, token: token).ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_misc2", op_load))
                             {
                                 /* TODO: Find some way to get Mystic Adept PPs from Hero Lab files
                                 // Attempt to load the split MAG CharacterAttribute information for Mystic Adepts.
@@ -35539,10 +35331,7 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_misc2");
                             }
 
-                            using (CustomActivity op_load_char_skills = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_skills", op_load)
-                                       : await Timekeeper.StartSyncronAsync("load_char_skills", op_load, token: token).ConfigureAwait(false)) //slightly messy
+                            using (CustomActivity op_load_char_skills = Timekeeper.StartSyncron("load_char_skills", op_load)) //slightly messy
                             {
                                 SkillsSection.LoadFromHeroLab(xmlStatBlockBaseNode.SelectSingleNodeAndCacheExpression("skills"),
                                                               op_load_char_skills);
@@ -35638,10 +35427,7 @@ namespace Chummer
 
                             Timekeeper.Finish("load_char_wloc");
                             */
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_contacts", op_load)
-                                       : await Timekeeper.StartSyncronAsync("load_char_contacts", op_load, token: token).ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_contacts", op_load))
                             {
                                 // Contacts.
                                 foreach (XPathNavigator xmlContactToImport in xmlStatBlockBaseNode.SelectAndCacheExpression(
@@ -35718,10 +35504,7 @@ namespace Chummer
                             }
 
                             XmlDocument xmlGearDocument;
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_armor", op_load)
-                                       : await Timekeeper.StartSyncronAsync("load_char_armor", op_load, token: token).ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_armor", op_load))
                             {
                                 // Armor.
                                 xmlGearDocument = blnSync
@@ -36001,10 +35784,7 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_armor");
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_weapons", op_load)
-                                       : await Timekeeper.StartSyncronAsync("load_char_weapons", op_load, token: token).ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_weapons", op_load))
                             {
                                 // Weapons.
                                 foreach (XPathNavigator xmlWeaponToImport in xmlStatBlockBaseNode.Select(
@@ -36046,10 +35826,7 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_weapons");
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_ware", op_load)
-                                       : await Timekeeper.StartSyncronAsync("load_char_ware", op_load, token: token).ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_ware", op_load))
                             {
                                 // Cyberware/Bioware.
                                 foreach (XPathNavigator xmlCyberwareToImport in xmlStatBlockBaseNode.Select(
@@ -36136,10 +35913,7 @@ namespace Chummer
                             }
 
                             XPathNodeIterator xmlNodeList;
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_spells", op_load)
-                                       : await Timekeeper.StartSyncronAsync("load_char_spells", op_load, token: token).ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_spells", op_load))
                             {
                                 // Spells.
                                 xmlNodeList = blnSync
@@ -36438,10 +36212,7 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_spells");
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_powers", op_load)
-                                       : await Timekeeper.StartSyncronAsync("load_char_powers", op_load, token: token).ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_powers", op_load))
                             {
                                 // Powers.
                                 xmlNodeList = blnSync
@@ -36550,10 +36321,7 @@ namespace Chummer
 
                             Timekeeper.Finish("load_char_spirits");
                             */
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_complex", op_load)
-                                       : await Timekeeper.StartSyncronAsync("load_char_complex", op_load, token: token).ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_complex", op_load))
                             {
                                 // Complex Forms/Technomancer Programs.
                                 string strComplexFormsLine =
@@ -36696,10 +36464,7 @@ namespace Chummer
 
                             Timekeeper.Finish("load_char_marts");
                             */
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_lifestyle", op_load)
-                                       : await Timekeeper.StartSyncronAsync("load_char_lifestyle", op_load, token: token).ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_lifestyle", op_load))
                             {
                                 // Lifestyles.
                                 XmlNode xmlFakeSINDataNode =
@@ -36800,10 +36565,7 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_lifestyle");
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_gear", op_load)
-                                       : await Timekeeper.StartSyncronAsync("load_char_gear", op_load, token: token).ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_gear", op_load))
                             {
                                 // <gears>
                                 foreach (XPathNavigator xmlGearToImport in xmlStatBlockBaseNode.Select(
@@ -36885,10 +36647,7 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_gear");
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_car", op_load)
-                                       : await Timekeeper.StartSyncronAsync("load_char_car", op_load, token: token).ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_car", op_load))
                             {
                                 foreach (Vehicle objVehicle in lstVehicles)
                                 {
@@ -37001,10 +36760,7 @@ namespace Chummer
                             */
                             _lstWeapons.AddRange(lstWeapons);
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_unarmed", op_load)
-                                       : await Timekeeper.StartSyncronAsync("load_char_unarmed", op_load, token: token).ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_unarmed", op_load))
                             {
                                 // Look for the unarmed attack
                                 bool blnFoundUnarmed = false;
@@ -37049,10 +36805,7 @@ namespace Chummer
                         }
 
                         // Refresh certain improvements
-                        using (_ = blnSync
-                                   // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                   ? Timekeeper.StartSyncron("load_char_improvementrefreshers2", op_load)
-                                   : await Timekeeper.StartSyncronAsync("load_char_improvementrefreshers2", op_load, token: token).ConfigureAwait(false))
+                        using (_ = Timekeeper.StartSyncron("load_char_improvementrefreshers2", op_load))
                         {
                             // Refresh Black Market discounts
                             RefreshBlackMarketDiscounts();

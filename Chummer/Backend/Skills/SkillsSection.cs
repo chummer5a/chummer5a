@@ -801,19 +801,11 @@ namespace Chummer.Backend.Skills
                 Interlocked.Increment(ref _intLoading);
                 try
                 {
-                    using (CustomActivity opLoadCharSkills = blnSync
-                               // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                               ? Timekeeper.StartSyncron("load_char_skills_skillnode", parentActivity)
-                               : await Timekeeper.StartSyncronAsync("load_char_skills_skillnode", parentActivity,
-                                                                    token).ConfigureAwait(false))
+                    using (CustomActivity opLoadCharSkills = Timekeeper.StartSyncron("load_char_skills_skillnode", parentActivity))
                     {
                         if (!blnLegacy)
                         {
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_skills_groups", opLoadCharSkills)
-                                       : await Timekeeper.StartSyncronAsync(
-                                           "load_char_skills_groups", opLoadCharSkills, token).ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_skills_groups", opLoadCharSkills))
                             {
                                 using (XmlNodeList xmlGroupsList = xmlSkillNode.SelectNodes("groups/group"))
                                 {
@@ -871,11 +863,7 @@ namespace Chummer.Backend.Skills
                                 //Timekeeper.Finish("load_char_skills_groups");
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_skills_normal", opLoadCharSkills)
-                                       : await Timekeeper.StartSyncronAsync(
-                                           "load_char_skills_normal", opLoadCharSkills, token).ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_skills_normal", opLoadCharSkills))
                             {
                                 //Load skills. Because sorting a BindingList is complicated we use a temporary normal list
                                 List<Skill> lstNewSkills;
@@ -936,11 +924,7 @@ namespace Chummer.Backend.Skills
                                 //Timekeeper.Finish("load_char_skills_normal");
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_skills_kno", opLoadCharSkills)
-                                       : await Timekeeper.StartSyncronAsync(
-                                           "load_char_skills_kno", opLoadCharSkills, token).ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_skills_kno", opLoadCharSkills))
                             {
                                 using (XmlNodeList xmlSkillsList = xmlSkillNode.SelectNodes("knoskills/skill"))
                                 {
@@ -1007,11 +991,7 @@ namespace Chummer.Backend.Skills
                                 //Timekeeper.Finish("load_char_skills_kno");
                             }
 
-                            using (_ = blnSync
-                                       // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                       ? Timekeeper.StartSyncron("load_char_knowsoft_buffer", opLoadCharSkills)
-                                       : await Timekeeper.StartSyncronAsync(
-                                           "load_char_knowsoft_buffer", opLoadCharSkills, token).ConfigureAwait(false))
+                            using (_ = Timekeeper.StartSyncron("load_char_knowsoft_buffer", opLoadCharSkills))
                             {
                                 // Knowsoft Buffer.
                                 using (XmlNodeList xmlSkillsList

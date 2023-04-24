@@ -266,10 +266,9 @@ namespace Chummer
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
                 try
                 {
-                    CustomActivity op_load_frm_career = await Timekeeper.StartSyncronAsync(
+                    using (CustomActivity op_load_frm_career = Timekeeper.StartSyncron(
                                "load_frm_career", null, CustomActivity.OperationType.RequestOperation,
-                               CharacterObject?.FileName, GenericToken).ConfigureAwait(false);
-                    try
+                               CharacterObject?.FileName))
                     {
                         await this.DoThreadSafeAsync(x => x.SuspendLayout(), GenericToken).ConfigureAwait(false);
                         try
@@ -284,8 +283,7 @@ namespace Chummer
                                     return;
                                 }
 
-                                using (_ = await Timekeeper.StartSyncronAsync("load_frm_career_databinding",
-                                                                              op_load_frm_career, GenericToken).ConfigureAwait(false))
+                                using (_ = Timekeeper.StartSyncron("load_frm_career_databinding", op_load_frm_career))
                                 {
                                     // Set the visibility of the Bioware Suites menu options.
                                     await mnuCreateMenu.DoThreadSafeAsync(
@@ -449,8 +447,7 @@ namespace Chummer
                                         = Math.Max(x.SplitterDistance, ((x.Height - x.SplitterWidth) * 2 + 2) / 3),
                                     GenericToken).ConfigureAwait(false);
 
-                                using (_ = await Timekeeper.StartSyncronAsync("load_frm_career_magictradition",
-                                                                              op_load_frm_career, GenericToken).ConfigureAwait(false))
+                                using (_ = Timekeeper.StartSyncron("load_frm_career_magictradition", op_load_frm_career))
                                 {
                                     // Populate the Magician Traditions list.
                                     XPathNavigator xmlTraditionsBaseChummerNode =
@@ -703,8 +700,7 @@ namespace Chummer
                                     }
                                 }
 
-                                using (_ = await Timekeeper.StartSyncronAsync("load_frm_career_shapeshifter",
-                                                                              op_load_frm_career, GenericToken).ConfigureAwait(false))
+                                using (_ = Timekeeper.StartSyncron("load_frm_career_shapeshifter", op_load_frm_career))
                                 {
                                     await cboAttributeCategory.DoThreadSafeAsync(
                                         x => x.Visible = CharacterObject.MetatypeCategory == "Shapeshifter",
@@ -756,8 +752,7 @@ namespace Chummer
                                         nameof(Character.CanAffordCareerPP), GenericToken).ConfigureAwait(false);
                                 }
 
-                                using (_ = await Timekeeper.StartSyncronAsync(
-                                           "load_frm_career_vehicle", op_load_frm_career, GenericToken).ConfigureAwait(false))
+                                using (_ = Timekeeper.StartSyncron("load_frm_career_vehicle", op_load_frm_career))
                                 {
                                     // Populate vehicle weapon fire mode list.
                                     using (new FetchSafelyFromPool<List<ListItem>>(
@@ -778,8 +773,7 @@ namespace Chummer
                                     }
                                 }
 
-                                using (_ = await Timekeeper.StartSyncronAsync("load_frm_career_selectStuff",
-                                                                              op_load_frm_career, GenericToken).ConfigureAwait(false))
+                                using (_ = Timekeeper.StartSyncron("load_frm_career_selectStuff", op_load_frm_career))
                                 {
                                     await this.DoThreadSafeAsync(() =>
                                     {
@@ -797,8 +791,7 @@ namespace Chummer
                                                           .ConfigureAwait(false);
                                 }
 
-                                using (_ = await Timekeeper.StartSyncronAsync("load_frm_career_databindingCallbacks2",
-                                                                              op_load_frm_career, GenericToken).ConfigureAwait(false))
+                                using (_ = Timekeeper.StartSyncron("load_frm_career_databindingCallbacks2", op_load_frm_career))
                                 {
                                     await this.DoThreadSafeAsync(() =>
                                     {
@@ -1158,8 +1151,7 @@ namespace Chummer
                                         nameof(Character.StunCMNaturalRecovery), GenericToken).ConfigureAwait(false);
                                 }
 
-                                using (_ = await Timekeeper.StartSyncronAsync("load_frm_career_miscstuff",
-                                                                              op_load_frm_career, GenericToken).ConfigureAwait(false))
+                                using (_ = Timekeeper.StartSyncron("load_frm_career_miscstuff", op_load_frm_career))
                                 {
                                     await SetTooltips(GenericToken).ConfigureAwait(false);
 
@@ -1203,12 +1195,12 @@ namespace Chummer
                                 }
 
                                 using (CustomActivity op_load_frm_career_longloads
-                                       = await Timekeeper.StartSyncronAsync("load_frm_career_longloads",
-                                                                            op_load_frm_career, GenericToken).ConfigureAwait(false))
+                                       = Timekeeper.StartSyncron("load_frm_career_longloads",
+                                                                            op_load_frm_career))
                                 {
-                                    using (_ = await Timekeeper.StartSyncronAsync(
+                                    using (_ = Timekeeper.StartSyncron(
                                                "load_frm_career_Run through all appropriate property changers",
-                                               op_load_frm_career_longloads, GenericToken).ConfigureAwait(false))
+                                               op_load_frm_career_longloads))
                                     {
                                         // Run through all appropriate property changers
                                         foreach (PropertyInfo objProperty in typeof(Character).GetProperties())
@@ -1216,23 +1208,23 @@ namespace Chummer
                                                 new PropertyChangedEventArgs(objProperty.Name)).ConfigureAwait(false);
                                     }
 
-                                    using (_ = await Timekeeper.StartSyncronAsync(
+                                    using (_ = Timekeeper.StartSyncron(
                                                "load_frm_career_tabPowerUc.RealLoad()",
-                                               op_load_frm_career_longloads, GenericToken).ConfigureAwait(false))
+                                               op_load_frm_career_longloads))
                                     {
                                         await tabPowerUc.RealLoad(GenericToken, GenericToken).ConfigureAwait(false);
                                     }
 
-                                    using (_ = await Timekeeper.StartSyncronAsync(
+                                    using (_ = Timekeeper.StartSyncron(
                                                "load_frm_career_tabSkillsUc.RealLoad()",
-                                               op_load_frm_career_longloads, GenericToken).ConfigureAwait(false))
+                                               op_load_frm_career_longloads))
                                     {
                                         await tabSkillsUc.RealLoad(GenericToken, GenericToken).ConfigureAwait(false);
                                     }
                                 }
 
-                                using (_ = await Timekeeper.StartSyncronAsync(
-                                           "load_frm_career_refresh", op_load_frm_career, GenericToken).ConfigureAwait(false))
+                                using (_ = Timekeeper.StartSyncron(
+                                           "load_frm_career_refresh", op_load_frm_career))
                                 {
                                     await RefreshQualities(treQualities, cmsQuality, _fntNormal, _fntStrikeout,
                                                            token: GenericToken).ConfigureAwait(false);
@@ -1299,8 +1291,8 @@ namespace Chummer
                                     await DoExpenseEntriesCollectionChanged(null, GenericToken).ConfigureAwait(false);
                                 }
 
-                                using (_ = await Timekeeper.StartSyncronAsync("load_frm_career_sortAndCallbacks",
-                                                                              op_load_frm_career, GenericToken).ConfigureAwait(false))
+                                using (_ = Timekeeper.StartSyncron("load_frm_career_sortAndCallbacks",
+                                                                              op_load_frm_career))
                                 {
                                     await treWeapons.DoThreadSafeAsync(x => x.SortCustomOrder(), GenericToken)
                                                     .ConfigureAwait(false);
@@ -1366,10 +1358,7 @@ namespace Chummer
                                 IsLoading = false;
                             }
 
-                            CustomActivity op_load_frm_career_finishingStuff =
-                                   await Timekeeper.StartSyncronAsync("load_frm_career_finishingStuff",
-                                                                      op_load_frm_career, GenericToken).ConfigureAwait(false);
-                            try
+                            using (CustomActivity op_load_frm_career_finishingStuff = Timekeeper.StartSyncron("load_frm_career_finishingStuff", op_load_frm_career))
                             {
                                 Task tskUpdate = await RequestCharacterUpdate().ConfigureAwait(false);
                                 // Directly awaiting here so that we can properly unset the dirty flag after the update
@@ -1381,10 +1370,6 @@ namespace Chummer
 
                                 await Program.PluginLoader.CallPlugins(this, op_load_frm_career_finishingStuff, GenericToken)
                                              .ConfigureAwait(false);
-                            }
-                            finally
-                            {
-                                await op_load_frm_career_finishingStuff.DisposeAsync().ConfigureAwait(false);
                             }
 
                             ConcurrentBag<string> lstInternalIdsNeedingReapplyImprovements
@@ -1426,10 +1411,6 @@ namespace Chummer
                         {
                             await this.DoThreadSafeAsync(x => x.ResumeLayout(true), GenericToken).ConfigureAwait(false);
                         }
-                    }
-                    finally
-                    {
-                        await op_load_frm_career.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 finally

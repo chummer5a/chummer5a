@@ -625,10 +625,9 @@ namespace Chummer
                     = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
                 try
                 {
-                    CustomActivity opFrmChummerMain = await Timekeeper.StartSyncronAsync(
-                        "frmChummerMain_Load", null, CustomActivity.OperationType.DependencyOperation,
-                        _strCurrentVersion, _objGenericToken).ConfigureAwait(false);
-                    try
+                    using (CustomActivity opFrmChummerMain = Timekeeper.StartSyncron(
+                               "frmChummerMain_Load", null, CustomActivity.OperationType.DependencyOperation,
+                               _strCurrentVersion))
                     {
                         try
                         {
@@ -1011,10 +1010,6 @@ namespace Chummer
                         if (!Utils.IsUnitTest && GlobalSettings.StartupFullscreen)
                             await this.DoThreadSafeAsync(x => x.WindowState = FormWindowState.Maximized,
                                                          token: _objGenericToken).ConfigureAwait(false);
-                    }
-                    finally
-                    {
-                        await opFrmChummerMain.DisposeAsync().ConfigureAwait(false);
                     }
 
                     if (Utils.IsUnitTestForUI)

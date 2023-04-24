@@ -530,10 +530,10 @@ namespace Chummer.Plugins
             {
                 foreach (IPlugin plugin in await GetMyActivePluginsAsync(token).ConfigureAwait(false))
                 {
-                    using (_ = await Timekeeper.StartSyncronAsync("load_plugin_GetTabPage_Career_" + plugin,
-                                                                  parentActivity,
-                                                                  CustomActivity.OperationType.DependencyOperation,
-                                                                  plugin.ToString(), token).ConfigureAwait(false))
+                    using (_ = Timekeeper.StartSyncron("load_plugin_GetTabPage_Career_" + plugin,
+                                                       parentActivity,
+                                                       CustomActivity.OperationType.DependencyOperation,
+                                                       plugin.ToString()))
                     {
                         ICollection<TabPage> pages = await plugin.GetTabPages(frmCareer, token).ConfigureAwait(false);
                         if (pages == null)
@@ -561,11 +561,9 @@ namespace Chummer.Plugins
             {
                 foreach (IPlugin plugin in await GetMyActivePluginsAsync(token).ConfigureAwait(false))
                 {
-                    using (_ = await Timekeeper
-                                     .StartSyncronAsync("load_plugin_GetTabPage_Create_" + plugin, parentActivity,
-                                                        CustomActivity.OperationType.DependencyOperation,
-                                                        plugin.ToString(),
-                                                        token).ConfigureAwait(false))
+                    using (_ = Timekeeper.StartSyncron("load_plugin_GetTabPage_Create_" + plugin, parentActivity,
+                                                       CustomActivity.OperationType.DependencyOperation,
+                                                       plugin.ToString()))
                     {
                         ICollection<TabPage> pages = await plugin.GetTabPages(frmCreate, token).ConfigureAwait(false);
                         if (pages == null)
@@ -593,10 +591,10 @@ namespace Chummer.Plugins
             {
                 foreach (IPlugin plugin in await GetMyActivePluginsAsync(token).ConfigureAwait(false))
                 {
-                    using (_ = await Timekeeper.StartSyncronAsync("load_plugin_GetMenuItems_" + plugin,
-                                                                  parentActivity,
-                                                                  CustomActivity.OperationType.DependencyOperation,
-                                                                  plugin.ToString(), token).ConfigureAwait(false))
+                    using (_ = Timekeeper.StartSyncron("load_plugin_GetMenuItems_" + plugin,
+                                                       parentActivity,
+                                                       CustomActivity.OperationType.DependencyOperation,
+                                                       plugin.ToString()))
                     {
                         ICollection<ToolStripMenuItem> menuitems
                             = await plugin.GetMenuItems(menu, token).ConfigureAwait(false);

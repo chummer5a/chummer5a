@@ -87,7 +87,7 @@ namespace ChummerHub.Client.UI
             try
             {
                 string hash = string.Empty;
-                using (CustomActivity op_shareChummer = await Timekeeper.StartSyncronAsync("Share Group", null,
+                using (CustomActivity op_shareChummer = Timekeeper.StartSyncron("Share Group", null,
                            CustomActivity.OperationType.DependencyOperation, MySINnerSearchGroup?.Groupname))
                 {
                     MyUserState myState = new MyUserState(this);
@@ -106,7 +106,7 @@ namespace ChummerHub.Client.UI
                     }
 
                     //check if char is already online and updated
-                    using (_ = await Timekeeper.StartSyncronAsync(
+                    using (_ = Timekeeper.StartSyncron(
                                "check if online", op_shareChummer,
                                CustomActivity.OperationType.DependencyOperation, MySINnerSearchGroup?.Groupname))
                     {
@@ -158,7 +158,7 @@ namespace ChummerHub.Client.UI
             string hash = string.Empty;
             try
             {
-                using (CustomActivity op_shareChummer = await Timekeeper.StartSyncronAsync("Share Chummer", null,
+                using (CustomActivity op_shareChummer = Timekeeper.StartSyncron("Share Chummer", null,
                            CustomActivity.OperationType.DependencyOperation, MyCharacterCache.FilePath))
                 {
                     MyUserState myState = new MyUserState(this);
@@ -171,7 +171,7 @@ namespace ChummerHub.Client.UI
                     {
                         async Task<CharacterExtended> GetCharacterExtended(CustomActivity parentActivity)
                         {
-                            using (_ = await Timekeeper.StartSyncronAsync("Loading Chummerfile", parentActivity,
+                            using (_ = Timekeeper.StartSyncron("Loading Chummerfile", parentActivity,
                                                                           CustomActivity.OperationType.DependencyOperation, MyCharacterCache.FilePath))
                             {
                                 Character c = Program.OpenCharacters.FirstOrDefault(a => a.FileName == MyCharacterCache.FilePath);
@@ -231,7 +231,7 @@ namespace ChummerHub.Client.UI
                         {
                             //check if char is already online and updated
                             ResultSinnerGetSINById checkresult;
-                            using (_ = await Timekeeper.StartSyncronAsync(
+                            using (_ = Timekeeper.StartSyncron(
                                        "check if online", op_shareChummer,
                                        CustomActivity.OperationType.DependencyOperation, MyCharacterCache?.FilePath))
                             {
@@ -265,7 +265,7 @@ namespace ChummerHub.Client.UI
 
                                 if (ce != null)
                                 {
-                                    using (CustomActivity op_uploadChummer = await Timekeeper.StartSyncronAsync(
+                                    using (CustomActivity op_uploadChummer = Timekeeper.StartSyncron(
                                                "Uploading Chummer", op_shareChummer,
                                                CustomActivity.OperationType.DependencyOperation, MyCharacterCache?.FilePath))
                                     {

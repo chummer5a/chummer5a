@@ -198,9 +198,9 @@ namespace ChummerHub.Client.Sinners
         {
             if (MyCharacter == null)
                 return true;
-            using (CustomActivity op_uploadChummer = await Timekeeper.StartSyncronAsync(
+            using (CustomActivity op_uploadChummer = Timekeeper.StartSyncron(
                        "Uploading Chummer", parentActivity,
-                       CustomActivity.OperationType.DependencyOperation, MyCharacter.FileName, token))
+                       CustomActivity.OperationType.DependencyOperation, MyCharacter.FileName))
             {
                 try
                 {
@@ -209,9 +209,9 @@ namespace ChummerHub.Client.Sinners
                         try
                         {
                             ResultSinnerGetSINById found = null;
-                            using (_ = await Timekeeper.StartSyncronAsync(
+                            using (_ = Timekeeper.StartSyncron(
                                        "Checking if already online Chummer", op_uploadChummer,
-                                       CustomActivity.OperationType.DependencyOperation, MyCharacter.FileName, token))
+                                       CustomActivity.OperationType.DependencyOperation, MyCharacter.FileName))
                             {
                                 if (myState != null)
                                 {
@@ -257,9 +257,9 @@ namespace ChummerHub.Client.Sinners
                             if (myState != null)
                                 //2 Step
                                 myState.CurrentProgress += myState.ProgressSteps;
-                            using (_ = await Timekeeper.StartSyncronAsync(
+                            using (_ = Timekeeper.StartSyncron(
                                        "Setting Visibility for Chummer", op_uploadChummer,
-                                       CustomActivity.OperationType.DependencyOperation, MyCharacter.FileName, token))
+                                       CustomActivity.OperationType.DependencyOperation, MyCharacter.FileName))
                             {
                                 if (found?.CallSuccess == true)
                                 {
@@ -294,16 +294,16 @@ namespace ChummerHub.Client.Sinners
                             //found?.Dispose();
                         }
 
-                        using (_ = await Timekeeper.StartSyncronAsync(
+                        using (_ = Timekeeper.StartSyncron(
                                    "Populating Reflection Tags", op_uploadChummer,
-                                   CustomActivity.OperationType.DependencyOperation, MyCharacter?.FileName, token))
+                                   CustomActivity.OperationType.DependencyOperation, MyCharacter?.FileName))
                         {
                             MySINnerFile.SiNnerMetaData.Tags = PopulateTags();
                         }
 
-                        using (_ = await Timekeeper.StartSyncronAsync(
+                        using (_ = Timekeeper.StartSyncron(
                                    "Preparing Model", op_uploadChummer,
-                                   CustomActivity.OperationType.DependencyOperation, MyCharacter?.FileName, token))
+                                   CustomActivity.OperationType.DependencyOperation, MyCharacter?.FileName))
                         {
                             await PrepareModelAsync(token);
                         }
@@ -319,9 +319,9 @@ namespace ChummerHub.Client.Sinners
                         ResultSinnerPostSIN res;
                         try
                         {
-                            using (_ = await Timekeeper.StartSyncronAsync(
+                            using (_ = Timekeeper.StartSyncron(
                                        "Posting SINner", op_uploadChummer,
-                                       CustomActivity.OperationType.DependencyOperation, MyCharacter?.FileName, token))
+                                       CustomActivity.OperationType.DependencyOperation, MyCharacter?.FileName))
                             {
                                 res = null;
                                 try
@@ -356,9 +356,9 @@ namespace ChummerHub.Client.Sinners
 
                             if (res?.CallSuccess == true)
                             {
-                                using (_ = await Timekeeper.StartSyncronAsync(
+                                using (_ = Timekeeper.StartSyncron(
                                            "Uploading File", op_uploadChummer,
-                                           CustomActivity.OperationType.DependencyOperation, MyCharacter?.FileName, token))
+                                           CustomActivity.OperationType.DependencyOperation, MyCharacter?.FileName))
                                 {
                                     ResultSINnerPut uploadres = await Utils.UploadChummerFileAsync(this, token);
                                     if (uploadres.CallSuccess)

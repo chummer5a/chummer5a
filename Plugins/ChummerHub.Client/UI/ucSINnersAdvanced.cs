@@ -90,7 +90,7 @@ namespace ChummerHub.Client.UI
         private async void cmdUploadChummerFile_Click(object sender, EventArgs e)
         {
             ResultSINnerPut res = await Utils.UploadChummerFileAsync(MySINnersUsercontrol.MyCE);
-            if (!res.CallSuccess) 
+            if (!res.CallSuccess)
             {
                 throw new NotImplementedException(res.ErrorText);
             }

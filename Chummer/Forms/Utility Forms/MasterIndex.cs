@@ -489,9 +489,7 @@ namespace Chummer
             using (CancellationTokenSource objJoinedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(token, objNewToken))
             {
                 token = objJoinedCancellationTokenSource.Token;
-                CustomActivity opLoadMasterindex = await Timekeeper.StartSyncronAsync("op_load_frm_masterindex", null,
-                           CustomActivity.OperationType.RequestOperation, null, token).ConfigureAwait(false);
-                try
+                using (CustomActivity opLoadMasterindex = Timekeeper.StartSyncron("op_load_frm_masterindex", null, CustomActivity.OperationType.RequestOperation, null))
                 {
                     Interlocked.Decrement(ref _intIsFinishedLoading);
                     try
@@ -530,14 +528,12 @@ namespace Chummer
                                 : "source";
                         }
 
-                        using (_ = await Timekeeper.StartSyncronAsync("load_frm_masterindex_load_andpopulate_entries",
-                                                                      opLoadMasterindex, token).ConfigureAwait(false))
+                        using (_ = Timekeeper.StartSyncron("load_frm_masterindex_load_andpopulate_entries", opLoadMasterindex))
                         {
                             if (_objSelectedSetting != null)
                             {
                                 ConcurrentBag<ListItem> lstItemsForLoading = new ConcurrentBag<ListItem>();
-                                using (_ = await Timekeeper.StartSyncronAsync(
-                                           "load_frm_masterindex_load_entries", opLoadMasterindex, token).ConfigureAwait(false))
+                                using (_ = Timekeeper.StartSyncron("load_frm_masterindex_load_entries", opLoadMasterindex))
                                 {
                                     ConcurrentBag<ListItem> lstFileNamesWithItemsForLoading = new ConcurrentBag<ListItem>();
                                     // Prevents locking the UI thread while still benefiting from static scheduling of Parallel.ForEach
@@ -627,8 +623,7 @@ namespace Chummer
                                     _lstFileNamesWithItems.AddRange(lstFileNamesWithItemsForLoading);
                                 }
 
-                                using (_ = await Timekeeper.StartSyncronAsync(
-                                           "load_frm_masterindex_populate_entries", opLoadMasterindex, token).ConfigureAwait(false))
+                                using (_ = Timekeeper.StartSyncron("load_frm_masterindex_populate_entries", opLoadMasterindex))
                                 {
                                     string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
                                     string strFormat = "{0}" + strSpace + "[{1}]";
@@ -723,13 +718,13 @@ namespace Chummer
                             }
                         }
 
-                        using (_ = await Timekeeper.StartSyncronAsync("load_frm_masterindex_sort_entries", opLoadMasterindex, token).ConfigureAwait(false))
+                        using (_ = Timekeeper.StartSyncron("load_frm_masterindex_sort_entries", opLoadMasterindex))
                         {
                             _lstItems.Sort(CompareListItems.CompareNames);
                             _lstFileNamesWithItems.Sort(CompareListItems.CompareNames);
                         }
 
-                        using (_ = await Timekeeper.StartSyncronAsync("load_frm_masterindex_populate_controls", opLoadMasterindex, token).ConfigureAwait(false))
+                        using (_ = Timekeeper.StartSyncron("load_frm_masterindex_populate_controls", opLoadMasterindex))
                         {
                             _lstFileNamesWithItems.Insert(
                                 0, new ListItem(string.Empty, await LanguageManager.GetStringAsync("String_All", token: token).ConfigureAwait(false)));
@@ -757,10 +752,6 @@ namespace Chummer
                         Interlocked.Decrement(ref _intSkipRefresh);
                         Interlocked.Increment(ref _intIsFinishedLoading);
                     }
-                }
-                finally
-                {
-                    await opLoadMasterindex.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }
