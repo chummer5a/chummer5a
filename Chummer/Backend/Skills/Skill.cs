@@ -1694,11 +1694,11 @@ namespace Chummer.Backend.Skills
                         {
                             decimal decLoopMaxValue = decMaxConditionalValue;
                             if (objMaxConditionalSpecialization != null)
-                                decLoopMaxValue += objMaxConditionalSpecialization.SpecializationBonus;
+                                decLoopMaxValue += await objMaxConditionalSpecialization.GetSpecializationBonusAsync(token).ConfigureAwait(false);
                             decimal decLoop = objImprovement.Value;
                             SkillSpecialization objLoopSpec = await GetSpecializationAsync(objImprovement.Condition, token).ConfigureAwait(false);
                             if (objLoopSpec != null)
-                                decLoop += objLoopSpec.SpecializationBonus;
+                                decLoop += await objLoopSpec.GetSpecializationBonusAsync(token).ConfigureAwait(false);
                             if (decLoop > decLoopMaxValue)
                             {
                                 decMaxConditionalValue = objImprovement.Value;
@@ -4571,26 +4571,32 @@ namespace Chummer.Backend.Skills
             using (EnterReadLock.Enter(LockObject))
             {
                 int intPool = PoolOtherAttribute(strAttribute);
-                if ((IsExoticSkill || Specializations.Count == 0 || ImprovementManager
-                        .GetCachedImprovementListForValueOf(
-                            CharacterObject,
-                            Improvement.ImprovementType
-                                .DisableSpecializationEffects,
-                            DictionaryKey).Count > 0)
-                    && !CharacterObject.Improvements.Any(i => i.ImproveType == Improvement.ImprovementType.Skill
-                                                              && !string.IsNullOrEmpty(i.Condition)))
-                {
-                    return intPool.ToString(GlobalSettings.CultureInfo);
-                }
-
                 int intConditionalBonus = PoolOtherAttribute(strAttribute, true);
-                int intSpecBonus = GetSpecializationBonus();
-                if (intSpecBonus == 0 && intPool == intConditionalBonus)
-                    return intPool.ToString(GlobalSettings.CultureInfo);
+                int intSpecBonus;
+                if (intPool == intConditionalBonus)
+                {
+                    if (IsExoticSkill
+                        || Specializations.Count == 0
+                        || ImprovementManager.GetCachedImprovementListForValueOf(
+                                                 CharacterObject,
+                                                 Improvement.ImprovementType.DisableSpecializationEffects,
+                                                 DictionaryKey)
+                                             .Count > 0)
+                    {
+                        return intPool.ToString(GlobalSettings.CultureInfo);
+                    }
+
+                    intSpecBonus = GetSpecializationBonus();
+                    if (intSpecBonus == 0)
+                        return intPool.ToString(GlobalSettings.CultureInfo);
+                }
+                else
+                    intSpecBonus = GetSpecializationBonus();
+
                 return string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})",
-                    intPool, LanguageManager.GetString("String_Space"),
-                    Math.Max(intPool + intSpecBonus,
-                        intConditionalBonus)); // Have to do it this way because some conditional bonuses apply specifically to specializations
+                                     intPool, LanguageManager.GetString("String_Space"),
+                                     Math.Max(intPool + intSpecBonus,
+                                              intConditionalBonus)); // Have to do it this way because some conditional bonuses apply specifically to specializations
             }
         }
 
@@ -4599,26 +4605,29 @@ namespace Chummer.Backend.Skills
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
                 int intPool = await PoolOtherAttributeAsync(strAttribute, token: token).ConfigureAwait(false);
-                if ((IsExoticSkill || await Specializations.GetCountAsync(token).ConfigureAwait(false) == 0 ||
-                     (await ImprovementManager
-                         .GetCachedImprovementListForValueOfAsync(
-                             CharacterObject,
-                             Improvement.ImprovementType
-                                 .DisableSpecializationEffects,
-                             await GetDictionaryKeyAsync(token).ConfigureAwait(false), token: token)
-                         .ConfigureAwait(false)).Count > 0)
-                    && !await CharacterObject.Improvements.AnyAsync(i =>
-                        i.ImproveType == Improvement.ImprovementType.Skill
-                        && !string.IsNullOrEmpty(i.Condition), token: token).ConfigureAwait(false))
-                {
-                    return intPool.ToString(GlobalSettings.CultureInfo);
-                }
-
                 int intConditionalBonus =
                     await PoolOtherAttributeAsync(strAttribute, true, token: token).ConfigureAwait(false);
-                int intSpecBonus = await GetSpecializationBonusAsync(token: token).ConfigureAwait(false);
-                if (intSpecBonus == 0 && intPool == intConditionalBonus)
-                    return intPool.ToString(GlobalSettings.CultureInfo);
+                int intSpecBonus;
+                if (intPool == intConditionalBonus)
+                {
+                    if (IsExoticSkill
+                        || await Specializations.GetCountAsync(token).ConfigureAwait(false) == 0
+                        || (await ImprovementManager
+                                  .GetCachedImprovementListForValueOfAsync(
+                                      CharacterObject, Improvement.ImprovementType.DisableSpecializationEffects,
+                                      await GetDictionaryKeyAsync(token).ConfigureAwait(false), token: token)
+                                  .ConfigureAwait(false)).Count > 0)
+                    {
+                        return intPool.ToString(GlobalSettings.CultureInfo);
+                    }
+
+                    intSpecBonus = await GetSpecializationBonusAsync(token: token).ConfigureAwait(false);
+                    if (intSpecBonus == 0)
+                        return intPool.ToString(GlobalSettings.CultureInfo);
+                }
+                else
+                    intSpecBonus = await GetSpecializationBonusAsync(token: token).ConfigureAwait(false);
+
                 return string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})",
                     intPool, await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false),
                     Math.Max(intPool + intSpecBonus,
