@@ -100,6 +100,15 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        public override async ValueTask<bool> GetAllowDeleteAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return !await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
+                       && await GetFreeBaseAsync(token).ConfigureAwait(false)
+                       + await GetFreeKarmaAsync(token).ConfigureAwait(false)
+                       + await RatingModifiersAsync(Attribute, token: token).ConfigureAwait(false) <= 0;
+        }
+
         public override bool BuyWithKarma
         {
             get => false;
