@@ -430,12 +430,12 @@ namespace Chummer.Backend.Attributes
         {
             using (LockObject.EnterWriteLock())
             {
-                _lstNormalAttributes.ForEach(x => x.Dispose());
-                _lstSpecialAttributes.ForEach(x => x.Dispose());
                 foreach (BindingSource objSource in _dicBindings.Values)
                     objSource.Dispose();
                 _dicBindings.Dispose();
+                _lstNormalAttributes.ForEach(x => x.Dispose());
                 _lstNormalAttributes.Dispose();
+                _lstSpecialAttributes.ForEach(x => x.Dispose());
                 _lstSpecialAttributes.Dispose();
                 _lstAttributes.Dispose();
                 _objAttributesInitializerLock.Dispose();
@@ -448,12 +448,12 @@ namespace Chummer.Backend.Attributes
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
-                await _lstNormalAttributes.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
-                await _lstSpecialAttributes.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
                 foreach (BindingSource objSource in await _dicBindings.GetValuesAsync().ConfigureAwait(false))
                     objSource.Dispose();
                 await _dicBindings.DisposeAsync().ConfigureAwait(false);
+                await _lstNormalAttributes.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
                 await _lstNormalAttributes.DisposeAsync().ConfigureAwait(false);
+                await _lstSpecialAttributes.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
                 await _lstSpecialAttributes.DisposeAsync().ConfigureAwait(false);
                 await _lstAttributes.DisposeAsync().ConfigureAwait(false);
                 await _objAttributesInitializerLock.DisposeAsync().ConfigureAwait(false);
