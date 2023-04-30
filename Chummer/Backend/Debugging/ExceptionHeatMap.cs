@@ -18,18 +18,18 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.ExceptionServices;
 using System.Text;
-using System.Threading.Tasks;
 
 namespace Chummer.Backend
 {
-    public sealed class ExceptionHeatMap : IDisposable, IAsyncDisposable
+    public sealed class ExceptionHeatMap
     {
-        private readonly Lazy<LockingDictionary<string, int>> _map = new Lazy<LockingDictionary<string, int>>(() => new LockingDictionary<string, int>());
+        private readonly Lazy<ConcurrentDictionary<string, int>> _dicMap = new Lazy<ConcurrentDictionary<string, int>>(() => new ConcurrentDictionary<string, int>());
 
         public void OnException(object sender, FirstChanceExceptionEventArgs e)
         {
@@ -46,7 +46,7 @@ namespace Chummer.Backend
             if (frame == null)
                 return;
             string heat = string.Format(GlobalSettings.InvariantCultureInfo, "{0}:{1}", frame.GetFileName(), frame.GetFileLineNumber());
-            _map.Value.AddOrUpdate(heat, 1, (a, b) => b + 1);
+            _dicMap.Value.AddOrUpdate(heat, 1, (a, b) => b + 1);
         }
 
         public string GenerateInfo()
@@ -55,7 +55,7 @@ namespace Chummer.Backend
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 sbdReturn.AppendLine();
-                foreach (KeyValuePair<string, int> exception in _map.Value.OrderBy(i => -i.Value))
+                foreach (KeyValuePair<string, int> exception in _dicMap.Value.OrderBy(i => -i.Value))
                 {
                     intLength = Math.Max((int)Math.Ceiling(Math.Log10(exception.Value)), intLength);
                     sbdReturn.Append("\t\t")
@@ -67,20 +67,6 @@ namespace Chummer.Backend
 
                 return sbdReturn.ToString();
             }
-        }
-
-        /// <inheritdoc />
-        public void Dispose()
-        {
-            if (_map.IsValueCreated)
-                _map.Value.Dispose();
-        }
-
-        /// <inheritdoc />
-        public async ValueTask DisposeAsync()
-        {
-            if (_map.IsValueCreated)
-                await _map.Value.DisposeAsync().ConfigureAwait(false);
         }
     }
 }
