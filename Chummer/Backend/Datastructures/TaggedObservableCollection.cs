@@ -43,11 +43,8 @@ namespace Chummer
         /// <returns>True if delegate was successfully added, false if a delegate already exists with the associated tag.</returns>
         public bool AddTaggedCollectionChanged(object objTag, NotifyCollectionChangedEventHandler funcDelegateToAdd)
         {
-            if (!_dicTaggedAddedDelegates.TryGetValue(objTag, out HashSet<NotifyCollectionChangedEventHandler> setFuncs))
-            {
-                setFuncs = new HashSet<NotifyCollectionChangedEventHandler>();
-                _dicTaggedAddedDelegates.Add(objTag, setFuncs);
-            }
+            HashSet<NotifyCollectionChangedEventHandler> setFuncs
+                = _dicTaggedAddedDelegates.AddOrGet(objTag, x => new HashSet<NotifyCollectionChangedEventHandler>());
             if (setFuncs.Add(funcDelegateToAdd))
             {
                 base.CollectionChanged += funcDelegateToAdd;
@@ -69,13 +66,10 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
-                (bool blnSuccess, HashSet<NotifyCollectionChangedEventHandler> setFuncs)
-                    = await _dicTaggedAddedDelegates.TryGetValueAsync(objTag, token).ConfigureAwait(false);
-                if (!blnSuccess)
-                {
-                    setFuncs = new HashSet<NotifyCollectionChangedEventHandler>();
-                    await _dicTaggedAddedDelegates.AddAsync(objTag, setFuncs, token).ConfigureAwait(false);
-                }
+                HashSet<NotifyCollectionChangedEventHandler> setFuncs
+                    = await _dicTaggedAddedDelegates
+                            .AddOrGetAsync(objTag, x => new HashSet<NotifyCollectionChangedEventHandler>(), token)
+                            .ConfigureAwait(false);
 
                 if (setFuncs.Add(funcDelegateToAdd))
                 {
@@ -160,11 +154,9 @@ namespace Chummer
         /// <returns>True if delegate was successfully added, false if a delegate already exists with the associated tag.</returns>
         public bool AddTaggedBeforeClearCollectionChanged(object objTag, NotifyCollectionChangedEventHandler funcDelegateToAdd)
         {
-            if (!_dicTaggedAddedBeforeClearDelegates.TryGetValue(objTag, out HashSet<NotifyCollectionChangedEventHandler> setFuncs))
-            {
-                setFuncs = new HashSet<NotifyCollectionChangedEventHandler>();
-                _dicTaggedAddedBeforeClearDelegates.Add(objTag, setFuncs);
-            }
+            HashSet<NotifyCollectionChangedEventHandler> setFuncs
+                = _dicTaggedAddedBeforeClearDelegates.AddOrGet(
+                    objTag, x => new HashSet<NotifyCollectionChangedEventHandler>());
             if (setFuncs.Add(funcDelegateToAdd))
             {
                 base.CollectionChanged += funcDelegateToAdd;
@@ -186,13 +178,10 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
-                (bool blnSuccess, HashSet<NotifyCollectionChangedEventHandler> setFuncs)
-                    = await _dicTaggedAddedBeforeClearDelegates.TryGetValueAsync(objTag, token).ConfigureAwait(false);
-                if (!blnSuccess)
-                {
-                    setFuncs = new HashSet<NotifyCollectionChangedEventHandler>();
-                    await _dicTaggedAddedBeforeClearDelegates.AddAsync(objTag, setFuncs, token).ConfigureAwait(false);
-                }
+                HashSet<NotifyCollectionChangedEventHandler> setFuncs
+                    = await _dicTaggedAddedBeforeClearDelegates
+                            .AddOrGetAsync(objTag, x => new HashSet<NotifyCollectionChangedEventHandler>(), token)
+                            .ConfigureAwait(false);
 
                 if (setFuncs.Add(funcDelegateToAdd))
                 {

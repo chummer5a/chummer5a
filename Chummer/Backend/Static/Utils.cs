@@ -41,7 +41,6 @@ using Microsoft.Extensions.ObjectPool;
 using Microsoft.VisualStudio.Threading;
 using Microsoft.Win32;
 using NLog;
-using IAsyncDisposable = System.IAsyncDisposable;
 using Microsoft.IO;
 using Chummer.Forms;
 
@@ -175,46 +174,19 @@ namespace Chummer
         /// Dictionary assigning icons to singly-initialized instances of their bitmaps.
         /// Mainly intended for SystemIcons.
         /// </summary>
-        public static Bitmap GetCachedIconBitmap(Icon objIcon, CancellationToken token = default)
+        public static Bitmap GetCachedIconBitmap(Icon objIcon)
         {
-            if (s_dicCachedIconBitmaps.TryGetValue(objIcon, out Bitmap bmpReturn, token))
-                return bmpReturn;
-            using (s_dicCachedIconBitmaps.LockObject.EnterWriteLock(token))
-            {
-                if (!s_dicCachedIconBitmaps.TryGetValue(objIcon, out bmpReturn, token))
-                {
-                    bmpReturn = objIcon.ToBitmap();
-                    s_dicCachedIconBitmaps.Add(objIcon, bmpReturn);
-                }
-            }
-            return bmpReturn;
+            return s_dicCachedIconBitmaps.AddOrGet(objIcon, x => x.ToBitmap());
         }
 
         /// <summary>
         /// Dictionary assigning icons to singly-initialized instances of their bitmaps.
         /// Mainly intended for SystemIcons.
         /// </summary>
-        public static async Task<Bitmap> GetCachedIconBitmapAsync(Icon objIcon, CancellationToken token = default)
+        public static Task<Bitmap> GetCachedIconBitmapAsync(Icon objIcon, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            (bool blnSuccess, Bitmap bmpReturn) = await s_dicCachedIconBitmaps.TryGetValueAsync(objIcon, token).ConfigureAwait(false);
-            if (blnSuccess)
-                return bmpReturn;
-            IAsyncDisposable objLocker = await s_dicCachedIconBitmaps.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
-            {
-                (blnSuccess, bmpReturn) = await s_dicCachedIconBitmaps.TryGetValueAsync(objIcon, token).ConfigureAwait(false);
-                if (!blnSuccess)
-                {
-                    bmpReturn = objIcon.ToBitmap();
-                    await s_dicCachedIconBitmaps.AddAsync(objIcon, bmpReturn, token).ConfigureAwait(false);
-                }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
-            return bmpReturn;
+            return s_dicCachedIconBitmaps.AddOrGetAsync(objIcon, x => x.ToBitmap(), token).AsTask();
         }
 
         private static readonly LockingDictionary<Icon, Bitmap> s_dicStockIconBitmapsForSystemIcons = new LockingDictionary<Icon, Bitmap>(10);
@@ -225,103 +197,93 @@ namespace Chummer
         /// </summary>
         public static Bitmap GetStockIconBitmapsForSystemIcon(Icon objIcon, CancellationToken token = default)
         {
-            if (s_dicStockIconBitmapsForSystemIcons.TryGetValue(objIcon, out Bitmap bmpReturn, token))
-                return bmpReturn;
-            using (s_dicStockIconBitmapsForSystemIcons.LockObject.EnterWriteLock(token))
+            return s_dicStockIconBitmapsForSystemIcons.AddOrGet(objIcon, x =>
             {
-                if (s_dicStockIconBitmapsForSystemIcons.TryGetValue(objIcon, out bmpReturn, token))
-                    return bmpReturn;
-                if (objIcon == SystemIcons.Application)
+                if (x == SystemIcons.Application)
                 {
-                    bmpReturn = NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_APPLICATION).ToBitmap();
+                    return NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_APPLICATION).ToBitmap();
                 }
-                else if (objIcon == SystemIcons.Asterisk || objIcon == SystemIcons.Information)
+
+                if (x == SystemIcons.Asterisk || x == SystemIcons.Information)
                 {
-                    bmpReturn = NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_INFO).ToBitmap();
+                    return NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_INFO).ToBitmap();
                 }
-                else if (objIcon == SystemIcons.Error || objIcon == SystemIcons.Hand)
+
+                if (x == SystemIcons.Error || x == SystemIcons.Hand)
                 {
-                    bmpReturn = NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_ERROR).ToBitmap();
+                    return NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_ERROR).ToBitmap();
                 }
-                else if (objIcon == SystemIcons.Exclamation || objIcon == SystemIcons.Warning)
+
+                if (x == SystemIcons.Exclamation || x == SystemIcons.Warning)
                 {
-                    bmpReturn = NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_WARNING).ToBitmap();
+                    return NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_WARNING).ToBitmap();
                 }
-                else if (objIcon == SystemIcons.Question)
+
+                if (x == SystemIcons.Question)
                 {
-                    bmpReturn = NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_HELP).ToBitmap();
+                    return NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_HELP).ToBitmap();
                 }
-                else if (objIcon == SystemIcons.Shield)
+
+                if (x == SystemIcons.Shield)
                 {
-                    bmpReturn = NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_SHIELD).ToBitmap();
+                    return NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_SHIELD).ToBitmap();
                 }
-                else if (objIcon == SystemIcons.WinLogo)
+
+                if (x == SystemIcons.WinLogo)
                 {
-                    bmpReturn = SystemIcons.WinLogo.ToBitmap();
+                    return SystemIcons.WinLogo.ToBitmap();
                 }
-                else
-                {
-                    throw new ArgumentOutOfRangeException(nameof(objIcon));
-                }
-                s_dicStockIconBitmapsForSystemIcons.Add(objIcon, bmpReturn);
-            }
-            return bmpReturn;
+
+                throw new ArgumentOutOfRangeException(nameof(objIcon));
+            });
         }
 
         /// <summary>
         /// Dictionary assigning Windows stock icons' bitmaps to SystemIcons equivalents.
         /// Needed where the graphics used in dialog windows in newer versions of windows are different from those in SystemIcons.
         /// </summary>
-        public static async Task<Bitmap> GetStockIconBitmapsForSystemIconAsync(Icon objIcon, CancellationToken token = default)
+        public static Task<Bitmap> GetStockIconBitmapsForSystemIconAsync(Icon objIcon, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            (bool blnSuccess, Bitmap bmpReturn) = await s_dicCachedIconBitmaps.TryGetValueAsync(objIcon, token).ConfigureAwait(false);
-            if (blnSuccess)
-                return bmpReturn;
-            IAsyncDisposable objLocker = await s_dicCachedIconBitmaps.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            return s_dicStockIconBitmapsForSystemIcons.AddOrGetAsync(objIcon, x =>
             {
-                if (s_dicStockIconBitmapsForSystemIcons.TryGetValue(objIcon, out bmpReturn, token))
-                    return bmpReturn;
-                if (objIcon == SystemIcons.Application)
+                if (x == SystemIcons.Application)
                 {
-                    bmpReturn = NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_APPLICATION).ToBitmap();
+                    return NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_APPLICATION).ToBitmap();
                 }
-                else if (objIcon == SystemIcons.Asterisk || objIcon == SystemIcons.Information)
+
+                if (x == SystemIcons.Asterisk || x == SystemIcons.Information)
                 {
-                    bmpReturn = NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_INFO).ToBitmap();
+                    return NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_INFO).ToBitmap();
                 }
-                else if (objIcon == SystemIcons.Error || objIcon == SystemIcons.Hand)
+
+                if (x == SystemIcons.Error || x == SystemIcons.Hand)
                 {
-                    bmpReturn = NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_ERROR).ToBitmap();
+                    return NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_ERROR).ToBitmap();
                 }
-                else if (objIcon == SystemIcons.Exclamation || objIcon == SystemIcons.Warning)
+
+                if (x == SystemIcons.Exclamation || x == SystemIcons.Warning)
                 {
-                    bmpReturn = NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_WARNING).ToBitmap();
+                    return NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_WARNING).ToBitmap();
                 }
-                else if (objIcon == SystemIcons.Question)
+
+                if (x == SystemIcons.Question)
                 {
-                    bmpReturn = NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_HELP).ToBitmap();
+                    return NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_HELP).ToBitmap();
                 }
-                else if (objIcon == SystemIcons.Shield)
+
+                if (x == SystemIcons.Shield)
                 {
-                    bmpReturn = NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_SHIELD).ToBitmap();
+                    return NativeMethods.GetStockIcon(NativeMethods.SHSTOCKICONID.SIID_SHIELD).ToBitmap();
                 }
-                else if (objIcon == SystemIcons.WinLogo)
+
+                if (x == SystemIcons.WinLogo)
                 {
-                    bmpReturn = SystemIcons.WinLogo.ToBitmap();
+                    return SystemIcons.WinLogo.ToBitmap();
                 }
-                else
-                {
-                    throw new ArgumentOutOfRangeException(nameof(objIcon));
-                }
-                await s_dicStockIconBitmapsForSystemIcons.AddAsync(objIcon, bmpReturn, token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
-            return bmpReturn;
+
+                throw new ArgumentOutOfRangeException(nameof(objIcon));
+            }, token).AsTask();
         }
 
         /// <summary>

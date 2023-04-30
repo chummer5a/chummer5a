@@ -375,7 +375,11 @@ namespace Chummer
         /// <inheritdoc />
         public async ValueTask<Tuple<bool, T>> TryTakeAsync(CancellationToken token = default)
         {
-            // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (_setData.Count == 0)
+                    return new Tuple<bool, T>(false, default);
+            }
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -400,7 +404,14 @@ namespace Chummer
         /// <inheritdoc />
         public bool TryTake(out T item)
         {
-            // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
+            using (EnterReadLock.Enter(LockObject))
+            {
+                if (_setData.Count == 0)
+                {
+                    item = default;
+                    return false;
+                }
+            }
             using (LockObject.EnterWriteLock())
             {
                 if (_setData.Count > 0)

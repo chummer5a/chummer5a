@@ -68,36 +68,28 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async ValueTask<Tuple<bool, object>> EvaluateInvariantXPathAsync(string strXPath, CancellationToken token = default)
         {
-            (bool blnSuccess, Tuple<bool, object> objCachedEvaluation) = await s_DicCompiledEvaluations.TryGetValueAsync(strXPath, token).ConfigureAwait(false);
-            if (blnSuccess)
-            {
-                return objCachedEvaluation;
-            }
-
-            Tuple<bool, object> tupReturn;
             if (string.IsNullOrWhiteSpace(strXPath))
             {
-                tupReturn = new Tuple<bool, object>(false, null);
-                await s_DicCompiledEvaluations.TryAddAsync(strXPath, tupReturn, token).ConfigureAwait(false);
+                Tuple<bool, object> tupReturn = new Tuple<bool, object>(false, null);
+                await s_DicCompiledEvaluations.TryAddAsync(strXPath, tupReturn, token);
                 return tupReturn;
             }
-
             if (!strXPath.IsLegalCharsOnly(true, s_LstInvariantXPathLegalChars))
             {
-                tupReturn = new Tuple<bool, object>(false, strXPath);
-                await s_DicCompiledEvaluations.TryAddAsync(strXPath, tupReturn, token).ConfigureAwait(false);
+                Tuple<bool, object> tupReturn = new Tuple<bool, object>(false, strXPath);
+                await s_DicCompiledEvaluations.TryAddAsync(strXPath, tupReturn, token);
                 return tupReturn;
             }
-
-            object objReturn;
-            bool blnIsSuccess;
             if (strXPath == "-")
             {
-                objReturn = 0.0;
-                blnIsSuccess = true;
+                Tuple<bool, object> tupReturn = new Tuple<bool, object>(true, 0.0);
+                await s_DicCompiledEvaluations.TryAddAsync(strXPath, tupReturn, token);
+                return tupReturn;
             }
-            else
+            return await s_DicCompiledEvaluations.AddOrGetAsync(strXPath, async x =>
             {
+                bool blnIsSuccess;
+                object objReturn;
                 try
                 {
                     if (!s_StkXPathNavigatorPool.TryPop(out XPathNavigator objEvaluator))
@@ -115,7 +107,7 @@ namespace Chummer
 
                     try
                     {
-                        objReturn = objEvaluator?.Evaluate(strXPath.TrimStart('+'));
+                        objReturn = objEvaluator?.Evaluate(x.TrimStart('+'));
                     }
                     finally
                     {
@@ -127,20 +119,18 @@ namespace Chummer
                 catch (ArgumentException)
                 {
                     Utils.BreakIfDebug();
-                    objReturn = strXPath;
+                    objReturn = x;
                     blnIsSuccess = false;
                 }
                 catch (XPathException)
                 {
                     Utils.BreakIfDebug();
-                    objReturn = strXPath;
+                    objReturn = x;
                     blnIsSuccess = false;
                 }
-            }
 
-            tupReturn = new Tuple<bool, object>(blnIsSuccess, objReturn);
-            await s_DicCompiledEvaluations.TryAddAsync(strXPath, tupReturn, token).ConfigureAwait(false); // don't want to store managed objects, only primitives
-            return tupReturn;
+                return new Tuple<bool, object>(blnIsSuccess, objReturn); // don't want to store managed objects, only primitives
+            }, token);
         }
 
         /// <summary>
@@ -153,35 +143,29 @@ namespace Chummer
         public static Tuple<bool, object> EvaluateInvariantXPath(string strXPath, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (s_DicCompiledEvaluations.TryGetValue(strXPath, out Tuple<bool, object> objCachedEvaluation, token))
-            {
-                return objCachedEvaluation;
-            }
-
-            Tuple<bool, object> tupReturn;
             if (string.IsNullOrWhiteSpace(strXPath))
             {
-                tupReturn = new Tuple<bool, object>(false, null);
+                Tuple<bool, object> tupReturn = new Tuple<bool, object>(false, null);
                 s_DicCompiledEvaluations.TryAdd(strXPath, tupReturn);
                 return tupReturn;
             }
-
             if (!strXPath.IsLegalCharsOnly(true, s_LstInvariantXPathLegalChars))
             {
-                tupReturn = new Tuple<bool, object>(false, strXPath);
+                Tuple<bool, object> tupReturn = new Tuple<bool, object>(false, strXPath);
                 s_DicCompiledEvaluations.TryAdd(strXPath, tupReturn);
                 return tupReturn;
             }
-
-            bool blnIsSuccess;
-            object objReturn;
             if (strXPath == "-")
             {
-                objReturn = 0.0;
-                blnIsSuccess = true;
+                Tuple<bool, object> tupReturn = new Tuple<bool, object>(true, 0.0);
+                s_DicCompiledEvaluations.TryAdd(strXPath, tupReturn);
+                return tupReturn;
             }
-            else
+            token.ThrowIfCancellationRequested();
+            return s_DicCompiledEvaluations.AddOrGet(strXPath, x =>
             {
+                bool blnIsSuccess;
+                object objReturn;
                 try
                 {
                     if (!s_StkXPathNavigatorPool.TryPop(out XPathNavigator objEvaluator))
@@ -199,7 +183,7 @@ namespace Chummer
 
                     try
                     {
-                        objReturn = objEvaluator?.Evaluate(strXPath.TrimStart('+'));
+                        objReturn = objEvaluator?.Evaluate(x.TrimStart('+'));
                     }
                     finally
                     {
@@ -211,20 +195,18 @@ namespace Chummer
                 catch (ArgumentException)
                 {
                     Utils.BreakIfDebug();
-                    objReturn = strXPath;
+                    objReturn = x;
                     blnIsSuccess = false;
                 }
                 catch (XPathException)
                 {
                     Utils.BreakIfDebug();
-                    objReturn = strXPath;
+                    objReturn = x;
                     blnIsSuccess = false;
                 }
-            }
 
-            tupReturn = new Tuple<bool, object>(blnIsSuccess, objReturn);
-            s_DicCompiledEvaluations.TryAdd(strXPath, tupReturn); // don't want to store managed objects, only primitives
-            return tupReturn;
+                return new Tuple<bool, object>(blnIsSuccess, objReturn); // don't want to store managed objects, only primitives
+            });
         }
 
         /// <summary>
@@ -237,56 +219,51 @@ namespace Chummer
         public static async ValueTask<Tuple<bool, object>> EvaluateInvariantXPathAsync(XPathExpression objXPath, CancellationToken token = default)
         {
             string strExpression = objXPath.Expression;
-            (bool blnSuccess, Tuple<bool, object> objCachedEvaluation) = await s_DicCompiledEvaluations.TryGetValueAsync(strExpression, token).ConfigureAwait(false);
-            if (blnSuccess)
+            return await s_DicCompiledEvaluations.AddOrGetAsync(strExpression, async x =>
             {
-                return objCachedEvaluation;
-            }
-
-            object objReturn;
-            bool blnIsSuccess;
-            try
-            {
-                if (!s_StkXPathNavigatorPool.TryPop(out XPathNavigator objEvaluator))
+                bool blnIsSuccess;
+                object objReturn;
+                try
                 {
-                    await s_ObjXPathNavigatorDocumentLock.WaitAsync(token).ConfigureAwait(false);
+                    if (!s_StkXPathNavigatorPool.TryPop(out XPathNavigator objEvaluator))
+                    {
+                        await s_ObjXPathNavigatorDocumentLock.WaitAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            objEvaluator = s_ObjXPathNavigatorDocument.CreateNavigator();
+                        }
+                        finally
+                        {
+                            s_ObjXPathNavigatorDocumentLock.Release();
+                        }
+                    }
+
                     try
                     {
-                        objEvaluator = s_ObjXPathNavigatorDocument.CreateNavigator();
+                        objReturn = objEvaluator?.Evaluate(x.TrimStart('+'));
                     }
                     finally
                     {
-                        s_ObjXPathNavigatorDocumentLock.Release();
+                        s_StkXPathNavigatorPool.Push(objEvaluator);
                     }
-                }
 
-                try
+                    blnIsSuccess = objReturn != null;
+                }
+                catch (ArgumentException)
                 {
-                    objReturn = objEvaluator?.Evaluate(objXPath);
+                    Utils.BreakIfDebug();
+                    objReturn = x;
+                    blnIsSuccess = false;
                 }
-                finally
+                catch (XPathException)
                 {
-                    s_StkXPathNavigatorPool.Push(objEvaluator);
+                    Utils.BreakIfDebug();
+                    objReturn = x;
+                    blnIsSuccess = false;
                 }
 
-                blnIsSuccess = objReturn != null;
-            }
-            catch (ArgumentException)
-            {
-                Utils.BreakIfDebug();
-                objReturn = strExpression;
-                blnIsSuccess = false;
-            }
-            catch (XPathException)
-            {
-                Utils.BreakIfDebug();
-                objReturn = strExpression;
-                blnIsSuccess = false;
-            }
-
-            Tuple<bool, object> tupReturn = new Tuple<bool, object>(blnIsSuccess, objReturn);
-            await s_DicCompiledEvaluations.TryAddAsync(strExpression, tupReturn, token).ConfigureAwait(false); // don't want to store managed objects, only primitives
-            return tupReturn;
+                return new Tuple<bool, object>(blnIsSuccess, objReturn); // don't want to store managed objects, only primitives
+            }, token);
         }
 
         /// <summary>
@@ -299,53 +276,49 @@ namespace Chummer
         public static Tuple<bool, object> EvaluateInvariantXPath(XPathExpression objXPath, CancellationToken token = default)
         {
             string strExpression = objXPath.Expression;
-            if (s_DicCompiledEvaluations.TryGetValue(strExpression, out Tuple<bool, object> objCachedEvaluation, token))
+            return s_DicCompiledEvaluations.AddOrGet(strExpression, x =>
             {
-                return objCachedEvaluation;
-            }
-
-            bool blnIsSuccess;
-            object objReturn;
-            try
-            {
-                if (!s_StkXPathNavigatorPool.TryPop(out XPathNavigator objEvaluator))
+                bool blnIsSuccess;
+                object objReturn;
+                try
                 {
-                    s_ObjXPathNavigatorDocumentLock.SafeWait(token);
+                    if (!s_StkXPathNavigatorPool.TryPop(out XPathNavigator objEvaluator))
+                    {
+                        s_ObjXPathNavigatorDocumentLock.SafeWait(token);
+                        try
+                        {
+                            objEvaluator = s_ObjXPathNavigatorDocument.CreateNavigator();
+                        }
+                        finally
+                        {
+                            s_ObjXPathNavigatorDocumentLock.Release();
+                        }
+                    }
                     try
                     {
-                        objEvaluator = s_ObjXPathNavigatorDocument.CreateNavigator();
+                        objReturn = objEvaluator?.Evaluate(objXPath);
                     }
                     finally
                     {
-                        s_ObjXPathNavigatorDocumentLock.Release();
+                        s_StkXPathNavigatorPool.Push(objEvaluator);
                     }
+                    blnIsSuccess = objReturn != null;
                 }
-                try
+                catch (ArgumentException)
                 {
-                    objReturn = objEvaluator?.Evaluate(objXPath);
+                    Utils.BreakIfDebug();
+                    objReturn = x;
+                    blnIsSuccess = false;
                 }
-                finally
+                catch (XPathException)
                 {
-                    s_StkXPathNavigatorPool.Push(objEvaluator);
+                    Utils.BreakIfDebug();
+                    objReturn = x;
+                    blnIsSuccess = false;
                 }
-                blnIsSuccess = objReturn != null;
-            }
-            catch (ArgumentException)
-            {
-                Utils.BreakIfDebug();
-                objReturn = strExpression;
-                blnIsSuccess = false;
-            }
-            catch (XPathException)
-            {
-                Utils.BreakIfDebug();
-                objReturn = strExpression;
-                blnIsSuccess = false;
-            }
 
-            Tuple<bool, object> tupReturn = new Tuple<bool, object>(blnIsSuccess, objReturn);
-            s_DicCompiledEvaluations.TryAdd(strExpression, tupReturn); // don't want to store managed objects, only primitives
-            return tupReturn;
+                return new Tuple<bool, object>(blnIsSuccess, objReturn); // don't want to store managed objects, only primitives
+            });
         }
 
         /// <summary>

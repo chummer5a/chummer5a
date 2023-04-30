@@ -104,13 +104,8 @@ namespace ChummerHub.Client.Sinners
             objReturn.MyCharacterCache.LoadFromFile(character.FileName);
             try
             {
-                if (!s_dicCachedPluginFileSINners.TryGetValue(strPluginFileElement, out SINner objSiNner))
-                {
-                    objSiNner = JsonConvert.DeserializeObject<SINner>(strPluginFileElement);
-                    s_dicCachedPluginFileSINners.AddOrUpdate(strPluginFileElement, objSiNner, (x, y) => objSiNner);
-                }
-
-                objReturn.MySINnerFile = objSiNner;
+                objReturn.MySINnerFile = s_dicCachedPluginFileSINners.AddCheapOrGet(
+                    strPluginFileElement, x => JsonConvert.DeserializeObject<SINner>(strPluginFileElement));
             }
             catch (Exception e)
             {

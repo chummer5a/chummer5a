@@ -318,7 +318,11 @@ namespace Chummer
 
         public bool TryAdd(TKey key, TValue value)
         {
-            // Immediately enter a write lock to prevent attempted reads until we have either added the item we want to add or failed to do so
+            using (EnterReadLock.Enter(LockObject))
+            {
+                if (_dicUnorderedData.ContainsKey(key))
+                    return false;
+            }
             using (LockObject.EnterWriteLock())
             {
                 if (_dicUnorderedData.ContainsKey(key))
@@ -331,7 +335,11 @@ namespace Chummer
 
         public async ValueTask<bool> TryAddAsync(TKey key, TValue value, CancellationToken token = default)
         {
-            // Immediately enter a write lock to prevent attempted reads until we have either added the item we want to add or failed to do so
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (_dicUnorderedData.ContainsKey(key))
+                    return false;
+            }
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -362,10 +370,14 @@ namespace Chummer
         /// <inheritdoc />
         public async ValueTask<Tuple<bool, KeyValuePair<TKey, TValue>>> TryTakeAsync(CancellationToken token = default)
         {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (_lstIndexes.Count == 0)
+                    return new Tuple<bool, KeyValuePair<TKey, TValue>>(false, default);
+            }
             bool blnTakeSuccessful = false;
             TKey objKeyToTake = default;
             TValue objValue = default;
-            // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -410,10 +422,17 @@ namespace Chummer
         /// <inheritdoc />
         public bool TryTake(out KeyValuePair<TKey, TValue> item)
         {
+            using (EnterReadLock.Enter(LockObject))
+            {
+                if (_lstIndexes.Count == 0)
+                {
+                    item = default;
+                    return false;
+                }
+            }
             bool blnTakeSuccessful = false;
             TKey objKeyToTake = default;
             TValue objValue = default;
-            // Immediately enter a write lock to prevent attempted reads until we have either taken the item we want to take or failed to do so
             using (LockObject.EnterWriteLock())
             {
                 if (_lstIndexes.Count > 0)

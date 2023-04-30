@@ -170,12 +170,7 @@ namespace Chummer
         /// <returns>New Color object identical to <paramref name="objColor"/>, but with lightness and saturation adjusted for Dark Mode.</returns>
         public static Color GenerateDarkModeColor(Color objColor)
         {
-            if (!s_DicDarkModeColors.TryGetValue(objColor, out Color objDarkModeColor))
-            {
-                objDarkModeColor = GetDarkModeVersion(objColor);
-                s_DicDarkModeColors.TryAdd(objColor, objDarkModeColor);
-            }
-            return objDarkModeColor;
+            return s_DicDarkModeColors.AddOrGet(objColor, x => GetDarkModeVersion(objColor));
         }
 
         /// <summary>
@@ -184,15 +179,9 @@ namespace Chummer
         /// <param name="objColor">Color whose lightness and saturation should be adjusted for Dark Mode.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>New Color object identical to <paramref name="objColor"/>, but with lightness and saturation adjusted for Dark Mode.</returns>
-        public static async Task<Color> GenerateDarkModeColorAsync(Color objColor, CancellationToken token = default)
+        public static Task<Color> GenerateDarkModeColorAsync(Color objColor, CancellationToken token = default)
         {
-            (bool blnSuccess, Color objDarkModeColor) = await s_DicDarkModeColors.TryGetValueAsync(objColor, token).ConfigureAwait(false);
-            if (!blnSuccess)
-            {
-                objDarkModeColor = GetDarkModeVersion(objColor);
-                await s_DicDarkModeColors.TryAddAsync(objColor, objDarkModeColor, token).ConfigureAwait(false);
-            }
-            return objDarkModeColor;
+            return s_DicDarkModeColors.AddOrGetAsync(objColor, x => GetDarkModeVersion(objColor), token).AsTask();
         }
 
         /// <summary>
@@ -202,12 +191,7 @@ namespace Chummer
         /// <returns>New Color object identical to <paramref name="objColor"/>, but with its Dark Mode conversion inverted.</returns>
         public static Color GenerateInverseDarkModeColor(Color objColor)
         {
-            if (!s_DicInverseDarkModeColors.TryGetValue(objColor, out Color objInverseDarkModeColor))
-            {
-                objInverseDarkModeColor = InverseGetDarkModeVersion(objColor);
-                s_DicInverseDarkModeColors.TryAdd(objColor, objInverseDarkModeColor);
-            }
-            return objInverseDarkModeColor;
+            return s_DicInverseDarkModeColors.AddOrGet(objColor, x => InverseGetDarkModeVersion(objColor));
         }
 
         /// <summary>
@@ -216,15 +200,9 @@ namespace Chummer
         /// <param name="objColor">Color whose Dark Mode conversions for lightness and saturation should be inverted.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>New Color object identical to <paramref name="objColor"/>, but with its Dark Mode conversion inverted.</returns>
-        public static async Task<Color> GenerateInverseDarkModeColorAsync(Color objColor, CancellationToken token = default)
+        public static Task<Color> GenerateInverseDarkModeColorAsync(Color objColor, CancellationToken token = default)
         {
-            (bool blnSuccess, Color objInverseDarkModeColor) = await s_DicInverseDarkModeColors.TryGetValueAsync(objColor, token).ConfigureAwait(false);
-            if (!blnSuccess)
-            {
-                objInverseDarkModeColor = InverseGetDarkModeVersion(objColor);
-                await s_DicInverseDarkModeColors.TryAddAsync(objColor, objInverseDarkModeColor, token).ConfigureAwait(false);
-            }
-            return objInverseDarkModeColor;
+            return s_DicInverseDarkModeColors.AddOrGetAsync(objColor, x => InverseGetDarkModeVersion(objColor), token).AsTask();
         }
 
         /// <summary>
@@ -276,22 +254,9 @@ namespace Chummer
         /// <returns>New Color object identical to <paramref name="objColor"/>, but with its lightness values dimmed.</returns>
         public static Color GenerateCurrentModeDimmedColor(Color objColor)
         {
-            Color objRetColor;
-            if (IsLightMode)
-            {
-                if (!s_DicDimmedColors.TryGetValue(objColor, out objRetColor))
-                {
-                    objRetColor = GetDimmedVersion(objColor);
-                    s_DicDimmedColors.TryAdd(objColor, objRetColor);
-                }
-            }
-            else if (!s_DicBrightenedColors.TryGetValue(objColor, out objRetColor))
-            {
-                objRetColor = GetBrightenedVersion(objColor);
-                s_DicBrightenedColors.TryAdd(objColor, objRetColor);
-            }
-
-            return objRetColor;
+            return IsLightMode
+                ? s_DicDimmedColors.AddOrGet(objColor, x => GetDimmedVersion(objColor))
+                : s_DicBrightenedColors.AddOrGet(objColor, x => GetBrightenedVersion(objColor));
         }
 
         /// <summary>
@@ -300,30 +265,11 @@ namespace Chummer
         /// <param name="objColor">Color whose lightness should be dimmed.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>New Color object identical to <paramref name="objColor"/>, but with its lightness values dimmed.</returns>
-        public static async Task<Color> GenerateCurrentModeDimmedColorAsync(Color objColor, CancellationToken token = default)
+        public static Task<Color> GenerateCurrentModeDimmedColorAsync(Color objColor, CancellationToken token = default)
         {
-            bool blnSuccess;
-            Color objRetColor;
-            if (IsLightMode)
-            {
-                (blnSuccess, objRetColor) = await s_DicDimmedColors.TryGetValueAsync(objColor, token).ConfigureAwait(false);
-                if (!blnSuccess)
-                {
-                    objRetColor = GetDimmedVersion(objColor);
-                    await s_DicDimmedColors.TryAddAsync(objColor, objRetColor, token).ConfigureAwait(false);
-                }
-            }
-            else
-            {
-                (blnSuccess, objRetColor) = await s_DicBrightenedColors.TryGetValueAsync(objColor, token).ConfigureAwait(false);
-                if (!blnSuccess)
-                {
-                    objRetColor = GetBrightenedVersion(objColor);
-                    await s_DicBrightenedColors.TryAddAsync(objColor, objRetColor, token).ConfigureAwait(false);
-                }
-            }
-
-            return objRetColor;
+            return IsLightMode
+                ? s_DicDimmedColors.AddOrGetAsync(objColor, x => GetDimmedVersion(objColor), token).AsTask()
+                : s_DicBrightenedColors.AddOrGetAsync(objColor, x => GetBrightenedVersion(objColor), token).AsTask();
         }
 
         /// <summary>
