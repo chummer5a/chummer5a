@@ -245,7 +245,6 @@ namespace Chummer
                                                                InternalId, Bonus, TotalRating, CurrentDisplayNameShort))
                     {
                         ImprovementManager.ForcedValue = strOldForce;
-                        DeletePower();
                         return false;
                     }
 
