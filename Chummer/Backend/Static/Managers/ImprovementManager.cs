@@ -22,6 +22,7 @@ using Chummer.Backend.Equipment;
 using Chummer.Backend.Skills;
 using NLog;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -45,8 +46,8 @@ namespace Chummer
         private static string _strSelectedValue = string.Empty;
         private static string _strForcedValue = string.Empty;
 
-        private static readonly LockingDictionary<Character, List<Improvement>> s_DictionaryTransactions
-            = new LockingDictionary<Character, List<Improvement>>(10);
+        private static readonly ConcurrentDictionary<Character, List<Improvement>> s_DictionaryTransactions
+            = new ConcurrentDictionary<Character, List<Improvement>>();
 
         private static readonly ConcurrentHashSet<Tuple<ImprovementDictionaryKey, IAsyncDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>>>
             s_SetCurrentlyCalculatingValues = new ConcurrentHashSet<Tuple<ImprovementDictionaryKey, IAsyncDictionary<ImprovementDictionaryKey, Tuple<decimal, List<Improvement>>>>>();
@@ -348,7 +349,7 @@ namespace Chummer
                     tupTemp.Item2.Clear(); // Just in case this helps the GC
             }
 
-            await s_DictionaryTransactions.TryRemoveAsync(objCharacter, token).ConfigureAwait(false);
+            s_DictionaryTransactions.TryRemove(objCharacter, out List<Improvement> _);
         }
 
         #endregion Properties
@@ -2347,11 +2348,7 @@ namespace Chummer
                     if (blnAddImprovementsToCharacter)
                     {
                         sbdTrace.AppendLine("Committing improvements.");
-                        if (blnSync)
-                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                            Commit(objCharacter);
-                        else
-                            await CommitAsync(objCharacter, token).ConfigureAwait(false);
+                        Commit(objCharacter);
                         sbdTrace.AppendLine("Finished committing improvements");
                     }
                     else
@@ -4898,14 +4895,9 @@ namespace Chummer
                     ClearCachedValue(objCharacter, objImprovementType, strImprovedName);
 
                     // Add the Improvement to the Transaction List.
-                    List<Improvement> lstTransactions;
-                    while (!s_DictionaryTransactions.TryGetValue(objCharacter, out lstTransactions))
-                    {
-                        lstTransactions = new List<Improvement>(1);
-                        if (s_DictionaryTransactions.TryAdd(objCharacter, lstTransactions))
-                            break;
-                    }
-
+                    List<Improvement> lstTransactions
+                        = s_DictionaryTransactions.AddOrUpdate(objCharacter, x => new List<Improvement>(1),
+                                                               (x, y) => y);
                     lstTransactions.Add(objImprovement);
                 }
             }
@@ -4999,17 +4991,9 @@ namespace Chummer
                     await ClearCachedValueAsync(objCharacter, objImprovementType, strImprovedName, token).ConfigureAwait(false);
 
                     // Add the Improvement to the Transaction List.
-                    List<Improvement> lstTransactions;
-                    List<Improvement> lstTransactionsNew = new List<Improvement>(1);
-                    do
-                    {
-                        bool blnSuccess;
-                        (blnSuccess, lstTransactions) = await s_DictionaryTransactions.TryGetValueAsync(objCharacter, token).ConfigureAwait(false);
-                        if (blnSuccess)
-                            break;
-                        lstTransactions = lstTransactionsNew;
-                    } while (!await s_DictionaryTransactions.TryAddAsync(objCharacter, lstTransactions, token).ConfigureAwait(false));
-
+                    List<Improvement> lstTransactions
+                        = s_DictionaryTransactions.AddOrUpdate(objCharacter, x => new List<Improvement>(1),
+                                                               (x, y) => y);
                     lstTransactions.Add(objImprovement);
                 }
                 finally
@@ -5030,23 +5014,6 @@ namespace Chummer
             Log.Debug("Commit");
             // Clear all of the Improvements from the Transaction List.
             if (s_DictionaryTransactions.TryRemove(objCharacter, out List<Improvement> lstTransactions))
-            {
-                lstTransactions.ProcessRelevantEvents();
-            }
-
-            Log.Debug("Commit exit");
-        }
-
-        /// <summary>
-        /// Clear all of the Improvements from the Transaction List.
-        /// </summary>
-        public static async ValueTask CommitAsync(Character objCharacter, CancellationToken token = default)
-        {
-            Log.Debug("Commit");
-            // Clear all of the Improvements from the Transaction List.
-            (bool blnSuccess, List<Improvement> lstTransactions)
-                = await s_DictionaryTransactions.TryRemoveAsync(objCharacter, token).ConfigureAwait(false);
-            if (blnSuccess)
             {
                 lstTransactions.ProcessRelevantEvents();
             }
@@ -5086,9 +5053,7 @@ namespace Chummer
         private static async ValueTask RollbackAsync(Character objCharacter, CancellationToken token = default)
         {
             Log.Debug("Rollback enter");
-            (bool blnSuccess, List<Improvement> lstTransactions)
-                = await s_DictionaryTransactions.TryRemoveAsync(objCharacter, token).ConfigureAwait(false);
-            if (blnSuccess)
+            if (s_DictionaryTransactions.TryRemove(objCharacter, out List<Improvement> lstTransactions))
             {
                 IAsyncDisposable objLocker = await objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try

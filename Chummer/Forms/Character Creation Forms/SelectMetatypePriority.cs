@@ -2114,7 +2114,7 @@ namespace Chummer
                 if (lstOldFreeSkillImprovements.Count > 0)
                     await ImprovementManager.RemoveImprovementsAsync(_objCharacter, lstOldFreeSkillImprovements, token: token).ConfigureAwait(false);
                 if (blnCommit)
-                    await ImprovementManager.CommitAsync(_objCharacter, token).ConfigureAwait(false);
+                    ImprovementManager.Commit(_objCharacter);
 
                 async ValueTask AddExoticSkillIfNecessary(string strDictionaryKey)
                 {

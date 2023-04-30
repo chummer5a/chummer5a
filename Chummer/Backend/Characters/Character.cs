@@ -7347,8 +7347,7 @@ namespace Chummer
                                                                           .GetCurrentDisplayNameShortAsync(token)
                                                                           .ConfigureAwait(false), token: token)
                                                                 .ConfigureAwait(false);
-                                                            await ImprovementManager.CommitAsync(this, token)
-                                                                .ConfigureAwait(false);
+                                                            ImprovementManager.Commit(this);
                                                         }
                                                     }
 
@@ -7409,8 +7408,7 @@ namespace Chummer
                                                                           .GetCurrentDisplayNameShortAsync(token)
                                                                           .ConfigureAwait(false), token: token)
                                                                 .ConfigureAwait(false);
-                                                            await ImprovementManager.CommitAsync(this, token)
-                                                                .ConfigureAwait(false);
+                                                            ImprovementManager.Commit(this);
                                                         }
                                                     }
                                                 }
@@ -18696,7 +18694,7 @@ namespace Chummer
                                                                         Improvement.ImprovementType.Attribute,
                                                                         string.Empty, 0, value, 0, 1, token: token)
                                                 .ConfigureAwait(false);
-                        await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
+                        ImprovementManager.Commit(this);
                         // Update any Metamagic Improvements the character might have.
                         await Metamagics.ForEachAsync(async objMetamagic =>
                         {
@@ -18740,7 +18738,7 @@ namespace Chummer
                                                                             Improvement.ImprovementType.Attribute,
                                                                             string.Empty, 0, value, 0, 1, token: token)
                                                     .ConfigureAwait(false);
-                            await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
+                            ImprovementManager.Commit(this);
                         }
 
                         // Update any Metamagic Improvements the character might have.
@@ -19989,7 +19987,7 @@ namespace Chummer
                             this, "RES", Improvement.ImprovementSource.Submersion,
                             string.Empty, Improvement.ImprovementType.Attribute,
                             string.Empty, 0, value, 0, 1, token: token).ConfigureAwait(false);
-                        await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
+                        ImprovementManager.Commit(this);
                         // Update any Echo Improvements the character might have.
                         await Metamagics.ForEachAsync(async objMetamagic =>
                         {
@@ -20027,7 +20025,7 @@ namespace Chummer
                                                                             Improvement.ImprovementType.Attribute,
                                                                             string.Empty, 0, value, 0, 1, token: token)
                                                     .ConfigureAwait(false);
-                            await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
+                            ImprovementManager.Commit(this);
                         }
 
                         // Update any Echo Improvements the character might have.
@@ -31008,7 +31006,7 @@ namespace Chummer
                             }
 
                             if (intMagMaxReduction != 0 || intResMaxReduction != 0 || intDepMaxReduction != 0)
-                                await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
+                                ImprovementManager.Commit(this);
                         }
                         finally
                         {
@@ -31235,7 +31233,7 @@ namespace Chummer
                                                 Improvement.ImprovementType.AdeptPowerPoints, string.Empty,
                                                 -decPPBurn,
                                                 token: token).ConfigureAwait(false);
-                                            await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
+                                            ImprovementManager.Commit(this);
                                         }
                                     }
                                 }
@@ -31296,7 +31294,7 @@ namespace Chummer
                                         -intMAGAdeptMaximumReduction, token: token).ConfigureAwait(false);
                                 if (intMAGMinimumReduction != 0 || intMAGMaximumReduction != 0 ||
                                     intMAGAdeptMinimumReduction != 0 || intMAGAdeptMaximumReduction != 0)
-                                    await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
+                                    ImprovementManager.Commit(this);
                             }
 
                             if (intResMaxReduction > 0
@@ -31358,7 +31356,7 @@ namespace Chummer
                                                                 -intRESMinimumReduction, -intRESMaximumReduction,
                                                                 token: token)
                                                             .ConfigureAwait(false);
-                                    await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
+                                    ImprovementManager.Commit(this);
                                 }
                             }
 
@@ -31421,7 +31419,7 @@ namespace Chummer
                                                                 -intDEPMinimumReduction, -intDEPMaximumReduction,
                                                                 token: token)
                                                             .ConfigureAwait(false);
-                                    await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
+                                    ImprovementManager.Commit(this);
                                 }
                             }
                         }
@@ -31525,7 +31523,7 @@ namespace Chummer
                                     -intDepMaxReduction, token: token).ConfigureAwait(false);
                             }
 
-                            await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
+                            ImprovementManager.Commit(this);
 
                             // If the character is in Career mode, it is possible for them to be forced to burn out.
                             if (await GetCreatedAsync(token).ConfigureAwait(false))
@@ -31651,7 +31649,7 @@ namespace Chummer
                               .RemoveImprovementsAsync(this, Improvement.ImprovementSource.EssenceLoss,
                                                        token: token)
                               .ConfigureAwait(false);
-                        await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
+                        ImprovementManager.Commit(this);
                     }
                     finally
                     {
@@ -31706,7 +31704,7 @@ namespace Chummer
                                 this, "WIL", Improvement.ImprovementSource.Cyberzombie,
                                 string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0,
                                 intESSModifier, token: token).ConfigureAwait(false);
-                            await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
+                            ImprovementManager.Commit(this);
                         }
                     }
                     finally
@@ -32559,7 +32557,7 @@ namespace Chummer
                             string.Empty, Improvement.ImprovementType.Attribute,
                             "precedence-1", 0, 1, 0, 0,
                             intEncumbrance * Settings.EncumbrancePenaltyReaction, token: token).ConfigureAwait(false);
-                    await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
+                    ImprovementManager.Commit(this);
                 }
                 finally
                 {
@@ -32627,7 +32625,7 @@ namespace Chummer
                             string.Empty, Improvement.ImprovementType.Attribute,
                             "precedence-1", 0, 1, 0, 0,
                             intEncumbrance, token: token).ConfigureAwait(false);
-                        await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
+                        ImprovementManager.Commit(this);
                     }
                 }
                 finally
@@ -37684,7 +37682,7 @@ namespace Chummer
                                                                 string.Empty,
                                                                 Improvement.ImprovementType.FreeNegativeQualities,
                                                                 string.Empty, intResult * -1, token: token).ConfigureAwait(false);
-                await ImprovementManager.CommitAsync(this, token).ConfigureAwait(false);
+                ImprovementManager.Commit(this);
 
                 // Convert the character.
                 // Characters lose access to Resonance.

@@ -3002,7 +3002,7 @@ namespace Chummer.Backend.Attributes
                                         string.Empty,
                                         Improvement.ImprovementType.Attribute,
                                         string.Empty, 0, 1, -intBurnedEdge, token: token).ConfigureAwait(false);
-                                    await ImprovementManager.CommitAsync(_objCharacter, token).ConfigureAwait(false);
+                                    ImprovementManager.Commit(_objCharacter);
                                 }
 
                                 continue; // Skip increasing Karma
@@ -3049,7 +3049,7 @@ namespace Chummer.Backend.Attributes
                         await ImprovementManager.CreateImprovementAsync(_objCharacter, "EDG",
                             Improvement.ImprovementSource.BurnedEdge,
                             string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intBurnedEdge, token: token).ConfigureAwait(false);
-                        await ImprovementManager.CommitAsync(_objCharacter, token).ConfigureAwait(false);
+                        ImprovementManager.Commit(_objCharacter);
                     }
                     else
                         return;

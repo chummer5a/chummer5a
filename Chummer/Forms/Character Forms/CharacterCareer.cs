@@ -3542,7 +3542,7 @@ namespace Chummer
                             CharacterObject, frmPickAttribute.MyForm.SelectedAttribute,
                             Improvement.ImprovementSource.AttributeLoss, string.Empty,
                             Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, -1, token: GenericToken).ConfigureAwait(false);
-                        await ImprovementManager.CommitAsync(CharacterObject, token: GenericToken).ConfigureAwait(false);
+                        ImprovementManager.Commit(CharacterObject);
                     }
 
                     // Permanently reduce the CharacterAttribute's value.
@@ -5112,7 +5112,7 @@ namespace Chummer
                                                         CharacterObject.CHA.MetatypeMaximum, 0,
                                                         CharacterObject.CHA.MetatypeAugmentedMaximum, token: GenericToken)
                                                     .ConfigureAwait(false);
-                            await ImprovementManager.CommitAsync(objMerge, GenericToken).ConfigureAwait(false);
+                            ImprovementManager.Commit(objMerge);
                             XmlDocument xmlPowerDoc
                                 = await CharacterObject.LoadDataAsync("critterpowers.xml", token: GenericToken)
                                                        .ConfigureAwait(false);
