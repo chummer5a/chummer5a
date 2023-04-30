@@ -6,6 +6,7 @@
       <xs:element name="extensions" type="NLogExtensions" />
       <xs:element name="include" type="NLogInclude" />
       <xs:element name="variable" type="NLogVariable" />
+      <xs:element name="variables" type="NLogVariables" />
       <xs:element name="targets" type="NLogTargets" />
       <xs:element name="rules" type="NLogRules" />
       <xs:element name="time" type="TimeSource" />
@@ -231,6 +232,11 @@
           <xs:documentation>Variable value. Note, the 'value' attribute has precedence over this one.</xs:documentation>
         </xs:annotation>
       </xs:element>
+      <xs:element name="layout" minOccurs="0" maxOccurs="1" type="Layout">
+        <xs:annotation>
+          <xs:documentation>Layout type variable value. Note, the 'value' attribute has precedence over this one.</xs:documentation>
+        </xs:annotation>
+      </xs:element>
     </xs:choice>
     <xs:attribute name="name" type="xs:string" use="required">
       <xs:annotation>
@@ -242,6 +248,11 @@
         <xs:documentation>Variable value.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
+  </xs:complexType>
+  <xs:complexType name="NLogVariables">
+    <xs:sequence minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="variable" type="NLogVariable" />
+    </xs:sequence>
   </xs:complexType>
   <xs:simpleType name="NLogTargetIDList">
     <xs:restriction base="xs:string">
@@ -2730,6 +2741,7 @@
           <xs:element name="escapeForwardSlash" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="excludeEmptyProperties" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="excludeProperties" type="xs:string" minOccurs="0" maxOccurs="1" />
+          <xs:element name="indentJson" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="maxRecursionLimit" type="xs:integer" minOccurs="0" maxOccurs="1" default="1" />
           <xs:element name="renderEmptyObject" type="xs:boolean" minOccurs="0" maxOccurs="1" default="true" />
           <xs:element name="suppressSpaces" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
@@ -2762,6 +2774,11 @@
         <xs:attribute name="excludeProperties" type="xs:string">
           <xs:annotation>
             <xs:documentation>List of property names to exclude when P:NLog.Layouts.JsonLayout.IncludeAllProperties is true</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="indentJson" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Auto indent and create new lines</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="maxRecursionLimit" type="xs:integer">
