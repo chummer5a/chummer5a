@@ -469,7 +469,7 @@ namespace Chummer
         {
             CancellationTokenSource objNewCancellationTokenSource = new CancellationTokenSource();
             CancellationToken objNewToken = objNewCancellationTokenSource.Token;
-            CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objProcessGradeChangedCancellationTokenSource, objNewCancellationTokenSource);
+            CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objDoRefreshSelectedCyberwareCancellationTokenSource, objNewCancellationTokenSource);
             if (objOldCancellationTokenSource?.IsCancellationRequested == false)
             {
                 objOldCancellationTokenSource.Cancel(false);
