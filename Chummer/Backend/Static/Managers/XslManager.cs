@@ -79,7 +79,7 @@ namespace Chummer
             Tuple<DateTime, XslCompiledTransform> tupCachedData;
             if (blnSync)
                 // ReSharper disable once MethodHasAsyncOverload
-                blnSuccess = s_dicCompiledTransforms.TryGetValue(strXslFilePath, out tupCachedData);
+                blnSuccess = s_dicCompiledTransforms.TryGetValue(strXslFilePath, out tupCachedData, token);
             else
                 (blnSuccess, tupCachedData) = await s_dicCompiledTransforms.TryGetValueAsync(strXslFilePath, token).ConfigureAwait(false);
 

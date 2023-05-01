@@ -2950,7 +2950,7 @@ namespace Chummer
 
                     if (objSkill == null)
                     {
-                        if (ExoticSkill.IsExoticSkillName(this, strSkill))
+                        if (ExoticSkill.IsExoticSkillName(this, strSkill, token))
                         {
                             SkillsSection.AddExoticSkill(strSkill, strSpec);
                             continue;

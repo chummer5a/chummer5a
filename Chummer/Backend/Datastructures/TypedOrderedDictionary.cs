@@ -423,14 +423,14 @@ namespace Chummer
 
         public int IndexOf(KeyValuePair<TKey, TValue> item)
         {
-            return _dicUnorderedData.ContainsKey(item.Key) && _dicUnorderedData[item.Key].Equals(item.Value)
+            return _dicUnorderedData.TryGetValue(item.Key, out TValue objValue) && objValue.Equals(item.Value)
                 ? _lstIndexes.IndexOf(item.Key)
                 : -1;
         }
 
         public int IndexOf(Tuple<TKey, TValue> item)
         {
-            return item != null && _dicUnorderedData.ContainsKey(item.Item1) && _dicUnorderedData[item.Item1].Equals(item.Item2)
+            return item != null && _dicUnorderedData.TryGetValue(item.Item1, out TValue objValue) && objValue.Equals(item.Item2)
                 ? _lstIndexes.IndexOf(item.Item1)
                 : -1;
         }
@@ -444,14 +444,14 @@ namespace Chummer
 
         public int LastIndexOf(KeyValuePair<TKey, TValue> item)
         {
-            return _dicUnorderedData.ContainsKey(item.Key) && _dicUnorderedData[item.Key].Equals(item.Value)
+            return _dicUnorderedData.TryGetValue(item.Key, out TValue objValue) && objValue.Equals(item.Value)
                 ? _lstIndexes.LastIndexOf(item.Key)
                 : -1;
         }
 
         public int LastIndexOf(Tuple<TKey, TValue> item)
         {
-            return item != null && _dicUnorderedData.ContainsKey(item.Item1) && _dicUnorderedData[item.Item1].Equals(item.Item2)
+            return item != null && _dicUnorderedData.TryGetValue(item.Item1, out TValue objValue) && objValue.Equals(item.Item2)
                 ? _lstIndexes.LastIndexOf(item.Item1)
                 : -1;
         }
