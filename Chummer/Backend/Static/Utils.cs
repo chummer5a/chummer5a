@@ -828,8 +828,17 @@ namespace Chummer
                 for (int i = await lstToProcess.GetCountAsync(token).ConfigureAwait(false); i >= 0; --i)
                 {
                     token.ThrowIfCancellationRequested();
-                    CharacterShared objOpenCharacterForm
-                        = await lstToProcess.GetValueAtAsync(i, token).ConfigureAwait(false);
+                    CharacterShared objOpenCharacterForm;
+                    try
+                    {
+                        objOpenCharacterForm = await lstToProcess.GetValueAtAsync(i, token).ConfigureAwait(false);
+                    }
+                    catch (IndexOutOfRangeException)
+                    {
+                        // Swallow this, we've closed the form in between the loop and us trying to get the form at the index
+                        continue;
+                    }
+
                     if (objOpenCharacterForm?.IsDirty == true)
                     {
                         string strCharacterName = await objOpenCharacterForm.CharacterObject
