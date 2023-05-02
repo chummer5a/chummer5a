@@ -202,31 +202,33 @@ namespace Chummer
 
             if (msg.message == (int)CbtHookAction.HCBT_ACTIVATE)
             {
+                int intHResult;
                 try
                 {
-                    CenterWindow(msg.hwnd);
+                    Marshal.ThrowExceptionForHR(CenterWindow(msg.hwnd));
                 }
                 finally
                 {
-                    NativeMethods.UnhookWindowsHookEx(Interlocked.Exchange(ref _hHook, IntPtr.Zero));
+                    intHResult = NativeMethods.UnhookWindowsHookEx(Interlocked.Exchange(ref _hHook, IntPtr.Zero));
                 }
+                Marshal.ThrowExceptionForHR(intHResult);
             }
 
             return NativeMethods.CallNextHookEx(hook, nCode, wParam, lParam);
         }
 
-        private static void CenterWindow(IntPtr hChildWnd)
+        private static int CenterWindow(IntPtr hChildWnd)
         {
             Rectangle recChild = new Rectangle(0, 0, 0, 0);
             if (!NativeMethods.GetWindowRect(hChildWnd, ref recChild))
-                return;
+                return 0;
 
             int width = recChild.Width - recChild.X;
             int height = recChild.Height - recChild.Y;
 
             Rectangle recParent = new Rectangle(0, 0, 0, 0);
             if (!NativeMethods.GetWindowRect(_owner.Handle, ref recParent))
-                return;
+                return 0;
 
             Point ptCenter = new Point(
                 recParent.X + (recParent.Width - recParent.X) / 2,
@@ -239,7 +241,7 @@ namespace Chummer
             ptStart.X = ptStart.X < 0 ? 0 : ptStart.X;
             ptStart.Y = ptStart.Y < 0 ? 0 : ptStart.Y;
 
-            NativeMethods.MoveWindow(hChildWnd, ptStart.X, ptStart.Y, width, height, false);
+            return NativeMethods.MoveWindow(hChildWnd, ptStart.X, ptStart.Y, width, height, false);
         }
     }
 }

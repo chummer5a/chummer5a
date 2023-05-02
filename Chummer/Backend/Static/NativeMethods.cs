@@ -524,7 +524,7 @@ namespace Chummer
                 ShowWindow(objProcess.Handle, ShowWindowMode.Restore);
             }
             // set user the focus to the window
-            SetForegroundWindow(objProcess.MainWindowHandle);
+            Marshal.ThrowExceptionForHR(SetForegroundWindow(objProcess.MainWindowHandle));
         }
 
         internal enum SystemString
