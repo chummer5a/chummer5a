@@ -1777,9 +1777,9 @@ namespace Chummer
         {
             if (xmlDoc == null)
                 throw new ArgumentNullException(nameof(xmlDoc));
-            XmlNode node = xmlDoc.SelectSingleNode(".//*[id = " + id.CleanXPath() + ']');
-            if (node == null)
-                throw new ArgumentException("Could not find node " + id + " in xmlDoc " + xmlDoc.Name + '.');
+            XmlNode node = xmlDoc.SelectSingleNode(".//*[id = " + id.CleanXPath() + ']')
+                           ?? throw new ArgumentException("Could not find node " + id + " in xmlDoc " + xmlDoc.Name
+                                                          + '.');
             return GetNodeOverrideable(node);
         }
 

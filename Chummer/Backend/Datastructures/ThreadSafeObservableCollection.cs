@@ -619,7 +619,9 @@ namespace Chummer
         }
 
         /// <inheritdoc />
+#pragma warning disable CA1070
         public virtual event PropertyChangedEventHandler PropertyChanged;
+#pragma warning restore CA1070
 
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)

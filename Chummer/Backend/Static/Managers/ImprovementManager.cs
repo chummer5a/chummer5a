@@ -4869,7 +4869,9 @@ namespace Chummer
                 {
                     // Record the improvement.
                     // ReSharper disable once UseObjectOrCollectionInitializer
+#pragma warning disable IDE0017
                     objImprovement = new Improvement(objCharacter)
+#pragma warning restore IDE0017
                     {
                         ImprovedName = strImprovedName,
                         ImproveSource = objImprovementSource,
@@ -4965,7 +4967,9 @@ namespace Chummer
                 {
                     // Record the improvement.
                     // ReSharper disable once UseObjectOrCollectionInitializer
+#pragma warning disable IDE0017
                     objImprovement = new Improvement(objCharacter)
+#pragma warning restore IDE0017
                     {
                         ImprovedName = strImprovedName,
                         ImproveSource = objImprovementSource,

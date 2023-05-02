@@ -1681,10 +1681,7 @@ namespace Chummer
 
             XmlDocument objXmlSpellDocument = _objCharacter.LoadData("spells.xml");
 
-            XmlNode node = objXmlSpellDocument.SelectSingleNode("/chummer/spells/spell[name = " + bonusNode.InnerText.CleanXPath() + ']');
-
-            if (node == null)
-                throw new AbortedException();
+            XmlNode node = objXmlSpellDocument.SelectSingleNode("/chummer/spells/spell[name = " + bonusNode.InnerText.CleanXPath() + ']') ?? throw new AbortedException();
             // Check for SelectText.
             string strExtra = string.Empty;
             XmlNode xmlSelectText = node.SelectSingleNode("bonus/selecttext");
@@ -1757,10 +1754,9 @@ namespace Chummer
             // Open the ComplexForms XML file and locate the selected piece.
             XmlDocument objXmlDocument = _objCharacter.LoadData("complexforms.xml");
 
-            XmlNode node = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[id = " + strSelectedComplexForm.CleanXPath() + ']') ??
-                           objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[name = " + strSelectedComplexForm.CleanXPath() + ']');
-            if (node == null)
-                throw new AbortedException();
+            XmlNode node = objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[id = " + strSelectedComplexForm.CleanXPath() + ']')
+                           ?? objXmlDocument.SelectSingleNode("/chummer/complexforms/complexform[name = " + strSelectedComplexForm.CleanXPath() + ']')
+                           ?? throw new AbortedException();
 
             SelectedValue = node["name"]?.InnerText;
 
@@ -1790,10 +1786,7 @@ namespace Chummer
 
             XmlDocument objXmlComplexFormDocument = _objCharacter.LoadData("complexforms.xml");
 
-            XmlNode node = objXmlComplexFormDocument.SelectSingleNode("/chummer/complexforms/complexform[name = " + bonusNode.InnerText.CleanXPath() + ']');
-
-            if (node == null)
-                throw new AbortedException();
+            XmlNode node = objXmlComplexFormDocument.SelectSingleNode("/chummer/complexforms/complexform[name = " + bonusNode.InnerText.CleanXPath() + ']') ?? throw new AbortedException();
 
             ComplexForm objComplexform = new ComplexForm(_objCharacter);
             objComplexform.Create(node);
@@ -1851,10 +1844,7 @@ namespace Chummer
                     strFilter += ']';
                 }
 
-                XmlNode xmlGearDataNode = _objCharacter.LoadData("gear.xml").SelectSingleNode(strFilter);
-
-                if (xmlGearDataNode == null)
-                    throw new AbortedException();
+                XmlNode xmlGearDataNode = _objCharacter.LoadData("gear.xml").SelectSingleNode(strFilter) ?? throw new AbortedException();
                 int intRating = 0;
                 string strTemp = string.Empty;
                 if (xmlGearNode.TryGetStringFieldQuickly("rating", ref strTemp))
@@ -7687,9 +7677,7 @@ namespace Chummer
             ForcedValue = string.Empty; // Temporarily clear Forced Value because the Forced Value should be for the specialization name, not the skill
             string strSkill = ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, _strFriendlyName, ref blnIsKnowledgeSkill);
             ForcedValue = strForcedValue;
-            Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(strSkill);
-            if (objSkill == null)
-                throw new AbortedException();
+            Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill(strSkill) ?? throw new AbortedException();
             // Select the actual specialization to add as an expertise
             using (ThreadSafeForm<SelectItem> frmPickItem = ThreadSafeForm<SelectItem>.Get(() => new SelectItem()))
             {

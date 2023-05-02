@@ -25,7 +25,9 @@ namespace Chummer
 {
     public class CachedBindingList<T> : BindingList<T>
     {
+#pragma warning disable CA1070
         public virtual event EventHandler<RemovingOldEventArgs> BeforeRemove;
+#pragma warning restore CA1070
 
         public CachedBindingList()
         {

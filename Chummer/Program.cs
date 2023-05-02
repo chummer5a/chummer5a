@@ -69,7 +69,9 @@ namespace Chummer
         [ThreadStatic]
         // ReSharper disable once ThreadStaticFieldHasInitializer
         // ReSharper disable once ConvertToConstant.Global
+#pragma warning disable CA2019
         public static readonly bool IsMainThread = true;
+#pragma warning restore CA2019
 
         /// <summary>
         /// The main entry point for the application.
