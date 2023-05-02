@@ -1357,9 +1357,8 @@ namespace Chummer
 
                                         if (blnSync)
                                             // ReSharper disable once MethodHasAsyncOverload
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             dicCachedValuesToUse.AddOrUpdate(objLoopCacheKey, tupNewValue,
-                                                                             (x, y) => tupNewValue);
+                                                                             (x, y) => tupNewValue, token);
                                         else
                                             await dicCachedValuesToUse.AddOrUpdateAsync(objLoopCacheKey, tupNewValue,
                                                 (x, y) => tupNewValue, token).ConfigureAwait(false);

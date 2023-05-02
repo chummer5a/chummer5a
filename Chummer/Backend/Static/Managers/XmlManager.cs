@@ -611,82 +611,35 @@ namespace Chummer
                 // Create a new document that everything will be merged into.
                 XmlDocument xmlScratchpad = new XmlDocument { XmlResolver = null };
                 // Look to see if this XmlDocument is already loaded.
-                XmlReference xmlReferenceOfReturn;
-                if (blnSync)
+                Lazy<XmlReference> xmlNewReference = new Lazy<XmlReference>(() => new XmlReference()); // Needs to be a Lazy so that we don't unnecessary construct one.
+                XmlReference xmlReferenceOfReturn = null;
+                try
                 {
-                    // ReSharper disable MethodHasAsyncOverload
-                    if (!s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn, token))
-                    {
-                        int intEmergencyRelease = 0;
-                        xmlReferenceOfReturn = new XmlReference();
-                        // We break either when we successfully add our XmlReference to the dictionary or when we end up successfully fetching an existing one.
-                        for (; intEmergencyRelease <= Utils.SleepEmergencyReleaseMaxTicks; ++intEmergencyRelease)
+                    xmlReferenceOfReturn = blnSync
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                        ? s_DicXmlDocuments.AddOrGet(objDataKey, x =>
                         {
-                            // The file was not found in the reference list, so it must be loaded.
-                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                            if (s_DicXmlDocuments.TryAdd(objDataKey, xmlReferenceOfReturn))
-                            {
-                                blnLoadFile = true;
-                                break;
-                            }
-
-                            xmlReferenceOfReturn.Dispose();
-
-                            // It somehow got added in the meantime, so let's fetch it again
-                            if (s_DicXmlDocuments.TryGetValue(objDataKey, out xmlReferenceOfReturn, token))
-                                break;
-                            // We're iterating the loop because we failed to get the reference, so we need to re-allocate our reference because it was in an out-argument above
-                            xmlReferenceOfReturn = new XmlReference();
-                        }
-
-                        if (intEmergencyRelease >
-                            Utils
-                                .SleepEmergencyReleaseMaxTicks) // Shouldn't ever happen, but just in case it does, emergency exit out of the loading function
+                            blnLoadFile = true;
+                            // ReSharper disable once AccessToDisposedClosure
+                            return xmlNewReference.Value;
+                        }, token)
+                        : await s_DicXmlDocuments.AddOrGetAsync(objDataKey, x =>
                         {
-                            Utils.BreakIfDebug();
-                            xmlReferenceOfReturn.Dispose();
-                            return new XmlDocument { XmlResolver = null };
-                        }
-                    }
-                    // ReSharper restore MethodHasAsyncOverload
+                            blnLoadFile = true;
+                            // ReSharper disable once AccessToDisposedClosure
+                            return xmlNewReference.Value;
+                        }, token).ConfigureAwait(false);
                 }
-                else
+                finally
                 {
-                    bool blnSuccess;
-                    (blnSuccess, xmlReferenceOfReturn) = await s_DicXmlDocuments.TryGetValueAsync(objDataKey, token).ConfigureAwait(false);
-                    if (!blnSuccess)
+                    if (xmlNewReference.IsValueCreated && !ReferenceEquals(xmlNewReference.Value, xmlReferenceOfReturn))
                     {
-                        int intEmergencyRelease = 0;
-                        xmlReferenceOfReturn = new XmlReference();
-                        // We break either when we successfully add our XmlReference to the dictionary or when we end up successfully fetching an existing one.
-                        for (; intEmergencyRelease <= Utils.SleepEmergencyReleaseMaxTicks; ++intEmergencyRelease)
-                        {
-                            // The file was not found in the reference list, so it must be loaded.
-                            if (await s_DicXmlDocuments.TryAddAsync(objDataKey, xmlReferenceOfReturn, token).ConfigureAwait(false))
-                            {
-                                blnLoadFile = true;
-                                break;
-                            }
-
-                            await xmlReferenceOfReturn.DisposeAsync().ConfigureAwait(false);
-
-                            // It somehow got added in the meantime, so let's fetch it again
-                            (blnSuccess, xmlReferenceOfReturn)
-                                = await s_DicXmlDocuments.TryGetValueAsync(objDataKey, token).ConfigureAwait(false);
-                            if (blnSuccess)
-                                break;
-                            // We're iterating the loop because we failed to get the reference, so we need to re-allocate our reference because it was in an out-argument above
-                            xmlReferenceOfReturn = new XmlReference();
-                        }
-
-                        if (intEmergencyRelease >
-                            Utils
-                                .SleepEmergencyReleaseMaxTicks) // Shouldn't ever happen, but just in case it does, emergency exit out of the loading function
-                        {
-                            Utils.BreakIfDebug();
-                            await xmlReferenceOfReturn.DisposeAsync().ConfigureAwait(false);
-                            return new XmlDocument { XmlResolver = null };
-                        }
+                        // A reference was created and added while we were attempting to create one here, so dispose our reference
+                        if (blnSync)
+                            // ReSharper disable once MethodHasAsyncOverload
+                            xmlNewReference.Value.Dispose();
+                        else
+                            await xmlNewReference.Value.DisposeAsync().ConfigureAwait(false);
                     }
                 }
 

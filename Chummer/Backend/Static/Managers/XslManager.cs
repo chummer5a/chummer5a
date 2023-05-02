@@ -94,8 +94,8 @@ namespace Chummer
                 {
                     objReturn.Load(strXslFilePath);
                     Tuple<DateTime, XslCompiledTransform> tupNewValue = new Tuple<DateTime, XslCompiledTransform>(datLastWriteTimeUtc, objReturn);
-                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                    s_dicCompiledTransforms.AddOrUpdate(strXslFilePath, tupNewValue, (x, y) => tupNewValue);
+                    // ReSharper disable once MethodHasAsyncOverload
+                    s_dicCompiledTransforms.AddOrUpdate(strXslFilePath, tupNewValue, (x, y) => tupNewValue, token);
                 }
                 else
                 {

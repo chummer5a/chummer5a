@@ -815,17 +815,17 @@ namespace Chummer
             }
         }
 
-        private Task SetTextToWorkerResult(string strText, CancellationToken token = default)
+        private async ValueTask SetTextToWorkerResult(string strText, CancellationToken token = default)
         {
             string strDisplayText = strText;
             // Displayed text has all mugshots data removed because it's unreadable as Base64 strings, but massive enough to slow down the program
             strDisplayText = s_RgxMainMugshotReplaceExpression.Replace(strDisplayText, "<mainmugshotbase64>[...]</mainmugshotbase64>");
             strDisplayText = s_RgxStringBase64ReplaceExpression.Replace(strDisplayText, "<stringbase64>[...]</stringbase64>");
             strDisplayText = s_RgxBase64ReplaceExpression.Replace(strDisplayText, "base64\": \"[...]\",");
-            _dicCache.AddOrUpdate(new Tuple<string, string>(_strExportLanguage, _strXslt),
-                new Tuple<string, string>(strText, strDisplayText),
-                (a, b) => new Tuple<string, string>(strText, strDisplayText));
-            return txtText.DoThreadSafeAsync(x => x.Text = strDisplayText, token);
+            await _dicCache.AddOrUpdateAsync(new Tuple<string, string>(_strExportLanguage, _strXslt),
+                                             new Tuple<string, string>(strText, strDisplayText),
+                                             (a, b) => new Tuple<string, string>(strText, strDisplayText), token).ConfigureAwait(false);
+            await txtText.DoThreadSafeAsync(x => x.Text = strDisplayText, token).ConfigureAwait(false);
         }
 
         private static readonly MainMugshotReplacePattern s_RgxMainMugshotReplaceExpression = new MainMugshotReplacePattern();

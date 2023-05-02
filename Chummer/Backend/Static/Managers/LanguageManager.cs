@@ -245,91 +245,15 @@ namespace Chummer
             LanguageData objNewLanguage;
             if (blnSync)
             {
-                // ReSharper disable MethodHasAsyncOverload
-                // ReSharper disable MethodHasAsyncOverloadWithCancellation
-                bool blnSuccess = s_DicLanguageData.TryGetValue(strKey, out objNewLanguage, token);
-                while (!blnSuccess)
-                {
-                    token.ThrowIfCancellationRequested();
-                    if (!s_DicLanguageData.TryAdd(strKey, null))
-                    {
-                        blnSuccess = s_DicLanguageData.TryGetValue(strKey, out objNewLanguage, token);
-                    }
-                    else
-                    {
-                        objNewLanguage = new LanguageData(strLanguage);
-                        s_DicLanguageData[strKey] = objNewLanguage;
-                        blnSuccess = true;
-                    }
-                }
-
-                // If this is null, a different thread is currently loading the language, so spin until it's done
-                while (objNewLanguage == null)
-                {
-                    Utils.SafeSleep(token);
-                    blnSuccess = s_DicLanguageData.TryGetValue(strKey, out objNewLanguage, token);
-                    while (!blnSuccess)
-                    {
-                        token.ThrowIfCancellationRequested();
-                        if (!s_DicLanguageData.TryAdd(strKey, null))
-                        {
-                            blnSuccess = s_DicLanguageData.TryGetValue(strKey, out objNewLanguage, token);
-                        }
-                        else
-                        {
-                            objNewLanguage = new LanguageData(strLanguage);
-                            s_DicLanguageData[strKey] = objNewLanguage;
-                            blnSuccess = true;
-                        }
-                    }
-                }
-                // ReSharper restore MethodHasAsyncOverloadWithCancellation
-                // ReSharper restore MethodHasAsyncOverload
+                // ReSharper disable once MethodHasAsyncOverload
+                objNewLanguage = s_DicLanguageData.AddCheapOrGet(strKey, x => new LanguageData(strLanguage), token);
             }
             else
             {
-                bool blnSuccess;
-                (blnSuccess, objNewLanguage)
-                    = await s_DicLanguageData.TryGetValueAsync(strKey, token).ConfigureAwait(false);
-                while (!blnSuccess)
-                {
-                    if (!await s_DicLanguageData.TryAddAsync(strKey, null, token).ConfigureAwait(false))
-                    {
-                        (blnSuccess, objNewLanguage)
-                            = await s_DicLanguageData.TryGetValueAsync(strKey, token).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        objNewLanguage = await Task.Run(() => new LanguageData(strLanguage), token)
-                                                   .ConfigureAwait(false);
-                        await s_DicLanguageData.SetValueAtAsync(strKey, objNewLanguage, token).ConfigureAwait(false);
-                        blnSuccess = true;
-                    }
-                }
-
-                // If this is null, a different thread is currently loading the language, so spin until it's done
-                while (objNewLanguage == null)
-                {
-                    await Utils.SafeSleepAsync(token).ConfigureAwait(false);
-                    (blnSuccess, objNewLanguage)
-                        = await s_DicLanguageData.TryGetValueAsync(strKey, token).ConfigureAwait(false);
-                    while (!blnSuccess)
-                    {
-                        if (!await s_DicLanguageData.TryAddAsync(strKey, null, token).ConfigureAwait(false))
-                        {
-                            (blnSuccess, objNewLanguage) = await s_DicLanguageData.TryGetValueAsync(strKey, token)
-                                .ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            objNewLanguage = await Task.Run(() => new LanguageData(strLanguage), token)
-                                                       .ConfigureAwait(false);
-                            await s_DicLanguageData.SetValueAtAsync(strKey, objNewLanguage, token)
-                                                   .ConfigureAwait(false);
-                            blnSuccess = true;
-                        }
-                    }
-                }
+                objNewLanguage = await s_DicLanguageData
+                                       .AddCheapOrGetAsync(
+                                           strKey, x => Task.Run(() => new LanguageData(strLanguage), token), token)
+                                       .ConfigureAwait(false);
             }
 
             if (!string.IsNullOrEmpty(objNewLanguage.ErrorMessage))

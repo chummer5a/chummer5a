@@ -206,7 +206,7 @@ namespace Chummer
                 }
 
                 return new Tuple<bool, object>(blnIsSuccess, objReturn); // don't want to store managed objects, only primitives
-            });
+            }, token);
         }
 
         /// <summary>
@@ -318,7 +318,7 @@ namespace Chummer
                 }
 
                 return new Tuple<bool, object>(blnIsSuccess, objReturn); // don't want to store managed objects, only primitives
-            });
+            }, token);
         }
 
         /// <summary>

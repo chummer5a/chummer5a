@@ -515,16 +515,17 @@ namespace Chummer
         /// </summary>
         /// <param name="key">The key to be added or whose value should be retrieved.</param>
         /// <param name="addValueFactory">The function used to generate a value for an absent key</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The new value for the key. This will be either be the result of addValueFactory (if the key was absent) or the existing value in the dictionary (if the key was present).</returns>
-        public TValue AddOrGet(TKey key, Func<TKey, TValue> addValueFactory)
+        public TValue AddOrGet(TKey key, Func<TKey, TValue> addValueFactory, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                     return objExistingValue;
             }
             TValue objReturn = addValueFactory(key);
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                     return objExistingValue;
@@ -538,15 +539,16 @@ namespace Chummer
         /// </summary>
         /// <param name="key">The key to be added or whose value should be retrieved.</param>
         /// <param name="addValue">The value to be added for an absent key</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The new value for the key. This will be either be addValue (if the key was absent) or the existing value in the dictionary (if the key was present).</returns>
-        public TValue AddOrGet(TKey key, TValue addValue)
+        public TValue AddOrGet(TKey key, TValue addValue, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                     return objExistingValue;
             }
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                     return objExistingValue;
@@ -658,13 +660,12 @@ namespace Chummer
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                     return objExistingValue;
             }
-
-            TValue objReturn;
+            
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                objReturn = await addValue.ConfigureAwait(false);
+                TValue objReturn = await addValue.ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                     return objExistingValue;
@@ -683,15 +684,16 @@ namespace Chummer
         /// </summary>
         /// <param name="key">The key to be added or whose value should be retrieved.</param>
         /// <param name="addValueFactory">The function used to generate a value for an absent key. Should be an expensive function. If it isn't, use AddOrGet instead.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The new value for the key. This will be either be the result of addValueFactory (if the key was absent) or the existing value in the dictionary (if the key was present).</returns>
-        public TValue AddCheapOrGet(TKey key, Func<TKey, TValue> addValueFactory)
+        public TValue AddCheapOrGet(TKey key, Func<TKey, TValue> addValueFactory, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                     return objExistingValue;
             }
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                     return objExistingValue;
@@ -770,24 +772,25 @@ namespace Chummer
         /// </summary>
         /// <param name="key">The key to be added or whose value should be updated</param>
         /// <param name="addValueFactory">The function used to generate a value for an absent key</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <param name="updateValueFactory">The function used to generate a new value for an existing key based on the key's existing value</param>
         /// <returns>The new value for the key. This will be either be the result of addValueFactory (if the key was absent) or the result of updateValueFactory (if the key was present).</returns>
         public TValue AddOrUpdate(TKey key, Func<TKey, TValue> addValueFactory,
-                                  Func<TKey, TValue, TValue> updateValueFactory)
+                                  Func<TKey, TValue, TValue> updateValueFactory, CancellationToken token = default)
         {
             TValue objReturn;
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     objReturn = updateValueFactory(key, objExistingValue);
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.EnterWriteLock(token))
                         _dicData[key] = objReturn;
                     return objReturn;
                 }
             }
             objReturn = addValueFactory(key);
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
@@ -806,20 +809,21 @@ namespace Chummer
         /// <param name="key">The key to be added or whose value should be updated</param>
         /// <param name="addValue">The value to be added for an absent key</param>
         /// <param name="updateValueFactory">The function used to generate a new value for an existing key based on the key's existing value</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>The new value for the key. This will be either be addValue (if the key was absent) or the result of updateValueFactory (if the key was present).</returns>
-        public TValue AddOrUpdate(TKey key, TValue addValue, Func<TKey, TValue, TValue> updateValueFactory)
+        public TValue AddOrUpdate(TKey key, TValue addValue, Func<TKey, TValue, TValue> updateValueFactory, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
                     TValue objNewValue = updateValueFactory(key, objExistingValue);
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.EnterWriteLock(token))
                         _dicData[key] = objNewValue;
                     return objNewValue;
                 }
             }
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                 {
