@@ -473,18 +473,9 @@ namespace Chummer.UI.Table
             await CreateCellsForColumn(index, column, token).ConfigureAwait(false);
             foreach (string dependency in column.Dependencies)
             {
-                bool blnSuccess = false;
-                List<int> lstDependencies = null;
-                while (!blnSuccess)
-                {
-                    (blnSuccess, lstDependencies)
-                        = await _dicObservedProperties.TryGetValueAsync(dependency, token).ConfigureAwait(false);
-                    if (!blnSuccess)
-                    {
-                        lstDependencies = new List<int>(1);
-                        blnSuccess = await _dicObservedProperties.TryAddAsync(dependency, lstDependencies, token).ConfigureAwait(false);
-                    }
-                }
+                List<int> lstDependencies = await _dicObservedProperties
+                                                  .AddOrGetAsync(dependency, x => new List<int>(1), token)
+                                                  .ConfigureAwait(false);
                 lstDependencies.Add(index);
             }
         }

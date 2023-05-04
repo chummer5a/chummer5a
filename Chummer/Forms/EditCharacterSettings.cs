@@ -121,7 +121,7 @@ namespace Chummer
             await PopulateOptions().ConfigureAwait(false);
             await SetupDataBindings().ConfigureAwait(false);
 
-            await SetIsDirty(false).ConfigureAwait(false);
+            await SetIsDirtyAsync(false).ConfigureAwait(false);
             Interlocked.Decrement(ref _intLoading);
         }
 
@@ -191,7 +191,7 @@ namespace Chummer
                     }
 
                     _blnWasRenamed = true;
-                    await SetIsDirty(true).ConfigureAwait(false);
+                    await SetIsDirtyAsync(true).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -268,7 +268,7 @@ namespace Chummer
                     _objReferenceCharacterSettings = kvpReplacementOption.Value;
                     await _objCharacterSettings.CopyValuesAsync(_objReferenceCharacterSettings).ConfigureAwait(false);
                     await RebuildCustomDataDirectoryInfosAsync().ConfigureAwait(false);
-                    await SetIsDirty(false).ConfigureAwait(false);
+                    await SetIsDirtyAsync(false).ConfigureAwait(false);
                     await PopulateSettingsList().ConfigureAwait(false);
                 }
                 finally
@@ -395,7 +395,7 @@ namespace Chummer
                     // Force repopulate character settings list in Master Index from here in lieu of event handling for concurrent dictionaries
                     _blnForceMasterIndexRepopulateOnClose = true;
                     _objReferenceCharacterSettings = objNewCharacterSettings;
-                    await SetIsDirty(false).ConfigureAwait(false);
+                    await SetIsDirtyAsync(false).ConfigureAwait(false);
                     await PopulateSettingsList().ConfigureAwait(false);
                 }
                 finally
@@ -451,7 +451,7 @@ namespace Chummer
                 try
                 {
                     await _objReferenceCharacterSettings.CopyValuesAsync(_objCharacterSettings).ConfigureAwait(false);
-                    await SetIsDirty(false).ConfigureAwait(false);
+                    await SetIsDirtyAsync(false).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -503,7 +503,7 @@ namespace Chummer
                     return;
                 }
 
-                await SetIsDirty(false).ConfigureAwait(false);
+                await SetIsDirtyAsync(false).ConfigureAwait(false);
             }
 
             CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
@@ -533,7 +533,7 @@ namespace Chummer
                         await _objCharacterSettings.CopyValuesAsync(objNewOption).ConfigureAwait(false);
                         await RebuildCustomDataDirectoryInfosAsync().ConfigureAwait(false);
                         await PopulateOptions().ConfigureAwait(false);
-                        await SetIsDirty(false).ConfigureAwait(false);
+                        await SetIsDirtyAsync(false).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -590,7 +590,7 @@ namespace Chummer
                                                    .ConfigureAwait(false);
                         await RebuildCustomDataDirectoryInfosAsync().ConfigureAwait(false);
                         await PopulateOptions().ConfigureAwait(false);
-                        await SetIsDirty(false).ConfigureAwait(false);
+                        await SetIsDirtyAsync(false).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -2310,7 +2310,7 @@ namespace Chummer
                 {
                     try
                     {
-                        await SetIsDirty(!await _objCharacterSettings
+                        await SetIsDirtyAsync(!await _objCharacterSettings
                                                 .HasIdenticalSettingsAsync(_objReferenceCharacterSettings)
                                                 .ConfigureAwait(false)).ConfigureAwait(false);
                         switch (e.PropertyName)
@@ -2427,9 +2427,38 @@ namespace Chummer
                        _objCharacterSettings.EncumbranceIntervalExpression, token: token).ConfigureAwait(false);
         }
 
-        private bool IsDirty => _blnDirty;
+        private bool IsDirty
+        {
+            get => _blnDirty;
+            set
+            {
+                if (_blnDirty == value)
+                    return;
+                _blnDirty = value;
+                string strText = LanguageManager.GetString(value ? "String_Cancel" : "String_OK");
+                cmdOK.DoThreadSafe(x => x.Text = strText);
+                if (value)
+                {
+                    bool blnIsAllTextBoxesLegal = IsAllTextBoxesLegal();
+                    cmdSaveAs.DoThreadSafe(x => x.Enabled = blnIsAllTextBoxesLegal);
+                    if (blnIsAllTextBoxesLegal)
+                    {
+                        bool blnTemp = _objCharacterSettings.BuiltInOption;
+                        cmdSave.DoThreadSafe(x => x.Enabled = !blnTemp);
+                    }
+                    else
+                        cmdSave.DoThreadSafe(x => x.Enabled = false);
+                }
+                else
+                {
+                    _blnWasRenamed = false;
+                    cmdSaveAs.DoThreadSafe(x => x.Enabled = false);
+                    cmdSave.DoThreadSafe(x => x.Enabled = false);
+                }
+            }
+        }
 
-        private async ValueTask SetIsDirty(bool value, CancellationToken token = default)
+        private async ValueTask SetIsDirtyAsync(bool value, CancellationToken token = default)
         {
             if (_blnDirty == value)
                 return;

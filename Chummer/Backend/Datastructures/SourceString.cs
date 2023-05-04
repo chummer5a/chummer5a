@@ -108,19 +108,22 @@ namespace Chummer
 
             Code = strBookCodeShort;
             _intHashCode = (Language, CultureInfo, Code, Page).GetHashCode();
-            if (!s_DicCachedStrings.ContainsKey(Language))
-                s_DicCachedStrings.TryAdd(Language, new Tuple<string, string>(
-                    LanguageManager.GetString("String_Space", Language),
-                    LanguageManager.GetString("String_Page", Language)));
-            string strSpace = s_DicCachedStrings[Language].Item1;
-            LanguageBookTooltip = strBookCodeLong + strSpace + s_DicCachedStrings[Language].Item2 + strSpace + Page.ToString(CultureInfo);
+            (string strSpace, string strPage) = s_DicCachedStrings.AddOrGet(
+                Language,
+                x => new Tuple<string, string>(LanguageManager.GetString("String_Space", x),
+                                               LanguageManager.GetString("String_Page", x)));
+            LanguageBookTooltip = strBookCodeLong + strSpace + strPage + strSpace + Page.ToString(CultureInfo);
         }
 
         public override string ToString()
         {
+            string strSpace = s_DicCachedStrings.AddOrGet(
+                Language,
+                x => new Tuple<string, string>(LanguageManager.GetString("String_Space", x),
+                                               LanguageManager.GetString("String_Page", x))).Item1;
             return string.IsNullOrEmpty(Code)
                 ? string.Empty
-                : Code + s_DicCachedStrings[Language].Item1 + Page.ToString(CultureInfo);
+                : Code + strSpace + Page.ToString(CultureInfo);
         }
 
         /// <summary>

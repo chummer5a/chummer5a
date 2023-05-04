@@ -31,6 +31,7 @@ using System.Windows.Forms;
 using System.Xml.Serialization;
 using System.Xml.XPath;
 using Chummer.Plugins;
+using Microsoft.VisualStudio.Threading;
 using Newtonsoft.Json;
 using NLog;
 
@@ -1582,24 +1583,44 @@ namespace Chummer
             {
                 try
                 {
-                    while (true)
+                    CharacterCache objTemp = null;
+                    try
                     {
-                        token.ThrowIfCancellationRequested();
+                        AsyncLazy<CharacterCache> objGeneratedCache
+                            = new AsyncLazy<CharacterCache>(() => CharacterCache.CreateFromFileAsync(strFile, token),
+                                                            Utils.JoinableTaskFactory);
                         if (blnForceRecache)
                         {
-                            await _dicSavedCharacterCaches.TryRemoveAsync(strFile, token).ConfigureAwait(false);
+                            objCache = await _dicSavedCharacterCaches
+                                             .AddOrUpdateAsync(
+                                                 strFile,
+                                                 async x => objTemp = await objGeneratedCache.GetValueAsync(token)
+                                                     .ConfigureAwait(false),
+                                                 async (x, y) =>
+                                                 {
+                                                     await y.DisposeAsync().ConfigureAwait(false);
+                                                     return objTemp = await objGeneratedCache.GetValueAsync(token)
+                                                         .ConfigureAwait(false);
+                                                 }, token)
+                                             .ConfigureAwait(false);
                         }
                         else
                         {
-                            bool blnSuccess;
-                            (blnSuccess, objCache) = await _dicSavedCharacterCaches.TryGetValueAsync(strFile, token).ConfigureAwait(false);
-                            if (blnSuccess)
-                                break;
+                            objCache = await _dicSavedCharacterCaches
+                                             .AddOrGetAsync(
+                                                 strFile,
+                                                 async x => objTemp = await objGeneratedCache.GetValueAsync(token),
+                                                 token)
+                                             .ConfigureAwait(false);
                         }
-                        objCache = await CharacterCache.CreateFromFileAsync(strFile, token).ConfigureAwait(false);
-                        if (await _dicSavedCharacterCaches.TryAddAsync(strFile, objCache, token).ConfigureAwait(false))
-                            break;
-                        await objCache.DisposeAsync().ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        if (objTemp != null)
+                        {
+                            if (!ReferenceEquals(objCache, objTemp))
+                                await objTemp.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                 }
                 catch (ObjectDisposedException)

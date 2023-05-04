@@ -616,7 +616,7 @@ namespace Chummer
                 try
                 {
                     xmlReferenceOfReturn = blnSync
-                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                        // ReSharper disable once MethodHasAsyncOverload
                         ? s_DicXmlDocuments.AddOrGet(objDataKey, x =>
                         {
                             blnLoadFile = true;

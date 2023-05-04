@@ -291,11 +291,10 @@ namespace Chummer
                                             ++i;
                                         }
 
-                                        if (!await _dicPersistence.TryAddAsync(macroPool, strSelectedNodeName, token)
-                                                                  .ConfigureAwait(false))
-                                            strSelectedNodeName = (await _dicPersistence
-                                                                         .TryGetValueAsync(macroPool, token)
-                                                                         .ConfigureAwait(false)).Item2;
+                                        string strToAdd = strSelectedNodeName;
+                                        strSelectedNodeName = await _dicPersistence
+                                                                    .AddOrGetAsync(macroPool, x => strToAdd, token)
+                                                                    .ConfigureAwait(false);
                                     }
 
                                     break;

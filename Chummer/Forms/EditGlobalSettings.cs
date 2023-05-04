@@ -1898,17 +1898,10 @@ namespace Chummer
                         intIndex = lstPdfParameters.Count - 1;
                     }
 
-                    (bool blnSuccess, HashSet<string> setAppNames) = await _dicCachedPdfAppNames.TryGetValueAsync(strValue, token).ConfigureAwait(false);
-                    if (!blnSuccess)
-                    {
-                        setAppNames = Utils.StringHashSetPool.Get();
-                        await _dicCachedPdfAppNames.AddOrUpdateAsync(strValue, setAppNames, (x, y) =>
-                        {
-                            Utils.StringHashSetPool.Return(ref setAppNames);
-                            setAppNames = y;
-                            return y;
-                        }, token).ConfigureAwait(false);
-                    }
+                    HashSet<string> setAppNames = await _dicCachedPdfAppNames
+                                                        .AddCheapOrGetAsync(
+                                                            strValue, x => Utils.StringHashSetPool.Get(), token)
+                                                        .ConfigureAwait(false);
 
                     foreach (XPathNavigator objAppNameNode in await objXmlNode
                                                                     .SelectAndCacheExpressionAsync(

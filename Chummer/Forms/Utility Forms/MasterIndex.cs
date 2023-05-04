@@ -895,38 +895,32 @@ namespace Chummer
                             await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
                             await lblSourceClickReminder.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
                             await objEntry.DisplaySource.SetControlAsync(lblSource, token).ConfigureAwait(false);
-                            (bool blnSuccess, Task<string> tskNotes)
-                                = await _dicCachedNotes.TryGetValueAsync(objEntry, token).ConfigureAwait(false);
-                            if (!blnSuccess)
+                            Task<string> tskNotes = await _dicCachedNotes.AddCheapOrGetAsync(objEntry, x =>
                             {
                                 if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
                                                                     StringComparison.OrdinalIgnoreCase)
-                                    && (objEntry.TranslatedNameOnPage != objEntry.EnglishNameOnPage
-                                        || objEntry.Source.Page != objEntry.DisplaySource.Page))
+                                    && (x.TranslatedNameOnPage != x.EnglishNameOnPage
+                                        || x.Source.Page != x.DisplaySource.Page))
                                 {
                                     // don't check again it is not translated
-                                    tskNotes = Task.Run(async () =>
+                                    return Task.Run(async () =>
                                     {
                                         string strReturn = await CommonFunctions.GetTextFromPdfAsync(
-                                            objEntry.Source.ToString(),
-                                            objEntry.EnglishNameOnPage, token: token).ConfigureAwait(false);
+                                            x.Source.ToString(),
+                                            x.EnglishNameOnPage, token: token).ConfigureAwait(false);
                                         if (string.IsNullOrEmpty(strReturn))
                                             strReturn = await CommonFunctions.GetTextFromPdfAsync(
-                                                objEntry.DisplaySource.ToString(), objEntry.TranslatedNameOnPage, token: token).ConfigureAwait(false);
+                                                                                 x.DisplaySource.ToString(),
+                                                                                 x.TranslatedNameOnPage, token: token)
+                                                                             .ConfigureAwait(false);
                                         return strReturn;
                                     }, token);
                                 }
-                                else
-                                {
-                                    tskNotes = Task.Run(() =>
-                                                            CommonFunctions.GetTextFromPdfAsync(
-                                                                objEntry.Source.ToString(),
-                                                                objEntry.EnglishNameOnPage, token: token), token);
-                                }
-
-                                await _dicCachedNotes.TryAddAsync(objEntry, tskNotes, token).ConfigureAwait(false);
-                            }
-
+                                return Task.Run(() =>
+                                                    CommonFunctions.GetTextFromPdfAsync(
+                                                        x.Source.ToString(),
+                                                        x.EnglishNameOnPage, token: token), token);
+                            }, token);
                             string strNotes = await tskNotes.ConfigureAwait(false);
                             await txtNotes.DoThreadSafeAsync(x =>
                             {
