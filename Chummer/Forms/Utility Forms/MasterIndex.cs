@@ -56,7 +56,7 @@ namespace Chummer
                 = await dicCharacterSettings.TryGetValueAsync(GlobalSettings.DefaultMasterIndexSettingDefaultValue, token).ConfigureAwait(false);
             return blnSuccess
                 ? objReturn
-                : (await dicCharacterSettings.GetReadOnlyValuesAsync(token).ConfigureAwait(false)).First();
+                : (await dicCharacterSettings.FirstOrDefaultAsync(token: token).ConfigureAwait(false)).Value;
         }
 
         private static readonly ReadOnlyCollection<string> _astrFileNames = Array.AsReadOnly(new[]
@@ -333,17 +333,17 @@ namespace Chummer
             }
             try
             {
-                foreach (Task<string> tskLoop in await _dicCachedNotes.GetValuesAsync(_objGenericToken).ConfigureAwait(false))
+                await _dicCachedNotes.ForEachParallelAsync(async x =>
                 {
                     try
                     {
-                        await tskLoop.ConfigureAwait(false);
+                        await x.Value.ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {
                         //swallow this
                     }
-                }
+                }, _objGenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {

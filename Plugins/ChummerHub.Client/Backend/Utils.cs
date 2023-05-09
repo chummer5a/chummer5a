@@ -826,7 +826,7 @@ namespace ChummerHub.Client.Backend
                 CharacterCache objCache = (blnSync
                                               // ReSharper disable once MethodHasAsyncOverload
                                               ? sinner.GetCharacterCache(token)
-                                              : await sinner.GetCharacterCacheAsync(token))
+                                              : await sinner.GetCharacterCacheAsync(token).ConfigureAwait(false))
                                           ?? new CharacterCache
                                           {
                                               CharacterName = "pending",
@@ -835,17 +835,15 @@ namespace ChummerHub.Client.Backend
                                           };
                 if (blnSync)
                 {
-                    // ReSharper disable MethodHasAsyncOverloadWithCancellation
-                    if (objCache.MyPluginDataDic.ContainsKey("IsSINnerFavorite"))
-                        objCache.MyPluginDataDic.Remove("IsSINnerFavorite");
-                    objCache.MyPluginDataDic.Add("IsSINnerFavorite", member.IsFavorite);
-                    // ReSharper restore MethodHasAsyncOverloadWithCancellation
+                    // ReSharper disable once MethodHasAsyncOverload
+                    objCache.MyPluginDataDic.AddOrUpdate("IsSINnerFavorite", member.IsFavorite,
+                                                         (x, y) => member.IsFavorite, token);
                 }
                 else
                 {
-                    if (await objCache.MyPluginDataDic.ContainsKeyAsync("IsSINnerFavorite", token))
-                        await objCache.MyPluginDataDic.RemoveAsync("IsSINnerFavorite", token);
-                    await objCache.MyPluginDataDic.AddAsync("IsSINnerFavorite", member.IsFavorite, token);
+                    await objCache.MyPluginDataDic
+                                  .AddOrUpdateAsync("IsSINnerFavorite", member.IsFavorite, (x, y) => member.IsFavorite,
+                                                    token).ConfigureAwait(false);
                 }
 
                 SetEventHandlers(sinner, objCache);

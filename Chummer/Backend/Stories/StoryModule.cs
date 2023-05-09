@@ -70,7 +70,7 @@ namespace Chummer
                             }
 
                             if (string.IsNullOrEmpty(_strDefaultTextKey))
-                                _strDefaultTextKey = _dicEnglishTexts.Keys.FirstOrDefault();
+                                _strDefaultTextKey = _dicEnglishTexts.FirstOrDefault().Key;
                         }
                     }
                 }
@@ -95,7 +95,7 @@ namespace Chummer
                     }
 
                     if (string.IsNullOrEmpty(_strDefaultTextKey))
-                        _strDefaultTextKey = _dicEnglishTexts.Keys.FirstOrDefault();
+                        _strDefaultTextKey = _dicEnglishTexts.FirstOrDefault().Key;
                 }
             }
         }

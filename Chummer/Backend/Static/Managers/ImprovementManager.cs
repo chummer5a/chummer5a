@@ -209,9 +209,13 @@ namespace Chummer
             }
             else
             {
-                foreach (ImprovementDictionaryKey objCheckKey in s_DictionaryCachedValues.Keys
-                             .Where(x => x.CharacterObject == objCharacter && x.ImprovementType == eImprovementType)
-                             .ToList())
+                List<ImprovementDictionaryKey> lstTempOuter = new List<ImprovementDictionaryKey>();
+                s_DictionaryCachedValues.ForEach(x =>
+                {
+                    if (x.Key.CharacterObject == objCharacter && x.Key.ImprovementType == eImprovementType)
+                        lstTempOuter.Add(x.Key);
+                });
+                foreach (ImprovementDictionaryKey objCheckKey in lstTempOuter)
                 {
                     if (s_DictionaryCachedValues.TryGetValue(objCheckKey,
                                                              out Tuple<decimal, List<Improvement>> tupTemp))
@@ -226,9 +230,13 @@ namespace Chummer
                     }
                 }
 
-                foreach (ImprovementDictionaryKey objCheckKey in s_DictionaryCachedAugmentedValues.Keys
-                             .Where(x => x.CharacterObject == objCharacter && x.ImprovementType == eImprovementType)
-                             .ToList())
+                lstTempOuter.Clear();
+                s_DictionaryCachedAugmentedValues.ForEach(x =>
+                {
+                    if (x.Key.CharacterObject == objCharacter && x.Key.ImprovementType == eImprovementType)
+                        lstTempOuter.Add(x.Key);
+                });
+                foreach (ImprovementDictionaryKey objCheckKey in lstTempOuter)
                 {
                     if (s_DictionaryCachedAugmentedValues.TryGetValue(objCheckKey,
                                                                       out Tuple<decimal, List<Improvement>> tupTemp))
@@ -272,9 +280,13 @@ namespace Chummer
             }
             else
             {
-                foreach (ImprovementDictionaryKey objCheckKey in s_DictionaryCachedValues.Keys
-                             .Where(x => x.CharacterObject == objCharacter && x.ImprovementType == eImprovementType)
-                             .ToList())
+                List<ImprovementDictionaryKey> lstTempOuter = new List<ImprovementDictionaryKey>();
+                await s_DictionaryCachedValues.ForEachAsync(x =>
+                {
+                    if (x.Key.CharacterObject == objCharacter && x.Key.ImprovementType == eImprovementType)
+                        lstTempOuter.Add(x.Key);
+                }, token: token).ConfigureAwait(false);
+                foreach (ImprovementDictionaryKey objCheckKey in lstTempOuter)
                 {
                     (bool blnSuccess, Tuple<decimal, List<Improvement>> tupTemp)
                         = await s_DictionaryCachedValues.TryGetValueAsync(objCheckKey, token).ConfigureAwait(false);
@@ -290,9 +302,13 @@ namespace Chummer
                     }
                 }
 
-                foreach (ImprovementDictionaryKey objCheckKey in s_DictionaryCachedAugmentedValues.Keys
-                             .Where(x => x.CharacterObject == objCharacter && x.ImprovementType == eImprovementType)
-                             .ToList())
+                lstTempOuter.Clear();
+                await s_DictionaryCachedAugmentedValues.ForEachAsync(x =>
+                {
+                    if (x.Key.CharacterObject == objCharacter && x.Key.ImprovementType == eImprovementType)
+                        lstTempOuter.Add(x.Key);
+                }, token: token).ConfigureAwait(false);
+                foreach (ImprovementDictionaryKey objCheckKey in lstTempOuter)
                 {
                     (bool blnSuccess, Tuple<decimal, List<Improvement>> tupTemp)
                         = await s_DictionaryCachedAugmentedValues.TryGetValueAsync(objCheckKey, token).ConfigureAwait(false);
@@ -312,13 +328,25 @@ namespace Chummer
 
         public static void ClearCachedValues(Character objCharacter)
         {
-            foreach (ImprovementDictionaryKey objKey in s_DictionaryCachedValues.Keys.Where(x => x.CharacterObject == objCharacter).ToList())
+            List<ImprovementDictionaryKey> lstToRemove = new List<ImprovementDictionaryKey>();
+            s_DictionaryCachedValues.ForEach(x =>
+            {
+                if (x.Key.CharacterObject == objCharacter)
+                    lstToRemove.Add(x.Key);
+            });
+            foreach (ImprovementDictionaryKey objKey in lstToRemove)
             {
                 if (s_DictionaryCachedValues.TryRemove(objKey, out Tuple<decimal, List<Improvement>> tupTemp))
                     tupTemp.Item2.Clear(); // Just in case this helps the GC
             }
 
-            foreach (ImprovementDictionaryKey objKey in s_DictionaryCachedAugmentedValues.Keys.Where(x => x.CharacterObject == objCharacter).ToList())
+            lstToRemove.Clear();
+            s_DictionaryCachedAugmentedValues.ForEach(x =>
+            {
+                if (x.Key.CharacterObject == objCharacter)
+                    lstToRemove.Add(x.Key);
+            });
+            foreach (ImprovementDictionaryKey objKey in lstToRemove)
             {
                 if (s_DictionaryCachedAugmentedValues.TryRemove(objKey, out Tuple<decimal, List<Improvement>> tupTemp))
                     tupTemp.Item2.Clear(); // Just in case this helps the GC
@@ -329,7 +357,13 @@ namespace Chummer
 
         public static async ValueTask ClearCachedValuesAsync(Character objCharacter, CancellationToken token = default)
         {
-            foreach (ImprovementDictionaryKey objKey in s_DictionaryCachedValues.Keys.Where(x => x.CharacterObject == objCharacter).ToList())
+            List<ImprovementDictionaryKey> lstToRemove = new List<ImprovementDictionaryKey>();
+            await s_DictionaryCachedValues.ForEachAsync(x =>
+            {
+                if (x.Key.CharacterObject == objCharacter)
+                    lstToRemove.Add(x.Key);
+            }, token: token).ConfigureAwait(false);
+            foreach (ImprovementDictionaryKey objKey in lstToRemove)
             {
                 (bool blnSuccess, Tuple<decimal, List<Improvement>> tupTemp)
                     = await s_DictionaryCachedValues.TryRemoveAsync(objKey, token).ConfigureAwait(false);
@@ -337,7 +371,13 @@ namespace Chummer
                     tupTemp.Item2.Clear(); // Just in case this helps the GC
             }
 
-            foreach (ImprovementDictionaryKey objKey in s_DictionaryCachedAugmentedValues.Keys.Where(x => x.CharacterObject == objCharacter).ToList())
+            lstToRemove.Clear();
+            await s_DictionaryCachedAugmentedValues.ForEachAsync(x =>
+            {
+                if (x.Key.CharacterObject == objCharacter)
+                    lstToRemove.Add(x.Key);
+            }, token: token).ConfigureAwait(false);
+            foreach (ImprovementDictionaryKey objKey in lstToRemove)
             {
                 (bool blnSuccess, Tuple<decimal, List<Improvement>> tupTemp)
                     = await s_DictionaryCachedAugmentedValues.TryRemoveAsync(objKey, token).ConfigureAwait(false);

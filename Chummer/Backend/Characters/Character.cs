@@ -6061,17 +6061,16 @@ namespace Chummer
                                     {
                                         CharacterSettings objHashCodeMatchSettings
                                             = blnSync
-                                                ? SettingsManager.LoadedCharacterSettings.Values.FirstOrDefault(
-                                                    x => x.GetEquatableHashCode() == intSettingsHashCode)
-                                                : await (await (await SettingsManager
-                                                                      .GetLoadedCharacterSettingsAsync(token)
-                                                                      .ConfigureAwait(false))
-                                                               .GetReadOnlyValuesAsync(token).ConfigureAwait(false))
-                                                        .FirstOrDefaultAsync(
-                                                            async x => await x.GetEquatableHashCodeAsync(token)
-                                                                              .ConfigureAwait(false)
-                                                                       == intSettingsHashCode, token)
-                                                        .ConfigureAwait(false);
+                                                ? SettingsManager.LoadedCharacterSettings.FirstOrDefault(
+                                                    x => x.Value.GetEquatableHashCode() == intSettingsHashCode).Value
+                                                : (await (await SettingsManager
+                                                                .GetLoadedCharacterSettingsAsync(token)
+                                                                .ConfigureAwait(false))
+                                                         .FirstOrDefaultAsync(
+                                                             async x => await x.Value.GetEquatableHashCodeAsync(token)
+                                                                               .ConfigureAwait(false)
+                                                                        == intSettingsHashCode, token)
+                                                         .ConfigureAwait(false)).Value;
                                         if (objHashCodeMatchSettings != default
                                             && objHashCodeMatchSettings.BuildMethod == eSavedBuildMethod)
                                         {
@@ -6164,8 +6163,8 @@ namespace Chummer
                                                 {
                                                     objProspectiveSettings
                                                         = (await SettingsManager.LoadedCharacterSettings
-                                                            .GetReadOnlyValuesAsync(token).ConfigureAwait(false))
-                                                        .First();
+                                                            .FirstOrDefaultAsync(token).ConfigureAwait(false))
+                                                        .Value;
                                                     strReplacementSettingsKey = await objProspectiveSettings
                                                         .GetDictionaryKeyAsync(token).ConfigureAwait(false);
                                                 }
@@ -6276,8 +6275,8 @@ namespace Chummer
                                                 {
                                                     objProspectiveSettings
                                                         = (await SettingsManager.LoadedCharacterSettings
-                                                            .GetReadOnlyValuesAsync(token).ConfigureAwait(false))
-                                                        .First();
+                                                            .FirstOrDefaultAsync(token).ConfigureAwait(false))
+                                                        .Value;
                                                     strReplacementSettingsKey = await objProspectiveSettings
                                                         .GetDictionaryKeyAsync(token).ConfigureAwait(false);
                                                 }

@@ -430,8 +430,7 @@ namespace Chummer.Backend.Attributes
         {
             using (LockObject.EnterWriteLock())
             {
-                foreach (BindingSource objSource in _dicBindings.Values)
-                    objSource.Dispose();
+                _dicBindings.ForEach(x => x.Value.Dispose());
                 _dicBindings.Dispose();
                 _lstNormalAttributes.ForEach(x => x.Dispose());
                 _lstNormalAttributes.Dispose();
@@ -448,8 +447,7 @@ namespace Chummer.Backend.Attributes
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
-                foreach (BindingSource objSource in await _dicBindings.GetValuesAsync().ConfigureAwait(false))
-                    objSource.Dispose();
+                await _dicBindings.ForEachAsync(x => x.Value.Dispose()).ConfigureAwait(false);
                 await _dicBindings.DisposeAsync().ConfigureAwait(false);
                 await _lstNormalAttributes.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
                 await _lstNormalAttributes.DisposeAsync().ConfigureAwait(false);
@@ -1772,8 +1770,7 @@ namespace Chummer.Backend.Attributes
 
                     if (blnFirstTime)
                     {
-                        foreach (BindingSource objSource in _dicBindings.Values)
-                            objSource.Dispose();
+                        _dicBindings.ForEach(x => x.Value.Dispose());
                         _dicBindings.Clear();
                         foreach (string strAttributeString in AttributeStrings)
                         {
@@ -1826,8 +1823,7 @@ namespace Chummer.Backend.Attributes
 
                     if (blnFirstTime)
                     {
-                        foreach (BindingSource objSource in _dicBindings.Values)
-                            objSource.Dispose();
+                        await _dicBindings.ForEachAsync(x => x.Value.Dispose(), token: token).ConfigureAwait(false);
                         await _dicBindings.ClearAsync(token).ConfigureAwait(false);
                         foreach (string strAttributeString in AttributeStrings)
                         {

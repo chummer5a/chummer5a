@@ -264,8 +264,7 @@ namespace Chummer
             using (s_objDataDirectoriesLock.EnterWriteLock(token))
             {
                 token.ThrowIfCancellationRequested();
-                foreach (XmlReference objReference in s_DicXmlDocuments.Values)
-                    objReference.Dispose();
+                s_DicXmlDocuments.ForEach(x => x.Value.Dispose(), token);
                 token.ThrowIfCancellationRequested();
                 s_DicXmlDocuments.Clear();
                 token.ThrowIfCancellationRequested();

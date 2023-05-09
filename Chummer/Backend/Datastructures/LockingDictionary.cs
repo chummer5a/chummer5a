@@ -440,6 +440,20 @@ namespace Chummer
                 return _dicData.ContainsKey(key);
         }
 
+        /// <inheritdoc cref="Dictionary{TKey, TValue}.ContainsValue" />
+        public bool ContainsValue(TValue value)
+        {
+            using (EnterReadLock.Enter(LockObject))
+                return _dicData.ContainsValue(value);
+        }
+
+        /// <inheritdoc cref="Dictionary{TKey, TValue}.ContainsValue" />
+        public async ValueTask<bool> ContainsValueAsync(TValue value, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _dicData.ContainsValue(value);
+        }
+
         /// <inheritdoc />
         public void Add(TKey key, TValue value)
         {

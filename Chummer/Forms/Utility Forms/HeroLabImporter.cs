@@ -43,8 +43,7 @@ namespace Chummer
             Disposed += (sender, args) =>
             {
                 _lstCharacterCache.Dispose();
-                foreach (Bitmap imgImage in _dicImages.Values)
-                    imgImage.Dispose();
+                _dicImages.ForEach(x => x.Value.Dispose());
                 _dicImages.Dispose();
             };
             InitializeComponent();

@@ -367,25 +367,32 @@ namespace Chummer
                 {
                     int intBestScore = int.MinValue;
                     string strReturn = string.Empty;
-                    foreach (CharacterSettings objExistingSettings in await s_DicLoadedCharacterSettings.GetValuesAsync(token).ConfigureAwait(false))
+                    await s_DicLoadedCharacterSettings.ForEachAsync(async x =>
                     {
-                        string strLoopKey = await objExistingSettings.GetDictionaryKeyAsync(token).ConfigureAwait(false);
-                        if (strKeyToDelete == strLoopKey)
-                            continue;
+                        if (strKeyToDelete == x.Key)
+                            return;
                         // ReSharper disable once AccessToDisposedClosure
-                        int intLoopScore = await CalculateCharacterSettingsMatchScore(objSettingsToDelete, objExistingSettings, token).ConfigureAwait(false);
+                        int intLoopScore
+                            = await CalculateCharacterSettingsMatchScore(
+                                objSettingsToDelete, x.Value, token).ConfigureAwait(false);
                         if (intLoopScore > intBestScore)
                         {
                             intBestScore = intLoopScore;
-                            strReturn = strLoopKey;
+                            strReturn = x.Key;
                         }
-                    }
+                    }, token: token).ConfigureAwait(false);
                     return strReturn;
                 }, Utils.JoinableTaskFactory);
                 await Program.OpenCharacters.ForEachAsync(async objCharacter =>
                 {
-                    if (await objCharacter.GetSettingsKeyAsync(token).ConfigureAwait(false) == strKeyToDelete)
-                        await objCharacter.SetSettingsKeyAsync(await strBestMatchNewSettingsKey.GetValueAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    using (await EnterReadLock.EnterAsync(objCharacter, token).ConfigureAwait(false))
+                    {
+                        if (await objCharacter.GetSettingsKeyAsync(token).ConfigureAwait(false) == strKeyToDelete)
+                            await objCharacter
+                                  .SetSettingsKeyAsync(
+                                      await strBestMatchNewSettingsKey.GetValueAsync(token).ConfigureAwait(false),
+                                      token).ConfigureAwait(false);
+                    }
                 }, token: token).ConfigureAwait(false);
             }
             finally
@@ -423,27 +430,28 @@ namespace Chummer
 
                 // We ended up changing our dictionary key, so find the first custom setting without a corresponding file and delete it
                 // (we assume that it's the one that got renamed)
-                if (await s_DicLoadedCharacterSettings.TryAddAsync(strKey, objNewCharacterSettings, token).ConfigureAwait(false))
+                if (!await s_DicLoadedCharacterSettings.TryAddAsync(strKey, objNewCharacterSettings, token)
+                                                       .ConfigureAwait(false))
+                    continue;
+                CharacterSettings objToDelete = (await s_DicLoadedCharacterSettings.FirstOrDefaultAsync(async x => !await x.Value.GetBuiltInOptionAsync(token)
+                            .ConfigureAwait(false)
+                        && !File.Exists(
+                            Path.Combine(Utils.GetStartupPath, "settings",
+                                         await x.Value.GetFileNameAsync(token)
+                                                .ConfigureAwait(false))), token)
+                    .ConfigureAwait(false)).Value;
+                if (objToDelete != null)
                 {
-                    foreach (CharacterSettings objExistingSettings in (await s_DicLoadedCharacterSettings.GetValuesAsync(token).ConfigureAwait(false)).ToList())
+                    string strKeyToDelete = await objToDelete.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                    await Program.OpenCharacters.ForEachAsync(async objCharacter =>
                     {
-                        if (await objExistingSettings.GetBuiltInOptionAsync(token).ConfigureAwait(false))
-                            continue;
-                        if (!File.Exists(Path.Combine(Utils.GetStartupPath, "settings", await objExistingSettings.GetFileNameAsync(token).ConfigureAwait(false))))
-                        {
-                            string strKeyToDelete = await objExistingSettings.GetDictionaryKeyAsync(token).ConfigureAwait(false);
-                            await Program.OpenCharacters.ForEachAsync(async objCharacter =>
-                            {
-                                if (await objCharacter.GetSettingsKeyAsync(token).ConfigureAwait(false) == strKeyToDelete)
-                                    await objCharacter.SetSettingsKeyAsync(strKey, token).ConfigureAwait(false);
-                            }, token: token).ConfigureAwait(false);
-                            await s_DicLoadedCharacterSettings.RemoveAsync(strKeyToDelete, token).ConfigureAwait(false);
-                            await objExistingSettings.DisposeAsync().ConfigureAwait(false);
-                            return;
-                        }
-                    }
-                    break;
+                        if (await objCharacter.GetSettingsKeyAsync(token).ConfigureAwait(false) == strKeyToDelete)
+                            await objCharacter.SetSettingsKeyAsync(strKey, token).ConfigureAwait(false);
+                    }, token: token).ConfigureAwait(false);
+                    await s_DicLoadedCharacterSettings.RemoveAsync(strKeyToDelete, token).ConfigureAwait(false);
+                    await objToDelete.DisposeAsync().ConfigureAwait(false);
                 }
+                break;
             }
         }
 

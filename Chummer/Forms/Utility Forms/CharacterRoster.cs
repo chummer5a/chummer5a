@@ -309,10 +309,14 @@ namespace Chummer
                                 objNode.Tag = objNewCache;
                             }
                         }, objTokenToUse).ConfigureAwait(false);
+                        await _dicSavedCharacterCaches.ForEachWithBreakAsync(x =>
+                        {
+                            setCachesToDispose.Remove(x.Value);
+                            return setCachesToDispose.Count > 0;
+                        }, objTokenToUse).ConfigureAwait(false);
                         foreach (CharacterCache objOldCache in setCachesToDispose)
                         {
-                            if (!(await _dicSavedCharacterCaches.GetValuesAsync(objTokenToUse).ConfigureAwait(false)).Contains(objOldCache))
-                                await objOldCache.DisposeAsync().ConfigureAwait(false);
+                            await objOldCache.DisposeAsync().ConfigureAwait(false);
                         }
                     }
                 }

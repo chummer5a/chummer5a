@@ -181,17 +181,17 @@ namespace Chummer
                 objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 List<string> lstPersistentKeysToRemove
                     = new List<string>(await _dicPersistentModules.GetCountAsync(token).ConfigureAwait(false));
-                foreach (KeyValuePair<string, StoryModule> objPersistentModule in _dicPersistentModules)
+                await _dicPersistentModules.ForEachAsync(x =>
                 {
-                    if (objPersistentModule.Value.IsRandomlyGenerated)
-                        lstPersistentKeysToRemove.Add(objPersistentModule.Key);
-                }
+                    if (x.Value.IsRandomlyGenerated)
+                        lstPersistentKeysToRemove.Add(x.Key);
+                }, token).ConfigureAwait(false);
 
                 foreach (string strKey in lstPersistentKeysToRemove)
                     await _dicPersistentModules.RemoveAsync(strKey, token).ConfigureAwait(false);
 
-                foreach (StoryModule objModule in Modules)
-                    await objModule.TestRunToGeneratePersistents(objCulture, strLanguage, token).ConfigureAwait(false);
+                await Modules.ForEachAsync(x => x.TestRunToGeneratePersistents(objCulture, strLanguage, token).AsTask(), token)
+                             .ConfigureAwait(false);
             }
             finally
             {
@@ -207,12 +207,20 @@ namespace Chummer
             {
                 if (_blnNeedToRegeneratePersistents)
                     await GeneratePersistentsAsync(objCulture, strLanguage, token).ConfigureAwait(false);
-                int intCount = await Modules.GetCountAsync(token).ConfigureAwait(false);
-                string[] strModuleOutputStrings = new string[intCount];
-                for (int i = 0; i < intCount; ++i)
+                string[] strModuleOutputStrings;
+                using (await EnterReadLock.EnterAsync(Modules, token).ConfigureAwait(false))
                 {
-                    strModuleOutputStrings[i] = await Modules[i].PrintModule(objCulture, strLanguage, token).ConfigureAwait(false);
+                    int intCount = await Modules.GetCountAsync(token).ConfigureAwait(false);
+                    strModuleOutputStrings = new string[intCount];
+                    for (int i = 0; i < intCount; ++i)
+                    {
+                        strModuleOutputStrings[i]
+                            = await (await Modules.GetValueAtAsync(i, token).ConfigureAwait(false))
+                                    .PrintModule(objCulture, strLanguage, token)
+                                    .ConfigureAwait(false);
+                    }
                 }
+
                 return string.Concat(strModuleOutputStrings);
             }
         }

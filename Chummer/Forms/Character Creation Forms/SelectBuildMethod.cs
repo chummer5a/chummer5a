@@ -260,14 +260,13 @@ namespace Chummer
                             (bool blnSuccess, CharacterSettings objSetting)
                                 = await dicCharacterSettings.TryGetValueAsync(
                                     GlobalSettings.DefaultCharacterSetting, token).ConfigureAwait(false);
-                            foreach (CharacterSettings objLoopSetting in await dicCharacterSettings
-                                                                               .GetReadOnlyValuesAsync(token).ConfigureAwait(false))
+                            await dicCharacterSettings.ForEachAsync(async x =>
                             {
-                                lstCharacterSettings.Add(new ListItem(objLoopSetting,
-                                                                      await objLoopSetting
-                                                                            .GetCurrentDisplayNameAsync(token)
-                                                                            .ConfigureAwait(false)));
-                            }
+                                lstCharacterSettings.Add(new ListItem(x.Value,
+                                                                      await x.Value
+                                                                             .GetCurrentDisplayNameAsync(token)
+                                                                             .ConfigureAwait(false)));
+                            }, token).ConfigureAwait(false);
 
                             lstCharacterSettings.Sort(CompareListItems.CompareNames);
                             await cboCharacterSetting.PopulateWithListItemsAsync(lstCharacterSettings, token: token)

@@ -476,14 +476,11 @@ namespace ChummerHub.Client.Sinners
                 if (blnSync)
                 {
                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                    if (MySINnerIds.ContainsKey(MyCharacter.FileName))
-                    {
-                        MySINnerIds.TryRemove(MyCharacter.FileName, out Guid _);
-                    }
-                }
-                else if (await MySINnerIds.ContainsKeyAsync(MyCharacter.FileName, token))
-                {
                     MySINnerIds.TryRemove(MyCharacter.FileName, out Guid _);
+                }
+                else
+                {
+                    await MySINnerIds.TryRemoveAsync(MyCharacter.FileName, token).ConfigureAwait(false);
                 }
             }
 
@@ -609,7 +606,16 @@ namespace ChummerHub.Client.Sinners
                     }
                 }
 
-                if (blnSync)
+                if (MySINnerFile.Id != null)
+                {
+                    Guid objTemp = MySINnerFile.Id.Value;
+                    if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverload
+                        MySINnerIds.AddOrUpdate(MyCharacter.FileName, objTemp, (x, y) => objTemp, token);
+                    else
+                        await MySINnerIds.AddOrUpdateAsync(MyCharacter.FileName, objTemp, (x, y) => objTemp, token);
+                }
+                else if (blnSync)
                 {
                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                     while (MySINnerIds.ContainsKey(MyCharacter.FileName))
@@ -619,15 +625,6 @@ namespace ChummerHub.Client.Sinners
                 {
                     while (await MySINnerIds.ContainsKeyAsync(MyCharacter.FileName, token))
                         await MySINnerIds.TryRemoveAsync(MyCharacter.FileName, token);
-                }
-
-                if (MySINnerFile.Id != null)
-                {
-                    if (blnSync)
-                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                        MySINnerIds.TryAdd(MyCharacter.FileName, MySINnerFile.Id.Value);
-                    else
-                        await MySINnerIds.TryAddAsync(MyCharacter.FileName, MySINnerFile.Id.Value, token);
                 }
 
                 SaveSINnerIds(); //Save it!

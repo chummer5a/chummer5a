@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
@@ -80,10 +81,9 @@ namespace Chummer
             Disposed += (sender, args) =>
             {
                 _dicSourcebookInfos.Dispose();
-                List<HashSet<string>> lstToReturn = _dicCachedPdfAppNames.Values.ToList();
-                for (int i = lstToReturn.Count - 1; i >= 0; --i)
+                while (_dicCachedPdfAppNames.TryTake(out KeyValuePair<string, HashSet<string>> kvpTemp))
                 {
-                    HashSet<string> setLoop = lstToReturn[i];
+                    HashSet<string> setLoop = kvpTemp.Value;
                     Utils.StringHashSetPool.Return(ref setLoop);
                 }
                 _dicCachedPdfAppNames.Dispose();
@@ -1679,8 +1679,9 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 await dicSourcebookInfos.ClearAsync(token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
-                foreach (SourcebookInfo objInfo in await _dicSourcebookInfos.GetValuesAsync(token).ConfigureAwait(false))
-                    await dicSourcebookInfos.AddAsync(objInfo.Code, objInfo, token).ConfigureAwait(false);
+                await _dicSourcebookInfos
+                      .ForEachAsync(x => dicSourcebookInfos.AddAsync(x.Value.Code, x.Value, token).AsTask(), token)
+                      .ConfigureAwait(false);
             }
             finally
             {
@@ -2451,38 +2452,16 @@ namespace Chummer
                                                                       LoadingBar frmProgressBar,
                                                                       CancellationToken token = default)
         {
-            // LockingDictionary makes sure we don't pick out multiple files for the same sourcebook
-            LockingDictionary<string, SourcebookInfo>
-                dicResults = new LockingDictionary<string, SourcebookInfo>();
-            try
+            // ConcurrentDictionary makes sure we don't pick out multiple files for the same sourcebook
+            ConcurrentDictionary<string, SourcebookInfo>
+                dicResults = new ConcurrentDictionary<string, SourcebookInfo>();
+            List<Task<SourcebookInfo>> lstLoadingTasks = new List<Task<SourcebookInfo>>(Utils.MaxParallelBatchSize);
+            int intCounter = 0;
+            foreach (string strFile in lstFiles)
             {
-                List<Task<SourcebookInfo>> lstLoadingTasks = new List<Task<SourcebookInfo>>(Utils.MaxParallelBatchSize);
-                int intCounter = 0;
-                foreach (string strFile in lstFiles)
-                {
-                    lstLoadingTasks.Add(GetSourcebookInfo(strFile));
-                    if (++intCounter != Utils.MaxParallelBatchSize)
-                        continue;
-                    await Task.WhenAll(lstLoadingTasks).ConfigureAwait(false);
-                    foreach (Task<SourcebookInfo> tskLoop in lstLoadingTasks)
-                    {
-                        SourcebookInfo objInfo = await tskLoop.ConfigureAwait(false);
-                        // ReSharper disable once AccessToDisposedClosure
-                        if (objInfo == null)
-                            continue;
-                        await dicResults.AddOrUpdateAsync(objInfo.Code, objInfo, (x, y) =>
-                        {
-                            y.Path = objInfo.Path;
-                            y.Offset = objInfo.Offset;
-                            objInfo.Dispose();
-                            return y;
-                        }, token).ConfigureAwait(false);
-                    }
-
-                    intCounter = 0;
-                    lstLoadingTasks.Clear();
-                }
-
+                lstLoadingTasks.Add(GetSourcebookInfo(strFile));
+                if (++intCounter != Utils.MaxParallelBatchSize)
+                    continue;
                 await Task.WhenAll(lstLoadingTasks).ConfigureAwait(false);
                 foreach (Task<SourcebookInfo> tskLoop in lstLoadingTasks)
                 {
@@ -2490,41 +2469,58 @@ namespace Chummer
                     // ReSharper disable once AccessToDisposedClosure
                     if (objInfo == null)
                         continue;
-                    await dicResults.AddOrUpdateAsync(objInfo.Code, objInfo, (x, y) =>
+                    dicResults.AddOrUpdate(objInfo.Code, objInfo, (x, y) =>
                     {
                         y.Path = objInfo.Path;
                         y.Offset = objInfo.Offset;
                         objInfo.Dispose();
                         return y;
-                    }, token).ConfigureAwait(false);
+                    });
                 }
 
-                async Task<SourcebookInfo> GetSourcebookInfo(string strBookFile)
-                {
-                    FileInfo fileInfo = new FileInfo(strBookFile);
-                    await frmProgressBar
-                          .PerformStepAsync(fileInfo.Name, LoadingBar.ProgressBarTextPatterns.Scanning, token)
-                          .ConfigureAwait(false);
-                    return await ScanPDFForMatchingText(fileInfo, matches, token).ConfigureAwait(false);
-                }
-
-                foreach (KeyValuePair<string, SourcebookInfo> kvpInfo in dicResults)
-                {
-                    await _dicSourcebookInfos.AddOrUpdateAsync(kvpInfo.Key, kvpInfo.Value, (x, y) =>
-                    {
-                        y.Path = kvpInfo.Value.Path;
-                        y.Offset = kvpInfo.Value.Offset;
-                        kvpInfo.Value.Dispose();
-                        return y;
-                    }, token).ConfigureAwait(false);
-                }
-
-                return (await dicResults.GetValuesAsync(token).ConfigureAwait(false)).ToList();
+                intCounter = 0;
+                lstLoadingTasks.Clear();
             }
-            finally
+
+            await Task.WhenAll(lstLoadingTasks).ConfigureAwait(false);
+            foreach (Task<SourcebookInfo> tskLoop in lstLoadingTasks)
             {
-                await dicResults.DisposeAsync().ConfigureAwait(false);
+                SourcebookInfo objInfo = await tskLoop.ConfigureAwait(false);
+                // ReSharper disable once AccessToDisposedClosure
+                if (objInfo == null)
+                    continue;
+                dicResults.AddOrUpdate(objInfo.Code, objInfo, (x, y) =>
+                {
+                    y.Path = objInfo.Path;
+                    y.Offset = objInfo.Offset;
+                    objInfo.Dispose();
+                    return y;
+                });
             }
+
+            async Task<SourcebookInfo> GetSourcebookInfo(string strBookFile)
+            {
+                FileInfo fileInfo = new FileInfo(strBookFile);
+                await frmProgressBar
+                      .PerformStepAsync(fileInfo.Name, LoadingBar.ProgressBarTextPatterns.Scanning, token)
+                      .ConfigureAwait(false);
+                return await ScanPDFForMatchingText(fileInfo, matches, token).ConfigureAwait(false);
+            }
+
+            List<SourcebookInfo> lstReturn
+                = new List<SourcebookInfo>(dicResults.Count);
+            foreach (KeyValuePair<string, SourcebookInfo> kvpInfo in dicResults)
+            {
+                lstReturn.Add(await _dicSourcebookInfos.AddOrUpdateAsync(kvpInfo.Key, kvpInfo.Value, (x, y) =>
+                {
+                    y.Path = kvpInfo.Value.Path;
+                    y.Offset = kvpInfo.Value.Offset;
+                    kvpInfo.Value.Dispose();
+                    return y;
+                }, token).ConfigureAwait(false));
+            }
+
+            return lstReturn;
         }
 
         private static async ValueTask<SourcebookInfo> ScanPDFForMatchingText(

@@ -228,7 +228,7 @@ namespace Chummer
         public const int MaxStackLimit = 1024;
         private static bool _blnShowCharacterCustomDataWarning;
 
-        public static ThreadSafeCachedRandom RandomGenerator { get; } = new ThreadSafeCachedRandom(new XoRoShiRo128starstar().GetRandomCompatible(), true);
+        public static ThreadSafeCachedRandom RandomGenerator { get; } = new ThreadSafeCachedRandom(new XoRoShiRo128starstar(), true);
 
         // Plugins information
         private static readonly LockingDictionary<string, bool> s_dicPluginsEnabled = new LockingDictionary<string, bool>();
@@ -885,14 +885,14 @@ namespace Chummer
                         LockingDictionary<string, SourcebookInfo> dicSourcebookInfos = await GetSourcebookInfosAsync(token).ConfigureAwait(false);
                         using (await EnterReadLock.EnterAsync(dicSourcebookInfos, token).ConfigureAwait(false))
                         {
-                            foreach (SourcebookInfo objSource in await dicSourcebookInfos.GetValuesAsync(token).ConfigureAwait(false))
+                            await dicSourcebookInfos.ForEachAsync(x =>
                             {
-                                token.ThrowIfCancellationRequested();
-                                objSourceRegistry.SetValue(objSource.Code,
-                                                           objSource.Path + '|'
-                                                                          + objSource.Offset.ToString(
-                                                                              InvariantCultureInfo));
-                            }
+                                // ReSharper disable once AccessToDisposedClosure
+                                objSourceRegistry.SetValue(x.Value.Code,
+                                                           x.Value.Path + '|'
+                                                                        + x.Value.Offset.ToString(
+                                                                            InvariantCultureInfo));
+                            }, token).ConfigureAwait(false);
                         }
                     }
                 }

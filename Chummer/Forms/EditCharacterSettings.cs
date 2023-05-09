@@ -233,17 +233,30 @@ namespace Chummer
                                                 .ConfigureAwait(false);
                 if (!blnSuccess)
                     return;
-                if (!await Utils.SafeDeleteFileAsync(
-                                    Path.Combine(Utils.GetStartupPath, "settings",
-                                                 _objReferenceCharacterSettings.FileName), true)
-                                .ConfigureAwait(false))
+                try
+                {
+                    if (!await Utils.SafeDeleteFileAsync(
+                                        Path.Combine(Utils.GetStartupPath, "settings",
+                                                     _objReferenceCharacterSettings.FileName), true)
+                                    .ConfigureAwait(false))
+                    {
+                        // Revert removal of setting if we cannot delete the file
+                        await dicCharacterSettings.AddAsync(
+                                                      await objDeletedSettings.GetDictionaryKeyAsync()
+                                                                              .ConfigureAwait(false),
+                                                      objDeletedSettings)
+                                                  .ConfigureAwait(false);
+                        return;
+                    }
+                }
+                catch
                 {
                     // Revert removal of setting if we cannot delete the file
                     await dicCharacterSettings.AddAsync(
                                                   await objDeletedSettings.GetDictionaryKeyAsync()
                                                                           .ConfigureAwait(false), objDeletedSettings)
                                               .ConfigureAwait(false);
-                    return;
+                    throw;
                 }
 
                 // Force repopulate character settings list in Master Index from here in lieu of event handling for concurrent dictionaries
@@ -384,7 +397,19 @@ namespace Chummer
                         return;
                     }
 
-                    if (!_objCharacterSettings.Save(strSelectedFullFileName, true))
+                    bool blnSaveSuccessful;
+                    try
+                    {
+                        blnSaveSuccessful = await _objCharacterSettings.SaveAsync(strSelectedFullFileName, true).ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        // Revert addition of settings if we cannot create a file
+                        await dicCharacterSettings.RemoveAsync(strKey).ConfigureAwait(false);
+                        await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
+                        throw;
+                    }
+                    if (!blnSaveSuccessful)
                     {
                         // Revert addition of settings if we cannot create a file
                         await dicCharacterSettings.RemoveAsync(strKey).ConfigureAwait(false);
@@ -444,7 +469,7 @@ namespace Chummer
                     }
                 }
 
-                if (!_objCharacterSettings.Save())
+                if (!await _objCharacterSettings.SaveAsync().ConfigureAwait(false))
                     return;
                 if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
                     await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
