@@ -1285,7 +1285,7 @@ namespace Chummer
                         }
                     case "Physical":
                         {
-                            eType = Improvement.ImprovementType.SocialLimit;
+                            eType = Improvement.ImprovementType.PhysicalLimit;
                             break;
                         }
                     default:
