@@ -261,7 +261,7 @@
         </required>
       </adeptwayrequires>
       <bonus>
-        <sociallimit>1</sociallimit>
+        <sociallimit>Rating</sociallimit>
       </bonus>
     </power>
     <power>
@@ -283,7 +283,7 @@
         </required>
       </adeptwayrequires>
       <bonus>
-        <mentallimit>1</mentallimit>
+        <mentallimit>Rating</mentallimit>
       </bonus>
     </power>
     <power>
@@ -305,7 +305,7 @@
         </required>
       </adeptwayrequires>
       <bonus>
-        <physicallimit>1</physicallimit>
+        <physicallimit>Rating</physicallimit>
       </bonus>
     </power>
     <!-- TODO: This is stupid and I hate it, but it's not like we're getting an errata any time soon.
