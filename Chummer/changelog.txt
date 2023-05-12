@@ -34,6 +34,7 @@ Data Changes:
 - Added missing martial arts from Datapuls SOTA 2080. Fixes #4986.
 - Added spidersilk spec to the Exotic Ranged Weapon skill. Closes #5000
 - Added Semi-Automatics spec to Streetline Special.
+- Added missing Infected Advanced Powers from Dark Terrors (Immunity (Cold), Mimicry, Pounce, Psychokinesis, Secretion/Substance Extrusion (Anti-Coagulant), Silence, Tunneling Claws)
 
 Changed/New Strings:
 - LimitCondition_SkillsActiveLeadership
