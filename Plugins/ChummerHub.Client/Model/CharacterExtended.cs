@@ -125,6 +125,7 @@ namespace ChummerHub.Client.Sinners
             get => _MySINnerFile;
             set
             {
+                // ReSharper disable once ArrangeAccessorOwnerBody
                 _MySINnerFile = value;
                 //if (value != null)
                 //    _MySINnerFile.DownloadedFromSINnersTime = DateTime.Now.ToUniversalTime();

@@ -610,15 +610,19 @@ namespace ChummerHub.Client.UI
                     show.AppendLine().Append(claim.Type).Append(": ").Append(claim.Value);
                 }
 
-                Dictionary<string, JsonElement> values
-                    = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(
-                        result.TokenResponse.Raw);
-                if (values != null)
+                string strJson = result.TokenResponse.Raw ?? string.Empty;
+                if (!string.IsNullOrEmpty(strJson))
                 {
-                    show.AppendLine().Append("token response...");
-                    foreach (KeyValuePair<string, JsonElement> item in values)
+                    Dictionary<string, JsonElement> values
+                        = System.Text.Json.JsonSerializer.Deserialize<Dictionary<string, JsonElement>>(
+                            strJson);
+                    if (values != null)
                     {
-                        show.AppendLine().Append(item.Key).Append(": ").Append(item.Value);
+                        show.AppendLine().Append("token response...");
+                        foreach (KeyValuePair<string, JsonElement> item in values)
+                        {
+                            show.AppendLine().Append(item.Key).Append(": ").Append(item.Value);
+                        }
                     }
                 }
 

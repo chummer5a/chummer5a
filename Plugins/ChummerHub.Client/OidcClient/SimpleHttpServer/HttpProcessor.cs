@@ -232,9 +232,9 @@ namespace SimpleHttpServer
             }
 
             string content = null;
-            if (headers.ContainsKey("Content-Length"))
+            if (headers.TryGetValue("Content-Length", out string strContentLength))
             {
-                int totalBytes = Convert.ToInt32(headers["Content-Length"]);
+                int totalBytes = Convert.ToInt32(strContentLength);
                 int bytesLeft = totalBytes;
                 byte[] bytes = new byte[totalBytes];
                

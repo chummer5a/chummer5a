@@ -179,7 +179,8 @@ namespace Chummer.Plugins
                         ImageDpi96 = Resources.delete,
                         ImageDpi192 = Resources.delete1
                     };
-                    newDelete.Click += MainForm.CharacterRoster.tsDelete_Click;
+                    if (MainForm != null)
+                        newDelete.Click += MainForm.CharacterRoster.tsDelete_Click;
                     newDelete.UpdateLightDarkMode();
                     newDelete.TranslateToolStripItemsRecursively();
                     cmsRoster.Items.Add(newDelete);
@@ -264,7 +265,8 @@ namespace Chummer.Plugins
                                 Tag = item.Tag,
                                 Name = item.Name
                             };
-                            newDelete.Click += MainForm.CharacterRoster.tsDelete_Click;
+                            if (MainForm != null)
+                                newDelete.Click += MainForm.CharacterRoster.tsDelete_Click;
                             newDelete.UpdateLightDarkMode();
                             newDelete.TranslateToolStripItemsRecursively();
                             cmsRoster.Items.Add(newDelete);

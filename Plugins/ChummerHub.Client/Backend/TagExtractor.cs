@@ -135,7 +135,7 @@ namespace ChummerHub.Client.Backend
                     //sometimes we simply don't have a specialication (for example)
                     if (includeprop == "Specialization")
                         continue;
-                    throw new ArgumentOutOfRangeException("Could not find property " + includeprop + " on instance of type " + objPropertyHaver.GetType() + " with name "+ objPropertyHaver.ToString()+".");
+                    throw new ArgumentOutOfRangeException("Could not find property " + includeprop + " on instance of type " + objPropertyHaver.GetType() + " with name " + objPropertyHaver +".");
 
                 }
                 object includeInstance = propfound.GetValue(objPropertyHaver);
