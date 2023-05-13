@@ -37,7 +37,7 @@ namespace Chummer
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
-        private bool _blnSilentMode;
+        private int _intSilentMode;
         private bool _blnSilentModeUpdateWasDenied;
         private string _strDownloadFile = string.Empty;
         private string _strLatestVersion = string.Empty;
@@ -549,12 +549,12 @@ namespace Chummer
         /// </summary>
         public bool SilentMode
         {
-            get => _blnSilentMode;
+            get => _intSilentMode > 0;
             set
             {
-                if (_blnSilentMode == value)
+                int intNewValue = value.ToInt32();
+                if (Interlocked.Exchange(ref _intSilentMode, intNewValue) == intNewValue)
                     return;
-                _blnSilentMode = value;
                 if (value)
                 {
                     CancellationTokenSource objNewSource = new CancellationTokenSource();

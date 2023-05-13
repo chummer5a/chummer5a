@@ -428,6 +428,7 @@ namespace Chummer
                 return;
             using (LockObject.EnterWriteLock())
             {
+                bool blnOldDoingCopy = _blnDoingCopy;
                 _blnDoingCopy = true;
                 List<string> lstPropertiesToUpdate;
                 try
@@ -523,7 +524,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    _blnDoingCopy = false;
+                    _blnDoingCopy = blnOldDoingCopy;
                 }
 
                 OnMultiplePropertyChanged(lstPropertiesToUpdate);
@@ -537,6 +538,7 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                bool blnOldDoingCopy = _blnDoingCopy;
                 _blnDoingCopy = true;
                 List<string> lstPropertiesToUpdate;
                 try
@@ -647,7 +649,7 @@ namespace Chummer
                 }
                 finally
                 {
-                    _blnDoingCopy = false;
+                    _blnDoingCopy = blnOldDoingCopy;
                 }
 
                 OnMultiplePropertyChanged(lstPropertiesToUpdate);
@@ -1969,7 +1971,7 @@ namespace Chummer
                         // <allowskillregrouping />
                         await objWriter.WriteElementStringAsync("allowskillregrouping",
                                                                 _blnAllowSkillRegrouping.ToString(
-                                                                    GlobalSettings.InvariantCultureInfo))
+                                                                    GlobalSettings.InvariantCultureInfo), token: token)
                                        .ConfigureAwait(false);
                         // <specializationsbreakskillgroups />
                         await objWriter.WriteElementStringAsync("specializationsbreakskillgroups",
@@ -2463,7 +2465,7 @@ namespace Chummer
                         // <karmamaskingfocus />
                         await objWriter.WriteElementStringAsync("karmamaskingfocus",
                                                                 _intKarmaMaskingFocus.ToString(
-                                                                    GlobalSettings.InvariantCultureInfo))
+                                                                    GlobalSettings.InvariantCultureInfo), token: token)
                                        .ConfigureAwait(false);
                         // <karmapowerfocus />
                         await objWriter.WriteElementStringAsync("karmapowerfocus",

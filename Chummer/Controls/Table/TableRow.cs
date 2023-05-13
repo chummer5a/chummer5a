@@ -28,7 +28,7 @@ namespace Chummer.UI.Table
     public partial class TableRow : UserControl
     {
         private int _intIndex;
-        private bool _blnSelected;
+        private int _intSelected;
 
         public TableRow()
         {
@@ -53,8 +53,8 @@ namespace Chummer.UI.Table
             }
             else
             {
-                this.DoThreadSafe(x => x.BackColor
-                                      = (intIndex & 1) == 0 ? ColorManager.ControlLightest : ColorManager.Control);
+                Color objColor = (intIndex & 1) == 0 ? ColorManager.ControlLightest : ColorManager.Control;
+                this.DoThreadSafe(x => x.BackColor = objColor);
             }
         }
 
@@ -86,12 +86,12 @@ namespace Chummer.UI.Table
 
         public bool Selected
         {
-            get => _blnSelected;
+            get => _intSelected > 0;
             set
             {
-                if (_blnSelected == value)
+                int intNewValue = value.ToInt32();
+                if (Interlocked.Exchange(ref _intSelected, intNewValue) == intNewValue)
                     return;
-                _blnSelected = value;
                 Update(Index, Selected);
             }
         }

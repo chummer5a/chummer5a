@@ -46,7 +46,7 @@ namespace Chummer
 
         private int _intLoading = 1;
         private int _intSkipLimbCountUpdate;
-        private bool _blnDirty;
+        private int _intDirty;
         private bool _blnSourcebookToggle = true;
         private bool _blnWasRenamed;
         private int _intSuspendLayoutCount;
@@ -2511,12 +2511,12 @@ namespace Chummer
 
         private bool IsDirty
         {
-            get => _blnDirty;
+            get => _intDirty > 0;
             set
             {
-                if (_blnDirty == value)
+                int intNewValue = value.ToInt32();
+                if (Interlocked.Exchange(ref _intDirty, intNewValue) == intNewValue)
                     return;
-                _blnDirty = value;
                 string strText = LanguageManager.GetString(value ? "String_Cancel" : "String_OK");
                 cmdOK.DoThreadSafe(x => x.Text = strText);
                 if (value)
@@ -2542,9 +2542,9 @@ namespace Chummer
 
         private async ValueTask SetIsDirtyAsync(bool value, CancellationToken token = default)
         {
-            if (_blnDirty == value)
+            int intNewValue = value.ToInt32();
+            if (Interlocked.Exchange(ref _intDirty, intNewValue) == intNewValue)
                 return;
-            _blnDirty = value;
             string strText = await LanguageManager.GetStringAsync(value ? "String_Cancel" : "String_OK", token: token)
                                                   .ConfigureAwait(false);
             await cmdOK.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);

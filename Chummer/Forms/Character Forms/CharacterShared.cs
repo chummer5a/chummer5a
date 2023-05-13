@@ -53,7 +53,7 @@ namespace Chummer
         private static Logger Log => s_ObjLogger.Value;
         private static TelemetryClient TelemetryClient { get; } = new TelemetryClient();
         private readonly Character _objCharacter;
-        private bool _blnIsDirty;
+        private int _intIsDirty;
         private int _intRefreshingCount;
         private int _intLoadingCount = 1;
         private int _intUpdatingCount;
@@ -8603,22 +8603,22 @@ namespace Chummer
         /// </summary>
         public bool IsDirty
         {
-            get => _blnIsDirty;
+            get => _intIsDirty > 0;
             set
             {
-                if (_blnIsDirty == value)
+                int intNewValue = value.ToInt32();
+                if (Interlocked.Exchange(ref _intIsDirty, intNewValue) == intNewValue)
                     return;
-                _blnIsDirty = value;
                 UpdateWindowTitle(true);
             }
         }
 
         public Task SetDirty(bool blnValue, CancellationToken token = default)
         {
-            if (_blnIsDirty == blnValue)
-                return Task.CompletedTask;
-            _blnIsDirty = blnValue;
-            return UpdateWindowTitleAsync(true, token);
+            int intNewValue = blnValue.ToInt32();
+            return Interlocked.Exchange(ref _intIsDirty, intNewValue) == intNewValue
+                ? Task.CompletedTask
+                : UpdateWindowTitleAsync(true, token);
         }
 
         /// <summary>
@@ -8870,12 +8870,12 @@ namespace Chummer
         /// </summary>
         protected void UpdateWindowTitle(bool blnCanSkip)
         {
-            if (Text.EndsWith('*') == _blnIsDirty && blnCanSkip)
+            if (Text.EndsWith('*') == IsDirty && blnCanSkip)
                 return;
 
             string strSpace = LanguageManager.GetString("String_Space", token: GenericToken);
             string strTitle = CharacterObject.CharacterName + strSpace + '-' + strSpace + FormMode + strSpace + '(' + CharacterObjectSettings.Name + ')';
-            if (_blnIsDirty)
+            if (IsDirty)
                 strTitle += '*';
             this.DoThreadSafe((x, y) => x.Text = strTitle, token: GenericToken);
         }
@@ -8900,12 +8900,12 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (Text.EndsWith('*') == _blnIsDirty && blnCanSkip)
+                if (Text.EndsWith('*') == IsDirty && blnCanSkip)
                     return;
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
                 string strTitle = CharacterObject.CharacterName + strSpace + '-' + strSpace + FormMode + strSpace + '('
                                   + CharacterObjectSettings.Name + ')';
-                if (_blnIsDirty)
+                if (IsDirty)
                     strTitle += '*';
                 await this.DoThreadSafeAsync(x => x.Text = strTitle, token).ConfigureAwait(false);
             }

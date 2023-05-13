@@ -6125,7 +6125,7 @@ namespace Chummer
                                                     intMostSuitable = intLoopScore;
                                                     strReplacementSettingsKey = kvpLoopOptions.Key;
                                                 }
-                                            });
+                                            }, token);
                                         }
                                         else
                                         {

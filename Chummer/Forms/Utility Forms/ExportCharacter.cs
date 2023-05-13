@@ -52,7 +52,7 @@ namespace Chummer
         private Task _tskCharacterXmlGenerator;
         private Task _tskXmlGenerator;
         private XmlDocument _objCharacterXml;
-        private bool _blnSelected;
+        private int _intSelected;
         private string _strXslt;
         private string _strExportLanguage;
         private CultureInfo _objExportCulture;
@@ -569,14 +569,13 @@ namespace Chummer
         {
             if (_intLoading > 0)
                 return;
-            _blnSelected = false;
+            _intSelected = 0;
         }
 
         private void txtText_MouseUp(object sender, MouseEventArgs e)
         {
-            if (_intLoading > 0 || _blnSelected || txtText.SelectionLength != 0)
+            if (_intLoading > 0 || _intSelected > 0 || txtText.SelectionLength != 0 || Interlocked.Exchange(ref _intSelected, 1) > 0)
                 return;
-            _blnSelected = true;
             txtText.SelectAll();
         }
 

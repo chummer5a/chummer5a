@@ -51,42 +51,56 @@ namespace Chummer
             {
                 case NotifyCollectionChangedAction.Add:
                     {
-                        _blnNeedToRegeneratePersistents = true;
-                        foreach (StoryModule objModule in e.NewItems)
-                            objModule.ParentStory = this;
+                        using (EnterReadLock.Enter(LockObject))
+                        {
+                            _blnNeedToRegeneratePersistents = true;
+                            foreach (StoryModule objModule in e.NewItems)
+                                objModule.ParentStory = this;
+                        }
+
                         break;
                     }
                 case NotifyCollectionChangedAction.Remove:
                     {
-                        _blnNeedToRegeneratePersistents = true;
-                        foreach (StoryModule objModule in e.OldItems)
+                        using (EnterReadLock.Enter(LockObject))
                         {
-                            if (objModule.ParentStory == this)
+                            _blnNeedToRegeneratePersistents = true;
+                            foreach (StoryModule objModule in e.OldItems)
                             {
-                                objModule.ParentStory = null;
-                                objModule.Dispose();
+                                if (objModule.ParentStory == this)
+                                {
+                                    objModule.ParentStory = null;
+                                    objModule.Dispose();
+                                }
                             }
                         }
+
                         break;
                     }
                 case NotifyCollectionChangedAction.Replace:
                     {
-                        _blnNeedToRegeneratePersistents = true;
-                        foreach (StoryModule objModule in e.OldItems)
+                        using (EnterReadLock.Enter(LockObject))
                         {
-                            if (objModule.ParentStory == this && !e.NewItems.Contains(objModule))
+                            _blnNeedToRegeneratePersistents = true;
+                            foreach (StoryModule objModule in e.OldItems)
                             {
-                                objModule.ParentStory = null;
-                                objModule.Dispose();
+                                if (objModule.ParentStory == this && !e.NewItems.Contains(objModule))
+                                {
+                                    objModule.ParentStory = null;
+                                    objModule.Dispose();
+                                }
                             }
+
+                            foreach (StoryModule objModule in e.NewItems)
+                                objModule.ParentStory = this;
                         }
-                        foreach (StoryModule objModule in e.NewItems)
-                            objModule.ParentStory = this;
+
                         break;
                     }
                 case NotifyCollectionChangedAction.Reset:
                     {
-                        _blnNeedToRegeneratePersistents = true;
+                        using (EnterReadLock.Enter(LockObject))
+                            _blnNeedToRegeneratePersistents = true;
                         break;
                     }
             }
@@ -192,13 +206,13 @@ namespace Chummer
 
                 await Modules.ForEachAsync(x => x.TestRunToGeneratePersistents(objCulture, strLanguage, token).AsTask(), token)
                              .ConfigureAwait(false);
+                _blnNeedToRegeneratePersistents = false;
             }
             finally
             {
                 if (objLocker != null)
                     await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-            _blnNeedToRegeneratePersistents = false;
         }
 
         public async ValueTask<string> PrintStory(CultureInfo objCulture, string strLanguage, CancellationToken token = default)

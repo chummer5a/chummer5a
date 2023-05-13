@@ -28,7 +28,7 @@ namespace Chummer
         private int _intResult;
         private int _intTarget;
         private int _intGlitchMin;
-        private bool _blnBubbleDie;
+        private int _intBubbleDie;
 
         public DiceRollerListViewItem(int intResult, int intTarget = 5, int intGlitchMin = 1, bool blnBubbleDie = false)
             : base(intResult)
@@ -36,7 +36,7 @@ namespace Chummer
             _intResult = intResult;
             _intTarget = intTarget;
             _intGlitchMin = intGlitchMin;
-            _blnBubbleDie = blnBubbleDie;
+            _intBubbleDie = blnBubbleDie.ToInt32();
 
             UpdateText();
             UpdateColor();
@@ -102,21 +102,21 @@ namespace Chummer
 
         public bool BubbleDie
         {
-            get => _blnBubbleDie;
+            get => _intBubbleDie > 0;
             set
             {
-                if (_blnBubbleDie == value)
+                int intNewValue = value.ToInt32();
+                if (Interlocked.Exchange(ref _intBubbleDie, intNewValue) == intNewValue)
                     return;
-                _blnBubbleDie = value;
                 UpdateText();
             }
         }
 
         public async ValueTask SetBubbleDie(bool value, CancellationToken token = default)
         {
-            if (_blnBubbleDie == value)
+            int intNewValue = value.ToInt32();
+            if (Interlocked.Exchange(ref _intBubbleDie, intNewValue) == intNewValue)
                 return;
-            _blnBubbleDie = value;
             await UpdateTextAsync(token).ConfigureAwait(false);
         }
 
