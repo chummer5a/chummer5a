@@ -7897,7 +7897,7 @@ namespace Chummer
                                                                       "/chummer/contacts/contact", token: token).ConfigureAwait(false))
                 {
                     Contact objContact = new Contact(CharacterObject);
-                    objContact.Load(xmlContact);
+                    await objContact.LoadAsync(xmlContact, token).ConfigureAwait(false);
                     await CharacterObject.Contacts.AddAsync(objContact, token).ConfigureAwait(false);
                 }
             }

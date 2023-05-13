@@ -219,7 +219,8 @@ namespace Chummer
         /// Load the Spirit from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
-        public void Load(XPathNavigator objNode)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public void Load(XPathNavigator objNode, CancellationToken token = default)
         {
             if (objNode == null)
                 return;
@@ -251,9 +252,57 @@ namespace Chummer
                 objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
                 _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
-                RefreshLinkedCharacter(false);
+                RefreshLinkedCharacter(token: token);
 
-                LoadMugshots(objNode);
+                LoadMugshots(objNode, token);
+            }
+        }
+
+        /// <summary>
+        /// Load the Spirit from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task LoadAsync(XPathNavigator objNode, CancellationToken token = default)
+        {
+            if (objNode == null)
+                return;
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                objNode.TryGetField("guid", Guid.TryParse, out _guiId);
+                if (_guiId == Guid.Empty)
+                    _guiId = Guid.NewGuid();
+                if (objNode.TryGetStringFieldQuickly("name", ref _strName))
+                {
+                    _objCachedMyXmlNode = null;
+                    _objCachedMyXPathNode = null;
+                }
+
+                string strTemp = string.Empty;
+                if (objNode.TryGetStringFieldQuickly("type", ref strTemp))
+                    _eEntityType = ConvertToSpiritType(strTemp);
+                objNode.TryGetStringFieldQuickly("crittername", ref _strCritterName);
+                objNode.TryGetInt32FieldQuickly("services", ref _intServicesOwed);
+                objNode.TryGetInt32FieldQuickly("force", ref _intForce);
+                Force = _intForce;
+                objNode.TryGetBoolFieldQuickly("bound", ref _blnBound);
+                objNode.TryGetBoolFieldQuickly("fettered", ref _blnFettered);
+                objNode.TryGetStringFieldQuickly("file", ref _strFileName);
+                objNode.TryGetStringFieldQuickly("relative", ref _strRelativeName);
+                objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+
+                string sNotesColor = ColorTranslator.ToHtml(await ColorManager.GetHasNotesColorAsync(token).ConfigureAwait(false));
+                objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+                _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
+                await RefreshLinkedCharacterAsync(token: token).ConfigureAwait(false);
+
+                await LoadMugshotsAsync(objNode, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1423,7 +1472,7 @@ namespace Chummer
             }
         }
 
-        public void RefreshLinkedCharacter(bool blnShowError)
+        public void RefreshLinkedCharacter(bool blnShowError = false, CancellationToken token = default)
         {
             using (EnterReadLock.Enter(LockObject))
             {
@@ -1508,6 +1557,118 @@ namespace Chummer
 
                         OnPropertyChanged(nameof(LinkedCharacter));
                     }
+                }
+            }
+        }
+
+        public async Task RefreshLinkedCharacterAsync(bool blnShowError = false, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                Character objOldLinkedCharacter = _objLinkedCharacter;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    await CharacterObject.LinkedCharacters.RemoveAsync(_objLinkedCharacter, token)
+                                         .ConfigureAwait(false);
+                    bool blnError = false;
+                    bool blnUseRelative = false;
+
+                    // Make sure the file still exists before attempting to load it.
+                    if (!File.Exists(FileName))
+                    {
+                        // If the file doesn't exist, use the relative path if one is available.
+                        if (string.IsNullOrEmpty(RelativeFileName))
+                            blnError = true;
+                        else if (!File.Exists(Path.GetFullPath(RelativeFileName)))
+                            blnError = true;
+                        else
+                            blnUseRelative = true;
+
+                        if (blnError && blnShowError)
+                        {
+                            Program.ShowScrollableMessageBox(
+                                string.Format(GlobalSettings.CultureInfo,
+                                              await LanguageManager.GetStringAsync("Message_FileNotFound", token: token).ConfigureAwait(false),
+                                              FileName),
+                                await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: token).ConfigureAwait(false), MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                        }
+                    }
+
+                    if (!blnError)
+                    {
+                        string strFile = blnUseRelative ? Path.GetFullPath(RelativeFileName) : FileName;
+                        if (strFile.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
+                            || strFile.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                        {
+                            if ((_objLinkedCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == strFile, token: token).ConfigureAwait(false)) == null)
+                            {
+                                using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                                       = await Program.CreateAndShowProgressBarAsync(strFile, Character.NumLoadingSections, token).ConfigureAwait(false))
+                                    _objLinkedCharacter
+                                        = await Program.LoadCharacterAsync(strFile, string.Empty, false, false,
+                                                                           frmLoadingBar.MyForm, token).ConfigureAwait(false);
+                            }
+
+                            if (_objLinkedCharacter != null)
+                                await CharacterObject.LinkedCharacters.AddAsync(_objLinkedCharacter, token).ConfigureAwait(false);
+                        }
+                    }
+
+                    if (_objLinkedCharacter != objOldLinkedCharacter)
+                    {
+                        if (objOldLinkedCharacter != null)
+                        {
+                            IAsyncDisposable objLocker2 = await objOldLinkedCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                            try
+                            {
+                                objOldLinkedCharacter.PropertyChanged -= LinkedCharacterOnPropertyChanged;
+                            }
+                            finally
+                            {
+                                await objLocker2.DisposeAsync().ConfigureAwait(false);
+                            }
+
+                            if (await Program.OpenCharacters.ContainsAsync(objOldLinkedCharacter, token).ConfigureAwait(false))
+                            {
+                                if (await Program.OpenCharacters.AllAsync(async x => x == _objLinkedCharacter
+                                                                              || !await x.LinkedCharacters.ContainsAsync(
+                                                                                  objOldLinkedCharacter, token).ConfigureAwait(false), token: token).ConfigureAwait(false)
+                                    && Program.MainForm.OpenFormsWithCharacters.All(
+                                        x => !x.CharacterObjects.Contains(objOldLinkedCharacter)))
+                                    await Program.OpenCharacters.RemoveAsync(objOldLinkedCharacter, token).ConfigureAwait(false);
+                            }
+                            else
+                                await objOldLinkedCharacter.DisposeAsync().ConfigureAwait(false);
+                        }
+
+                        if (_objLinkedCharacter != null)
+                        {
+                            using (await EnterReadLock.EnterAsync(_objLinkedCharacter.LockObject, token).ConfigureAwait(false))
+                            {
+                                if (string.IsNullOrEmpty(_strCritterName)
+                                    && CritterName != LanguageManager.GetString("String_UnnamedCharacter"))
+                                    _strCritterName = CritterName;
+
+                                IAsyncDisposable objLocker2 = await _objLinkedCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                                try
+                                {
+                                    _objLinkedCharacter.PropertyChanged += LinkedCharacterOnPropertyChanged;
+                                }
+                                finally
+                                {
+                                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                                }
+                            }
+                        }
+
+                        OnPropertyChanged(nameof(LinkedCharacter));
+                    }
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }
@@ -1698,7 +1859,7 @@ namespace Chummer
             }
         }
 
-        public void LoadMugshots(XPathNavigator xmlSavedNode)
+        public void LoadMugshots(XPathNavigator xmlSavedNode, CancellationToken token = default)
         {
             using (LockObject.EnterWriteLock())
             {
@@ -1725,6 +1886,46 @@ namespace Chummer
                 {
                     _lstMugshots.Add(lstMugshotsBase64[0].ToImage(PixelFormat.Format32bppPArgb));
                 }
+            }
+        }
+
+        public async Task LoadMugshotsAsync(XPathNavigator xmlSavedNode, CancellationToken token = default)
+        {
+            // Mugshots
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                xmlSavedNode.TryGetInt32FieldQuickly("mainmugshotindex", ref _intMainMugshotIndex);
+                XPathNodeIterator xmlMugshotsList = await xmlSavedNode.SelectAndCacheExpressionAsync("mugshots/mugshot", token).ConfigureAwait(false);
+                List<string> lstMugshotsBase64 = new List<string>(xmlMugshotsList.Count);
+                foreach (XPathNavigator objXmlMugshot in xmlMugshotsList)
+                {
+                    string strMugshot = objXmlMugshot.Value;
+                    if (!string.IsNullOrWhiteSpace(strMugshot))
+                    {
+                        lstMugshotsBase64.Add(strMugshot);
+                    }
+                }
+
+                if (lstMugshotsBase64.Count > 1)
+                {
+                    Task<Bitmap>[] atskMugshotImages = new Task<Bitmap>[lstMugshotsBase64.Count];
+                    for (int i = 0; i < lstMugshotsBase64.Count; ++i)
+                    {
+                        int iLocal = i;
+                        atskMugshotImages[i]
+                            = Task.Run(() => lstMugshotsBase64[iLocal].ToImageAsync(PixelFormat.Format32bppPArgb, token).AsTask(), token);
+                    }
+                    await _lstMugshots.AddRangeAsync(await Task.WhenAll(atskMugshotImages).ConfigureAwait(false), token).ConfigureAwait(false);
+                }
+                else if (lstMugshotsBase64.Count == 1)
+                {
+                    await _lstMugshots.AddAsync(await lstMugshotsBase64[0].ToImageAsync(PixelFormat.Format32bppPArgb, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

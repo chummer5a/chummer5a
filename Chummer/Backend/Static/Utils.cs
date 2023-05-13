@@ -776,11 +776,16 @@ namespace Chummer
             if (blnSync)
             {
                 int intReturn = 1;
-                Parallel.ForEach(astrFilesToDelete, () => true, (strToDelete, x, y) => SafeDeleteFile(strToDelete, false, intTimeout, token), blnLoop =>
+                RunWithoutThreadLock(() =>
                 {
-                    if (!blnLoop)
-                        Interlocked.Exchange(ref intReturn, 0);
-                });
+                    Parallel.ForEach(astrFilesToDelete, () => true,
+                                     (strToDelete, x, y) => SafeDeleteFile(strToDelete, false, intTimeout, token),
+                                     blnLoop =>
+                                     {
+                                         if (!blnLoop)
+                                             Interlocked.Exchange(ref intReturn, 0);
+                                     });
+                }, token);
                 return intReturn > 0;
             }
 

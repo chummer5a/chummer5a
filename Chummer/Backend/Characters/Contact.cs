@@ -469,9 +469,10 @@ namespace Chummer
         /// Load the Contact from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
-        public void Load(XPathNavigator objNode)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public void Load(XPathNavigator objNode, CancellationToken token = default)
         {
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
                 objNode.TryGetStringFieldQuickly("name", ref _strName);
                 objNode.TryGetStringFieldQuickly("role", ref _strRole);
@@ -516,10 +517,74 @@ namespace Chummer
                     objNode.TryGetBoolFieldQuickly("mademan", ref _blnGroupEnabled);
                 }
 
-                RefreshLinkedCharacter();
+                RefreshLinkedCharacter(token: token);
 
                 // Mugshots
-                LoadMugshots(objNode);
+                LoadMugshots(objNode, token);
+            }
+        }
+
+        /// <summary>
+        /// Load the Contact from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task LoadAsync(XPathNavigator objNode, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                objNode.TryGetStringFieldQuickly("name", ref _strName);
+                objNode.TryGetStringFieldQuickly("role", ref _strRole);
+                objNode.TryGetStringFieldQuickly("location", ref _strLocation);
+                objNode.TryGetInt32FieldQuickly("connection", ref _intConnection);
+                objNode.TryGetInt32FieldQuickly("loyalty", ref _intLoyalty);
+                objNode.TryGetStringFieldQuickly("metatype", ref _strMetatype);
+                if (!objNode.TryGetStringFieldQuickly("gender", ref _strGender))
+                    objNode.TryGetStringFieldQuickly("sex", ref _strGender);
+                objNode.TryGetStringFieldQuickly("age", ref _strAge);
+                objNode.TryGetStringFieldQuickly("contacttype", ref _strType);
+                objNode.TryGetStringFieldQuickly("preferredpayment", ref _strPreferredPayment);
+                objNode.TryGetStringFieldQuickly("hobbiesvice", ref _strHobbiesVice);
+                objNode.TryGetStringFieldQuickly("personallife", ref _strPersonalLife);
+                string strTemp = string.Empty;
+                if (objNode.TryGetStringFieldQuickly("type", ref strTemp))
+                    _eContactType = ConvertToContactType(strTemp);
+                objNode.TryGetStringFieldQuickly("file", ref _strFileName);
+                objNode.TryGetStringFieldQuickly("notes", ref _strNotes);
+
+                string sNotesColor = ColorTranslator.ToHtml(await ColorManager.GetHasNotesColorAsync(token).ConfigureAwait(false));
+                objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+                _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
+                objNode.TryGetStringFieldQuickly("groupname", ref _strGroupName);
+                objNode.TryGetBoolFieldQuickly("group", ref _blnIsGroup);
+                objNode.TryGetStringFieldQuickly("guid", ref _strUnique);
+                objNode.TryGetBoolFieldQuickly("family", ref _blnFamily);
+                objNode.TryGetBoolFieldQuickly("blackmail", ref _blnBlackmail);
+                objNode.TryGetBoolFieldQuickly("free", ref _blnFree);
+                if (await objNode.SelectSingleNodeAndCacheExpressionAsync("colour", token).ConfigureAwait(false) != null)
+                {
+                    int intTmp = _objColor.ToArgb();
+                    if (objNode.TryGetInt32FieldQuickly("colour", ref intTmp))
+                        _objColor = Color.FromArgb(intTmp);
+                }
+
+                _blnReadOnly = await objNode.SelectSingleNodeAndCacheExpressionAsync("readonly", token).ConfigureAwait(false) != null;
+
+                if (!objNode.TryGetBoolFieldQuickly("groupenabled", ref _blnGroupEnabled))
+                {
+                    objNode.TryGetBoolFieldQuickly("mademan", ref _blnGroupEnabled);
+                }
+
+                await RefreshLinkedCharacterAsync(token: token).ConfigureAwait(false);
+
+                // Mugshots
+                await LoadMugshotsAsync(objNode, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1892,12 +1957,12 @@ namespace Chummer
             }
         }
 
-        public void RefreshLinkedCharacter(bool blnShowError = false)
+        public void RefreshLinkedCharacter(bool blnShowError = false, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 Character objOldLinkedCharacter = _objLinkedCharacter;
-                using (LockObject.EnterWriteLock())
+                using (LockObject.EnterWriteLock(token))
                 {
                     CharacterObject.LinkedCharacters.Remove(_objLinkedCharacter);
                     bool blnError = false;
@@ -1918,9 +1983,9 @@ namespace Chummer
                         {
                             Program.ShowScrollableMessageBox(
                                 string.Format(GlobalSettings.CultureInfo,
-                                              LanguageManager.GetString("Message_FileNotFound"),
+                                              LanguageManager.GetString("Message_FileNotFound", token: token),
                                               FileName),
-                                LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK,
+                                LanguageManager.GetString("MessageTitle_FileNotFound", token: token), MessageBoxButtons.OK,
                                 MessageBoxIcon.Error);
                         }
                     }
@@ -1949,7 +2014,7 @@ namespace Chummer
                     {
                         if (objOldLinkedCharacter != null)
                         {
-                            using (objOldLinkedCharacter.LockObject.EnterWriteLock())
+                            using (objOldLinkedCharacter.LockObject.EnterWriteLock(token))
                                 objOldLinkedCharacter.PropertyChanged -= LinkedCharacterOnPropertyChanged;
                             if (Program.OpenCharacters.Contains(objOldLinkedCharacter))
                             {
@@ -1978,13 +2043,131 @@ namespace Chummer
                                 if (string.IsNullOrEmpty(_strMetatype) && !string.IsNullOrEmpty(Metatype))
                                     _strMetatype = Metatype;
 
-                                using (_objLinkedCharacter.LockObject.EnterWriteLock())
+                                using (_objLinkedCharacter.LockObject.EnterWriteLock(token))
                                     _objLinkedCharacter.PropertyChanged += LinkedCharacterOnPropertyChanged;
                             }
                         }
 
                         OnPropertyChanged(nameof(LinkedCharacter));
                     }
+                }
+            }
+        }
+
+        public async Task RefreshLinkedCharacterAsync(bool blnShowError = false, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                Character objOldLinkedCharacter = _objLinkedCharacter;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    await CharacterObject.LinkedCharacters.RemoveAsync(_objLinkedCharacter, token)
+                                         .ConfigureAwait(false);
+                    bool blnError = false;
+                    bool blnUseRelative = false;
+
+                    // Make sure the file still exists before attempting to load it.
+                    if (!File.Exists(FileName))
+                    {
+                        // If the file doesn't exist, use the relative path if one is available.
+                        if (string.IsNullOrEmpty(RelativeFileName))
+                            blnError = true;
+                        else if (!File.Exists(Path.GetFullPath(RelativeFileName)))
+                            blnError = true;
+                        else
+                            blnUseRelative = true;
+
+                        if (blnError && blnShowError)
+                        {
+                            Program.ShowScrollableMessageBox(
+                                string.Format(GlobalSettings.CultureInfo,
+                                              await LanguageManager.GetStringAsync("Message_FileNotFound", token: token).ConfigureAwait(false),
+                                              FileName),
+                                await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: token).ConfigureAwait(false), MessageBoxButtons.OK,
+                                MessageBoxIcon.Error);
+                        }
+                    }
+
+                    if (!blnError)
+                    {
+                        string strFile = blnUseRelative ? Path.GetFullPath(RelativeFileName) : FileName;
+                        if (strFile.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
+                            || strFile.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
+                        {
+                            if ((_objLinkedCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == strFile, token: token).ConfigureAwait(false)) == null)
+                            {
+                                using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                                       = await Program.CreateAndShowProgressBarAsync(strFile, Character.NumLoadingSections, token).ConfigureAwait(false))
+                                    _objLinkedCharacter
+                                        = await Program.LoadCharacterAsync(strFile, string.Empty, false, false,
+                                                                           frmLoadingBar.MyForm, token).ConfigureAwait(false);
+                            }
+
+                            if (_objLinkedCharacter != null)
+                                await CharacterObject.LinkedCharacters.AddAsync(_objLinkedCharacter, token).ConfigureAwait(false);
+                        }
+                    }
+
+                    if (_objLinkedCharacter != objOldLinkedCharacter)
+                    {
+                        if (objOldLinkedCharacter != null)
+                        {
+                            IAsyncDisposable objLocker2 = await objOldLinkedCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                            try
+                            {
+                                objOldLinkedCharacter.PropertyChanged -= LinkedCharacterOnPropertyChanged;
+                            }
+                            finally
+                            {
+                                await objLocker2.DisposeAsync().ConfigureAwait(false);
+                            }
+
+                            if (await Program.OpenCharacters.ContainsAsync(objOldLinkedCharacter, token).ConfigureAwait(false))
+                            {
+                                if (await Program.OpenCharacters.AllAsync(async x => x == _objLinkedCharacter
+                                                                              || !await x.LinkedCharacters.ContainsAsync(
+                                                                                  objOldLinkedCharacter, token).ConfigureAwait(false), token: token).ConfigureAwait(false)
+                                    && Program.MainForm.OpenFormsWithCharacters.All(
+                                        x => !x.CharacterObjects.Contains(objOldLinkedCharacter)))
+                                    await Program.OpenCharacters.RemoveAsync(objOldLinkedCharacter, token).ConfigureAwait(false);
+                            }
+                            else
+                                await objOldLinkedCharacter.DisposeAsync().ConfigureAwait(false);
+                        }
+
+                        if (_objLinkedCharacter != null)
+                        {
+                            using (await EnterReadLock.EnterAsync(_objLinkedCharacter.LockObject, token).ConfigureAwait(false))
+                            {
+                                if (string.IsNullOrEmpty(_strName)
+                                    && Name != await LanguageManager.GetStringAsync("String_UnnamedCharacter", token: token).ConfigureAwait(false))
+                                    _strName = Name;
+                                if (string.IsNullOrEmpty(_strAge) && !string.IsNullOrEmpty(Age))
+                                    _strAge = Age;
+                                if (string.IsNullOrEmpty(_strGender) && !string.IsNullOrEmpty(Gender))
+                                    _strGender = Gender;
+                                if (string.IsNullOrEmpty(_strMetatype) && !string.IsNullOrEmpty(Metatype))
+                                    _strMetatype = Metatype;
+
+                                IAsyncDisposable objLocker2 = await _objLinkedCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                                try
+                                {
+                                    _objLinkedCharacter.PropertyChanged += LinkedCharacterOnPropertyChanged;
+                                }
+                                finally
+                                {
+                                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                                }
+                            }
+                        }
+
+                        OnPropertyChanged(nameof(LinkedCharacter));
+                    }
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }
@@ -2179,7 +2362,7 @@ namespace Chummer
             }
         }
 
-        public void LoadMugshots(XPathNavigator xmlSavedNode)
+        public void LoadMugshots(XPathNavigator xmlSavedNode, CancellationToken token = default)
         {
             using (LockObject.EnterWriteLock())
             {
@@ -2206,6 +2389,46 @@ namespace Chummer
                 {
                     _lstMugshots.Add(lstMugshotsBase64[0].ToImage(PixelFormat.Format32bppPArgb));
                 }
+            }
+        }
+
+        public async Task LoadMugshotsAsync(XPathNavigator xmlSavedNode, CancellationToken token = default)
+        {
+            // Mugshots
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                xmlSavedNode.TryGetInt32FieldQuickly("mainmugshotindex", ref _intMainMugshotIndex);
+                XPathNodeIterator xmlMugshotsList = await xmlSavedNode.SelectAndCacheExpressionAsync("mugshots/mugshot", token).ConfigureAwait(false);
+                List<string> lstMugshotsBase64 = new List<string>(xmlMugshotsList.Count);
+                foreach (XPathNavigator objXmlMugshot in xmlMugshotsList)
+                {
+                    string strMugshot = objXmlMugshot.Value;
+                    if (!string.IsNullOrWhiteSpace(strMugshot))
+                    {
+                        lstMugshotsBase64.Add(strMugshot);
+                    }
+                }
+
+                if (lstMugshotsBase64.Count > 1)
+                {
+                    Task<Bitmap>[] atskMugshotImages = new Task<Bitmap>[lstMugshotsBase64.Count];
+                    for (int i = 0; i < lstMugshotsBase64.Count; ++i)
+                    {
+                        int iLocal = i;
+                        atskMugshotImages[i]
+                            = Task.Run(() => lstMugshotsBase64[iLocal].ToImageAsync(PixelFormat.Format32bppPArgb, token).AsTask(), token);
+                    }
+                    await _lstMugshots.AddRangeAsync(await Task.WhenAll(atskMugshotImages).ConfigureAwait(false), token).ConfigureAwait(false);
+                }
+                else if (lstMugshotsBase64.Count == 1)
+                {
+                    await _lstMugshots.AddAsync(await lstMugshotsBase64[0].ToImageAsync(PixelFormat.Format32bppPArgb, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

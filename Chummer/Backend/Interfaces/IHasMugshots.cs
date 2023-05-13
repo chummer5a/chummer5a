@@ -36,7 +36,9 @@ namespace Chummer
 
         Task SaveMugshotsAsync(XmlWriter objWriter, CancellationToken token = default);
 
-        void LoadMugshots(XPathNavigator xmlSavedNode);
+        void LoadMugshots(XPathNavigator xmlSavedNode, CancellationToken token = default);
+
+        Task LoadMugshotsAsync(XPathNavigator xmlSavedNode, CancellationToken token = default);
 
         ValueTask PrintMugshots(XmlWriter objWriter, CancellationToken token = default);
     }

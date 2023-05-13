@@ -6116,6 +6116,7 @@ namespace Chummer
                                         int intMostSuitable = int.MinValue;
                                         if (blnSync)
                                         {
+                                            // ReSharper disable once MethodHasAsyncOverload
                                             SettingsManager.LoadedCharacterSettings.ForEach(kvpLoopOptions =>
                                             {
                                                 int intLoopScore
@@ -6604,7 +6605,11 @@ namespace Chummer
 
                                 // General character information.
                                 xmlCharacterNavigator.TryGetStringFieldQuickly("name", ref _strName);
-                                LoadMugshots(xmlCharacterNavigator);
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    LoadMugshots(xmlCharacterNavigator, token);
+                                else
+                                    await LoadMugshotsAsync(xmlCharacterNavigator, token).ConfigureAwait(false);
                                 if (!xmlCharacterNavigator.TryGetStringFieldQuickly("gender", ref _strGender))
                                     xmlCharacterNavigator.TryGetStringFieldQuickly("sex", ref _strGender);
                                 xmlCharacterNavigator.TryGetStringFieldQuickly("age", ref _strAge);
@@ -6971,12 +6976,18 @@ namespace Chummer
                                                  "contacts/contact", token: token).ConfigureAwait(false)))
                                 {
                                     Contact objContact = new Contact(this);
-                                    objContact.Load(xmlContact);
                                     if (blnSync)
+                                    {
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        objContact.Load(xmlContact, token);
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstContacts.Add(objContact);
+                                    }
                                     else
+                                    {
+                                        await objContact.LoadAsync(xmlContact, token).ConfigureAwait(false);
                                         await _lstContacts.AddAsync(objContact, token).ConfigureAwait(false);
+                                    }
                                 }
 
                                 //Timekeeper.Finish("load_char_contacts");
@@ -8436,27 +8447,45 @@ namespace Chummer
                                                  "spirits/spirit", token: token).ConfigureAwait(false)))
                                 {
                                     Spirit objSpirit = new Spirit(this);
-                                    objSpirit.Load(xmlSpirit);
                                     if (blnSync)
+                                    {
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        objSpirit.Load(xmlSpirit, token);
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstSpirits.Add(objSpirit);
+                                    }
                                     else
+                                    {
+                                        await objSpirit.LoadAsync(xmlSpirit, token).ConfigureAwait(false);
                                         await _lstSpirits.AddAsync(objSpirit, token).ConfigureAwait(false);
+                                    }
                                 }
 
-                                if (!_lstSpirits.Any(s => s.Fettered) && Improvements.Any(imp =>
-                                        imp.ImproveSource == Improvement.ImprovementSource.SpiritFettering))
+                                // If we don't have any Fettered spirits, make sure that we
+                                if (blnSync)
                                 {
-                                    // If we don't have any Fettered spirits, make sure that we
-                                    if (blnSync)
+                                    if (!_lstSpirits.Any(s => s.Fettered) && Improvements.Any(imp =>
+                                            imp.ImproveSource == Improvement.ImprovementSource.SpiritFettering))
+                                    {
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         ImprovementManager.RemoveImprovements(
                                             this, Improvement.ImprovementSource.SpiritFettering);
-                                    else
+                                    }
+                                }
+                                else
+                                {
+                                    if (!await _lstSpirits.AnyAsync(s => s.Fettered, token).ConfigureAwait(false)
+                                        && await Improvements
+                                                 .AnyAsync(
+                                                     imp => imp.ImproveSource
+                                                            == Improvement.ImprovementSource.SpiritFettering, token)
+                                                 .ConfigureAwait(false))
+                                    {
                                         await ImprovementManager.RemoveImprovementsAsync(this,
                                                                     Improvement.ImprovementSource.SpiritFettering,
                                                                     token: token)
                                                                 .ConfigureAwait(false);
+                                    }
                                 }
 
                                 //Timekeeper.Finish("load_char_spirits");
@@ -15173,10 +15202,10 @@ namespace Chummer
             }
         }
 
-        public void LoadMugshots(XPathNavigator xmlSavedNode)
+        public void LoadMugshots(XPathNavigator xmlSavedNode, CancellationToken token = default)
         {
             // Mugshots
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
                 xmlSavedNode.TryGetInt32FieldQuickly("mainmugshotindex", ref _intMainMugshotIndex);
                 XPathNodeIterator xmlMugshotsList = xmlSavedNode.SelectAndCacheExpression("mugshots/mugshot");
@@ -15213,6 +15242,58 @@ namespace Chummer
                         _intMainMugshotIndex = 0;
                     }
                 }
+            }
+        }
+
+        public async Task LoadMugshotsAsync(XPathNavigator xmlSavedNode, CancellationToken token = default)
+        {
+            // Mugshots
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                xmlSavedNode.TryGetInt32FieldQuickly("mainmugshotindex", ref _intMainMugshotIndex);
+                XPathNodeIterator xmlMugshotsList = await xmlSavedNode.SelectAndCacheExpressionAsync("mugshots/mugshot", token).ConfigureAwait(false);
+                List<string> lstMugshotsBase64 = new List<string>(xmlMugshotsList.Count);
+                foreach (XPathNavigator objXmlMugshot in xmlMugshotsList)
+                {
+                    string strMugshot = objXmlMugshot.Value;
+                    if (!string.IsNullOrWhiteSpace(strMugshot))
+                    {
+                        lstMugshotsBase64.Add(strMugshot);
+                    }
+                }
+
+                if (lstMugshotsBase64.Count > 1)
+                {
+                    Task<Bitmap>[] atskMugshotImages = new Task<Bitmap>[lstMugshotsBase64.Count];
+                    for (int i = 0; i < lstMugshotsBase64.Count; ++i)
+                    {
+                        int iLocal = i;
+                        atskMugshotImages[i]
+                            = Task.Run(() => lstMugshotsBase64[iLocal].ToImageAsync(PixelFormat.Format32bppPArgb, token).AsTask(), token);
+                    }
+                    await _lstMugshots.AddRangeAsync(await Task.WhenAll(atskMugshotImages).ConfigureAwait(false), token).ConfigureAwait(false);
+                }
+                else if (lstMugshotsBase64.Count == 1)
+                {
+                    await _lstMugshots.AddAsync(await lstMugshotsBase64[0].ToImageAsync(PixelFormat.Format32bppPArgb, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                }
+
+                // Legacy Shimmer
+                if (await Mugshots.GetCountAsync(token).ConfigureAwait(false) == 0)
+                {
+                    XPathNavigator objOldMugshotNode = await xmlSavedNode.SelectSingleNodeAndCacheExpressionAsync("mugshot", token).ConfigureAwait(false);
+                    string strMugshot = objOldMugshotNode?.Value;
+                    if (!string.IsNullOrWhiteSpace(strMugshot))
+                    {
+                        await _lstMugshots.AddAsync(await strMugshot.ToImageAsync(PixelFormat.Format32bppPArgb, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        _intMainMugshotIndex = 0;
+                    }
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
