@@ -475,7 +475,6 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_DiceRoller";
             this.Text = "Dice Roller";
-            this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.DiceRoller_FormClosing);
             this.Load += new System.EventHandler(this.DiceRoller_Load);
             ((System.ComponentModel.ISupportInitialize)(this.nudDice)).EndInit();
             this.tlpMain.ResumeLayout(false);

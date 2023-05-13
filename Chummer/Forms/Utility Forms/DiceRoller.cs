@@ -214,12 +214,6 @@ namespace Chummer
             }
         }
 
-        private void DiceRoller_FormClosing(object sender, FormClosingEventArgs e)
-        {
-            // Remove the Main window's reference to this form.
-            _frmMain.RollerWindow = null;
-        }
-
         private async void cmdReroll_Click(object sender, EventArgs e)
         {
             //Remove the BubbleDie (it is always at the end)

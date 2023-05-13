@@ -50,6 +50,7 @@ namespace Chummer
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
         private ChummerUpdater _frmUpdate;
+        private DiceRoller _frmDiceRoller;
         private ThreadSafeObservableCollection<CharacterShared> _lstOpenCharacterEditorForms
             = new ThreadSafeObservableCollection<CharacterShared>();
         private ThreadSafeObservableCollection<CharacterSheetViewer> _lstOpenCharacterSheetViewers
@@ -151,7 +152,7 @@ namespace Chummer
         {
             if (Utils.IsUnitTest || _intFormClosing > 0)
                 return;
-            await ProcessQueuedCharactersToOpen();
+            await ProcessQueuedCharactersToOpen().ConfigureAwait(false);
         }
 
         private async void OpenCharacterExportFormsOnBeforeClearCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -2406,36 +2407,7 @@ namespace Chummer
         {
             try
             {
-                if (GlobalSettings.SingleDiceRoller)
-                {
-                    // Only a single instance of the Dice Roller window is allowed, so either find the existing one and focus on it, or create a new one.
-                    if (RollerWindow == null)
-                    {
-                        RollerWindow = await this.DoThreadSafeFuncAsync(x =>
-                        {
-                            DiceRoller objReturn = new DiceRoller(this);
-                            try
-                            {
-                                return objReturn;
-                            }
-                            finally
-                            {
-                                x.Disposed += (o, args) => objReturn.Dispose();
-                            }
-                        }, token: _objGenericToken).ConfigureAwait(false);
-                        await RollerWindow.DoThreadSafeAsync(x => x.Show(), token: _objGenericToken).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        await RollerWindow.DoThreadSafeAsync(x => x.Activate(), token: _objGenericToken).ConfigureAwait(false);
-                    }
-                }
-                else
-                {
-                    // No limit on the number of Dice Roller windows, so just create a new one.
-                    DiceRoller frmRoller = await this.DoThreadSafeFuncAsync(() => new DiceRoller(this), token: _objGenericToken).ConfigureAwait(false);
-                    await frmRoller.DoThreadSafeAsync(x => x.Show(), token: _objGenericToken).ConfigureAwait(false);
-                }
+                await OpenDiceRollerWithPool(token: _objGenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -3956,40 +3928,51 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
+                DiceRoller frmDiceRoller = RollerWindow;
+                if (frmDiceRoller == null)
+                {
+                    DiceRoller frmNewDiceRoller = await this.DoThreadSafeFuncAsync(() => new DiceRoller(this, objCharacter?.Qualities, intDice), token).ConfigureAwait(false);
+                    try
+                    {
+                        frmDiceRoller = Interlocked.CompareExchange(ref _frmDiceRoller, frmNewDiceRoller, null);
+                        if (frmDiceRoller == null)
+                        {
+                            frmNewDiceRoller.FormClosing += (o, args) =>
+                                Interlocked.CompareExchange(ref _frmDiceRoller, null, frmNewDiceRoller);
+                            await frmNewDiceRoller.DoThreadSafeAsync(x => x.Show(), token).ConfigureAwait(false);
+                            return;
+                        }
+                    }
+                    finally
+                    {
+                        if (frmDiceRoller != null)
+                            await frmNewDiceRoller.DoThreadSafeAsync(x => x.Close(), CancellationToken.None).ConfigureAwait(false);
+                    }
+                }
                 if (GlobalSettings.SingleDiceRoller)
                 {
-                    if (RollerWindow == null)
+                    await frmDiceRoller.DoThreadSafeAsync(x =>
                     {
-                        RollerWindow = await this.DoThreadSafeFuncAsync(x =>
-                        {
-                            DiceRoller objReturn = new DiceRoller(this, objCharacter?.Qualities, intDice);
-                            try
-                            {
-                                return objReturn;
-                            }
-                            finally
-                            {
-                                x.Disposed += (o, args) => objReturn.Dispose();
-                            }
-                        }, token).ConfigureAwait(false);
-                        await RollerWindow.DoThreadSafeAsync(x => x.Show(), token).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        await RollerWindow.DoThreadSafeAsync(x =>
-                        {
-                            x.Dice = intDice;
-                            x.ProcessGremlins(objCharacter?.Qualities);
-                            x.Activate();
-                        }, token).ConfigureAwait(false);
-                    }
+                        x.Dice = intDice;
+                        x.ProcessGremlins(objCharacter?.Qualities);
+                        x.Activate();
+                    }, token).ConfigureAwait(false);
                 }
                 else
                 {
                     DiceRoller frmRoller
                         = await this.DoThreadSafeFuncAsync(() => new DiceRoller(this, objCharacter?.Qualities, intDice),
                                                            token).ConfigureAwait(false);
-                    await frmRoller.DoThreadSafeAsync(x => x.Show(), token).ConfigureAwait(false);
+                    try
+                    {
+                        await frmRoller.DoThreadSafeAsync(x => x.Show(), token).ConfigureAwait(false);
+                    }
+                    catch (OperationCanceledException)
+                    {
+                        if (token.IsCancellationRequested)
+                            await frmRoller.DoThreadSafeAsync(x => x.Close(), CancellationToken.None).ConfigureAwait(false);
+                        throw;
+                    }
                 }
             }
             finally
@@ -4255,7 +4238,7 @@ namespace Chummer
         /// <summary>
         /// The frmDiceRoller window being used by the application.
         /// </summary>
-        public DiceRoller RollerWindow { get; set; }
+        public DiceRoller RollerWindow => _frmDiceRoller;
 
         public ThreadSafeObservableCollection<CharacterShared> OpenCharacterEditorForms => _lstOpenCharacterEditorForms;
 
