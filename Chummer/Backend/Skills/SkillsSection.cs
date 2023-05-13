@@ -173,12 +173,11 @@ namespace Chummer.Backend.Skills
                             try
                             {
                                 await _dicSkills.ClearAsync().ConfigureAwait(false);
-                                foreach (Skill objSkill in _lstSkills)
+                                await _lstSkills.ForEachAsync(async objSkill =>
                                 {
                                     string strLoop = await objSkill.GetDictionaryKeyAsync().ConfigureAwait(false);
-                                    if (!await _dicSkills.ContainsKeyAsync(strLoop).ConfigureAwait(false))
-                                        await _dicSkills.AddAsync(strLoop, objSkill).ConfigureAwait(false);
-                                }
+                                    await _dicSkills.TryAddAsync(strLoop, objSkill).ConfigureAwait(false);
+                                }).ConfigureAwait(false);
                             }
                             finally
                             {
@@ -198,8 +197,7 @@ namespace Chummer.Backend.Skills
                             {
                                 Skill objNewSkill = await _lstSkills.GetValueAtAsync(e.NewIndex).ConfigureAwait(false);
                                 string strLoop = await objNewSkill.GetDictionaryKeyAsync().ConfigureAwait(false);
-                                if (!await _dicSkills.ContainsKeyAsync(strLoop).ConfigureAwait(false))
-                                    await _dicSkills.AddAsync(strLoop, objNewSkill).ConfigureAwait(false);
+                                await _dicSkills.TryAddAsync(strLoop, objNewSkill).ConfigureAwait(false);
                             }
                             finally
                             {
@@ -764,14 +762,20 @@ namespace Chummer.Backend.Skills
                     if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                     {
                         // zero out any skill groups whose skills did not make the final cut
-                        await (await GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachAsync(objSkillGroup =>
-                        {
-                            if (!objSkillGroup.SkillList.Any(x => _dicSkills.ContainsKey(x.DictionaryKey)))
+                        await (await GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachAsync(
+                            async objSkillGroup =>
                             {
-                                objSkillGroup.Base = 0;
-                                objSkillGroup.Karma = 0;
-                            }
-                        }, token: token).ConfigureAwait(false);
+                                if (!await objSkillGroup.SkillList
+                                                        .AnyAsync(
+                                                            async x => await _dicSkills.ContainsKeyAsync(
+                                                                await x.GetDictionaryKeyAsync(token)
+                                                                       .ConfigureAwait(false), token).ConfigureAwait(false), token: token)
+                                                        .ConfigureAwait(false))
+                                {
+                                    await objSkillGroup.SetBaseAsync(0, token).ConfigureAwait(false);
+                                    await objSkillGroup.SetKarmaAsync(0, token).ConfigureAwait(false);
+                                }
+                            }, token: token).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -1188,9 +1192,7 @@ namespace Chummer.Backend.Skills
                             foreach (Skill objSkill in Skills)
                             {
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                if (!_dicSkills.ContainsKey(objSkill.DictionaryKey))
-                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    _dicSkills.Add(objSkill.DictionaryKey, objSkill);
+                                _dicSkills.TryAdd(objSkill.DictionaryKey, objSkill);
                             }
 
                             foreach (KnowledgeSkill objKnoSkill in KnowledgeSkills)
@@ -1205,10 +1207,8 @@ namespace Chummer.Backend.Skills
                             await Skills.ForEachAsync(
                                 async objSkill =>
                                 {
-                                    if (!await _dicSkills.ContainsKeyAsync(objSkill.DictionaryKey, token)
-                                                         .ConfigureAwait(false))
-                                        await _dicSkills.AddAsync(objSkill.DictionaryKey, objSkill, token)
-                                                        .ConfigureAwait(false);
+                                    await _dicSkills.TryAddAsync(await objSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false), objSkill, token)
+                                                    .ConfigureAwait(false);
                                 }, token).ConfigureAwait(false);
 
                             await KnowledgeSkills.ForEachAsync(
@@ -1262,8 +1262,8 @@ namespace Chummer.Backend.Skills
                                                                    .ConfigureAwait(false), token: token)
                                     .ConfigureAwait(false))
                                 {
-                                    objSkillGroup.Base = 0;
-                                    objSkillGroup.Karma = 0;
+                                    await objSkillGroup.SetBaseAsync(0, token).ConfigureAwait(false);
+                                    await objSkillGroup.SetKarmaAsync(0, token).ConfigureAwait(false);
                                 }
                             }, token).ConfigureAwait(false);
                         }
@@ -1572,7 +1572,7 @@ namespace Chummer.Backend.Skills
                             Parallel.ForEach(SkillGroups, x =>
                             {
                                 // ReSharper disable once AccessToDisposedClosure
-                                if (x.Rating > 0 && !dicGroups.ContainsKey(x.Name))
+                                if (x.Rating > 0)
                                     // ReSharper disable once AccessToDisposedClosure
                                     dicGroups.TryAdd(x.Name, x.Id);
                             });
@@ -1637,21 +1637,21 @@ namespace Chummer.Backend.Skills
                     // but we want to allow UI messages to happen, just in case this is called on the Main Thread and another thread wants to show a message box.
                     // Not using async-await because this is trivial code and I do not want to infect everything that calls this with async as well.
                     await Task.WhenAll(
-                        Task.Run(() => SkillGroups.ForEachParallelAsync(x =>
+                        Task.Run(() => SkillGroups.ForEachParallelAsync(async x =>
                         {
                             // ReSharper disable once AccessToDisposedClosure
-                            if (x.Rating > 0 && !dicGroups.ContainsKey(x.Name))
+                            if (await x.GetRatingAsync(token).ConfigureAwait(false) > 0)
                                 // ReSharper disable once AccessToDisposedClosure
-                                dicGroups.TryAdd(x.Name, x.Id);
+                                await dicGroups.TryAddAsync(x.Name, x.Id, token).ConfigureAwait(false);
                         }, token: token), token),
-                        Task.Run(() => Skills.ForEachParallelAsync(x =>
+                        Task.Run(() => Skills.ForEachParallelAsync(async x =>
                         {
-                            if (x.TotalBaseRating > 0)
+                            if (await x.GetTotalBaseRatingAsync(token).ConfigureAwait(false) > 0)
                                 // ReSharper disable once AccessToDisposedClosure
-                                dicSkills.TryAdd(x.Name, x.Id);
+                                await dicSkills.TryAddAsync(x.Name, x.Id, token).ConfigureAwait(false);
                         }, token: token), token),
                         // ReSharper disable once AccessToDisposedClosure
-                        Task.Run(() => KnowledgeSkills.ForEachParallelAsync(x => dicSkills.TryAdd(x.Name, x.Id), token: token), token)).ConfigureAwait(false);
+                        Task.Run(() => KnowledgeSkills.ForEachParallelAsync(x => dicSkills.TryAddAsync(x.Name, x.Id, token).AsTask(), token: token), token)).ConfigureAwait(false);
                     UpdateUndoSpecific(
                         dicSkills,
                         EnumerableExtensions.ToEnumerable(KarmaExpenseType.AddSkill, KarmaExpenseType.ImproveSkill));

@@ -427,7 +427,7 @@ namespace Chummer
                                                                     token)
                                                                 .ConfigureAwait(false);
                                 if (!blnSuccess)
-                                    objSettings = dicCharacterSettings.Values.First();
+                                    objSettings = (await dicCharacterSettings.FirstOrDefaultAsync(token: token).ConfigureAwait(false)).Value;
                             }
                         }
 

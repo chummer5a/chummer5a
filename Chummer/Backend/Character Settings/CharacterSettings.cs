@@ -467,28 +467,34 @@ namespace Chummer
                             objProperty.SetValue(this, objOtherValue);
                         }
 
-                        bool blnDoRebuildDirectoryKeys = _dicCustomDataDirectoryKeys.Count != objOther._dicCustomDataDirectoryKeys.Count;
-                        if (!blnDoRebuildDirectoryKeys)
+                        using (EnterReadLock.Enter(objOther._dicCustomDataDirectoryKeys))
+                        using (EnterReadLock.Enter(_dicCustomDataDirectoryKeys))
                         {
-                            for (int i = 0; i < _dicCustomDataDirectoryKeys.Count; ++i)
+                            int intMyCount = _dicCustomDataDirectoryKeys.Count;
+                            bool blnDoRebuildDirectoryKeys = intMyCount != objOther._dicCustomDataDirectoryKeys.Count;
+                            if (!blnDoRebuildDirectoryKeys)
                             {
-                                KeyValuePair<string, bool> kvpMine = _dicCustomDataDirectoryKeys[i];
-                                KeyValuePair<string, bool> kvpOther = objOther._dicCustomDataDirectoryKeys[i];
-                                if (!string.Equals(kvpMine.Key, kvpOther.Key, StringComparison.OrdinalIgnoreCase)
-                                    || kvpMine.Value != kvpOther.Value)
+                                for (int i = 0; i < intMyCount; ++i)
                                 {
-                                    blnDoRebuildDirectoryKeys = true;
-                                    break;
+                                    KeyValuePair<string, bool> kvpMine = _dicCustomDataDirectoryKeys[i];
+                                    KeyValuePair<string, bool> kvpOther = objOther._dicCustomDataDirectoryKeys[i];
+                                    if (!string.Equals(kvpMine.Key, kvpOther.Key, StringComparison.OrdinalIgnoreCase)
+                                        || kvpMine.Value != kvpOther.Value)
+                                    {
+                                        blnDoRebuildDirectoryKeys = true;
+                                        break;
+                                    }
                                 }
                             }
-                        }
-                        if (blnDoRebuildDirectoryKeys)
-                        {
-                            lstPropertiesToUpdate.Add(nameof(CustomDataDirectoryKeys));
-                            _dicCustomDataDirectoryKeys.Clear();
-                            foreach (KeyValuePair<string, bool> kvpOther in objOther.CustomDataDirectoryKeys)
+
+                            if (blnDoRebuildDirectoryKeys)
                             {
-                                _dicCustomDataDirectoryKeys.Add(kvpOther.Key, kvpOther.Value);
+                                lstPropertiesToUpdate.Add(nameof(CustomDataDirectoryKeys));
+                                using (_dicCustomDataDirectoryKeys.LockObject.EnterWriteLock())
+                                {
+                                    _dicCustomDataDirectoryKeys.Clear();
+                                    objOther.CustomDataDirectoryKeys.ForEach(kvpOther => _dicCustomDataDirectoryKeys.Add(kvpOther.Key, kvpOther.Value));
+                                }
                             }
                         }
 
@@ -570,29 +576,49 @@ namespace Chummer
                             objProperty.SetValue(this, objOtherValue);
                         }
 
-                        int intMyCount = await _dicCustomDataDirectoryKeys.GetCountAsync(token).ConfigureAwait(false);
-                        bool blnDoRebuildDirectoryKeys = intMyCount != await objOther._dicCustomDataDirectoryKeys.GetCountAsync(token).ConfigureAwait(false);
-                        if (!blnDoRebuildDirectoryKeys)
+                        using (await EnterReadLock.EnterAsync(objOther._dicCustomDataDirectoryKeys, token))
+                        using (await EnterReadLock.EnterAsync(_dicCustomDataDirectoryKeys, token))
                         {
-                            for (int i = 0; i < intMyCount; ++i)
+                            int intMyCount = await _dicCustomDataDirectoryKeys.GetCountAsync(token)
+                                                                              .ConfigureAwait(false);
+                            bool blnDoRebuildDirectoryKeys = intMyCount != await objOther._dicCustomDataDirectoryKeys
+                                .GetCountAsync(token).ConfigureAwait(false);
+                            if (!blnDoRebuildDirectoryKeys)
                             {
-                                KeyValuePair<string, bool> kvpMine = await _dicCustomDataDirectoryKeys.GetValueAtAsync(i, token).ConfigureAwait(false);
-                                KeyValuePair<string, bool> kvpOther = await objOther._dicCustomDataDirectoryKeys.GetValueAtAsync(i, token).ConfigureAwait(false);
-                                if (!string.Equals(kvpMine.Key, kvpOther.Key, StringComparison.OrdinalIgnoreCase)
-                                    || kvpMine.Value != kvpOther.Value)
+                                for (int i = 0; i < intMyCount; ++i)
                                 {
-                                    blnDoRebuildDirectoryKeys = true;
-                                    break;
+                                    KeyValuePair<string, bool> kvpMine = await _dicCustomDataDirectoryKeys
+                                                                               .GetValueAtAsync(i, token)
+                                                                               .ConfigureAwait(false);
+                                    KeyValuePair<string, bool> kvpOther = await objOther._dicCustomDataDirectoryKeys
+                                        .GetValueAtAsync(i, token).ConfigureAwait(false);
+                                    if (!string.Equals(kvpMine.Key, kvpOther.Key, StringComparison.OrdinalIgnoreCase)
+                                        || kvpMine.Value != kvpOther.Value)
+                                    {
+                                        blnDoRebuildDirectoryKeys = true;
+                                        break;
+                                    }
                                 }
                             }
-                        }
-                        if (blnDoRebuildDirectoryKeys)
-                        {
-                            lstPropertiesToUpdate.Add(nameof(CustomDataDirectoryKeys));
-                            await _dicCustomDataDirectoryKeys.ClearAsync(token).ConfigureAwait(false);
-                            foreach (KeyValuePair<string, bool> kvpOther in objOther._dicCustomDataDirectoryKeys)
+
+                            if (blnDoRebuildDirectoryKeys)
                             {
-                                await _dicCustomDataDirectoryKeys.AddAsync(kvpOther.Key, kvpOther.Value, token).ConfigureAwait(false);
+                                lstPropertiesToUpdate.Add(nameof(CustomDataDirectoryKeys));
+                                IAsyncDisposable objLocker2 = await _dicCustomDataDirectoryKeys.LockObject
+                                    .EnterWriteLockAsync(token).ConfigureAwait(false);
+                                try
+                                {
+                                    await _dicCustomDataDirectoryKeys.ClearAsync(token).ConfigureAwait(false);
+                                    await objOther._dicCustomDataDirectoryKeys
+                                                  .ForEachAsync(
+                                                      kvpOther => _dicCustomDataDirectoryKeys
+                                                                  .AddAsync(kvpOther.Key, kvpOther.Value, token)
+                                                                  .AsTask(), token).ConfigureAwait(false);
+                                }
+                                finally
+                                {
+                                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                                }
                             }
                         }
 
@@ -713,16 +739,21 @@ namespace Chummer
                         return false;
                 }
 
-                if (_dicCustomDataDirectoryKeys.Count != objOther._dicCustomDataDirectoryKeys.Count)
-                    return false;
-                for (int i = 0; i < _dicCustomDataDirectoryKeys.Count; ++i)
+                using (EnterReadLock.Enter(objOther._dicCustomDataDirectoryKeys))
+                using (EnterReadLock.Enter(_dicCustomDataDirectoryKeys))
                 {
-                    KeyValuePair<string, bool> kvpMine = _dicCustomDataDirectoryKeys[i];
-                    KeyValuePair<string, bool> kvpOther = objOther._dicCustomDataDirectoryKeys[i];
-                    if (!string.Equals(kvpMine.Key, kvpOther.Key, StringComparison.OrdinalIgnoreCase)
-                        || kvpMine.Value != kvpOther.Value)
-                    {
+                    int intMyCount = _dicCustomDataDirectoryKeys.Count;
+                    if (intMyCount != objOther._dicCustomDataDirectoryKeys.Count)
                         return false;
+                    for (int i = 0; i < intMyCount; ++i)
+                    {
+                        KeyValuePair<string, bool> kvpMine = _dicCustomDataDirectoryKeys[i];
+                        KeyValuePair<string, bool> kvpOther = objOther._dicCustomDataDirectoryKeys[i];
+                        if (!string.Equals(kvpMine.Key, kvpOther.Key, StringComparison.OrdinalIgnoreCase)
+                            || kvpMine.Value != kvpOther.Value)
+                        {
+                            return false;
+                        }
                     }
                 }
 
@@ -755,17 +786,25 @@ namespace Chummer
                         return false;
                 }
 
-                int intMyCount = await _dicCustomDataDirectoryKeys.GetCountAsync(token).ConfigureAwait(false);
-                if (intMyCount != await objOther._dicCustomDataDirectoryKeys.GetCountAsync(token).ConfigureAwait(false))
-                    return false;
-                for (int i = 0; i < intMyCount; ++i)
+                using (await EnterReadLock.EnterAsync(objOther._dicCustomDataDirectoryKeys, token).ConfigureAwait(false))
+                using (await EnterReadLock.EnterAsync(_dicCustomDataDirectoryKeys, token).ConfigureAwait(false))
                 {
-                    KeyValuePair<string, bool> kvpMine = await _dicCustomDataDirectoryKeys.GetValueAtAsync(i, token).ConfigureAwait(false);
-                    KeyValuePair<string, bool> kvpOther = await objOther._dicCustomDataDirectoryKeys.GetValueAtAsync(i, token).ConfigureAwait(false);
-                    if (!string.Equals(kvpMine.Key, kvpOther.Key, StringComparison.OrdinalIgnoreCase)
-                        || kvpMine.Value != kvpOther.Value)
-                    {
+                    int intMyCount = await _dicCustomDataDirectoryKeys.GetCountAsync(token).ConfigureAwait(false);
+                    if (intMyCount != await objOther._dicCustomDataDirectoryKeys.GetCountAsync(token)
+                                                    .ConfigureAwait(false))
                         return false;
+                    for (int i = 0; i < intMyCount; ++i)
+                    {
+                        KeyValuePair<string, bool> kvpMine = await _dicCustomDataDirectoryKeys.GetValueAtAsync(i, token)
+                            .ConfigureAwait(false);
+                        KeyValuePair<string, bool> kvpOther = await objOther._dicCustomDataDirectoryKeys
+                                                                            .GetValueAtAsync(i, token)
+                                                                            .ConfigureAwait(false);
+                        if (!string.Equals(kvpMine.Key, kvpOther.Key, StringComparison.OrdinalIgnoreCase)
+                            || kvpMine.Value != kvpOther.Value)
+                        {
+                            return false;
+                        }
                     }
                 }
 
@@ -1610,23 +1649,25 @@ namespace Chummer
 
                         // <customdatadirectorynames>
                         objWriter.WriteStartElement("customdatadirectorynames");
-                        for (int i = 0; i < _dicCustomDataDirectoryKeys.Count; ++i)
+                        int i = -1;
+                        _dicCustomDataDirectoryKeys.ForEach(kvpDirectoryInfo =>
                         {
-                            KeyValuePair<string, bool> kvpDirectoryInfo = _dicCustomDataDirectoryKeys[i];
                             string strDirectoryName = kvpDirectoryInfo.Key;
                             bool blnDirectoryIsEnabled = kvpDirectoryInfo.Value;
                             if (!blnDirectoryIsEnabled && GlobalSettings.CustomDataDirectoryInfos.Any(
                                     x => x.DirectoryPath.StartsWith(strCustomDataRootPath, StringComparison.Ordinal)
                                          && x.CharacterSettingsSaveKey.Equals(
                                              strDirectoryName, StringComparison.OrdinalIgnoreCase)))
-                                continue; // Do not save disabled custom data directories that are in the customdata folder and would be auto-populated anyway
+                                return; // Do not save disabled custom data directories that are in the customdata folder and would be auto-populated anyway
+                            // ReSharper disable AccessToDisposedClosure
                             objWriter.WriteStartElement("customdatadirectoryname");
                             objWriter.WriteElementString("directoryname", strDirectoryName);
-                            objWriter.WriteElementString("order", i.ToString(GlobalSettings.InvariantCultureInfo));
+                            objWriter.WriteElementString("order", Interlocked.Increment(ref i).ToString(GlobalSettings.InvariantCultureInfo));
                             objWriter.WriteElementString(
                                 "enabled", blnDirectoryIsEnabled.ToString(GlobalSettings.InvariantCultureInfo));
                             objWriter.WriteEndElement();
-                        }
+                            // ReSharper restore AccessToDisposedClosure
+                        });
 
                         // </customdatadirectorynames>
                         objWriter.WriteEndElement();
@@ -2506,29 +2547,31 @@ namespace Chummer
                         string strCustomDataRootPath = Path.Combine(Utils.GetStartupPath, "customdata");
 
                         // <customdatadirectorynames>
-                        objWriter.WriteStartElement("customdatadirectorynames");
-                        for (int i = 0; i < _dicCustomDataDirectoryKeys.Count; ++i)
+                        await objWriter.WriteStartElementAsync("customdatadirectorynames", token: token).ConfigureAwait(false);
+                        int i = -1;
+                        await _dicCustomDataDirectoryKeys.ForEachAsync(async kvpDirectoryInfo =>
                         {
-                            KeyValuePair<string, bool> kvpDirectoryInfo = _dicCustomDataDirectoryKeys[i];
                             string strDirectoryName = kvpDirectoryInfo.Key;
                             bool blnDirectoryIsEnabled = kvpDirectoryInfo.Value;
                             if (!blnDirectoryIsEnabled && GlobalSettings.CustomDataDirectoryInfos.Any(
                                     x => x.DirectoryPath.StartsWith(strCustomDataRootPath, StringComparison.Ordinal)
                                          && x.CharacterSettingsSaveKey.Equals(
                                              strDirectoryName, StringComparison.OrdinalIgnoreCase)))
-                                continue; // Do not save disabled custom data directories that are in the customdata folder and would be auto-populated anyway
+                                return; // Do not save disabled custom data directories that are in the customdata folder and would be auto-populated anyway
+                            // ReSharper disable AccessToDisposedClosure
                             await objWriter.WriteStartElementAsync("customdatadirectoryname", token: token)
                                            .ConfigureAwait(false);
                             await objWriter.WriteElementStringAsync("directoryname", strDirectoryName, token: token)
                                            .ConfigureAwait(false);
                             await objWriter
-                                  .WriteElementStringAsync("order", i.ToString(GlobalSettings.InvariantCultureInfo),
+                                  .WriteElementStringAsync("order", Interlocked.Increment(ref i).ToString(GlobalSettings.InvariantCultureInfo),
                                                            token: token).ConfigureAwait(false);
                             await objWriter.WriteElementStringAsync(
                                 "enabled", blnDirectoryIsEnabled.ToString(GlobalSettings.InvariantCultureInfo),
                                 token: token).ConfigureAwait(false);
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
-                        }
+                            // ReSharper restore AccessToDisposedClosure
+                        }, token).ConfigureAwait(false);
 
                         // </customdatadirectorynames>
                         await objWriter.WriteEndElementAsync().ConfigureAwait(false);
@@ -2544,7 +2587,7 @@ namespace Chummer
                         // <qualitykarmalimit />
                         await objWriter.WriteElementStringAsync("qualitykarmalimit",
                                                                 _intQualityKarmaLimit.ToString(
-                                                                    GlobalSettings.InvariantCultureInfo))
+                                                                    GlobalSettings.InvariantCultureInfo), token: token)
                                        .ConfigureAwait(false);
                         // <priorityarray />
                         await objWriter.WriteElementStringAsync("priorityarray", _strPriorityArray, token: token)
@@ -3175,41 +3218,14 @@ namespace Chummer
                     }
                 }
 
-                _dicCustomDataDirectoryKeys.Clear();
-                for (int i = intBottomMostOrder; i <= intTopMostOrder; ++i)
+                using (_dicCustomDataDirectoryKeys.LockObject.EnterWriteLock())
                 {
-                    if (!dicLoadingCustomDataDirectories.ContainsKey(i))
-                        continue;
-                    string strDirectoryKey = dicLoadingCustomDataDirectories[i].Item1;
-                    string strLoopId = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strDirectoryKey);
-                    if (string.IsNullOrEmpty(strLoopId))
+                    _dicCustomDataDirectoryKeys.Clear();
+                    for (int i = intBottomMostOrder; i <= intTopMostOrder; ++i)
                     {
-                        CustomDataDirectoryInfo objExistingInfo = null;
-                        foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
-                        {
-                            if (!objLoopInfo.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
-                                continue;
-                            if (objExistingInfo == null || objLoopInfo.MyVersion > objExistingInfo.MyVersion)
-                                objExistingInfo = objLoopInfo;
-                        }
-
-                        if (objExistingInfo != null)
-                            strDirectoryKey = objExistingInfo.CharacterSettingsSaveKey;
-                    }
-
-                    if (!_dicCustomDataDirectoryKeys.ContainsKey(strDirectoryKey))
-                        _dicCustomDataDirectoryKeys.Add(strDirectoryKey, dicLoadingCustomDataDirectories[i].Item2);
-                }
-
-                // Legacy sweep for custom data directories
-                if (xmlLegacyCharacterNavigator != null)
-                {
-                    foreach (XPathNavigator xmlCustomDataDirectoryName in xmlLegacyCharacterNavigator
-                                 .SelectAndCacheExpression("customdatadirectorynames/directoryname"))
-                    {
-                        string strDirectoryKey = xmlCustomDataDirectoryName.Value;
-                        if (string.IsNullOrEmpty(strDirectoryKey))
+                        if (!dicLoadingCustomDataDirectories.TryGetValue(i, out Tuple<string, bool> tupLoop))
                             continue;
+                        string strDirectoryKey = tupLoop.Item1;
                         string strLoopId = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strDirectoryKey);
                         if (string.IsNullOrEmpty(strLoopId))
                         {
@@ -3226,36 +3242,100 @@ namespace Chummer
                                 strDirectoryKey = objExistingInfo.CharacterSettingsSaveKey;
                         }
 
-                        if (!_dicCustomDataDirectoryKeys.ContainsKey(strDirectoryKey))
-                            _dicCustomDataDirectoryKeys.Add(strDirectoryKey, true);
+                        _dicCustomDataDirectoryKeys.TryAdd(strDirectoryKey, tupLoop.Item2);
                     }
-                }
 
-                // Add in the stragglers that didn't have any load order info
-                if (blnNeedToProcessInfosWithoutLoadOrder)
-                {
-                    foreach (XPathNavigator objXmlDirectoryName in objXmlNode.SelectAndCacheExpression(
-                                 "customdatadirectorynames/customdatadirectoryname"))
+                    // Legacy sweep for custom data directories
+                    if (xmlLegacyCharacterNavigator != null)
                     {
-                        string strDirectoryKey = objXmlDirectoryName.SelectSingleNodeAndCacheExpression("directoryname")
-                                                                    ?.Value;
-                        if (string.IsNullOrEmpty(strDirectoryKey))
-                            continue;
-                        string strLoopId = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strDirectoryKey);
-                        string strOrder = objXmlDirectoryName.SelectSingleNodeAndCacheExpression("order")?.Value;
-                        if (!string.IsNullOrEmpty(strOrder) && int.TryParse(strOrder, NumberStyles.Integer,
-                                                                            GlobalSettings.InvariantCultureInfo,
-                                                                            out int _))
-                            continue;
-                        // Only load in directories that are either present in our GlobalSettings or are enabled
-                        bool blnLoopEnabled = objXmlDirectoryName.SelectSingleNodeAndCacheExpression("enabled")?.Value
-                                              == bool.TrueString;
-                        if (blnLoopEnabled || (string.IsNullOrEmpty(strLoopId)
-                                ? GlobalSettings.CustomDataDirectoryInfos.Any(
-                                    x => x.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
-                                : GlobalSettings.CustomDataDirectoryInfos.Any(
-                                    x => x.InternalId.Equals(strLoopId, StringComparison.OrdinalIgnoreCase))))
+                        foreach (XPathNavigator xmlCustomDataDirectoryName in xmlLegacyCharacterNavigator
+                                     .SelectAndCacheExpression("customdatadirectorynames/directoryname"))
                         {
+                            string strDirectoryKey = xmlCustomDataDirectoryName.Value;
+                            if (string.IsNullOrEmpty(strDirectoryKey))
+                                continue;
+                            string strLoopId
+                                = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strDirectoryKey);
+                            if (string.IsNullOrEmpty(strLoopId))
+                            {
+                                CustomDataDirectoryInfo objExistingInfo = null;
+                                foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
+                                {
+                                    if (!objLoopInfo.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
+                                        continue;
+                                    if (objExistingInfo == null || objLoopInfo.MyVersion > objExistingInfo.MyVersion)
+                                        objExistingInfo = objLoopInfo;
+                                }
+
+                                if (objExistingInfo != null)
+                                    strDirectoryKey = objExistingInfo.CharacterSettingsSaveKey;
+                            }
+
+                            _dicCustomDataDirectoryKeys.TryAdd(strDirectoryKey, true);
+                        }
+                    }
+
+                    // Add in the stragglers that didn't have any load order info
+                    if (blnNeedToProcessInfosWithoutLoadOrder)
+                    {
+                        foreach (XPathNavigator objXmlDirectoryName in objXmlNode.SelectAndCacheExpression(
+                                     "customdatadirectorynames/customdatadirectoryname"))
+                        {
+                            string strDirectoryKey = objXmlDirectoryName
+                                                     .SelectSingleNodeAndCacheExpression("directoryname")
+                                                     ?.Value;
+                            if (string.IsNullOrEmpty(strDirectoryKey))
+                                continue;
+                            string strLoopId
+                                = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strDirectoryKey);
+                            string strOrder = objXmlDirectoryName.SelectSingleNodeAndCacheExpression("order")?.Value;
+                            if (!string.IsNullOrEmpty(strOrder) && int.TryParse(strOrder, NumberStyles.Integer,
+                                    GlobalSettings.InvariantCultureInfo,
+                                    out int _))
+                                continue;
+                            // Only load in directories that are either present in our GlobalSettings or are enabled
+                            bool blnLoopEnabled
+                                = objXmlDirectoryName.SelectSingleNodeAndCacheExpression("enabled")?.Value
+                                  == bool.TrueString;
+                            if (blnLoopEnabled || (string.IsNullOrEmpty(strLoopId)
+                                    ? GlobalSettings.CustomDataDirectoryInfos.Any(
+                                        x => x.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
+                                    : GlobalSettings.CustomDataDirectoryInfos.Any(
+                                        x => x.InternalId.Equals(strLoopId, StringComparison.OrdinalIgnoreCase))))
+                            {
+                                if (string.IsNullOrEmpty(strLoopId))
+                                {
+                                    CustomDataDirectoryInfo objExistingInfo = null;
+                                    foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings
+                                                 .CustomDataDirectoryInfos)
+                                    {
+                                        if (!objLoopInfo.Name.Equals(strDirectoryKey,
+                                                                     StringComparison.OrdinalIgnoreCase))
+                                            continue;
+                                        if (objExistingInfo == null
+                                            || objLoopInfo.MyVersion > objExistingInfo.MyVersion)
+                                            objExistingInfo = objLoopInfo;
+                                    }
+
+                                    if (objExistingInfo != null)
+                                        strDirectoryKey = objExistingInfo.InternalId;
+                                }
+
+                                _dicCustomDataDirectoryKeys.TryAdd(strDirectoryKey, blnLoopEnabled);
+                            }
+                        }
+                    }
+
+                    if (_dicCustomDataDirectoryKeys.Count == 0)
+                    {
+                        foreach (XPathNavigator objXmlDirectoryName in objXmlNode.SelectAndCacheExpression(
+                                     "customdatadirectorynames/directoryname"))
+                        {
+                            string strDirectoryKey = objXmlDirectoryName.Value;
+                            if (string.IsNullOrEmpty(strDirectoryKey))
+                                continue;
+                            string strLoopId
+                                = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strDirectoryKey);
                             if (string.IsNullOrEmpty(strLoopId))
                             {
                                 CustomDataDirectoryInfo objExistingInfo = null;
@@ -3271,48 +3351,15 @@ namespace Chummer
                                     strDirectoryKey = objExistingInfo.InternalId;
                             }
 
-                            if (!_dicCustomDataDirectoryKeys.ContainsKey(strDirectoryKey))
-                                _dicCustomDataDirectoryKeys.Add(strDirectoryKey, blnLoopEnabled);
+                            _dicCustomDataDirectoryKeys.TryAdd(strDirectoryKey, true);
                         }
                     }
-                }
 
-                if (_dicCustomDataDirectoryKeys.Count == 0)
-                {
-                    foreach (XPathNavigator objXmlDirectoryName in objXmlNode.SelectAndCacheExpression(
-                                 "customdatadirectorynames/directoryname"))
+                    // Add in any directories that are in GlobalSettings but are not present in the settings so that we may enable them if we want to
+                    foreach (string strCharacterSettingsSaveKey in GlobalSettings.CustomDataDirectoryInfos.Select(
+                                 x => x.CharacterSettingsSaveKey))
                     {
-                        string strDirectoryKey = objXmlDirectoryName.Value;
-                        if (string.IsNullOrEmpty(strDirectoryKey))
-                            continue;
-                        string strLoopId = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strDirectoryKey);
-                        if (string.IsNullOrEmpty(strLoopId))
-                        {
-                            CustomDataDirectoryInfo objExistingInfo = null;
-                            foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
-                            {
-                                if (!objLoopInfo.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
-                                    continue;
-                                if (objExistingInfo == null || objLoopInfo.MyVersion > objExistingInfo.MyVersion)
-                                    objExistingInfo = objLoopInfo;
-                            }
-
-                            if (objExistingInfo != null)
-                                strDirectoryKey = objExistingInfo.InternalId;
-                        }
-
-                        if (!_dicCustomDataDirectoryKeys.ContainsKey(strDirectoryKey))
-                            _dicCustomDataDirectoryKeys.Add(strDirectoryKey, true);
-                    }
-                }
-
-                // Add in any directories that are in GlobalSettings but are not present in the settings so that we may enable them if we want to
-                foreach (string strCharacterSettingsSaveKey in GlobalSettings.CustomDataDirectoryInfos.Select(
-                             x => x.CharacterSettingsSaveKey))
-                {
-                    if (!_dicCustomDataDirectoryKeys.ContainsKey(strCharacterSettingsSaveKey))
-                    {
-                        _dicCustomDataDirectoryKeys.Add(strCharacterSettingsSaveKey, false);
+                        _dicCustomDataDirectoryKeys.TryAdd(strCharacterSettingsSaveKey, false);
                     }
                 }
 
@@ -3941,41 +3988,16 @@ namespace Chummer
                     }
                 }
 
-                await _dicCustomDataDirectoryKeys.ClearAsync(token).ConfigureAwait(false);
-                for (int i = intBottomMostOrder; i <= intTopMostOrder; ++i)
+                IAsyncDisposable objLocker2 = await _dicCustomDataDirectoryKeys.LockObject.EnterWriteLockAsync(token)
+                                                                               .ConfigureAwait(false);
+                try
                 {
-                    if (!dicLoadingCustomDataDirectories.ContainsKey(i))
-                        continue;
-                    string strDirectoryKey = dicLoadingCustomDataDirectories[i].Item1;
-                    string strLoopId = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strDirectoryKey);
-                    if (string.IsNullOrEmpty(strLoopId))
+                    await _dicCustomDataDirectoryKeys.ClearAsync(token).ConfigureAwait(false);
+                    for (int i = intBottomMostOrder; i <= intTopMostOrder; ++i)
                     {
-                        CustomDataDirectoryInfo objExistingInfo = null;
-                        foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
-                        {
-                            if (!objLoopInfo.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
-                                continue;
-                            if (objExistingInfo == null || objLoopInfo.MyVersion > objExistingInfo.MyVersion)
-                                objExistingInfo = objLoopInfo;
-                        }
-
-                        if (objExistingInfo != null)
-                            strDirectoryKey = objExistingInfo.CharacterSettingsSaveKey;
-                    }
-
-                    if (!await _dicCustomDataDirectoryKeys.ContainsKeyAsync(strDirectoryKey, token).ConfigureAwait(false))
-                        await _dicCustomDataDirectoryKeys.AddAsync(strDirectoryKey, dicLoadingCustomDataDirectories[i].Item2, token).ConfigureAwait(false);
-                }
-
-                // Legacy sweep for custom data directories
-                if (xmlLegacyCharacterNavigator != null)
-                {
-                    foreach (XPathNavigator xmlCustomDataDirectoryName in await xmlLegacyCharacterNavigator
-                                 .SelectAndCacheExpressionAsync("customdatadirectorynames/directoryname", token).ConfigureAwait(false))
-                    {
-                        string strDirectoryKey = xmlCustomDataDirectoryName.Value;
-                        if (string.IsNullOrEmpty(strDirectoryKey))
+                        if (!dicLoadingCustomDataDirectories.TryGetValue(i, out Tuple<string, bool> tupLoop))
                             continue;
+                        string strDirectoryKey = tupLoop.Item1;
                         string strLoopId = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strDirectoryKey);
                         if (string.IsNullOrEmpty(strLoopId))
                         {
@@ -3992,36 +4014,109 @@ namespace Chummer
                                 strDirectoryKey = objExistingInfo.CharacterSettingsSaveKey;
                         }
 
-                        if (!await _dicCustomDataDirectoryKeys.ContainsKeyAsync(strDirectoryKey, token).ConfigureAwait(false))
-                            await _dicCustomDataDirectoryKeys.AddAsync(strDirectoryKey, true, token).ConfigureAwait(false);
+                        await _dicCustomDataDirectoryKeys
+                              .TryAddAsync(strDirectoryKey, tupLoop.Item2, token)
+                              .ConfigureAwait(false);
                     }
-                }
 
-                // Add in the stragglers that didn't have any load order info
-                if (blnNeedToProcessInfosWithoutLoadOrder)
-                {
-                    foreach (XPathNavigator objXmlDirectoryName in await objXmlNode.SelectAndCacheExpressionAsync(
-                                 "customdatadirectorynames/customdatadirectoryname", token).ConfigureAwait(false))
+                    // Legacy sweep for custom data directories
+                    if (xmlLegacyCharacterNavigator != null)
                     {
-                        string strDirectoryKey = (await objXmlDirectoryName.SelectSingleNodeAndCacheExpressionAsync("directoryname", token).ConfigureAwait(false))
-                                                                    ?.Value;
-                        if (string.IsNullOrEmpty(strDirectoryKey))
-                            continue;
-                        string strLoopId = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strDirectoryKey);
-                        string strOrder = (await objXmlDirectoryName.SelectSingleNodeAndCacheExpressionAsync("order", token).ConfigureAwait(false))?.Value;
-                        if (!string.IsNullOrEmpty(strOrder) && int.TryParse(strOrder, NumberStyles.Integer,
-                                                                            GlobalSettings.InvariantCultureInfo,
-                                                                            out int _))
-                            continue;
-                        // Only load in directories that are either present in our GlobalSettings or are enabled
-                        bool blnLoopEnabled = (await objXmlDirectoryName.SelectSingleNodeAndCacheExpressionAsync("enabled", token).ConfigureAwait(false))?.Value
-                                              == bool.TrueString;
-                        if (blnLoopEnabled || (string.IsNullOrEmpty(strLoopId)
-                                ? GlobalSettings.CustomDataDirectoryInfos.Any(
-                                    x => x.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
-                                : GlobalSettings.CustomDataDirectoryInfos.Any(
-                                    x => x.InternalId.Equals(strLoopId, StringComparison.OrdinalIgnoreCase))))
+                        foreach (XPathNavigator xmlCustomDataDirectoryName in await xmlLegacyCharacterNavigator
+                                     .SelectAndCacheExpressionAsync("customdatadirectorynames/directoryname", token)
+                                     .ConfigureAwait(false))
                         {
+                            string strDirectoryKey = xmlCustomDataDirectoryName.Value;
+                            if (string.IsNullOrEmpty(strDirectoryKey))
+                                continue;
+                            string strLoopId
+                                = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strDirectoryKey);
+                            if (string.IsNullOrEmpty(strLoopId))
+                            {
+                                CustomDataDirectoryInfo objExistingInfo = null;
+                                foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
+                                {
+                                    if (!objLoopInfo.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
+                                        continue;
+                                    if (objExistingInfo == null || objLoopInfo.MyVersion > objExistingInfo.MyVersion)
+                                        objExistingInfo = objLoopInfo;
+                                }
+
+                                if (objExistingInfo != null)
+                                    strDirectoryKey = objExistingInfo.CharacterSettingsSaveKey;
+                            }
+
+                            await _dicCustomDataDirectoryKeys.TryAddAsync(strDirectoryKey, true, token)
+                                                             .ConfigureAwait(false);
+                        }
+                    }
+
+                    // Add in the stragglers that didn't have any load order info
+                    if (blnNeedToProcessInfosWithoutLoadOrder)
+                    {
+                        foreach (XPathNavigator objXmlDirectoryName in await objXmlNode.SelectAndCacheExpressionAsync(
+                                     "customdatadirectorynames/customdatadirectoryname", token).ConfigureAwait(false))
+                        {
+                            string strDirectoryKey = (await objXmlDirectoryName
+                                                            .SelectSingleNodeAndCacheExpressionAsync(
+                                                                "directoryname", token).ConfigureAwait(false))
+                                ?.Value;
+                            if (string.IsNullOrEmpty(strDirectoryKey))
+                                continue;
+                            string strLoopId
+                                = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strDirectoryKey);
+                            string strOrder = (await objXmlDirectoryName
+                                                     .SelectSingleNodeAndCacheExpressionAsync("order", token)
+                                                     .ConfigureAwait(false))?.Value;
+                            if (!string.IsNullOrEmpty(strOrder) && int.TryParse(strOrder, NumberStyles.Integer,
+                                    GlobalSettings.InvariantCultureInfo,
+                                    out int _))
+                                continue;
+                            // Only load in directories that are either present in our GlobalSettings or are enabled
+                            bool blnLoopEnabled
+                                = (await objXmlDirectoryName.SelectSingleNodeAndCacheExpressionAsync("enabled", token)
+                                                            .ConfigureAwait(false))?.Value
+                                  == bool.TrueString;
+                            if (blnLoopEnabled || (string.IsNullOrEmpty(strLoopId)
+                                    ? GlobalSettings.CustomDataDirectoryInfos.Any(
+                                        x => x.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
+                                    : GlobalSettings.CustomDataDirectoryInfos.Any(
+                                        x => x.InternalId.Equals(strLoopId, StringComparison.OrdinalIgnoreCase))))
+                            {
+                                if (string.IsNullOrEmpty(strLoopId))
+                                {
+                                    CustomDataDirectoryInfo objExistingInfo = null;
+                                    foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings
+                                                 .CustomDataDirectoryInfos)
+                                    {
+                                        if (!objLoopInfo.Name.Equals(strDirectoryKey,
+                                                                     StringComparison.OrdinalIgnoreCase))
+                                            continue;
+                                        if (objExistingInfo == null
+                                            || objLoopInfo.MyVersion > objExistingInfo.MyVersion)
+                                            objExistingInfo = objLoopInfo;
+                                    }
+
+                                    if (objExistingInfo != null)
+                                        strDirectoryKey = objExistingInfo.InternalId;
+                                }
+
+                                await _dicCustomDataDirectoryKeys.TryAddAsync(strDirectoryKey, blnLoopEnabled, token)
+                                                                 .ConfigureAwait(false);
+                            }
+                        }
+                    }
+
+                    if (await _dicCustomDataDirectoryKeys.GetCountAsync(token).ConfigureAwait(false) == 0)
+                    {
+                        foreach (XPathNavigator objXmlDirectoryName in await objXmlNode.SelectAndCacheExpressionAsync(
+                                     "customdatadirectorynames/directoryname", token).ConfigureAwait(false))
+                        {
+                            string strDirectoryKey = objXmlDirectoryName.Value;
+                            if (string.IsNullOrEmpty(strDirectoryKey))
+                                continue;
+                            string strLoopId
+                                = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strDirectoryKey);
                             if (string.IsNullOrEmpty(strLoopId))
                             {
                                 CustomDataDirectoryInfo objExistingInfo = null;
@@ -4037,47 +4132,22 @@ namespace Chummer
                                     strDirectoryKey = objExistingInfo.InternalId;
                             }
 
-                            if (!await _dicCustomDataDirectoryKeys.ContainsKeyAsync(strDirectoryKey, token).ConfigureAwait(false))
-                                await _dicCustomDataDirectoryKeys.AddAsync(strDirectoryKey, blnLoopEnabled, token).ConfigureAwait(false);
+                            await _dicCustomDataDirectoryKeys.TryAddAsync(strDirectoryKey, true, token)
+                                                             .ConfigureAwait(false);
                         }
                     }
-                }
 
-                if (_dicCustomDataDirectoryKeys.Count == 0)
-                {
-                    foreach (XPathNavigator objXmlDirectoryName in await objXmlNode.SelectAndCacheExpressionAsync(
-                                 "customdatadirectorynames/directoryname", token).ConfigureAwait(false))
+                    // Add in any directories that are in GlobalSettings but are not present in the settings so that we may enable them if we want to
+                    foreach (string strCharacterSettingsSaveKey in GlobalSettings.CustomDataDirectoryInfos.Select(
+                                 x => x.CharacterSettingsSaveKey))
                     {
-                        string strDirectoryKey = objXmlDirectoryName.Value;
-                        if (string.IsNullOrEmpty(strDirectoryKey))
-                            continue;
-                        string strLoopId = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strDirectoryKey);
-                        if (string.IsNullOrEmpty(strLoopId))
-                        {
-                            CustomDataDirectoryInfo objExistingInfo = null;
-                            foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
-                            {
-                                if (!objLoopInfo.Name.Equals(strDirectoryKey, StringComparison.OrdinalIgnoreCase))
-                                    continue;
-                                if (objExistingInfo == null || objLoopInfo.MyVersion > objExistingInfo.MyVersion)
-                                    objExistingInfo = objLoopInfo;
-                            }
-
-                            if (objExistingInfo != null)
-                                strDirectoryKey = objExistingInfo.InternalId;
-                        }
-
-                        if (!await _dicCustomDataDirectoryKeys.ContainsKeyAsync(strDirectoryKey, token).ConfigureAwait(false))
-                            await _dicCustomDataDirectoryKeys.AddAsync(strDirectoryKey, true, token).ConfigureAwait(false);
+                        await _dicCustomDataDirectoryKeys.TryAddAsync(strCharacterSettingsSaveKey, false, token)
+                                                         .ConfigureAwait(false);
                     }
                 }
-
-                // Add in any directories that are in GlobalSettings but are not present in the settings so that we may enable them if we want to
-                foreach (string strCharacterSettingsSaveKey in GlobalSettings.CustomDataDirectoryInfos.Select(
-                             x => x.CharacterSettingsSaveKey))
+                finally
                 {
-                    if (!await _dicCustomDataDirectoryKeys.ContainsKeyAsync(strCharacterSettingsSaveKey, token).ConfigureAwait(false))
-                        await _dicCustomDataDirectoryKeys.AddAsync(strCharacterSettingsSaveKey, false, token).ConfigureAwait(false);
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
 
                 await RecalculateEnabledCustomDataDirectoriesAsync(token).ConfigureAwait(false);
@@ -4800,10 +4870,10 @@ namespace Chummer
                 _setEnabledCustomDataDirectoryGuids.Clear();
                 _setEnabledCustomDataDirectories.Clear();
                 _lstEnabledCustomDataDirectoryPaths.Clear();
-                foreach (KeyValuePair<string, bool> kvpCustomDataDirectoryName in _dicCustomDataDirectoryKeys)
+                _dicCustomDataDirectoryKeys.ForEach(kvpCustomDataDirectoryName =>
                 {
                     if (!kvpCustomDataDirectoryName.Value)
-                        continue;
+                        return;
                     string strKey = kvpCustomDataDirectoryName.Key;
                     string strId
                         = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(
@@ -4852,7 +4922,7 @@ namespace Chummer
                     }
                     else
                         Utils.BreakIfDebug();
-                }
+                });
             }
         }
 
@@ -4864,10 +4934,10 @@ namespace Chummer
                 _setEnabledCustomDataDirectoryGuids.Clear();
                 _setEnabledCustomDataDirectories.Clear();
                 _lstEnabledCustomDataDirectoryPaths.Clear();
-                foreach (KeyValuePair<string, bool> kvpCustomDataDirectoryName in _dicCustomDataDirectoryKeys)
+                await _dicCustomDataDirectoryKeys.ForEachAsync(kvpCustomDataDirectoryName =>
                 {
                     if (!kvpCustomDataDirectoryName.Value)
-                        continue;
+                        return;
                     string strKey = kvpCustomDataDirectoryName.Key;
                     string strId
                         = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(
@@ -4916,7 +4986,7 @@ namespace Chummer
                     }
                     else
                         Utils.BreakIfDebug();
-                }
+                }, token: token).ConfigureAwait(false);
             }
             finally
             {

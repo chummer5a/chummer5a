@@ -199,6 +199,35 @@ namespace Chummer.Backend.Skills
                         await GetRatingMaximumAsync(token).ConfigureAwait(false));
             }
         }
+        
+        public async ValueTask SetBaseAsync(int value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                if (!await GetBaseUnbrokenAsync(token).ConfigureAwait(false))
+                    return;
+                //Calculate how far above maximum we are.
+                int intOverMax = value + await GetKarmaPointsAsync(token).ConfigureAwait(false) + await GetFreeLevelsAsync(token).ConfigureAwait(false) - await GetRatingMaximumAsync(token).ConfigureAwait(false);
+
+                //reduce value by max or 0
+                value -= Math.Max(0, intOverMax);
+
+                //and save back, cannot go under 0
+                int intValue = Math.Max(0, value - await GetFreeBaseAsync(token).ConfigureAwait(false));
+                if (Interlocked.Exchange(ref _intSkillFromSp, intValue) != intValue)
+                    OnPropertyChanged(nameof(BasePoints));
+                foreach (Skill skill in SkillList)
+                {
+                    //To trigger new calculation of skill.BasePoints
+                    skill.OnPropertyChanged(nameof(Skill.Base));
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
 
         public int Karma
         {
@@ -270,7 +299,9 @@ namespace Chummer.Backend.Skills
                 value -= Math.Max(0, intOverMax);
 
                 //and save back, cannot go under 0
-                KarmaPoints = Math.Max(0, value - await GetFreeLevelsAsync(token).ConfigureAwait(false));
+                int intValue = Math.Max(0, value - await GetFreeLevelsAsync(token).ConfigureAwait(false));
+                if (Interlocked.Exchange(ref _intSkillFromKarma, intValue) != intValue)
+                    OnPropertyChanged(nameof(KarmaPoints));
                 foreach (Skill skill in SkillList)
                 {
                     //To trigger new calculation of skill.KarmaPoints

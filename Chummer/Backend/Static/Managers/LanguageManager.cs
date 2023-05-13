@@ -69,10 +69,8 @@ namespace Chummer
                             string strText = objNode.SelectSingleNodeAndCacheExpression("text")?.Value;
                             if (string.IsNullOrEmpty(strText))
                                 continue;
-                            if (s_DicEnglishStrings.ContainsKey(strKey))
+                            if (!s_DicEnglishStrings.TryAdd(strKey, strText.NormalizeLineEndings(true)))
                                 Utils.BreakIfDebug();
-                            else
-                                s_DicEnglishStrings.Add(strKey, strText.NormalizeLineEndings(true));
                         }
                     }
                     else

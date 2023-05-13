@@ -524,6 +524,54 @@ namespace Chummer
             return TryAddAsync(item.Key, item.Value, token);
         }
 
+        public bool TryUpdate(TKey key, TValue value)
+        {
+            using (EnterReadLock.Enter(LockObject))
+            {
+                if (!_dicData.ContainsKey(key))
+                    return false;
+            }
+            using (LockObject.EnterWriteLock())
+            {
+                if (!_dicData.ContainsKey(key))
+                    return false;
+                _dicData[key] = value;
+            }
+            return true;
+        }
+
+        public async ValueTask<bool> TryUpdateAsync(TKey key, TValue value, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (!_dicData.ContainsKey(key))
+                    return false;
+            }
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (!_dicData.ContainsKey(key))
+                    return false;
+                _dicData[key] = value;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            return true;
+        }
+        
+        public bool TryUpdate(KeyValuePair<TKey, TValue> item)
+        {
+            return TryUpdate(item.Key, item.Value);
+        }
+
+        public ValueTask<bool> TryUpdateAsync(KeyValuePair<TKey, TValue> item, CancellationToken token = default)
+        {
+            return TryUpdateAsync(item.Key, item.Value, token);
+        }
+
         /// <summary>
         /// Uses the specified functions to add a key/value pair to the dictionary if the key does not already exist (and return it) or return the original value in dictionary if the key already exists.
         /// </summary>

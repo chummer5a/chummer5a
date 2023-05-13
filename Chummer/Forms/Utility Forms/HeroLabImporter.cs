@@ -636,16 +636,16 @@ namespace Chummer
                     await Program.OpenCharacters.AddAsync(objCharacter, token: token).ConfigureAwait(false);
                     IAsyncReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings = await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false);
                     CharacterSettings objHeroLabSettings =
-                        dicCharacterSettings.Values.FirstOrDefault(
-                            x => x.Name == objCache.SettingsName && x.BuildMethod == objCache.BuildMethod);
+                        (await dicCharacterSettings.FirstOrDefaultAsync(
+                            x => x.Value.Name == objCache.SettingsName && x.Value.BuildMethod == objCache.BuildMethod, token: token).ConfigureAwait(false)).Value;
                     if (objHeroLabSettings != null)
                     {
                         await objCharacter.SetSettingsKeyAsync(await objHeroLabSettings.GetDictionaryKeyAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                     }
                     else
                     {
-                        objHeroLabSettings = dicCharacterSettings.Values.FirstOrDefault(
-                            x => x.Name.Contains(objCache.SettingsName) && x.BuildMethod == objCache.BuildMethod);
+                        objHeroLabSettings = (await dicCharacterSettings.FirstOrDefaultAsync(
+                            x => x.Value.Name.Contains(objCache.SettingsName) && x.Value.BuildMethod == objCache.BuildMethod, token: token).ConfigureAwait(false)).Value;
                         if (objHeroLabSettings != null)
                         {
                             await objCharacter.SetSettingsKeyAsync(await objHeroLabSettings.GetDictionaryKeyAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
@@ -664,15 +664,15 @@ namespace Chummer
                             else
                             {
                                 CharacterSettings objTempSetting
-                                    = dicCharacterSettings.Values.FirstOrDefault(
-                                        x => x.BuiltInOption && x.BuildMethod == objCache.BuildMethod);
+                                    = (await dicCharacterSettings.FirstOrDefaultAsync(
+                                        x => x.Value.BuiltInOption && x.Value.BuildMethod == objCache.BuildMethod, token: token).ConfigureAwait(false)).Value;
                                 if (objTempSetting != null)
                                     await objCharacter.SetSettingsKeyAsync(await objTempSetting.GetDictionaryKeyAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                                 else
                                 {
-                                    objTempSetting = dicCharacterSettings.Values.FirstOrDefault(
-                                        x => x.BuiltInOption && x.BuildMethod.UsesPriorityTables()
-                                            == blnCacheUsesPriorityTables);
+                                    objTempSetting = (await dicCharacterSettings.FirstOrDefaultAsync(
+                                        x => x.Value.BuiltInOption && x.Value.BuildMethod.UsesPriorityTables()
+                                            == blnCacheUsesPriorityTables, token: token).ConfigureAwait(false)).Value;
                                     if (objTempSetting != null)
                                         await objCharacter.SetSettingsKeyAsync(await objTempSetting.GetDictionaryKeyAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                                     else

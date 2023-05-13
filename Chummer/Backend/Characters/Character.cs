@@ -314,7 +314,7 @@ namespace Chummer
                 _objSettings = new CharacterSettings(); // Need this because ExpenseCharts is WPF and needs a Character in design mode.
             else if (!SettingsManager.LoadedCharacterSettings.TryGetValue(GlobalSettings.DefaultCharacterSetting, out _objSettings)
                      && !SettingsManager.LoadedCharacterSettings.TryGetValue(GlobalSettings.DefaultCharacterSettingDefaultValue, out _objSettings))
-                _objSettings = SettingsManager.LoadedCharacterSettings.Values.First();
+                _objSettings = SettingsManager.LoadedCharacterSettings.First().Value;
 
             using (_objSettings.LockObject.EnterWriteLock())
                 _objSettings.PropertyChanged += OptionsOnPropertyChanged;
@@ -5902,9 +5902,9 @@ namespace Chummer
                                     if (!blnSuccess)
                                     {
                                         objDefaultSettings = blnSync
-                                            ? SettingsManager.LoadedCharacterSettings.Values.First()
+                                            ? SettingsManager.LoadedCharacterSettings.First().Value
                                             : (await SettingsManager.GetLoadedCharacterSettingsAsync(token)
-                                                                    .ConfigureAwait(false)).Values.First();
+                                                                    .ConfigureAwait(false)).First().Value;
                                     }
                                 }
 
@@ -6114,17 +6114,31 @@ namespace Chummer
                                         // Set up interim options for selection by build method
                                         string strReplacementSettingsKey = string.Empty;
                                         int intMostSuitable = int.MinValue;
-                                        foreach (KeyValuePair<string, CharacterSettings> kvpLoopOptions in
-                                                 SettingsManager
-                                                     .LoadedCharacterSettings)
+                                        if (blnSync)
                                         {
-                                            int intLoopScore
-                                                = CalculateCharacterSettingsMatchScore(kvpLoopOptions.Value);
-                                            if (intLoopScore > intMostSuitable)
+                                            SettingsManager.LoadedCharacterSettings.ForEach(kvpLoopOptions =>
                                             {
-                                                intMostSuitable = intLoopScore;
-                                                strReplacementSettingsKey = kvpLoopOptions.Key;
-                                            }
+                                                int intLoopScore
+                                                    = CalculateCharacterSettingsMatchScore(kvpLoopOptions.Value);
+                                                if (intLoopScore > intMostSuitable)
+                                                {
+                                                    intMostSuitable = intLoopScore;
+                                                    strReplacementSettingsKey = kvpLoopOptions.Key;
+                                                }
+                                            });
+                                        }
+                                        else
+                                        {
+                                            await SettingsManager.LoadedCharacterSettings.ForEachAsync(kvpLoopOptions =>
+                                            {
+                                                int intLoopScore
+                                                    = CalculateCharacterSettingsMatchScore(kvpLoopOptions.Value);
+                                                if (intLoopScore > intMostSuitable)
+                                                {
+                                                    intMostSuitable = intLoopScore;
+                                                    strReplacementSettingsKey = kvpLoopOptions.Key;
+                                                }
+                                            }, token).ConfigureAwait(false);
                                         }
 
                                         if (string.IsNullOrEmpty(strReplacementSettingsKey))
@@ -6156,7 +6170,7 @@ namespace Chummer
                                                 if (blnSync)
                                                 {
                                                     objProspectiveSettings
-                                                        = SettingsManager.LoadedCharacterSettings.Values.First();
+                                                        = SettingsManager.LoadedCharacterSettings.FirstOrDefault().Value;
                                                     strReplacementSettingsKey = objProspectiveSettings.DictionaryKey;
                                                 }
                                                 else
@@ -6268,7 +6282,7 @@ namespace Chummer
                                                 if (blnSync)
                                                 {
                                                     objProspectiveSettings
-                                                        = SettingsManager.LoadedCharacterSettings.Values.First();
+                                                        = SettingsManager.LoadedCharacterSettings.FirstOrDefault().Value;
                                                     strReplacementSettingsKey = objProspectiveSettings.DictionaryKey;
                                                 }
                                                 else
@@ -34790,17 +34804,26 @@ namespace Chummer
                                                         strHeroLabSettingsName = "Point Buy";
                                                 }
 
-                                                CharacterSettings objHeroLabSettings =
-                                                    SettingsManager.LoadedCharacterSettings.Values.FirstOrDefault(
-                                                        x => x.Name == strHeroLabSettingsName);
-                                                if (objHeroLabSettings != null)
+                                                if (blnSync)
                                                 {
-                                                    if (blnSync)
+                                                    CharacterSettings objHeroLabSettings =
+                                                        SettingsManager.LoadedCharacterSettings.FirstOrDefault(
+                                                            x => x.Value.Name == strHeroLabSettingsName).Value;
+                                                    if (objHeroLabSettings != null)
                                                     {
                                                         strSettingsKey = objHeroLabSettings.DictionaryKey;
                                                         SettingsKey = strSettingsKey;
                                                     }
-                                                    else
+                                                }
+                                                else
+                                                {
+                                                    CharacterSettings objHeroLabSettings =
+                                                        (await SettingsManager.LoadedCharacterSettings
+                                                                              .FirstOrDefaultAsync(
+                                                                                  x => x.Value.Name
+                                                                                      == strHeroLabSettingsName, token)
+                                                                              .ConfigureAwait(false)).Value;
+                                                    if (objHeroLabSettings != null)
                                                     {
                                                         strSettingsKey = await objHeroLabSettings
                                                                                .GetDictionaryKeyAsync(token)
