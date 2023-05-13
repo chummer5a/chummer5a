@@ -194,7 +194,15 @@ namespace ChummerHub.Client.Backend
                 if (value == null)
                 {
                     Uri uri = new Uri(Settings.Default.SINnerUrl);
-                    DeleteUriCookieData(uri);
+                    try
+                    {
+                        NativeMethods.DeleteUriCookieData(uri);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error(e);
+                        throw;
+                    }
                     Settings.Default.CookieData = null;
                     Settings.Default.Save();
                 }
@@ -214,7 +222,17 @@ namespace ChummerHub.Client.Backend
             try
             {
                 if (string.IsNullOrEmpty(cookieData))
-                    cookieData = GetUriCookieData(uri);
+                {
+                    try
+                    {
+                        cookieData = NativeMethods.GetUriCookieData(uri);
+                    }
+                    catch (Exception e)
+                    {
+                        Log.Error(e);
+                        throw;
+                    }
+                }
                 if (cookieData == null)
                     return null;
                 if (cookieData.Length > 0)
@@ -244,95 +262,6 @@ namespace ChummerHub.Client.Backend
                 throw;
             }
             return cookies;
-        }
-
-        [DllImport("wininet.dll", SetLastError = true)]
-        private static extern bool InternetGetCookieEx(
-                                        string url,
-                                        string cookieName,
-                                        StringBuilder cookieData,
-                                        ref int size,
-                                        int dwFlags,
-                                        IntPtr lpReserved);
-
-        private const int InternetCookieHttponly = 0x2000;
-
-        [DllImport("wininet.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        static extern bool InternetSetCookie(string lpszUrlName, string lpszCookieName, string lpszCookieData);
-
-        /// <summary>
-        /// Gets the actual Cookie data
-        /// </summary>
-        public static string GetUriCookieData(Uri uri)
-        {
-            if (uri == null)
-                return string.Empty;
-            // Determine the size of the cookie
-            int datasize = 8192 * 16;
-            StringBuilder cookieData = new StringBuilder(datasize);
-            try
-            {
-                if (!InternetGetCookieEx(uri.ToString(), null, cookieData, ref datasize, InternetCookieHttponly, IntPtr.Zero))
-                {
-                    if (datasize < 0)
-                        return null;
-                    // Allocate stringbuilder large enough to hold the cookie
-                    cookieData = new StringBuilder(datasize);
-                    if (!InternetGetCookieEx(
-                        uri.ToString(),
-                        null, cookieData,
-                        ref datasize,
-                        InternetCookieHttponly,
-                        IntPtr.Zero))
-                        return null;
-                }
-            }
-            catch(Exception e)
-            {
-                Log.Error(e);
-                throw;
-            }
-            return cookieData.Replace(';', ',').ToString();
-        }
-
-
-        /// <summary>
-        /// Gets the actual Cookie data
-        /// </summary>
-        public static bool DeleteUriCookieData(Uri uri)
-        {
-            if (uri == null)
-                return true;
-            Cookie temp1 = new Cookie("KEY1", "VALUE1", "/Path/To/My/App", "/");
-            // Determine the size of the cookie
-            int datasize = 8192 * 16;
-            StringBuilder cookieData = new StringBuilder(datasize);
-            try
-            {
-                if (!InternetGetCookieEx(uri.ToString(), null, cookieData, ref datasize, InternetCookieHttponly, IntPtr.Zero))
-                {
-                    if (datasize < 0)
-                        return false;
-                    // Allocate stringbuilder large enough to hold the cookie
-                    cookieData = new StringBuilder(datasize);
-                    if (!InternetGetCookieEx(
-                        uri.ToString(),
-                        null, cookieData,
-                        ref datasize,
-                        InternetCookieHttponly,
-                        IntPtr.Zero))
-                        return false;
-                }
-                if (InternetSetCookie(uri.ToString(), null, ""))
-                {
-                    return true;
-                }
-            }
-            catch(Exception e)
-            {
-                Log.Error(e);
-            }
-            return false;
         }
 
 
@@ -638,9 +567,9 @@ namespace ChummerHub.Client.Backend
             return rb;
         }
 
-        public static object ShowErrorResponseForm(object objResultBase, Exception e = null)
+        public static object ShowErrorResponseForm(object objResultBase, Exception e = null, CancellationToken token = default)
         {
-            return ShowErrorResponseFormCoreAsync(true, objResultBase, e).GetAwaiter().GetResult();
+            return Chummer.Utils.SafelyRunSynchronously(() => ShowErrorResponseFormCoreAsync(true, objResultBase, e, token), token);
         }
 
         public static Task<object> ShowErrorResponseFormAsync(object objResultBase, Exception e = null, CancellationToken token = default)
@@ -791,7 +720,7 @@ namespace ChummerHub.Client.Backend
 
         private static TreeNode GetCharacterRosterTreeNodeRecursive(SINnerSearchGroup ssg, CancellationToken token = default)
         {
-            return GetCharacterRosterTreeNodeRecursiveCoreAsync(true, ssg, token).GetAwaiter().GetResult();
+            return Chummer.Utils.SafelyRunSynchronously(() => GetCharacterRosterTreeNodeRecursiveCoreAsync(true, ssg, token), token);
         }
 
         private static Task<TreeNode> GetCharacterRosterTreeNodeRecursiveAsync(SINnerSearchGroup ssg, CancellationToken token = default)
@@ -1224,9 +1153,9 @@ namespace ChummerHub.Client.Backend
             }
         }
 
-        public static ResultSinnerPostSIN PostSINner(CharacterExtended ce)
+        public static ResultSinnerPostSIN PostSINner(CharacterExtended ce, CancellationToken token = default)
         {
-            return PostSINnerCoreAsync(true, ce).GetAwaiter().GetResult();
+            return Chummer.Utils.SafelyRunSynchronously(() => PostSINnerCoreAsync(true, ce, token), token);
         }
 
         public static Task<ResultSinnerPostSIN> PostSINnerAsync(CharacterExtended ce, CancellationToken token = default)
@@ -1263,11 +1192,8 @@ namespace ChummerHub.Client.Backend
                 if (!StaticUtils.IsUnitTest)
                 {
                     if (blnSync)
-                    {
-                        Task<ResultSinnerPostSIN> objPostTask = client.PostSINAsync(uploadInfoObject, token);
-                        objPostTask.RunSynchronously(objUIScheduler);
-                        res = objPostTask.GetAwaiter().GetResult();
-                    }
+                        res = Chummer.Utils.SafelyRunSynchronously(() => client.PostSINAsync(uploadInfoObject, token),
+                                                                   token);
                     else
                         res = await client.PostSINAsync(uploadInfoObject, token);
                     if (res != null && !res.CallSuccess)
@@ -1279,16 +1205,16 @@ namespace ChummerHub.Client.Backend
                         try
                         {
                             if (blnSync)
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                ShowErrorResponseForm(res);
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ShowErrorResponseForm(res, token: token);
                             else
                                 await ShowErrorResponseFormAsync(res, token: token);
                         }
                         catch (Exception e)
                         {
                             if (blnSync)
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                ShowErrorResponseForm(res, e);
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ShowErrorResponseForm(res, e, token);
                             else
                                 await ShowErrorResponseFormAsync(res, e, token);
                         }
@@ -1316,9 +1242,9 @@ namespace ChummerHub.Client.Backend
             return res;
         }
 
-        public static ResultSINnerPut UploadChummerFile(CharacterExtended ce)
+        public static ResultSINnerPut UploadChummerFile(CharacterExtended ce, CancellationToken token = default)
         {
-            return UploadChummerFileCoreAsync(true, ce).GetAwaiter().GetResult();
+            return Chummer.Utils.SafelyRunSynchronously(() => UploadChummerFileCoreAsync(true, ce, token), token);
         }
 
         public static Task<ResultSINnerPut> UploadChummerFileAsync(CharacterExtended ce, CancellationToken token = default)
@@ -1335,8 +1261,8 @@ namespace ChummerHub.Client.Backend
             {
                 if (string.IsNullOrEmpty(ce.ZipFilePath))
                     ce.ZipFilePath = blnSync
-                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                        ? ce.PrepareModel()
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? ce.PrepareModel(token)
                         : await ce.PrepareModelAsync(token);
 
                 using (FileStream fs = new FileStream(ce.ZipFilePath, FileMode.Open, FileAccess.Read))
@@ -1350,12 +1276,8 @@ namespace ChummerHub.Client.Backend
                             {
                                 FileParameter fp = new FileParameter(fs);
                                 if (blnSync)
-                                {
-                                    Task<ResultSINnerPut> objPutTask = client.PutSINAsync(ce.MySINnerFile.Id.Value, fp, token);
-                                    if (objPutTask.Status == TaskStatus.Created)
-                                        objPutTask.RunSynchronously();
-                                    res = objPutTask.GetAwaiter().GetResult();
-                                }
+                                    res = Chummer.Utils.SafelyRunSynchronously(
+                                        () => client.PutSINAsync(ce.MySINnerFile.Id.Value, fp, token), token);
                                 else
                                     res = await client.PutSINAsync(ce.MySINnerFile.Id.Value, fp, token);
                             }
@@ -1381,7 +1303,7 @@ namespace ChummerHub.Client.Backend
                         {
                             FileParameter fp = new FileParameter(fs);
                             if (blnSync)
-                                client.PutSINAsync(ce.MySINnerFile.Id ?? Guid.Empty, fp, token).GetAwaiter().GetResult();
+                                Chummer.Utils.SafelyRunSynchronously(() => client.PutSINAsync(ce.MySINnerFile.Id ?? Guid.Empty, fp, token), token);
                             else
                                 await client.PutSINAsync(ce.MySINnerFile.Id ?? Guid.Empty, fp, token);
                         }
@@ -1471,12 +1393,10 @@ namespace ChummerHub.Client.Backend
                             if (!File.Exists(zippedFile) || fi.Length == 0)
                             {
                                 SinnersClient client = StaticUtils.GetClient();
-                                FileResponse filestream = await client.GetDownloadFileAsync(sinner.Id.Value, token);
-                                if (filestream == null)
-                                {
-                                    throw new ArgumentNullException(nameof(sinner), "Could not download Sinner " +
-                                        sinner.Id.Value + " via client.GetDownloadFileAsync()!");
-                                }
+                                FileResponse filestream = await client.GetDownloadFileAsync(sinner.Id.Value, token)
+                                                          ?? throw new ArgumentNullException(nameof(sinner), "Could not download Sinner " +
+                                                                    sinner.Id.Value
+                                                                    + " via client.GetDownloadFileAsync()!");
 
                                 byte[] array = ReadFully(filestream.Stream);
                                 File.WriteAllBytes(zippedFile, array);

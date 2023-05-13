@@ -53,7 +53,7 @@ namespace ChummerHub.Client.Sinners
 
         public CharacterCache GetCharacterCache(CancellationToken token = default)
         {
-            return GetCharacterCacheCoreAsync(true, token).GetAwaiter().GetResult();
+            return Utils.SafelyRunSynchronously(() => GetCharacterCacheCoreAsync(true, token), token);
         }
 
         public Task<CharacterCache> GetCharacterCacheAsync(CancellationToken token = default)

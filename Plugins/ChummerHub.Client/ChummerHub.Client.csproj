@@ -235,6 +235,7 @@
     <Compile Include="Backend\ApiKeyCredentials.cs" />
     <Compile Include="Backend\FixedIsoDateTimeOffsetConverter .cs" />
     <Compile Include="Backend\NamedPipeManager.cs" />
+    <Compile Include="Backend\NativeMethods.cs" />
     <Compile Include="Backend\PluginHandler.cs" />
     <Compile Include="Backend\PropertyRenameAndIgnoreSerializerContractResolver.cs" />
     <Compile Include="Backend\Search\SearchTagExtractor.cs" />

@@ -110,9 +110,8 @@ namespace ChummerHub.Client.UI
                                "check if online", op_shareChummer,
                                CustomActivity.OperationType.DependencyOperation, MySINnerSearchGroup?.Groupname))
                     {
-                        ResultGroupGetGroupById checkresult = await client.GetGroupByIdAsync(MySINnerSearchGroup?.Id).ConfigureAwait(false);
-                        if (checkresult == null)
-                            throw new ArgumentException("Could not parse result from SINners Webservice!");
+                        ResultGroupGetGroupById checkresult = await client.GetGroupByIdAsync(MySINnerSearchGroup?.Id).ConfigureAwait(false)
+                                                              ?? throw new ArgumentException("Could not parse result from SINners Webservice!");
                         if (!checkresult.CallSuccess)
                         {
                             if (checkresult.MyException != null)
@@ -276,10 +275,9 @@ namespace ChummerHub.Client.UI
                                         await ce.Upload(myState, op_uploadChummer);
                                         if (ce?.MySINnerFile?.Id != null)
                                             SINid = ce.MySINnerFile.Id.Value;
-                                        ResultSinnerGetSINById result = await client.GetSINByIdAsync(SINid);
-                                        if (result == null)
-                                            throw new ArgumentException(
-                                                "Could not parse result from SINners Webservice!");
+                                        ResultSinnerGetSINById result = await client.GetSINByIdAsync(SINid)
+                                                                        ?? throw new ArgumentException(
+                                                                            "Could not parse result from SINners Webservice!");
                                         if (!result.CallSuccess)
                                         {
                                             if (result.MyException != null)

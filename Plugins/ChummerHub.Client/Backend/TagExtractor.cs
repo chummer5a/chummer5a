@@ -57,9 +57,8 @@ namespace ChummerHub.Client.Backend
                             if (!string.IsNullOrEmpty(classprop.ListInstanceNameFromProperty))
                             {
                                 tag.TagName = classprop.ListInstanceNameFromProperty;
-                                PropertyInfo childprop = obj.GetType().GetProperties().Find(x => x.Name == classprop.ListInstanceNameFromProperty);
-                                if (childprop == null)
-                                    throw new ArgumentOutOfRangeException("Could not find property " + classprop.ListInstanceNameFromProperty + " on instance of type " + obj.GetType() + ".");
+                                PropertyInfo childprop = obj.GetType().GetProperties().Find(x => x.Name == classprop.ListInstanceNameFromProperty)
+                                                         ?? throw new ArgumentOutOfRangeException("Could not find property " + classprop.ListInstanceNameFromProperty + " on instance of type " + obj.GetType() + ".");
                                 tag.TagValue += childprop.GetValue(obj);
                             }
                             if (string.IsNullOrEmpty(tag.TagName))
@@ -92,9 +91,8 @@ namespace ChummerHub.Client.Backend
                             if (!string.IsNullOrEmpty(classprop.ListInstanceNameFromProperty))
                             {
                                 tag.TagName = classprop.ListInstanceNameFromProperty;
-                                PropertyInfo childprop = item.GetType().GetProperties().Find(x => x.Name == classprop.ListInstanceNameFromProperty);
-                                if (childprop == null)
-                                    throw new ArgumentOutOfRangeException("Could not find property " + classprop.ListInstanceNameFromProperty + " on instance of type " + item.GetType() + ".");
+                                PropertyInfo childprop = item.GetType().GetProperties().Find(x => x.Name == classprop.ListInstanceNameFromProperty)
+                                                         ?? throw new ArgumentOutOfRangeException("Could not find property " + classprop.ListInstanceNameFromProperty + " on instance of type " + item.GetType() + ".");
                                 tag.TagValue += childprop.GetValue(item);
                             }
                             if (string.IsNullOrEmpty(tag.TagName))

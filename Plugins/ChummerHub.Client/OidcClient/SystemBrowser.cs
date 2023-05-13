@@ -129,6 +129,10 @@ namespace ChummerHub.Client.OidcClient
                 return;
             }
 
+            CancellationToken token = _objCallbackCancellationTokenSource.Token;
+            _objCallbackCancellationTokenRegistration
+                = token.Register(() => _source.TrySetCanceled(token));
+
             List<Route> routeConfig = new List<Route>
             {
                 new Route {
@@ -145,9 +149,9 @@ namespace ChummerHub.Client.OidcClient
                             ReasonPhrase = "OK",
                             StatusCode = "200"
                         };
-                        if (request.Headers.TryGetValue("Authorization", out string token))
+                        if (request.Headers.TryGetValue("Authorization", out string strAuthToken))
                         {
-                            result.Headers.Add("Authorization", token);
+                            result.Headers.Add("Authorization", strAuthToken);
                         }
                         return result;
                      }
@@ -173,10 +177,9 @@ namespace ChummerHub.Client.OidcClient
 
         private readonly HttpServer _httpServer;
 
-        readonly TaskCompletionSource<string> _source = new TaskCompletionSource<string>();
-        //string _url;
-
-        //public string Url => _url;
+        private readonly CancellationTokenSource _objCallbackCancellationTokenSource = new CancellationTokenSource();
+        private CancellationTokenRegistration _objCallbackCancellationTokenRegistration;
+        private readonly TaskCompletionSource<string> _source = new TaskCompletionSource<string>();
 
         //public LoopbackHttpListener(int port, string path = null)
         //{
@@ -195,6 +198,8 @@ namespace ChummerHub.Client.OidcClient
 
         public void Dispose()
         {
+            _objCallbackCancellationTokenRegistration.Dispose();
+            _objCallbackCancellationTokenSource.Dispose();
             //Task.Run(async () =>
             //{
             //    await Task.Delay(500);
@@ -239,12 +244,7 @@ namespace ChummerHub.Client.OidcClient
 
         public Task<string> WaitForCallbackAsync(int timeoutInSeconds = DefaultTimeout)
         {
-            Task.Run(async () =>
-            {
-                await Task.Delay(timeoutInSeconds * 1000);
-                _source.TrySetCanceled();
-            });
-
+            _objCallbackCancellationTokenSource.CancelAfter(timeoutInSeconds * 1000);
             return _source.Task;
         }
     }

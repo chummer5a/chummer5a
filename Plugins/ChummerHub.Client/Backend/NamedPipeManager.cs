@@ -157,8 +157,8 @@ namespace ChummerHub.Client.Backend
 
         private async Task RunChummerFilePipeThread(CancellationToken token = default)
         {
-            if (!(NamedPipeName is string pipeNameString))
-                throw new ArgumentNullException(nameof(NamedPipeName));
+            if (string.IsNullOrEmpty(NamedPipeName))
+                throw new NullReferenceException(nameof(NamedPipeName));
             PipeSecurity ps = new PipeSecurity();
             System.Security.Principal.SecurityIdentifier sid = new System.Security.Principal.SecurityIdentifier(System.Security.Principal.WellKnownSidType.WorldSid, null);
             PipeAccessRule par = new PipeAccessRule(sid, PipeAccessRights.ReadWrite, System.Security.AccessControl.AccessControlType.Allow);
@@ -170,7 +170,7 @@ namespace ChummerHub.Client.Backend
                 try
                 {
                     string text;
-                    using (NamedPipeServerStream server = new NamedPipeServerStream(pipeNameString,
+                    using (NamedPipeServerStream server = new NamedPipeServerStream(NamedPipeName,
                         PipeDirection.InOut, 1,
                         PipeTransmissionMode.Message, PipeOptions.None,
                         4028, 4028, ps))

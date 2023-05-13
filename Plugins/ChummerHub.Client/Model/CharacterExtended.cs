@@ -459,9 +459,9 @@ namespace ChummerHub.Client.Sinners
             }
         }
 
-        public string PrepareModel()
+        public string PrepareModel(CancellationToken token = default)
         {
-            return PrepareModelCoreAsync(true).GetAwaiter().GetResult();
+            return Chummer.Utils.SafelyRunSynchronously(() => PrepareModelCoreAsync(true, token), token);
         }
 
         public Task<string> PrepareModelAsync(CancellationToken token = default)
@@ -519,12 +519,8 @@ namespace ChummerHub.Client.Sinners
                         try
                         {
                             if (blnSync)
-                            {
-                                Task<ResultSinnerGetOwnedSINByAlias> objSearchTask = client.SinnerGetOwnedSINByAliasAsync(MySINnerFile.Alias, token);
-                                if (objSearchTask.Status == TaskStatus.Created)
-                                    objSearchTask.RunSynchronously();
-                                res = objSearchTask.ConfigureAwait(false).GetAwaiter().GetResult();
-                            }
+                                res = Chummer.Utils.SafelyRunSynchronously(
+                                    () => client.SinnerGetOwnedSINByAliasAsync(MySINnerFile.Alias, token), token);
                             else
                                 res = await client.SinnerGetOwnedSINByAliasAsync(MySINnerFile.Alias, token);
                         }

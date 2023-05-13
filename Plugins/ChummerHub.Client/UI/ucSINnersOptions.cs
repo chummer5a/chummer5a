@@ -95,7 +95,7 @@ namespace ChummerHub.Client.UI
         public ucSINnersOptions()
         {
             InitializeComponent();
-            InitializeMe(true).GetAwaiter().GetResult();
+            Chummer.Utils.SafelyRunSynchronously(() => InitializeMe(true));
         }
 
         public static bool UploadOnSave
@@ -926,7 +926,7 @@ namespace ChummerHub.Client.UI
                     await BackupTask(folderBrowserDialog1).ContinueWith(a =>
                     {
                         Program.ShowMessageBox(a.Status.ToString());
-                    });
+                    }, TaskScheduler.Default);
                 }
             }
         }
@@ -983,7 +983,7 @@ namespace ChummerHub.Client.UI
                     await RestoreTask(folderBrowserDialog1).ContinueWith(a =>
                     {
                         Program.ShowMessageBox(a.Status.ToString());
-                    });
+                    }, TaskScheduler.Default);
                 }
             }
         }

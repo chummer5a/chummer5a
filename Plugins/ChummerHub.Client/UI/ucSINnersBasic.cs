@@ -61,20 +61,16 @@ namespace ChummerHub.Client.UI
             AutoSize = true;
             myUC = parent;
             myUC.MyCE = parent.MyCE;
-            if (myUC.MyCE?.MySINnerFile?.Id != null)
-                tbID.Text = myUC.MyCE?.MySINnerFile?.Id?.ToString();
+            string strId = myUC.MyCE?.MySINnerFile?.Id?.ToString() ?? string.Empty;
+            if (!string.IsNullOrEmpty(strId))
+                tbID.Text = strId;
             string tip =
                 "Assigning this SINner a new Id enables you to save multiple versions of this chummer on SINnersHub." +
                 Environment.NewLine;
             bGenerateNewId.SetToolTip(tip);
-            Task.Run(() => CheckSINnerStatus().ContinueWith(a =>
-            {
-                if (!a.Result)
-                {
-                    Log.Error("somehow I couldn't check the onlinestatus of " +
-                                                        myUC.MyCE.MySINnerFile.Id);
-                }
-            }));
+            if (!Chummer.Utils.SafelyRunSynchronously(() => CheckSINnerStatus()))
+                Log.Error("somehow I couldn't check the onlinestatus of " +
+                          strId);
             foreach (object cb in gpTags.Controls)
             {
                 if (cb is Control cont)

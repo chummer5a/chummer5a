@@ -52,7 +52,8 @@ namespace IdentityModel.OidcClient
 
             if (options.ProviderInformation == null)
             {
-                if (options.Authority.IsMissing()) throw new ArgumentException("No authority specified", nameof(Options.Authority));
+                if (options.Authority.IsMissing())
+                    throw new ArgumentException("No authority specified", nameof(Options.Authority));
                 _useDiscovery = true;
             }
 

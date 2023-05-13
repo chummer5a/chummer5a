@@ -305,7 +305,7 @@ namespace Chummer.Plugins
             switch (onlyparameter)
             {
                 case "Load":
-                    return HandleLoadCommand(argument).GetAwaiter().GetResult();
+                    return Utils.SafelyRunSynchronously(() => HandleLoadCommand(argument));
             }
             Log.Warn("Unknown command line parameter: " + parameter);
             return true;
@@ -394,14 +394,14 @@ namespace Chummer.Plugins
         {
             return !Settings.Default.UserModeRegistered
                 ? Task.FromResult<ICollection<TabPage>>(null)
-                : GetTabPagesCommon(input, token).ContinueWith(x => (ICollection<TabPage>) x.Result.Yield().ToArray(), token);
+                : GetTabPagesCommon(input, token).ContinueWith(x => (ICollection<TabPage>) x.Result.Yield().ToArray(), token, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.Default);
         }
 
         public Task<ICollection<TabPage>> GetTabPages(CharacterCreate input, CancellationToken token = default)
         {
             return !Settings.Default.UserModeRegistered
                 ? Task.FromResult<ICollection<TabPage>>(null)
-                : GetTabPagesCommon(input, token).ContinueWith(x => (ICollection<TabPage>)x.Result.Yield().ToArray(), token);
+                : GetTabPagesCommon(input, token).ContinueWith(x => (ICollection<TabPage>)x.Result.Yield().ToArray(), token, TaskContinuationOptions.OnlyOnRanToCompletion, TaskScheduler.Default);
         }
 
         private static async Task<TabPage> GetTabPagesCommon(CharacterShared input, CancellationToken token = default)
@@ -435,7 +435,9 @@ namespace Chummer.Plugins
         }
 
         public static SINner MySINnerLoading { get; internal set; }
-        public NamedPipeManager PipeManager { get; private set; }
+
+        private NamedPipeManager _objPipeManager;
+        public NamedPipeManager PipeManager => _objPipeManager;
 
         public string GetSaveToFileElement(Character input)
         {
@@ -546,9 +548,9 @@ namespace Chummer.Plugins
             return true;
         }
 
-        private static CharacterExtended GetMyCe(Character input)
+        private static CharacterExtended GetMyCe(Character input, CancellationToken token = default)
         {
-            return GetMyCeCoreAsync(true, input).GetAwaiter().GetResult();
+            return Utils.SafelyRunSynchronously(() => GetMyCeCoreAsync(true, input, token), token);
         }
 
         private static Task<CharacterExtended> GetMyCeAsync(Character input, CancellationToken token = default)
@@ -1248,20 +1250,26 @@ namespace Chummer.Plugins
                 Utils.BreakIfDebug();
                 HasDuplicate = true;
             }
-            if (PipeManager == null)
-            {
-                PipeManager = new NamedPipeManager();
-                Log.Info("blnHasDuplicate = " + HasDuplicate.ToString(CultureInfo.InvariantCulture));
-                // If there is more than 1 instance running, do not let the application start a receiving server.
-                if (HasDuplicate)
-                {
-                    Log.Info("More than one instance, not starting NamedPipe-Server...");
-                    throw new InvalidOperationException("More than one instance is running.");
-                }
 
-                Log.Info("Only one instance, starting NamedPipe-Server...");
-                Task.Run(() => PipeManager.StartServer().ContinueWith(x => PipeManager.ReceiveString += y => HandleNamedPipe_OpenRequest(y).GetAwaiter().GetResult()));
+            if (_objPipeManager != null)
+                return;
+            NamedPipeManager objNewNamedPipeManager = new NamedPipeManager();
+            if (Interlocked.CompareExchange(ref _objPipeManager, objNewNamedPipeManager, null) != null)
+            {
+                objNewNamedPipeManager.Dispose();
+                return;
             }
+            Log.Info("blnHasDuplicate = " + HasDuplicate.ToString(CultureInfo.InvariantCulture));
+            // If there is more than 1 instance running, do not let the application start a receiving server.
+            if (HasDuplicate)
+            {
+                Log.Info("More than one instance, not starting NamedPipe-Server...");
+                throw new InvalidOperationException("More than one instance is running.");
+            }
+
+            Log.Info("Only one instance, starting NamedPipe-Server...");
+            Utils.SafelyRunSynchronously(() => objNewNamedPipeManager.StartServer());
+            objNewNamedPipeManager.ReceiveString += x => Utils.SafelyRunSynchronously(() => HandleNamedPipe_OpenRequest(x));
         }
 
         private static string fileNameToLoad = string.Empty;

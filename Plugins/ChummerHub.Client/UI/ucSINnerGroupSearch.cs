@@ -307,7 +307,7 @@ namespace ChummerHub.Client.UI
                                 await ProcessGroupSearchVisible();
                                 await PluginHandler.MainForm.CharacterRoster.RefreshPluginNodesAsync(PluginHandler.MyPluginHandlerInstance);
                             }
-                        }).Unwrap();
+                        }, TaskScheduler.Default).Unwrap();
                     }
                 }
             }
@@ -388,36 +388,38 @@ namespace ChummerHub.Client.UI
                             SinnersClient client = StaticUtils.GetClient();
                             SINner response =
                                 await client.PutSINerInGroupAsync(searchgroup.Id, myCE.MySINnerFile.Id,
-                                    groupEdit?.MySINnerGroupCreate?.MyGroup?.PasswordHash, token);
+                                    groupEdit?.MySINnerGroupCreate?.MyGroup?.PasswordHash, token)
+                                ?? throw new NotImplementedException();
+                            /*
                             if (response == null)
                             {
-                                throw new NotImplementedException();
-                                //var rescontent = await response.Response.Content.ReadAsStringAsync();
-                                //if (response.Response.StatusCode == HttpStatusCode.BadRequest)
-                                //{
-                                //    if (rescontent.Contains("PW is wrong!"))
-                                //    {
-                                //        throw new ArgumentException("Wrong Password provided!");
-                                //    }
+                                var rescontent = await response.Response.Content.ReadAsStringAsync();
+                                if (response.Response.StatusCode == HttpStatusCode.BadRequest)
+                                {
+                                    if (rescontent.Contains("PW is wrong!"))
+                                    {
+                                        throw new ArgumentException("Wrong Password provided!");
+                                    }
 
-                                //    string searchfor = "NoUserRightException\",\"Message\":\"";
-                                //    if (rescontent.Contains(searchfor))
-                                //    {
-                                //        string msg =
-                                //            rescontent.Substring(rescontent.IndexOf(searchfor, StringComparison.Ordinal) + searchfor.Length);
-                                //        msg = msg.Substring(0, msg.IndexOf("\"", StringComparison.Ordinal));
-                                //        throw new ArgumentException(msg);
-                                //    }
+                                    string searchfor = "NoUserRightException\",\"Message\":\"";
+                                    if (rescontent.Contains(searchfor))
+                                    {
+                                        string msg =
+                                            rescontent.Substring(rescontent.IndexOf(searchfor, StringComparison.Ordinal) + searchfor.Length);
+                                        msg = msg.Substring(0, msg.IndexOf("\"", StringComparison.Ordinal));
+                                        throw new ArgumentException(msg);
+                                    }
 
-                                //    throw new ArgumentException(rescontent);
-                                //}
-                                //else
-                                //{
-                                //    string msg = "StatusCode: " + response.Response.StatusCode + Environment.NewLine;
-                                //    msg += rescontent;
-                                //    throw new ArgumentException(msg);
-                                //}
+                                    throw new ArgumentException(rescontent);
+                                }
+                                else
+                                {
+                                    string msg = "StatusCode: " + response.Response.StatusCode + Environment.NewLine;
+                                    msg += rescontent;
+                                    throw new ArgumentException(msg);
+                                }
                             }
+                            */
 
                             ResultGroupGetGroupById found = await client.GetGroupByIdAsync(searchgroup.Id, token);
                             await Backend.Utils.ShowErrorResponseFormAsync(found, token: token);

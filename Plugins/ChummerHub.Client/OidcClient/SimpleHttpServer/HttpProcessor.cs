@@ -77,7 +77,7 @@ namespace SimpleHttpServer
         private static void WriteResponse(Stream stream, HttpResponse response)
         {            
             if (response.Content == null) {           
-                response.Content = new byte[]{};
+                response.Content = Array.Empty<byte>();
             }
             
             // default to text/html content type
