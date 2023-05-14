@@ -862,23 +862,26 @@ namespace Chummer
                             sbdDuplicatesNames.AppendJoin(Environment.NewLine, lstDuplicateNames);
                         }
 
-                        Program.ShowScrollableMessageBox(string.Format(GlobalSettings.CultureInfo
-                            , LanguageManager.GetString(
-                                "Message_DuplicateGuidWarning", token: token)
-                            , setDuplicateIDs.Count
-                            , strFileName
-                            , sbdDuplicatesNames.ToString()));
+                        Program.ShowScrollableMessageBox(string.Format(GlobalSettings.CultureInfo,
+                                                                       LanguageManager.GetString(
+                                                                           "Message_DuplicateGuidWarning",
+                                                                           token: token),
+                                                                       setDuplicateIDs.Count,
+                                                                       strFileName,
+                                                                       sbdDuplicatesNames.ToString()));
                     }
                 }
             }
 
             if (lstItemsWithMalformedIDs.Count > 0)
             {
-                Program.ShowScrollableMessageBox(string.Format(GlobalSettings.CultureInfo
-                    , LanguageManager.GetString("Message_NonGuidIdWarning", token: token)
-                    , lstItemsWithMalformedIDs.Count
-                    , strFileName
-                    , string.Join(Environment.NewLine, lstItemsWithMalformedIDs)));
+                Program.ShowScrollableMessageBox(string.Format(GlobalSettings.CultureInfo,
+                                                               LanguageManager.GetString(
+                                                                   "Message_NonGuidIdWarning", token: token),
+                                                               lstItemsWithMalformedIDs.Count,
+                                                               strFileName,
+                                                               string.Join(
+                                                                   Environment.NewLine, lstItemsWithMalformedIDs)));
             }
         }
 

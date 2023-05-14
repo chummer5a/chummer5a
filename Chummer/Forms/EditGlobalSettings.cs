@@ -163,8 +163,11 @@ namespace Chummer
             }
 
             if (_blnDirty)
+            {
                 await Utils.RestartApplication(_strSelectedLanguage, "Message_Options_CloseForms")
                            .ConfigureAwait(false);
+            }
+
             await this.DoThreadSafeAsync(x => x.Close()).ConfigureAwait(false);
         }
 
@@ -376,22 +379,22 @@ namespace Chummer
             if (_intLoading > 0)
                 return;
             UseAILogging useAI = await cboUseLoggingApplicationInsights
-                                       .DoThreadSafeFuncAsync(x => (UseAILogging) ((ListItem) x.SelectedItem).Value)
+                                       .DoThreadSafeFuncAsync(x => (UseAILogging)((ListItem) x.SelectedItem).Value)
                                        .ConfigureAwait(false);
             GlobalSettings.UseLoggingResetCounter = 10;
             if (useAI > UseAILogging.Info
                 && GlobalSettings.UseLoggingApplicationInsightsPreference <= UseAILogging.Info
-                && DialogResult.Yes != Program.ShowScrollableMessageBox(this,
-                                                              (await LanguageManager
-                                                                     .GetStringAsync(
-                                                                         "Message_Options_ConfirmTelemetry",
-                                                                         _strSelectedLanguage).ConfigureAwait(false))
-                                                              .WordWrap(),
-                                                              await LanguageManager
-                                                                    .GetStringAsync(
-                                                                        "MessageTitle_Options_ConfirmTelemetry",
-                                                                        _strSelectedLanguage).ConfigureAwait(false),
-                                                              MessageBoxButtons.YesNo))
+                && Program.ShowScrollableMessageBox(this,
+                                                    (await LanguageManager
+                                                           .GetStringAsync(
+                                                               "Message_Options_ConfirmTelemetry",
+                                                               _strSelectedLanguage).ConfigureAwait(false))
+                                                    .WordWrap(),
+                                                    await LanguageManager
+                                                          .GetStringAsync(
+                                                              "MessageTitle_Options_ConfirmTelemetry",
+                                                              _strSelectedLanguage).ConfigureAwait(false),
+                                                    MessageBoxButtons.YesNo) != DialogResult.Yes)
             {
                 int intLoading = Interlocked.Increment(ref _intLoading);
                 try
@@ -425,14 +428,16 @@ namespace Chummer
         {
             if (_intLoading > 0)
                 return;
-            if (chkUseLogging.Checked && !GlobalSettings.UseLogging && DialogResult.Yes != Program.ShowScrollableMessageBox(this,
+            if (await chkUseLogging.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false)
+                && !GlobalSettings.UseLogging
+                && Program.ShowScrollableMessageBox(
+                    this,
                     (await LanguageManager
                            .GetStringAsync("Message_Options_ConfirmDetailedTelemetry", _strSelectedLanguage)
                            .ConfigureAwait(false)).WordWrap(),
                     await LanguageManager
                           .GetStringAsync("MessageTitle_Options_ConfirmDetailedTelemetry", _strSelectedLanguage)
-                          .ConfigureAwait(false),
-                    MessageBoxButtons.YesNo))
+                          .ConfigureAwait(false), MessageBoxButtons.YesNo) != DialogResult.Yes)
             {
                 int intLoading = Interlocked.Increment(ref _intLoading);
                 try
@@ -1065,8 +1070,11 @@ namespace Chummer
                                                                   out StringBuilder sbdIncompatibilities))
                     {
                         foreach (DirectoryDependency exclusivity in objSelected.IncompatibilitiesList)
+                        {
                             sbdIncompatibilities.AppendLine(
                                 await exclusivity.GetDisplayNameAsync().ConfigureAwait(false));
+                        }
+
                         await lblIncompatibilities.DoThreadSafeAsync(x => x.Text = sbdIncompatibilities.ToString())
                                                   .ConfigureAwait(false);
                     }
@@ -1712,9 +1720,12 @@ namespace Chummer
                     {
                         string strName = kvpLoopCharacterOptions.Value.Name;
                         if (strName.IsGuid() || (strName.StartsWith('{') && strName.EndsWith('}')))
+                        {
                             strName = await LanguageManager.GetStringAsync(strName.TrimStartOnce('{').TrimEndOnce('}'),
                                                                            _strSelectedLanguage, token: token)
                                                            .ConfigureAwait(false);
+                        }
+
                         lstCharacterSettings.Add(new ListItem(strId, strName));
                     }
                 }
@@ -2305,11 +2316,16 @@ namespace Chummer
                     string strLanguage = _strSelectedLanguage;
                     if (string.IsNullOrEmpty(strLanguage)
                         || strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                    {
                         intNameIndex = x.FindStringExact(GlobalSettings.DefaultCharacterSheet);
+                    }
                     else
+                    {
                         intNameIndex = x.FindStringExact(
                             GlobalSettings.DefaultCharacterSheet.Substring(
                                 GlobalSettings.DefaultLanguage.LastIndexOf(Path.DirectorySeparatorChar) + 1));
+                    }
+
                     x.SelectedIndex = Math.Max(0, intNameIndex);
                 }
             }, token);

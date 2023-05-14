@@ -7732,12 +7732,10 @@ namespace Chummer
         }
 
         /// <summary>
-        ///
-        /// </summary>
-        /// <param name="bonusNode">Replaces the Active Skill used for one or all spells with another. Example:
+        /// Replaces the Active Skill used for one or all spells with another. Example:
         /// <replacespellskill spell="Mana Net">Blades</replacespellskill> Replace the Spellcasting skill with Blades for the spell Mana Net.
         /// <replacespellskill>Blades</replacespellskill> Replace the Spellcasting skill with Blades for ALL spells that are not marked as Alchemical or BareHandedAdept.
-        /// </param>
+        /// </summary>
         public void replaceskillspell(XmlNode bonusNode)
         {
             if (bonusNode == null)

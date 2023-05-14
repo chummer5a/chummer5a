@@ -561,7 +561,7 @@ namespace Chummer
             }
             return true;
         }
-        
+
         public bool TryUpdate(KeyValuePair<TKey, TValue> item)
         {
             return TryUpdate(item.Key, item.Value);
@@ -722,7 +722,7 @@ namespace Chummer
                 if (_dicData.TryGetValue(key, out TValue objExistingValue))
                     return objExistingValue;
             }
-            
+
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {

@@ -624,8 +624,13 @@ namespace Chummer
                                       ?? strChildName;
                                 strRating = (await objXmlChild.SelectSingleNodeAndCacheExpressionAsync("rating").ConfigureAwait(false))?.Value;
                                 if (!string.IsNullOrEmpty(strRating))
-                                    strInnerText += strSpace + await LanguageManager.GetStringAsync("String_Rating").ConfigureAwait(false)
-                                                             + strSpace + strRating;
+                                {
+                                    strInnerText += strSpace
+                                                    + await LanguageManager.GetStringAsync("String_Rating")
+                                                                           .ConfigureAwait(false)
+                                                    + strSpace + strRating;
+                                }
+
                                 TreeNode objChildChild = new TreeNode
                                 {
                                     Text = strInnerText

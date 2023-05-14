@@ -1314,9 +1314,6 @@ namespace Chummer
         /// <summary>
         /// Checks if every letter in a string is uppercase or not.
         /// </summary>
-        /// <param name="strText"></param>
-        /// <returns></returns>
-        /// <exception cref="ArgumentNullException"></exception>
         public static bool IsAllLettersUpperCase(this string strText)
         {
             if (strText == null)

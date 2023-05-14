@@ -641,7 +641,7 @@ namespace Chummer
                                 opFrmChummerMain.MyTelemetryClient.TrackPageView(MyStartupPvt);
                             }
 
-                            NativeMethods.ChangeFilterStruct changeFilter = new NativeMethods.ChangeFilterStruct();
+                            NativeMethods.ChangeFilterStruct changeFilter = default;
                             changeFilter.size = (uint) Marshal.SizeOf(changeFilter);
                             changeFilter.info = 0;
                             if (NativeMethods.ChangeWindowMessageFilterEx(
@@ -871,14 +871,13 @@ namespace Chummer
                                     _mascotChummy = await this.DoThreadSafeFuncAsync(x =>
                                     {
                                         Chummy objReturn = new Chummy(null);
-                                        try
+                                        x.Disposed += (o, args) =>
                                         {
-                                            return objReturn;
-                                        }
-                                        finally
-                                        {
-                                            x.Disposed += (o, args) => objReturn.Dispose();
-                                        }
+                                            if (Interlocked.CompareExchange(ref _mascotChummy, null, objReturn)
+                                                == objReturn)
+                                                objReturn.Dispose();
+                                        };
+                                        return objReturn;
                                     }, token: _objGenericToken).ConfigureAwait(false);
                                     await _mascotChummy.DoThreadSafeAsync(
                                         x => x.Show(), token: _objGenericToken).ConfigureAwait(false);
@@ -982,8 +981,8 @@ namespace Chummer
                             int intDefaultHeight = 720;
                             using (Graphics g = CreateGraphics())
                             {
-                                intDefaultWidth = (int) (intDefaultWidth * g.DpiX / 96.0f);
-                                intDefaultHeight = (int) (intDefaultHeight * g.DpiY / 96.0f);
+                                intDefaultWidth = (int)(intDefaultWidth * g.DpiX / 96.0f);
+                                intDefaultHeight = (int)(intDefaultHeight * g.DpiY / 96.0f);
                             }
 
                             await this.DoThreadSafeAsync(x =>

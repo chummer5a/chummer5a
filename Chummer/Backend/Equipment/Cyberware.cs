@@ -1024,7 +1024,7 @@ namespace Chummer.Backend.Equipment
                                                      out intAddWeaponRating);
                                     }
 
-                                    objGearWeapon.Create(objXmlAccessory, new Tuple<string, string>("", ""),
+                                    objGearWeapon.Create(objXmlAccessory, new Tuple<string, string>(string.Empty, string.Empty),
                                                          intAddWeaponRating,
                                                          blnSkipSelectForms, true, blnCreateImprovements);
                                     objGearWeapon.Cost = "0";
@@ -5449,7 +5449,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                     if (string.IsNullOrEmpty(strCapacity))
-                        return (0.0m).ToString("#,0.##", GlobalSettings.CultureInfo);
+                        return 0.0m.ToString("#,0.##", GlobalSettings.CultureInfo);
                     if (strCapacity == "[*]")
                         return "*";
                     string strReturn;

@@ -54,7 +54,7 @@ namespace Chummer
             IntPtr CallbackParam
         );
 
-        [StructLayout(LayoutKind.Sequential, Pack = 4)]  // Pack=4 is important! So it works also for x64!
+        [StructLayout(LayoutKind.Sequential, Pack = 4)] // Pack=4 is important! So it works also for x64!
         internal struct MiniDumpExceptionInformation
         {
             internal readonly uint ThreadId;

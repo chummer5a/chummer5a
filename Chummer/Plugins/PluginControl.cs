@@ -130,7 +130,7 @@ namespace Chummer.Plugins
             return true;
         }
 
-        public static bool RegisterMyProtocol(string myAppPath)  //myAppPath = full path to your application
+        public static bool RegisterMyProtocol(string myAppPath) //myAppPath = full path to your application
         {
             RegistryKey objSoftware = null;
             RegistryKey objClasses = null;
@@ -469,7 +469,7 @@ namespace Chummer.Plugins
             {
                 try
                 {
-                    using (_ = Timekeeper.StartSyncron("LoadPlugins", parentActivity,
+                    using (Timekeeper.StartSyncron("LoadPlugins", parentActivity,
                                                        CustomActivity.OperationType.DependencyOperation,
                                                        _objMyDirectoryCatalog?.FullPath))
                         Initialize();
@@ -530,7 +530,7 @@ namespace Chummer.Plugins
             {
                 foreach (IPlugin plugin in await GetMyActivePluginsAsync(token).ConfigureAwait(false))
                 {
-                    using (_ = Timekeeper.StartSyncron("load_plugin_GetTabPage_Career_" + plugin,
+                    using (Timekeeper.StartSyncron("load_plugin_GetTabPage_Career_" + plugin,
                                                        parentActivity,
                                                        CustomActivity.OperationType.DependencyOperation,
                                                        plugin.ToString()))
@@ -561,7 +561,7 @@ namespace Chummer.Plugins
             {
                 foreach (IPlugin plugin in await GetMyActivePluginsAsync(token).ConfigureAwait(false))
                 {
-                    using (_ = Timekeeper.StartSyncron("load_plugin_GetTabPage_Create_" + plugin, parentActivity,
+                    using (Timekeeper.StartSyncron("load_plugin_GetTabPage_Create_" + plugin, parentActivity,
                                                        CustomActivity.OperationType.DependencyOperation,
                                                        plugin.ToString()))
                     {
@@ -591,7 +591,7 @@ namespace Chummer.Plugins
             {
                 foreach (IPlugin plugin in await GetMyActivePluginsAsync(token).ConfigureAwait(false))
                 {
-                    using (_ = Timekeeper.StartSyncron("load_plugin_GetMenuItems_" + plugin,
+                    using (Timekeeper.StartSyncron("load_plugin_GetMenuItems_" + plugin,
                                                        parentActivity,
                                                        CustomActivity.OperationType.DependencyOperation,
                                                        plugin.ToString()))
@@ -602,7 +602,6 @@ namespace Chummer.Plugins
                             continue;
                         foreach (ToolStripMenuItem plugInMenu in menuitems)
                         {
-
                             if (plugInMenu != null)
                             {
                                 await Utils.RunOnMainThreadAsync(() =>

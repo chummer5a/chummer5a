@@ -959,8 +959,7 @@ namespace Chummer.Backend.Equipment
 
             foreach (string strAmmo in lstCount)
             {
-                if (int.TryParse(strAmmo, NumberStyles.Any, GlobalSettings.InvariantCultureInfo
-                    , out int intNewAmmoCount))
+                if (int.TryParse(strAmmo, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intNewAmmoCount))
                 {
                     if (intAmmoCount > intNewAmmoCount)
                         intAmmoCount = intNewAmmoCount;
@@ -1023,8 +1022,7 @@ namespace Chummer.Backend.Equipment
 
             foreach (string strAmmo in lstCount)
             {
-                if (int.TryParse(strAmmo, NumberStyles.Any, GlobalSettings.InvariantCultureInfo
-                    , out int intNewAmmoCount))
+                if (int.TryParse(strAmmo, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intNewAmmoCount))
                 {
                     if (intAmmoCount > intNewAmmoCount)
                         intAmmoCount = intNewAmmoCount;
@@ -7471,8 +7469,7 @@ namespace Chummer.Backend.Equipment
 
                 foreach (string strAmmo in lstCount)
                 {
-                    if (int.TryParse(strAmmo, NumberStyles.Any, GlobalSettings.InvariantCultureInfo
-                                     , out intMaxAmmoCount))
+                    if (int.TryParse(strAmmo, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intMaxAmmoCount))
                     {
                         break;
                     }

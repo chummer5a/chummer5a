@@ -31,7 +31,8 @@ namespace Chummer
 {
     public partial class CreatePACKSKit : Form
     {
-        [NotNull] private readonly Character _objCharacter;
+        [NotNull]
+        private readonly Character _objCharacter;
 
         #region Control Events
 

@@ -87,7 +87,7 @@ namespace Chummer
             pvt.Properties.Add("Name", objCharacter?.Name);
             string strCharacterFileName = objCharacter?.FileName; // Store this in a local so that we avoid possible weird semaphore collisions in the Shown delegate
             pvt.Properties.Add("Path", strCharacterFileName);
-            Shown += delegate
+            Shown += (o, args) =>
             {
                 pvt.Duration = DateTimeOffset.UtcNow - pvt.Timestamp;
                 if (strCharacterFileName != null && Uri.TryCreate(strCharacterFileName, UriKind.Absolute, out Uri uriResult))

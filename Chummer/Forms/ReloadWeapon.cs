@@ -54,8 +54,12 @@ namespace Chummer
                     string strName = await objGear.GetCurrentDisplayNameShortAsync().ConfigureAwait(false) + " x"
                         + objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo);
                     if (objGear.Rating > 0)
-                        strName += strSpace + '(' + await LanguageManager.GetStringAsync(objGear.RatingLabel).ConfigureAwait(false) + strSpace
-                                   + objGear.Rating.ToString(GlobalSettings.CultureInfo) + ')';
+                    {
+                        strName += strSpace + '('
+                                            + await LanguageManager.GetStringAsync(objGear.RatingLabel)
+                                                                   .ConfigureAwait(false) + strSpace
+                                            + objGear.Rating.ToString(GlobalSettings.CultureInfo) + ')';
+                    }
 
                     if (objGear.Parent is Gear objParent)
                     {

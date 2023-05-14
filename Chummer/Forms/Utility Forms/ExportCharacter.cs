@@ -596,9 +596,12 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 XmlDocument objNewDocument;
                 using (token.Register(() => _objCharacterXmlGeneratorCancellationTokenSource.Cancel(false)))
+                {
                     objNewDocument = await _objCharacter.GenerateExportXml(_objExportCulture, _strExportLanguage,
                                                                            _objCharacterXmlGeneratorCancellationTokenSource
                                                                                .Token).ConfigureAwait(false);
+                }
+
                 token.ThrowIfCancellationRequested();
                 if ((_objCharacterXml = objNewDocument) != null)
                     await DoXsltUpdate(token).ConfigureAwait(false);
@@ -646,8 +649,10 @@ namespace Chummer
                         {
                             token.ThrowIfCancellationRequested();
                             if (strLine.StartsWith("<!-- ext:", StringComparison.Ordinal))
+                            {
                                 strExtension = strLine.TrimStartOnce("<!-- ext:", true).FastEscapeOnceFromEnd("-->")
                                                       .Trim();
+                            }
                         }
                     }
                 }

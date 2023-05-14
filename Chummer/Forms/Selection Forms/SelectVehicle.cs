@@ -980,12 +980,16 @@ namespace Chummer
             if (GlobalSettings.SearchInCategoryOnly
                 || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength, token: token)
                                   .ConfigureAwait(false) == 0)
+            {
                 _strSelectCategory = await cboCategory
                                            .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token)
                                            .ConfigureAwait(false);
+            }
             else if (xmlVehicle != null)
+            {
                 _strSelectCategory = (await xmlVehicle.SelectSingleNodeAndCacheExpressionAsync("category", token)
                                                       .ConfigureAwait(false))?.Value ?? string.Empty;
+            }
             else
                 _strSelectCategory = string.Empty;
             _decMarkup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);

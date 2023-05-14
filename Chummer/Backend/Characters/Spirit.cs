@@ -224,7 +224,7 @@ namespace Chummer
         {
             if (objNode == null)
                 return;
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
                 objNode.TryGetField("guid", Guid.TryParse, out _guiId);
                 if (_guiId == Guid.Empty)
@@ -1239,9 +1239,9 @@ namespace Chummer
                                 : Force;
                             if (!CommonFunctions.ConfirmKarmaExpense(string.Format(GlobalSettings.CultureInfo,
                                                                          LanguageManager.GetString(
-                                                                             "Message_ConfirmKarmaExpenseSpend")
-                                                                         , Name
-                                                                         , fetteringCost.ToString(GlobalSettings.CultureInfo))))
+                                                                             "Message_ConfirmKarmaExpenseSpend"),
+                                                                         Name,
+                                                                         fetteringCost.ToString(GlobalSettings.CultureInfo))))
                             {
                                 return;
                             }
@@ -1474,10 +1474,10 @@ namespace Chummer
 
         public void RefreshLinkedCharacter(bool blnShowError = false, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 Character objOldLinkedCharacter = _objLinkedCharacter;
-                using (LockObject.EnterWriteLock())
+                using (LockObject.EnterWriteLock(token))
                 {
                     CharacterObject.LinkedCharacters.Remove(_objLinkedCharacter);
                     bool blnError = false;
@@ -1498,9 +1498,9 @@ namespace Chummer
                         {
                             Program.ShowScrollableMessageBox(
                                 string.Format(GlobalSettings.CultureInfo,
-                                              LanguageManager.GetString("Message_FileNotFound"),
+                                              LanguageManager.GetString("Message_FileNotFound", token: token),
                                               FileName),
-                                LanguageManager.GetString("MessageTitle_FileNotFound"), MessageBoxButtons.OK,
+                                LanguageManager.GetString("MessageTitle_FileNotFound", token: token), MessageBoxButtons.OK,
                                 MessageBoxIcon.Error);
                         }
                     }
@@ -1517,7 +1517,7 @@ namespace Chummer
                                        = Program.CreateAndShowProgressBar(strFile, Character.NumLoadingSections))
                                     _objLinkedCharacter
                                         = Program.LoadCharacter(strFile, string.Empty, false, false,
-                                                                frmLoadingBar.MyForm);
+                                                                frmLoadingBar.MyForm, token);
                             }
 
                             if (_objLinkedCharacter != null)
@@ -1529,7 +1529,7 @@ namespace Chummer
                     {
                         if (objOldLinkedCharacter != null)
                         {
-                            using (objOldLinkedCharacter.LockObject.EnterWriteLock())
+                            using (objOldLinkedCharacter.LockObject.EnterWriteLock(token))
                                 objOldLinkedCharacter.PropertyChanged -= LinkedCharacterOnPropertyChanged;
                             if (Program.OpenCharacters.Contains(objOldLinkedCharacter))
                             {
@@ -1544,13 +1544,13 @@ namespace Chummer
 
                         if (_objLinkedCharacter != null)
                         {
-                            using (EnterReadLock.Enter(_objLinkedCharacter.LockObject))
+                            using (EnterReadLock.Enter(_objLinkedCharacter.LockObject, token))
                             {
                                 if (string.IsNullOrEmpty(_strCritterName)
-                                    && CritterName != LanguageManager.GetString("String_UnnamedCharacter"))
+                                    && CritterName != LanguageManager.GetString("String_UnnamedCharacter", token: token))
                                     _strCritterName = CritterName;
 
-                                using (_objLinkedCharacter.LockObject.EnterWriteLock())
+                                using (_objLinkedCharacter.LockObject.EnterWriteLock(token))
                                     _objLinkedCharacter.PropertyChanged += LinkedCharacterOnPropertyChanged;
                             }
                         }
@@ -1648,7 +1648,7 @@ namespace Chummer
                             using (await EnterReadLock.EnterAsync(_objLinkedCharacter.LockObject, token).ConfigureAwait(false))
                             {
                                 if (string.IsNullOrEmpty(_strCritterName)
-                                    && CritterName != LanguageManager.GetString("String_UnnamedCharacter"))
+                                    && CritterName != LanguageManager.GetString("String_UnnamedCharacter", token: token))
                                     _strCritterName = CritterName;
 
                                 IAsyncDisposable objLocker2 = await _objLinkedCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
@@ -1861,7 +1861,7 @@ namespace Chummer
 
         public void LoadMugshots(XPathNavigator xmlSavedNode, CancellationToken token = default)
         {
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
                 xmlSavedNode.TryGetInt32FieldQuickly("mainmugshotindex", ref _intMainMugshotIndex);
                 XPathNodeIterator xmlMugshotsList = xmlSavedNode.SelectAndCacheExpression("mugshots/mugshot");

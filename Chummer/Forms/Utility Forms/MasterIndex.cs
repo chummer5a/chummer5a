@@ -127,6 +127,7 @@ namespace Chummer
                     objOldCancellationTokenSource.Dispose();
                 }
                 _objGenericFormClosingCancellationTokenSource.Dispose();
+
                 _dicCachedNotes.Dispose();
                 foreach (ListItem objExistingItem in _lstItems)
                     ((MasterIndexEntry) objExistingItem.Value).Dispose();
@@ -528,12 +529,12 @@ namespace Chummer
                                 : "source";
                         }
 
-                        using (_ = Timekeeper.StartSyncron("load_frm_masterindex_load_andpopulate_entries", opLoadMasterindex))
+                        using (Timekeeper.StartSyncron("load_frm_masterindex_load_andpopulate_entries", opLoadMasterindex))
                         {
                             if (_objSelectedSetting != null)
                             {
                                 ConcurrentBag<ListItem> lstItemsForLoading = new ConcurrentBag<ListItem>();
-                                using (_ = Timekeeper.StartSyncron("load_frm_masterindex_load_entries", opLoadMasterindex))
+                                using (Timekeeper.StartSyncron("load_frm_masterindex_load_entries", opLoadMasterindex))
                                 {
                                     ConcurrentBag<ListItem> lstFileNamesWithItemsForLoading = new ConcurrentBag<ListItem>();
                                     // Prevents locking the UI thread while still benefiting from static scheduling of Parallel.ForEach
@@ -623,7 +624,7 @@ namespace Chummer
                                     _lstFileNamesWithItems.AddRange(lstFileNamesWithItemsForLoading);
                                 }
 
-                                using (_ = Timekeeper.StartSyncron("load_frm_masterindex_populate_entries", opLoadMasterindex))
+                                using (Timekeeper.StartSyncron("load_frm_masterindex_populate_entries", opLoadMasterindex))
                                 {
                                     string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
                                     string strFormat = "{0}" + strSpace + "[{1}]";
@@ -718,13 +719,13 @@ namespace Chummer
                             }
                         }
 
-                        using (_ = Timekeeper.StartSyncron("load_frm_masterindex_sort_entries", opLoadMasterindex))
+                        using (Timekeeper.StartSyncron("load_frm_masterindex_sort_entries", opLoadMasterindex))
                         {
                             _lstItems.Sort(CompareListItems.CompareNames);
                             _lstFileNamesWithItems.Sort(CompareListItems.CompareNames);
                         }
 
-                        using (_ = Timekeeper.StartSyncron("load_frm_masterindex_populate_controls", opLoadMasterindex))
+                        using (Timekeeper.StartSyncron("load_frm_masterindex_populate_controls", opLoadMasterindex))
                         {
                             _lstFileNamesWithItems.Insert(
                                 0, new ListItem(string.Empty, await LanguageManager.GetStringAsync("String_All", token: token).ConfigureAwait(false)));

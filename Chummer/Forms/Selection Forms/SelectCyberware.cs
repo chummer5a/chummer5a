@@ -342,8 +342,10 @@ namespace Chummer
                         && strSelectedGrade != null)
                         _strOldSelectedGrade = strSelectedGrade;
                     if (!string.IsNullOrEmpty(strSelectedGrade))
+                    {
                         xmlGrade = _xmlBaseCyberwareDataNode.SelectSingleNode(
                             "grades/grade[id = " + strSelectedGrade.CleanXPath() + ']');
+                    }
 
                     // Update the Essence and Cost multipliers based on the Grade that has been selected.
                     if (xmlGrade != null)
@@ -427,8 +429,13 @@ namespace Chummer
                 // Update the list of Cyberware based on the selected Category.
                 await cboGrade.DoThreadSafeAsync(x => x.Enabled = !_blnLockGrade, token: _objGenericToken).ConfigureAwait(false);
                 if (_blnLockGrade)
-                    strForceGrade = await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: _objGenericToken)
-                                                  .ConfigureAwait(false);
+                {
+                    strForceGrade = await cboGrade
+                                          .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(),
+                                                                 token: _objGenericToken)
+                                          .ConfigureAwait(false);
+                }
+
                 // We will need to rebuild the Grade list since certain categories of 'ware disallow certain grades (e.g. Used for cultured bioware) and ForceGrades can change.
                 await PopulateGrades(null, false, strForceGrade,
                                      await chkHideBannedGrades.DoThreadSafeFuncAsync(x => x.Checked, token: _objGenericToken)
@@ -979,7 +986,7 @@ namespace Chummer
         /// <summary>
         /// Parent vehicle that the cyberlimb will be attached to.
         /// </summary>
-        public Vehicle ParentVehicle { set; get; }
+        public Vehicle ParentVehicle { get; set; }
 
         public decimal Markup { get; set; }
 
@@ -1110,8 +1117,10 @@ namespace Chummer
                                         decMax = Convert.ToDecimal(strValues[1], GlobalSettings.InvariantCultureInfo);
                                     }
                                     else
+                                    {
                                         decMin = Convert.ToDecimal(strCost.FastEscape('+'),
                                                                    GlobalSettings.InvariantCultureInfo);
+                                    }
 
                                     strCost = decMax == decimal.MaxValue
                                                                         ? decMin.ToString(_objCharacter.Settings.NuyenFormat,
@@ -1168,9 +1177,12 @@ namespace Chummer
                                 }
                             }
                             else
+                            {
                                 strCost = (0.0m).ToString(_objCharacter.Settings.NuyenFormat,
-                                                                          GlobalSettings.CultureInfo)
-                                                                      + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
+                                                          GlobalSettings.CultureInfo)
+                                          + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token)
+                                                                 .ConfigureAwait(false);
+                            }
                         }
                         await lblCost.DoThreadSafeAsync(x => x.Text = strCost, token: token).ConfigureAwait(false);
 
@@ -1254,8 +1266,10 @@ namespace Chummer
                                     decESS = decCharacterESSModifier
                                              * Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
                                     if (!_objCharacter.Settings.DontRoundEssenceInternally)
+                                    {
                                         decESS = decimal.Round(decESS, _objCharacter.Settings.EssenceDecimals,
                                                                MidpointRounding.AwayFromZero);
+                                    }
                                 }
                             }
 
@@ -1267,9 +1281,13 @@ namespace Chummer
                             }, token: token).ConfigureAwait(false);
                         }
                         else
+                        {
                             await lblEssence.DoThreadSafeAsync(x => x.Text
-                                                                   = (0.0m).ToString(_objCharacter.Settings.EssenceFormat,
-                                                                       GlobalSettings.CultureInfo), token: token).ConfigureAwait(false);
+                                                                   = (0.0m).ToString(
+                                                                       _objCharacter.Settings.EssenceFormat,
+                                                                       GlobalSettings.CultureInfo), token: token)
+                                            .ConfigureAwait(false);
+                        }
 
                         bool blnShowEssence = !string.IsNullOrEmpty(await lblEssence.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false));
                         await lblEssenceLabel.DoThreadSafeAsync(x => x.Visible = blnShowEssence, token: token).ConfigureAwait(false);
@@ -1342,9 +1360,11 @@ namespace Chummer
                                             ? objProcess.ToString()
                                             : strCapacity;
                                         if (blnSquareBrackets)
+                                        {
                                             x.Text = blnAddToParentCapacity
                                                 ? "+[" + x.Text + ']'
                                                 : '[' + x.Text + ']';
+                                        }
                                     }, token: token).ConfigureAwait(false);
                                 }
                             }
@@ -1420,8 +1440,10 @@ namespace Chummer
                 {
                     if (strCategory != "Show All" && !Upgrading
                                                   && (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0))
+                    {
                         sbdCategoryFilter.Append("category = ").Append(strCategory.CleanXPath())
                                          .Append(" or category = \"None\"");
+                    }
                     else
                     {
                         foreach (ListItem objItem in cboCategory.Items)
@@ -1445,9 +1467,11 @@ namespace Chummer
                     sbdFilter.Append(" and (requireparent or contains(capacity, \"[\")) and not(mountsto)");
                 else if (ParentVehicle == null && ((!_objCharacter.AddCyberwareEnabled && _eMode == Mode.Cyberware)
                                                    || (!_objCharacter.AddBiowareEnabled && _eMode == Mode.Bioware)))
+                {
                     sbdFilter.Append(" and (id = ").Append(Cyberware.EssenceHoleGUID.ToString().CleanXPath())
                              .Append(" or id = ").Append(Cyberware.EssenceAntiHoleGUID.ToString().CleanXPath())
                              .Append(" or mountsto)");
+                }
                 else
                     sbdFilter.Append(" and not(requireparent)");
                 if (objCurrentGrade != null)
@@ -1889,9 +1913,9 @@ namespace Chummer
 
                     if (decMaximumCapacityUsed - decCapacity < 0)
                     {
-                        Program.ShowScrollableMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_OverCapacityLimit", token: token).ConfigureAwait(false)
-                                                                             , decMaximumCapacityUsed.ToString("#,0.##", GlobalSettings.CultureInfo)
-                                                                             , decCapacity.ToString("#,0.##", GlobalSettings.CultureInfo)),
+                        Program.ShowScrollableMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_OverCapacityLimit", token: token).ConfigureAwait(false),
+                                                                             decMaximumCapacityUsed.ToString("#,0.##", GlobalSettings.CultureInfo),
+                                                                             decCapacity.ToString("#,0.##", GlobalSettings.CultureInfo)),
                                                          await LanguageManager.GetStringAsync("MessageTitle_OverCapacityLimit", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
                         return;
                     }

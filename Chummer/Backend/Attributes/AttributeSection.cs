@@ -489,7 +489,7 @@ namespace Chummer.Backend.Attributes
                 Interlocked.Increment(ref _intLoading);
                 try
                 {
-                    using (_ = Timekeeper.StartSyncron("create_char_attrib", null,
+                    using (Timekeeper.StartSyncron("create_char_attrib", null,
                                                        CustomActivity.OperationType.RequestOperation,
                                                        charNode.InnerText))
                     {
@@ -847,7 +847,7 @@ namespace Chummer.Backend.Attributes
                 return;
             using (LockObject.EnterWriteLock(token))
             {
-                using (_ = Timekeeper.StartSyncron("load_char_attrib", parentActivity))
+                using (Timekeeper.StartSyncron("load_char_attrib", parentActivity))
                 {
                     Interlocked.Increment(ref _intLoading);
                     try

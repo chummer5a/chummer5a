@@ -1496,8 +1496,8 @@ namespace Chummer
                             strTemp.Add(nameof(AnyPowerAdeptWayDiscountEnabled));
                             strTemp.Add(nameof(AllowAdeptWayPowerDiscount));
                             dicChangedProperties.Add(this, strTemp);
-                        }
                             break;
+                        }
                         case ListChangedType.ItemAdded:
                         {
                             HashSet<string> strTemp = Utils.StringHashSetPool.Get();
@@ -1537,15 +1537,16 @@ namespace Chummer
                                     strTemp.Add(nameof(AllowAdeptWayPowerDiscount));
                                 }
                             }
-                        }
+
                             break;
+                        }
                         case ListChangedType.ItemDeleted:
                         {
                             HashSet<string> strTemp = Utils.StringHashSetPool.Get();
                             strTemp.Add(nameof(PowerPointsUsed));
                             dicChangedProperties.Add(this, strTemp);
-                        }
                             break;
+                        }
                         case ListChangedType.ItemChanged:
                         {
                             if (e.PropertyDescriptor == null)
@@ -1595,11 +1596,13 @@ namespace Chummer
                                     break;
                                 }
                             }
-                        }
+
                             break;
+                        }
                     }
 
-                    foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToProcess in dicChangedProperties)
+                    foreach (KeyValuePair<INotifyMultiplePropertyChanged, HashSet<string>> kvpToProcess in
+                             dicChangedProperties)
                     {
                         kvpToProcess.Key.OnMultiplePropertyChanged(kvpToProcess.Value.ToList());
                     }
@@ -5526,7 +5529,7 @@ namespace Chummer
                 {
                     try
                     {
-                        using (_ = Timekeeper.StartSyncron("upload_AI_options", loadActivity))
+                        using (Timekeeper.StartSyncron("upload_AI_options", loadActivity))
                         {
                             UploadObjectAsMetric.UploadObject(TelemetryClient, Settings);
                         }
@@ -5545,7 +5548,7 @@ namespace Chummer
                                 await frmLoadingForm.PerformStepAsync("XML", token: token).ConfigureAwait(false);
                         }
 
-                        using (_ = Timekeeper.StartSyncron("load_xml", loadActivity))
+                        using (Timekeeper.StartSyncron("load_xml", loadActivity))
                         {
                             bool blnKeepLoading = blnSync
                                 ? LoadSaveFileDocument()
@@ -5715,7 +5718,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_misc", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_misc", loadActivity))
                             {
                                 _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strFileName);
 
@@ -6784,7 +6787,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_mentorspirit", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_mentorspirit", loadActivity))
                             {
                                 // Improvements.
                                 using (objXmlNodeList = objXmlCharacter.SelectNodes("mentorspirits/mentorspirit"))
@@ -6826,7 +6829,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_imp", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_imp", loadActivity))
                             {
                                 // Improvements.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("improvements/improvement");
@@ -6965,7 +6968,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_contacts", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_contacts", loadActivity))
                             {
                                 // Contacts.
                                 foreach (XPathNavigator xmlContact in
@@ -7008,7 +7011,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_quality", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_quality", loadActivity))
                             {
                                 // Qualities
 
@@ -7476,7 +7479,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_attributes", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_attributes", loadActivity))
                             {
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverload
@@ -7500,7 +7503,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_misc2", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_misc2", loadActivity))
                             {
                                 // Attempt to load the split MAG CharacterAttribute information for Mystic Adepts.
                                 if (_blnAdeptEnabled && _blnMagicianEnabled)
@@ -7733,7 +7736,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_skills", loadActivity)) //slightly messy
+                            using (Timekeeper.StartSyncron("load_char_skills", loadActivity)) //slightly messy
                             {
                                 _oldSkillsBackup = objXmlCharacter.SelectSingleNode("skills")?.Clone();
                                 _oldSkillGroupBackup = objXmlCharacter.SelectSingleNode("skillgroups")?.Clone();
@@ -7781,7 +7784,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_loc", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_loc", loadActivity))
                             {
                                 // Locations.
                                 objXmlLocationList = objXmlCharacter.SelectNodes("gearlocations/gearlocation");
@@ -7808,7 +7811,7 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_loc");
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_abundle", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_abundle", loadActivity))
                             {
                                 // Armor Bundles.
                                 objXmlLocationList = objXmlCharacter.SelectNodes("armorbundles/armorbundle");
@@ -7835,7 +7838,7 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_abundle");
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_vloc", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_vloc", loadActivity))
                             {
                                 // Vehicle Locations.
                                 XmlNodeList objXmlVehicleLocationList =
@@ -7857,7 +7860,7 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_vloc");
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_wloc", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_wloc", loadActivity))
                             {
                                 // Weapon Locations.
                                 XmlNodeList objXmlWeaponLocationList =
@@ -7878,7 +7881,7 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_wloc");
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_sfoci", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_sfoci", loadActivity))
                             {
                                 // Stacked Foci.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("stackedfoci/stackedfocus");
@@ -7910,7 +7913,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_armor", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_armor", loadActivity))
                             {
                                 // Armor.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("armors/armor");
@@ -7942,7 +7945,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_drugs", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_drugs", loadActivity))
                             {
                                 // Drugs.
                                 objXmlNodeList = objXmlDocument.SelectNodes("/character/drugs/drug");
@@ -7975,7 +7978,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_ware", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_ware", loadActivity))
                             {
                                 // Cyberware/Bioware.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("cyberwares/cyberware");
@@ -8327,7 +8330,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_spells", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_spells", loadActivity))
                             {
                                 // Spells.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("spells/spell");
@@ -8358,7 +8361,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_powers", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_powers", loadActivity))
                             {
                                 // Powers.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("powers/power");
@@ -8437,7 +8440,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_spirits", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_spirits", loadActivity))
                             {
                                 // Spirits/Sprites.
                                 foreach (XPathNavigator xmlSpirit in (blnSync
@@ -8506,7 +8509,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_complex", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_complex", loadActivity))
                             {
                                 // Complex Forms/Technomancer Programs.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("complexforms/complexform");
@@ -8539,7 +8542,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_aiprogram", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_aiprogram", loadActivity))
                             {
                                 // Complex Forms/Technomancer Programs.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("aiprograms/aiprogram");
@@ -8572,7 +8575,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_martialarts", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_martialarts", loadActivity))
                             {
                                 // Martial Arts.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("martialarts/martialart");
@@ -8604,7 +8607,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_mod", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_mod", loadActivity))
                             {
                                 // Limit Modifiers.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("limitmodifiers/limitmodifier");
@@ -8636,7 +8639,7 @@ namespace Chummer
                                               .ConfigureAwait(false), token: token).ConfigureAwait(false);
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_lifestyle", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_lifestyle", loadActivity))
                             {
                                 // Lifestyles.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("lifestyles/lifestyle");
@@ -8668,7 +8671,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_gear", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_gear", loadActivity))
                             {
                                 // <gears>
                                 objXmlNodeList = objXmlCharacter.SelectNodes("gears/gear");
@@ -8832,7 +8835,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_car", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_car", loadActivity))
                             {
                                 // Vehicles.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("vehicles/vehicle");
@@ -8864,7 +8867,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_weapons", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_weapons", loadActivity))
                             {
                                 // Weapons.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("weapons/weapon");
@@ -8897,7 +8900,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_metamagics", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_metamagics", loadActivity))
                             {
                                 // Metamagics/Echoes.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("metamagics/metamagic");
@@ -8929,7 +8932,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_arts", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_arts", loadActivity))
                             {
                                 // Arts
                                 objXmlNodeList = objXmlCharacter.SelectNodes("arts/art");
@@ -8962,7 +8965,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_enhancements", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_enhancements", loadActivity))
                             {
                                 // Enhancements
                                 objXmlNodeList = objXmlCharacter.SelectNodes("enhancements/enhancement");
@@ -8994,7 +8997,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_critterpowers", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_critterpowers", loadActivity))
                             {
                                 // Critter Powers.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("critterpowers/critterpower");
@@ -9027,7 +9030,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_foci", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_foci", loadActivity))
                             {
                                 // Foci.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("foci/focus");
@@ -9061,7 +9064,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_init", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_init", loadActivity))
                             {
                                 // Initiation Grades.
                                 objXmlNodeList = objXmlCharacter.SelectNodes("initiationgrades/initiationgrade");
@@ -9098,7 +9101,7 @@ namespace Chummer
                             // they shouldn't get loaded in create mode because they shouldn't be there.
                             if (Created)
                             {
-                                using (_ = Timekeeper.StartSyncron("load_char_elog", loadActivity))
+                                using (Timekeeper.StartSyncron("load_char_elog", loadActivity))
                                 {
                                     // Expense Log Entries.
                                     XmlNodeList objXmlExpenseList = objXmlCharacter.SelectNodes("expenses/expense");
@@ -9140,7 +9143,7 @@ namespace Chummer
                             }
 
                             // Need to load these after everything else so that we can properly link them up during loading
-                            using (_ = Timekeeper.StartSyncron("load_char_sustainedobjects", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_sustainedobjects", loadActivity))
                             {
                                 objXmlNodeList = objXmlCharacter.SelectNodes("sustainedobjects");
                                 foreach (XmlNode objXmlSustained in objXmlNodeList)
@@ -9175,7 +9178,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_igroup", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_igroup", loadActivity))
                             {
                                 // Improvement Groups.
                                 XmlNodeList objXmlGroupList =
@@ -9214,7 +9217,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_calendar", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_calendar", loadActivity))
                             {
                                 // Calendar.
                                 XmlNodeList objXmlWeekList = objXmlCharacter.SelectNodes("calendar/week");
@@ -9257,7 +9260,7 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_unarmed", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_unarmed", loadActivity))
                             {
                                 // Look for the unarmed attack
                                 bool blnFoundUnarmed = false;
@@ -9296,7 +9299,7 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_unarmed");
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_dwarffix", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_dwarffix", loadActivity))
                             {
                                 // converting from old dwarven resistance to new dwarven resistance
                                 if (Metatype.Equals("dwarf", StringComparison.OrdinalIgnoreCase))
@@ -9368,7 +9371,7 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_dwarffix");
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_cyberadeptfix", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_cyberadeptfix", loadActivity))
                             {
                                 //Sweep through grades if we have any cyberadept improvements that need reassignment
                                 if (lstCyberadeptSweepGrades.Count > 0)
@@ -9410,7 +9413,7 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_cyberadeptfix");
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_mentorspiritfix", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_mentorspiritfix", loadActivity))
                             {
                                 Quality objMentorQuality = Qualities.FirstOrDefault(q => q.Name == "Mentor Spirit");
                                 // This character doesn't have any improvements tied to a cached Mentor Spirit value, so re-apply the improvement that adds the Mentor spirit
@@ -9441,7 +9444,7 @@ namespace Chummer
                             }
 
                             //Plugins
-                            using (_ = Timekeeper.StartSyncron("load_char_plugins", loadActivity))
+                            using (Timekeeper.StartSyncron("load_char_plugins", loadActivity))
                             {
                                 foreach (IPlugin plugin in (blnSync
                                              ? Program.PluginLoader.MyActivePlugins
@@ -9485,7 +9488,7 @@ namespace Chummer
                         }
 
                         // Refresh certain improvements
-                        using (_ = Timekeeper.StartSyncron("load_char_improvementrefreshers1", loadActivity))
+                        using (Timekeeper.StartSyncron("load_char_improvementrefreshers1", loadActivity))
                         {
                             // Process all events related to improvements
                             using (new FetchSafelyFromPool<
@@ -11410,6 +11413,8 @@ namespace Chummer
                     objItem.Dispose();
                 _lstVehicleLocations.Dispose();
                 _lstImprovementGroups.Dispose();
+                _lstLimitModifiers.Dispose();
+                _lstSustainedObjects.Dispose();
                 _lstPrioritySkills.Dispose();
                 _objSkillsSection.Dispose();
                 _objAttributeSection.Dispose();
@@ -11504,6 +11509,8 @@ namespace Chummer
                 await _lstWeaponLocations.DisposeAsync().ConfigureAwait(false);
                 await _lstVehicleLocations.DisposeAsync().ConfigureAwait(false);
                 await _lstImprovementGroups.DisposeAsync().ConfigureAwait(false);
+                await _lstLimitModifiers.DisposeAsync().ConfigureAwait(false);
+                await _lstSustainedObjects.DisposeAsync().ConfigureAwait(false);
                 await _lstPrioritySkills.DisposeAsync().ConfigureAwait(false);
                 await _objSkillsSection.DisposeAsync().ConfigureAwait(false);
                 await _objAttributeSection.DisposeAsync().ConfigureAwait(false);
@@ -24772,8 +24779,8 @@ namespace Chummer
                     return _decCachedTotalCarriedWeight = Armor.Sum(x => x.Equipped, x => x.TotalWeight)
                                                           + Weapons.Sum(x => x.Equipped, x => x.TotalWeight)
                                                           + Gear.Sum(x => x.Equipped, x => x.TotalWeight)
-                                                          + Cyberware.Sum(x => x.IsModularCurrentlyEquipped, x => x.TotalWeight);
-
+                                                          + Cyberware.Sum(
+                                                              x => x.IsModularCurrentlyEquipped, x => x.TotalWeight);
                 }
             }
         }
@@ -26093,9 +26100,8 @@ namespace Chummer
                                                           ImprovementManager.ValueOf(
                                                               this, Improvement.ImprovementType.Nuyen) -
                                                           ImprovementManager.ValueOf(
-                                                              this, Improvement.ImprovementType.Nuyen
-                                                              , strImprovedName: "Stolen");
-
+                                                              this, Improvement.ImprovementType.Nuyen,
+                                                              strImprovedName: "Stolen");
                 }
             }
         }
@@ -26115,8 +26121,8 @@ namespace Chummer
                                                await ImprovementManager.ValueOfAsync(
                                                    this, Improvement.ImprovementType.Nuyen, token: token).ConfigureAwait(false) -
                                                await ImprovementManager.ValueOfAsync(
-                                                   this, Improvement.ImprovementType.Nuyen
-                                                   , strImprovedName: "Stolen", token: token).ConfigureAwait(false);
+                                                   this, Improvement.ImprovementType.Nuyen,
+                                                   strImprovedName: "Stolen", token: token).ConfigureAwait(false);
             }
         }
 
@@ -32304,7 +32310,7 @@ namespace Chummer
 
         public void RefreshMAGAdeptDependentProperties(object sender, PropertyChangedEventArgs e)
         {
-            if(MAG == MAGAdept)
+            if (MAG == MAGAdept)
                 return;
 
             switch (e?.PropertyName)
@@ -34474,7 +34480,7 @@ namespace Chummer
                             XPathNavigator xmlStatBlockBaseNode;
                             XPathNavigator xmlLeadsBaseNode;
 
-                            using (_ = Timekeeper.StartSyncron("load_char_misc", op_load))
+                            using (Timekeeper.StartSyncron("load_char_misc", op_load))
                             {
                                 _dateFileLastWriteTime = File.GetLastWriteTimeUtc(strPorFile);
 
@@ -35141,7 +35147,7 @@ namespace Chummer
                             List<Weapon> lstWeapons = new List<Weapon>(1);
                             List<Vehicle> lstVehicles = new List<Vehicle>(1);
 
-                            using (_ = Timekeeper.StartSyncron("load_char_quality", op_load))
+                            using (Timekeeper.StartSyncron("load_char_quality", op_load))
                             {
                                 string[] astrLevelLabels =
                                 {
@@ -35398,7 +35404,7 @@ namespace Chummer
                             }
 
                             AttributeSection.LoadFromHeroLab(xmlStatBlockBaseNode, op_load, token);
-                            using (_ = Timekeeper.StartSyncron("load_char_misc2", op_load))
+                            using (Timekeeper.StartSyncron("load_char_misc2", op_load))
                             {
                                 /* TODO: Find some way to get Mystic Adept PPs from Hero Lab files
                                 // Attempt to load the split MAG CharacterAttribute information for Mystic Adepts.
@@ -35528,7 +35534,7 @@ namespace Chummer
 
                             Timekeeper.Finish("load_char_wloc");
                             */
-                            using (_ = Timekeeper.StartSyncron("load_char_contacts", op_load))
+                            using (Timekeeper.StartSyncron("load_char_contacts", op_load))
                             {
                                 // Contacts.
                                 foreach (XPathNavigator xmlContactToImport in xmlStatBlockBaseNode.SelectAndCacheExpression(
@@ -35605,7 +35611,7 @@ namespace Chummer
                             }
 
                             XmlDocument xmlGearDocument;
-                            using (_ = Timekeeper.StartSyncron("load_char_armor", op_load))
+                            using (Timekeeper.StartSyncron("load_char_armor", op_load))
                             {
                                 // Armor.
                                 xmlGearDocument = blnSync
@@ -35770,7 +35776,7 @@ namespace Chummer
                                                                 else
                                                                     await objArmor.GearChildren.AddAsync(objPlugin, token).ConfigureAwait(false);
                                                             }
-                                                            else if(blnSync)
+                                                            else if (blnSync)
                                                                 // ReSharper disable once MethodHasAsyncOverload
                                                                 objPlugin.Dispose();
                                                             else
@@ -35885,7 +35891,7 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_armor");
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_weapons", op_load))
+                            using (Timekeeper.StartSyncron("load_char_weapons", op_load))
                             {
                                 // Weapons.
                                 foreach (XPathNavigator xmlWeaponToImport in xmlStatBlockBaseNode.Select(
@@ -35927,7 +35933,7 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_weapons");
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_ware", op_load))
+                            using (Timekeeper.StartSyncron("load_char_ware", op_load))
                             {
                                 // Cyberware/Bioware.
                                 foreach (XPathNavigator xmlCyberwareToImport in xmlStatBlockBaseNode.Select(
@@ -36014,7 +36020,7 @@ namespace Chummer
                             }
 
                             XPathNodeIterator xmlNodeList;
-                            using (_ = Timekeeper.StartSyncron("load_char_spells", op_load))
+                            using (Timekeeper.StartSyncron("load_char_spells", op_load))
                             {
                                 // Spells.
                                 xmlNodeList = blnSync
@@ -36313,7 +36319,7 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_spells");
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_powers", op_load))
+                            using (Timekeeper.StartSyncron("load_char_powers", op_load))
                             {
                                 // Powers.
                                 xmlNodeList = blnSync
@@ -36422,7 +36428,7 @@ namespace Chummer
 
                             Timekeeper.Finish("load_char_spirits");
                             */
-                            using (_ = Timekeeper.StartSyncron("load_char_complex", op_load))
+                            using (Timekeeper.StartSyncron("load_char_complex", op_load))
                             {
                                 // Complex Forms/Technomancer Programs.
                                 string strComplexFormsLine =
@@ -36565,7 +36571,7 @@ namespace Chummer
 
                             Timekeeper.Finish("load_char_marts");
                             */
-                            using (_ = Timekeeper.StartSyncron("load_char_lifestyle", op_load))
+                            using (Timekeeper.StartSyncron("load_char_lifestyle", op_load))
                             {
                                 // Lifestyles.
                                 XmlNode xmlFakeSINDataNode =
@@ -36666,7 +36672,7 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_lifestyle");
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_gear", op_load))
+                            using (Timekeeper.StartSyncron("load_char_gear", op_load))
                             {
                                 // <gears>
                                 foreach (XPathNavigator xmlGearToImport in xmlStatBlockBaseNode.Select(
@@ -36748,7 +36754,7 @@ namespace Chummer
                                 //Timekeeper.Finish("load_char_gear");
                             }
 
-                            using (_ = Timekeeper.StartSyncron("load_char_car", op_load))
+                            using (Timekeeper.StartSyncron("load_char_car", op_load))
                             {
                                 foreach (Vehicle objVehicle in lstVehicles)
                                 {
@@ -36861,7 +36867,7 @@ namespace Chummer
                             */
                             _lstWeapons.AddRange(lstWeapons);
 
-                            using (_ = Timekeeper.StartSyncron("load_char_unarmed", op_load))
+                            using (Timekeeper.StartSyncron("load_char_unarmed", op_load))
                             {
                                 // Look for the unarmed attack
                                 bool blnFoundUnarmed = false;
@@ -36906,7 +36912,7 @@ namespace Chummer
                         }
 
                         // Refresh certain improvements
-                        using (_ = Timekeeper.StartSyncron("load_char_improvementrefreshers2", op_load))
+                        using (Timekeeper.StartSyncron("load_char_improvementrefreshers2", op_load))
                         {
                             // Refresh Black Market discounts
                             RefreshBlackMarketDiscounts();

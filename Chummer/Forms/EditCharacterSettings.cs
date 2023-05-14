@@ -2434,8 +2434,8 @@ namespace Chummer
                                                          && !_objCharacterSettings.BuiltInOption).ConfigureAwait(false);
                             break;
                         }
-                        case nameof(CharacterSettings.ChargenKarmaToNuyenExpression)
-                            : // Not data-bound so that the setter can be asynchronous
+                        // Not data-bound so that the setter can be asynchronous
+                        case nameof(CharacterSettings.ChargenKarmaToNuyenExpression):
                         {
                             await txtNuyenExpression.DoThreadSafeAsync(
                                                         x => x.Text = _objCharacterSettings

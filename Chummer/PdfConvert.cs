@@ -47,7 +47,8 @@ namespace Codaxy.WkHtmlToPdf
 
     public class PdfConvertTimeoutException : PdfConvertException
     {
-        public PdfConvertTimeoutException() : base("HTML to PDF conversion process has not finished in the given period.")
+        public PdfConvertTimeoutException() : base(
+            "HTML to PDF conversion process has not finished in the given period.")
         {
         }
 
@@ -128,7 +129,9 @@ namespace Codaxy.WkHtmlToPdf
                 return filePath;
 
             filePath = Path.Combine(programFilesPath, @"wkhtmltopdf\bin\wkhtmltopdf.exe");
-            return File.Exists(filePath) ? filePath : Path.Combine(programFilesx86Path, @"wkhtmltopdf\bin\wkhtmltopdf.exe");
+            return File.Exists(filePath)
+                ? filePath
+                : Path.Combine(programFilesx86Path, @"wkhtmltopdf\bin\wkhtmltopdf.exe");
         }
 
         public static void ConvertHtmlToPdf(PdfDocument document, PdfOutput output)
@@ -136,17 +139,22 @@ namespace Codaxy.WkHtmlToPdf
             ConvertHtmlToPdf(document, null, output);
         }
 
-        public static void ConvertHtmlToPdf(PdfDocument document, PdfConvertEnvironment environment, PdfOutput woutput, CancellationToken token = default)
+        public static void ConvertHtmlToPdf(PdfDocument document, PdfConvertEnvironment environment, PdfOutput woutput,
+                                            CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => ConvertHtmlToPdfCoreAsync(true, document, environment, woutput, token), token);
+            Utils.SafelyRunSynchronously(() => ConvertHtmlToPdfCoreAsync(true, document, environment, woutput, token),
+                                         token);
         }
 
-        public static Task ConvertHtmlToPdfAsync(PdfDocument document, PdfConvertEnvironment environment, PdfOutput woutput, CancellationToken token = default)
+        public static Task ConvertHtmlToPdfAsync(PdfDocument document, PdfConvertEnvironment environment,
+                                                 PdfOutput woutput, CancellationToken token = default)
         {
             return ConvertHtmlToPdfCoreAsync(false, document, environment, woutput, token);
         }
 
-        private static async Task ConvertHtmlToPdfCoreAsync(bool blnSync, PdfDocument document, PdfConvertEnvironment environment, PdfOutput woutput, CancellationToken token = default)
+        private static async Task ConvertHtmlToPdfCoreAsync(bool blnSync, PdfDocument document,
+                                                            PdfConvertEnvironment environment, PdfOutput woutput,
+                                                            CancellationToken token = default)
         {
             if (environment == null)
                 environment = Environment;
@@ -168,7 +176,8 @@ namespace Codaxy.WkHtmlToPdf
             }
 
             if (!File.Exists(environment.WkHtmlToPdfPath))
-                throw new PdfConvertException($"File '{environment.WkHtmlToPdfPath}' not found. Check if wkhtmltopdf application is installed.");
+                throw new PdfConvertException(
+                    $"File '{environment.WkHtmlToPdfPath}' not found. Check if wkhtmltopdf application is installed.");
 
             string strParams;
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -222,22 +231,23 @@ namespace Codaxy.WkHtmlToPdf
                 if (document.ExtraParams != null)
                 {
                     foreach (KeyValuePair<string, string> extraParam in document.ExtraParams)
-					{
-						if (string.IsNullOrEmpty(extraParam.Key))
-							continue;
+                    {
+                        if (string.IsNullOrEmpty(extraParam.Key))
+                            continue;
                         sbdParams.Append("--").Append(extraParam.Key).Append(' ');
-						if (!string.IsNullOrEmpty(extraParam.Value))
-							sbdParams.Append(extraParam.Value).Append(' ');
-					}
+                        if (!string.IsNullOrEmpty(extraParam.Value))
+                            sbdParams.Append(extraParam.Value).Append(' ');
+                    }
                 }
 
                 if (document.Cookies != null)
                 {
                     foreach (KeyValuePair<string, string> cookie in document.Cookies)
-					{
-						if (!string.IsNullOrEmpty(cookie.Key) && !string.IsNullOrEmpty(cookie.Value))
-							sbdParams.Append("--cookie ").Append(cookie.Key).Append(' ').Append(cookie.Value).Append(' ');
-					}
+                    {
+                        if (!string.IsNullOrEmpty(cookie.Key) && !string.IsNullOrEmpty(cookie.Value))
+                            sbdParams.Append("--cookie ").Append(cookie.Key).Append(' ').Append(cookie.Value)
+                                     .Append(' ');
+                    }
                 }
 
                 sbdParams.Append('\"').Append(document.Url).Append("\" \"").Append(outputPdfFilePath).Append('\"');
@@ -246,7 +256,7 @@ namespace Codaxy.WkHtmlToPdf
 
             try
             {
-                using (Process process = new Process { EnableRaisingEvents = true })
+                using (Process process = new Process {EnableRaisingEvents = true})
                 {
                     process.StartInfo.FileName = environment.WkHtmlToPdfPath;
                     process.StartInfo.Arguments = strParams;
@@ -298,17 +308,14 @@ namespace Codaxy.WkHtmlToPdf
                                    = new CancellationTokenSource(environment.Timeout))
                             {
                                 CancellationToken objTimeoutToken = objTimeoutSource.Token;
-                                using (CancellationTokenSource objSource = CancellationTokenSource.CreateLinkedTokenSource(objTimeoutToken, token))
+                                using (CancellationTokenSource objSource
+                                       = CancellationTokenSource.CreateLinkedTokenSource(objTimeoutToken, token))
                                 {
                                     CancellationToken objToken = objSource.Token;
                                     if (blnSync)
                                         process.Start();
                                     else
-                                    {
-#pragma warning disable AsyncFixer04 // Fire-and-forget async call inside a using block
                                         tskAsyncProcess = process.StartAsync(objToken);
-#pragma warning restore AsyncFixer04 // Fire-and-forget async call inside a using block
-                                    }
 
                                     process.BeginOutputReadLine();
                                     process.BeginErrorReadLine();
@@ -398,7 +405,8 @@ namespace Codaxy.WkHtmlToPdf
 
                 if (woutput.OutputStream != null)
                 {
-                    using (FileStream fs = new FileStream(outputPdfFilePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+                    using (FileStream fs
+                           = new FileStream(outputPdfFilePath, FileMode.Open, FileAccess.Read, FileShare.Read))
                     {
                         byte[] buffer = ArrayPool<byte>.Shared.Rent(32 * 1024);
                         try
@@ -414,7 +422,8 @@ namespace Codaxy.WkHtmlToPdf
                             }
                             else
                             {
-                                while ((read = await fs.ReadAsync(buffer, 0, buffer.Length, token).ConfigureAwait(false)) > 0)
+                                while ((read = await fs.ReadAsync(buffer, 0, buffer.Length, token)
+                                                       .ConfigureAwait(false)) > 0)
                                     await woutput.OutputStream.WriteAsync(buffer, 0, read, token).ConfigureAwait(false);
                             }
                         }
@@ -439,14 +448,15 @@ namespace Codaxy.WkHtmlToPdf
                         // ReSharper disable once MethodHasAsyncOverload
                         Utils.SafeDeleteFile(outputPdfFilePath, true, token: CancellationToken.None);
                     else
-                        await Utils.SafeDeleteFileAsync(outputPdfFilePath, true, token: CancellationToken.None).ConfigureAwait(false);
+                        await Utils.SafeDeleteFileAsync(outputPdfFilePath, true, token: CancellationToken.None)
+                                   .ConfigureAwait(false);
                 }
             }
         }
 
         internal static void ConvertHtmlToPdf(string url, string outputFilePath)
         {
-            ConvertHtmlToPdf(new PdfDocument { Url = url }, new PdfOutput { OutputFilePath = outputFilePath });
+            ConvertHtmlToPdf(new PdfDocument {Url = url}, new PdfOutput {OutputFilePath = outputFilePath});
         }
     }
 

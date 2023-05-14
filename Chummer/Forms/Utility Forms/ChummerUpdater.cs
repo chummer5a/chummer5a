@@ -103,12 +103,16 @@ namespace Chummer
                 {
                     Log.Info("More than one instance, exiting");
                     if (!SilentMode)
+                    {
                         Program.ShowScrollableMessageBox(
                             this,
                             await LanguageManager.GetStringAsync("Message_Update_MultipleInstances",
                                                                  token: _objGenericToken).ConfigureAwait(false),
-                            await LanguageManager.GetStringAsync("Title_Update", token: _objGenericToken).ConfigureAwait(false),
+                            await LanguageManager.GetStringAsync("Title_Update", token: _objGenericToken)
+                                                 .ConfigureAwait(false),
                             MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                    }
+
                     Log.Info("ChummerUpdater_Load exit");
                     await this.DoThreadSafeAsync(x => x.Close(), _objGenericToken).ConfigureAwait(false);
                 }
@@ -460,12 +464,23 @@ namespace Chummer
             if (!blnChummerVersionGotten || LatestVersion == strError)
             {
                 if (!SilentMode)
+                {
                     Program.ShowScrollableMessageBox(this,
-                    string.IsNullOrEmpty(_strExceptionString)
-                        ? await LanguageManager.GetStringAsync("Warning_Update_CouldNotConnect", token: token).ConfigureAwait(false)
-                        : string.Format(GlobalSettings.CultureInfo,
-                            await LanguageManager.GetStringAsync("Warning_Update_CouldNotConnectException", token: token).ConfigureAwait(false), _strExceptionString),
-                    Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                     string.IsNullOrEmpty(_strExceptionString)
+                                                         ? await LanguageManager
+                                                                 .GetStringAsync(
+                                                                     "Warning_Update_CouldNotConnect", token: token)
+                                                                 .ConfigureAwait(false)
+                                                         : string.Format(GlobalSettings.CultureInfo,
+                                                                         await LanguageManager
+                                                                               .GetStringAsync(
+                                                                                   "Warning_Update_CouldNotConnectException",
+                                                                                   token: token).ConfigureAwait(false),
+                                                                         _strExceptionString),
+                                                     Application.ProductName, MessageBoxButtons.OK,
+                                                     MessageBoxIcon.Error);
+                }
+
                 return;
             }
 
@@ -504,13 +519,18 @@ namespace Chummer
                     strException = strException.Substring(0, intNewLineLocation);
                 _strExceptionString = strException;
                 if (!SilentMode)
+                {
                     Program.ShowScrollableMessageBox(this,
-                                           string.Format(GlobalSettings.CultureInfo,
-                                                         await LanguageManager
-                                                               .GetStringAsync(
-                                                                   "Warning_Update_CouldNotConnectException",
-                                                                   token: token).ConfigureAwait(false), strException),
-                                           Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                     string.Format(GlobalSettings.CultureInfo,
+                                                                   await LanguageManager
+                                                                         .GetStringAsync(
+                                                                             "Warning_Update_CouldNotConnectException",
+                                                                             token: token).ConfigureAwait(false),
+                                                                   strException),
+                                                     Application.ProductName, MessageBoxButtons.OK,
+                                                     MessageBoxIcon.Error);
+                }
+
                 return;
             }
             catch (UriFormatException ex)
@@ -525,13 +545,18 @@ namespace Chummer
                     strException = strException.Substring(0, intNewLineLocation);
                 _strExceptionString = strException;
                 if (!SilentMode)
+                {
                     Program.ShowScrollableMessageBox(this,
-                                           string.Format(GlobalSettings.CultureInfo,
-                                                         await LanguageManager
-                                                               .GetStringAsync(
-                                                                   "Warning_Update_CouldNotConnectException",
-                                                                   token: token).ConfigureAwait(false), strException),
-                                           Application.ProductName, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                     string.Format(GlobalSettings.CultureInfo,
+                                                                   await LanguageManager
+                                                                         .GetStringAsync(
+                                                                             "Warning_Update_CouldNotConnectException",
+                                                                             token: token).ConfigureAwait(false),
+                                                                   strException),
+                                                     Application.ProductName, MessageBoxButtons.OK,
+                                                     MessageBoxIcon.Error);
+                }
+
                 return;
             }
             catch
@@ -567,7 +592,7 @@ namespace Chummer
                         objTemp.Dispose();
                     }
                     Task tskConnectionLoader = _tskConnectionLoader;
-                    if ((tskConnectionLoader == null || (tskConnectionLoader.IsCompleted && (tskConnectionLoader.IsCanceled || tskConnectionLoader.IsFaulted))))
+                    if (tskConnectionLoader == null || (tskConnectionLoader.IsCompleted && (tskConnectionLoader.IsCanceled || tskConnectionLoader.IsFaulted)))
                     {
                         Task tskOld = Interlocked.Exchange(ref _tskChangelogDownloader, null);
                         if (tskOld?.IsCompleted == false)
@@ -618,9 +643,10 @@ namespace Chummer
             get => _strLatestVersion;
             set
             {
-                if (Interlocked.Exchange(ref _strLatestVersion, value) != value)
-                    _strTempLatestVersionZipPath
-                        = Path.Combine(Utils.GetTempPath(), "chummer" + value + ".zip");
+                if (Interlocked.Exchange(ref _strLatestVersion, value) == value)
+                    return;
+                _strTempLatestVersionZipPath
+                    = Path.Combine(Utils.GetTempPath(), "chummer" + value + ".zip");
             }
         }
 
@@ -1052,6 +1078,7 @@ namespace Chummer
                             catch (IOException)
                             {
                                 if (!SilentMode)
+                                {
                                     Program.ShowScrollableMessageBox(
                                         this,
                                         string.Format(GlobalSettings.CultureInfo,
@@ -1060,12 +1087,15 @@ namespace Chummer
                                                                                token: token)
                                                                            .ConfigureAwait(false),
                                                       Path.GetFileName(strLoopPath)));
+                                }
+
                                 blnDoRestart = false;
                                 break;
                             }
                             catch (NotSupportedException)
                             {
                                 if (!SilentMode)
+                                {
                                     Program.ShowScrollableMessageBox(
                                         this,
                                         string.Format(GlobalSettings.CultureInfo,
@@ -1074,18 +1104,23 @@ namespace Chummer
                                                                                token: token)
                                                                            .ConfigureAwait(false),
                                                       Path.GetFileName(strLoopPath)));
+                                }
+
                                 blnDoRestart = false;
                                 break;
                             }
                             catch (UnauthorizedAccessException)
                             {
                                 if (!SilentMode)
+                                {
                                     Program.ShowScrollableMessageBox(
                                         this,
                                         await LanguageManager.GetStringAsync(
                                                                  "Message_Insufficient_Permissions_Warning",
                                                                  token: token)
                                                              .ConfigureAwait(false));
+                                }
+
                                 blnDoRestart = false;
                                 break;
                             }
@@ -1097,6 +1132,7 @@ namespace Chummer
                 catch (IOException)
                 {
                     if (!SilentMode)
+                    {
                         Program.ShowScrollableMessageBox(
                             this,
                             string.Format(GlobalSettings.CultureInfo,
@@ -1104,11 +1140,14 @@ namespace Chummer
                                                 .GetStringAsync("Message_File_Cannot_Be_Accessed", token: token)
                                                 .ConfigureAwait(false),
                                           strZipPath));
+                    }
+
                     blnDoRestart = false;
                 }
                 catch (NotSupportedException)
                 {
                     if (!SilentMode)
+                    {
                         Program.ShowScrollableMessageBox(
                             this,
                             string.Format(GlobalSettings.CultureInfo,
@@ -1116,16 +1155,21 @@ namespace Chummer
                                                 .GetStringAsync("Message_File_Cannot_Be_Accessed", token: token)
                                                 .ConfigureAwait(false),
                                           strZipPath));
+                    }
+
                     blnDoRestart = false;
                 }
                 catch (UnauthorizedAccessException)
                 {
                     if (!SilentMode)
+                    {
                         Program.ShowScrollableMessageBox(
                             this,
                             await LanguageManager
                                   .GetStringAsync("Message_Insufficient_Permissions_Warning", token: token)
                                   .ConfigureAwait(false));
+                    }
+
                     blnDoRestart = false;
                 }
 
@@ -1297,13 +1341,18 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     // Show the warning even if we're in silent mode, because the user should still know that the update check could not be performed
                     if (!SilentMode)
+                    {
                         Program.ShowScrollableMessageBox(
                             this,
                             string.Format(GlobalSettings.CultureInfo,
                                           await LanguageManager.GetStringAsync(
-                                              "Warning_Update_CouldNotConnectException", token: token).ConfigureAwait(false),
+                                                                   "Warning_Update_CouldNotConnectException",
+                                                                   token: token)
+                                                               .ConfigureAwait(false),
                                           strException), Application.ProductName, MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
+                    }
+
                     await cmdUpdate.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
                 }
             }

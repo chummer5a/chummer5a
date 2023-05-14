@@ -151,8 +151,10 @@ namespace Chummer
                     && strSelectedGrade != null)
                     _strOldSelectedGrade = strSelectedGrade;
                 if (!string.IsNullOrEmpty(strSelectedGrade))
+                {
                     xmlGrade = _xmlBaseDrugDataNode.SelectSingleNode(
                         "grades/grade[id = " + strSelectedGrade.CleanXPath() + ']');
+                }
 
                 // Update the Cost multipliers based on the Grade that has been selected.
                 if (xmlGrade != null)
@@ -361,8 +363,10 @@ namespace Chummer
                     {
                         await cboGrade.DoThreadSafeAsync(x => x.Enabled = !_blnLockGrade).ConfigureAwait(false);
                         if (_blnLockGrade)
+                        {
                             strForceGrade = _objForcedGrade?.SourceID.ToString("D", GlobalSettings.InvariantCultureInfo)
                                             ?? cboGrade.SelectedValue?.ToString();
+                        }
                     }
 
                     bool blnCanBlackMarketDiscount = _setBlackMarketMaps.Contains(
@@ -601,7 +605,7 @@ namespace Chummer
         /// <summary>
         /// Parent vehicle that the cyberlimb will be attached to.
         /// </summary>
-        public Vehicle ParentVehicle { set; get; }
+        public Vehicle ParentVehicle { get; set; }
 
         public decimal Markup { get; set; }
 

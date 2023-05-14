@@ -61,15 +61,20 @@ namespace Chummer
 
                 XPathNavigator xmlParentSkill;
                 if (Mode == "Knowledge")
+                {
                     xmlParentSkill
                         = _objXmlDocument.SelectSingleNode("/chummer/knowledgeskills/skill[name = "
                                                            + _objSkill.Name.CleanXPath() + ']')
                           ?? _objXmlDocument.SelectSingleNode(
                               "/chummer/knowledgeskills/skill[translate = " + _objSkill.Name.CleanXPath() + ']');
+                }
                 else
+                {
                     xmlParentSkill = _objXmlDocument.SelectSingleNode(
                         "/chummer/skills/skill[name = " + _objSkill.Name.CleanXPath() + " and ("
                         + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false) + ")]");
+                }
+
                 // Populate the Skill's Specializations (if any).
                 XPathNodeIterator xmlSpecList = xmlParentSkill != null ? await xmlParentSkill.SelectAndCacheExpressionAsync("specs/spec").ConfigureAwait(false) : null;
                 if (xmlSpecList?.Count > 0)
@@ -93,10 +98,14 @@ namespace Chummer
                         {
                             string strName = (await objXmlWeapon.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false))?.Value;
                             if (!string.IsNullOrEmpty(strName))
+                            {
                                 lstItems.Add(new ListItem(
                                                  strName,
-                                                 (await objXmlWeapon.SelectSingleNodeAndCacheExpressionAsync("translate").ConfigureAwait(false))?.Value
+                                                 (await objXmlWeapon
+                                                        .SelectSingleNodeAndCacheExpressionAsync("translate")
+                                                        .ConfigureAwait(false))?.Value
                                                  ?? strName));
+                            }
                         }
                     }
                 }

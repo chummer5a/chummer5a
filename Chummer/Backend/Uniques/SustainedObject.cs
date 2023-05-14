@@ -56,7 +56,6 @@ namespace Chummer
         /// Creates a sustained object from a thing that can be sustained (usually a Spell, Complex Form, or Critter Power)
         /// </summary>
         /// <param name="objLinkedObject">The liked object that is meant to be sustained.</param>
-        /// <returns></returns>
         public void Create(IHasInternalId objLinkedObject)
         {
             _objLinkedObject = objLinkedObject;

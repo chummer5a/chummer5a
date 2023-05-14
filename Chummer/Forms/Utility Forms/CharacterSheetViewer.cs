@@ -148,14 +148,24 @@ namespace Chummer
                     int intNameIndex;
                     if (string.IsNullOrEmpty(strLanguage)
                         || strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+                    {
                         intNameIndex
                             = await cboXSLT.DoThreadSafeFuncAsync(
-                                x => x.FindStringExact(GlobalSettings.DefaultCharacterSheet), _objGenericToken).ConfigureAwait(false);
+                                               x => x.FindStringExact(GlobalSettings.DefaultCharacterSheet),
+                                               _objGenericToken)
+                                           .ConfigureAwait(false);
+                    }
                     else
+                    {
                         intNameIndex = await cboXSLT.DoThreadSafeFuncAsync(
-                            x => x.FindStringExact(GlobalSettings.DefaultCharacterSheet.Substring(
-                                                       GlobalSettings.DefaultLanguage.LastIndexOf(
-                                                           Path.DirectorySeparatorChar) + 1)), _objGenericToken).ConfigureAwait(false);
+                                                        x => x.FindStringExact(
+                                                            GlobalSettings.DefaultCharacterSheet.Substring(
+                                                                GlobalSettings.DefaultLanguage.LastIndexOf(
+                                                                    Path.DirectorySeparatorChar) + 1)),
+                                                        _objGenericToken)
+                                                    .ConfigureAwait(false);
+                    }
+
                     if (intNameIndex != -1)
                         await cboXSLT.DoThreadSafeAsync(x => x.SelectedIndex = intNameIndex, _objGenericToken).ConfigureAwait(false);
                     else if (await cboXSLT.DoThreadSafeFuncAsync(x => x.Items.Count > 0, _objGenericToken).ConfigureAwait(false))
@@ -164,8 +174,11 @@ namespace Chummer
                             || strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                             _strSelectedSheet = GlobalSettings.DefaultCharacterSheetDefaultValue;
                         else
+                        {
                             _strSelectedSheet
                                 = Path.Combine(strLanguage, GlobalSettings.DefaultCharacterSheetDefaultValue);
+                        }
+
                         await cboXSLT.DoThreadSafeAsync(x =>
                         {
                             x.SelectedValue = _strSelectedSheet;
@@ -565,8 +578,11 @@ namespace Chummer
                 string strOldSelected = _strSelectedSheet;
                 // Strip away the language prefix
                 if (strOldSelected.Contains(Path.DirectorySeparatorChar))
+                {
                     strOldSelected
                         = strOldSelected.Substring(strOldSelected.LastIndexOf(Path.DirectorySeparatorChar) + 1);
+                }
+
                 try
                 {
                     await PopulateXsltList(_objGenericToken).ConfigureAwait(false);

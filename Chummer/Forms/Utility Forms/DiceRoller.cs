@@ -176,8 +176,15 @@ namespace Chummer
                                           intHitCount + ')');
                     }
                     else
+                    {
                         sbdResults.AppendFormat(GlobalSettings.CultureInfo,
-                                                await LanguageManager.GetStringAsync(intHitCount == 1 ? "String_DiceRoller_Hit" : "String_DiceRoller_Hits").ConfigureAwait(false), intHitCount);
+                                                await LanguageManager
+                                                      .GetStringAsync(
+                                                          intHitCount == 1
+                                                              ? "String_DiceRoller_Hit"
+                                                              : "String_DiceRoller_Hits").ConfigureAwait(false),
+                                                intHitCount);
+                    }
                 }
 
                 sbdResults.AppendLine().AppendLine().Append(await LanguageManager.GetStringAsync("Label_DiceRoller_Sum").ConfigureAwait(false))
@@ -348,8 +355,15 @@ namespace Chummer
                                           intHitCount).Append(')');
                     }
                     else
+                    {
                         sbdResults.AppendFormat(GlobalSettings.CultureInfo,
-                                                await LanguageManager.GetStringAsync(intHitCount == 1 ? "String_DiceRoller_Hit" : "String_DiceRoller_Hits").ConfigureAwait(false), intHitCount);
+                                                await LanguageManager
+                                                      .GetStringAsync(
+                                                          intHitCount == 1
+                                                              ? "String_DiceRoller_Hit"
+                                                              : "String_DiceRoller_Hits").ConfigureAwait(false),
+                                                intHitCount);
+                    }
                 }
 
                 sbdResults.AppendLine().AppendLine().Append(await LanguageManager.GetStringAsync("Label_DiceRoller_Sum").ConfigureAwait(false))

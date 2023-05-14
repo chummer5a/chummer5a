@@ -127,7 +127,7 @@ namespace SevenZip
         /// </exception>
         Task CodeAsync(System.IO.Stream inStream, System.IO.Stream outStream,
                   long inSize, long outSize, IAsyncCodeProgress progress, CancellationToken token = default);
-    };
+    }
 
     /*
 	public interface ICoder2
@@ -137,8 +137,8 @@ namespace SevenZip
 				ISequentialOutStream []outStreams,
 				UInt64 []outSizes,
 				ICodeProgress progress);
-	};
-  */
+	}
+    */
 
     /// <summary>
     /// Provides the fields that represent properties identifiers for compressing.
@@ -219,12 +219,12 @@ namespace SevenZip
         /// Specifies mode with end marker.
         /// </summary>
         EndMarker
-    };
+    }
 
     public interface ISetCoderProperties
     {
         void SetCoderProperties(CoderPropID[] propIDs, object[] properties);
-    };
+    }
 
     public interface IWriteCoderProperties
     {

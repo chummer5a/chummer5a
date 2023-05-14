@@ -507,7 +507,7 @@ namespace Chummer
                     if (showMainForm)
                     {
                         // Attempt to cache all XML files that are used the most.
-                        using (_ = Timekeeper.StartSyncron("cache_load", null, CustomActivity.OperationType.DependencyOperation, Utils.CurrentChummerVersion.ToString(3)))
+                        using (Timekeeper.StartSyncron("cache_load", null, CustomActivity.OperationType.DependencyOperation, Utils.CurrentChummerVersion.ToString(3)))
                         using (ThreadSafeForm<LoadingBar> frmLoadingBar = CreateAndShowProgressBar(Application.ProductName, Utils.BasicDataFileNames.Count))
                         {
                             List<Task> lstCachingTasks = new List<Task>(Utils.MaxParallelBatchSize);
@@ -580,7 +580,8 @@ namespace Chummer
                     Win32Exception exception = new Win32Exception(intError, "Error while unblocking " + strFile + '.');
                     switch (exception.NativeErrorCode)
                     {
-                        case 2://file not found - that means the alternate data-stream is not present.
+                        //file not found - that means the alternate data-stream is not present.
+                        case 2:
                             break;
 
                         case 5:

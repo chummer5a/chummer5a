@@ -390,8 +390,10 @@ namespace Chummer
                                 out intMax);
                         }
                         else
+                        {
                             int.TryParse(strCost.FastEscape('+'), NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                                out intMin);
+                                         out intMin);
+                        }
 
                         string strBP = intMax == int.MaxValue
                             ? intMin.ToString(GlobalSettings.CultureInfo)

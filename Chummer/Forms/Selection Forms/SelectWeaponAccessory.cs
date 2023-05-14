@@ -358,9 +358,12 @@ namespace Chummer
                                          .ConfigureAwait(false);
             // Retrieve the information for the selected Accessory.
             if (!string.IsNullOrEmpty(strSelectedId))
+            {
                 xmlAccessory
                     = _xmlBaseChummerNode.SelectSingleNode("accessories/accessory[id = " + strSelectedId.CleanXPath()
                                                            + ']');
+            }
+
             if (xmlAccessory == null)
             {
                 await tlpRight.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
@@ -537,6 +540,7 @@ namespace Chummer
             {
                 string strCost = "0";
                 if (xmlAccessory.TryGetStringFieldQuickly("cost", ref strCost))
+                {
                     strCost = (await strCost.CheapReplaceAsync("Weapon Cost",
                                                                () => _objParentWeapon.OwnCost.ToString(
                                                                    GlobalSettings.InvariantCultureInfo), token: token)
@@ -545,6 +549,8 @@ namespace Chummer
                                                                    .ToString(GlobalSettings.InvariantCultureInfo),
                                                                token: token).ConfigureAwait(false))
                         .Replace("Rating", intRating.ToString(GlobalSettings.CultureInfo));
+                }
+
                 if (strCost.StartsWith("Variable(", StringComparison.Ordinal))
                 {
                     decimal decMin;
@@ -559,8 +565,10 @@ namespace Chummer
                                          out decMax);
                     }
                     else
+                    {
                         decimal.TryParse(strCost.FastEscape('+'), NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                                          out decMin);
+                    }
 
                     if (decMax == decimal.MaxValue)
                     {

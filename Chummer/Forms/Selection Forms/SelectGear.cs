@@ -873,12 +873,18 @@ namespace Chummer
                                     decMax = Convert.ToDecimal(strValues[1], GlobalSettings.InvariantCultureInfo);
                                 }
                                 else
+                                {
                                     decMin = Convert.ToDecimal(strCost.FastEscape('+'),
                                                                GlobalSettings.InvariantCultureInfo);
+                                }
 
                                 if (decMax == decimal.MaxValue)
-                                    strCost = decMin.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
-                                        + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false) + '+';
+                                {
+                                    strCost = decMin.ToString(_objCharacter.Settings.NuyenFormat,
+                                                              GlobalSettings.CultureInfo)
+                                              + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token)
+                                                                     .ConfigureAwait(false) + '+';
+                                }
                                 else
                                 {
                                     string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
@@ -1443,8 +1449,8 @@ namespace Chummer
                                             = _lstCategory.Find(objFind => objFind.Value.ToString() == strLoopCategory);
                                         if (!string.IsNullOrEmpty(objFoundItem.Name))
                                         {
-                                            lstGears[i] = new ListItem(objLoopItem.Value
-                                                                       , objLoopItem.Name + strSpace + '[' + objFoundItem.Name + ']');
+                                            lstGears[i] = new ListItem(objLoopItem.Value,
+                                                                       objLoopItem.Name + strSpace + '[' + objFoundItem.Name + ']');
                                         }
                                     }
                                 }

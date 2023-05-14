@@ -1076,8 +1076,11 @@ namespace Chummer
                     objCharacterNode.Text = kvpNode.Value;
                     string strTooltip = string.Empty;
                     if (!string.IsNullOrEmpty(objCache.FilePath))
+                    {
                         strTooltip = objCache.FilePath.Replace(Utils.GetStartupPath,
                                                                '<' + Application.ProductName + '>');
+                    }
+
                     if (!string.IsNullOrEmpty(objCache.ErrorText))
                     {
                         objCharacterNode.ForeColor = ColorManager.ErrorColor;
@@ -1640,8 +1643,14 @@ namespace Chummer
                 objCache = await CharacterCache.CreateFromFileAsync(strFile, token).ConfigureAwait(false);
             token.ThrowIfCancellationRequested();
             if (objCache == null)
+            {
                 return new TreeNode
-                    {Text = await LanguageManager.GetStringAsync("String_Error", token: token).ConfigureAwait(false), ForeColor = ColorManager.ErrorColor};
+                {
+                    Text = await LanguageManager.GetStringAsync("String_Error", token: token).ConfigureAwait(false),
+                    ForeColor = ColorManager.ErrorColor
+                };
+            }
+
             token.ThrowIfCancellationRequested();
             TreeNode objNode = new TreeNode
             {
@@ -2113,9 +2122,14 @@ namespace Chummer
                         {
                             using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                    = await Program.CreateAndShowProgressBarAsync(
-                                       objCache.FilePath, Character.NumLoadingSections, _objGenericToken).ConfigureAwait(false))
+                                                      objCache.FilePath, Character.NumLoadingSections, _objGenericToken)
+                                                  .ConfigureAwait(false))
+                            {
                                 objCharacter = await Program.LoadCharacterAsync(
-                                    objCache.FilePath, frmLoadingBar: frmLoadingBar.MyForm, token: _objGenericToken).ConfigureAwait(false);
+                                                                objCache.FilePath, frmLoadingBar: frmLoadingBar.MyForm,
+                                                                token: _objGenericToken)
+                                                            .ConfigureAwait(false);
+                            }
                         }
 
                         if (!await Program.SwitchToOpenCharacter(objCharacter, _objGenericToken).ConfigureAwait(false))
@@ -2153,10 +2167,14 @@ namespace Chummer
                     {
                         using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                = await Program.CreateAndShowProgressBarAsync(
-                                   objCache.FilePath, Character.NumLoadingSections, _objGenericToken).ConfigureAwait(false))
+                                                  objCache.FilePath, Character.NumLoadingSections, _objGenericToken)
+                                              .ConfigureAwait(false))
+                        {
                             objCharacter
-                                = await Program.LoadCharacterAsync(objCache.FilePath, frmLoadingBar: frmLoadingBar.MyForm,
+                                = await Program.LoadCharacterAsync(objCache.FilePath,
+                                                                   frmLoadingBar: frmLoadingBar.MyForm,
                                                                    token: _objGenericToken).ConfigureAwait(false);
+                        }
                     }
 
                     if (!await Program.SwitchToOpenPrintCharacter(objCharacter, _objGenericToken).ConfigureAwait(false))
@@ -2193,10 +2211,14 @@ namespace Chummer
                     {
                         using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                = await Program.CreateAndShowProgressBarAsync(
-                                   objCache.FilePath, Character.NumLoadingSections, _objGenericToken).ConfigureAwait(false))
+                                                  objCache.FilePath, Character.NumLoadingSections, _objGenericToken)
+                                              .ConfigureAwait(false))
+                        {
                             objCharacter
-                                = await Program.LoadCharacterAsync(objCache.FilePath, frmLoadingBar: frmLoadingBar.MyForm,
+                                = await Program.LoadCharacterAsync(objCache.FilePath,
+                                                                   frmLoadingBar: frmLoadingBar.MyForm,
                                                                    token: _objGenericToken).ConfigureAwait(false);
+                        }
                     }
 
                     if (!await Program.SwitchToOpenExportCharacter(objCharacter, _objGenericToken).ConfigureAwait(false))
@@ -2360,8 +2382,11 @@ namespace Chummer
                             token: _objGenericToken).ConfigureAwait(false);
                     }
                     else
-                        await this.DoThreadSafeAsync(() => e.Node.ContextMenuStrip = CreateContextMenuStrip(false, _objGenericToken),
-                                                     token: _objGenericToken).ConfigureAwait(false);
+                    {
+                        await this.DoThreadSafeAsync(
+                            () => e.Node.ContextMenuStrip = CreateContextMenuStrip(false, _objGenericToken),
+                            token: _objGenericToken).ConfigureAwait(false);
+                    }
                 }
 
                 foreach (IPlugin plugin in await Program.PluginLoader.GetMyActivePluginsAsync(_objGenericToken)

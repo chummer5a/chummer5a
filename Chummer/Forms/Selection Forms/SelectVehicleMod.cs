@@ -66,9 +66,12 @@ namespace Chummer
             // Load the Vehicle information.
             _xmlBaseVehicleDataNode = _objCharacter.LoadDataXPath("vehicles.xml").SelectSingleNodeAndCacheExpression("/chummer");
             if (_xmlBaseVehicleDataNode != null)
+            {
                 _setBlackMarketMaps.AddRange(
                     _objCharacter.GenerateBlackMarketMappings(
                         _xmlBaseVehicleDataNode.SelectSingleNodeAndCacheExpression("modcategories")));
+            }
+
             if (lstExistingMods != null)
                 _lstMods.AddRange(lstExistingMods);
         }
@@ -737,12 +740,14 @@ namespace Chummer
                     // Cost.
                     decimal decItemCost = 0;
                     if (await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
+                    {
                         await lblCost
                               .DoThreadSafeAsync(
                                   x => x.Text = (0.0m).ToString(_objCharacter.Settings.NuyenFormat,
                                                                 GlobalSettings.CultureInfo)
                                                 + LanguageManager.GetString("String_NuyenSymbol"), token: token)
                               .ConfigureAwait(false);
+                    }
                     else
                     {
                         string strCost
@@ -760,16 +765,20 @@ namespace Chummer
                                 decMax = Convert.ToDecimal(strValues[1], GlobalSettings.InvariantCultureInfo);
                             }
                             else
+                            {
                                 decMin = Convert.ToDecimal(strCost.FastEscape('+'),
                                                            GlobalSettings.InvariantCultureInfo);
+                            }
 
                             if (decMax == decimal.MaxValue)
+                            {
                                 await lblCost.DoThreadSafeAsync(
                                                  x => x.Text = decMin.ToString(_objCharacter.Settings.NuyenFormat,
                                                                                GlobalSettings.CultureInfo)
                                                                + LanguageManager.GetString("String_NuyenSymbol") + '+',
                                                  token: token)
                                              .ConfigureAwait(false);
+                            }
                             else
                             {
                                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
@@ -884,8 +893,10 @@ namespace Chummer
                                                      token: token).ConfigureAwait(false);
                         }
                         else
+                        {
                             await lblCategory.DoThreadSafeAsync(x => x.Text = strCategory, token: token)
                                              .ConfigureAwait(false);
+                        }
                     }
                     else
                     {
@@ -926,8 +937,10 @@ namespace Chummer
                         await lblLimit.DoThreadSafeAsync(x => x.Text = strLimit, token: token).ConfigureAwait(false);
                     }
                     else
+                    {
                         await lblLimit.DoThreadSafeAsync(x => x.Text = string.Empty, token: token)
                                       .ConfigureAwait(false);
+                    }
 
                     if (await xmlVehicleMod.SelectSingleNodeAndCacheExpressionAsync("ratinglabel", token)
                                            .ConfigureAwait(false) != null)

@@ -58,9 +58,11 @@ namespace Chummer
                 {
                     string strSelectedId = await lstMentor.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false);
                     if (!string.IsNullOrEmpty(strSelectedId))
+                    {
                         objXmlMentor =
                             _xmlBaseMentorSpiritDataNode.SelectSingleNode("mentors/mentor[id = " +
                                                                           strSelectedId.CleanXPath() + ']');
+                    }
                 }
 
                 if (objXmlMentor != null)
@@ -82,14 +84,23 @@ namespace Chummer
                                     (_objCharacter.MagicianEnabled ||
                                      !strName.StartsWith("Magician:", StringComparison.Ordinal)))
                                 {
-                                    if ((await objChoice.SelectSingleNodeAndCacheExpressionAsync("@set").ConfigureAwait(false))?.Value == "2")
+                                    if ((await objChoice.SelectSingleNodeAndCacheExpressionAsync("@set")
+                                                        .ConfigureAwait(false))?.Value == "2")
+                                    {
                                         lstChoice2.Add(new ListItem(strName,
-                                                                    (await objChoice.SelectSingleNodeAndCacheExpressionAsync(
-                                                                        "translate").ConfigureAwait(false))?.Value ?? strName));
+                                                                    (await objChoice
+                                                                           .SelectSingleNodeAndCacheExpressionAsync(
+                                                                               "translate").ConfigureAwait(false))
+                                                                    ?.Value ?? strName));
+                                    }
                                     else
+                                    {
                                         lstChoice1.Add(new ListItem(strName,
-                                                                    (await objChoice.SelectSingleNodeAndCacheExpressionAsync(
-                                                                        "translate").ConfigureAwait(false))?.Value ?? strName));
+                                                                    (await objChoice
+                                                                           .SelectSingleNodeAndCacheExpressionAsync(
+                                                                               "translate").ConfigureAwait(false))
+                                                                    ?.Value ?? strName));
+                                    }
                                 }
                             }
 

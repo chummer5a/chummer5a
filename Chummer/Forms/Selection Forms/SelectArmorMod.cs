@@ -54,9 +54,11 @@ namespace Chummer
             _objArmor = objParentNode;
             _objParentNode = _objArmor?.GetNodeXPath();
             if (_xmlBaseDataNode != null)
+            {
                 _setBlackMarketMaps.AddRange(
                     _objCharacter.GenerateBlackMarketMappings(
                         _xmlBaseDataNode.SelectSingleNodeAndCacheExpression("modcategories")));
+            }
         }
 
         private async void SelectArmorMod_Load(object sender, EventArgs e)

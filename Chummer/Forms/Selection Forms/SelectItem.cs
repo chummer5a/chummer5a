@@ -78,9 +78,13 @@ namespace Chummer
                                 }
 
                                 if (objGear.Rating > 0)
+                                {
                                     sbdAmmoName.Append(strSpace).Append('(')
-                                               .Append(await LanguageManager.GetStringAsync(objGear.RatingLabel).ConfigureAwait(false)).Append(strSpace)
+                                               .Append(await LanguageManager.GetStringAsync(objGear.RatingLabel)
+                                                                            .ConfigureAwait(false)).Append(strSpace)
                                                .Append(objGear.Rating.ToString(GlobalSettings.CultureInfo)).Append(')');
+                                }
+
                                 sbdAmmoName.Append(strSpace).Append('x')
                                            .Append(objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo));
                                 lstItems.Add(new ListItem(objGear.InternalId, sbdAmmoName.ToString()));
@@ -129,9 +133,13 @@ namespace Chummer
                             {
                                 string strInnerText = objNode.Value;
                                 if (!string.IsNullOrEmpty(strInnerText))
+                                {
                                     lstItems.Add(new ListItem(strInnerText,
-                                                              (await objNode.SelectSingleNodeAndCacheExpressionAsync("@translate").ConfigureAwait(false))
-                                                                     ?.Value ?? strInnerText));
+                                                              (await objNode
+                                                                     .SelectSingleNodeAndCacheExpressionAsync(
+                                                                         "@translate").ConfigureAwait(false))
+                                                              ?.Value ?? strInnerText));
+                                }
                             }
                         }
                         else

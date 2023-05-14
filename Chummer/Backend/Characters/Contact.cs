@@ -2002,7 +2002,7 @@ namespace Chummer
                                        = Program.CreateAndShowProgressBar(strFile, Character.NumLoadingSections))
                                     _objLinkedCharacter
                                         = Program.LoadCharacter(strFile, string.Empty, false, false,
-                                                                frmLoadingBar.MyForm);
+                                                                frmLoadingBar.MyForm, token);
                             }
 
                             if (_objLinkedCharacter != null)
@@ -2031,10 +2031,10 @@ namespace Chummer
 
                         if (_objLinkedCharacter != null)
                         {
-                            using (EnterReadLock.Enter(_objLinkedCharacter.LockObject))
+                            using (EnterReadLock.Enter(_objLinkedCharacter.LockObject, token))
                             {
                                 if (string.IsNullOrEmpty(_strName)
-                                    && Name != LanguageManager.GetString("String_UnnamedCharacter"))
+                                    && Name != LanguageManager.GetString("String_UnnamedCharacter", token: token))
                                     _strName = Name;
                                 if (string.IsNullOrEmpty(_strAge) && !string.IsNullOrEmpty(Age))
                                     _strAge = Age;
@@ -2364,7 +2364,7 @@ namespace Chummer
 
         public void LoadMugshots(XPathNavigator xmlSavedNode, CancellationToken token = default)
         {
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
                 xmlSavedNode.TryGetInt32FieldQuickly("mainmugshotindex", ref _intMainMugshotIndex);
                 XPathNodeIterator xmlMugshotsList = xmlSavedNode.SelectAndCacheExpression("mugshots/mugshot");
