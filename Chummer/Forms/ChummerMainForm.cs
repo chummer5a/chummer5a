@@ -69,12 +69,21 @@ namespace Chummer
         {
             get
             {
-                string strSpace = LanguageManager.GetString("String_Space");
-                string strTitle = Application.ProductName + strSpace + '-' + strSpace + LanguageManager.GetString("String_Version") + strSpace + _strCurrentVersion;
+                try
+                {
+                    string strSpace = LanguageManager.GetString("String_Space", token: _objGenericToken);
+                    string strTitle = Application.ProductName + strSpace + '-' + strSpace
+                                      + LanguageManager.GetString("String_Version", token: _objGenericToken) + strSpace
+                                      + _strCurrentVersion;
 #if DEBUG
-                strTitle += " DEBUG BUILD";
+                    strTitle += " DEBUG BUILD";
 #endif
-                return strTitle;
+                    return strTitle;
+                }
+                catch (OperationCanceledException)
+                {
+                    return string.Empty;
+                }
             }
         }
 

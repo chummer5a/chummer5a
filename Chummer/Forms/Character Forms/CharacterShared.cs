@@ -2541,12 +2541,16 @@ namespace Chummer
         protected async ValueTask RefreshQualityNames(TreeView treQualities, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (treQualities == null || await treQualities.DoThreadSafeFuncAsync(x => x.GetNodeCount(false), token).ConfigureAwait(false) <= 0)
+            if (treQualities == null)
+                return;
+            int intTopLevelNodeCount = await treQualities.DoThreadSafeFuncAsync(x => x.GetNodeCount(false), token)
+                                                         .ConfigureAwait(false);
+            if (intTopLevelNodeCount <= 0)
                 return;
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                List<Tuple<TreeNode, Task<string>>> lstNames = new List<Tuple<TreeNode, Task<string>>>();
+                List<Tuple<TreeNode, Task<string>>> lstNames = new List<Tuple<TreeNode, Task<string>>>(intTopLevelNodeCount);
                 TreeNode objSelectedNode = await treQualities.DoThreadSafeFuncAsync(x =>
                 {
                     foreach (TreeNode objQualityTypeNode in x.Nodes)
@@ -3062,7 +3066,7 @@ namespace Chummer
 
                     case NotifyCollectionChangedAction.Reset:
                     {
-                        List<TreeNode> lstNodesNeedingProcessing = new List<TreeNode>();
+                        List<TreeNode> lstNodesNeedingProcessing = new List<TreeNode>(lstLocations.Count);
                         await treSelected.DoThreadSafeAsync(x =>
                         {
                             for (int i = x.Nodes.Count - 1; i >= 0; --i)

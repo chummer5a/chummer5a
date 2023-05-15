@@ -919,7 +919,7 @@ namespace Chummer
             async Task<Form> InnerMethod()
             {
                 Form frmReturn;
-                IAsyncEnumerable<CharacterShared> lstForms1 = MainForm.OpenCharacterEditorForms;
+                ThreadSafeObservableCollection<CharacterShared> lstForms1 = MainForm.OpenCharacterEditorForms;
                 if (lstForms1 != null)
                 {
                     frmReturn = await lstForms1.FirstOrDefaultAsync(
@@ -927,7 +927,7 @@ namespace Chummer
                     if (frmReturn != null)
                         return frmReturn;
                 }
-                IAsyncEnumerable<CharacterSheetViewer> lstForms2 = MainForm.OpenCharacterSheetViewers;
+                ThreadSafeObservableCollection<CharacterSheetViewer> lstForms2 = MainForm.OpenCharacterSheetViewers;
                 if (lstForms2 != null)
                 {
                     frmReturn = await lstForms2.FirstOrDefaultAsync(
@@ -935,7 +935,7 @@ namespace Chummer
                     if (frmReturn != null)
                         return frmReturn;
                 }
-                IAsyncEnumerable<ExportCharacter> lstForms3 = MainForm.OpenCharacterExportForms;
+                ThreadSafeObservableCollection<ExportCharacter> lstForms3 = MainForm.OpenCharacterExportForms;
                 if (lstForms3 != null)
                 {
                     frmReturn = await lstForms1.FirstOrDefaultAsync(
