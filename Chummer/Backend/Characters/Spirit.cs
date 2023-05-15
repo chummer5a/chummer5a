@@ -1262,11 +1262,21 @@ namespace Chummer
 
                         if (EntityType == SpiritType.Spirit)
                         {
-                            ImprovementManager.CreateImprovement(CharacterObject, "MAG",
-                                                                 Improvement.ImprovementSource.SpiritFettering,
-                                                                 string.Empty,
-                                                                 Improvement.ImprovementType.Attribute, string.Empty, 0,
-                                                                 1, 0, 0, -1);
+                            try
+                            {
+                                ImprovementManager.CreateImprovement(CharacterObject, "MAG",
+                                                                     Improvement.ImprovementSource.SpiritFettering,
+                                                                     string.Empty,
+                                                                     Improvement.ImprovementType.Attribute,
+                                                                     string.Empty, 0,
+                                                                     1, 0, 0, -1);
+                            }
+                            catch
+                            {
+                                ImprovementManager.Rollback(CharacterObject, CancellationToken.None);
+                                throw;
+                            }
+
                             ImprovementManager.Commit(CharacterObject);
                         }
                     }

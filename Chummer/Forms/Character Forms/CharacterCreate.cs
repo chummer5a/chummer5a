@@ -10307,7 +10307,7 @@ namespace Chummer
                 int intPosition = await CharacterObject.Lifestyles
                                                        .IndexOfAsync(
                                                            await CharacterObject.Lifestyles.FirstOrDefaultAsync(
-                                                               p => p.InternalId == objLifestyle.InternalId,
+                                                               p => p.InternalId == strGuid,
                                                                GenericToken).ConfigureAwait(false),
                                                            GenericToken)
                                                        .ConfigureAwait(false);

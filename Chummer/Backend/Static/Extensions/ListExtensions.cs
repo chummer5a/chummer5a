@@ -20,18 +20,20 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using Chummer.Annotations;
 
 namespace Chummer
 {
     public static class ListExtensions
     {
-        public static void AddWithSort<T>(this IList<T> lstCollection, T objNewItem, Action<T, T> funcOverrideIfEquals = null) where T : IComparable
+        public static void AddWithSort<T>(this IList<T> lstCollection, T objNewItem, Action<T, T> funcOverrideIfEquals = null, CancellationToken token = default) where T : IComparable
         {
+            token.ThrowIfCancellationRequested();
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
             if (lstCollection is IHasLockObject objLocker)
-                objLocker.LockObject.EnterReadLock();
+                objLocker.LockObject.EnterReadLock(token);
             else
                 objLocker = null;
             try
@@ -43,6 +45,7 @@ namespace Chummer
                      intIntervalStart <= intIntervalEnd;
                      intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
                 {
+                    token.ThrowIfCancellationRequested();
                     T objLoopExistingItem = lstCollection[intTargetIndex];
                     int intCompareResult = objLoopExistingItem.CompareTo(objNewItem);
                     if (intCompareResult == 0)
@@ -90,14 +93,15 @@ namespace Chummer
             }
         }
 
-        public static void AddWithSort<T>(this IList<T> lstCollection, T objNewItem, IComparer<T> comparer, Action<T, T> funcOverrideIfEquals = null)
+        public static void AddWithSort<T>(this IList<T> lstCollection, T objNewItem, IComparer<T> comparer, Action<T, T> funcOverrideIfEquals = null, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
             if (comparer == null)
                 throw new ArgumentNullException(nameof(comparer));
             if (lstCollection is IHasLockObject objLocker)
-                objLocker.LockObject.EnterReadLock();
+                objLocker.LockObject.EnterReadLock(token);
             else
                 objLocker = null;
             try
@@ -109,6 +113,7 @@ namespace Chummer
                      intIntervalStart <= intIntervalEnd;
                      intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
                 {
+                    token.ThrowIfCancellationRequested();
                     T objLoopExistingItem = lstCollection[intTargetIndex];
                     int intCompareResult = comparer.Compare(objLoopExistingItem, objNewItem);
                     if (intCompareResult == 0)
@@ -156,14 +161,15 @@ namespace Chummer
             }
         }
 
-        public static void AddWithSort<T>(this IList<T> lstCollection, T objNewItem, Comparison<T> funcComparison, Action<T, T> funcOverrideIfEquals = null)
+        public static void AddWithSort<T>(this IList<T> lstCollection, T objNewItem, Comparison<T> funcComparison, Action<T, T> funcOverrideIfEquals = null, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
             if (lstCollection is IHasLockObject objLocker)
-                objLocker.LockObject.EnterReadLock();
+                objLocker.LockObject.EnterReadLock(token);
             else
                 objLocker = null;
             try
@@ -175,6 +181,7 @@ namespace Chummer
                      intIntervalStart <= intIntervalEnd;
                      intTargetIndex = (intIntervalStart + intIntervalEnd) / 2)
                 {
+                    token.ThrowIfCancellationRequested();
                     T objLoopExistingItem = lstCollection[intTargetIndex];
                     int intCompareResult = funcComparison.Invoke(objLoopExistingItem, objNewItem);
                     if (intCompareResult == 0)
@@ -222,17 +229,17 @@ namespace Chummer
             }
         }
 
-        public static void AddRangeWithSort<T>(this IList<T> lstCollection, IEnumerable<T> lstToAdd, Action<T, T> funcOverrideIfEquals = null) where T : IComparable
+        public static void AddRangeWithSort<T>(this IList<T> lstCollection, IEnumerable<T> lstToAdd, Action<T, T> funcOverrideIfEquals = null, CancellationToken token = default) where T : IComparable
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
             if (lstToAdd == null)
                 throw new ArgumentNullException(nameof(lstToAdd));
             foreach (T objItem in lstToAdd)
-                AddWithSort(lstCollection, objItem, funcOverrideIfEquals);
+                AddWithSort(lstCollection, objItem, funcOverrideIfEquals, token);
         }
 
-        public static void AddRangeWithSort<T>(this IList<T> lstCollection, IEnumerable<T> lstToAdd, IComparer<T> comparer, Action<T, T> funcOverrideIfEquals = null)
+        public static void AddRangeWithSort<T>(this IList<T> lstCollection, IEnumerable<T> lstToAdd, IComparer<T> comparer, Action<T, T> funcOverrideIfEquals = null, CancellationToken token = default)
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
@@ -241,10 +248,10 @@ namespace Chummer
             if (comparer == null)
                 throw new ArgumentNullException(nameof(comparer));
             foreach (T objItem in lstToAdd)
-                AddWithSort(lstCollection, objItem, comparer, funcOverrideIfEquals);
+                AddWithSort(lstCollection, objItem, comparer, funcOverrideIfEquals, token);
         }
 
-        public static void AddRangeWithSort<T>(this IList<T> lstCollection, IEnumerable<T> lstToAdd, Comparison<T> funcComparison, Action<T, T> funcOverrideIfEquals = null)
+        public static void AddRangeWithSort<T>(this IList<T> lstCollection, IEnumerable<T> lstToAdd, Comparison<T> funcComparison, Action<T, T> funcOverrideIfEquals = null, CancellationToken token = default)
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
@@ -253,11 +260,12 @@ namespace Chummer
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
             foreach (T objItem in lstToAdd)
-                AddWithSort(lstCollection, objItem, funcComparison, funcOverrideIfEquals);
+                AddWithSort(lstCollection, objItem, funcComparison, funcOverrideIfEquals, token);
         }
 
-        public static void RemoveRange<T>(this IList<T> lstCollection, int index, int count)
+        public static void RemoveRange<T>(this IList<T> lstCollection, int index, int count, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (count == 0)
                 return;
             if (lstCollection == null)
@@ -269,12 +277,15 @@ namespace Chummer
             if (count < 0)
                 throw new ArgumentOutOfRangeException(nameof(count));
             IDisposable objLocker = lstCollection is IHasLockObject objHasLockObject
-                ? objHasLockObject.LockObject.EnterWriteLock()
+                ? objHasLockObject.LockObject.EnterWriteLock(token)
                 : null;
             try
             {
                 for (int i = Math.Min(index + count - 1, lstCollection.Count); i >= index; --i)
+                {
+                    token.ThrowIfCancellationRequested();
                     lstCollection.RemoveAt(i);
+                }
             }
             finally
             {
@@ -282,19 +293,21 @@ namespace Chummer
             }
         }
 
-        public static void RemoveAll<T>(this IList<T> lstCollection, Predicate<T> predicate)
+        public static void RemoveAll<T>(this IList<T> lstCollection, Predicate<T> predicate, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
             if (predicate == null)
                 throw new ArgumentNullException(nameof(predicate));
             IDisposable objLocker = lstCollection is IHasLockObject objHasLockObject
-                ? objHasLockObject.LockObject.EnterWriteLock()
+                ? objHasLockObject.LockObject.EnterWriteLock(token)
                 : null;
             try
             {
                 for (int i = lstCollection.Count - 1; i >= 0; --i)
                 {
+                    token.ThrowIfCancellationRequested();
                     if (predicate(lstCollection[i]))
                     {
                         lstCollection.RemoveAt(i);
@@ -307,17 +320,19 @@ namespace Chummer
             }
         }
 
-        public static void InsertRange<T>(this IList<T> lstCollection, int index, [NotNull] IEnumerable<T> collection)
+        public static void InsertRange<T>(this IList<T> lstCollection, int index, [NotNull] IEnumerable<T> collection, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
             IDisposable objLocker = lstCollection is IHasLockObject objHasLockObject
-                ? objHasLockObject.LockObject.EnterWriteLock()
+                ? objHasLockObject.LockObject.EnterWriteLock(token)
                 : null;
             try
             {
                 foreach (T item in collection.Reverse())
                 {
+                    token.ThrowIfCancellationRequested();
                     lstCollection.Insert(index, item);
                 }
             }

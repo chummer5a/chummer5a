@@ -4493,14 +4493,15 @@ namespace Chummer.Backend.Equipment
         #region Hero Lab Importing Methods
 
         public bool ImportHeroLabGear(XPathNavigator xmlGearImportNode, XmlNode xmlParentGearNode,
-            IList<Weapon> lstWeapons)
+            IList<Weapon> lstWeapons, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (xmlGearImportNode == null)
                 return false;
-            string strOriginalName = xmlGearImportNode.SelectSingleNodeAndCacheExpression("@name")?.Value ?? string.Empty;
+            string strOriginalName = xmlGearImportNode.SelectSingleNodeAndCacheExpression("@name", token)?.Value ?? string.Empty;
             if (!string.IsNullOrEmpty(strOriginalName))
             {
-                XmlDocument xmlGearDocument = _objCharacter.LoadData("gear.xml");
+                XmlDocument xmlGearDocument = _objCharacter.LoadData("gear.xml", token: token);
                 string strForceValue = string.Empty;
                 XmlNode xmlGearDataNode = null;
                 using (XmlNodeList xmlGearDataList =
@@ -4511,6 +4512,7 @@ namespace Chummer.Backend.Equipment
                     {
                         foreach (XmlNode xmlLoopNode in xmlGearDataList)
                         {
+                            token.ThrowIfCancellationRequested();
                             XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
                             if (xmlTestNode != null && xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                             {
@@ -4561,6 +4563,7 @@ namespace Chummer.Backend.Equipment
                             {
                                 foreach (XmlNode xmlLoopNode in xmlGearDataList)
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
                                     if (xmlTestNode != null &&
                                         xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
@@ -4617,6 +4620,7 @@ namespace Chummer.Backend.Equipment
                                 {
                                     foreach (XmlNode xmlLoopNode in xmlGearDataList)
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
                                         if (xmlTestNode != null &&
                                             xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
@@ -4663,7 +4667,7 @@ namespace Chummer.Backend.Equipment
 
                 if (xmlGearDataNode != null)
                 {
-                    Create(xmlGearDataNode, xmlGearImportNode.SelectSingleNodeAndCacheExpression("@rating")?.ValueAsInt ?? 0, lstWeapons,
+                    Create(xmlGearDataNode, xmlGearImportNode.SelectSingleNodeAndCacheExpression("@rating", token)?.ValueAsInt ?? 0, lstWeapons,
                         strForceValue);
                 }
                 else
@@ -4672,9 +4676,9 @@ namespace Chummer.Backend.Equipment
                         xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = 'Custom Item']");
                     if (xmlCustomGearDataNode != null)
                     {
-                        Create(xmlCustomGearDataNode, xmlGearImportNode.SelectSingleNodeAndCacheExpression("@rating")?.ValueAsInt ?? 0,
+                        Create(xmlCustomGearDataNode, xmlGearImportNode.SelectSingleNodeAndCacheExpression("@rating", token)?.ValueAsInt ?? 0,
                             lstWeapons, strOriginalName);
-                        Cost = xmlGearImportNode.SelectSingleNodeAndCacheExpression("gearcost/@value")?.Value;
+                        Cost = xmlGearImportNode.SelectSingleNodeAndCacheExpression("gearcost/@value", token)?.Value;
                     }
                     else
                         return false;
@@ -4683,10 +4687,10 @@ namespace Chummer.Backend.Equipment
                 if (InternalId.IsEmptyGuid())
                     return false;
 
-                Quantity = xmlGearImportNode.SelectSingleNodeAndCacheExpression("@quantity")?.ValueAsInt ?? 1;
-                Notes = xmlGearImportNode.SelectSingleNodeAndCacheExpression("description")?.Value;
+                Quantity = xmlGearImportNode.SelectSingleNodeAndCacheExpression("@quantity", token)?.ValueAsInt ?? 1;
+                Notes = xmlGearImportNode.SelectSingleNodeAndCacheExpression("description", token)?.Value;
 
-                ProcessHeroLabGearPlugins(xmlGearImportNode, lstWeapons);
+                ProcessHeroLabGearPlugins(xmlGearImportNode, lstWeapons, token);
 
                 return true;
             }
@@ -4694,17 +4698,239 @@ namespace Chummer.Backend.Equipment
             return false;
         }
 
-        public void ProcessHeroLabGearPlugins(XPathNavigator xmlGearImportNode, IList<Weapon> lstWeapons)
+        public async Task<bool> ImportHeroLabGearAsync(XPathNavigator xmlGearImportNode, XmlNode xmlParentGearNode,
+                                                       IList<Weapon> lstWeapons, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
+            if (xmlGearImportNode == null)
+                return false;
+            string strOriginalName
+                = (await xmlGearImportNode.SelectSingleNodeAndCacheExpressionAsync("@name", token)
+                                          .ConfigureAwait(false))?.Value ?? string.Empty;
+            if (!string.IsNullOrEmpty(strOriginalName))
+            {
+                XmlDocument xmlGearDocument
+                    = await _objCharacter.LoadDataAsync("gear.xml", token: token).ConfigureAwait(false);
+                string strForceValue = string.Empty;
+                XmlNode xmlGearDataNode = null;
+                using (XmlNodeList xmlGearDataList =
+                       xmlGearDocument.SelectNodes("/chummer/gears/gear[contains(name, " + strOriginalName.CleanXPath()
+                                                   +
+                                                   ")]"))
+                {
+                    if (xmlGearDataList?.Count > 0)
+                    {
+                        foreach (XmlNode xmlLoopNode in xmlGearDataList)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                            if (xmlTestNode != null && xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                            {
+                                // Assumes topmost parent is an AND node
+                                continue;
+                            }
+
+                            xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                            if (xmlTestNode != null &&
+                                !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                            {
+                                // Assumes topmost parent is an AND node
+                                continue;
+                            }
+
+                            xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/geardetails");
+                            if (xmlTestNode != null && xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                            {
+                                // Assumes topmost parent is an AND node
+                                continue;
+                            }
+
+                            xmlTestNode = xmlLoopNode.SelectSingleNode("required/geardetails");
+                            if (xmlTestNode != null &&
+                                !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                            {
+                                // Assumes topmost parent is an AND node
+                                continue;
+                            }
+
+                            xmlGearDataNode = xmlLoopNode;
+                            break;
+                        }
+                    }
+                }
+
+                if (xmlGearDataNode == null)
+                {
+                    string[] astrOriginalNameSplit = strOriginalName.Split(':', StringSplitOptions.RemoveEmptyEntries);
+                    if (astrOriginalNameSplit.Length > 1)
+                    {
+                        string strName = astrOriginalNameSplit[0].Trim();
+                        using (XmlNodeList xmlGearDataList =
+                               xmlGearDocument.SelectNodes("/chummer/gears/gear[contains(name, " + strName.CleanXPath()
+                                                           +
+                                                           ")]"))
+                        {
+                            if (xmlGearDataList?.Count > 0)
+                            {
+                                foreach (XmlNode xmlLoopNode in xmlGearDataList)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                                    if (xmlTestNode != null &&
+                                        xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                    {
+                                        // Assumes topmost parent is an AND node
+                                        continue;
+                                    }
+
+                                    xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                                    if (xmlTestNode != null &&
+                                        !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                    {
+                                        // Assumes topmost parent is an AND node
+                                        continue;
+                                    }
+
+                                    xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/geardetails");
+                                    if (xmlTestNode != null &&
+                                        xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                    {
+                                        // Assumes topmost parent is an AND node
+                                        continue;
+                                    }
+
+                                    xmlTestNode = xmlLoopNode.SelectSingleNode("required/geardetails");
+                                    if (xmlTestNode != null &&
+                                        !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                    {
+                                        // Assumes topmost parent is an AND node
+                                        continue;
+                                    }
+
+                                    xmlGearDataNode = xmlLoopNode;
+                                    break;
+                                }
+                            }
+                        }
+
+                        if (xmlGearDataNode != null)
+                            strForceValue = astrOriginalNameSplit[1].Trim();
+                    }
+
+                    if (xmlGearDataNode == null)
+                    {
+                        astrOriginalNameSplit = strOriginalName.Split(',', StringSplitOptions.RemoveEmptyEntries);
+                        if (astrOriginalNameSplit.Length > 1)
+                        {
+                            string strName = astrOriginalNameSplit[0].Trim();
+                            using (XmlNodeList xmlGearDataList =
+                                   xmlGearDocument.SelectNodes("/chummer/gears/gear[contains(name, " +
+                                                               strName.CleanXPath() + ")]"))
+                            {
+                                if (xmlGearDataList?.Count > 0)
+                                {
+                                    foreach (XmlNode xmlLoopNode in xmlGearDataList)
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                                        if (xmlTestNode != null &&
+                                            xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                        {
+                                            // Assumes topmost parent is an AND node
+                                            continue;
+                                        }
+
+                                        xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                                        if (xmlTestNode != null &&
+                                            !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                        {
+                                            // Assumes topmost parent is an AND node
+                                            continue;
+                                        }
+
+                                        xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/geardetails");
+                                        if (xmlTestNode != null &&
+                                            xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                        {
+                                            // Assumes topmost parent is an AND node
+                                            continue;
+                                        }
+
+                                        xmlTestNode = xmlLoopNode.SelectSingleNode("required/geardetails");
+                                        if (xmlTestNode != null &&
+                                            !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                        {
+                                            // Assumes topmost parent is an AND node
+                                            continue;
+                                        }
+
+                                        xmlGearDataNode = xmlLoopNode;
+                                        break;
+                                    }
+                                }
+                            }
+
+                            if (xmlGearDataNode != null)
+                                strForceValue = astrOriginalNameSplit[1].Trim();
+                        }
+                    }
+                }
+
+                if (xmlGearDataNode != null)
+                {
+                    Create(xmlGearDataNode,
+                           (await xmlGearImportNode.SelectSingleNodeAndCacheExpressionAsync("@rating", token)
+                                                   .ConfigureAwait(false))?.ValueAsInt ?? 0, lstWeapons,
+                           strForceValue);
+                }
+                else
+                {
+                    XmlNode xmlCustomGearDataNode =
+                        xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = 'Custom Item']");
+                    if (xmlCustomGearDataNode != null)
+                    {
+                        Create(xmlCustomGearDataNode,
+                               (await xmlGearImportNode.SelectSingleNodeAndCacheExpressionAsync("@rating", token)
+                                                       .ConfigureAwait(false))?.ValueAsInt ?? 0,
+                               lstWeapons, strOriginalName);
+                        Cost = (await xmlGearImportNode
+                                      .SelectSingleNodeAndCacheExpressionAsync("gearcost/@value", token)
+                                      .ConfigureAwait(false))?.Value;
+                    }
+                    else
+                        return false;
+                }
+
+                if (InternalId.IsEmptyGuid())
+                    return false;
+
+                Quantity = (await xmlGearImportNode.SelectSingleNodeAndCacheExpressionAsync("@quantity", token)
+                                                   .ConfigureAwait(false))?.ValueAsInt ?? 1;
+                Notes = (await xmlGearImportNode.SelectSingleNodeAndCacheExpressionAsync("description", token)
+                                                .ConfigureAwait(false))?.Value;
+
+                await ProcessHeroLabGearPluginsAsync(xmlGearImportNode, lstWeapons, token).ConfigureAwait(false);
+
+                return true;
+            }
+
+            return false;
+        }
+
+        public void ProcessHeroLabGearPlugins(XPathNavigator xmlGearImportNode, IList<Weapon> lstWeapons, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
             if (xmlGearImportNode == null)
                 return;
             foreach (string strPluginNodeName in Character.HeroLabPluginNodeNames)
             {
+                token.ThrowIfCancellationRequested();
                 foreach (XPathNavigator xmlPluginToAdd in xmlGearImportNode.Select(strPluginNodeName +
                     "/item[@useradded != \"no\"]"))
                 {
+                    token.ThrowIfCancellationRequested();
                     Gear objPlugin = new Gear(_objCharacter);
-                    if (objPlugin.ImportHeroLabGear(xmlPluginToAdd, this.GetNode(), lstWeapons))
+                    if (objPlugin.ImportHeroLabGear(xmlPluginToAdd, this.GetNode(token), lstWeapons, token))
                     {
                         objPlugin.Parent = this;
                         Children.Add(objPlugin);
@@ -4714,16 +4940,17 @@ namespace Chummer.Backend.Equipment
                 foreach (XPathNavigator xmlPluginToAdd in xmlGearImportNode.Select(strPluginNodeName +
                     "/item[@useradded = \"no\"]"))
                 {
-                    string strName = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("@name")?.Value ?? string.Empty;
+                    token.ThrowIfCancellationRequested();
+                    string strName = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("@name", token)?.Value ?? string.Empty;
                     if (!string.IsNullOrEmpty(strName))
                     {
                         Gear objPlugin = Children.FirstOrDefault(x =>
                             x.IncludedInParent && (x.Name.Contains(strName) || strName.Contains(x.Name)));
                         if (objPlugin != null)
                         {
-                            objPlugin.Quantity = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("@quantity")?.ValueAsInt ?? 1;
-                            objPlugin.Notes = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("description")?.Value;
-                            objPlugin.ProcessHeroLabGearPlugins(xmlPluginToAdd, lstWeapons);
+                            objPlugin.Quantity = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("@quantity", token)?.ValueAsInt ?? 1;
+                            objPlugin.Notes = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("description", token)?.Value;
+                            objPlugin.ProcessHeroLabGearPlugins(xmlPluginToAdd, lstWeapons, token);
                         }
                     }
                 }
@@ -4742,7 +4969,7 @@ namespace Chummer.Backend.Equipment
                              "/item[@useradded != \"no\"]"))
                 {
                     Gear objPlugin = new Gear(_objCharacter);
-                    if (objPlugin.ImportHeroLabGear(xmlPluginToAdd, await this.GetNodeAsync(token: token).ConfigureAwait(false), lstWeapons))
+                    if (await objPlugin.ImportHeroLabGearAsync(xmlPluginToAdd, await this.GetNodeAsync(token: token).ConfigureAwait(false), lstWeapons, token).ConfigureAwait(false))
                     {
                         objPlugin.Parent = this;
                         await Children.AddAsync(objPlugin, token).ConfigureAwait(false);

@@ -541,7 +541,7 @@ namespace Chummer
                                     // Preload all data first to prevent weird locking issues with the rest of the program
                                     await Task.WhenAll(_astrFileNames.Select(
                                                            x => Task.Run(
-                                                               async () => await XmlManager.LoadXPathAsync(
+                                                               () => XmlManager.LoadXPathAsync(
                                                                    x,
                                                                    _objSelectedSetting.EnabledCustomDataDirectoryPaths,
                                                                    token: token), token)));
@@ -896,7 +896,7 @@ namespace Chummer
                             await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
                             await lblSourceClickReminder.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
                             await objEntry.DisplaySource.SetControlAsync(lblSource, token).ConfigureAwait(false);
-                            Task<string> tskNotes = await _dicCachedNotes.AddCheapOrGetAsync(objEntry, x =>
+                            string strNotes = await _dicCachedNotes.AddCheapOrGetAsync(objEntry, x =>
                             {
                                 if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
                                                                     StringComparison.OrdinalIgnoreCase)
@@ -921,8 +921,7 @@ namespace Chummer
                                                     CommonFunctions.GetTextFromPdfAsync(
                                                         x.Source.ToString(),
                                                         x.EnglishNameOnPage, token: token), token);
-                            }, token);
-                            string strNotes = await tskNotes.ConfigureAwait(false);
+                            }, token).AsTask().Unwrap().ConfigureAwait(false);
                             await txtNotes.DoThreadSafeAsync(x =>
                             {
                                 x.Text = strNotes;

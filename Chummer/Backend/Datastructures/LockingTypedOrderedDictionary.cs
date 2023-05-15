@@ -1818,15 +1818,57 @@ namespace Chummer
                     : -1;
         }
 
-        public List<TKey> FindAll(Predicate<TKey> predicate)
+        /// <inheritdoc cref="List{T}.Find" />
+        public KeyValuePair<TKey, TValue> Find(Predicate<TKey> predicate, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
+            {
+                TKey objKey = _lstIndexes.Find(predicate);
+                return new KeyValuePair<TKey, TValue>(objKey, _dicUnorderedData.TryGetValue(objKey, out TValue objValue) ? objValue : default);
+            }
+        }
+
+        /// <inheritdoc cref="List{T}.Find" />
+        public async ValueTask<KeyValuePair<TKey, TValue>> FindAsync(Predicate<TKey> predicate, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                TKey objKey = _lstIndexes.Find(predicate);
+                return new KeyValuePair<TKey, TValue>(objKey, _dicUnorderedData.TryGetValue(objKey, out TValue objValue) ? objValue : default);
+            }
+        }
+
+        public List<TKey> FindAllKeys(Predicate<TKey> predicate, CancellationToken token = default)
+        {
+            using (EnterReadLock.Enter(LockObject, token))
                 return _lstIndexes.FindAll(predicate);
         }
 
-        public TypedOrderedDictionary<TKey, TValue> FindAll(Predicate<KeyValuePair<TKey, TValue>> predicate)
+        public async ValueTask<List<TKey>> FindAllKeysAsync(Predicate<TKey> predicate, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _lstIndexes.FindAll(predicate);
+        }
+
+        /// <inheritdoc cref="List{T}.FindAll" />
+        public List<KeyValuePair<TKey, TValue>> FindAll(Predicate<TKey> predicate, CancellationToken token = default)
+        {
+            using (EnterReadLock.Enter(LockObject, token))
+            {
+                List<TKey> lstKeys = _lstIndexes.FindAll(predicate);
+                List<KeyValuePair<TKey, TValue>> lstReturn = new List<KeyValuePair<TKey, TValue>>(lstKeys.Count);
+                foreach (TKey objKey in lstKeys)
+                    lstReturn.Add(new KeyValuePair<TKey, TValue>(
+                                      objKey,
+                                      _dicUnorderedData.TryGetValue(objKey, out TValue objValue) ? objValue : default));
+                return lstReturn;
+            }
+        }
+
+        /// <inheritdoc cref="List{T}.FindAll" />
+        public TypedOrderedDictionary<TKey, TValue> FindAll(Predicate<KeyValuePair<TKey, TValue>> predicate, CancellationToken token = default)
+        {
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 TypedOrderedDictionary<TKey, TValue> dicReturn
                     = new TypedOrderedDictionary<TKey, TValue>(_lstIndexes.Count);
@@ -1840,9 +1882,60 @@ namespace Chummer
             }
         }
 
-        public List<Tuple<TKey, TValue>> FindAll(Predicate<Tuple<TKey, TValue>> predicate)
+        /// <inheritdoc cref="List{T}.FindAll" />
+        public List<Tuple<TKey, TValue>> FindAll(Predicate<Tuple<TKey, TValue>> predicate, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
+            {
+                List<Tuple<TKey, TValue>> lstReturn = new List<Tuple<TKey, TValue>>(_lstIndexes.Count);
+                foreach (TKey objKey in _lstIndexes)
+                {
+                    Tuple<TKey, TValue> tupLoop
+                        = new Tuple<TKey, TValue>(objKey, _dicUnorderedData[objKey]);
+                    if (predicate(tupLoop))
+                        lstReturn.Add(tupLoop);
+                }
+
+                return lstReturn;
+            }
+        }
+
+        /// <inheritdoc cref="List{T}.FindAll" />
+        public async ValueTask<List<KeyValuePair<TKey, TValue>>> FindAllAsync(Predicate<TKey> predicate, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                List<TKey> lstKeys = _lstIndexes.FindAll(predicate);
+                List<KeyValuePair<TKey, TValue>> lstReturn = new List<KeyValuePair<TKey, TValue>>(lstKeys.Count);
+                foreach (TKey objKey in lstKeys)
+                    lstReturn.Add(new KeyValuePair<TKey, TValue>(
+                                      objKey,
+                                      _dicUnorderedData.TryGetValue(objKey, out TValue objValue) ? objValue : default));
+                return lstReturn;
+            }
+        }
+
+        /// <inheritdoc cref="List{T}.FindAll" />
+        public async ValueTask<TypedOrderedDictionary<TKey, TValue>> FindAllAsync(Predicate<KeyValuePair<TKey, TValue>> predicate, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                TypedOrderedDictionary<TKey, TValue> dicReturn
+                    = new TypedOrderedDictionary<TKey, TValue>(_lstIndexes.Count);
+                foreach (TKey objKey in _lstIndexes)
+                {
+                    KeyValuePair<TKey, TValue> kvpLoop = new KeyValuePair<TKey, TValue>(objKey, _dicUnorderedData[objKey]);
+                    if (predicate(kvpLoop))
+                        dicReturn.Add(kvpLoop);
+                }
+                return dicReturn;
+            }
+        }
+
+        /// <inheritdoc cref="List{T}.FindAll" />
+        public async ValueTask<List<Tuple<TKey, TValue>>> FindAllAsync(Predicate<Tuple<TKey, TValue>> predicate, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
                 List<Tuple<TKey, TValue>> lstReturn = new List<Tuple<TKey, TValue>>(_lstIndexes.Count);
                 foreach (TKey objKey in _lstIndexes)

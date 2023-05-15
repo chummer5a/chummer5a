@@ -87,7 +87,7 @@ namespace Chummer
                                                                    .FirstOrDefaultAsync(x => ReferenceEquals(x.Value, objSelectedGameplayOption), _objGenericToken).ConfigureAwait(false)).Key, _objGenericToken).ConfigureAwait(false);
                     // If the character is loading, make sure we only switch build methods after we've loaded, otherwise we might cause all sorts of nastiness
                     if (_objCharacter.IsLoading)
-                        _objCharacter.EnqueuePostLoadAsyncMethod(x => _objCharacter.SwitchBuildMethods(_eStartingBuildMethod, eSelectedBuildMethod, strOldCharacterSettingsKey, x));
+                        await _objCharacter.EnqueuePostLoadAsyncMethodAsync(x => _objCharacter.SwitchBuildMethods(_eStartingBuildMethod, eSelectedBuildMethod, strOldCharacterSettingsKey, x), _objGenericToken).ConfigureAwait(false);
                     else if (!await _objCharacter.SwitchBuildMethods(_eStartingBuildMethod, eSelectedBuildMethod, strOldCharacterSettingsKey, _objGenericToken).ConfigureAwait(false))
                         return;
                 }

@@ -135,11 +135,11 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        private void InitializeAttributesList()
+        private void InitializeAttributesList(CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(_objCharacter.LockObject))
+            using (EnterReadLock.Enter(_objCharacter.LockObject, token))
             {
-                using (_objAttributesInitializerLock.EnterWriteLock())
+                using (_objAttributesInitializerLock.EnterWriteLock(token))
                 {
                     _blnAttributesInitialized = true;
 
@@ -542,61 +542,61 @@ namespace Chummer.Backend.Attributes
                         }
 
                         _objCharacter.BOD.AssignLimits(
-                            CommonFunctions.ExpressionToInt(charNode["bodmin"]?.InnerText, intValue, intMinModifier),
-                            CommonFunctions.ExpressionToInt(charNode["bodmax"]?.InnerText, intValue, intMaxModifier),
-                            CommonFunctions.ExpressionToInt(charNode["bodaug"]?.InnerText, intValue, intMaxModifier));
+                            CommonFunctions.ExpressionToInt(charNode["bodmin"]?.InnerText, intValue, intMinModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["bodmax"]?.InnerText, intValue, intMaxModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["bodaug"]?.InnerText, intValue, intMaxModifier, token: token));
                         _objCharacter.AGI.AssignLimits(
-                            CommonFunctions.ExpressionToInt(charNode["agimin"]?.InnerText, intValue, intMinModifier),
-                            CommonFunctions.ExpressionToInt(charNode["agimax"]?.InnerText, intValue, intMaxModifier),
-                            CommonFunctions.ExpressionToInt(charNode["agiaug"]?.InnerText, intValue, intMaxModifier));
+                            CommonFunctions.ExpressionToInt(charNode["agimin"]?.InnerText, intValue, intMinModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["agimax"]?.InnerText, intValue, intMaxModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["agiaug"]?.InnerText, intValue, intMaxModifier, token: token));
                         _objCharacter.REA.AssignLimits(
-                            CommonFunctions.ExpressionToInt(charNode["reamin"]?.InnerText, intValue, intMinModifier),
-                            CommonFunctions.ExpressionToInt(charNode["reamax"]?.InnerText, intValue, intMaxModifier),
-                            CommonFunctions.ExpressionToInt(charNode["reaaug"]?.InnerText, intValue, intMaxModifier));
+                            CommonFunctions.ExpressionToInt(charNode["reamin"]?.InnerText, intValue, intMinModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["reamax"]?.InnerText, intValue, intMaxModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["reaaug"]?.InnerText, intValue, intMaxModifier, token: token));
                         _objCharacter.STR.AssignLimits(
-                            CommonFunctions.ExpressionToInt(charNode["strmin"]?.InnerText, intValue, intMinModifier),
-                            CommonFunctions.ExpressionToInt(charNode["strmax"]?.InnerText, intValue, intMaxModifier),
-                            CommonFunctions.ExpressionToInt(charNode["straug"]?.InnerText, intValue, intMaxModifier));
+                            CommonFunctions.ExpressionToInt(charNode["strmin"]?.InnerText, intValue, intMinModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["strmax"]?.InnerText, intValue, intMaxModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["straug"]?.InnerText, intValue, intMaxModifier, token: token));
                         _objCharacter.CHA.AssignLimits(
-                            CommonFunctions.ExpressionToInt(charNode["chamin"]?.InnerText, intValue, intMinModifier),
-                            CommonFunctions.ExpressionToInt(charNode["chamax"]?.InnerText, intValue, intMaxModifier),
-                            CommonFunctions.ExpressionToInt(charNode["chaaug"]?.InnerText, intValue, intMaxModifier));
+                            CommonFunctions.ExpressionToInt(charNode["chamin"]?.InnerText, intValue, intMinModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["chamax"]?.InnerText, intValue, intMaxModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["chaaug"]?.InnerText, intValue, intMaxModifier, token: token));
                         _objCharacter.INT.AssignLimits(
-                            CommonFunctions.ExpressionToInt(charNode["intmin"]?.InnerText, intValue, intMinModifier),
-                            CommonFunctions.ExpressionToInt(charNode["intmax"]?.InnerText, intValue, intMaxModifier),
-                            CommonFunctions.ExpressionToInt(charNode["intaug"]?.InnerText, intValue, intMaxModifier));
+                            CommonFunctions.ExpressionToInt(charNode["intmin"]?.InnerText, intValue, intMinModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["intmax"]?.InnerText, intValue, intMaxModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["intaug"]?.InnerText, intValue, intMaxModifier, token: token));
                         _objCharacter.LOG.AssignLimits(
-                            CommonFunctions.ExpressionToInt(charNode["logmin"]?.InnerText, intValue, intMinModifier),
-                            CommonFunctions.ExpressionToInt(charNode["logmax"]?.InnerText, intValue, intMaxModifier),
-                            CommonFunctions.ExpressionToInt(charNode["logaug"]?.InnerText, intValue, intMaxModifier));
+                            CommonFunctions.ExpressionToInt(charNode["logmin"]?.InnerText, intValue, intMinModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["logmax"]?.InnerText, intValue, intMaxModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["logaug"]?.InnerText, intValue, intMaxModifier, token: token));
                         _objCharacter.WIL.AssignLimits(
-                            CommonFunctions.ExpressionToInt(charNode["wilmin"]?.InnerText, intValue, intMinModifier),
-                            CommonFunctions.ExpressionToInt(charNode["wilmax"]?.InnerText, intValue, intMaxModifier),
-                            CommonFunctions.ExpressionToInt(charNode["wilaug"]?.InnerText, intValue, intMaxModifier));
+                            CommonFunctions.ExpressionToInt(charNode["wilmin"]?.InnerText, intValue, intMinModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["wilmax"]?.InnerText, intValue, intMaxModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["wilaug"]?.InnerText, intValue, intMaxModifier, token: token));
                         _objCharacter.MAG.AssignLimits(
-                            CommonFunctions.ExpressionToInt(charNode["magmin"]?.InnerText, intValue, intMinModifier),
-                            CommonFunctions.ExpressionToInt(charNode["magmax"]?.InnerText, intValue, intMaxModifier),
-                            CommonFunctions.ExpressionToInt(charNode["magaug"]?.InnerText, intValue, intMaxModifier));
+                            CommonFunctions.ExpressionToInt(charNode["magmin"]?.InnerText, intValue, intMinModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["magmax"]?.InnerText, intValue, intMaxModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["magaug"]?.InnerText, intValue, intMaxModifier, token: token));
                         _objCharacter.RES.AssignLimits(
-                            CommonFunctions.ExpressionToInt(charNode["resmin"]?.InnerText, intValue, intMinModifier),
-                            CommonFunctions.ExpressionToInt(charNode["resmax"]?.InnerText, intValue, intMaxModifier),
-                            CommonFunctions.ExpressionToInt(charNode["resaug"]?.InnerText, intValue, intMaxModifier));
+                            CommonFunctions.ExpressionToInt(charNode["resmin"]?.InnerText, intValue, intMinModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["resmax"]?.InnerText, intValue, intMaxModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["resaug"]?.InnerText, intValue, intMaxModifier, token: token));
                         _objCharacter.EDG.AssignLimits(
-                            CommonFunctions.ExpressionToInt(charNode["edgmin"]?.InnerText, intValue, intMinModifier),
-                            CommonFunctions.ExpressionToInt(charNode["edgmax"]?.InnerText, intValue, intMaxModifier),
-                            CommonFunctions.ExpressionToInt(charNode["edgaug"]?.InnerText, intValue, intMaxModifier));
+                            CommonFunctions.ExpressionToInt(charNode["edgmin"]?.InnerText, intValue, intMinModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["edgmax"]?.InnerText, intValue, intMaxModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["edgaug"]?.InnerText, intValue, intMaxModifier, token: token));
                         _objCharacter.DEP.AssignLimits(
-                            CommonFunctions.ExpressionToInt(charNode["depmin"]?.InnerText, intValue, intMinModifier),
-                            CommonFunctions.ExpressionToInt(charNode["depmax"]?.InnerText, intValue, intMaxModifier),
-                            CommonFunctions.ExpressionToInt(charNode["depaug"]?.InnerText, intValue, intMaxModifier));
+                            CommonFunctions.ExpressionToInt(charNode["depmin"]?.InnerText, intValue, intMinModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["depmax"]?.InnerText, intValue, intMaxModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["depaug"]?.InnerText, intValue, intMaxModifier, token: token));
                         _objCharacter.MAGAdept.AssignLimits(
-                            CommonFunctions.ExpressionToInt(charNode["magmin"]?.InnerText, intValue, intMinModifier),
-                            CommonFunctions.ExpressionToInt(charNode["magmax"]?.InnerText, intValue, intMaxModifier),
-                            CommonFunctions.ExpressionToInt(charNode["magaug"]?.InnerText, intValue, intMaxModifier));
+                            CommonFunctions.ExpressionToInt(charNode["magmin"]?.InnerText, intValue, intMinModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["magmax"]?.InnerText, intValue, intMaxModifier, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["magaug"]?.InnerText, intValue, intMaxModifier, token: token));
                         _objCharacter.ESS.AssignLimits(
-                            CommonFunctions.ExpressionToInt(charNode["essmin"]?.InnerText, intValue),
-                            CommonFunctions.ExpressionToInt(charNode["essmax"]?.InnerText, intValue),
-                            CommonFunctions.ExpressionToInt(charNode["essaug"]?.InnerText, intValue));
+                            CommonFunctions.ExpressionToInt(charNode["essmin"]?.InnerText, intValue, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["essmax"]?.InnerText, intValue, token: token),
+                            CommonFunctions.ExpressionToInt(charNode["essaug"]?.InnerText, intValue, token: token));
 
                         _objCharacter.BOD.Base = Math.Min(intOldBODBase, _objCharacter.BOD.PriorityMaximum);
                         _objCharacter.BOD.Karma = Math.Min(intOldBODKarma, _objCharacter.BOD.KarmaMaximum);
@@ -642,8 +642,8 @@ namespace Chummer.Backend.Attributes
                             _objCharacter.DEP.Karma = Math.Min(intOldDEPKarma, _objCharacter.DEP.KarmaMaximum);
                         }
 
-                        InitializeAttributesList();
-                        ResetBindings();
+                        InitializeAttributesList(token);
+                        ResetBindings(token);
 
                         //Timekeeper.Finish("create_char_attrib");
                     }
@@ -726,8 +726,8 @@ namespace Chummer.Backend.Attributes
                                                                        CharacterAttrib.AttributeCategory.Special);
                                     if (blnSync)
                                     {
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        objAttribute = RemakeAttribute(objAttribute, xmlCharNode);
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        objAttribute = RemakeAttribute(objAttribute, xmlCharNode, token);
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         SpecialAttributeList.Add(objAttribute);
                                     }
@@ -744,8 +744,8 @@ namespace Chummer.Backend.Attributes
                                                                        CharacterAttrib.AttributeCategory.Standard);
                                     if (blnSync)
                                     {
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        objAttribute = RemakeAttribute(objAttribute, xmlCharNode);
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        objAttribute = RemakeAttribute(objAttribute, xmlCharNode, token);
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         AttributeList.Add(objAttribute);
                                     }
@@ -763,8 +763,8 @@ namespace Chummer.Backend.Attributes
                             objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                                                CharacterAttrib.AttributeCategory.Shapeshifter);
                             objAttribute = blnSync
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                ? RemakeAttribute(objAttribute, xmlCharNodeAnimalForm)
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? RemakeAttribute(objAttribute, xmlCharNodeAnimalForm, token)
                                 : await RemakeAttributeAsync(objAttribute, xmlCharNodeAnimalForm, token).ConfigureAwait(false);
                             switch (CharacterAttrib.ConvertToAttributeCategory(objAttribute.Abbrev))
                             {
@@ -819,8 +819,8 @@ namespace Chummer.Backend.Attributes
                     }
 
                     if (blnSync)
-                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                        ResetBindings();
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ResetBindings(token);
                     else
                         await ResetBindingsAsync(token).ConfigureAwait(false);
                 }
@@ -870,14 +870,14 @@ namespace Chummer.Backend.Attributes
                                 case CharacterAttrib.AttributeCategory.Special:
                                     objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                                                        CharacterAttrib.AttributeCategory.Special);
-                                    objAttribute = RemakeAttribute(objAttribute, xmlCharNode);
+                                    objAttribute = RemakeAttribute(objAttribute, xmlCharNode, token);
                                     SpecialAttributeList.Add(objAttribute);
                                     break;
 
                                 case CharacterAttrib.AttributeCategory.Standard:
                                     objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                                                        CharacterAttrib.AttributeCategory.Standard);
-                                    objAttribute = RemakeAttribute(objAttribute, xmlCharNode);
+                                    objAttribute = RemakeAttribute(objAttribute, xmlCharNode, token);
                                     AttributeList.Add(objAttribute);
                                     break;
                             }
@@ -889,7 +889,7 @@ namespace Chummer.Backend.Attributes
                                     case CharacterAttrib.AttributeCategory.Special:
                                         objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                                                            CharacterAttrib.AttributeCategory.Special);
-                                        objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm);
+                                        objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm, token);
                                         SpecialAttributeList.Add(objAttribute);
                                         break;
 
@@ -897,7 +897,7 @@ namespace Chummer.Backend.Attributes
                                         objAttribute = new CharacterAttrib(_objCharacter, strAttribute,
                                                                            CharacterAttrib.AttributeCategory
                                                                                .Shapeshifter);
-                                        objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm);
+                                        objAttribute = RemakeAttribute(objAttribute, xmlCharNodeAnimalForm, token);
                                         AttributeList.Add(objAttribute);
                                         break;
                                 }
@@ -912,11 +912,11 @@ namespace Chummer.Backend.Attributes
                                     "attributes/attribute[@name = " + GetAttributeEnglishName(strAttribute).CleanXPath()
                                                                     +
                                                                     ']');
-                            XPathNavigator xmlAttributeBaseNode = xmlHeroLabAttributeNode?.SelectSingleNodeAndCacheExpression("@base");
+                            XPathNavigator xmlAttributeBaseNode = xmlHeroLabAttributeNode?.SelectSingleNodeAndCacheExpression("@base", token);
                             if (xmlAttributeBaseNode != null &&
                                 int.TryParse(xmlAttributeBaseNode.Value, out int intHeroLabAttributeBaseValue))
                             {
-                                int intAttributeMinimumValue = GetAttributeByName(strAttribute).MetatypeMinimum;
+                                int intAttributeMinimumValue = GetAttributeByName(strAttribute, token).MetatypeMinimum;
                                 if (intHeroLabAttributeBaseValue == intAttributeMinimumValue) continue;
                                 if (objAttribute != null)
                                     objAttribute.Karma = intHeroLabAttributeBaseValue - intAttributeMinimumValue;
@@ -1049,7 +1049,7 @@ namespace Chummer.Backend.Attributes
                             }
                         }
 
-                        ResetBindings();
+                        ResetBindings(token);
                     }
                     finally
                     {
@@ -1060,7 +1060,7 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        private static CharacterAttrib RemakeAttribute(CharacterAttrib objNewAttribute, XPathNavigator objCharacterNode)
+        private static CharacterAttrib RemakeAttribute(CharacterAttrib objNewAttribute, XPathNavigator objCharacterNode, CancellationToken token = default)
         {
             if (objNewAttribute == null)
                 return null;
@@ -1078,7 +1078,7 @@ namespace Chummer.Backend.Attributes
             {
                 (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(
                     objCharacterNode.SelectSingleNode(strAttributeLower + "min")?.Value.Replace("/", " div ")
-                                    .Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1");
+                                    .Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1", token);
                 if (blnIsSuccess)
                     intMinValue = ((double)objProcess).StandardRound();
             }
@@ -1089,7 +1089,7 @@ namespace Chummer.Backend.Attributes
             {
                 (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(
                     objCharacterNode.SelectSingleNode(strAttributeLower + "max")?.Value.Replace("/", " div ")
-                                    .Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1");
+                                    .Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1", token);
                 if (blnIsSuccess)
                     intMaxValue = ((double)objProcess).StandardRound();
             }
@@ -1100,7 +1100,7 @@ namespace Chummer.Backend.Attributes
             {
                 (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(
                     objCharacterNode.SelectSingleNode(strAttributeLower + "aug")?.Value.Replace("/", " div ")
-                                    .Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1");
+                                    .Replace('F', '0').Replace("1D6", "0").Replace("2D6", "0") ?? "1", token);
                 if (blnIsSuccess)
                     intAugValue = ((double)objProcess).StandardRound();
             }
@@ -1109,8 +1109,8 @@ namespace Chummer.Backend.Attributes
             catch (InvalidCastException) { intAugValue = 1; }
 
             objNewAttribute.AssignBaseKarmaLimits(
-                objCharacterNode.SelectSingleNodeAndCacheExpression("base")?.ValueAsInt ?? 0,
-                objCharacterNode.SelectSingleNodeAndCacheExpression("base")?.ValueAsInt ?? 0, intMinValue, intMaxValue,
+                objCharacterNode.SelectSingleNodeAndCacheExpression("base", token)?.ValueAsInt ?? 0,
+                objCharacterNode.SelectSingleNodeAndCacheExpression("base", token)?.ValueAsInt ?? 0, intMinValue, intMaxValue,
                 intAugValue);
             return objNewAttribute;
         }
@@ -1217,9 +1217,9 @@ namespace Chummer.Backend.Attributes
 
         #region Methods
 
-        public CharacterAttrib GetAttributeByName(string abbrev)
+        public CharacterAttrib GetAttributeByName(string abbrev, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 bool blnGetShifterAttribute = _objCharacter.MetatypeCategory == "Shapeshifter" && _objCharacter.Created
                     && AttributeCategory == CharacterAttrib.AttributeCategory.Shapeshifter;
@@ -1740,9 +1740,9 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        internal void Reset(bool blnFirstTime = false)
+        internal void Reset(bool blnFirstTime = false, CancellationToken token = default)
         {
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
                 Interlocked.Increment(ref _intLoading);
                 try
@@ -1751,6 +1751,7 @@ namespace Chummer.Backend.Attributes
                     SpecialAttributeList.Clear();
                     foreach (string strAttribute in AttributeStrings)
                     {
+                        token.ThrowIfCancellationRequested();
                         CharacterAttrib objAttribute;
                         switch (CharacterAttrib.ConvertToAttributeCategory(strAttribute))
                         {
@@ -1770,15 +1771,16 @@ namespace Chummer.Backend.Attributes
 
                     if (blnFirstTime)
                     {
-                        _dicBindings.ForEach(x => x.Value.Dispose());
+                        _dicBindings.ForEach(x => x.Value.Dispose(), token);
                         _dicBindings.Clear();
                         foreach (string strAttributeString in AttributeStrings)
                         {
+                            token.ThrowIfCancellationRequested();
                             _dicBindings.Add(strAttributeString, new BindingSource());
                         }
                     }
 
-                    ResetBindings();
+                    ResetBindings(token);
                 }
                 finally
                 {
@@ -1868,20 +1870,14 @@ namespace Chummer.Backend.Attributes
         /// Reset the databindings for all character attributes.
         /// This method is used to support hot-swapping attributes for shapeshifters.
         /// </summary>
-        public void ResetBindings()
+        public void ResetBindings(CancellationToken token = default)
         {
-            using (_objCharacter.LockObject.EnterWriteLock())
-            using (LockObject.EnterWriteLock())
+            using (_objCharacter.LockObject.EnterWriteLock(token))
+            using (LockObject.EnterWriteLock(token))
             {
-                foreach (KeyValuePair<string, BindingSource> objBindingEntry in _dicBindings)
-                {
-                    objBindingEntry.Value.DataSource = GetAttributeByName(objBindingEntry.Key);
-                }
-                _objCharacter.RefreshAttributeBindings();
-                foreach (KeyValuePair<string, BindingSource> objBindingEntry in _dicBindings)
-                {
-                    objBindingEntry.Value.ResetBindings(false);
-                }
+                _dicBindings.ForEach(objBindingEntry => objBindingEntry.Value.DataSource = GetAttributeByName(objBindingEntry.Key, token), token);
+                _objCharacter.RefreshAttributeBindings(token);
+                _dicBindings.ForEach(objBindingEntry => objBindingEntry.Value.ResetBindings(false), token);
             }
         }
 

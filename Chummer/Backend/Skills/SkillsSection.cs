@@ -404,13 +404,13 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        internal IEnumerable<Skill> GetActiveSkillsFromData(FilterOption eFilterOption, bool blnDeleteSkillsFromBackupIfFound = false, string strName = "")
+        internal IEnumerable<Skill> GetActiveSkillsFromData(FilterOption eFilterOption, bool blnDeleteSkillsFromBackupIfFound = false, string strName = "", CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
-                XmlDocument xmlSkillsDocument = _objCharacter.LoadData("skills.xml");
+                XmlDocument xmlSkillsDocument = _objCharacter.LoadData("skills.xml", token: token);
                 using (XmlNodeList xmlSkillList = xmlSkillsDocument
-                           .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and (" + _objCharacter.Settings.BookXPath()
+                           .SelectNodes("/chummer/skills/skill[not(exotic = 'True') and (" + _objCharacter.Settings.BookXPath(token: token)
                                         + ')'
                                         + SkillFilter(eFilterOption, strName) + ']'))
                 {
@@ -418,9 +418,10 @@ namespace Chummer.Backend.Skills
                     {
                         foreach (XmlNode xmlSkill in xmlSkillList)
                         {
+                            token.ThrowIfCancellationRequested();
                             if (_dicSkillBackups.Count > 0
                                 && xmlSkill.TryGetField("id", Guid.TryParse, out Guid guiSkillId)
-                                && _dicSkillBackups.TryGetValue(guiSkillId, out Skill objSkill)
+                                && _dicSkillBackups.TryGetValue(guiSkillId, out Skill objSkill, token: token)
                                 && objSkill != null)
                             {
                                 if (blnDeleteSkillsFromBackupIfFound)
@@ -445,7 +446,7 @@ namespace Chummer.Backend.Skills
 
         internal async Task<List<Skill>> GetActiveSkillsFromDataAsync(FilterOption eFilterOption, bool blnDeleteSkillsFromBackupIfFound = false, string strName = "", CancellationToken token = default)
         {
-            List<Skill> lstReturn = new List<Skill>();
+            List<Skill> lstReturn;
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
                 XmlDocument xmlSkillsDocument = await _objCharacter.LoadDataAsync("skills.xml", token: token).ConfigureAwait(false);
@@ -454,6 +455,7 @@ namespace Chummer.Backend.Skills
                                         + ')'
                                         + SkillFilter(eFilterOption, strName) + ']'))
                 {
+                    lstReturn = new List<Skill>(xmlSkillList?.Count ?? 0);
                     if (xmlSkillList?.Count > 0)
                     {
                         foreach (XmlNode xmlSkill in xmlSkillList)
@@ -497,25 +499,25 @@ namespace Chummer.Backend.Skills
             return lstReturn;
         }
 
-        internal void AddSkills(FilterOption eFilterOption, string strName = "")
+        internal void AddSkills(FilterOption eFilterOption, string strName = "", CancellationToken token = default)
         {
-            List<Skill> lstSkillsToAdd = GetActiveSkillsFromData(eFilterOption, true, strName).ToList();
-            using (LockObject.EnterWriteLock())
+            List<Skill> lstSkillsToAdd = GetActiveSkillsFromData(eFilterOption, true, strName, token).ToList();
+            using (LockObject.EnterWriteLock(token))
             {
                 foreach (Skill objSkill in lstSkillsToAdd)
                 {
                     Guid guidLoop = objSkill.SkillId;
                     if (guidLoop != Guid.Empty && !objSkill.IsExoticSkill)
                     {
-                        Skill objExistingSkill = Skills.FirstOrDefault(x => x.SkillId == guidLoop);
+                        Skill objExistingSkill = Skills.Find(x => x.SkillId == guidLoop);
                         if (objExistingSkill != null)
                         {
-                            MergeSkills(objExistingSkill, objSkill);
+                            MergeSkills(objExistingSkill, objSkill, token);
                             continue;
                         }
                     }
 
-                    Skills.AddWithSort(objSkill, CompareSkills, MergeSkills);
+                    Skills.AddWithSort(objSkill, CompareSkills, (x, y) => MergeSkills(x, y, token), token);
                 }
             }
         }
@@ -551,20 +553,20 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        internal ExoticSkill AddExoticSkill(string strName, string strSpecific)
+        internal ExoticSkill AddExoticSkill(string strName, string strSpecific, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
-                XmlNode xmlSkillNode = _objCharacter.LoadData("skills.xml")
+                XmlNode xmlSkillNode = _objCharacter.LoadData("skills.xml", token: token)
                                                     .SelectSingleNode(
                                                         "/chummer/skills/skill[name = " + strName.CleanXPath() + ']');
-                using (LockObject.EnterWriteLock())
+                using (LockObject.EnterWriteLock(token))
                 {
                     ExoticSkill objExoticSkill = new ExoticSkill(_objCharacter, xmlSkillNode)
                     {
                         Specific = strSpecific
                     };
-                    Skills.AddWithSort(objExoticSkill, CompareSkills, MergeSkills);
+                    Skills.AddWithSort(objExoticSkill, CompareSkills, (x, y) => MergeSkills(x, y, token), token);
                     return objExoticSkill;
                 }
             }
@@ -595,19 +597,19 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        internal void RemoveSkills(FilterOption eSkillsToRemove, string strName = "", bool blnCreateKnowledge = true)
+        internal void RemoveSkills(FilterOption eSkillsToRemove, string strName = "", bool blnCreateKnowledge = true, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 HashSet<Skill> setSkillsToRemove
-                    = new HashSet<Skill>(GetActiveSkillsFromData(eSkillsToRemove, false, strName));
+                    = new HashSet<Skill>(GetActiveSkillsFromData(eSkillsToRemove, false, strName, token));
                 // Check for duplicates (we'd normally want to make sure the improvement is enabled, but disabled SpecialSkills just force-disables a skill, so we need to keep those)
                 foreach (Improvement objImprovement in _objCharacter.Improvements.Where(
                              x => x.ImproveType == Improvement.ImprovementType.SpecialSkills))
                 {
                     FilterOption eFilterOption
                         = (FilterOption)Enum.Parse(typeof(FilterOption), objImprovement.ImprovedName);
-                    setSkillsToRemove.ExceptWith(GetActiveSkillsFromData(eFilterOption, false, objImprovement.Target));
+                    setSkillsToRemove.ExceptWith(GetActiveSkillsFromData(eFilterOption, false, objImprovement.Target, token));
                 }
 
                 if (setSkillsToRemove.Count == 0)
@@ -618,21 +620,22 @@ namespace Chummer.Backend.Skills
                 {
                     strKnowledgeSkillTypeToUse = new Lazy<string>(() =>
                     {
-                        XPathNavigator xmlCategories = _objCharacter.LoadDataXPath("skills.xml")
+                        XPathNavigator xmlCategories = _objCharacter.LoadDataXPath("skills.xml", token: token)
                                                                     .SelectSingleNodeAndCacheExpression(
-                                                                        "/chummer/categories");
-                        if (xmlCategories.SelectSingleNodeAndCacheExpression("category[@type = \"knowledge\" and . = \"Professional\"]")
+                                                                        "/chummer/categories", token);
+                        if (xmlCategories.SelectSingleNodeAndCacheExpression("category[@type = \"knowledge\" and . = \"Professional\"]", token)
                             != null)
                             return "Professional";
-                        return xmlCategories.SelectSingleNodeAndCacheExpression("category[@type = \"knowledge\"]")?.Value
+                        return xmlCategories.SelectSingleNodeAndCacheExpression("category[@type = \"knowledge\"]", token)?.Value
                                ?? "Professional";
                     });
                 }
 
-                using (LockObject.EnterWriteLock())
+                using (LockObject.EnterWriteLock(token))
                 {
                     for (int i = Skills.Count - 1; i >= 0; --i)
                     {
+                        token.ThrowIfCancellationRequested();
                         Skill objSkill = Skills[i];
                         if (!setSkillsToRemove.Contains(objSkill))
                             continue;
@@ -663,7 +666,7 @@ namespace Chummer.Backend.Skills
                                     default:
                                         return 1;
                                 }
-                            }, MergeSkills);
+                            }, (x, y) => MergeSkills(x, y, token), token: token);
                         }
                     }
 
@@ -672,6 +675,7 @@ namespace Chummer.Backend.Skills
                         // zero out any skill groups whose skills did not make the final cut
                         foreach (SkillGroup objSkillGroup in SkillGroups)
                         {
+                            token.ThrowIfCancellationRequested();
                             if (!objSkillGroup.SkillList.Any(x => _dicSkills.ContainsKey(x.DictionaryKey)))
                             {
                                 objSkillGroup.Base = 0;
@@ -834,7 +838,7 @@ namespace Chummer.Backend.Skills
                                             if (objGroup == null)
                                             {
                                                 objGroup = new SkillGroup(_objCharacter, strName);
-                                                objGroup.Load(xmlNode);
+                                                objGroup.Load(xmlNode, token: token);
                                                 if (blnSync)
                                                 {
                                                     SkillGroups.AddWithSort(objGroup, CompareSkillGroups,
@@ -848,7 +852,7 @@ namespace Chummer.Backend.Skills
                                                                                                 .SkillList.Contains(x)))
                                                                                     objExistingSkillGroup.Add(x);
                                                                                 objNewSkillGroup.Dispose();
-                                                                            });
+                                                                            }, token);
                                                 }
                                                 else
                                                 {
@@ -866,7 +870,7 @@ namespace Chummer.Backend.Skills
                                                 }
                                             }
                                             else
-                                                objGroup.Load(xmlNode);
+                                                objGroup.Load(xmlNode, token: token);
                                         }
                                     }
                                 }
@@ -910,7 +914,7 @@ namespace Chummer.Backend.Skills
                                     {
                                         foreach (Skill objSkill in lstNewSkills)
                                         {
-                                            Skills.AddWithSort(objSkill, CompareSkills, MergeSkills);
+                                            Skills.AddWithSort(objSkill, CompareSkills, (x, y) => MergeSkills(x, y, token), token);
                                         }
                                     }
                                     else
@@ -1113,8 +1117,8 @@ namespace Chummer.Backend.Skills
                                         if (objExistingSkill != null)
                                         {
                                             if (blnSync)
-                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                MergeSkills(objExistingSkill, objSkill);
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                MergeSkills(objExistingSkill, objSkill, token);
                                             else
                                                 await MergeSkillsAsync(objExistingSkill, objSkill, token)
                                                     .ConfigureAwait(false);
@@ -1148,16 +1152,16 @@ namespace Chummer.Backend.Skills
                             foreach (XPathNavigator node in skillsDocXPath.Select(
                                          "/chummer/skills/skill[not(exotic = 'True') and ("
                                          + (blnSync
-                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                             ? _objCharacter.Settings.BookXPath()
+                                             // ReSharper disable once MethodHasAsyncOverload
+                                             ? _objCharacter.Settings.BookXPath(token: token)
                                              : await _objCharacter.Settings.BookXPathAsync(token: token)
                                                                   .ConfigureAwait(false)) + ')'
                                          + SkillFilter(FilterOption.NonSpecial) + ']'))
                             {
                                 string strName
                                     = (blnSync
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        ? node.SelectSingleNodeAndCacheExpression("name")
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        ? node.SelectSingleNodeAndCacheExpression("name", token)
                                         : await node.SelectSingleNodeAndCacheExpressionAsync("name", token)
                                                     .ConfigureAwait(false))?.Value;
                                 if (!string.IsNullOrEmpty(strName))
@@ -1298,19 +1302,19 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        internal void LoadFromHeroLab(XPathNavigator xmlSkillNode, CustomActivity parentActivity)
+        internal void LoadFromHeroLab(XPathNavigator xmlSkillNode, CustomActivity parentActivity, CancellationToken token = default)
         {
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
                 Interlocked.Increment(ref _intLoading);
                 try
                 {
                     using (_ = Timekeeper.StartSyncron("load_char_skills_groups", parentActivity))
                     {
-                        foreach (XPathNavigator xmlNode in xmlSkillNode.SelectAndCacheExpression("groups/skill"))
+                        foreach (XPathNavigator xmlNode in xmlSkillNode.SelectAndCacheExpression("groups/skill", token))
                         {
                             SkillGroup objGroup = new SkillGroup(_objCharacter);
-                            objGroup.LoadFromHeroLab(xmlNode);
+                            objGroup.LoadFromHeroLab(xmlNode, token: token);
                             SkillGroups.AddWithSort(objGroup, CompareSkillGroups,
                                                     (objExistingSkillGroup, objNewSkillGroup) =>
                                                     {
@@ -1319,7 +1323,7 @@ namespace Chummer.Backend.Skills
                                                                                 .SkillList.Contains(x)))
                                                             objExistingSkillGroup.Add(x);
                                                         objNewSkillGroup.Dispose();
-                                                    });
+                                                    }, token);
                         }
 
                         //Timekeeper.Finish("load_char_skills_groups");
@@ -1328,23 +1332,23 @@ namespace Chummer.Backend.Skills
                     using (_ = Timekeeper.StartSyncron("load_char_skills", parentActivity))
                     {
                         List<Skill> lstTempSkillList = new List<Skill>(Skills.Count);
-                        foreach (XPathNavigator xmlNode in xmlSkillNode.SelectAndCacheExpression("active/skill"))
+                        foreach (XPathNavigator xmlNode in xmlSkillNode.SelectAndCacheExpression("active/skill", token))
                         {
-                            Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, false);
+                            Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, false, token: token);
                             if (objSkill != null)
                                 lstTempSkillList.Add(objSkill);
                         }
 
-                        foreach (XPathNavigator xmlNode in xmlSkillNode.SelectAndCacheExpression("knowledge/skill"))
+                        foreach (XPathNavigator xmlNode in xmlSkillNode.SelectAndCacheExpression("knowledge/skill", token))
                         {
-                            Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, true);
+                            Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, true, token: token);
                             if (objSkill != null)
                                 lstTempSkillList.Add(objSkill);
                         }
 
-                        foreach (XPathNavigator xmlNode in xmlSkillNode.SelectAndCacheExpression("language/skill"))
+                        foreach (XPathNavigator xmlNode in xmlSkillNode.SelectAndCacheExpression("language/skill", token))
                         {
-                            Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, true, "Language");
+                            Skill objSkill = Skill.LoadFromHeroLab(_objCharacter, xmlNode, true, "Language", token: token);
                             if (objSkill != null)
                                 lstTempSkillList.Add(objSkill);
                         }
@@ -1366,6 +1370,7 @@ namespace Chummer.Backend.Skills
 
                         foreach (Skill objSkill in lstTempSkillList)
                         {
+                            token.ThrowIfCancellationRequested();
                             if (objSkill is KnowledgeSkill objKnoSkill)
                             {
                                 KnowledgeSkills.Add(objKnoSkill);
@@ -1380,17 +1385,18 @@ namespace Chummer.Backend.Skills
 
                         foreach (Skill objSkill in lstUnsortedSkills)
                         {
+                            token.ThrowIfCancellationRequested();
                             if (objSkill.SkillId != Guid.Empty && !objSkill.IsExoticSkill)
                             {
                                 Skill objExistingSkill = Skills.FirstOrDefault(x => x.SkillId == objSkill.SkillId);
                                 if (objExistingSkill != null)
                                 {
-                                    MergeSkills(objExistingSkill, objSkill);
+                                    MergeSkills(objExistingSkill, objSkill, token);
                                     continue;
                                 }
                             }
 
-                            Skills.AddWithSort(objSkill, CompareSkills, MergeSkills);
+                            Skills.AddWithSort(objSkill, CompareSkills, (x, y) => MergeSkills(x, y, token), token);
                         }
 
                         //This might give subtle bugs in the future,
@@ -1404,6 +1410,7 @@ namespace Chummer.Backend.Skills
                             // zero out any skillgroups whose skills did not make the final cut
                             foreach (SkillGroup objSkillGroup in SkillGroups)
                             {
+                                token.ThrowIfCancellationRequested();
                                 if (!objSkillGroup.SkillList.Any(x => _dicSkills.ContainsKey(x.DictionaryKey)))
                                 {
                                     objSkillGroup.Base = 0;
@@ -1479,7 +1486,7 @@ namespace Chummer.Backend.Skills
 
                             // Allocate Knowledge Skill Points
                             int intKnowledgeSkillPointCount = KnowledgeSkillPoints;
-                            Skill objKnowledgeSkillToPutPointsInto;
+                            KnowledgeSkill objKnowledgeSkillToPutPointsInto;
 
                             // First loop through skills where costs can be 100% covered with points
                             do
@@ -1743,22 +1750,22 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        internal void Reset(bool blnFirstTime = false)
+        internal void Reset(bool blnFirstTime = false, CancellationToken token = default)
         {
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
                 Interlocked.Increment(ref _intLoading);
                 try
                 {
-                    _dicSkillBackups.ForEach(x => x.Value.Remove());
-                    _lstSkills.ForEach(x => x.Remove());
+                    _dicSkillBackups.ForEach(x => x.Value.Remove(), token);
+                    _lstSkills.ForEach(x => x.Remove(), token);
                     KnowledgeSkills.ForEach(x =>
                     {
-                        using (x.LockObject.EnterWriteLock())
+                        using (x.LockObject.EnterWriteLock(token))
                             x.PropertyChanged -= OnKnowledgeSkillPropertyChanged;
                         x.Remove();
-                    });
-                    SkillGroups.ForEach(x => x.Dispose());
+                    }, token);
+                    SkillGroups.ForEach(x => x.Dispose(), token);
                     _dicSkillBackups.Clear();
                     _dicSkills.Clear();
                     _lstSkills.Clear();
@@ -1882,7 +1889,7 @@ namespace Chummer.Backend.Skills
                                                 }
                                             }
 
-                                            _lstSkills.AddWithSort(objSkill, CompareSkills, MergeSkills);
+                                            _lstSkills.AddWithSort(objSkill, CompareSkills, (x, y) => MergeSkills(x, y));
                                         }
                                     }
                                 }
@@ -2000,12 +2007,12 @@ namespace Chummer.Backend.Skills
         /// Gets an active skill by its Name. Returns null if none found.
         /// </summary>
         /// <param name="strSkillName">Name of the skill.</param>
-        /// <returns></returns>
-        public Skill GetActiveSkill(string strSkillName)
+        /// <param name="token">CancellationToken to listen to.</param>
+        public Skill GetActiveSkill(string strSkillName, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
-                _dicSkills.TryGetValue(strSkillName, out Skill objReturn);
+                _dicSkills.TryGetValue(strSkillName, out Skill objReturn, token);
                 return objReturn;
             }
         }
@@ -2015,7 +2022,6 @@ namespace Chummer.Backend.Skills
         /// </summary>
         /// <param name="strSkillName">Name of the skill.</param>
         /// <param name="token">CancellationToken to listen to.</param>
-        /// <returns></returns>
         public async ValueTask<Skill> GetActiveSkillAsync(string strSkillName, CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
@@ -2536,10 +2542,10 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        private static void MergeSkills(Skill objExistingSkill, Skill objNewSkill)
+        private static void MergeSkills(Skill objExistingSkill, Skill objNewSkill, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(objNewSkill))
-            using (EnterReadLock.Enter(objExistingSkill))
+            using (EnterReadLock.Enter(objNewSkill, token))
+            using (EnterReadLock.Enter(objExistingSkill, token))
             {
                 objExistingSkill.CopyInternalId(objNewSkill);
                 if (objNewSkill.BasePoints > objExistingSkill.BasePoints)
@@ -2549,7 +2555,7 @@ namespace Chummer.Backend.Skills
                 objExistingSkill.BuyWithKarma = objNewSkill.BuyWithKarma;
                 objExistingSkill.Notes += objNewSkill.Notes;
                 objExistingSkill.NotesColor = objNewSkill.NotesColor;
-                objExistingSkill.Specializations.AddRangeWithSort(objNewSkill.Specializations, CompareSpecializations);
+                objExistingSkill.Specializations.AddRangeWithSort(objNewSkill.Specializations, CompareSpecializations, token: token);
             }
             objNewSkill.Remove();
         }

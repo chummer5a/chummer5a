@@ -4655,9 +4655,10 @@ namespace Chummer
         /// Determine whether or not a given book is in use.
         /// </summary>
         /// <param name="strCode">Book code to search for.</param>
-        public bool BookEnabled(string strCode)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public bool BookEnabled(string strCode, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
                 return _setBooks.Contains(strCode);
         }
 
@@ -4675,18 +4676,18 @@ namespace Chummer
         /// <summary>
         /// XPath query used to filter items based on the user's selected source books and optional rules.
         /// </summary>
-        public string BookXPath(bool excludeHidden = true)
+        public string BookXPath(bool excludeHidden = true, CancellationToken token = default)
         {
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdPath))
             {
                 if (excludeHidden)
                     sbdPath.Append("not(hide)");
-                using (EnterReadLock.Enter(LockObject))
+                using (EnterReadLock.Enter(LockObject, token))
                 {
                     if (string.IsNullOrWhiteSpace(_strBookXPath) && _setBooks.Count > 0)
                     {
-                        RecalculateBookXPath();
+                        RecalculateBookXPath(token);
                     }
 
                     if (!string.IsNullOrEmpty(_strBookXPath))
@@ -4736,6 +4737,8 @@ namespace Chummer
                         await RecalculateBookXPathAsync(token).ConfigureAwait(false);
                     }
 
+                    token.ThrowIfCancellationRequested();
+
                     if (!string.IsNullOrEmpty(_strBookXPath))
                     {
                         if (sbdPath.Length != 0)
@@ -4769,9 +4772,9 @@ namespace Chummer
         /// <summary>
         /// XPath query used to filter items based on the user's selected source books.
         /// </summary>
-        public void RecalculateBookXPath()
+        public void RecalculateBookXPath(CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 _strBookXPath = string.Empty;
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
@@ -4780,6 +4783,7 @@ namespace Chummer
                     sbdBookXPath.Append('(');
                     foreach (string strBook in _setBooks)
                     {
+                        token.ThrowIfCancellationRequested();
                         if (!string.IsNullOrWhiteSpace(strBook))
                         {
                             sbdBookXPath.Append("source = ").Append(strBook.CleanXPath()).Append(" or ");
@@ -4810,6 +4814,7 @@ namespace Chummer
                     sbdBookXPath.Append('(');
                     foreach (string strBook in _setBooks)
                     {
+                        token.ThrowIfCancellationRequested();
                         if (!string.IsNullOrWhiteSpace(strBook))
                         {
                             sbdBookXPath.Append("source = ").Append(strBook.CleanXPath()).Append(" or ");

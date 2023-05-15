@@ -613,13 +613,14 @@ namespace Chummer.Backend.Skills
             return objSkill;
         }
 
-        public static Skill LoadFromHeroLab(Character objCharacter, XPathNavigator xmlSkillNode, bool blnIsKnowledgeSkill, string strSkillType = "")
+        public static Skill LoadFromHeroLab(Character objCharacter, XPathNavigator xmlSkillNode, bool blnIsKnowledgeSkill, string strSkillType = "", CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (xmlSkillNode == null)
                 throw new ArgumentNullException(nameof(xmlSkillNode));
-            string strName = xmlSkillNode.SelectSingleNodeAndCacheExpression("@name")?.Value ?? string.Empty;
+            string strName = xmlSkillNode.SelectSingleNodeAndCacheExpression("@name", token)?.Value ?? string.Empty;
 
-            XmlNode xmlSkillDataNode = objCharacter.LoadData("skills.xml")
+            XmlNode xmlSkillDataNode = objCharacter.LoadData("skills.xml", token: token)
                 .SelectSingleNode((blnIsKnowledgeSkill
                     ? "/chummer/knowledgeskills/skill[name = "
                     : "/chummer/skills/skill[name = ") + strName.CleanXPath() + ']');
@@ -628,9 +629,9 @@ namespace Chummer.Backend.Skills
 
             bool blnIsNativeLanguage = false;
             int intKarmaRating = 0;
-            if (xmlSkillNode.SelectSingleNodeAndCacheExpression("@text")?.Value == "N")
+            if (xmlSkillNode.SelectSingleNodeAndCacheExpression("@text", token)?.Value == "N")
                 blnIsNativeLanguage = true;
-            else if (!int.TryParse(xmlSkillNode.SelectSingleNodeAndCacheExpression("@base")?.Value, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intKarmaRating)) // Only reading karma rating out for now, any base rating will need modification within SkillsSection
+            else if (!int.TryParse(xmlSkillNode.SelectSingleNodeAndCacheExpression("@base", token)?.Value, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intKarmaRating)) // Only reading karma rating out for now, any base rating will need modification within SkillsSection
                 intKarmaRating = 0;
 
             Skill objSkill;
@@ -647,7 +648,7 @@ namespace Chummer.Backend.Skills
             else
             {
                 objSkill = FromData(xmlSkillDataNode, objCharacter, false);
-                if (xmlSkillNode.SelectSingleNodeAndCacheExpression("@fromgroup")?.Value == "yes")
+                if (xmlSkillNode.SelectSingleNodeAndCacheExpression("@fromgroup", token)?.Value == "yes")
                 {
                     intKarmaRating -= objSkill.SkillGroupObject.Karma;
                 }
@@ -655,7 +656,7 @@ namespace Chummer.Backend.Skills
 
                 if (objSkill is ExoticSkill objExoticSkill)
                 {
-                    string strSpecializationName = xmlSkillNode.SelectSingleNodeAndCacheExpression("specialization/@bonustext")?.Value ?? string.Empty;
+                    string strSpecializationName = xmlSkillNode.SelectSingleNodeAndCacheExpression("specialization/@bonustext", token)?.Value ?? string.Empty;
                     if (!string.IsNullOrEmpty(strSpecializationName))
                     {
                         int intLastPlus = strSpecializationName.LastIndexOf('+');
@@ -670,9 +671,9 @@ namespace Chummer.Backend.Skills
 
             objSkill.SkillId = suid;
 
-            foreach (XPathNavigator xmlSpecializationNode in xmlSkillNode.SelectAndCacheExpression("specialization"))
+            foreach (XPathNavigator xmlSpecializationNode in xmlSkillNode.SelectAndCacheExpression("specialization", token))
             {
-                string strSpecializationName = xmlSpecializationNode.SelectSingleNodeAndCacheExpression("@bonustext")?.Value;
+                string strSpecializationName = xmlSpecializationNode.SelectSingleNodeAndCacheExpression("@bonustext", token)?.Value;
                 if (string.IsNullOrEmpty(strSpecializationName))
                     continue;
                 int intLastPlus = strSpecializationName.LastIndexOf('+');

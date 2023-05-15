@@ -1239,11 +1239,11 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        internal void WriteTo(XmlWriter writer)
+        internal void WriteTo(XmlWriter writer, CancellationToken token = default)
         {
             if (writer == null)
                 return;
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 writer.WriteStartElement("group");
 
@@ -1293,11 +1293,11 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public void Load(XmlNode xmlNode)
+        public void Load(XmlNode xmlNode, CancellationToken token = default)
         {
             if (xmlNode == null)
                 return;
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
                 if (xmlNode.TryGetField("id", Guid.TryParse, out Guid g) && g != Guid.Empty)
                     _guidId = g;
@@ -1308,16 +1308,16 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public void LoadFromHeroLab(XPathNavigator xmlNode)
+        public void LoadFromHeroLab(XPathNavigator xmlNode, CancellationToken token = default)
         {
             if (xmlNode == null)
                 return;
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
-                string strTemp = xmlNode.SelectSingleNodeAndCacheExpression("@name")?.Value;
+                string strTemp = xmlNode.SelectSingleNodeAndCacheExpression("@name", token)?.Value;
                 if (!string.IsNullOrEmpty(strTemp))
                     _strGroupName = strTemp.TrimEndOnce("Group").Trim();
-                strTemp = xmlNode.SelectSingleNodeAndCacheExpression("@base")?.Value;
+                strTemp = xmlNode.SelectSingleNodeAndCacheExpression("@base", token)?.Value;
                 if (!string.IsNullOrEmpty(strTemp) && int.TryParse(strTemp, out int intTemp))
                     _intSkillFromKarma = intTemp;
             }

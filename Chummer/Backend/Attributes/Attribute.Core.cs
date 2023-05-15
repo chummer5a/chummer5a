@@ -2997,11 +2997,19 @@ namespace Chummer.Backend.Attributes
                                 --intBurnedEdge;
                                 if (intBurnedEdge > 0)
                                 {
-                                    await ImprovementManager.CreateImprovementAsync(_objCharacter, "EDG",
-                                        Improvement.ImprovementSource.BurnedEdge,
-                                        string.Empty,
-                                        Improvement.ImprovementType.Attribute,
-                                        string.Empty, 0, 1, -intBurnedEdge, token: token).ConfigureAwait(false);
+                                    try
+                                    {
+                                        await ImprovementManager.CreateImprovementAsync(_objCharacter, "EDG",
+                                            Improvement.ImprovementSource.BurnedEdge,
+                                            string.Empty,
+                                            Improvement.ImprovementType.Attribute,
+                                            string.Empty, 0, 1, -intBurnedEdge, token: token).ConfigureAwait(false);
+                                    }
+                                    catch
+                                    {
+                                        await ImprovementManager.RollbackAsync(_objCharacter, CancellationToken.None).ConfigureAwait(false);
+                                        throw;
+                                    }
                                     ImprovementManager.Commit(_objCharacter);
                                 }
 
@@ -3046,9 +3054,21 @@ namespace Chummer.Backend.Attributes
                             .Sum(x => x.ImproveSource == Improvement.ImprovementSource.BurnedEdge,
                                 x => x.Minimum * x.Rating, token: token) + 1;
                         await ImprovementManager.RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.BurnedEdge, token: token).ConfigureAwait(false);
-                        await ImprovementManager.CreateImprovementAsync(_objCharacter, "EDG",
-                            Improvement.ImprovementSource.BurnedEdge,
-                            string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, -intBurnedEdge, token: token).ConfigureAwait(false);
+                        try
+                        {
+                            await ImprovementManager.CreateImprovementAsync(_objCharacter, "EDG",
+                                                                            Improvement.ImprovementSource.BurnedEdge,
+                                                                            string.Empty,
+                                                                            Improvement.ImprovementType.Attribute,
+                                                                            string.Empty, 0, 1, -intBurnedEdge,
+                                                                            token: token).ConfigureAwait(false);
+                        }
+                        catch
+                        {
+                            await ImprovementManager.RollbackAsync(_objCharacter, CancellationToken.None).ConfigureAwait(false);
+                            throw;
+                        }
+
                         ImprovementManager.Commit(_objCharacter);
                     }
                     else

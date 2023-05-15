@@ -293,7 +293,7 @@ namespace SevenZip.Compression.LZMA
                     prices[st + i] = b0 + _midCoder[posState].GetPrice(i - Base.kNumLowLenSymbols);
                 }
                 for (; i < numSymbols; i++)
-                    prices[st + i] = b1 + _highCoder.GetPrice(i - Base.kNumLowLenSymbols - Base.kNumMidLenSymbols);
+                    prices[st + i] = b1 + _highCoder.GetPrice(i - (Base.kNumLowLenSymbols + Base.kNumMidLenSymbols));
             }
         }
 
@@ -1002,7 +1002,7 @@ namespace SevenZip.Compression.LZMA
                                     repMatchPrice + GetRepPrice(repIndex, lenTest, state, posState) +
                                     _isMatch[(state2.Index << Base.kNumPosStatesBitsMax) + posStateNext].GetPrice0() +
                                     _literalEncoder.GetSubCoder(position + lenTest,
-                                                                _matchFinder.GetIndexByte((int)lenTest - 1 - 1))
+                                                                _matchFinder.GetIndexByte((int)lenTest - 2))
                                                    .GetPrice(true,
                                                              _matchFinder.GetIndexByte((int)lenTest - 1
                                                                  - (int)(reps[repIndex] + 1)),
@@ -1089,8 +1089,7 @@ namespace SevenZip.Compression.LZMA
                                                                       (state2.Index << Base.kNumPosStatesBitsMax)
                                                                       + posStateNext].GetPrice0() +
                                                                   _literalEncoder.GetSubCoder(position + lenTest,
-                                                                          _matchFinder.GetIndexByte((int)lenTest - 1
-                                                                              - 1))
+                                                                          _matchFinder.GetIndexByte((int)lenTest - 2))
                                                                       .GetPrice(true,
                                                                           _matchFinder.GetIndexByte(
                                                                               (int)lenTest - (int)(curBack + 1)
@@ -1389,9 +1388,9 @@ namespace SevenZip.Compression.LZMA
 
             unchecked
             {
-                _lenEncoder.SetTableSize(_numFastBytes + 1 - Base.kMatchMinLen);
+                _lenEncoder.SetTableSize(_numFastBytes - (Base.kMatchMinLen - 1));
                 _lenEncoder.UpdateTables((uint)1 << _posStateBits);
-                _repMatchLenEncoder.SetTableSize(_numFastBytes + 1 - Base.kMatchMinLen);
+                _repMatchLenEncoder.SetTableSize(_numFastBytes - (Base.kMatchMinLen - 1));
                 _repMatchLenEncoder.UpdateTables((uint)1 << _posStateBits);
             }
 
@@ -1401,7 +1400,7 @@ namespace SevenZip.Compression.LZMA
         public void Code(Stream inStream, Stream outStream,
                          long inSize, long outSize, ICodeProgress progress)
         {
-            Chummer.Utils.SafelyRunSynchronously(() => CodeCoreAsync(true, inStream, outStream, inSize, outSize, progress, null, CancellationToken.None));
+            Chummer.Utils.SafelyRunSynchronously(() => CodeCoreAsync(true, inStream, outStream, inSize, outSize, progress, null, CancellationToken.None), CancellationToken.None);
         }
 
         public Task CodeAsync(Stream inStream, Stream outStream,
@@ -1479,7 +1478,7 @@ namespace SevenZip.Compression.LZMA
                     for (posSlot = 0; posSlot < _distTableSize; posSlot++)
                         _posSlotPrices[st + posSlot] = encoder.GetPrice(posSlot);
                     for (posSlot = Base.kEndPosModelIndex; posSlot < _distTableSize; posSlot++)
-                        _posSlotPrices[st + posSlot] += ((posSlot >> 1) - 1 - Base.kNumAlignBits)
+                        _posSlotPrices[st + posSlot] += ((posSlot >> 1) - (1 + Base.kNumAlignBits))
                                                         << BitEncoder.kNumBitPriceShiftBits;
 
                     uint st2 = lenToPosState * Base.kNumFullDistances;

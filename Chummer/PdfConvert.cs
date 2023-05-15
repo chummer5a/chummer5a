@@ -134,9 +134,9 @@ namespace Codaxy.WkHtmlToPdf
                 : Path.Combine(programFilesx86Path, @"wkhtmltopdf\bin\wkhtmltopdf.exe");
         }
 
-        public static void ConvertHtmlToPdf(PdfDocument document, PdfOutput output)
+        public static void ConvertHtmlToPdf(PdfDocument document, PdfOutput output, CancellationToken token = default)
         {
-            ConvertHtmlToPdf(document, null, output);
+            ConvertHtmlToPdf(document, null, output, token);
         }
 
         public static void ConvertHtmlToPdf(PdfDocument document, PdfConvertEnvironment environment, PdfOutput woutput,

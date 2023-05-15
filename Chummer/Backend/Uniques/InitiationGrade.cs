@@ -63,8 +63,10 @@ namespace Chummer
         /// <param name="blnGroup">Whether or not a Group was used.</param>
         /// <param name="blnOrdeal">Whether or not an Ordeal was used.</param>
         /// <param name="blnSchooling">Whether or not Schooling was used.</param>
-        public void Create(int intGrade, bool blnTechnomancer, bool blnGroup, bool blnOrdeal, bool blnSchooling)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public void Create(int intGrade, bool blnTechnomancer, bool blnGroup, bool blnOrdeal, bool blnSchooling, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             _intGrade = intGrade;
             _blnTechnomancer = blnTechnomancer;
             _blnGroup = blnGroup;
@@ -75,7 +77,7 @@ namespace Chummer
             //To handle this, we ceiling the CyberwareEssence value up, as a non-zero loss of Essence removes a point of Resonance, and cut the submersion grade in half.
             //Whichever value is lower becomes the value of the improvement.
             if (intGrade > 0 && blnTechnomancer && _objCharacter.RESEnabled && !_objCharacter.Settings.SpecialKarmaCostBasedOnShownValue
-                && ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.CyberadeptDaemon).Count > 0)
+                && ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.CyberadeptDaemon, token: token).Count > 0)
             {
                 decimal decNonCyberwareEssence = _objCharacter.BiowareEssence + _objCharacter.EssenceHole;
                 int intResonanceRecovered = Math.Min(intGrade.DivAwayFromZero(2), (int)(
@@ -87,8 +89,19 @@ namespace Chummer
                     ? Math.Min(intResonanceRecovered, _objCharacter.RES.MaximumNoEssenceLoss() - intGrade - _objCharacter.RES.TotalMaximum)
                     // +1 compared to normal because this Grade's effect has not been processed yet.
                     : Math.Min(intResonanceRecovered, _objCharacter.RES.MaximumNoEssenceLoss() - intGrade + 1 - _objCharacter.RES.Value);
-                ImprovementManager.CreateImprovement(_objCharacter, "RESBase", Improvement.ImprovementSource.CyberadeptDaemon,
-                    InternalId, Improvement.ImprovementType.Attribute, string.Empty, 0, intResonanceRecovered, 0, 1, 1);
+                try
+                {
+                    ImprovementManager.CreateImprovement(_objCharacter, "RESBase",
+                                                         Improvement.ImprovementSource.CyberadeptDaemon,
+                                                         InternalId, Improvement.ImprovementType.Attribute,
+                                                         string.Empty, 0, intResonanceRecovered, 0, 1, 1, token: token);
+                }
+                catch
+                {
+                    ImprovementManager.Rollback(_objCharacter, CancellationToken.None);
+                    throw;
+                }
+
                 ImprovementManager.Commit(_objCharacter);
             }
         }

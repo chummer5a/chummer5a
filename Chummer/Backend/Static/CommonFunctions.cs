@@ -216,10 +216,10 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>A tuple where the first element is if the calculation was successful and the second element is a System.Boolean, System.Double, System.String, or System.Xml.XPath.XPathNodeIterator depending on the result type.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async ValueTask<Tuple<bool, object>> EvaluateInvariantXPathAsync(XPathExpression objXPath, CancellationToken token = default)
+        public static ValueTask<Tuple<bool, object>> EvaluateInvariantXPathAsync(XPathExpression objXPath, CancellationToken token = default)
         {
             string strExpression = objXPath.Expression;
-            return await s_DicCompiledEvaluations.AddOrGetAsync(strExpression, async x =>
+            return s_DicCompiledEvaluations.AddOrGetAsync(strExpression, async x =>
             {
                 bool blnIsSuccess;
                 object objReturn;
@@ -326,8 +326,9 @@ namespace Chummer
         /// </summary>
         /// <param name="strXPathExpression" >XPath Expression to evaluate</param>
         /// <param name="blnIsNullSuccess"   >Should a null or empty result be treated as success?</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool IsCharacterAttributeXPathValidOrNull(string strXPathExpression, bool blnIsNullSuccess = true)
+        public static bool IsCharacterAttributeXPathValidOrNull(string strXPathExpression, bool blnIsNullSuccess = true, CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(strXPathExpression))
                 return blnIsNullSuccess;
@@ -342,7 +343,7 @@ namespace Chummer
 
             if (string.IsNullOrEmpty(strXPathExpression))
                 return true;
-            (bool blnIsSuccess, _) = EvaluateInvariantXPath(strXPathExpression);
+            (bool blnIsSuccess, _) = EvaluateInvariantXPath(strXPathExpression, token);
             return blnIsSuccess;
         }
 
@@ -993,13 +994,14 @@ namespace Chummer
         /// </summary>
         /// <param name="strGuid">InternalId of the Art to find.</param>
         /// <param name="objCharacter">The character to search.</param>
-        public static Enhancement FindEnhancement(this Character objCharacter, string strGuid)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static Enhancement FindEnhancement(this Character objCharacter, string strGuid, CancellationToken token = default)
         {
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
-                using (EnterReadLock.Enter(objCharacter.LockObject))
+                using (EnterReadLock.Enter(objCharacter.LockObject, token))
                 {
                     foreach (Enhancement objEnhancement in objCharacter.Enhancements)
                     {
@@ -1023,13 +1025,14 @@ namespace Chummer
         /// <param name="strAltCode">Book code to search for.</param>
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strLanguage">Language to load.</param>
-        public static string LanguageBookCodeFromAltCode(string strAltCode, string strLanguage = "", Character objCharacter = null)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static string LanguageBookCodeFromAltCode(string strAltCode, string strLanguage = "", Character objCharacter = null, CancellationToken token = default)
         {
             if (string.IsNullOrWhiteSpace(strAltCode))
                 return string.Empty;
             XPathNavigator xmlOriginalCode = objCharacter != null
-                ? objCharacter.LoadDataXPath("books.xml", strLanguage)
-                : XmlManager.LoadXPath("books.xml", null, strLanguage);
+                ? objCharacter.LoadDataXPath("books.xml", strLanguage, token: token)
+                : XmlManager.LoadXPath("books.xml", null, strLanguage, token: token);
             xmlOriginalCode = xmlOriginalCode?.SelectSingleNode("/chummer/books/book[altcode = " + strAltCode.CleanXPath() + "]/code");
             return xmlOriginalCode?.Value ?? strAltCode;
         }
@@ -1058,13 +1061,14 @@ namespace Chummer
         /// <param name="strCode">Book code to search for.</param>
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strLanguage">Language to load.</param>
-        public static string LanguageBookShort(string strCode, string strLanguage = "", Character objCharacter = null)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static string LanguageBookShort(string strCode, string strLanguage = "", Character objCharacter = null, CancellationToken token = default)
         {
             if (string.IsNullOrWhiteSpace(strCode))
                 return string.Empty;
             XPathNavigator xmlAltCode = objCharacter != null
-                ? objCharacter.LoadDataXPath("books.xml", strLanguage)
-                : XmlManager.LoadXPath("books.xml", null, strLanguage);
+                ? objCharacter.LoadDataXPath("books.xml", strLanguage, token: token)
+                : XmlManager.LoadXPath("books.xml", null, strLanguage, token: token);
             xmlAltCode = xmlAltCode?.SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + "]/altcode");
             return xmlAltCode?.Value ?? strCode;
         }
@@ -1093,17 +1097,19 @@ namespace Chummer
         /// <param name="strCode">Book code to search for.</param>
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strLanguage">Language to load.</param>
-        public static string LanguageBookLong(string strCode, string strLanguage = "", Character objCharacter = null)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static string LanguageBookLong(string strCode, string strLanguage = "", Character objCharacter = null, CancellationToken token = default)
         {
             if (string.IsNullOrWhiteSpace(strCode))
                 return string.Empty;
             XPathNavigator xmlBook = objCharacter != null
-                ? objCharacter.LoadDataXPath("books.xml", strLanguage)
-                : XmlManager.LoadXPath("books.xml", null, strLanguage);
+                ? objCharacter.LoadDataXPath("books.xml", strLanguage, token: token)
+                : XmlManager.LoadXPath("books.xml", null, strLanguage, token: token);
             xmlBook = xmlBook?.SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + ']');
             if (xmlBook != null)
             {
-                string strReturn = xmlBook.SelectSingleNodeAndCacheExpression("translate")?.Value ?? xmlBook.SelectSingleNodeAndCacheExpression("name")?.Value;
+                string strReturn = xmlBook.SelectSingleNodeAndCacheExpression("translate", token)?.Value
+                                   ?? xmlBook.SelectSingleNodeAndCacheExpression("name", token)?.Value;
                 if (!string.IsNullOrWhiteSpace(strReturn))
                     return strReturn;
             }
@@ -1140,7 +1146,7 @@ namespace Chummer
         /// <summary>
         /// Fetch the in-book description of a given object.
         /// </summary>
-        public static string GetBookNotes(XmlNode objNode, string strName, string strDisplayName, string strSource, string strPage, string strDisplayPage, Character objCharacter)
+        public static string GetBookNotes(XmlNode objNode, string strName, string strDisplayName, string strSource, string strPage, string strDisplayPage, Character objCharacter, CancellationToken token = default)
         {
             string strEnglishNameOnPage = strName;
             string strNameOnPage = string.Empty;
@@ -1149,9 +1155,9 @@ namespace Chummer
                 !string.IsNullOrEmpty(strNameOnPage))
                 strEnglishNameOnPage = strNameOnPage;
 
-            using (EnterReadLock.Enter(objCharacter.LockObject))
+            using (EnterReadLock.Enter(objCharacter.LockObject, token))
             {
-                string strNotes = GetTextFromPdf(strSource + ' ' + strPage, strEnglishNameOnPage, objCharacter);
+                string strNotes = GetTextFromPdf(strSource + ' ' + strPage, strEnglishNameOnPage, objCharacter, token);
 
                 if (!string.IsNullOrEmpty(strNotes)
                     || GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
@@ -1169,7 +1175,7 @@ namespace Chummer
                     strTranslatedNameOnPage = strNameOnPage;
 
                 return GetTextFromPdf(strSource + ' ' + strDisplayPage,
-                                      strTranslatedNameOnPage, objCharacter);
+                                      strTranslatedNameOnPage, objCharacter, token);
             }
         }
 
@@ -1291,8 +1297,8 @@ namespace Chummer
         /// <param name="intForce">Force value to use.</param>
         /// <param name="intOffset">Dice offset.</param>
         /// <param name="intMinValueFromForce">Minimum value to return if Force is present (greater than 0).</param>
-        /// <returns></returns>
-        public static int ExpressionToInt(string strIn, int intForce = 0, int intOffset = 0, int intMinValueFromForce = 1)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static int ExpressionToInt(string strIn, int intForce = 0, int intOffset = 0, int intMinValueFromForce = 1, CancellationToken token = default)
         {
             if (string.IsNullOrWhiteSpace(strIn))
                 return intOffset;
@@ -1303,7 +1309,7 @@ namespace Chummer
             {
                 (bool blnIsSuccess, object objProcess) = EvaluateInvariantXPath(
                     strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce)
-                         .Replace("2D6", strForce));
+                         .Replace("2D6", strForce), token);
                 if (blnIsSuccess)
                     intValue = ((double)objProcess).StandardRound();
             }
@@ -1380,8 +1386,8 @@ namespace Chummer
         /// <param name="intForce">Force value to use.</param>
         /// <param name="decOffset">Dice offset.</param>
         /// <param name="decMinValueFromForce">Minimum value to return if Force is present (greater than 0).</param>
-        /// <returns></returns>
-        public static decimal ExpressionToDecimal(string strIn, int intForce = 0, decimal decOffset = 0, decimal decMinValueFromForce = 1.0m)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static decimal ExpressionToDecimal(string strIn, int intForce = 0, decimal decOffset = 0, decimal decMinValueFromForce = 1.0m, CancellationToken token = default)
         {
             if (string.IsNullOrWhiteSpace(strIn))
                 return decOffset;
@@ -1392,7 +1398,7 @@ namespace Chummer
             {
                 (bool blnIsSuccess, object objProcess) = EvaluateInvariantXPath(
                     strIn.Replace("/", " div ").Replace("F", strForce).Replace("1D6", strForce)
-                         .Replace("2D6", strForce));
+                         .Replace("2D6", strForce), token);
                 if (blnIsSuccess)
                     decValue = Convert.ToDecimal((double)objProcess);
             }
@@ -1476,10 +1482,10 @@ namespace Chummer
         /// <summary>
         /// Verify that the user wants to delete an item.
         /// </summary>
-        public static bool ConfirmDelete(string strMessage)
+        public static bool ConfirmDelete(string strMessage, CancellationToken token = default)
         {
             return !GlobalSettings.ConfirmDelete ||
-                   Program.ShowScrollableMessageBox(strMessage, LanguageManager.GetString("MessageTitle_Delete"),
+                   Program.ShowScrollableMessageBox(strMessage, LanguageManager.GetString("MessageTitle_Delete", token: token),
                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
         }
 
@@ -1497,10 +1503,10 @@ namespace Chummer
         /// <summary>
         /// Verify that the user wants to spend their Karma and did not accidentally click the button.
         /// </summary>
-        public static bool ConfirmKarmaExpense(string strMessage)
+        public static bool ConfirmKarmaExpense(string strMessage, CancellationToken token = default)
         {
             return !GlobalSettings.ConfirmKarmaExpense ||
-                   Program.ShowScrollableMessageBox(strMessage, LanguageManager.GetString("MessageTitle_ConfirmKarmaExpense"),
+                   Program.ShowScrollableMessageBox(strMessage, LanguageManager.GetString("MessageTitle_ConfirmKarmaExpense", token: token),
                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) == DialogResult.Yes;
         }
 
@@ -1771,10 +1777,10 @@ namespace Chummer
         /// <param name="strSource">Formatted Source to search, ie SR5 70</param>
         /// <param name="strText">String to search for as an opener</param>
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
-        /// <returns></returns>
-        public static string GetTextFromPdf(string strSource, string strText, Character objCharacter = null)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static string GetTextFromPdf(string strSource, string strText, Character objCharacter = null, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => GetTextFromPdfCoreAsync(true, strSource, strText, objCharacter));
+            return Utils.SafelyRunSynchronously(() => GetTextFromPdfCoreAsync(true, strSource, strText, objCharacter, token), token);
         }
 
         /// <summary>
@@ -1784,7 +1790,6 @@ namespace Chummer
         /// <param name="strText">String to search for as an opener</param>
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns></returns>
         public static Task<string> GetTextFromPdfAsync(string strSource, string strText, Character objCharacter = null, CancellationToken token = default)
         {
             return GetTextFromPdfCoreAsync(false, strSource, strText, objCharacter, token);
@@ -1887,8 +1892,8 @@ namespace Chummer
 
             // Revert the sourcebook code to the one from the XML file if necessary.
             string strBook = blnSync
-                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                ? LanguageBookCodeFromAltCode(strTemp[0], string.Empty, objCharacter)
+                // ReSharper disable once MethodHasAsyncOverload
+                ? LanguageBookCodeFromAltCode(strTemp[0], string.Empty, objCharacter, token)
                 : await LanguageBookCodeFromAltCodeAsync(strTemp[0], string.Empty, objCharacter, token).ConfigureAwait(false);
 
             token.ThrowIfCancellationRequested();
@@ -2263,43 +2268,44 @@ namespace Chummer
         /// <param name="strValue">String value to convert.</param>
         /// <param name="blnSingle">Whether to return multiple of the timescale (Hour vs Hours)</param>
         /// <param name="strLanguage">Language to use. If left empty, will use current program language.</param>
-        public static string GetTimescaleString(Timescale strValue, bool blnSingle, string strLanguage = "")
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static string GetTimescaleString(Timescale strValue, bool blnSingle, string strLanguage = "", CancellationToken token = default)
         {
             switch (strValue)
             {
                 case Timescale.Seconds when blnSingle:
-                    return LanguageManager.GetString("String_Second", strLanguage);
+                    return LanguageManager.GetString("String_Second", strLanguage, token: token);
 
                 case Timescale.Seconds:
-                    return LanguageManager.GetString("String_Seconds", strLanguage);
+                    return LanguageManager.GetString("String_Seconds", strLanguage, token: token);
 
                 case Timescale.CombatTurns when blnSingle:
-                    return LanguageManager.GetString("String_CombatTurn", strLanguage);
+                    return LanguageManager.GetString("String_CombatTurn", strLanguage, token: token);
 
                 case Timescale.CombatTurns:
-                    return LanguageManager.GetString("String_CombatTurns", strLanguage);
+                    return LanguageManager.GetString("String_CombatTurns", strLanguage, token: token);
 
                 case Timescale.Minutes when blnSingle:
-                    return LanguageManager.GetString("String_Minute", strLanguage);
+                    return LanguageManager.GetString("String_Minute", strLanguage, token: token);
 
                 case Timescale.Minutes:
-                    return LanguageManager.GetString("String_Minutes", strLanguage);
+                    return LanguageManager.GetString("String_Minutes", strLanguage, token: token);
 
                 case Timescale.Hours when blnSingle:
-                    return LanguageManager.GetString("String_Hour", strLanguage);
+                    return LanguageManager.GetString("String_Hour", strLanguage, token: token);
 
                 case Timescale.Hours:
-                    return LanguageManager.GetString("String_Hours", strLanguage);
+                    return LanguageManager.GetString("String_Hours", strLanguage, token: token);
 
                 case Timescale.Days when blnSingle:
-                    return LanguageManager.GetString("String_Day", strLanguage);
+                    return LanguageManager.GetString("String_Day", strLanguage, token: token);
 
                 case Timescale.Days:
-                    return LanguageManager.GetString("String_Days", strLanguage);
+                    return LanguageManager.GetString("String_Days", strLanguage, token: token);
 
                 case Timescale.Instant:
                 default:
-                    return LanguageManager.GetString("String_Immediate", strLanguage);
+                    return LanguageManager.GetString("String_Immediate", strLanguage, token: token);
             }
         }
 

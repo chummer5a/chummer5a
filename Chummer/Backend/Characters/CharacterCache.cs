@@ -651,8 +651,8 @@ namespace Chummer
                         }
 
                         xmlSourceNode = blnSync
-                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                            ? xmlDoc.CreateNavigator().SelectSingleNodeAndCacheExpression("/character")
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? xmlDoc.CreateNavigator().SelectSingleNodeAndCacheExpression("/character", token)
                             : await xmlDoc.CreateNavigator()
                                           .SelectSingleNodeAndCacheExpressionAsync("/character", token: token)
                                           .ConfigureAwait(false);
@@ -668,23 +668,23 @@ namespace Chummer
                 {
                     if (blnSync)
                     {
-                        // ReSharper disable MethodHasAsyncOverloadWithCancellation
-                        _strDescription = xmlSourceNode.SelectSingleNodeAndCacheExpression("description")?.Value;
-                        _strBuildMethod = xmlSourceNode.SelectSingleNodeAndCacheExpression("buildmethod")?.Value;
-                        _strBackground = xmlSourceNode.SelectSingleNodeAndCacheExpression("background")?.Value;
-                        _strCharacterNotes = xmlSourceNode.SelectSingleNodeAndCacheExpression("notes")?.Value;
-                        _strGameNotes = xmlSourceNode.SelectSingleNodeAndCacheExpression("gamenotes")?.Value;
-                        _strConcept = xmlSourceNode.SelectSingleNodeAndCacheExpression("concept")?.Value;
-                        _strKarma = xmlSourceNode.SelectSingleNodeAndCacheExpression("totalkarma")?.Value;
-                        _strMetatype = xmlSourceNode.SelectSingleNodeAndCacheExpression("metatype")?.Value;
-                        _strMetavariant = xmlSourceNode.SelectSingleNodeAndCacheExpression("metavariant")?.Value;
-                        _strPlayerName = xmlSourceNode.SelectSingleNodeAndCacheExpression("playername")?.Value;
-                        _strCharacterName = xmlSourceNode.SelectSingleNodeAndCacheExpression("name")?.Value;
-                        _strCharacterAlias = xmlSourceNode.SelectSingleNodeAndCacheExpression("alias")?.Value;
-                        _intCreated = (xmlSourceNode.SelectSingleNodeAndCacheExpression("created")?.Value
+                        // ReSharper disable MethodHasAsyncOverload
+                        _strDescription = xmlSourceNode.SelectSingleNodeAndCacheExpression("description", token)?.Value;
+                        _strBuildMethod = xmlSourceNode.SelectSingleNodeAndCacheExpression("buildmethod", token)?.Value;
+                        _strBackground = xmlSourceNode.SelectSingleNodeAndCacheExpression("background", token)?.Value;
+                        _strCharacterNotes = xmlSourceNode.SelectSingleNodeAndCacheExpression("notes", token)?.Value;
+                        _strGameNotes = xmlSourceNode.SelectSingleNodeAndCacheExpression("gamenotes", token)?.Value;
+                        _strConcept = xmlSourceNode.SelectSingleNodeAndCacheExpression("concept", token)?.Value;
+                        _strKarma = xmlSourceNode.SelectSingleNodeAndCacheExpression("totalkarma", token)?.Value;
+                        _strMetatype = xmlSourceNode.SelectSingleNodeAndCacheExpression("metatype", token)?.Value;
+                        _strMetavariant = xmlSourceNode.SelectSingleNodeAndCacheExpression("metavariant", token)?.Value;
+                        _strPlayerName = xmlSourceNode.SelectSingleNodeAndCacheExpression("playername", token)?.Value;
+                        _strCharacterName = xmlSourceNode.SelectSingleNodeAndCacheExpression("name", token)?.Value;
+                        _strCharacterAlias = xmlSourceNode.SelectSingleNodeAndCacheExpression("alias", token)?.Value;
+                        _intCreated = (xmlSourceNode.SelectSingleNodeAndCacheExpression("created", token)?.Value
                                        == bool.TrueString).ToInt32();
-                        _strEssence = xmlSourceNode.SelectSingleNodeAndCacheExpression("totaless")?.Value;
-                        // ReSharper restore MethodHasAsyncOverloadWithCancellation
+                        _strEssence = xmlSourceNode.SelectSingleNodeAndCacheExpression("totaless", token)?.Value;
+                        // ReSharper restore MethodHasAsyncOverload
                     }
                     else
                     {
@@ -734,8 +734,8 @@ namespace Chummer
 
                     string strSettings
                         = (blnSync
-                              // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                              ? xmlSourceNode.SelectSingleNodeAndCacheExpression("settings")
+                              // ReSharper disable once MethodHasAsyncOverload
+                              ? xmlSourceNode.SelectSingleNodeAndCacheExpression("settings", token)
                               : await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("settings", token: token)
                                                    .ConfigureAwait(false))?.Value
                           ?? string.Empty;
@@ -767,16 +767,16 @@ namespace Chummer
 
                     string strMugshotBase64
                         = (blnSync
-                              // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                              ? xmlSourceNode.SelectSingleNodeAndCacheExpression("mugshot")
+                              // ReSharper disable once MethodHasAsyncOverload
+                              ? xmlSourceNode.SelectSingleNodeAndCacheExpression("mugshot", token)
                               : await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("mugshot", token: token)
                                                    .ConfigureAwait(false))?.Value
                           ?? string.Empty;
                     if (string.IsNullOrEmpty(strMugshotBase64))
                     {
                         XPathNavigator xmlMainMugshotIndex = blnSync
-                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                            ? xmlSourceNode.SelectSingleNodeAndCacheExpression("mainmugshotindex")
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? xmlSourceNode.SelectSingleNodeAndCacheExpression("mainmugshotindex", token)
                             : await xmlSourceNode
                                     .SelectSingleNodeAndCacheExpressionAsync("mainmugshotindex", token: token)
                                     .ConfigureAwait(false);
@@ -785,8 +785,8 @@ namespace Chummer
                             intMainMugshotIndex >= 0)
                         {
                             XPathNodeIterator xmlMugshotList = blnSync
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                ? xmlSourceNode.SelectAndCacheExpression("mugshots/mugshot")
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? xmlSourceNode.SelectAndCacheExpression("mugshots/mugshot", token)
                                 : await xmlSourceNode.SelectAndCacheExpressionAsync("mugshots/mugshot", token: token)
                                                      .ConfigureAwait(false);
                             if (xmlMugshotList.Count > intMainMugshotIndex)

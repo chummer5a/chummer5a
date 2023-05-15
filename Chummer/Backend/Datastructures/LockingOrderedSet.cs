@@ -691,41 +691,41 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="List{T}.Sort()" />
-        public void Sort()
+        public void Sort(CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 if (_setData.Comparer is IComparer<T> comparer)
                 {
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.EnterWriteLock(token))
                         _lstOrderedData.Sort(comparer);
                 }
                 else
                 {
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.EnterWriteLock(token))
                         _lstOrderedData.Sort();
                 }
             }
         }
 
         /// <inheritdoc cref="List{T}.Sort(Comparison{T})" />
-        public void Sort(Comparison<T> comparison)
+        public void Sort(Comparison<T> comparison, CancellationToken token = default)
         {
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
                 _lstOrderedData.Sort(comparison);
         }
 
         /// <inheritdoc cref="List{T}.Sort(IComparer{T})" />
-        public void Sort(IComparer<T> comparer)
+        public void Sort(IComparer<T> comparer, CancellationToken token = default)
         {
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
                 _lstOrderedData.Sort(comparer);
         }
 
         /// <inheritdoc cref="List{T}.Sort(int, int, IComparer{T})" />
-        public void Sort(int index, int count, IComparer<T> comparer)
+        public void Sort(int index, int count, IComparer<T> comparer, CancellationToken token = default)
         {
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
                 _lstOrderedData.Sort(index, count, comparer);
         }
 
@@ -804,9 +804,9 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="List{T}.Reverse(int, int)" />
-        public void Reverse(int index, int count)
+        public void Reverse(int index, int count, CancellationToken token = default)
         {
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
                 _lstOrderedData.Reverse(index, count);
         }
 
@@ -824,10 +824,24 @@ namespace Chummer
             }
         }
 
-        /// <inheritdoc cref="List{T}.FindAll" />
-        public List<T> FindAll(Predicate<T> predicate)
+        /// <inheritdoc cref="List{T}.Find" />
+        public T Find(Predicate<T> predicate, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
+                return _lstOrderedData.Find(predicate);
+        }
+
+        /// <inheritdoc cref="List{T}.Find" />
+        public async ValueTask<T> FindAsync(Predicate<T> predicate, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _lstOrderedData.Find(predicate);
+        }
+
+        /// <inheritdoc cref="List{T}.FindAll" />
+        public List<T> FindAll(Predicate<T> predicate, CancellationToken token = default)
+        {
+            using (EnterReadLock.Enter(LockObject, token))
                 return _lstOrderedData.FindAll(predicate);
         }
 

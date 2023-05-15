@@ -607,11 +607,11 @@ namespace Chummer
             }
         }
 
-        public void RefreshAttributeBindings()
+        public void RefreshAttributeBindings(CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
-            using (EnterReadLock.Enter(AttributeSection.LockObject))
-            using (EnterReadLock.Enter(AttributeSection.Attributes.LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
+            using (EnterReadLock.Enter(AttributeSection.LockObject, token))
+            using (EnterReadLock.Enter(AttributeSection.Attributes.LockObject, token))
             {
                 Stack<CharacterAttrib> stkLockedAttribs = new Stack<CharacterAttrib>();
                 try
@@ -619,111 +619,111 @@ namespace Chummer
                     // First remove all existing bindings
                     foreach (CharacterAttrib objAttribute in AttributeSection.Attributes)
                     {
-                        objAttribute.LockObject.EnterReadLock();
+                        objAttribute.LockObject.EnterReadLock(token);
                         stkLockedAttribs.Push(objAttribute);
                         switch (objAttribute.Abbrev)
                         {
                             case "BOD":
-                                using (objAttribute.LockObject.EnterWriteLock())
+                                using (objAttribute.LockObject.EnterWriteLock(token))
                                     objAttribute.PropertyChanged -= RefreshBODDependentProperties;
                                 break;
 
                             case "AGI":
-                                using (objAttribute.LockObject.EnterWriteLock())
+                                using (objAttribute.LockObject.EnterWriteLock(token))
                                     objAttribute.PropertyChanged -= RefreshAGIDependentProperties;
                                 break;
 
                             case "REA":
-                                using (objAttribute.LockObject.EnterWriteLock())
+                                using (objAttribute.LockObject.EnterWriteLock(token))
                                     objAttribute.PropertyChanged -= RefreshREADependentProperties;
                                 break;
 
                             case "STR":
-                                using (objAttribute.LockObject.EnterWriteLock())
+                                using (objAttribute.LockObject.EnterWriteLock(token))
                                     objAttribute.PropertyChanged -= RefreshSTRDependentProperties;
                                 break;
 
                             case "CHA":
-                                using (objAttribute.LockObject.EnterWriteLock())
+                                using (objAttribute.LockObject.EnterWriteLock(token))
                                     objAttribute.PropertyChanged -= RefreshCHADependentProperties;
                                 break;
 
                             case "INT":
-                                using (objAttribute.LockObject.EnterWriteLock())
+                                using (objAttribute.LockObject.EnterWriteLock(token))
                                     objAttribute.PropertyChanged -= RefreshINTDependentProperties;
                                 break;
 
                             case "LOG":
-                                using (objAttribute.LockObject.EnterWriteLock())
+                                using (objAttribute.LockObject.EnterWriteLock(token))
                                     objAttribute.PropertyChanged -= RefreshLOGDependentProperties;
                                 break;
 
                             case "WIL":
-                                using (objAttribute.LockObject.EnterWriteLock())
+                                using (objAttribute.LockObject.EnterWriteLock(token))
                                     objAttribute.PropertyChanged -= RefreshWILDependentProperties;
                                 break;
 
                             case "EDG":
-                                using (objAttribute.LockObject.EnterWriteLock())
+                                using (objAttribute.LockObject.EnterWriteLock(token))
                                     objAttribute.PropertyChanged -= RefreshEDGDependentProperties;
                                 break;
 
                             case "MAG":
-                                using (objAttribute.LockObject.EnterWriteLock())
+                                using (objAttribute.LockObject.EnterWriteLock(token))
                                     objAttribute.PropertyChanged -= RefreshMAGDependentProperties;
                                 break;
 
                             case "MAGAdept":
-                                using (objAttribute.LockObject.EnterWriteLock())
+                                using (objAttribute.LockObject.EnterWriteLock(token))
                                     objAttribute.PropertyChanged -= RefreshMAGAdeptDependentProperties;
                                 break;
 
                             case "RES":
-                                using (objAttribute.LockObject.EnterWriteLock())
+                                using (objAttribute.LockObject.EnterWriteLock(token))
                                     objAttribute.PropertyChanged -= RefreshRESDependentProperties;
                                 break;
 
                             case "DEP":
-                                using (objAttribute.LockObject.EnterWriteLock())
+                                using (objAttribute.LockObject.EnterWriteLock(token))
                                     objAttribute.PropertyChanged -= RefreshDEPDependentProperties;
                                 break;
 
                             case "ESS":
-                                using (objAttribute.LockObject.EnterWriteLock())
+                                using (objAttribute.LockObject.EnterWriteLock(token))
                                     objAttribute.PropertyChanged -= RefreshESSDependentProperties;
                                 break;
                         }
                     }
 
-                    using (BOD.LockObject.EnterWriteLock())
+                    using (BOD.LockObject.EnterWriteLock(token))
                         BOD.PropertyChanged += RefreshBODDependentProperties;
-                    using (AGI.LockObject.EnterWriteLock())
+                    using (AGI.LockObject.EnterWriteLock(token))
                         AGI.PropertyChanged += RefreshAGIDependentProperties;
-                    using (REA.LockObject.EnterWriteLock())
+                    using (REA.LockObject.EnterWriteLock(token))
                         REA.PropertyChanged += RefreshREADependentProperties;
-                    using (STR.LockObject.EnterWriteLock())
+                    using (STR.LockObject.EnterWriteLock(token))
                         STR.PropertyChanged += RefreshSTRDependentProperties;
-                    using (CHA.LockObject.EnterWriteLock())
+                    using (CHA.LockObject.EnterWriteLock(token))
                         CHA.PropertyChanged += RefreshCHADependentProperties;
-                    using (INT.LockObject.EnterWriteLock())
+                    using (INT.LockObject.EnterWriteLock(token))
                         INT.PropertyChanged += RefreshINTDependentProperties;
-                    using (LOG.LockObject.EnterWriteLock())
+                    using (LOG.LockObject.EnterWriteLock(token))
                         LOG.PropertyChanged += RefreshLOGDependentProperties;
-                    using (WIL.LockObject.EnterWriteLock())
+                    using (WIL.LockObject.EnterWriteLock(token))
                         WIL.PropertyChanged += RefreshWILDependentProperties;
-                    using (EDG.LockObject.EnterWriteLock())
+                    using (EDG.LockObject.EnterWriteLock(token))
                         EDG.PropertyChanged += RefreshEDGDependentProperties;
-                    using (MAG.LockObject.EnterWriteLock())
+                    using (MAG.LockObject.EnterWriteLock(token))
                         MAG.PropertyChanged += RefreshMAGDependentProperties;
-                    using (RES.LockObject.EnterWriteLock())
+                    using (RES.LockObject.EnterWriteLock(token))
                         RES.PropertyChanged += RefreshRESDependentProperties;
-                    using (DEP.LockObject.EnterWriteLock())
+                    using (DEP.LockObject.EnterWriteLock(token))
                         DEP.PropertyChanged += RefreshDEPDependentProperties;
-                    using (ESS.LockObject.EnterWriteLock())
+                    using (ESS.LockObject.EnterWriteLock(token))
                         ESS.PropertyChanged += RefreshESSDependentProperties;
                     // This needs to be explicitly set because a MAGAdept call could redirect to MAG, and we don't want that
-                    CharacterAttrib objMagAdept = AttributeSection.GetAttributeByName("MAGAdept");
-                    using (objMagAdept.LockObject.EnterWriteLock())
+                    CharacterAttrib objMagAdept = AttributeSection.GetAttributeByName("MAGAdept", token);
+                    using (objMagAdept.LockObject.EnterWriteLock(token))
                         objMagAdept.PropertyChanged += RefreshMAGAdeptDependentProperties;
                 }
                 finally
@@ -2755,7 +2755,7 @@ namespace Chummer
                 ImprovementManager.RemoveImprovements(this,
                     Improvements.Where(objImprovement =>
                         objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
-                        || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant).ToList());
+                        || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant).ToList(), token: token);
 
                 // Remove any Qualities the character received from their Metatype, then remove the Quality.
                 for (int i = Qualities.Count - 1; i >= 0; --i)
@@ -2766,7 +2766,7 @@ namespace Chummer
                     if (objQuality.OriginSource == QualitySource.Metatype ||
                         objQuality.OriginSource == QualitySource.MetatypeRemovable ||
                         objQuality.OriginSource == QualitySource.MetatypeRemovedAtChargen)
-                        objQuality.DeleteQuality();
+                        objQuality.DeleteQuality(token: token);
                 }
 
                 // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
@@ -2808,7 +2808,7 @@ namespace Chummer
                 XmlNode xmlBonusNode = charNode.SelectSingleNode("bonus");
                 if (xmlBonusNode != null)
                     ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Metatype, strMetatypeId,
-                        xmlBonusNode, 1, strMetatypeId);
+                        xmlBonusNode, 1, strMetatypeId, token: token);
 
                 List<Weapon> lstWeapons = new List<Weapon>(1);
                 // Create the Qualities that come with the Metatype.
@@ -2875,15 +2875,25 @@ namespace Chummer
                             int intRating =
                                 CommonFunctions.ExpressionToInt(objXmlPower.Attributes["rating"]?.InnerText, intForce,
                                                                 0,
-                                                                0);
+                                                                0, token);
 
                             objPower.Create(objXmlCritterPower, intRating, strForcedValue);
                             objPower.CountTowardsLimit = false;
                             CritterPowers.Add(objPower);
-                            ImprovementManager.CreateImprovement(this, objPower.InternalId,
-                                                                 Improvement.ImprovementSource.Metatype, string.Empty,
-                                                                 Improvement.ImprovementType.CritterPower,
-                                                                 string.Empty);
+                            try
+                            {
+                                ImprovementManager.CreateImprovement(this, objPower.InternalId,
+                                                                     Improvement.ImprovementSource.Metatype,
+                                                                     string.Empty,
+                                                                     Improvement.ImprovementType.CritterPower,
+                                                                     string.Empty, token: token);
+                            }
+                            catch
+                            {
+                                ImprovementManager.Rollback(this, CancellationToken.None);
+                                throw;
+                            }
+
                             ImprovementManager.Commit(this);
                         }
                     }
@@ -2898,7 +2908,7 @@ namespace Chummer
                         Category = LanguageManager.GetString("Tab_Critter", GlobalSettings.DefaultLanguage, token: token),
                         RangeType = "Melee",
                         Reach =
-                            CommonFunctions.ExpressionToInt(objXmlNaturalWeapon["reach"]?.InnerText ?? "0", intForce, 0, 0),
+                            CommonFunctions.ExpressionToInt(objXmlNaturalWeapon["reach"]?.InnerText ?? "0", intForce, 0, 0, token),
                         Damage = objXmlNaturalWeapon["damage"]?.InnerText ?? "({STR})S",
                         Accuracy = objXmlNaturalWeapon["accuracy"]?.InnerText ?? "Physical",
                         AP = objXmlNaturalWeapon["ap"]?.InnerText ?? "0",
@@ -2938,24 +2948,34 @@ namespace Chummer
                     bool bImprovementAdded = false;
                     if (!string.IsNullOrEmpty(strRating))
                     {
-                        ImprovementManager.CreateImprovement(this, xmlSkill.InnerText,
-                            Improvement.ImprovementSource.Metatype, string.Empty,
-                            Improvement.ImprovementType.SkillLevel,
-                            string.Empty,
-                            CommonFunctions.ExpressionToInt(strRating, intForce, 0, 0));
+                        try
+                        {
+                            ImprovementManager.CreateImprovement(this, xmlSkill.InnerText,
+                                                                 Improvement.ImprovementSource.Metatype, string.Empty,
+                                                                 Improvement.ImprovementType.SkillLevel,
+                                                                 string.Empty,
+                                                                 CommonFunctions.ExpressionToInt(
+                                                                     strRating, intForce, 0, 0, token), token: token);
+                        }
+                        catch
+                        {
+                            ImprovementManager.Rollback(this, CancellationToken.None);
+                            throw;
+                        }
+
                         ImprovementManager.Commit(this);
                         bImprovementAdded = true;
                     }
 
                     string strSkill = xmlSkill.InnerText;
                     string strSpec = xmlSkill.Attributes?["spec"]?.InnerText ?? string.Empty;
-                    Skill objSkill = SkillsSection.GetActiveSkill(strSkill);
+                    Skill objSkill = SkillsSection.GetActiveSkill(strSkill, token);
 
                     if (objSkill == null)
                     {
                         if (ExoticSkill.IsExoticSkillName(this, strSkill, token))
                         {
-                            SkillsSection.AddExoticSkill(strSkill, strSpec);
+                            SkillsSection.AddExoticSkill(strSkill, strSpec, token);
                             continue;
                         }
 
@@ -2964,8 +2984,8 @@ namespace Chummer
 
                         //This skill does not yet exist but the datafile asks to improve it.
                         //We need to add it so it is not only improved but also shown on the skills tab.
-                        SkillsSection.AddSkills(SkillsSection.FilterOption.Name, strSkill);
-                        objSkill = SkillsSection.GetActiveSkill(strSkill);
+                        SkillsSection.AddSkills(SkillsSection.FilterOption.Name, strSkill, token);
+                        objSkill = SkillsSection.GetActiveSkill(strSkill, token);
                     }
 
                     if (objSkill != null) //More or less a safeguard only. Should not be empty at that point any longer.
@@ -2977,11 +2997,21 @@ namespace Chummer
                             try
                             {
                                 objSkill.Specializations.Add(objSpec);
-                                ImprovementManager.CreateImprovement(this, strSkill,
-                                                                     Improvement.ImprovementSource.Metatype,
-                                                                     string.Empty,
-                                                                     Improvement.ImprovementType.SkillSpecialization,
-                                                                     objSpec.InternalId);
+                                try
+                                {
+                                    ImprovementManager.CreateImprovement(this, strSkill,
+                                                                         Improvement.ImprovementSource.Metatype,
+                                                                         string.Empty,
+                                                                         Improvement.ImprovementType
+                                                                             .SkillSpecialization,
+                                                                         objSpec.InternalId, token: token);
+                                }
+                                catch
+                                {
+                                    ImprovementManager.Rollback(this, CancellationToken.None);
+                                    throw;
+                                }
+
                                 ImprovementManager.Commit(this);
                             }
                             catch
@@ -2999,10 +3029,21 @@ namespace Chummer
                     string strRating = xmlSkillGroup.Attributes?["rating"]?.InnerText;
                     if (!string.IsNullOrEmpty(strRating))
                     {
-                        ImprovementManager.CreateImprovement(this, xmlSkillGroup.InnerText,
-                            Improvement.ImprovementSource.Metatype, string.Empty,
-                            Improvement.ImprovementType.SkillGroupLevel, string.Empty,
-                            CommonFunctions.ExpressionToInt(strRating, intForce, 0, 0));
+                        try
+                        {
+                            ImprovementManager.CreateImprovement(this, xmlSkillGroup.InnerText,
+                                                                 Improvement.ImprovementSource.Metatype, string.Empty,
+                                                                 Improvement.ImprovementType.SkillGroupLevel,
+                                                                 string.Empty,
+                                                                 CommonFunctions.ExpressionToInt(
+                                                                     strRating, intForce, 0, 0, token), token: token);
+                        }
+                        catch
+                        {
+                            ImprovementManager.Rollback(this, CancellationToken.None);
+                            throw;
+                        }
+
                         ImprovementManager.Commit(this);
                     }
                 }
@@ -3047,10 +3088,20 @@ namespace Chummer
                             }
                         }
 
-                        ImprovementManager.CreateImprovement(this, strName,
-                            Improvement.ImprovementSource.Metatype, string.Empty,
-                            Improvement.ImprovementType.SkillLevel, string.Empty,
-                            CommonFunctions.ExpressionToInt(strRating, intForce, 0, 0));
+                        try
+                        {
+                            ImprovementManager.CreateImprovement(this, strName,
+                                                                 Improvement.ImprovementSource.Metatype, string.Empty,
+                                                                 Improvement.ImprovementType.SkillLevel, string.Empty,
+                                                                 CommonFunctions.ExpressionToInt(
+                                                                     strRating, intForce, 0, 0, token), token: token);
+                        }
+                        catch
+                        {
+                            ImprovementManager.Rollback(this, CancellationToken.None);
+                            throw;
+                        }
+
                         ImprovementManager.Commit(this);
                     }
                 }
@@ -3076,9 +3127,19 @@ namespace Chummer
 
                     ComplexForms.Add(objComplexform);
 
-                    ImprovementManager.CreateImprovement(this, objComplexform.InternalId,
-                        Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.ComplexForm,
-                        string.Empty);
+                    try
+                    {
+                        ImprovementManager.CreateImprovement(this, objComplexform.InternalId,
+                                                             Improvement.ImprovementSource.Metatype, string.Empty,
+                                                             Improvement.ImprovementType.ComplexForm,
+                                                             string.Empty, token: token);
+                    }
+                    catch
+                    {
+                        ImprovementManager.Rollback(this, CancellationToken.None);
+                        throw;
+                    }
+
                     ImprovementManager.Commit(this);
                 }
 
@@ -3097,16 +3158,26 @@ namespace Chummer
                     Cyberware objWare = new Cyberware(this);
                     string strForcedValue = node.Attributes["select"]?.InnerText ?? string.Empty;
                     int intRating =
-                        CommonFunctions.ExpressionToInt(node.Attributes["rating"]?.InnerText, intForce, 0, 0);
+                        CommonFunctions.ExpressionToInt(node.Attributes["rating"]?.InnerText, intForce, 0, 0, token);
 
                     objWare.Create(objXmlCyberwareNode,
                         GetGrades(Improvement.ImprovementSource.Cyberware, true, token)
                             .FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Metatype, intRating,
                         Weapons, Vehicles, true, true, strForcedValue);
                     Cyberware.Add(objWare);
-                    ImprovementManager.CreateImprovement(this, objWare.InternalId,
-                        Improvement.ImprovementSource.Metatype,
-                        string.Empty, Improvement.ImprovementType.FreeWare, string.Empty);
+                    try
+                    {
+                        ImprovementManager.CreateImprovement(this, objWare.InternalId,
+                                                             Improvement.ImprovementSource.Metatype,
+                                                             string.Empty, Improvement.ImprovementType.FreeWare,
+                                                             string.Empty, token: token);
+                    }
+                    catch
+                    {
+                        ImprovementManager.Rollback(this, CancellationToken.None);
+                        throw;
+                    }
+
                     ImprovementManager.Commit(this);
                 }
 
@@ -3125,16 +3196,26 @@ namespace Chummer
                     Cyberware objWare = new Cyberware(this);
                     string strForcedValue = node.Attributes["select"]?.InnerText ?? string.Empty;
                     int intRating =
-                        CommonFunctions.ExpressionToInt(node.Attributes["rating"]?.InnerText, intForce, 0, 0);
+                        CommonFunctions.ExpressionToInt(node.Attributes["rating"]?.InnerText, intForce, 0, 0, token);
 
                     objWare.Create(objXmlCyberwareNode,
                         GetGrades(Improvement.ImprovementSource.Bioware, true, token)
                             .FirstOrDefault(x => x.Name == "None"), Improvement.ImprovementSource.Metatype, intRating,
                         Weapons, Vehicles, true, true, strForcedValue);
                     Cyberware.Add(objWare);
-                    ImprovementManager.CreateImprovement(this, objWare.InternalId,
-                        Improvement.ImprovementSource.Metatype,
-                        string.Empty, Improvement.ImprovementType.FreeWare, string.Empty);
+                    try
+                    {
+                        ImprovementManager.CreateImprovement(this, objWare.InternalId,
+                                                             Improvement.ImprovementSource.Metatype,
+                                                             string.Empty, Improvement.ImprovementType.FreeWare,
+                                                             string.Empty, token: token);
+                    }
+                    catch
+                    {
+                        ImprovementManager.Rollback(this, CancellationToken.None);
+                        throw;
+                    }
+
                     ImprovementManager.Commit(this);
                 }
 
@@ -3177,9 +3258,19 @@ namespace Chummer
 
                     AIPrograms.Add(objAIProgram);
 
-                    ImprovementManager.CreateImprovement(this, objAIProgram.InternalId,
-                        Improvement.ImprovementSource.Metatype, string.Empty, Improvement.ImprovementType.AIProgram,
-                        string.Empty);
+                    try
+                    {
+                        ImprovementManager.CreateImprovement(this, objAIProgram.InternalId,
+                                                             Improvement.ImprovementSource.Metatype, string.Empty,
+                                                             Improvement.ImprovementType.AIProgram,
+                                                             string.Empty, token: token);
+                    }
+                    catch
+                    {
+                        ImprovementManager.Rollback(this, CancellationToken.None);
+                        throw;
+                    }
+
                     ImprovementManager.Commit(this);
                 }
 
@@ -3197,10 +3288,10 @@ namespace Chummer
 
                     int intRating = 1;
                     if (xmlGear["rating"] != null)
-                        intRating = CommonFunctions.ExpressionToInt(xmlGear["rating"].InnerText, intForce, 0, 0);
+                        intRating = CommonFunctions.ExpressionToInt(xmlGear["rating"].InnerText, intForce, 0, 0, token);
                     decimal decQty = 1.0m;
                     if (xmlGear["quantity"] != null)
-                        decQty = CommonFunctions.ExpressionToDecimal(xmlGear["quantity"].InnerText, intForce);
+                        decQty = CommonFunctions.ExpressionToDecimal(xmlGear["quantity"].InnerText, intForce, token: token);
                     string strForceValue = xmlGear.Attributes?["select"]?.InnerText ?? string.Empty;
 
                     Gear objGear = new Gear(this);
@@ -3226,9 +3317,19 @@ namespace Chummer
 
                     Gear.Add(objGear);
 
-                    ImprovementManager.CreateImprovement(this, objGear.InternalId,
-                        Improvement.ImprovementSource.Metatype,
-                        string.Empty, Improvement.ImprovementType.Gear, string.Empty);
+                    try
+                    {
+                        ImprovementManager.CreateImprovement(this, objGear.InternalId,
+                                                             Improvement.ImprovementSource.Metatype,
+                                                             string.Empty, Improvement.ImprovementType.Gear,
+                                                             string.Empty, token: token);
+                    }
+                    catch
+                    {
+                        ImprovementManager.Rollback(this, CancellationToken.None);
+                        throw;
+                    }
+
                     ImprovementManager.Commit(this);
                 }
 
@@ -3266,7 +3367,7 @@ namespace Chummer
 
                         foreach (XmlNode bonusNode in objDummyDocument.SelectNodes("/bonus"))
                             ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Metatype,
-                                strMetatypeId, bonusNode, 1, strMetatypeId);
+                                strMetatypeId, bonusNode, 1, strMetatypeId, token: token);
                     }
 
                     // Remove the Critter's Materialization Power if they have it. Add the Possession or Inhabitation Power if the Possession-based Tradition checkbox is checked.
@@ -3292,9 +3393,20 @@ namespace Chummer
                                     objPower.CountTowardsLimit = false;
                                     CritterPowers.Add(objPower);
 
-                                    ImprovementManager.CreateImprovement(this, objPower.InternalId,
-                                        Improvement.ImprovementSource.Metatype, string.Empty,
-                                        Improvement.ImprovementType.CritterPower, string.Empty);
+                                    try
+                                    {
+                                        ImprovementManager.CreateImprovement(this, objPower.InternalId,
+                                                                             Improvement.ImprovementSource.Metatype,
+                                                                             string.Empty,
+                                                                             Improvement.ImprovementType.CritterPower,
+                                                                             string.Empty, token: token);
+                                    }
+                                    catch
+                                    {
+                                        ImprovementManager.Rollback(this, CancellationToken.None);
+                                        throw;
+                                    }
+
                                     ImprovementManager.Commit(this);
                                 }
                             }
@@ -3313,9 +3425,20 @@ namespace Chummer
                                 objPower.CountTowardsLimit = false;
                                 CritterPowers.Add(objPower);
 
-                                ImprovementManager.CreateImprovement(this, objPower.InternalId,
-                                    Improvement.ImprovementSource.Metatype, string.Empty,
-                                    Improvement.ImprovementType.CritterPower, string.Empty);
+                                try
+                                {
+                                    ImprovementManager.CreateImprovement(this, objPower.InternalId,
+                                                                         Improvement.ImprovementSource.Metatype,
+                                                                         string.Empty,
+                                                                         Improvement.ImprovementType.CritterPower,
+                                                                         string.Empty, token: token);
+                                }
+                                catch
+                                {
+                                    ImprovementManager.Rollback(this, CancellationToken.None);
+                                    throw;
+                                }
+
                                 ImprovementManager.Commit(this);
                             }
                         }
@@ -5445,10 +5568,10 @@ namespace Chummer
         /// <summary>
         /// Add a function to the queue of methods to execute after loading has finished. Return value signals whether loading should continue after execution (True) or terminate/cancel (False).
         /// </summary>
-        public bool EnqueuePostLoadMethod(Func<bool> value)
+        public bool EnqueuePostLoadMethod(Func<CancellationToken, bool> value, CancellationToken token = default)
         {
             // Only need read lock because collection is concurrent anyway
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 return _setPostLoadMethods.TryAdd(value);
             }
@@ -5457,10 +5580,34 @@ namespace Chummer
         /// <summary>
         /// Queue of asynchronous methods to execute after loading has finished. Return value signals whether loading should continue after execution (True) or terminate/cancel (False).
         /// </summary>
-        public bool EnqueuePostLoadAsyncMethod(Func<CancellationToken, Task<bool>> value)
+        public bool EnqueuePostLoadAsyncMethod(Func<CancellationToken, Task<bool>> value, CancellationToken token = default)
         {
             // Only need read lock because collection is concurrent anyway
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
+            {
+                return _setPostLoadAsyncMethods.TryAdd(value);
+            }
+        }
+
+        /// <summary>
+        /// Add a function to the queue of methods to execute after loading has finished. Return value signals whether loading should continue after execution (True) or terminate/cancel (False).
+        /// </summary>
+        public async ValueTask<bool> EnqueuePostLoadMethodAsync(Func<CancellationToken, bool> value, CancellationToken token = default)
+        {
+            // Only need read lock because collection is concurrent anyway
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                return _setPostLoadMethods.TryAdd(value);
+            }
+        }
+
+        /// <summary>
+        /// Queue of asynchronous methods to execute after loading has finished. Return value signals whether loading should continue after execution (True) or terminate/cancel (False).
+        /// </summary>
+        public async ValueTask<bool> EnqueuePostLoadAsyncMethodAsync(Func<CancellationToken, Task<bool>> value, CancellationToken token = default)
+        {
+            // Only need read lock because collection is concurrent anyway
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
                 return _setPostLoadAsyncMethods.TryAdd(value);
             }
@@ -5613,7 +5760,7 @@ namespace Chummer
 
                                 objXmlCharacter = objXmlDocument.SelectSingleNode("/character");
                                 xmlCharacterNavigator =
-                                    objXmlDocument.GetFastNavigator().SelectSingleNodeAndCacheExpression("/character");
+                                    objXmlDocument.GetFastNavigator().SelectSingleNodeAndCacheExpression("/character", token);
                                 return true;
                             }
 
@@ -5726,8 +5873,8 @@ namespace Chummer
                                 xmlCharacterNavigator.TryGetBoolFieldQuickly("created", ref _blnCreated);
 
                                 if (blnSync)
-                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    ResetCharacter();
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ResetCharacter(token);
                                 else
                                     await ResetCharacterAsync(token).ConfigureAwait(false);
 
@@ -5781,8 +5928,8 @@ namespace Chummer
                                             blnSync
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 ? objXmlDocument.GetFastNavigator()
-                                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                                .SelectSingleNodeAndCacheExpression("/character")
+                                                                // ReSharper disable once MethodHasAsyncOverload
+                                                                .SelectSingleNodeAndCacheExpression("/character", token)
                                                 : await (await objXmlDocument.GetFastNavigatorAsync(token)
                                                                              .ConfigureAwait(false))
                                                         .SelectSingleNodeAndCacheExpressionAsync("/character", token)
@@ -5917,9 +6064,9 @@ namespace Chummer
                                            out HashSet<string> setSavedBooks))
                                 {
                                     foreach (XPathNavigator xmlBook in (blnSync
-                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                 // ReSharper disable once MethodHasAsyncOverload
                                                  ? xmlCharacterNavigator.SelectAndCacheExpression(
-                                                     "sources/source")
+                                                     "sources/source", token)
                                                  : await xmlCharacterNavigator.SelectAndCacheExpressionAsync(
                                                      "sources/source", token: token).ConfigureAwait(false)))
                                     {
@@ -5931,9 +6078,9 @@ namespace Chummer
                                         setSavedBooks.AddRange(objDefaultSettings.Books);
 
                                     XPathNodeIterator xmlCustomDirectoryNames = blnSync
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                        // ReSharper disable once MethodHasAsyncOverload
                                         ? xmlCharacterNavigator.SelectAndCacheExpression(
-                                            "customdatadirectorynames/directoryname")
+                                            "customdatadirectorynames/directoryname", token)
                                         : await xmlCharacterNavigator.SelectAndCacheExpressionAsync(
                                                                          "customdatadirectorynames/directoryname",
                                                                          token: token)
@@ -6473,8 +6620,8 @@ namespace Chummer
                                         : await GetNodeXPathAsync(true, token: token).ConfigureAwait(false);
                                     if (objMetatypeNode == null || !Guid.TryParse(
                                             (blnSync
-                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                ? objMetatypeNode.SelectSingleNodeAndCacheExpression("id")
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                ? objMetatypeNode.SelectSingleNodeAndCacheExpression("id", token)
                                                 : await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync(
                                                     "id", token).ConfigureAwait(false))?.Value, out _guiMetatype))
                                     {
@@ -6490,17 +6637,17 @@ namespace Chummer
 
                                 if (blnSync)
                                 {
-                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    _strRunAlt = xmlCharacterNavigator.SelectSingleNodeAndCacheExpression("run/@alt")
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    _strRunAlt = xmlCharacterNavigator.SelectSingleNodeAndCacheExpression("run/@alt", token)
                                                                       ?.Value ??
                                                  string.Empty;
-                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    _strWalkAlt = xmlCharacterNavigator.SelectSingleNodeAndCacheExpression("walk/@alt")
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    _strWalkAlt = xmlCharacterNavigator.SelectSingleNodeAndCacheExpression("walk/@alt", token)
                                                                        ?.Value ??
                                                   string.Empty;
                                     _strSprintAlt = xmlCharacterNavigator
-                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                    .SelectSingleNodeAndCacheExpression("sprint/@alt")?.Value ??
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    .SelectSingleNodeAndCacheExpression("sprint/@alt", token)?.Value ??
                                                     string.Empty;
                                 }
                                 else
@@ -6535,8 +6682,8 @@ namespace Chummer
                                     // ReSharper disable once MethodHasAsyncOverload
                                     _strMetatype = (blnSync
                                             ? GetNodeXPath(true, token: token)
-                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                .SelectSingleNodeAndCacheExpression("name")
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                .SelectSingleNodeAndCacheExpression("name", token)
                                             : await (await GetNodeXPathAsync(true, token: token).ConfigureAwait(false))
                                                     .SelectSingleNodeAndCacheExpressionAsync("name", token)
                                                     .ConfigureAwait(false))
@@ -6556,8 +6703,8 @@ namespace Chummer
                                         _guiMetavariant
                                             = Guid.Parse(
                                                 (blnSync
-                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                    ? objMetavariantNode.SelectSingleNodeAndCacheExpression("id")
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    ? objMetavariantNode.SelectSingleNodeAndCacheExpression("id", token)
                                                     : await objMetavariantNode
                                                             .SelectSingleNodeAndCacheExpressionAsync("id", token)
                                                             .ConfigureAwait(false))
@@ -6583,11 +6730,11 @@ namespace Chummer
                                     {
                                         if (blnSync)
                                         {
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            _strSource = xmlCharNode.SelectSingleNodeAndCacheExpression("source")?.Value
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            _strSource = xmlCharNode.SelectSingleNodeAndCacheExpression("source", token)?.Value
                                                          ?? _strSource;
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            _strPage = xmlCharNode.SelectSingleNodeAndCacheExpression("page")?.Value
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            _strPage = xmlCharNode.SelectSingleNodeAndCacheExpression("page", token)?.Value
                                                        ?? _strPage;
                                         }
                                         else
@@ -6654,9 +6801,9 @@ namespace Chummer
                                 else
                                     await _lstPrioritySkills.ClearAsync(token).ConfigureAwait(false);
                                 foreach (XPathNavigator xmlSkillName in (blnSync
-                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                             // ReSharper disable once MethodHasAsyncOverload
                                              ? xmlCharacterNavigator.SelectAndCacheExpression(
-                                                 "priorityskills/priorityskill")
+                                                 "priorityskills/priorityskill", token)
                                              : await xmlCharacterNavigator.SelectAndCacheExpressionAsync(
                                                  "priorityskills/priorityskill", token: token).ConfigureAwait(false)))
                                 {
@@ -6973,8 +7120,8 @@ namespace Chummer
                                 // Contacts.
                                 foreach (XPathNavigator xmlContact in
                                          (blnSync
-                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                             ? xmlCharacterNavigator.SelectAndCacheExpression("contacts/contact")
+                                             // ReSharper disable once MethodHasAsyncOverload
+                                             ? xmlCharacterNavigator.SelectAndCacheExpression("contacts/contact", token)
                                              : await xmlCharacterNavigator.SelectAndCacheExpressionAsync(
                                                  "contacts/contact", token: token).ConfigureAwait(false)))
                                 {
@@ -7043,9 +7190,9 @@ namespace Chummer
                                                         _lstQualities.Add(objQuality);
                                                         // ReSharper disable once MethodHasAsyncOverload
                                                         if (objQuality.GetNodeXPath(token: token)
-                                                                      // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                                      // ReSharper disable once MethodHasAsyncOverload
                                                                       ?.SelectSingleNodeAndCacheExpression(
-                                                                          "bonus/addgear/name")
+                                                                          "bonus/addgear/name", token)
                                                                       ?.Value == "Living Persona")
                                                             objLivingPersonaQuality = objQuality;
                                                     }
@@ -7077,10 +7224,10 @@ namespace Chummer
                                                         && objQuality.Bonus?.HasChildNodes == false)
                                                     {
                                                         if (blnSync)
-                                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                            // ReSharper disable once MethodHasAsyncOverload
                                                             ImprovementManager.RemoveImprovements(this,
                                                                 Improvement.ImprovementSource.Quality,
-                                                                objQuality.InternalId);
+                                                                objQuality.InternalId, token: token);
                                                         else
                                                             await ImprovementManager.RemoveImprovementsAsync(this,
                                                                 Improvement.ImprovementSource.Quality,
@@ -7097,11 +7244,11 @@ namespace Chummer
                                                             {
                                                                 ImprovementManager.ForcedValue = objQuality.Extra;
                                                                 if (blnSync)
-                                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                                    // ReSharper disable once MethodHasAsyncOverload
                                                                     ImprovementManager.CreateImprovements(this,
                                                                         Improvement.ImprovementSource.Quality,
                                                                         objQuality.InternalId, objQuality.Bonus, 1,
-                                                                        objQuality.CurrentDisplayNameShort);
+                                                                        objQuality.CurrentDisplayNameShort, token: token);
                                                                 else
                                                                     await ImprovementManager.CreateImprovementsAsync(
                                                                             this,
@@ -7140,12 +7287,12 @@ namespace Chummer
                                                                 {
                                                                     ImprovementManager.ForcedValue = objQuality.Extra;
                                                                     if (blnSync)
-                                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                                        // ReSharper disable once MethodHasAsyncOverload
                                                                         ImprovementManager.CreateImprovements(this,
                                                                             Improvement.ImprovementSource.Quality,
                                                                             objQuality.InternalId,
                                                                             objQuality.FirstLevelBonus, 1,
-                                                                            objQuality.CurrentDisplayNameShort);
+                                                                            objQuality.CurrentDisplayNameShort, token: token);
                                                                     else
                                                                         await ImprovementManager
                                                                               .CreateImprovementsAsync(
@@ -7179,12 +7326,12 @@ namespace Chummer
                                                         {
                                                             ImprovementManager.ForcedValue = objQuality.Extra;
                                                             if (blnSync)
-                                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                                // ReSharper disable once MethodHasAsyncOverload
                                                                 ImprovementManager.CreateImprovements(this,
                                                                     Improvement.ImprovementSource.Quality,
                                                                     objQuality.InternalId,
                                                                     objQuality.NaturalWeaponsNode, 1,
-                                                                    objQuality.CurrentDisplayNameShort);
+                                                                    objQuality.CurrentDisplayNameShort, token: token);
                                                             else
                                                                 await ImprovementManager.CreateImprovementsAsync(this,
                                                                         Improvement.ImprovementSource.Quality,
@@ -7286,96 +7433,109 @@ namespace Chummer
                                                             xmlRootQualitiesNode.SelectSingleNode(
                                                                 "quality[name=\"Made Man\"]/bonus");
                                                         objQuality.Extra = string.Empty;
-                                                        if (blnSync)
+                                                        try
                                                         {
-                                                            // ReSharper disable MethodHasAsyncOverloadWithCancellation
-                                                            ImprovementManager.RemoveImprovements(this,
-                                                                Improvement.ImprovementSource.Quality,
-                                                                objQuality.InternalId);
-                                                            ImprovementManager.CreateImprovement(this, string.Empty,
-                                                                Improvement.ImprovementSource.Quality,
-                                                                objQuality.InternalId,
-                                                                Improvement.ImprovementType.MadeMan,
-                                                                objQuality.CurrentDisplayNameShort);
-                                                            ImprovementManager.CreateImprovement(
-                                                                this, selectedContactUniqueId,
-                                                                Improvement.ImprovementSource.Quality,
-                                                                objQuality.InternalId,
-                                                                Improvement.ImprovementType.AddContact,
-                                                                objQuality.CurrentDisplayNameShort);
-                                                            ImprovementManager.CreateImprovement(
-                                                                this, selectedContactUniqueId,
-                                                                Improvement.ImprovementSource.Quality,
-                                                                objQuality.InternalId,
-                                                                Improvement.ImprovementType.ContactForcedLoyalty,
-                                                                objQuality.CurrentDisplayNameShort);
-                                                            ImprovementManager.CreateImprovement(
-                                                                this, selectedContactUniqueId,
-                                                                Improvement.ImprovementSource.Quality,
-                                                                objQuality.InternalId,
-                                                                Improvement.ImprovementType.ContactForceGroup,
-                                                                objQuality.CurrentDisplayNameShort);
-                                                            ImprovementManager.CreateImprovement(
-                                                                this, selectedContactUniqueId,
-                                                                Improvement.ImprovementSource.Quality,
-                                                                objQuality.InternalId,
-                                                                Improvement.ImprovementType.ContactMakeFree,
-                                                                objQuality.CurrentDisplayNameShort);
-                                                            ImprovementManager.Commit(this);
-                                                            // ReSharper restore MethodHasAsyncOverloadWithCancellation
-                                                        }
-                                                        else
-                                                        {
-                                                            await ImprovementManager.RemoveImprovementsAsync(this,
-                                                                Improvement.ImprovementSource.Quality,
-                                                                objQuality.InternalId, token).ConfigureAwait(false);
-                                                            await ImprovementManager.CreateImprovementAsync(
-                                                                    this, string.Empty,
+                                                            if (blnSync)
+                                                            {
+                                                                // ReSharper disable MethodHasAsyncOverload
+                                                                ImprovementManager.RemoveImprovements(this,
+                                                                    Improvement.ImprovementSource.Quality,
+                                                                    objQuality.InternalId, token: token);
+                                                                ImprovementManager.CreateImprovement(this, string.Empty,
                                                                     Improvement.ImprovementSource.Quality,
                                                                     objQuality.InternalId,
                                                                     Improvement.ImprovementType.MadeMan,
-                                                                    await objQuality
-                                                                          .GetCurrentDisplayNameShortAsync(token)
-                                                                          .ConfigureAwait(false), token: token)
-                                                                .ConfigureAwait(false);
-                                                            await ImprovementManager.CreateImprovementAsync(
+                                                                    objQuality.CurrentDisplayNameShort, token: token);
+                                                                ImprovementManager.CreateImprovement(
                                                                     this, selectedContactUniqueId,
                                                                     Improvement.ImprovementSource.Quality,
                                                                     objQuality.InternalId,
                                                                     Improvement.ImprovementType.AddContact,
-                                                                    await objQuality
-                                                                          .GetCurrentDisplayNameShortAsync(token)
-                                                                          .ConfigureAwait(false), token: token)
-                                                                .ConfigureAwait(false);
-                                                            await ImprovementManager.CreateImprovementAsync(
+                                                                    objQuality.CurrentDisplayNameShort, token: token);
+                                                                ImprovementManager.CreateImprovement(
                                                                     this, selectedContactUniqueId,
                                                                     Improvement.ImprovementSource.Quality,
                                                                     objQuality.InternalId,
                                                                     Improvement.ImprovementType.ContactForcedLoyalty,
-                                                                    await objQuality
-                                                                          .GetCurrentDisplayNameShortAsync(token)
-                                                                          .ConfigureAwait(false), token: token)
-                                                                .ConfigureAwait(false);
-                                                            await ImprovementManager.CreateImprovementAsync(
+                                                                    objQuality.CurrentDisplayNameShort, token: token);
+                                                                ImprovementManager.CreateImprovement(
                                                                     this, selectedContactUniqueId,
                                                                     Improvement.ImprovementSource.Quality,
                                                                     objQuality.InternalId,
                                                                     Improvement.ImprovementType.ContactForceGroup,
-                                                                    await objQuality
-                                                                          .GetCurrentDisplayNameShortAsync(token)
-                                                                          .ConfigureAwait(false), token: token)
-                                                                .ConfigureAwait(false);
-                                                            await ImprovementManager.CreateImprovementAsync(
+                                                                    objQuality.CurrentDisplayNameShort, token: token);
+                                                                ImprovementManager.CreateImprovement(
                                                                     this, selectedContactUniqueId,
                                                                     Improvement.ImprovementSource.Quality,
                                                                     objQuality.InternalId,
                                                                     Improvement.ImprovementType.ContactMakeFree,
-                                                                    await objQuality
-                                                                          .GetCurrentDisplayNameShortAsync(token)
-                                                                          .ConfigureAwait(false), token: token)
-                                                                .ConfigureAwait(false);
-                                                            ImprovementManager.Commit(this);
+                                                                    objQuality.CurrentDisplayNameShort, token: token);
+                                                                // ReSharper restore MethodHasAsyncOverload
+                                                            }
+                                                            else
+                                                            {
+                                                                await ImprovementManager.RemoveImprovementsAsync(this,
+                                                                    Improvement.ImprovementSource.Quality,
+                                                                    objQuality.InternalId, token).ConfigureAwait(false);
+                                                                await ImprovementManager.CreateImprovementAsync(
+                                                                        this, string.Empty,
+                                                                        Improvement.ImprovementSource.Quality,
+                                                                        objQuality.InternalId,
+                                                                        Improvement.ImprovementType.MadeMan,
+                                                                        await objQuality
+                                                                              .GetCurrentDisplayNameShortAsync(token)
+                                                                              .ConfigureAwait(false), token: token)
+                                                                    .ConfigureAwait(false);
+                                                                await ImprovementManager.CreateImprovementAsync(
+                                                                        this, selectedContactUniqueId,
+                                                                        Improvement.ImprovementSource.Quality,
+                                                                        objQuality.InternalId,
+                                                                        Improvement.ImprovementType.AddContact,
+                                                                        await objQuality
+                                                                              .GetCurrentDisplayNameShortAsync(token)
+                                                                              .ConfigureAwait(false), token: token)
+                                                                    .ConfigureAwait(false);
+                                                                await ImprovementManager.CreateImprovementAsync(
+                                                                        this, selectedContactUniqueId,
+                                                                        Improvement.ImprovementSource.Quality,
+                                                                        objQuality.InternalId,
+                                                                        Improvement.ImprovementType
+                                                                            .ContactForcedLoyalty,
+                                                                        await objQuality
+                                                                              .GetCurrentDisplayNameShortAsync(token)
+                                                                              .ConfigureAwait(false), token: token)
+                                                                    .ConfigureAwait(false);
+                                                                await ImprovementManager.CreateImprovementAsync(
+                                                                        this, selectedContactUniqueId,
+                                                                        Improvement.ImprovementSource.Quality,
+                                                                        objQuality.InternalId,
+                                                                        Improvement.ImprovementType.ContactForceGroup,
+                                                                        await objQuality
+                                                                              .GetCurrentDisplayNameShortAsync(token)
+                                                                              .ConfigureAwait(false), token: token)
+                                                                    .ConfigureAwait(false);
+                                                                await ImprovementManager.CreateImprovementAsync(
+                                                                        this, selectedContactUniqueId,
+                                                                        Improvement.ImprovementSource.Quality,
+                                                                        objQuality.InternalId,
+                                                                        Improvement.ImprovementType.ContactMakeFree,
+                                                                        await objQuality
+                                                                              .GetCurrentDisplayNameShortAsync(token)
+                                                                              .ConfigureAwait(false), token: token)
+                                                                    .ConfigureAwait(false);
+                                                            }
                                                         }
+                                                        catch
+                                                        {
+                                                            if (blnSync)
+                                                                // ReSharper disable once MethodHasAsyncOverload
+                                                                ImprovementManager.Rollback(this, CancellationToken.None);
+                                                            else
+                                                                await ImprovementManager.RollbackAsync(this, CancellationToken.None).ConfigureAwait(false);
+                                                            throw;
+                                                        }
+
+                                                        ImprovementManager.Commit(this);
                                                     }
 
                                                     if (LastSavedVersion <= new Version(5, 212, 43)
@@ -7406,37 +7566,49 @@ namespace Chummer
                                                         objQuality.Bonus =
                                                             xmlRootQualitiesNode.SelectSingleNode(
                                                                 "quality[name=\"Resonant Stream: Cyberadept\"]/bonus");
-                                                        if (blnSync)
+                                                        try
                                                         {
-                                                            // ReSharper disable MethodHasAsyncOverloadWithCancellation
-                                                            ImprovementManager.RemoveImprovements(this,
-                                                                Improvement.ImprovementSource.Quality,
-                                                                objQuality.InternalId);
-                                                            ImprovementManager.CreateImprovement(this, string.Empty,
-                                                                Improvement.ImprovementSource.Quality,
-                                                                objQuality.InternalId,
-                                                                Improvement.ImprovementType.CyberadeptDaemon,
-                                                                objQuality.CurrentDisplayNameShort);
-                                                            ImprovementManager.Commit(this);
-                                                            // ReSharper restore MethodHasAsyncOverloadWithCancellation
-                                                        }
-                                                        else
-                                                        {
-                                                            await ImprovementManager.RemoveImprovementsAsync(this,
+                                                            if (blnSync)
+                                                            {
+                                                                // ReSharper disable MethodHasAsyncOverload
+                                                                ImprovementManager.RemoveImprovements(this,
                                                                     Improvement.ImprovementSource.Quality,
-                                                                    objQuality.InternalId, token: token)
-                                                                .ConfigureAwait(false);
-                                                            await ImprovementManager.CreateImprovementAsync(
-                                                                    this, string.Empty,
+                                                                    objQuality.InternalId, token: token);
+                                                                ImprovementManager.CreateImprovement(this, string.Empty,
                                                                     Improvement.ImprovementSource.Quality,
                                                                     objQuality.InternalId,
                                                                     Improvement.ImprovementType.CyberadeptDaemon,
-                                                                    await objQuality
-                                                                          .GetCurrentDisplayNameShortAsync(token)
-                                                                          .ConfigureAwait(false), token: token)
-                                                                .ConfigureAwait(false);
-                                                            ImprovementManager.Commit(this);
+                                                                    objQuality.CurrentDisplayNameShort, token: token);
+                                                                // ReSharper restore MethodHasAsyncOverload
+                                                            }
+                                                            else
+                                                            {
+                                                                await ImprovementManager.RemoveImprovementsAsync(this,
+                                                                        Improvement.ImprovementSource.Quality,
+                                                                        objQuality.InternalId, token: token)
+                                                                    .ConfigureAwait(false);
+                                                                await ImprovementManager.CreateImprovementAsync(
+                                                                        this, string.Empty,
+                                                                        Improvement.ImprovementSource.Quality,
+                                                                        objQuality.InternalId,
+                                                                        Improvement.ImprovementType.CyberadeptDaemon,
+                                                                        await objQuality
+                                                                              .GetCurrentDisplayNameShortAsync(token)
+                                                                              .ConfigureAwait(false), token: token)
+                                                                    .ConfigureAwait(false);
+                                                            }
                                                         }
+                                                        catch
+                                                        {
+                                                            if (blnSync)
+                                                                // ReSharper disable once MethodHasAsyncOverload
+                                                                ImprovementManager.Rollback(this, CancellationToken.None);
+                                                            else
+                                                                await ImprovementManager.RollbackAsync(this, CancellationToken.None).ConfigureAwait(false);
+                                                            throw;
+                                                        }
+
+                                                        ImprovementManager.Commit(this);
                                                     }
                                                 }
                                                 catch
@@ -7583,8 +7755,8 @@ namespace Chummer
                                 else
                                 {
                                     XPathNavigator xpathTraditionNavigator = blnSync
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        ? xmlCharacterNavigator.SelectSingleNodeAndCacheExpression("tradition")
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        ? xmlCharacterNavigator.SelectSingleNodeAndCacheExpression("tradition", token)
                                         : await xmlCharacterNavigator
                                                 .SelectSingleNodeAndCacheExpressionAsync("tradition", token)
                                                 .ConfigureAwait(false);
@@ -7592,11 +7764,11 @@ namespace Chummer
                                     if (xpathTraditionNavigator != null)
                                     {
                                         if (blnSync
-                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                ? (xpathTraditionNavigator.SelectSingleNodeAndCacheExpression("guid")
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                ? (xpathTraditionNavigator.SelectSingleNodeAndCacheExpression("guid", token)
                                                    != null
-                                                   // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                   || xpathTraditionNavigator.SelectSingleNodeAndCacheExpression("id")
+                                                   // ReSharper disable once MethodHasAsyncOverload
+                                                   || xpathTraditionNavigator.SelectSingleNodeAndCacheExpression("id", token)
                                                    != null)
                                                 : (await xpathTraditionNavigator
                                                          .SelectSingleNodeAndCacheExpressionAsync("guid", token)
@@ -8010,12 +8182,12 @@ namespace Chummer
                                         {
                                             if (blnSync)
                                             {
-                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                // ReSharper disable once MethodHasAsyncOverload
                                                 ImprovementManager.RemoveImprovements(this, objCyberware.SourceType,
-                                                    objCyberware.InternalId);
-                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                    objCyberware.InternalId, token: token);
+                                                // ReSharper disable once MethodHasAsyncOverload
                                                 ImprovementManager.RemoveImprovements(this, objCyberware.SourceType,
-                                                    objCyberware.InternalId + "Pair");
+                                                    objCyberware.InternalId + "Pair", token: token);
                                             }
                                             else
                                             {
@@ -8039,11 +8211,11 @@ namespace Chummer
                                             if (objCyberware.Bonus != null)
                                             {
                                                 if (blnSync)
-                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                    // ReSharper disable once MethodHasAsyncOverload
                                                     ImprovementManager.CreateImprovements(this, objCyberware.SourceType,
                                                         objCyberware.InternalId, objCyberware.Bonus,
                                                         objCyberware.Rating,
-                                                        objCyberware.CurrentDisplayNameShort);
+                                                        objCyberware.CurrentDisplayNameShort, token: token);
                                                 else
                                                     await ImprovementManager.CreateImprovementsAsync(
                                                                                 this, objCyberware.SourceType,
@@ -8064,11 +8236,11 @@ namespace Chummer
                                             if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
                                             {
                                                 if (blnSync)
-                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                    // ReSharper disable once MethodHasAsyncOverload
                                                     ImprovementManager.CreateImprovements(this, objCyberware.SourceType,
                                                         objCyberware.InternalId, objCyberware.WirelessBonus,
                                                         objCyberware.Rating,
-                                                        objCyberware.CurrentDisplayNameShort);
+                                                        objCyberware.CurrentDisplayNameShort, token: token);
                                                 else
                                                     await ImprovementManager.CreateImprovementsAsync(
                                                                                 this, objCyberware.SourceType,
@@ -8138,12 +8310,12 @@ namespace Chummer
                                             {
                                                 if (blnSync)
                                                 {
-                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                    // ReSharper disable once MethodHasAsyncOverload
                                                     ImprovementManager.RemoveImprovements(this, objCyberware.SourceType,
-                                                        objCyberware.InternalId);
-                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                        objCyberware.InternalId, token: token);
+                                                    // ReSharper disable once MethodHasAsyncOverload
                                                     ImprovementManager.RemoveImprovements(this, objCyberware.SourceType,
-                                                        objCyberware.InternalId + "Pair");
+                                                        objCyberware.InternalId + "Pair", token: token);
                                                 }
                                                 else
                                                 {
@@ -8167,12 +8339,12 @@ namespace Chummer
                                                 if (objCyberware.Bonus != null)
                                                 {
                                                     if (blnSync)
-                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                        // ReSharper disable once MethodHasAsyncOverload
                                                         ImprovementManager.CreateImprovements(this,
                                                             objCyberware.SourceType,
                                                             objCyberware.InternalId, objCyberware.Bonus,
                                                             objCyberware.Rating,
-                                                            objCyberware.CurrentDisplayNameShort);
+                                                            objCyberware.CurrentDisplayNameShort, token: token);
                                                     else
                                                         await ImprovementManager.CreateImprovementsAsync(this,
                                                                 objCyberware.SourceType,
@@ -8190,12 +8362,12 @@ namespace Chummer
                                                 if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
                                                 {
                                                     if (blnSync)
-                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                        // ReSharper disable once MethodHasAsyncOverload
                                                         ImprovementManager.CreateImprovements(this,
                                                             objCyberware.SourceType,
                                                             objCyberware.InternalId, objCyberware.WirelessBonus,
                                                             objCyberware.Rating,
-                                                            objCyberware.CurrentDisplayNameShort);
+                                                            objCyberware.CurrentDisplayNameShort, token: token);
                                                     else
                                                         await ImprovementManager.CreateImprovementsAsync(this,
                                                                 objCyberware.SourceType,
@@ -8279,13 +8451,13 @@ namespace Chummer
                                                     objCyberware.Forced != "Left")
                                                     ImprovementManager.ForcedValue = objCyberware.Forced;
                                                 if (blnSync)
-                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                    // ReSharper disable once MethodHasAsyncOverload
                                                     ImprovementManager.CreateImprovements(this,
                                                         objLoopCyberware.SourceType,
                                                         objLoopCyberware.InternalId + "Pair",
                                                         objLoopCyberware.PairBonus,
                                                         objLoopCyberware.Rating,
-                                                        objLoopCyberware.CurrentDisplayNameShort);
+                                                        objLoopCyberware.CurrentDisplayNameShort, token: token);
                                                 else
                                                     await ImprovementManager.CreateImprovementsAsync(this,
                                                                                 objLoopCyberware.SourceType,
@@ -8444,8 +8616,8 @@ namespace Chummer
                             {
                                 // Spirits/Sprites.
                                 foreach (XPathNavigator xmlSpirit in (blnSync
-                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                             ? xmlCharacterNavigator.SelectAndCacheExpression("spirits/spirit")
+                                             // ReSharper disable once MethodHasAsyncOverload
+                                             ? xmlCharacterNavigator.SelectAndCacheExpression("spirits/spirit", token)
                                              : await xmlCharacterNavigator.SelectAndCacheExpressionAsync(
                                                  "spirits/spirit", token: token).ConfigureAwait(false)))
                                 {
@@ -8470,9 +8642,9 @@ namespace Chummer
                                     if (!_lstSpirits.Any(s => s.Fettered) && Improvements.Any(imp =>
                                             imp.ImproveSource == Improvement.ImprovementSource.SpiritFettering))
                                     {
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                        // ReSharper disable once MethodHasAsyncOverload
                                         ImprovementManager.RemoveImprovements(
-                                            this, Improvement.ImprovementSource.SpiritFettering);
+                                            this, Improvement.ImprovementSource.SpiritFettering, token: token);
                                     }
                                 }
                                 else
@@ -8690,10 +8862,10 @@ namespace Chummer
                                 if (objLivingPersonaQuality != null && LastSavedVersion <= new Version(5, 195, 1))
                                 {
                                     if (blnSync)
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                        // ReSharper disable once MethodHasAsyncOverload
                                         ImprovementManager.RemoveImprovements(this,
                                                                               Improvement.ImprovementSource.Quality,
-                                                                              objLivingPersonaQuality.InternalId);
+                                                                              objLivingPersonaQuality.InternalId, token: token);
                                     else
                                         await ImprovementManager.RemoveImprovementsAsync(this,
                                             Improvement.ImprovementSource.Quality,
@@ -8711,13 +8883,13 @@ namespace Chummer
                                         {
                                             ImprovementManager.ForcedValue = objLivingPersonaQuality.Extra;
                                             if (blnSync)
-                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                // ReSharper disable once MethodHasAsyncOverload
                                                 ImprovementManager.CreateImprovements(this,
                                                     Improvement.ImprovementSource.Quality,
                                                     objLivingPersonaQuality.InternalId,
                                                     objLivingPersonaQuality
                                                         .Bonus, 1,
-                                                    objLivingPersonaQuality.CurrentDisplayNameShort);
+                                                    objLivingPersonaQuality.CurrentDisplayNameShort, token: token);
                                             else
                                                 await ImprovementManager.CreateImprovementsAsync(this,
                                                     Improvement.ImprovementSource.Quality,
@@ -8754,13 +8926,13 @@ namespace Chummer
                                             {
                                                 ImprovementManager.ForcedValue = objLivingPersonaQuality.Extra;
                                                 if (blnSync)
-                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                    // ReSharper disable once MethodHasAsyncOverload
                                                     ImprovementManager.CreateImprovements(this,
                                                         Improvement.ImprovementSource.Quality,
                                                         objLivingPersonaQuality.InternalId,
                                                         objLivingPersonaQuality
                                                             .FirstLevelBonus, 1,
-                                                        objLivingPersonaQuality.CurrentDisplayNameShort);
+                                                        objLivingPersonaQuality.CurrentDisplayNameShort, token: token);
                                                 else
                                                     await ImprovementManager.CreateImprovementsAsync(this,
                                                                                 Improvement.ImprovementSource.Quality,
@@ -8793,13 +8965,13 @@ namespace Chummer
                                     {
                                         ImprovementManager.ForcedValue = objLivingPersonaQuality.Extra;
                                         if (blnSync)
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            // ReSharper disable once MethodHasAsyncOverload
                                             ImprovementManager.CreateImprovements(this,
                                                 Improvement.ImprovementSource.Quality,
                                                 objLivingPersonaQuality.InternalId,
                                                 objLivingPersonaQuality
                                                     .NaturalWeaponsNode, 1,
-                                                objLivingPersonaQuality.CurrentDisplayNameShort);
+                                                objLivingPersonaQuality.CurrentDisplayNameShort, token: token);
                                         else
                                             await ImprovementManager.CreateImprovementsAsync(this,
                                                                         Improvement.ImprovementSource.Quality,
@@ -9314,8 +9486,8 @@ namespace Chummer
                                     if (objOldQuality != null)
                                     {
                                         if (blnSync)
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            objOldQuality.DeleteQuality();
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            objOldQuality.DeleteQuality(token: token);
                                         else
                                             await objOldQuality.DeleteQualityAsync(token: token).ConfigureAwait(false);
 
@@ -9536,26 +9708,30 @@ namespace Chummer
                                 }
                             }
 
-                            // Refresh Black Market Discounts
-                            RefreshBlackMarketDiscounts();
-                            // Refresh Dealer Connection discounts
-                            RefreshDealerConnectionDiscounts();
                             if (blnSync)
                             {
-                                // ReSharper disable MethodHasAsyncOverloadWithCancellation
+                                // ReSharper disable MethodHasAsyncOverload
+                                // Refresh Black Market Discounts
+                                RefreshBlackMarketDiscounts(token);
+                                // Refresh Dealer Connection discounts
+                                RefreshDealerConnectionDiscounts(token);
                                 // Refresh permanent attribute changes due to essence loss
-                                RefreshEssenceLossImprovements();
+                                RefreshEssenceLossImprovements(token);
                                 // Refresh dicepool modifiers due to filled condition monitor boxes
-                                RefreshWoundPenalties();
+                                RefreshWoundPenalties(token);
                                 // Refresh dicepool modifiers due to sustained spells
-                                RefreshSustainingPenalties();
+                                RefreshSustainingPenalties(token);
                                 // Refresh encumbrance penalties
-                                RefreshEncumbrance();
-                                RefreshArmorEncumbrance();
-                                // ReSharper restore MethodHasAsyncOverloadWithCancellation
+                                RefreshEncumbrance(token);
+                                RefreshArmorEncumbrance(token);
+                                // ReSharper restore MethodHasAsyncOverload
                             }
                             else
                             {
+                                // Refresh Black Market Discounts
+                                await RefreshBlackMarketDiscountsAsync(token).ConfigureAwait(false);
+                                // Refresh Dealer Connection discounts
+                                await RefreshDealerConnectionDiscountsAsync(token).ConfigureAwait(false);
                                 // Refresh permanent attribute changes due to essence loss
                                 await RefreshEssenceLossImprovementsAsync(token).ConfigureAwait(false);
                                 // Refresh dicepool modifiers due to filled condition monitor boxes
@@ -9587,9 +9763,9 @@ namespace Chummer
                                     await ClearInitiationsAsync(token).ConfigureAwait(false);
                             }
 
-                            while (_setPostLoadMethods.TryTake(out Func<bool> funcToCall))
+                            while (_setPostLoadMethods.TryTake(out Func<CancellationToken, bool> funcToCall))
                             {
-                                if (!funcToCall.Invoke())
+                                if (!funcToCall.Invoke(token))
                                     return false;
                             }
 
@@ -11537,9 +11713,9 @@ namespace Chummer
         /// <summary>
         /// Reset all of the Character information and start from scratch.
         /// </summary>
-        public void ResetCharacter()
+        public void ResetCharacter(CancellationToken token = default)
         {
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
                 _intFreeSpells = 0;
                 _intCFPLimit = 0;
@@ -11571,7 +11747,7 @@ namespace Chummer
                 _intCurrentLiftCarryHits = 0;
                 _decCachedBiowareEssence = decimal.MinValue;
                 _decCachedCyberwareEssence = decimal.MinValue;
-                ResetCachedEssence();
+                ResetCachedEssence(token);
                 _decCachedEssenceHole = decimal.MinValue;
                 _decCachedPowerPointsUsed = decimal.MinValue;
                 _decCachedPrototypeTranshumanEssenceUsed = decimal.MinValue;
@@ -11602,8 +11778,8 @@ namespace Chummer
                 _blnCritterEnabled = false;
 
                 // Reset Attributes.
-                AttributeSection.Reset();
-                SkillsSection.Reset();
+                AttributeSection.Reset(token: token);
+                SkillsSection.Reset(token: token);
                 _blnMAGEnabled = false;
                 _blnRESEnabled = false;
                 _blnDEPEnabled = false;
@@ -11618,42 +11794,27 @@ namespace Chummer
 
                 _lstLinkedCharacters.Clear();
                 _intMainMugshotIndex = -1;
-                foreach (Image imgMugshot in _lstMugshots)
-                    imgMugshot.Dispose();
+                _lstMugshots.ForEach(x => x.Dispose(), token);
                 _lstMugshots.Clear();
-                foreach (Contact objContact in _lstContacts)
-                    objContact.Dispose();
+                _lstContacts.ForEach(x => x.Dispose(), token);
                 _lstContacts.Clear();
-                foreach (Spirit objSpirit in _lstSpirits)
-                    objSpirit.Dispose();
+                _lstSpirits.ForEach(x => x.Dispose(), token);
                 _lstSpirits.Clear();
-                foreach (Armor objItem in _lstArmor)
-                    objItem.Dispose();
-                foreach (Weapon objItem in _lstWeapons)
-                    objItem.Dispose();
-                foreach (Gear objItem in _lstGear)
-                    objItem.Dispose();
-                foreach (Cyberware objItem in _lstCyberware)
-                    objItem.Dispose();
-                foreach (Vehicle objItem in _lstVehicles)
-                    objItem.Dispose();
-                foreach (Lifestyle objItem in _lstLifestyles)
-                    objItem.Dispose();
-                foreach (Spell objItem in _lstSpells)
-                    objItem.Dispose();
-                foreach (Power objItem in _lstPowers)
-                    objItem.Dispose();
-                foreach (MartialArt objItem in _lstMartialArts)
-                    objItem.Dispose();
-                foreach (StackedFocus objItem in _lstStackedFoci)
-                    objItem.Dispose();
-                foreach (Drug objItem in _lstDrugs)
-                    objItem.Dispose();
-                foreach (MentorSpirit objItem in _lstMentorSpirits)
-                    objItem.Dispose();
+                _lstArmor.ForEach(x => x.Dispose(), token);
+                _lstWeapons.ForEach(x => x.Dispose(), token);
+                _lstGear.ForEach(x => x.Dispose(), token);
+                _lstCyberware.ForEach(x => x.Dispose(), token);
+                _lstVehicles.ForEach(x => x.Dispose(), token);
+                _lstLifestyles.ForEach(x => x.Dispose(), token);
+                _lstSpells.ForEach(x => x.Dispose(), token);
+                _lstPowers.ForEach(x => x.Dispose(), token);
+                _lstMartialArts.ForEach(x => x.Dispose(), token);
+                _lstStackedFoci.ForEach(x => x.Dispose(), token);
+                _lstDrugs.ForEach(x => x.Dispose(), token);
+                _lstMentorSpirits.ForEach(x => x.Dispose(), token);
                 // Reset all of the Lists.
                 // This kills the GC
-                ImprovementManager.ClearCachedValues(this);
+                ImprovementManager.ClearCachedValues(this, token);
                 _lstImprovements.Clear();
                 _lstSpells.Clear();
                 _lstSustainedObjects.Clear();
@@ -13055,7 +13216,7 @@ namespace Chummer
                 {
                     intOldImprovementCount = Improvements.Count;
                     // Relying on (a lack of) GetObjectName is slower than ideal, but much easier to maintain
-                    Improvements.RemoveAll(x => string.IsNullOrEmpty(GetObjectName(x, GlobalSettings.DefaultLanguage, token)));
+                    Improvements.RemoveAll(x => string.IsNullOrEmpty(GetObjectName(x, GlobalSettings.DefaultLanguage, token)), token);
                     intNewImprovementCount = Improvements.Count;
                 }
             }
@@ -13128,7 +13289,7 @@ namespace Chummer
                 {
                     if (Settings != null)
                     {
-                        sbdFilter.Append('(').Append(Settings.BookXPath()).Append(") and ");
+                        sbdFilter.Append('(').Append(Settings.BookXPath(token: token)).Append(") and ");
                         if (!IgnoreRules && !Created && !blnIgnoreBannedGrades)
                         {
                             foreach (string strBannedGrade in Settings.BannedWareGrades)
@@ -13893,7 +14054,7 @@ namespace Chummer
                 // if the passed list is still the root, assume we're looking for default categories. Special cases like vehicle modcategories are expected to be passed through by the parameter.
                 if (xmlCategoryList.Name == "chummer")
                 {
-                    xmlCategoryList = xmlCategoryList.SelectSingleNodeAndCacheExpression("categories");
+                    xmlCategoryList = xmlCategoryList.SelectSingleNodeAndCacheExpression("categories", token);
                     if (xmlCategoryList == null)
                         yield break;
                 }
@@ -13909,10 +14070,10 @@ namespace Chummer
                     }
 
                     // For each category node, split the comma-separated blackmarket attribute (if present on the node), then add each category where any of those items matches a Black Market Pipeline improvement.
-                    foreach (XPathNavigator xmlCategoryNode in xmlCategoryList.SelectAndCacheExpression("category"))
+                    foreach (XPathNavigator xmlCategoryNode in xmlCategoryList.SelectAndCacheExpression("category", token))
                     {
                         string strBlackMarketAttribute
-                            = xmlCategoryNode.SelectSingleNodeAndCacheExpression("@blackmarket")?.Value;
+                            = xmlCategoryNode.SelectSingleNodeAndCacheExpression("@blackmarket", token)?.Value;
                         if (!string.IsNullOrEmpty(strBlackMarketAttribute) &&
                             strBlackMarketAttribute.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
                                                    .Any(x => setNames.Contains(x)))
@@ -13922,6 +14083,54 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Creates a list of keywords for each category of an XML node. Used to preselect whether items of that category are discounted by the Black Market Pipeline quality.
+        /// </summary>
+        public async ValueTask<List<string>> GenerateBlackMarketMappingsAsync(XPathNavigator xmlCategoryList, CancellationToken token = default)
+        {
+            List<string> lstReturn = new List<string>();
+            if (xmlCategoryList == null)
+                return lstReturn;
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                // Character has no Black Market discount qualities. Fail out early.
+                if (!BlackMarketDiscount)
+                    return lstReturn;
+                // if the passed list is still the root, assume we're looking for default categories. Special cases like vehicle modcategories are expected to be passed through by the parameter.
+                if (xmlCategoryList.Name == "chummer")
+                {
+                    xmlCategoryList = await xmlCategoryList.SelectSingleNodeAndCacheExpressionAsync("categories", token).ConfigureAwait(false);
+                    if (xmlCategoryList == null)
+                        return lstReturn;
+                }
+
+                // Get all the improved names of the Black Market Pipeline improvements. In most cases this should only be 1 item, but supports custom content.
+                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                out HashSet<string> setNames))
+                {
+                    foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                 this, Improvement.ImprovementType.BlackMarketDiscount, token: token).ConfigureAwait(false))
+                    {
+                        setNames.Add(objImprovement.ImprovedName);
+                    }
+
+                    // For each category node, split the comma-separated blackmarket attribute (if present on the node), then add each category where any of those items matches a Black Market Pipeline improvement.
+                    foreach (XPathNavigator xmlCategoryNode in await xmlCategoryList.SelectAndCacheExpressionAsync("category", token).ConfigureAwait(false))
+                    {
+                        string strBlackMarketAttribute
+                            = (await xmlCategoryNode.SelectSingleNodeAndCacheExpressionAsync("@blackmarket", token).ConfigureAwait(false))?.Value;
+                        if (!string.IsNullOrEmpty(strBlackMarketAttribute) &&
+                            strBlackMarketAttribute.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
+                                                   .Any(x => setNames.Contains(x)))
+                        {
+                            lstReturn.Add(xmlCategoryNode.Value);
+                        }
+                    }
+                }
+            }
+            return lstReturn;
         }
 
         /// <summary>
@@ -14506,7 +14715,7 @@ namespace Chummer
                                         continue;
                                     // Remove the Improvements created by the Spell.
                                     ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Spell,
-                                        objToRemove.InternalId);
+                                        objToRemove.InternalId, token: token);
                                     Spells.RemoveAt(i);
                                 }
                             }
@@ -14548,7 +14757,7 @@ namespace Chummer
                         {
                             // Remove the Improvements created by the Power.
                             ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Power,
-                                objToRemove.InternalId);
+                                objToRemove.InternalId, token: token);
                             Powers.RemoveAt(i);
                         }
                         else
@@ -14575,7 +14784,7 @@ namespace Chummer
                         {
                             // Remove the Improvements created by the Spell.
                             ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.ComplexForm,
-                                objToRemove.InternalId);
+                                objToRemove.InternalId, token: token);
                             ComplexForms.RemoveAt(i);
                         }
                     }
@@ -14612,7 +14821,7 @@ namespace Chummer
                         {
                             // Remove the Improvements created by the Program.
                             ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.AIProgram,
-                                objToRemove.InternalId);
+                                objToRemove.InternalId, token: token);
                             AIPrograms.RemoveAt(i);
                         }
                     }
@@ -14674,7 +14883,7 @@ namespace Chummer
                                 strEntry + strDisabledSource
                                          + objCyberware.CurrentDisplayNameShort,
                                 ExpenseType.Nuyen, DateTime.Now);
-                            ExpenseEntries.AddWithSort(objExpense);
+                            ExpenseEntries.AddWithSort(objExpense, token: token);
                         }
                     }
                 }
@@ -14697,7 +14906,7 @@ namespace Chummer
                         {
                             // Remove the Improvements created by the Metamagic.
                             ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.CritterPower,
-                                objToRemove.InternalId);
+                                objToRemove.InternalId, token: token);
                             CritterPowers.RemoveAt(i);
                         }
                     }
@@ -15215,7 +15424,7 @@ namespace Chummer
             using (LockObject.EnterWriteLock(token))
             {
                 xmlSavedNode.TryGetInt32FieldQuickly("mainmugshotindex", ref _intMainMugshotIndex);
-                XPathNodeIterator xmlMugshotsList = xmlSavedNode.SelectAndCacheExpression("mugshots/mugshot");
+                XPathNodeIterator xmlMugshotsList = xmlSavedNode.SelectAndCacheExpression("mugshots/mugshot", token);
                 List<string> lstMugshotsBase64 = new List<string>(xmlMugshotsList.Count);
                 foreach (XPathNavigator objXmlMugshot in xmlMugshotsList)
                 {
@@ -15241,7 +15450,7 @@ namespace Chummer
                 // Legacy Shimmer
                 if (Mugshots.Count == 0)
                 {
-                    XPathNavigator objOldMugshotNode = xmlSavedNode.SelectSingleNodeAndCacheExpression("mugshot");
+                    XPathNavigator objOldMugshotNode = xmlSavedNode.SelectSingleNodeAndCacheExpression("mugshot", token);
                     string strMugshot = objOldMugshotNode?.Value;
                     if (!string.IsNullOrWhiteSpace(strMugshot))
                     {
@@ -16165,17 +16374,17 @@ namespace Chummer
             }
         }
 
-        private bool RefreshAstralReputationImprovements()
+        private bool RefreshAstralReputationImprovements(CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 if (IsLoading) // Not all improvements are guaranteed to have been loaded in, so just skip the refresh until the end
                 {
-                    EnqueuePostLoadMethod(RefreshAstralReputationImprovements);
+                    EnqueuePostLoadMethod(RefreshAstralReputationImprovements, token);
                     return true;
                 }
 
-                using (LockObject.EnterWriteLock())
+                using (LockObject.EnterWriteLock(token))
                 {
                     int intCurrentTotalAstralReputation = TotalAstralReputation;
                     List<Improvement> lstCurrentAstralReputationImprovements = Improvements
@@ -16184,36 +16393,46 @@ namespace Chummer
                                                                                        .AstralReputation).ToList();
                     if (lstCurrentAstralReputationImprovements.All(x => x.Value == -intCurrentTotalAstralReputation))
                         return true;
-                    ImprovementManager.RemoveImprovements(this, lstCurrentAstralReputationImprovements);
-                    ImprovementManager.CreateImprovement(this, "Summoning",
-                                                         Improvement.ImprovementSource.AstralReputation,
-                                                         nameof(TotalAstralReputation).ToUpperInvariant(),
-                                                         Improvement.ImprovementType.Skill,
-                                                         Guid.NewGuid()
-                                                             .ToString("D", GlobalSettings.InvariantCultureInfo),
-                                                         -intCurrentTotalAstralReputation);
-                    ImprovementManager.CreateImprovement(this, "Binding",
-                                                         Improvement.ImprovementSource.AstralReputation,
-                                                         nameof(TotalAstralReputation).ToUpperInvariant(),
-                                                         Improvement.ImprovementType.Skill,
-                                                         Guid.NewGuid()
-                                                             .ToString("D", GlobalSettings.InvariantCultureInfo),
-                                                         -intCurrentTotalAstralReputation);
-                    ImprovementManager.CreateImprovement(this, "Banishing",
-                                                         Improvement.ImprovementSource.AstralReputation,
-                                                         nameof(TotalAstralReputation).ToUpperInvariant(),
-                                                         Improvement.ImprovementType.Skill,
-                                                         Guid.NewGuid()
-                                                             .ToString("D", GlobalSettings.InvariantCultureInfo),
-                                                         -intCurrentTotalAstralReputation);
-                    if (intCurrentTotalAstralReputation >= 3)
-                        ImprovementManager.CreateImprovement(this, "Chain Breaker",
+                    ImprovementManager.RemoveImprovements(this, lstCurrentAstralReputationImprovements, token: token);
+                    try
+                    {
+                        ImprovementManager.CreateImprovement(this, "Summoning",
                                                              Improvement.ImprovementSource.AstralReputation,
                                                              nameof(TotalAstralReputation).ToUpperInvariant(),
-                                                             Improvement.ImprovementType.DisableQuality,
+                                                             Improvement.ImprovementType.Skill,
                                                              Guid.NewGuid()
                                                                  .ToString("D", GlobalSettings.InvariantCultureInfo),
-                                                             -intCurrentTotalAstralReputation);
+                                                             -intCurrentTotalAstralReputation, token: token);
+                        ImprovementManager.CreateImprovement(this, "Binding",
+                                                             Improvement.ImprovementSource.AstralReputation,
+                                                             nameof(TotalAstralReputation).ToUpperInvariant(),
+                                                             Improvement.ImprovementType.Skill,
+                                                             Guid.NewGuid()
+                                                                 .ToString("D", GlobalSettings.InvariantCultureInfo),
+                                                             -intCurrentTotalAstralReputation, token: token);
+                        ImprovementManager.CreateImprovement(this, "Banishing",
+                                                             Improvement.ImprovementSource.AstralReputation,
+                                                             nameof(TotalAstralReputation).ToUpperInvariant(),
+                                                             Improvement.ImprovementType.Skill,
+                                                             Guid.NewGuid()
+                                                                 .ToString("D", GlobalSettings.InvariantCultureInfo),
+                                                             -intCurrentTotalAstralReputation, token: token);
+                        if (intCurrentTotalAstralReputation >= 3)
+                            ImprovementManager.CreateImprovement(this, "Chain Breaker",
+                                                                 Improvement.ImprovementSource.AstralReputation,
+                                                                 nameof(TotalAstralReputation).ToUpperInvariant(),
+                                                                 Improvement.ImprovementType.DisableQuality,
+                                                                 Guid.NewGuid()
+                                                                     .ToString(
+                                                                         "D", GlobalSettings.InvariantCultureInfo),
+                                                                 -intCurrentTotalAstralReputation, token: token);
+                    }
+                    catch
+                    {
+                        ImprovementManager.Rollback(this, CancellationToken.None);
+                        throw;
+                    }
+
                     ImprovementManager.Commit(this);
                     return true;
                 }
@@ -18656,25 +18875,37 @@ namespace Chummer
                         }
                         else if (blnFirstInitiation)
                         {
-                            // Create the new Improvement.
-                            ImprovementManager.CreateImprovement(this, "MAG", Improvement.ImprovementSource.Initiation,
-                                                                 string.Empty, Improvement.ImprovementType.Attribute,
-                                                                 string.Empty, 0, value, 0, 1);
-                            ImprovementManager.CreateImprovement(this, "MAGAdept",
-                                                                 Improvement.ImprovementSource.Initiation,
-                                                                 string.Empty, Improvement.ImprovementType.Attribute,
-                                                                 string.Empty, 0, value, 0, 1);
-                            ImprovementManager.Commit(this);
-                            // Update any Metamagic Improvements the character might have.
-                            foreach (Metamagic objMetamagic in Metamagics.Where(
-                                         x => x.SourceType == Improvement.ImprovementSource.Metamagic
-                                              && x.Bonus?.InnerXml.Contains("Rating") == true))
+                            try
                             {
-                                ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Metamagic,
-                                                                      objMetamagic.InternalId, objMetamagic.Bonus,
-                                                                      value,
-                                                                      objMetamagic.CurrentDisplayNameShort);
+                                // Create the new Improvement.
+                                ImprovementManager.CreateImprovement(this, "MAG",
+                                                                     Improvement.ImprovementSource.Initiation,
+                                                                     string.Empty,
+                                                                     Improvement.ImprovementType.Attribute,
+                                                                     string.Empty, 0, value, 0, 1);
+                                ImprovementManager.CreateImprovement(this, "MAGAdept",
+                                                                     Improvement.ImprovementSource.Initiation,
+                                                                     string.Empty,
+                                                                     Improvement.ImprovementType.Attribute,
+                                                                     string.Empty, 0, value, 0, 1);
+                                // Update any Metamagic Improvements the character might have.
+                                foreach (Metamagic objMetamagic in Metamagics.Where(
+                                             x => x.SourceType == Improvement.ImprovementSource.Metamagic
+                                                  && x.Bonus?.InnerXml.Contains("Rating") == true))
+                                {
+                                    ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Metamagic,
+                                                                          objMetamagic.InternalId, objMetamagic.Bonus,
+                                                                          value,
+                                                                          objMetamagic.CurrentDisplayNameShort);
+                                }
                             }
+                            catch
+                            {
+                                ImprovementManager.Rollback(this, CancellationToken.None);
+                                throw;
+                            }
+
+                            ImprovementManager.Commit(this);
                         }
                         else
                         {
@@ -18692,16 +18923,25 @@ namespace Chummer
                             if (!blnFoundImprovement)
                             {
                                 // Create the new Improvement.
-                                ImprovementManager.CreateImprovement(this, "MAG",
-                                                                     Improvement.ImprovementSource.Initiation,
-                                                                     string.Empty,
-                                                                     Improvement.ImprovementType.Attribute,
-                                                                     string.Empty, 0, value, 0, 1);
-                                ImprovementManager.CreateImprovement(this, "MAGAdept",
-                                                                     Improvement.ImprovementSource.Initiation,
-                                                                     string.Empty,
-                                                                     Improvement.ImprovementType.Attribute,
-                                                                     string.Empty, 0, value, 0, 1);
+                                try
+                                {
+                                    ImprovementManager.CreateImprovement(this, "MAG",
+                                                                         Improvement.ImprovementSource.Initiation,
+                                                                         string.Empty,
+                                                                         Improvement.ImprovementType.Attribute,
+                                                                         string.Empty, 0, value, 0, 1);
+                                    ImprovementManager.CreateImprovement(this, "MAGAdept",
+                                                                         Improvement.ImprovementSource.Initiation,
+                                                                         string.Empty,
+                                                                         Improvement.ImprovementType.Attribute,
+                                                                         string.Empty, 0, value, 0, 1);
+                                }
+                                catch
+                                {
+                                    ImprovementManager.Rollback(this, CancellationToken.None);
+                                    throw;
+                                }
+
                                 ImprovementManager.Commit(this);
                             }
 
@@ -18726,9 +18966,20 @@ namespace Chummer
                                 // If the Bonus contains "Rating", refresh ratings of existing Improvements.
                                 if (!blnFoundImprovement)
                                 {
-                                    ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Metamagic,
-                                                                          strMetamagicId, objMetamagic.Bonus, value,
-                                                                          objMetamagic.CurrentDisplayNameShort);
+                                    try
+                                    {
+                                        ImprovementManager.CreateImprovements(
+                                            this, Improvement.ImprovementSource.Metamagic,
+                                            strMetamagicId, objMetamagic.Bonus, value,
+                                            objMetamagic.CurrentDisplayNameShort);
+                                    }
+                                    catch
+                                    {
+                                        ImprovementManager.Rollback(this, CancellationToken.None);
+                                        throw;
+                                    }
+
+                                    ImprovementManager.Commit(this);
                                 }
                             }
                         }
@@ -18784,31 +19035,40 @@ namespace Chummer
                     }
                     else if (blnFirstInitiation)
                     {
-                        // Create the new Improvement.
-                        await ImprovementManager.CreateImprovementAsync(
-                            this, "MAG", Improvement.ImprovementSource.Initiation,
-                            string.Empty, Improvement.ImprovementType.Attribute,
-                            string.Empty, 0, value, 0, 1, token: token).ConfigureAwait(false);
-                        await ImprovementManager.CreateImprovementAsync(this, "MAGAdept",
-                                                                        Improvement.ImprovementSource.Initiation,
-                                                                        string.Empty,
-                                                                        Improvement.ImprovementType.Attribute,
-                                                                        string.Empty, 0, value, 0, 1, token: token)
-                                                .ConfigureAwait(false);
-                        ImprovementManager.Commit(this);
-                        // Update any Metamagic Improvements the character might have.
-                        await Metamagics.ForEachAsync(async objMetamagic =>
+                        try
                         {
-                            if (objMetamagic.SourceType == Improvement.ImprovementSource.Metamagic
-                                && objMetamagic.Bonus?.InnerXml.Contains("Rating") == true)
+                            // Create the new Improvement.
+                            await ImprovementManager.CreateImprovementAsync(
+                                this, "MAG", Improvement.ImprovementSource.Initiation,
+                                string.Empty, Improvement.ImprovementType.Attribute,
+                                string.Empty, 0, value, 0, 1, token: token).ConfigureAwait(false);
+                            await ImprovementManager.CreateImprovementAsync(this, "MAGAdept",
+                                                                            Improvement.ImprovementSource.Initiation,
+                                                                            string.Empty,
+                                                                            Improvement.ImprovementType.Attribute,
+                                                                            string.Empty, 0, value, 0, 1, token: token)
+                                                    .ConfigureAwait(false);
+                            // Update any Metamagic Improvements the character might have.
+                            await Metamagics.ForEachAsync(async objMetamagic =>
                             {
-                                await ImprovementManager.CreateImprovementsAsync(
-                                    this, Improvement.ImprovementSource.Metamagic, objMetamagic.InternalId,
-                                    objMetamagic.Bonus, value,
-                                    await objMetamagic.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
-                                    token: token).ConfigureAwait(false);
-                            }
-                        }, token).ConfigureAwait(false);
+                                if (objMetamagic.SourceType == Improvement.ImprovementSource.Metamagic
+                                    && objMetamagic.Bonus?.InnerXml.Contains("Rating") == true)
+                                {
+                                    await ImprovementManager.CreateImprovementsAsync(
+                                        this, Improvement.ImprovementSource.Metamagic, objMetamagic.InternalId,
+                                        objMetamagic.Bonus, value,
+                                        await objMetamagic.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                                        token: token).ConfigureAwait(false);
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                        catch
+                        {
+                            await ImprovementManager.RollbackAsync(this, CancellationToken.None).ConfigureAwait(false);
+                            throw;
+                        }
+
+                        ImprovementManager.Commit(this);
                     }
                     else
                     {
@@ -18827,18 +19087,27 @@ namespace Chummer
                         if (!blnFoundImprovement)
                         {
                             // Create the new Improvement.
-                            await ImprovementManager.CreateImprovementAsync(this, "MAG",
-                                                                            Improvement.ImprovementSource.Initiation,
-                                                                            string.Empty,
-                                                                            Improvement.ImprovementType.Attribute,
-                                                                            string.Empty, 0, value, 0, 1, token: token)
-                                                    .ConfigureAwait(false);
-                            await ImprovementManager.CreateImprovementAsync(this, "MAGAdept",
-                                                                            Improvement.ImprovementSource.Initiation,
-                                                                            string.Empty,
-                                                                            Improvement.ImprovementType.Attribute,
-                                                                            string.Empty, 0, value, 0, 1, token: token)
-                                                    .ConfigureAwait(false);
+                            try
+                            {
+                                await ImprovementManager.CreateImprovementAsync(this, "MAG",
+                                                            Improvement.ImprovementSource.Initiation,
+                                                            string.Empty,
+                                                            Improvement.ImprovementType.Attribute,
+                                                            string.Empty, 0, value, 0, 1, token: token)
+                                                        .ConfigureAwait(false);
+                                await ImprovementManager.CreateImprovementAsync(this, "MAGAdept",
+                                                            Improvement.ImprovementSource.Initiation,
+                                                            string.Empty,
+                                                            Improvement.ImprovementType.Attribute,
+                                                            string.Empty, 0, value, 0, 1, token: token)
+                                                        .ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                await ImprovementManager.RollbackAsync(this, CancellationToken.None).ConfigureAwait(false);
+                                throw;
+                            }
+
                             ImprovementManager.Commit(this);
                         }
 
@@ -18867,11 +19136,22 @@ namespace Chummer
                                 // If the Bonus contains "Rating", refresh ratings of existing Improvements.
                                 if (!blnFoundImprovement)
                                 {
-                                    await ImprovementManager.CreateImprovementsAsync(
-                                        this, Improvement.ImprovementSource.Metamagic, strMetamagicId,
-                                        objMetamagic.Bonus, value,
-                                        await objMetamagic.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
-                                        token: token).ConfigureAwait(false);
+                                    try
+                                    {
+                                        await ImprovementManager.CreateImprovementsAsync(
+                                            this, Improvement.ImprovementSource.Metamagic, strMetamagicId,
+                                            objMetamagic.Bonus, value,
+                                            await objMetamagic.GetCurrentDisplayNameShortAsync(token)
+                                                              .ConfigureAwait(false),
+                                            token: token).ConfigureAwait(false);
+                                    }
+                                    catch
+                                    {
+                                        await ImprovementManager.RollbackAsync(this, CancellationToken.None).ConfigureAwait(false);
+                                        throw;
+                                    }
+
+                                    ImprovementManager.Commit(this);
                                 }
                             }
                         }, token).ConfigureAwait(false);
@@ -19964,21 +20244,30 @@ namespace Chummer
                         }
                         else if (blnFirstSubmersion)
                         {
-                            // Create the new Improvement.
-                            ImprovementManager.CreateImprovement(this, "RES", Improvement.ImprovementSource.Submersion,
-                                                                 string.Empty, Improvement.ImprovementType.Attribute,
-                                                                 string.Empty, 0, value, 0, 1);
-                            ImprovementManager.Commit(this);
-                            // Update any Echo Improvements the character might have.
-                            foreach (Metamagic objMetamagic in Metamagics.Where(
-                                         x => x.SourceType == Improvement.ImprovementSource.Echo
-                                              && x.Bonus?.InnerXml.Contains("Rating") == true))
+                            try
                             {
-                                ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Echo,
-                                                                      objMetamagic.InternalId, objMetamagic.Bonus,
-                                                                      value,
-                                                                      objMetamagic.CurrentDisplayNameShort);
+                                // Create the new Improvement.
+                                ImprovementManager.CreateImprovement(this, "RES", Improvement.ImprovementSource.Submersion,
+                                                                     string.Empty, Improvement.ImprovementType.Attribute,
+                                                                     string.Empty, 0, value, 0, 1);
+                                // Update any Echo Improvements the character might have.
+                                foreach (Metamagic objMetamagic in Metamagics.Where(
+                                             x => x.SourceType == Improvement.ImprovementSource.Echo
+                                                  && x.Bonus?.InnerXml.Contains("Rating") == true))
+                                {
+                                    ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Echo,
+                                                                          objMetamagic.InternalId, objMetamagic.Bonus,
+                                                                          value,
+                                                                          objMetamagic.CurrentDisplayNameShort);
+                                }
                             }
+                            catch
+                            {
+                                ImprovementManager.Rollback(this, CancellationToken.None);
+                                throw;
+                            }
+
+                            ImprovementManager.Commit(this);
                         }
                         else
                         {
@@ -19996,11 +20285,20 @@ namespace Chummer
                             if (!blnFoundImprovement)
                             {
                                 // Create the new Improvement.
-                                ImprovementManager.CreateImprovement(this, "RES",
-                                                                     Improvement.ImprovementSource.Submersion,
-                                                                     string.Empty,
-                                                                     Improvement.ImprovementType.Attribute,
-                                                                     string.Empty, 0, value, 0, 1);
+                                try
+                                {
+                                    ImprovementManager.CreateImprovement(this, "RES",
+                                                                         Improvement.ImprovementSource.Submersion,
+                                                                         string.Empty,
+                                                                         Improvement.ImprovementType.Attribute,
+                                                                         string.Empty, 0, value, 0, 1);
+                                }
+                                catch
+                                {
+                                    ImprovementManager.Rollback(this, CancellationToken.None);
+                                    throw;
+                                }
+
                                 ImprovementManager.Commit(this);
                             }
 
@@ -20025,9 +20323,19 @@ namespace Chummer
                                 // If the Bonus contains "Rating", refresh ratings of existing Improvements.
                                 if (!blnFoundImprovement)
                                 {
-                                    ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Echo,
-                                                                          strMetamagicId, objMetamagic.Bonus, value,
-                                                                          objMetamagic.CurrentDisplayNameShort);
+                                    try
+                                    {
+                                        ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Echo,
+                                                                              strMetamagicId, objMetamagic.Bonus, value,
+                                                                              objMetamagic.CurrentDisplayNameShort);
+                                    }
+                                    catch
+                                    {
+                                        ImprovementManager.Rollback(this, CancellationToken.None);
+                                        throw;
+                                    }
+
+                                    ImprovementManager.Commit(this);
                                 }
                             }
                         }
@@ -20083,25 +20391,34 @@ namespace Chummer
                     }
                     else if (blnFirstSubmersion)
                     {
-                        // Create the new Improvement.
-                        await ImprovementManager.CreateImprovementAsync(
-                            this, "RES", Improvement.ImprovementSource.Submersion,
-                            string.Empty, Improvement.ImprovementType.Attribute,
-                            string.Empty, 0, value, 0, 1, token: token).ConfigureAwait(false);
-                        ImprovementManager.Commit(this);
-                        // Update any Echo Improvements the character might have.
-                        await Metamagics.ForEachAsync(async objMetamagic =>
+                        try
                         {
-                            if (objMetamagic.SourceType == Improvement.ImprovementSource.Echo
-                                && objMetamagic.Bonus?.InnerXml.Contains("Rating") == true)
+                            // Create the new Improvement.
+                            await ImprovementManager.CreateImprovementAsync(
+                                this, "RES", Improvement.ImprovementSource.Submersion,
+                                string.Empty, Improvement.ImprovementType.Attribute,
+                                string.Empty, 0, value, 0, 1, token: token).ConfigureAwait(false);
+                            // Update any Echo Improvements the character might have.
+                            await Metamagics.ForEachAsync(async objMetamagic =>
                             {
-                                await ImprovementManager.CreateImprovementsAsync(
-                                    this, Improvement.ImprovementSource.Echo, objMetamagic.InternalId,
-                                    objMetamagic.Bonus, value,
-                                    await objMetamagic.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
-                                    token: token).ConfigureAwait(false);
-                            }
-                        }, token).ConfigureAwait(false);
+                                if (objMetamagic.SourceType == Improvement.ImprovementSource.Echo
+                                    && objMetamagic.Bonus?.InnerXml.Contains("Rating") == true)
+                                {
+                                    await ImprovementManager.CreateImprovementsAsync(
+                                        this, Improvement.ImprovementSource.Echo, objMetamagic.InternalId,
+                                        objMetamagic.Bonus, value,
+                                        await objMetamagic.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                                        token: token).ConfigureAwait(false);
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                        catch
+                        {
+                            await ImprovementManager.RollbackAsync(this, CancellationToken.None).ConfigureAwait(false);
+                            throw;
+                        }
+
+                        ImprovementManager.Commit(this);
                     }
                     else
                     {
@@ -20120,12 +20437,21 @@ namespace Chummer
                         if (!blnFoundImprovement)
                         {
                             // Create the new Improvement.
-                            await ImprovementManager.CreateImprovementAsync(this, "RES",
-                                                                            Improvement.ImprovementSource.Submersion,
-                                                                            string.Empty,
-                                                                            Improvement.ImprovementType.Attribute,
-                                                                            string.Empty, 0, value, 0, 1, token: token)
-                                                    .ConfigureAwait(false);
+                            try
+                            {
+                                await ImprovementManager.CreateImprovementAsync(this, "RES",
+                                                            Improvement.ImprovementSource.Submersion,
+                                                            string.Empty,
+                                                            Improvement.ImprovementType.Attribute,
+                                                            string.Empty, 0, value, 0, 1, token: token)
+                                                        .ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                await ImprovementManager.RollbackAsync(this, CancellationToken.None).ConfigureAwait(false);
+                                throw;
+                            }
+
                             ImprovementManager.Commit(this);
                         }
 
@@ -20154,11 +20480,22 @@ namespace Chummer
                                 // If the Bonus contains "Rating", refresh ratings of existing Improvements.
                                 if (!blnFoundImprovement)
                                 {
-                                    await ImprovementManager.CreateImprovementsAsync(
-                                        this, Improvement.ImprovementSource.Echo, strMetamagicId, objMetamagic.Bonus,
-                                        value,
-                                        await objMetamagic.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
-                                        token: token).ConfigureAwait(false);
+                                    try
+                                    {
+                                        await ImprovementManager.CreateImprovementsAsync(
+                                            this, Improvement.ImprovementSource.Echo, strMetamagicId,
+                                            objMetamagic.Bonus,
+                                            value,
+                                            await objMetamagic.GetCurrentDisplayNameShortAsync(token)
+                                                              .ConfigureAwait(false),
+                                            token: token).ConfigureAwait(false);
+                                    }
+                                    catch
+                                    {
+                                        await ImprovementManager.RollbackAsync(this, CancellationToken.None).ConfigureAwait(false);
+                                        throw;
+                                    }
+                                    ImprovementManager.Commit(this);
                                 }
                             }
                         }, token).ConfigureAwait(false);
@@ -28367,9 +28704,9 @@ namespace Chummer
                                                 .GetCachedImprovementListForValueOf(
                                                     this, Improvement.ImprovementType.DealerConnection).Count > 0;
 
-        public void RefreshDealerConnectionDiscounts()
+        public void RefreshDealerConnectionDiscounts(CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
                 if (IsLoading)
@@ -28385,17 +28722,53 @@ namespace Chummer
                                                                 out HashSet<string> setDealerConnectionMaps))
                 {
                     foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
-                                 this, Improvement.ImprovementType.DealerConnection))
+                                 this, Improvement.ImprovementType.DealerConnection, token: token))
                     {
+                        token.ThrowIfCancellationRequested();
                         setDealerConnectionMaps.Add(objImprovement.UniqueName);
                     }
 
                     foreach (Vehicle objVehicle in Vehicles)
                     {
+                        token.ThrowIfCancellationRequested();
                         objVehicle.DealerConnectionDiscount = objVehicle.DealerConnectionDiscount
                                                               && Vehicle.DoesDealerConnectionApply(
                                                                   setDealerConnectionMaps, objVehicle.Category);
                     }
+                }
+            }
+        }
+
+        public async ValueTask RefreshDealerConnectionDiscountsAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
+                if (IsLoading)
+                    return;
+
+                if (await GetCreatedAsync(token).ConfigureAwait(false))
+                    return; // Don't need to refresh properties in Career mode because costs are calculated immediately upon purchasing stuff
+
+                if (DealerConnectionDiscount)
+                    return;
+
+                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                out HashSet<string> setDealerConnectionMaps))
+                {
+                    foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                 this, Improvement.ImprovementType.DealerConnection, token: token).ConfigureAwait(false))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        setDealerConnectionMaps.Add(objImprovement.UniqueName);
+                    }
+
+                    await Vehicles.ForEachAsync(objVehicle =>
+                    {
+                        objVehicle.DealerConnectionDiscount = objVehicle.DealerConnectionDiscount
+                                                              && Vehicle.DoesDealerConnectionApply(
+                                                                  setDealerConnectionMaps, objVehicle.Category);
+                    }, token).ConfigureAwait(false);
                 }
             }
         }
@@ -28408,9 +28781,20 @@ namespace Chummer
                                                this, Improvement.ImprovementType.BlackMarketDiscount).Count
                                            > 0;
 
-        public void RefreshBlackMarketDiscounts()
+        /// <summary>
+        /// Whether or not Black Market Discount is enabled.
+        /// </summary>
+        public async ValueTask<bool> GetBlackMarketDiscountAsync(CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            return (await ImprovementManager
+                          .GetCachedImprovementListForValueOfAsync(
+                              this, Improvement.ImprovementType.BlackMarketDiscount, token: token).ConfigureAwait(false)).Count
+                   > 0;
+        }
+
+        public void RefreshBlackMarketDiscounts(CancellationToken token = default)
+        {
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
                 if (IsLoading)
@@ -28440,48 +28824,57 @@ namespace Chummer
                     using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                     out HashSet<string> setWeaponBlackMarketMaps))
                     {
-                        setArmorBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("armor.xml")
-                                                             .SelectSingleNodeAndCacheExpression("/chummer")));
-                        setArmorModBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("armor.xml")
+                        setArmorBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("armor.xml", token: token)
+                                                             .SelectSingleNodeAndCacheExpression("/chummer", token), token));
+                        setArmorModBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("armor.xml", token: token)
                                                                 .SelectSingleNodeAndCacheExpression(
-                                                                    "/chummer/modcategories")));
-                        setBiowareBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("bioware.xml")
-                                                               .SelectSingleNodeAndCacheExpression("/chummer")));
-                        setCyberwareBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("cyberware.xml")
-                                                                 .SelectSingleNodeAndCacheExpression("/chummer")));
-                        setGearBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("gear.xml")
-                                                            .SelectSingleNodeAndCacheExpression("/chummer")));
-                        setVehicleBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("vehicles.xml")
-                                                               .SelectSingleNodeAndCacheExpression("/chummer")));
-                        setVehicleModBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("vehicles.xml")
+                                                                    "/chummer/modcategories", token), token));
+                        setBiowareBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("bioware.xml", token: token)
+                                                               .SelectSingleNodeAndCacheExpression("/chummer", token), token));
+                        setCyberwareBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("cyberware.xml", token: token)
+                                                                 .SelectSingleNodeAndCacheExpression("/chummer", token), token));
+                        setGearBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("gear.xml", token: token)
+                                                            .SelectSingleNodeAndCacheExpression("/chummer", token), token));
+                        setVehicleBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("vehicles.xml", token: token)
+                                                               .SelectSingleNodeAndCacheExpression("/chummer", token), token));
+                        setVehicleModBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("vehicles.xml", token: token)
                                                                   .SelectSingleNodeAndCacheExpression(
-                                                                      "/chummer/modcategories")));
-                        setWeaponMountBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("vehicles.xml")
+                                                                      "/chummer/modcategories", token), token));
+                        setWeaponMountBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("vehicles.xml", token: token)
                                                                    .SelectSingleNodeAndCacheExpression(
-                                                                       "/chummer/weaponmountcategories")));
-                        setWeaponBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("weapons.xml")
-                                                              .SelectSingleNodeAndCacheExpression("/chummer")));
+                                                                       "/chummer/weaponmountcategories", token), token));
+                        setWeaponBlackMarketMaps.AddRange(GenerateBlackMarketMappings(LoadDataXPath("weapons.xml", token: token)
+                                                              .SelectSingleNodeAndCacheExpression("/chummer", token), token));
 
                         foreach (Armor objArmor in Armor)
                         {
+                            token.ThrowIfCancellationRequested();
                             objArmor.DiscountCost
                                 = objArmor.DiscountCost && setArmorBlackMarketMaps.Contains(objArmor.Category);
                             foreach (ArmorMod objMod in objArmor.ArmorMods)
                             {
+                                token.ThrowIfCancellationRequested();
                                 objMod.DiscountCost = objMod.DiscountCost
                                                       && setArmorModBlackMarketMaps.Contains(objMod.Category);
                                 foreach (Gear objGear in objMod.GearChildren.GetAllDescendants(x => x.Children))
+                                {
+                                    token.ThrowIfCancellationRequested();
                                     objGear.DiscountCost = objGear.DiscountCost
                                                            && setGearBlackMarketMaps.Contains(objGear.Category);
+                                }
                             }
 
                             foreach (Gear objGear in objArmor.GearChildren.GetAllDescendants(x => x.Children))
+                            {
+                                token.ThrowIfCancellationRequested();
                                 objGear.DiscountCost
                                     = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
+                            }
                         }
 
                         foreach (Cyberware objCyberware in Cyberware.GetAllDescendants(x => x.Children))
                         {
+                            token.ThrowIfCancellationRequested();
                             if (objCyberware.DiscountCost)
                             {
                                 objCyberware.DiscountCost
@@ -28491,28 +28884,41 @@ namespace Chummer
                             }
 
                             foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(x => x.Children))
+                            {
+                                token.ThrowIfCancellationRequested();
                                 objGear.DiscountCost
                                     = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
+                            }
                         }
 
                         foreach (Gear objGear in Gear.GetAllDescendants(x => x.Children))
+                        {
+                            token.ThrowIfCancellationRequested();
                             objGear.DiscountCost
                                 = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
+                        }
 
                         foreach (Vehicle objVehicle in Vehicles)
                         {
+                            token.ThrowIfCancellationRequested();
                             objVehicle.DiscountCost = objVehicle.DiscountCost
                                                       && setVehicleBlackMarketMaps.Contains(objVehicle.Category);
                             foreach (Gear objGear in objVehicle.GearChildren.GetAllDescendants(x => x.Children))
+                            {
+                                token.ThrowIfCancellationRequested();
                                 objGear.DiscountCost
                                     = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
+                            }
+
                             foreach (VehicleMod objMod in objVehicle.Mods)
                             {
+                                token.ThrowIfCancellationRequested();
                                 objMod.DiscountCost = objMod.DiscountCost
                                                       && setVehicleModBlackMarketMaps.Contains(objMod.Category);
                                 foreach (Cyberware objCyberware in objMod.Cyberware.GetAllDescendants(
                                              x => x.Children))
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     if (objCyberware.DiscountCost)
                                     {
                                         objCyberware.DiscountCost
@@ -28523,39 +28929,50 @@ namespace Chummer
 
                                     foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(
                                                  x => x.Children))
+                                    {
+                                        token.ThrowIfCancellationRequested();
                                         objGear.DiscountCost = objGear.DiscountCost
                                                                && setGearBlackMarketMaps.Contains(objGear.Category);
+                                    }
                                 }
                             }
 
                             foreach (Weapon objWeapon in objVehicle.Weapons.GetAllDescendants(x => x.Children))
                             {
+                                token.ThrowIfCancellationRequested();
                                 objWeapon.DiscountCost = objWeapon.DiscountCost
                                                          && setWeaponBlackMarketMaps.Contains(objWeapon.Category);
                                 foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     objAccessory.DiscountCost = objAccessory.DiscountCost
                                                                 && setWeaponBlackMarketMaps
                                                                     .Contains(objWeapon.Category);
                                     foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(
                                                  x => x.Children))
+                                    {
+                                        token.ThrowIfCancellationRequested();
                                         objGear.DiscountCost = objGear.DiscountCost
                                                                && setGearBlackMarketMaps.Contains(objGear.Category);
+                                    }
                                 }
                             }
 
                             foreach (WeaponMount objMount in objVehicle.WeaponMounts)
                             {
+                                token.ThrowIfCancellationRequested();
                                 objMount.DiscountCost = objMount.DiscountCost
                                                         && setWeaponMountBlackMarketMaps
                                                             .Contains(objMount.Category);
                                 foreach (VehicleMod objMod in objMount.Mods)
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     objMod.DiscountCost = objMod.DiscountCost
                                                           && setVehicleModBlackMarketMaps.Contains(objMod.Category);
                                     foreach (Cyberware objCyberware in objMod.Cyberware.GetAllDescendants(
                                                  x => x.Children))
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         if (objCyberware.DiscountCost)
                                         {
                                             objCyberware.DiscountCost
@@ -28566,27 +28983,35 @@ namespace Chummer
 
                                         foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(
                                                      x => x.Children))
+                                        {
+                                            token.ThrowIfCancellationRequested();
                                             objGear.DiscountCost = objGear.DiscountCost
                                                                    && setGearBlackMarketMaps.Contains(
                                                                        objGear.Category);
+                                        }
                                     }
                                 }
 
                                 foreach (Weapon objWeapon in objMount.Weapons.GetAllDescendants(x => x.Children))
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     objWeapon.DiscountCost = objWeapon.DiscountCost
                                                              && setWeaponBlackMarketMaps.Contains(
                                                                  objWeapon.Category);
                                     foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         objAccessory.DiscountCost = objAccessory.DiscountCost
                                                                     && setWeaponBlackMarketMaps
                                                                         .Contains(objWeapon.Category);
                                         foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(
                                                      x => x.Children))
+                                        {
+                                            token.ThrowIfCancellationRequested();
                                             objGear.DiscountCost = objGear.DiscountCost
                                                                    && setGearBlackMarketMaps.Contains(
                                                                        objGear.Category);
+                                        }
                                     }
                                 }
                             }
@@ -28594,17 +29019,22 @@ namespace Chummer
 
                         foreach (Weapon objWeapon in Weapons.GetAllDescendants(x => x.Children))
                         {
+                            token.ThrowIfCancellationRequested();
                             objWeapon.DiscountCost = objWeapon.DiscountCost
                                                      && setWeaponBlackMarketMaps.Contains(objWeapon.Category);
                             foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                             {
+                                token.ThrowIfCancellationRequested();
                                 objAccessory.DiscountCost = objAccessory.DiscountCost
                                                             && setWeaponBlackMarketMaps
                                                                 .Contains(objWeapon.Category);
                                 foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(
                                              x => x.Children))
+                                {
+                                    token.ThrowIfCancellationRequested();
                                     objGear.DiscountCost = objGear.DiscountCost
                                                            && setGearBlackMarketMaps.Contains(objGear.Category);
+                                }
                             }
                         }
                     }
@@ -28614,82 +29044,123 @@ namespace Chummer
                     // Forcefully disable all Black Market Discounts that don't apply.
                     foreach (Armor objArmor in Armor)
                     {
+                        token.ThrowIfCancellationRequested();
                         objArmor.DiscountCost = false;
                         foreach (ArmorMod objMod in objArmor.ArmorMods)
                         {
+                            token.ThrowIfCancellationRequested();
                             objMod.DiscountCost = false;
                             foreach (Gear objGear in objMod.GearChildren.GetAllDescendants(x => x.Children))
+                            {
+                                token.ThrowIfCancellationRequested();
                                 objGear.DiscountCost = false;
+                            }
                         }
 
                         foreach (Gear objGear in objArmor.GearChildren.GetAllDescendants(x => x.Children))
+                        {
+                            token.ThrowIfCancellationRequested();
                             objGear.DiscountCost = false;
+                        }
                     }
 
                     foreach (Cyberware objCyberware in Cyberware.GetAllDescendants(x => x.Children))
                     {
+                        token.ThrowIfCancellationRequested();
                         objCyberware.DiscountCost = false;
                         foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(x => x.Children))
+                        {
+                            token.ThrowIfCancellationRequested();
                             objGear.DiscountCost = false;
+                        }
                     }
 
                     foreach (Gear objGear in Gear.GetAllDescendants(x => x.Children))
+                    {
+                        token.ThrowIfCancellationRequested();
                         objGear.DiscountCost = false;
+                    }
 
                     foreach (Vehicle objVehicle in Vehicles)
                     {
+                        token.ThrowIfCancellationRequested();
                         objVehicle.DiscountCost = false;
                         foreach (Gear objGear in objVehicle.GearChildren.GetAllDescendants(x => x.Children))
+                        {
+                            token.ThrowIfCancellationRequested();
                             objGear.DiscountCost = false;
+                        }
+
                         foreach (VehicleMod objMod in objVehicle.Mods)
                         {
+                            token.ThrowIfCancellationRequested();
                             objMod.DiscountCost = false;
                             foreach (Cyberware objCyberware in objMod.Cyberware.GetAllDescendants(x => x.Children))
                             {
+                                token.ThrowIfCancellationRequested();
                                 objCyberware.DiscountCost = false;
                                 foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(
                                              x => x.Children))
+                                {
+                                    token.ThrowIfCancellationRequested();
                                     objGear.DiscountCost = false;
+                                }
                             }
                         }
 
                         foreach (Weapon objWeapon in objVehicle.Weapons.GetAllDescendants(x => x.Children))
                         {
+                            token.ThrowIfCancellationRequested();
                             objWeapon.DiscountCost = false;
                             foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                             {
+                                token.ThrowIfCancellationRequested();
                                 objAccessory.DiscountCost = false;
                                 foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(
                                              x => x.Children))
+                                {
+                                    token.ThrowIfCancellationRequested();
                                     objGear.DiscountCost = false;
+                                }
                             }
                         }
 
                         foreach (WeaponMount objMount in objVehicle.WeaponMounts)
                         {
+                            token.ThrowIfCancellationRequested();
                             objMount.DiscountCost = false;
                             foreach (VehicleMod objMod in objMount.Mods)
                             {
+                                token.ThrowIfCancellationRequested();
                                 objMod.DiscountCost = false;
                                 foreach (Cyberware objCyberware in objMod.Cyberware.GetAllDescendants(
                                              x => x.Children))
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     objCyberware.DiscountCost = false;
                                     foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(
                                                  x => x.Children))
+                                    {
+                                        token.ThrowIfCancellationRequested();
                                         objGear.DiscountCost = false;
+                                    }
                                 }
                             }
 
                             foreach (Weapon objWeapon in objMount.Weapons.GetAllDescendants(x => x.Children))
                             {
+                                token.ThrowIfCancellationRequested();
                                 objWeapon.DiscountCost = false;
                                 foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     objAccessory.DiscountCost = false;
                                     foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(
                                                  x => x.Children))
+                                    {
+                                        token.ThrowIfCancellationRequested();
                                         objGear.DiscountCost = false;
+                                    }
                                 }
                             }
                         }
@@ -28697,13 +29168,396 @@ namespace Chummer
 
                     foreach (Weapon objWeapon in Weapons.GetAllDescendants(x => x.Children))
                     {
+                        token.ThrowIfCancellationRequested();
                         objWeapon.DiscountCost = false;
                         foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
                         {
+                            token.ThrowIfCancellationRequested();
                             objAccessory.DiscountCost = false;
                             foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(x => x.Children))
+                            {
+                                token.ThrowIfCancellationRequested();
                                 objGear.DiscountCost = false;
+                            }
                         }
+                    }
+                }
+            }
+        }
+
+        public async ValueTask RefreshBlackMarketDiscountsAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
+                if (IsLoading)
+                    return;
+
+                if (await GetCreatedAsync(token).ConfigureAwait(false))
+                    return; // Don't need to refresh properties in Career mode because costs are calculated immediately upon purchasing stuff
+
+                if (await GetBlackMarketDiscountAsync(token).ConfigureAwait(false))
+                {
+                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                    out HashSet<string> setArmorBlackMarketMaps))
+                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                    out HashSet<string> setArmorModBlackMarketMaps))
+                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                    out HashSet<string> setBiowareBlackMarketMaps))
+                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                    out HashSet<string> setCyberwareBlackMarketMaps))
+                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                    out HashSet<string> setGearBlackMarketMaps))
+                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                    out HashSet<string> setVehicleBlackMarketMaps))
+                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                    out HashSet<string> setVehicleModBlackMarketMaps))
+                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                    out HashSet<string> setWeaponMountBlackMarketMaps))
+                    using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                    out HashSet<string> setWeaponBlackMarketMaps))
+                    {
+                        setArmorBlackMarketMaps.AddRange(await GenerateBlackMarketMappingsAsync(await (await LoadDataXPathAsync("armor.xml", token: token).ConfigureAwait(false))
+                                                             .SelectSingleNodeAndCacheExpressionAsync("/chummer", token).ConfigureAwait(false), token).ConfigureAwait(false));
+                        setArmorModBlackMarketMaps.AddRange(await GenerateBlackMarketMappingsAsync(await (await LoadDataXPathAsync("armor.xml", token: token).ConfigureAwait(false))
+                                                                .SelectSingleNodeAndCacheExpressionAsync(
+                                                                    "/chummer/modcategories", token).ConfigureAwait(false), token).ConfigureAwait(false));
+                        setBiowareBlackMarketMaps.AddRange(await GenerateBlackMarketMappingsAsync(await (await LoadDataXPathAsync("bioware.xml", token: token).ConfigureAwait(false))
+                                                               .SelectSingleNodeAndCacheExpressionAsync("/chummer", token).ConfigureAwait(false), token).ConfigureAwait(false));
+                        setCyberwareBlackMarketMaps.AddRange(await GenerateBlackMarketMappingsAsync(await (await LoadDataXPathAsync("cyberware.xml", token: token).ConfigureAwait(false))
+                                                                 .SelectSingleNodeAndCacheExpressionAsync("/chummer", token).ConfigureAwait(false), token).ConfigureAwait(false));
+                        setGearBlackMarketMaps.AddRange(await GenerateBlackMarketMappingsAsync(await (await LoadDataXPathAsync("gear.xml", token: token).ConfigureAwait(false))
+                                                            .SelectSingleNodeAndCacheExpressionAsync("/chummer", token).ConfigureAwait(false), token).ConfigureAwait(false));
+                        setVehicleBlackMarketMaps.AddRange(await GenerateBlackMarketMappingsAsync(await (await LoadDataXPathAsync("vehicles.xml", token: token).ConfigureAwait(false))
+                                                               .SelectSingleNodeAndCacheExpressionAsync("/chummer", token).ConfigureAwait(false), token).ConfigureAwait(false));
+                        setVehicleModBlackMarketMaps.AddRange(await GenerateBlackMarketMappingsAsync(await (await LoadDataXPathAsync("vehicles.xml", token: token).ConfigureAwait(false))
+                                                                  .SelectSingleNodeAndCacheExpressionAsync(
+                                                                      "/chummer/modcategories", token).ConfigureAwait(false), token).ConfigureAwait(false));
+                        setWeaponMountBlackMarketMaps.AddRange(await GenerateBlackMarketMappingsAsync(await (await LoadDataXPathAsync("vehicles.xml", token: token).ConfigureAwait(false))
+                                                                   .SelectSingleNodeAndCacheExpressionAsync(
+                                                                       "/chummer/weaponmountcategories", token).ConfigureAwait(false), token).ConfigureAwait(false));
+                        setWeaponBlackMarketMaps.AddRange(await GenerateBlackMarketMappingsAsync(await (await LoadDataXPathAsync("weapons.xml", token: token).ConfigureAwait(false))
+                                                              .SelectSingleNodeAndCacheExpressionAsync("/chummer", token).ConfigureAwait(false), token).ConfigureAwait(false));
+
+                        await Armor.ForEachAsync(async objArmor =>
+                        {
+                            objArmor.DiscountCost
+                                = objArmor.DiscountCost && setArmorBlackMarketMaps.Contains(objArmor.Category);
+                            await objArmor.ArmorMods.ForEachAsync(objMod =>
+                            {
+                                objMod.DiscountCost = objMod.DiscountCost
+                                                      && setArmorModBlackMarketMaps.Contains(objMod.Category);
+                                foreach (Gear objGear in objMod.GearChildren.GetAllDescendants(x => x.Children))
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    objGear.DiscountCost = objGear.DiscountCost
+                                                           && setGearBlackMarketMaps.Contains(objGear.Category);
+                                }
+                            }, token).ConfigureAwait(false);
+
+                            foreach (Gear objGear in objArmor.GearChildren.GetAllDescendants(x => x.Children))
+                            {
+                                token.ThrowIfCancellationRequested();
+                                objGear.DiscountCost
+                                    = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
+                            }
+                        }, token).ConfigureAwait(false);
+
+                        foreach (Cyberware objCyberware in Cyberware.GetAllDescendants(x => x.Children))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (objCyberware.DiscountCost)
+                            {
+                                objCyberware.DiscountCost
+                                    = (objCyberware.SourceType == Improvement.ImprovementSource.Bioware
+                                        ? setBiowareBlackMarketMaps
+                                        : setCyberwareBlackMarketMaps).Contains(objCyberware.Category);
+                            }
+
+                            foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(x => x.Children))
+                            {
+                                token.ThrowIfCancellationRequested();
+                                objGear.DiscountCost
+                                    = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
+                            }
+                        }
+
+                        foreach (Gear objGear in Gear.GetAllDescendants(x => x.Children))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            objGear.DiscountCost
+                                = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
+                        }
+
+                        await Vehicles.ForEachAsync(async objVehicle =>
+                        {
+                            objVehicle.DiscountCost = objVehicle.DiscountCost
+                                                      && setVehicleBlackMarketMaps.Contains(objVehicle.Category);
+                            foreach (Gear objGear in objVehicle.GearChildren.GetAllDescendants(x => x.Children))
+                            {
+                                token.ThrowIfCancellationRequested();
+                                objGear.DiscountCost
+                                    = objGear.DiscountCost && setGearBlackMarketMaps.Contains(objGear.Category);
+                            }
+
+                            await objVehicle.Mods.ForEachAsync(objMod =>
+                            {
+                                objMod.DiscountCost = objMod.DiscountCost
+                                                      && setVehicleModBlackMarketMaps.Contains(objMod.Category);
+                                foreach (Cyberware objCyberware in objMod.Cyberware.GetAllDescendants(
+                                             x => x.Children))
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    if (objCyberware.DiscountCost)
+                                    {
+                                        objCyberware.DiscountCost
+                                            = (objCyberware.SourceType == Improvement.ImprovementSource.Bioware
+                                                ? setBiowareBlackMarketMaps
+                                                : setCyberwareBlackMarketMaps).Contains(objCyberware.Category);
+                                    }
+
+                                    foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(
+                                                 x => x.Children))
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        objGear.DiscountCost = objGear.DiscountCost
+                                                               && setGearBlackMarketMaps.Contains(objGear.Category);
+                                    }
+                                }
+                            }, token).ConfigureAwait(false);
+
+                            foreach (Weapon objWeapon in objVehicle.Weapons.GetAllDescendants(x => x.Children))
+                            {
+                                token.ThrowIfCancellationRequested();
+                                objWeapon.DiscountCost = objWeapon.DiscountCost
+                                                         && setWeaponBlackMarketMaps.Contains(objWeapon.Category);
+                                await objWeapon.WeaponAccessories.ForEachAsync(objAccessory =>
+                                {
+                                    objAccessory.DiscountCost = objAccessory.DiscountCost
+                                                                && setWeaponBlackMarketMaps
+                                                                    .Contains(objWeapon.Category);
+                                    foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(
+                                                 x => x.Children))
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        objGear.DiscountCost = objGear.DiscountCost
+                                                               && setGearBlackMarketMaps.Contains(objGear.Category);
+                                    }
+                                }, token).ConfigureAwait(false);
+                            }
+
+                            await objVehicle.WeaponMounts.ForEachAsync(async objMount =>
+                            {
+                                objMount.DiscountCost = objMount.DiscountCost
+                                                        && setWeaponMountBlackMarketMaps
+                                                            .Contains(objMount.Category);
+                                await objMount.Mods.ForEachAsync(objMod =>
+                                {
+                                    objMod.DiscountCost = objMod.DiscountCost
+                                                          && setVehicleModBlackMarketMaps.Contains(objMod.Category);
+                                    foreach (Cyberware objCyberware in objMod.Cyberware.GetAllDescendants(
+                                                 x => x.Children))
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        if (objCyberware.DiscountCost)
+                                        {
+                                            objCyberware.DiscountCost
+                                                = (objCyberware.SourceType == Improvement.ImprovementSource.Bioware
+                                                    ? setBiowareBlackMarketMaps
+                                                    : setCyberwareBlackMarketMaps).Contains(objCyberware.Category);
+                                        }
+
+                                        foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(
+                                                     x => x.Children))
+                                        {
+                                            token.ThrowIfCancellationRequested();
+                                            objGear.DiscountCost = objGear.DiscountCost
+                                                                   && setGearBlackMarketMaps.Contains(
+                                                                       objGear.Category);
+                                        }
+                                    }
+                                }, token).ConfigureAwait(false);
+
+                                foreach (Weapon objWeapon in objMount.Weapons.GetAllDescendants(x => x.Children))
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    objWeapon.DiscountCost = objWeapon.DiscountCost
+                                                             && setWeaponBlackMarketMaps.Contains(
+                                                                 objWeapon.Category);
+                                    await objWeapon.WeaponAccessories.ForEachAsync(objAccessory =>
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        objAccessory.DiscountCost = objAccessory.DiscountCost
+                                                                    && setWeaponBlackMarketMaps
+                                                                        .Contains(objWeapon.Category);
+                                        foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(
+                                                     x => x.Children))
+                                        {
+                                            token.ThrowIfCancellationRequested();
+                                            objGear.DiscountCost = objGear.DiscountCost
+                                                                   && setGearBlackMarketMaps.Contains(
+                                                                       objGear.Category);
+                                        }
+                                    }, token).ConfigureAwait(false);
+                                }
+                            }, token).ConfigureAwait(false);
+                        }, token).ConfigureAwait(false);
+
+                        foreach (Weapon objWeapon in Weapons.GetAllDescendants(x => x.Children))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            objWeapon.DiscountCost = objWeapon.DiscountCost
+                                                     && setWeaponBlackMarketMaps.Contains(objWeapon.Category);
+                            await objWeapon.WeaponAccessories.ForEachAsync(objAccessory =>
+                            {
+                                token.ThrowIfCancellationRequested();
+                                objAccessory.DiscountCost = objAccessory.DiscountCost
+                                                            && setWeaponBlackMarketMaps
+                                                                .Contains(objWeapon.Category);
+                                foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(
+                                             x => x.Children))
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    objGear.DiscountCost = objGear.DiscountCost
+                                                           && setGearBlackMarketMaps.Contains(objGear.Category);
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                    }
+                }
+                else
+                {
+                    // Forcefully disable all Black Market Discounts that don't apply.
+                    await Armor.ForEachAsync(async objArmor =>
+                    {
+                        objArmor.DiscountCost = false;
+                        await objArmor.ArmorMods.ForEachAsync(objMod =>
+                        {
+                            objMod.DiscountCost = false;
+                            foreach (Gear objGear in objMod.GearChildren.GetAllDescendants(x => x.Children))
+                            {
+                                token.ThrowIfCancellationRequested();
+                                objGear.DiscountCost = false;
+                            }
+                        }, token).ConfigureAwait(false);
+
+                        foreach (Gear objGear in objArmor.GearChildren.GetAllDescendants(x => x.Children))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            objGear.DiscountCost = false;
+                        }
+                    }, token).ConfigureAwait(false);
+
+                    foreach (Cyberware objCyberware in Cyberware.GetAllDescendants(x => x.Children))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        objCyberware.DiscountCost = false;
+                        foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(x => x.Children))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            objGear.DiscountCost = false;
+                        }
+                    }
+
+                    foreach (Gear objGear in Gear.GetAllDescendants(x => x.Children))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        objGear.DiscountCost = false;
+                    }
+
+                    await Vehicles.ForEachAsync(async objVehicle =>
+                    {
+                        objVehicle.DiscountCost = false;
+                        foreach (Gear objGear in objVehicle.GearChildren.GetAllDescendants(x => x.Children))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            objGear.DiscountCost = false;
+                        }
+
+                        await objVehicle.Mods.ForEachAsync(objMod =>
+                        {
+                            objMod.DiscountCost = false;
+                            foreach (Cyberware objCyberware in objMod.Cyberware.GetAllDescendants(x => x.Children))
+                            {
+                                token.ThrowIfCancellationRequested();
+                                objCyberware.DiscountCost = false;
+                                foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(
+                                             x => x.Children))
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    objGear.DiscountCost = false;
+                                }
+                            }
+                        }, token).ConfigureAwait(false);
+
+                        foreach (Weapon objWeapon in objVehicle.Weapons.GetAllDescendants(x => x.Children))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            objWeapon.DiscountCost = false;
+                            await objWeapon.WeaponAccessories.ForEachAsync(objAccessory =>
+                            {
+                                objAccessory.DiscountCost = false;
+                                foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(
+                                             x => x.Children))
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    objGear.DiscountCost = false;
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+
+                        await objVehicle.WeaponMounts.ForEachAsync(async objMount =>
+                        {
+                            objMount.DiscountCost = false;
+                            await objMount.Mods.ForEachAsync(objMod =>
+                            {
+                                objMod.DiscountCost = false;
+                                foreach (Cyberware objCyberware in objMod.Cyberware.GetAllDescendants(
+                                             x => x.Children))
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    objCyberware.DiscountCost = false;
+                                    foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(
+                                                 x => x.Children))
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        objGear.DiscountCost = false;
+                                    }
+                                }
+                            }, token).ConfigureAwait(false);
+
+                            foreach (Weapon objWeapon in objMount.Weapons.GetAllDescendants(x => x.Children))
+                            {
+                                token.ThrowIfCancellationRequested();
+                                objWeapon.DiscountCost = false;
+                                await objWeapon.WeaponAccessories.ForEachAsync(objAccessory =>
+                                {
+                                    objAccessory.DiscountCost = false;
+                                    foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(
+                                                 x => x.Children))
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        objGear.DiscountCost = false;
+                                    }
+                                }, token).ConfigureAwait(false);
+                            }
+                        }, token).ConfigureAwait(false);
+                    }, token).ConfigureAwait(false);
+
+                    foreach (Weapon objWeapon in Weapons.GetAllDescendants(x => x.Children))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        objWeapon.DiscountCost = false;
+                        await objWeapon.WeaponAccessories.ForEachAsync(objAccessory =>
+                        {
+                            objAccessory.DiscountCost = false;
+                            foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(
+                                         x => x.Children))
+                            {
+                                token.ThrowIfCancellationRequested();
+                                objGear.DiscountCost = false;
+                            }
+                        }, token).ConfigureAwait(false);
                     }
                 }
             }
@@ -30173,13 +31027,13 @@ namespace Chummer
             }
         }
 
-        private bool RefreshRedlinerImprovements()
+        private bool RefreshRedlinerImprovements(CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 if (IsLoading) // If we are in the middle of loading, just queue a single refresh to happen at the end of the process
                 {
-                    EnqueuePostLoadMethod(RefreshRedlinerImprovements);
+                    EnqueuePostLoadMethod(RefreshRedlinerImprovements, token);
                     return true;
                 }
 
@@ -30187,17 +31041,17 @@ namespace Chummer
                 List<Improvement> lstSeekerImprovements = new List<Improvement>(Improvements.Count);
                 lstSeekerImprovements.AddRange(ImprovementManager
                                                .GetCachedImprovementListForValueOf(
-                                                   this, Improvement.ImprovementType.Attribute)
+                                                   this, Improvement.ImprovementType.Attribute, token: token)
                                                .Where(objLoopImprovement =>
                                                           objLoopImprovement.SourceName.Contains("SEEKER")));
                 lstSeekerImprovements.AddRange(ImprovementManager
                                                .GetCachedImprovementListForValueOf(
-                                                   this, Improvement.ImprovementType.PhysicalCM)
+                                                   this, Improvement.ImprovementType.PhysicalCM, token: token)
                                                .Where(objLoopImprovement =>
                                                           objLoopImprovement.SourceName.Contains("SEEKER")));
                 List<string> lstSeekerAttributes = ImprovementManager
                                                    .GetCachedImprovementListForValueOf(
-                                                       this, Improvement.ImprovementType.Seeker)
+                                                       this, Improvement.ImprovementType.Seeker, token: token)
                                                    .ConvertAll(objImprovement => objImprovement.ImprovedName);
                 lstSeekerAttributes.RemoveAll(x => x != "BOX" && !AttributeSection.AttributeStrings.Contains(x));
                 //if neither contains anything, it is safe to exit
@@ -30211,7 +31065,7 @@ namespace Chummer
                 int intCount = Cyberware.Sum(x => x.GetCyberlimbCount(Settings.RedlinerExcludes));
 
                 intCount = Math.Min(intCount / 2, 2);
-                using (LockObject.EnterWriteLock())
+                using (LockObject.EnterWriteLock(token))
                 {
                     _intCachedRedlinerBonus = lstSeekerAttributes.Any(x => x == "STR" || x == "AGI")
                         ? intCount
@@ -30241,34 +31095,42 @@ namespace Chummer
                     //the local
 
                     // Remove which qualities have been removed or which values have changed
-                    ImprovementManager.RemoveImprovements(this, lstSeekerImprovements);
+                    ImprovementManager.RemoveImprovements(this, lstSeekerImprovements, token: token);
 
-                    // Add new improvements or old improvements with new values
-                    foreach (string strAttribute in lstSeekerAttributes)
+                    try
                     {
-                        if (strAttribute == "BOX")
+                        // Add new improvements or old improvements with new values
+                        foreach (string strAttribute in lstSeekerAttributes)
                         {
-                            ImprovementManager.CreateImprovement(this, strAttribute,
-                                                                 Improvement.ImprovementSource.Quality,
-                                                                 "SEEKER_BOX",
-                                                                 Improvement.ImprovementType.PhysicalCM,
-                                                                 Guid.NewGuid()
-                                                                     .ToString(
-                                                                         "D", GlobalSettings.InvariantCultureInfo),
-                                                                 intCount * -3);
+                            if (strAttribute == "BOX")
+                            {
+                                ImprovementManager.CreateImprovement(this, strAttribute,
+                                                                     Improvement.ImprovementSource.Quality,
+                                                                     "SEEKER_BOX",
+                                                                     Improvement.ImprovementType.PhysicalCM,
+                                                                     Guid.NewGuid()
+                                                                         .ToString(
+                                                                             "D", GlobalSettings.InvariantCultureInfo),
+                                                                     intCount * -3, token: token);
+                            }
+                            else
+                            {
+                                ImprovementManager.CreateImprovement(this, strAttribute,
+                                                                     Improvement.ImprovementSource.Quality,
+                                                                     "SEEKER_" + strAttribute,
+                                                                     Improvement.ImprovementType.Attribute,
+                                                                     Guid.NewGuid()
+                                                                         .ToString(
+                                                                             "D", GlobalSettings.InvariantCultureInfo),
+                                                                     intCount, 1, 0, 0,
+                                                                     intCount, token: token);
+                            }
                         }
-                        else
-                        {
-                            ImprovementManager.CreateImprovement(this, strAttribute,
-                                                                 Improvement.ImprovementSource.Quality,
-                                                                 "SEEKER_" + strAttribute,
-                                                                 Improvement.ImprovementType.Attribute,
-                                                                 Guid.NewGuid()
-                                                                     .ToString(
-                                                                         "D", GlobalSettings.InvariantCultureInfo),
-                                                                 intCount, 1, 0, 0,
-                                                                 intCount);
-                        }
+                    }
+                    catch
+                    {
+                        ImprovementManager.Rollback(this, CancellationToken.None);
+                        throw;
                     }
 
                     ImprovementManager.Commit(this);
@@ -30277,9 +31139,9 @@ namespace Chummer
             }
         }
 
-        public void RefreshEssenceLossImprovements()
+        public void RefreshEssenceLossImprovements(CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
                 if (IsLoading)
@@ -30293,7 +31155,7 @@ namespace Chummer
                     decimal decTotalSpecialAttBurnMultiplier = 1.0m;
                     List<Improvement> lstUsedImprovements =
                         ImprovementManager.GetCachedImprovementListForValueOf(
-                            this, Improvement.ImprovementType.SpecialAttBurn);
+                            this, Improvement.ImprovementType.SpecialAttBurn, token: token);
                     if (lstUsedImprovements.Count != 0)
                     {
                         foreach (Improvement objImprovement in lstUsedImprovements)
@@ -30302,16 +31164,16 @@ namespace Chummer
 
                     List<Improvement> lstUsedImprovements2 =
                         ImprovementManager.GetCachedImprovementListForValueOf(
-                            this, Improvement.ImprovementType.SpecialAttTotalBurnMultiplier);
+                            this, Improvement.ImprovementType.SpecialAttTotalBurnMultiplier, token: token);
                     if (lstUsedImprovements2.Count != 0)
                     {
                         foreach (Improvement objImprovement in lstUsedImprovements2)
                             decTotalSpecialAttBurnMultiplier *= objImprovement.Value / 100m;
                     }
 
-                    decimal decESSMag = Essence(true, "MAG");
-                    decimal decESSRes = Essence(true, "RES");
-                    decimal decESSDep = Essence(true, "DEP");
+                    decimal decESSMag = Essence(true, "MAG", token);
+                    decimal decESSRes = Essence(true, "RES", token);
+                    decimal decESSDep = Essence(true, "DEP", token);
                     if (!Settings.DontRoundEssenceInternally)
                     {
                         int intESSDecimals = Settings.EssenceDecimals;
@@ -30338,69 +31200,81 @@ namespace Chummer
                         Improvement.ImprovementSource eEssenceLossSource = Created
                             ? Improvement.ImprovementSource.EssenceLoss
                             : Improvement.ImprovementSource.EssenceLossChargen;
-                        using (LockObject.EnterWriteLock())
+                        using (LockObject.EnterWriteLock(token))
                         {
-                            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.EssenceLoss);
+                            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.EssenceLoss, token: token);
                             ImprovementManager.RemoveImprovements(
-                                this, Improvement.ImprovementSource.EssenceLossChargen);
+                                this, Improvement.ImprovementSource.EssenceLossChargen, token: token);
                             // With this house rule, Cyberadept Daemon just negates a penalty from Essence based on Grade instead of restoring Resonance, so delete all old improvements
-                            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.CyberadeptDaemon);
-
-                            if (intMagMaxReduction != 0)
+                            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.CyberadeptDaemon, token: token);
+                            try
                             {
-                                ImprovementManager.CreateImprovement(this, "MAG", eEssenceLossSource, string.Empty,
-                                                                     Improvement.ImprovementType.Attribute,
-                                                                     string.Empty, 0,
-                                                                     1, 0, 0, -intMagMaxReduction);
-                                ImprovementManager.CreateImprovement(this, "MAGAdept", eEssenceLossSource, string.Empty,
-                                                                     Improvement.ImprovementType.Attribute,
-                                                                     string.Empty, 0,
-                                                                     1, 0, 0, -intMagMaxReduction);
-                                // If this is a Mystic Adept using special Mystic Adept PP rules (i.e. no second MAG attribute), Mystic Adepts lose PPs even if they have fewer PPs than their MAG
-                                if (UseMysticAdeptPPs)
-                                    ImprovementManager.CreateImprovement(this, string.Empty, eEssenceLossSource,
-                                                                         string.Empty,
-                                                                         Improvement.ImprovementType.AdeptPowerPoints,
-                                                                         string.Empty, -intMagMaxReduction);
-                            }
-
-                            if (intResMaxReduction != 0)
-                            {
-                                int intRESReduction = intResMaxReduction;
-                                if (TechnomancerEnabled && SubmersionGrade > 0 && ImprovementManager
-                                        .GetCachedImprovementListForValueOf(this,
-                                                                            Improvement.ImprovementType
-                                                                                .CyberadeptDaemon)
-                                        .Count > 0)
+                                if (intMagMaxReduction != 0)
                                 {
-                                    decimal decNonCyberwareEssence = BiowareEssence + EssenceHole;
-                                    int intMaxCyberadeptDaemonBonus = Math.Ceiling(decNonCyberwareEssence) ==
-                                                                      Math.Floor(decNonCyberwareEssence)
-                                        ? (int) Math.Ceiling(CyberwareEssence)
-                                        : (int) Math.Floor(CyberwareEssence);
-                                    int intCyberadeptDaemonBonus = 0;
-                                    for (int i = 1; i <= SubmersionGrade; ++i)
-                                    {
-                                        intCyberadeptDaemonBonus += i.DivAwayFromZero(2);
-                                    }
-
-                                    intRESReduction -= Math.Min(intCyberadeptDaemonBonus, intMaxCyberadeptDaemonBonus);
-                                    if (intRESReduction < 0)
-                                        intRESReduction = 0;
+                                    ImprovementManager.CreateImprovement(this, "MAG", eEssenceLossSource, string.Empty,
+                                                                         Improvement.ImprovementType.Attribute,
+                                                                         string.Empty, 0,
+                                                                         1, 0, 0, -intMagMaxReduction, token: token);
+                                    ImprovementManager.CreateImprovement(
+                                        this, "MAGAdept", eEssenceLossSource, string.Empty,
+                                        Improvement.ImprovementType.Attribute,
+                                        string.Empty, 0,
+                                        1, 0, 0, -intMagMaxReduction, token: token);
+                                    // If this is a Mystic Adept using special Mystic Adept PP rules (i.e. no second MAG attribute), Mystic Adepts lose PPs even if they have fewer PPs than their MAG
+                                    if (UseMysticAdeptPPs)
+                                        ImprovementManager.CreateImprovement(this, string.Empty, eEssenceLossSource,
+                                                                             string.Empty,
+                                                                             Improvement.ImprovementType
+                                                                                 .AdeptPowerPoints,
+                                                                             string.Empty, -intMagMaxReduction,
+                                                                             token: token);
                                 }
 
-                                if (intRESReduction != 0)
-                                    ImprovementManager.CreateImprovement(this, "RES", eEssenceLossSource, string.Empty,
-                                                                         Improvement.ImprovementType.Attribute,
-                                                                         string.Empty, 0, 1, 0, 0, -intRESReduction);
-                            }
+                                if (intResMaxReduction != 0)
+                                {
+                                    int intRESReduction = intResMaxReduction;
+                                    if (TechnomancerEnabled && SubmersionGrade > 0 && ImprovementManager
+                                            .GetCachedImprovementListForValueOf(this,
+                                                Improvement.ImprovementType
+                                                           .CyberadeptDaemon, token: token)
+                                            .Count > 0)
+                                    {
+                                        decimal decNonCyberwareEssence = BiowareEssence + EssenceHole;
+                                        int intMaxCyberadeptDaemonBonus = Math.Ceiling(decNonCyberwareEssence) ==
+                                                                          Math.Floor(decNonCyberwareEssence)
+                                            ? (int) Math.Ceiling(CyberwareEssence)
+                                            : (int) Math.Floor(CyberwareEssence);
+                                        int intCyberadeptDaemonBonus = 0;
+                                        for (int i = 1; i <= SubmersionGrade; ++i)
+                                        {
+                                            intCyberadeptDaemonBonus += i.DivAwayFromZero(2);
+                                        }
 
-                            if (intDepMaxReduction != 0)
+                                        intRESReduction
+                                            -= Math.Min(intCyberadeptDaemonBonus, intMaxCyberadeptDaemonBonus);
+                                        if (intRESReduction < 0)
+                                            intRESReduction = 0;
+                                    }
+
+                                    if (intRESReduction != 0)
+                                        ImprovementManager.CreateImprovement(
+                                            this, "RES", eEssenceLossSource, string.Empty,
+                                            Improvement.ImprovementType.Attribute,
+                                            string.Empty, 0, 1, 0, 0, -intRESReduction, token: token);
+                                }
+
+                                if (intDepMaxReduction != 0)
+                                {
+                                    ImprovementManager.CreateImprovement(this, "DEP", eEssenceLossSource, string.Empty,
+                                                                         Improvement.ImprovementType.Attribute,
+                                                                         string.Empty, 0,
+                                                                         1, 0, 0, -intDepMaxReduction, token: token);
+                                }
+                            }
+                            catch
                             {
-                                ImprovementManager.CreateImprovement(this, "DEP", eEssenceLossSource, string.Empty,
-                                                                     Improvement.ImprovementType.Attribute,
-                                                                     string.Empty, 0,
-                                                                     1, 0, 0, -intDepMaxReduction);
+                                ImprovementManager.Rollback(this, CancellationToken.None);
+                                throw;
                             }
 
                             if (intMagMaxReduction != 0 || intResMaxReduction != 0 || intDepMaxReduction != 0)
@@ -30456,7 +31330,7 @@ namespace Chummer
                         int intOldMAGAdeptCareerMinimumReduction = 0;
                         foreach (Improvement objImprovement in
                                  ImprovementManager.GetCachedImprovementListForValueOf(
-                                     this, Improvement.ImprovementType.Attribute))
+                                     this, Improvement.ImprovementType.Attribute, token: token))
                         {
                             if (objImprovement.ImproveSource == Improvement.ImprovementSource.EssenceLoss)
                             {
@@ -30487,10 +31361,10 @@ namespace Chummer
                             }
                         }
 
-                        using (LockObject.EnterWriteLock())
+                        using (LockObject.EnterWriteLock(token))
                         {
                             // Remove any Improvements from MAG, RES, and DEP from Essence Loss that were added in career.
-                            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.EssenceLoss);
+                            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.EssenceLoss, token: token);
 
                             // Career Minimum and Maximum reduction relies on whether there's any extra reduction since chargen.
                             // This is the step where create mode attribute loss regarding attribute maximum loss gets factored out.
@@ -30556,16 +31430,25 @@ namespace Chummer
                                         decimal decPPBurn = Math.Min(intMAGMinimumReductionDelta - intChargenPPBurn,
                                                                      ImprovementManager.ValueOf(
                                                                          this,
-                                                                         Improvement.ImprovementType.AdeptPowerPoints));
+                                                                         Improvement.ImprovementType.AdeptPowerPoints, token: token));
                                         // Source needs to be EssenceLossChargen so that it doesn't get wiped in career mode.
                                         if (decPPBurn != 0)
                                         {
-                                            ImprovementManager.CreateImprovement(this, string.Empty,
-                                                Improvement.ImprovementSource
-                                                           .EssenceLossChargen, string.Empty,
-                                                Improvement.ImprovementType
-                                                           .AdeptPowerPoints, string.Empty,
-                                                -decPPBurn);
+                                            try
+                                            {
+                                                ImprovementManager.CreateImprovement(this, string.Empty,
+                                                    Improvement.ImprovementSource
+                                                               .EssenceLossChargen, string.Empty,
+                                                    Improvement.ImprovementType
+                                                               .AdeptPowerPoints, string.Empty,
+                                                    -decPPBurn, token: token);
+                                            }
+                                            catch
+                                            {
+                                                ImprovementManager.Rollback(this, CancellationToken.None);
+                                                throw;
+                                            }
+
                                             ImprovementManager.Commit(this);
                                         }
                                     }
@@ -30608,22 +31491,32 @@ namespace Chummer
                                 }
 
                                 // Create Improvements
-                                if (intMAGMinimumReduction != 0 || intMAGMaximumReduction != 0)
-                                    ImprovementManager.CreateImprovement(this, "MAG",
-                                                                         Improvement.ImprovementSource.EssenceLoss,
-                                                                         string.Empty,
-                                                                         Improvement.ImprovementType.Attribute,
-                                                                         string.Empty, 0, 1,
-                                                                         -intMAGMinimumReduction,
-                                                                         -intMAGMaximumReduction);
-                                if (intMAGAdeptMinimumReduction != 0 || intMAGAdeptMaximumReduction != 0)
-                                    ImprovementManager.CreateImprovement(this, "MAGAdept",
-                                                                         Improvement.ImprovementSource.EssenceLoss,
-                                                                         string.Empty,
-                                                                         Improvement.ImprovementType.Attribute,
-                                                                         string.Empty, 0, 1,
-                                                                         -intMAGAdeptMinimumReduction,
-                                                                         -intMAGAdeptMaximumReduction);
+                                try
+                                {
+                                    if (intMAGMinimumReduction != 0 || intMAGMaximumReduction != 0)
+                                        ImprovementManager.CreateImprovement(this, "MAG",
+                                                                             Improvement.ImprovementSource.EssenceLoss,
+                                                                             string.Empty,
+                                                                             Improvement.ImprovementType.Attribute,
+                                                                             string.Empty, 0, 1,
+                                                                             -intMAGMinimumReduction,
+                                                                             -intMAGMaximumReduction, token: token);
+                                    if (intMAGAdeptMinimumReduction != 0 || intMAGAdeptMaximumReduction != 0)
+                                        ImprovementManager.CreateImprovement(this, "MAGAdept",
+                                                                             Improvement.ImprovementSource.EssenceLoss,
+                                                                             string.Empty,
+                                                                             Improvement.ImprovementType.Attribute,
+                                                                             string.Empty, 0, 1,
+                                                                             -intMAGAdeptMinimumReduction,
+                                                                             -intMAGAdeptMaximumReduction,
+                                                                             token: token);
+                                }
+                                catch
+                                {
+                                    ImprovementManager.Rollback(this, CancellationToken.None);
+                                    throw;
+                                }
+
                                 if (intMAGMinimumReduction != 0 || intMAGMaximumReduction != 0 ||
                                     intMAGAdeptMinimumReduction != 0 || intMAGAdeptMaximumReduction != 0)
                                     ImprovementManager.Commit(this);
@@ -30673,13 +31566,21 @@ namespace Chummer
                                 // Create Improvements
                                 if (intRESMinimumReduction != 0 || intRESMaximumReduction != 0)
                                 {
-                                    ImprovementManager.CreateImprovement(this, "RES",
-                                                                         Improvement.ImprovementSource.EssenceLoss,
-                                                                         string.Empty,
-                                                                         Improvement.ImprovementType.Attribute,
-                                                                         string.Empty, 0, 1,
-                                                                         -intRESMinimumReduction,
-                                                                         -intRESMaximumReduction);
+                                    try
+                                    {
+                                        ImprovementManager.CreateImprovement(this, "RES",
+                                                                             Improvement.ImprovementSource.EssenceLoss,
+                                                                             string.Empty,
+                                                                             Improvement.ImprovementType.Attribute,
+                                                                             string.Empty, 0, 1,
+                                                                             -intRESMinimumReduction,
+                                                                             -intRESMaximumReduction, token: token);
+                                    }
+                                    catch
+                                    {
+                                        ImprovementManager.Rollback(this, CancellationToken.None);
+                                        throw;
+                                    }
                                     ImprovementManager.Commit(this);
                                 }
                             }
@@ -30727,13 +31628,22 @@ namespace Chummer
                                 // Create Improvements
                                 if (intDEPMinimumReduction != 0 || intDEPMaximumReduction != 0)
                                 {
-                                    ImprovementManager.CreateImprovement(this, "DEP",
-                                                                         Improvement.ImprovementSource.EssenceLoss,
-                                                                         string.Empty,
-                                                                         Improvement.ImprovementType.Attribute,
-                                                                         string.Empty, 0, 1,
-                                                                         -intDEPMinimumReduction,
-                                                                         -intDEPMaximumReduction);
+                                    try
+                                    {
+                                        ImprovementManager.CreateImprovement(this, "DEP",
+                                                                             Improvement.ImprovementSource.EssenceLoss,
+                                                                             string.Empty,
+                                                                             Improvement.ImprovementType.Attribute,
+                                                                             string.Empty, 0, 1,
+                                                                             -intDEPMinimumReduction,
+                                                                             -intDEPMaximumReduction, token: token);
+                                    }
+                                    catch
+                                    {
+                                        ImprovementManager.Rollback(this, CancellationToken.None);
+                                        throw;
+                                    }
+
                                     ImprovementManager.Commit(this);
                                 }
                             }
@@ -30771,11 +31681,11 @@ namespace Chummer
                                 = Math.Max(0, intDepMinReduction + DEP.TotalValue - DEP.TotalMaximum);
                         }
 
-                        using (LockObject.EnterWriteLock())
+                        using (LockObject.EnterWriteLock(token))
                         {
-                            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.EssenceLoss);
+                            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.EssenceLoss, token: token);
                             ImprovementManager.RemoveImprovements(
-                                this, Improvement.ImprovementSource.EssenceLossChargen);
+                                this, Improvement.ImprovementSource.EssenceLossChargen, token: token);
 
                             if (intMagMaxReduction != 0 || intMAGMinimumReduction != 0
                                                         || intMAGAdeptMinimumReduction != 0)
@@ -30785,37 +31695,47 @@ namespace Chummer
                                                                      string.Empty,
                                                                      Improvement.ImprovementType.Attribute,
                                                                      string.Empty, 0, 1, -intMAGMinimumReduction,
-                                                                     -intMagMaxReduction);
+                                                                     -intMagMaxReduction, token: token);
                                 ImprovementManager.CreateImprovement(this, "MAGAdept",
                                                                      Improvement.ImprovementSource.EssenceLossChargen,
                                                                      string.Empty,
                                                                      Improvement.ImprovementType.Attribute,
                                                                      string.Empty, 0, 1, -intMAGAdeptMinimumReduction,
-                                                                     -intMagMaxReduction);
+                                                                     -intMagMaxReduction, token: token);
                             }
 
-                            if (intResMaxReduction != 0 || intRESMinimumReduction != 0)
+                            try
                             {
-                                ImprovementManager.CreateImprovement(this, "RES",
-                                                                     Improvement.ImprovementSource.EssenceLossChargen,
-                                                                     string.Empty,
-                                                                     Improvement.ImprovementType.Attribute,
-                                                                     string.Empty, 0, 1, -intRESMinimumReduction,
-                                                                     -intResMaxReduction);
+                                if (intResMaxReduction != 0 || intRESMinimumReduction != 0)
+                                {
+                                    ImprovementManager.CreateImprovement(this, "RES",
+                                                                         Improvement.ImprovementSource
+                                                                             .EssenceLossChargen,
+                                                                         string.Empty,
+                                                                         Improvement.ImprovementType.Attribute,
+                                                                         string.Empty, 0, 1, -intRESMinimumReduction,
+                                                                         -intResMaxReduction, token: token);
+                                }
+
+                                if (intDepMaxReduction != 0 || intDEPMinimumReduction != 0)
+                                {
+                                    ImprovementManager.CreateImprovement(this, "DEP",
+                                                                         Improvement.ImprovementSource
+                                                                             .EssenceLossChargen,
+                                                                         string.Empty,
+                                                                         Improvement.ImprovementType.Attribute,
+                                                                         string.Empty, 0, 1, -intDEPMinimumReduction,
+                                                                         -intDepMaxReduction, token: token);
+                                }
+                            }
+                            catch
+                            {
+                                ImprovementManager.Rollback(this, CancellationToken.None);
+                                throw;
                             }
 
-                            if (intDepMaxReduction != 0 || intDEPMinimumReduction != 0)
-                            {
-                                ImprovementManager.CreateImprovement(this, "DEP",
-                                                                     Improvement.ImprovementSource.EssenceLossChargen,
-                                                                     string.Empty,
-                                                                     Improvement.ImprovementType.Attribute,
-                                                                     string.Empty, 0, 1, -intDEPMinimumReduction,
-                                                                     -intDepMaxReduction);
-                            }
+                            ImprovementManager.Commit(this);
                         }
-
-                        ImprovementManager.Commit(this);
 
                         // If the character is in Career mode, it is possible for them to be forced to burn out.
                         if (Created)
@@ -30907,10 +31827,21 @@ namespace Chummer
                 // Otherwise any essence loss improvements that might have been left need to be deleted (e.g. character is in create mode and had access to special attributes, but that access was removed)
                 else
                 {
-                    using (LockObject.EnterWriteLock())
+                    using (LockObject.EnterWriteLock(token))
                     {
-                        ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.EssenceLossChargen);
-                        ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.EssenceLoss);
+                        try
+                        {
+                            ImprovementManager.RemoveImprovements(
+                                this, Improvement.ImprovementSource.EssenceLossChargen, token: token);
+                            ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.EssenceLoss,
+                                                                  token: token);
+                        }
+                        catch
+                        {
+                            ImprovementManager.Rollback(this, CancellationToken.None);
+                            throw;
+                        }
+
                         ImprovementManager.Commit(this);
                     }
                 }
@@ -30918,8 +31849,8 @@ namespace Chummer
                 // If the character is Cyberzombie, adjust their Attributes based on their Essence.
                 if (MetatypeCategory == "Cyberzombie")
                 {
-                    int intESSModifier = (-Essence()).StandardRound();
-                    using (LockObject.EnterWriteLock())
+                    int intESSModifier = (-Essence(token: token)).StandardRound();
+                    using (LockObject.EnterWriteLock(token))
                     {
                         ImprovementManager.RemoveImprovements(this,
                                                               Improvements.Where(x =>
@@ -30928,33 +31859,66 @@ namespace Chummer
                                                                       .Cyberzombie &&
                                                                   x.ImproveType == Improvement
                                                                       .ImprovementType
-                                                                      .Attribute).ToList());
+                                                                      .Attribute).ToList(), token: token);
                         if (intESSModifier != 0)
                         {
-                            ImprovementManager.CreateImprovement(this, "BOD", Improvement.ImprovementSource.Cyberzombie,
-                                                                 string.Empty, Improvement.ImprovementType.Attribute,
-                                                                 string.Empty, 0, 1, 0, intESSModifier);
-                            ImprovementManager.CreateImprovement(this, "AGI", Improvement.ImprovementSource.Cyberzombie,
-                                                                 string.Empty, Improvement.ImprovementType.Attribute,
-                                                                 string.Empty, 0, 1, 0, intESSModifier);
-                            ImprovementManager.CreateImprovement(this, "REA", Improvement.ImprovementSource.Cyberzombie,
-                                                                 string.Empty, Improvement.ImprovementType.Attribute,
-                                                                 string.Empty, 0, 1, 0, intESSModifier);
-                            ImprovementManager.CreateImprovement(this, "STR", Improvement.ImprovementSource.Cyberzombie,
-                                                                 string.Empty, Improvement.ImprovementType.Attribute,
-                                                                 string.Empty, 0, 1, 0, intESSModifier);
-                            ImprovementManager.CreateImprovement(this, "CHA", Improvement.ImprovementSource.Cyberzombie,
-                                                                 string.Empty, Improvement.ImprovementType.Attribute,
-                                                                 string.Empty, 0, 1, 0, intESSModifier);
-                            ImprovementManager.CreateImprovement(this, "INT", Improvement.ImprovementSource.Cyberzombie,
-                                                                 string.Empty, Improvement.ImprovementType.Attribute,
-                                                                 string.Empty, 0, 1, 0, intESSModifier);
-                            ImprovementManager.CreateImprovement(this, "LOG", Improvement.ImprovementSource.Cyberzombie,
-                                                                 string.Empty, Improvement.ImprovementType.Attribute,
-                                                                 string.Empty, 0, 1, 0, intESSModifier);
-                            ImprovementManager.CreateImprovement(this, "WIL", Improvement.ImprovementSource.Cyberzombie,
-                                                                 string.Empty, Improvement.ImprovementType.Attribute,
-                                                                 string.Empty, 0, 1, 0, intESSModifier);
+                            try
+                            {
+                                ImprovementManager.CreateImprovement(this, "BOD",
+                                                                     Improvement.ImprovementSource.Cyberzombie,
+                                                                     string.Empty,
+                                                                     Improvement.ImprovementType.Attribute,
+                                                                     string.Empty, 0, 1, 0, intESSModifier,
+                                                                     token: token);
+                                ImprovementManager.CreateImprovement(this, "AGI",
+                                                                     Improvement.ImprovementSource.Cyberzombie,
+                                                                     string.Empty,
+                                                                     Improvement.ImprovementType.Attribute,
+                                                                     string.Empty, 0, 1, 0, intESSModifier,
+                                                                     token: token);
+                                ImprovementManager.CreateImprovement(this, "REA",
+                                                                     Improvement.ImprovementSource.Cyberzombie,
+                                                                     string.Empty,
+                                                                     Improvement.ImprovementType.Attribute,
+                                                                     string.Empty, 0, 1, 0, intESSModifier,
+                                                                     token: token);
+                                ImprovementManager.CreateImprovement(this, "STR",
+                                                                     Improvement.ImprovementSource.Cyberzombie,
+                                                                     string.Empty,
+                                                                     Improvement.ImprovementType.Attribute,
+                                                                     string.Empty, 0, 1, 0, intESSModifier,
+                                                                     token: token);
+                                ImprovementManager.CreateImprovement(this, "CHA",
+                                                                     Improvement.ImprovementSource.Cyberzombie,
+                                                                     string.Empty,
+                                                                     Improvement.ImprovementType.Attribute,
+                                                                     string.Empty, 0, 1, 0, intESSModifier,
+                                                                     token: token);
+                                ImprovementManager.CreateImprovement(this, "INT",
+                                                                     Improvement.ImprovementSource.Cyberzombie,
+                                                                     string.Empty,
+                                                                     Improvement.ImprovementType.Attribute,
+                                                                     string.Empty, 0, 1, 0, intESSModifier,
+                                                                     token: token);
+                                ImprovementManager.CreateImprovement(this, "LOG",
+                                                                     Improvement.ImprovementSource.Cyberzombie,
+                                                                     string.Empty,
+                                                                     Improvement.ImprovementType.Attribute,
+                                                                     string.Empty, 0, 1, 0, intESSModifier,
+                                                                     token: token);
+                                ImprovementManager.CreateImprovement(this, "WIL",
+                                                                     Improvement.ImprovementSource.Cyberzombie,
+                                                                     string.Empty,
+                                                                     Improvement.ImprovementType.Attribute,
+                                                                     string.Empty, 0, 1, 0, intESSModifier,
+                                                                     token: token);
+                            }
+                            catch
+                            {
+                                ImprovementManager.Rollback(this, CancellationToken.None);
+                                throw;
+                            }
+
                             ImprovementManager.Commit(this);
                         }
                     }
@@ -31044,65 +32008,73 @@ namespace Chummer
                                                         token: token)
                                                     .ConfigureAwait(false);
 
-                            if (intMagMaxReduction != 0)
+                            try
                             {
-                                await ImprovementManager.CreateImprovementAsync(
-                                    this, "MAG", eEssenceLossSource, string.Empty,
-                                    Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0,
-                                    -intMagMaxReduction, token: token).ConfigureAwait(false);
-                                await ImprovementManager.CreateImprovementAsync(
-                                    this, "MAGAdept", eEssenceLossSource, string.Empty,
-                                    Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0,
-                                    -intMagMaxReduction, token: token).ConfigureAwait(false);
-                                // If this is a Mystic Adept using special Mystic Adept PP rules (i.e. no second MAG attribute), Mystic Adepts lose PPs even if they have fewer PPs than their MAG
-                                if (UseMysticAdeptPPs)
-                                    await ImprovementManager.CreateImprovementAsync(
-                                        this, string.Empty, eEssenceLossSource,
-                                        string.Empty,
-                                        Improvement.ImprovementType.AdeptPowerPoints, string.Empty,
-                                        -intMagMaxReduction,
-                                        token: token).ConfigureAwait(false);
-                            }
-
-                            if (intResMaxReduction != 0)
-                            {
-                                int intRESReduction = intResMaxReduction;
-                                if (TechnomancerEnabled && SubmersionGrade > 0 && (await ImprovementManager
-                                        .GetCachedImprovementListForValueOfAsync(this,
-                                            Improvement.ImprovementType
-                                                       .CyberadeptDaemon, token: token).ConfigureAwait(false))
-                                    .Count > 0)
+                                if (intMagMaxReduction != 0)
                                 {
-                                    decimal decNonCyberwareEssence = BiowareEssence + EssenceHole;
-                                    int intMaxCyberadeptDaemonBonus = Math.Ceiling(decNonCyberwareEssence) ==
-                                                                      Math.Floor(decNonCyberwareEssence)
-                                        ? (int) Math.Ceiling(CyberwareEssence)
-                                        : (int) Math.Floor(CyberwareEssence);
-                                    int intCyberadeptDaemonBonus = 0;
-                                    for (int i = 1; i <= SubmersionGrade; ++i)
-                                    {
-                                        intCyberadeptDaemonBonus += i.DivAwayFromZero(2);
-                                    }
-
-                                    intRESReduction
-                                        -= Math.Min(intCyberadeptDaemonBonus, intMaxCyberadeptDaemonBonus);
-                                    if (intRESReduction < 0)
-                                        intRESReduction = 0;
+                                    await ImprovementManager.CreateImprovementAsync(
+                                        this, "MAG", eEssenceLossSource, string.Empty,
+                                        Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0,
+                                        -intMagMaxReduction, token: token).ConfigureAwait(false);
+                                    await ImprovementManager.CreateImprovementAsync(
+                                        this, "MAGAdept", eEssenceLossSource, string.Empty,
+                                        Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0,
+                                        -intMagMaxReduction, token: token).ConfigureAwait(false);
+                                    // If this is a Mystic Adept using special Mystic Adept PP rules (i.e. no second MAG attribute), Mystic Adepts lose PPs even if they have fewer PPs than their MAG
+                                    if (UseMysticAdeptPPs)
+                                        await ImprovementManager.CreateImprovementAsync(
+                                            this, string.Empty, eEssenceLossSource,
+                                            string.Empty,
+                                            Improvement.ImprovementType.AdeptPowerPoints, string.Empty,
+                                            -intMagMaxReduction,
+                                            token: token).ConfigureAwait(false);
                                 }
 
-                                if (intRESReduction != 0)
-                                    await ImprovementManager.CreateImprovementAsync(
-                                        this, "RES", eEssenceLossSource, string.Empty,
-                                        Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0,
-                                        -intRESReduction, token: token).ConfigureAwait(false);
-                            }
+                                if (intResMaxReduction != 0)
+                                {
+                                    int intRESReduction = intResMaxReduction;
+                                    if (TechnomancerEnabled && SubmersionGrade > 0 && (await ImprovementManager
+                                            .GetCachedImprovementListForValueOfAsync(this,
+                                                Improvement.ImprovementType
+                                                           .CyberadeptDaemon, token: token).ConfigureAwait(false))
+                                        .Count > 0)
+                                    {
+                                        decimal decNonCyberwareEssence = BiowareEssence + EssenceHole;
+                                        int intMaxCyberadeptDaemonBonus = Math.Ceiling(decNonCyberwareEssence) ==
+                                                                          Math.Floor(decNonCyberwareEssence)
+                                            ? (int) Math.Ceiling(CyberwareEssence)
+                                            : (int) Math.Floor(CyberwareEssence);
+                                        int intCyberadeptDaemonBonus = 0;
+                                        for (int i = 1; i <= SubmersionGrade; ++i)
+                                        {
+                                            intCyberadeptDaemonBonus += i.DivAwayFromZero(2);
+                                        }
 
-                            if (intDepMaxReduction != 0)
+                                        intRESReduction
+                                            -= Math.Min(intCyberadeptDaemonBonus, intMaxCyberadeptDaemonBonus);
+                                        if (intRESReduction < 0)
+                                            intRESReduction = 0;
+                                    }
+
+                                    if (intRESReduction != 0)
+                                        await ImprovementManager.CreateImprovementAsync(
+                                            this, "RES", eEssenceLossSource, string.Empty,
+                                            Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0,
+                                            -intRESReduction, token: token).ConfigureAwait(false);
+                                }
+
+                                if (intDepMaxReduction != 0)
+                                {
+                                    await ImprovementManager.CreateImprovementAsync(
+                                        this, "DEP", eEssenceLossSource, string.Empty,
+                                        Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0,
+                                        -intDepMaxReduction, token: token).ConfigureAwait(false);
+                                }
+                            }
+                            catch
                             {
-                                await ImprovementManager.CreateImprovementAsync(
-                                    this, "DEP", eEssenceLossSource, string.Empty,
-                                    Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0,
-                                    -intDepMaxReduction, token: token).ConfigureAwait(false);
+                                await ImprovementManager.RollbackAsync(this, CancellationToken.None).ConfigureAwait(false);
+                                throw;
                             }
 
                             if (intMagMaxReduction != 0 || intResMaxReduction != 0 || intDepMaxReduction != 0)
@@ -31328,11 +32300,20 @@ namespace Chummer
                                         // Source needs to be EssenceLossChargen so that it doesn't get wiped in career mode.
                                         if (decPPBurn != 0)
                                         {
-                                            await ImprovementManager.CreateImprovementAsync(this, string.Empty,
-                                                Improvement.ImprovementSource.EssenceLossChargen, string.Empty,
-                                                Improvement.ImprovementType.AdeptPowerPoints, string.Empty,
-                                                -decPPBurn,
-                                                token: token).ConfigureAwait(false);
+                                            try
+                                            {
+                                                await ImprovementManager.CreateImprovementAsync(this, string.Empty,
+                                                    Improvement.ImprovementSource.EssenceLossChargen, string.Empty,
+                                                    Improvement.ImprovementType.AdeptPowerPoints, string.Empty,
+                                                    -decPPBurn,
+                                                    token: token).ConfigureAwait(false);
+                                            }
+                                            catch
+                                            {
+                                                await ImprovementManager.RollbackAsync(this, CancellationToken.None).ConfigureAwait(false);
+                                                throw;
+                                            }
+
                                             ImprovementManager.Commit(this);
                                         }
                                     }
@@ -31378,20 +32359,29 @@ namespace Chummer
                                 }
 
                                 // Create Improvements
-                                if (intMAGMinimumReduction != 0 || intMAGMaximumReduction != 0)
-                                    await ImprovementManager.CreateImprovementAsync(this, "MAG",
-                                                                Improvement.ImprovementSource.EssenceLoss,
-                                                                string.Empty, Improvement.ImprovementType.Attribute,
-                                                                string.Empty, 0, 1,
-                                                                -intMAGMinimumReduction, -intMAGMaximumReduction,
-                                                                token: token)
-                                                            .ConfigureAwait(false);
-                                if (intMAGAdeptMinimumReduction != 0 || intMAGAdeptMaximumReduction != 0)
-                                    await ImprovementManager.CreateImprovementAsync(this, "MAGAdept",
-                                        Improvement.ImprovementSource.EssenceLoss, string.Empty,
-                                        Improvement.ImprovementType.Attribute, string.Empty, 0, 1,
-                                        -intMAGAdeptMinimumReduction,
-                                        -intMAGAdeptMaximumReduction, token: token).ConfigureAwait(false);
+                                try
+                                {
+                                    if (intMAGMinimumReduction != 0 || intMAGMaximumReduction != 0)
+                                        await ImprovementManager.CreateImprovementAsync(this, "MAG",
+                                                                    Improvement.ImprovementSource.EssenceLoss,
+                                                                    string.Empty, Improvement.ImprovementType.Attribute,
+                                                                    string.Empty, 0, 1,
+                                                                    -intMAGMinimumReduction, -intMAGMaximumReduction,
+                                                                    token: token)
+                                                                .ConfigureAwait(false);
+                                    if (intMAGAdeptMinimumReduction != 0 || intMAGAdeptMaximumReduction != 0)
+                                        await ImprovementManager.CreateImprovementAsync(this, "MAGAdept",
+                                            Improvement.ImprovementSource.EssenceLoss, string.Empty,
+                                            Improvement.ImprovementType.Attribute, string.Empty, 0, 1,
+                                            -intMAGAdeptMinimumReduction,
+                                            -intMAGAdeptMaximumReduction, token: token).ConfigureAwait(false);
+                                }
+                                catch
+                                {
+                                    await ImprovementManager.RollbackAsync(this, CancellationToken.None).ConfigureAwait(false);
+                                    throw;
+                                }
+
                                 if (intMAGMinimumReduction != 0 || intMAGMaximumReduction != 0 ||
                                     intMAGAdeptMinimumReduction != 0 || intMAGAdeptMaximumReduction != 0)
                                     ImprovementManager.Commit(this);
@@ -31449,13 +32439,22 @@ namespace Chummer
                                 // Create Improvements
                                 if (intRESMinimumReduction != 0 || intRESMaximumReduction != 0)
                                 {
-                                    await ImprovementManager.CreateImprovementAsync(this, "RES",
-                                                                Improvement.ImprovementSource.EssenceLoss,
-                                                                string.Empty, Improvement.ImprovementType.Attribute,
-                                                                string.Empty, 0, 1,
-                                                                -intRESMinimumReduction, -intRESMaximumReduction,
-                                                                token: token)
-                                                            .ConfigureAwait(false);
+                                    try
+                                    {
+                                        await ImprovementManager.CreateImprovementAsync(this, "RES",
+                                                                    Improvement.ImprovementSource.EssenceLoss,
+                                                                    string.Empty, Improvement.ImprovementType.Attribute,
+                                                                    string.Empty, 0, 1,
+                                                                    -intRESMinimumReduction, -intRESMaximumReduction,
+                                                                    token: token)
+                                                                .ConfigureAwait(false);
+                                    }
+                                    catch
+                                    {
+                                        await ImprovementManager.RollbackAsync(this, CancellationToken.None).ConfigureAwait(false);
+                                        throw;
+                                    }
+
                                     ImprovementManager.Commit(this);
                                 }
                             }
@@ -31512,13 +32511,22 @@ namespace Chummer
                                 // Create Improvements
                                 if (intDEPMinimumReduction != 0 || intDEPMaximumReduction != 0)
                                 {
-                                    await ImprovementManager.CreateImprovementAsync(this, "DEP",
-                                                                Improvement.ImprovementSource.EssenceLoss,
-                                                                string.Empty, Improvement.ImprovementType.Attribute,
-                                                                string.Empty, 0, 1,
-                                                                -intDEPMinimumReduction, -intDEPMaximumReduction,
-                                                                token: token)
-                                                            .ConfigureAwait(false);
+                                    try
+                                    {
+                                        await ImprovementManager.CreateImprovementAsync(this, "DEP",
+                                                                    Improvement.ImprovementSource.EssenceLoss,
+                                                                    string.Empty, Improvement.ImprovementType.Attribute,
+                                                                    string.Empty, 0, 1,
+                                                                    -intDEPMinimumReduction, -intDEPMaximumReduction,
+                                                                    token: token)
+                                                                .ConfigureAwait(false);
+                                    }
+                                    catch
+                                    {
+                                        await ImprovementManager.RollbackAsync(this, CancellationToken.None).ConfigureAwait(false);
+                                        throw;
+                                    }
+
                                     ImprovementManager.Commit(this);
                                 }
                             }
@@ -31585,42 +32593,50 @@ namespace Chummer
                                                         token: token)
                                                     .ConfigureAwait(false);
 
-                            if (intMagMaxReduction != 0 || intMAGMinimumReduction != 0
-                                                        || intMAGAdeptMinimumReduction != 0)
+                            try
                             {
-                                await ImprovementManager.CreateImprovementAsync(this, "MAG",
-                                    Improvement.ImprovementSource
-                                               .EssenceLossChargen, string.Empty,
-                                    Improvement.ImprovementType.Attribute,
-                                    string.Empty, 0, 1, -intMAGMinimumReduction,
-                                    -intMagMaxReduction, token: token).ConfigureAwait(false);
-                                await ImprovementManager.CreateImprovementAsync(this, "MAGAdept",
-                                    Improvement.ImprovementSource
-                                               .EssenceLossChargen, string.Empty,
-                                    Improvement.ImprovementType.Attribute,
-                                    string.Empty, 0, 1,
-                                    -intMAGAdeptMinimumReduction,
-                                    -intMagMaxReduction, token: token).ConfigureAwait(false);
-                            }
+                                if (intMagMaxReduction != 0 || intMAGMinimumReduction != 0
+                                                            || intMAGAdeptMinimumReduction != 0)
+                                {
+                                    await ImprovementManager.CreateImprovementAsync(this, "MAG",
+                                        Improvement.ImprovementSource
+                                                   .EssenceLossChargen, string.Empty,
+                                        Improvement.ImprovementType.Attribute,
+                                        string.Empty, 0, 1, -intMAGMinimumReduction,
+                                        -intMagMaxReduction, token: token).ConfigureAwait(false);
+                                    await ImprovementManager.CreateImprovementAsync(this, "MAGAdept",
+                                        Improvement.ImprovementSource
+                                                   .EssenceLossChargen, string.Empty,
+                                        Improvement.ImprovementType.Attribute,
+                                        string.Empty, 0, 1,
+                                        -intMAGAdeptMinimumReduction,
+                                        -intMagMaxReduction, token: token).ConfigureAwait(false);
+                                }
 
-                            if (intResMaxReduction != 0 || intRESMinimumReduction != 0)
-                            {
-                                await ImprovementManager.CreateImprovementAsync(this, "RES",
-                                    Improvement.ImprovementSource
-                                               .EssenceLossChargen, string.Empty,
-                                    Improvement.ImprovementType.Attribute,
-                                    string.Empty, 0, 1, -intRESMinimumReduction,
-                                    -intResMaxReduction, token: token).ConfigureAwait(false);
-                            }
+                                if (intResMaxReduction != 0 || intRESMinimumReduction != 0)
+                                {
+                                    await ImprovementManager.CreateImprovementAsync(this, "RES",
+                                        Improvement.ImprovementSource
+                                                   .EssenceLossChargen, string.Empty,
+                                        Improvement.ImprovementType.Attribute,
+                                        string.Empty, 0, 1, -intRESMinimumReduction,
+                                        -intResMaxReduction, token: token).ConfigureAwait(false);
+                                }
 
-                            if (intDepMaxReduction != 0 || intDEPMinimumReduction != 0)
+                                if (intDepMaxReduction != 0 || intDEPMinimumReduction != 0)
+                                {
+                                    await ImprovementManager.CreateImprovementAsync(this, "DEP",
+                                        Improvement.ImprovementSource
+                                                   .EssenceLossChargen, string.Empty,
+                                        Improvement.ImprovementType.Attribute,
+                                        string.Empty, 0, 1, -intDEPMinimumReduction,
+                                        -intDepMaxReduction, token: token).ConfigureAwait(false);
+                                }
+                            }
+                            catch
                             {
-                                await ImprovementManager.CreateImprovementAsync(this, "DEP",
-                                    Improvement.ImprovementSource
-                                               .EssenceLossChargen, string.Empty,
-                                    Improvement.ImprovementType.Attribute,
-                                    string.Empty, 0, 1, -intDEPMinimumReduction,
-                                    -intDepMaxReduction, token: token).ConfigureAwait(false);
+                                await ImprovementManager.RollbackAsync(this, CancellationToken.None).ConfigureAwait(false);
+                                throw;
                             }
 
                             ImprovementManager.Commit(this);
@@ -31741,14 +32757,23 @@ namespace Chummer
                     IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
-                        await ImprovementManager.RemoveImprovementsAsync(
-                                                    this, Improvement.ImprovementSource.EssenceLossChargen,
-                                                    token: token)
-                                                .ConfigureAwait(false);
-                        await ImprovementManager
-                              .RemoveImprovementsAsync(this, Improvement.ImprovementSource.EssenceLoss,
-                                                       token: token)
-                              .ConfigureAwait(false);
+                        try
+                        {
+                            await ImprovementManager.RemoveImprovementsAsync(
+                                                        this, Improvement.ImprovementSource.EssenceLossChargen,
+                                                        token: token)
+                                                    .ConfigureAwait(false);
+                            await ImprovementManager
+                                  .RemoveImprovementsAsync(this, Improvement.ImprovementSource.EssenceLoss,
+                                                           token: token)
+                                  .ConfigureAwait(false);
+                        }
+                        catch
+                        {
+                            await ImprovementManager.RollbackAsync(this, CancellationToken.None).ConfigureAwait(false);
+                            throw;
+                        }
+
                         ImprovementManager.Commit(this);
                     }
                     finally
@@ -31772,38 +32797,47 @@ namespace Chummer
                                 .ConfigureAwait(false), token: token).ConfigureAwait(false);
                         if (intESSModifier != 0)
                         {
-                            await ImprovementManager.CreateImprovementAsync(
-                                this, "BOD", Improvement.ImprovementSource.Cyberzombie,
-                                string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0,
-                                intESSModifier, token: token).ConfigureAwait(false);
-                            await ImprovementManager.CreateImprovementAsync(
-                                this, "AGI", Improvement.ImprovementSource.Cyberzombie,
-                                string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0,
-                                intESSModifier, token: token).ConfigureAwait(false);
-                            await ImprovementManager.CreateImprovementAsync(
-                                this, "REA", Improvement.ImprovementSource.Cyberzombie,
-                                string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0,
-                                intESSModifier, token: token).ConfigureAwait(false);
-                            await ImprovementManager.CreateImprovementAsync(
-                                this, "STR", Improvement.ImprovementSource.Cyberzombie,
-                                string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0,
-                                intESSModifier, token: token).ConfigureAwait(false);
-                            await ImprovementManager.CreateImprovementAsync(
-                                this, "CHA", Improvement.ImprovementSource.Cyberzombie,
-                                string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0,
-                                intESSModifier, token: token).ConfigureAwait(false);
-                            await ImprovementManager.CreateImprovementAsync(
-                                this, "INT", Improvement.ImprovementSource.Cyberzombie,
-                                string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0,
-                                intESSModifier, token: token).ConfigureAwait(false);
-                            await ImprovementManager.CreateImprovementAsync(
-                                this, "LOG", Improvement.ImprovementSource.Cyberzombie,
-                                string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0,
-                                intESSModifier, token: token).ConfigureAwait(false);
-                            await ImprovementManager.CreateImprovementAsync(
-                                this, "WIL", Improvement.ImprovementSource.Cyberzombie,
-                                string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0,
-                                intESSModifier, token: token).ConfigureAwait(false);
+                            try
+                            {
+                                await ImprovementManager.CreateImprovementAsync(
+                                    this, "BOD", Improvement.ImprovementSource.Cyberzombie,
+                                    string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0,
+                                    intESSModifier, token: token).ConfigureAwait(false);
+                                await ImprovementManager.CreateImprovementAsync(
+                                    this, "AGI", Improvement.ImprovementSource.Cyberzombie,
+                                    string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0,
+                                    intESSModifier, token: token).ConfigureAwait(false);
+                                await ImprovementManager.CreateImprovementAsync(
+                                    this, "REA", Improvement.ImprovementSource.Cyberzombie,
+                                    string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0,
+                                    intESSModifier, token: token).ConfigureAwait(false);
+                                await ImprovementManager.CreateImprovementAsync(
+                                    this, "STR", Improvement.ImprovementSource.Cyberzombie,
+                                    string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0,
+                                    intESSModifier, token: token).ConfigureAwait(false);
+                                await ImprovementManager.CreateImprovementAsync(
+                                    this, "CHA", Improvement.ImprovementSource.Cyberzombie,
+                                    string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0,
+                                    intESSModifier, token: token).ConfigureAwait(false);
+                                await ImprovementManager.CreateImprovementAsync(
+                                    this, "INT", Improvement.ImprovementSource.Cyberzombie,
+                                    string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0,
+                                    intESSModifier, token: token).ConfigureAwait(false);
+                                await ImprovementManager.CreateImprovementAsync(
+                                    this, "LOG", Improvement.ImprovementSource.Cyberzombie,
+                                    string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0,
+                                    intESSModifier, token: token).ConfigureAwait(false);
+                                await ImprovementManager.CreateImprovementAsync(
+                                    this, "WIL", Improvement.ImprovementSource.Cyberzombie,
+                                    string.Empty, Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0,
+                                    intESSModifier, token: token).ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                await ImprovementManager.RollbackAsync(this, CancellationToken.None).ConfigureAwait(false);
+                                throw;
+                            }
+
                             ImprovementManager.Commit(this);
                         }
                     }
@@ -32454,17 +33488,17 @@ namespace Chummer
             }
         }
 
-        public void RefreshEncumbrance()
+        public void RefreshEncumbrance(CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
                 if (IsLoading)
                     return;
-                using (LockObject.EnterWriteLock())
+                using (LockObject.EnterWriteLock(token))
                 {
                     // Remove any Improvements from Armor Encumbrance.
-                    ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Encumbrance);
+                    ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Encumbrance, token: token);
                     if (!Settings.DoEncumbrancePenaltyPhysicalLimit
                         && !Settings.DoEncumbrancePenaltyMovementSpeed
                         && !Settings.DoEncumbrancePenaltyAgility
@@ -32474,71 +33508,109 @@ namespace Chummer
                     int intEncumbrance = Encumbrance;
                     if (intEncumbrance == 0)
                         return;
-                    if (Settings.DoEncumbrancePenaltyPhysicalLimit)
-                        ImprovementManager.CreateImprovement(this, "Physical",
-                                                             Improvement.ImprovementSource.Encumbrance,
-                                                             string.Empty, Improvement.ImprovementType.PhysicalLimit,
-                                                             "precedence-1",
-                                                             intEncumbrance * Settings.EncumbrancePenaltyPhysicalLimit);
-                    if (Settings.DoEncumbrancePenaltyMovementSpeed)
+                    try
                     {
-                        ImprovementManager.CreateImprovement(this, "Ground", Improvement.ImprovementSource.Encumbrance,
-                                                             string.Empty,
-                                                             Improvement.ImprovementType.SprintBonusPercent,
-                                                             "precedence-1",
-                                                             intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed);
-                        ImprovementManager.CreateImprovement(this, "Fly", Improvement.ImprovementSource.Encumbrance,
-                                                             string.Empty,
-                                                             Improvement.ImprovementType.SprintBonusPercent,
-                                                             "precedence-1",
-                                                             intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed);
-                        ImprovementManager.CreateImprovement(this, "Swim", Improvement.ImprovementSource.Encumbrance,
-                                                             string.Empty,
-                                                             Improvement.ImprovementType.SprintBonusPercent,
-                                                             "precedence-1",
-                                                             intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed);
-                        ImprovementManager.CreateImprovement(this, "Ground", Improvement.ImprovementSource.Encumbrance,
-                                                             string.Empty,
-                                                             Improvement.ImprovementType.RunMultiplierPercent,
-                                                             "precedence-1",
-                                                             intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed);
-                        ImprovementManager.CreateImprovement(this, "Fly", Improvement.ImprovementSource.Encumbrance,
-                                                             string.Empty,
-                                                             Improvement.ImprovementType.RunMultiplierPercent,
-                                                             "precedence-1",
-                                                             intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed);
-                        ImprovementManager.CreateImprovement(this, "Swim", Improvement.ImprovementSource.Encumbrance,
-                                                             string.Empty,
-                                                             Improvement.ImprovementType.RunMultiplierPercent,
-                                                             "precedence-1",
-                                                             intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed);
-                        ImprovementManager.CreateImprovement(this, "Ground", Improvement.ImprovementSource.Encumbrance,
-                                                             string.Empty,
-                                                             Improvement.ImprovementType.WalkMultiplierPercent,
-                                                             "precedence-1",
-                                                             intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed);
-                        ImprovementManager.CreateImprovement(this, "Fly", Improvement.ImprovementSource.Encumbrance,
-                                                             string.Empty,
-                                                             Improvement.ImprovementType.WalkMultiplierPercent,
-                                                             "precedence-1",
-                                                             intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed);
-                        ImprovementManager.CreateImprovement(this, "Swim", Improvement.ImprovementSource.Encumbrance,
-                                                             string.Empty,
-                                                             Improvement.ImprovementType.WalkMultiplierPercent,
-                                                             "precedence-1",
-                                                             intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed);
+                        if (Settings.DoEncumbrancePenaltyPhysicalLimit)
+                            ImprovementManager.CreateImprovement(this, "Physical",
+                                                                 Improvement.ImprovementSource.Encumbrance,
+                                                                 string.Empty,
+                                                                 Improvement.ImprovementType.PhysicalLimit,
+                                                                 "precedence-1",
+                                                                 intEncumbrance
+                                                                 * Settings.EncumbrancePenaltyPhysicalLimit,
+                                                                 token: token);
+                        if (Settings.DoEncumbrancePenaltyMovementSpeed)
+                        {
+                            ImprovementManager.CreateImprovement(this, "Ground",
+                                                                 Improvement.ImprovementSource.Encumbrance,
+                                                                 string.Empty,
+                                                                 Improvement.ImprovementType.SprintBonusPercent,
+                                                                 "precedence-1",
+                                                                 intEncumbrance
+                                                                 * Settings.EncumbrancePenaltyMovementSpeed,
+                                                                 token: token);
+                            ImprovementManager.CreateImprovement(this, "Fly", Improvement.ImprovementSource.Encumbrance,
+                                                                 string.Empty,
+                                                                 Improvement.ImprovementType.SprintBonusPercent,
+                                                                 "precedence-1",
+                                                                 intEncumbrance
+                                                                 * Settings.EncumbrancePenaltyMovementSpeed,
+                                                                 token: token);
+                            ImprovementManager.CreateImprovement(this, "Swim",
+                                                                 Improvement.ImprovementSource.Encumbrance,
+                                                                 string.Empty,
+                                                                 Improvement.ImprovementType.SprintBonusPercent,
+                                                                 "precedence-1",
+                                                                 intEncumbrance
+                                                                 * Settings.EncumbrancePenaltyMovementSpeed,
+                                                                 token: token);
+                            ImprovementManager.CreateImprovement(this, "Ground",
+                                                                 Improvement.ImprovementSource.Encumbrance,
+                                                                 string.Empty,
+                                                                 Improvement.ImprovementType.RunMultiplierPercent,
+                                                                 "precedence-1",
+                                                                 intEncumbrance
+                                                                 * Settings.EncumbrancePenaltyMovementSpeed,
+                                                                 token: token);
+                            ImprovementManager.CreateImprovement(this, "Fly", Improvement.ImprovementSource.Encumbrance,
+                                                                 string.Empty,
+                                                                 Improvement.ImprovementType.RunMultiplierPercent,
+                                                                 "precedence-1",
+                                                                 intEncumbrance
+                                                                 * Settings.EncumbrancePenaltyMovementSpeed,
+                                                                 token: token);
+                            ImprovementManager.CreateImprovement(this, "Swim",
+                                                                 Improvement.ImprovementSource.Encumbrance,
+                                                                 string.Empty,
+                                                                 Improvement.ImprovementType.RunMultiplierPercent,
+                                                                 "precedence-1",
+                                                                 intEncumbrance
+                                                                 * Settings.EncumbrancePenaltyMovementSpeed,
+                                                                 token: token);
+                            ImprovementManager.CreateImprovement(this, "Ground",
+                                                                 Improvement.ImprovementSource.Encumbrance,
+                                                                 string.Empty,
+                                                                 Improvement.ImprovementType.WalkMultiplierPercent,
+                                                                 "precedence-1",
+                                                                 intEncumbrance
+                                                                 * Settings.EncumbrancePenaltyMovementSpeed,
+                                                                 token: token);
+                            ImprovementManager.CreateImprovement(this, "Fly", Improvement.ImprovementSource.Encumbrance,
+                                                                 string.Empty,
+                                                                 Improvement.ImprovementType.WalkMultiplierPercent,
+                                                                 "precedence-1",
+                                                                 intEncumbrance
+                                                                 * Settings.EncumbrancePenaltyMovementSpeed,
+                                                                 token: token);
+                            ImprovementManager.CreateImprovement(this, "Swim",
+                                                                 Improvement.ImprovementSource.Encumbrance,
+                                                                 string.Empty,
+                                                                 Improvement.ImprovementType.WalkMultiplierPercent,
+                                                                 "precedence-1",
+                                                                 intEncumbrance
+                                                                 * Settings.EncumbrancePenaltyMovementSpeed,
+                                                                 token: token);
+                        }
+
+                        if (Settings.DoEncumbrancePenaltyAgility)
+                            ImprovementManager.CreateImprovement(this, "AGI", Improvement.ImprovementSource.Encumbrance,
+                                                                 string.Empty, Improvement.ImprovementType.Attribute,
+                                                                 "precedence-1", 0, 1, 0, 0,
+                                                                 intEncumbrance * Settings.EncumbrancePenaltyAgility,
+                                                                 token: token);
+                        if (Settings.DoEncumbrancePenaltyReaction)
+                            ImprovementManager.CreateImprovement(this, "REA", Improvement.ImprovementSource.Encumbrance,
+                                                                 string.Empty, Improvement.ImprovementType.Attribute,
+                                                                 "precedence-1", 0, 1, 0, 0,
+                                                                 intEncumbrance * Settings.EncumbrancePenaltyReaction,
+                                                                 token: token);
+                    }
+                    catch
+                    {
+                        ImprovementManager.Rollback(this, CancellationToken.None);
+                        throw;
                     }
 
-                    if (Settings.DoEncumbrancePenaltyAgility)
-                        ImprovementManager.CreateImprovement(this, "AGI", Improvement.ImprovementSource.Encumbrance,
-                                                             string.Empty, Improvement.ImprovementType.Attribute,
-                                                             "precedence-1", 0, 1, 0, 0,
-                                                             intEncumbrance * Settings.EncumbrancePenaltyAgility);
-                    if (Settings.DoEncumbrancePenaltyReaction)
-                        ImprovementManager.CreateImprovement(this, "REA", Improvement.ImprovementSource.Encumbrance,
-                                                             string.Empty, Improvement.ImprovementType.Attribute,
-                                                             "precedence-1", 0, 1, 0, 0,
-                                                             intEncumbrance * Settings.EncumbrancePenaltyReaction);
                     ImprovementManager.Commit(this);
                 }
             }
@@ -32567,96 +33639,109 @@ namespace Chummer
                     int intEncumbrance = Encumbrance;
                     if (intEncumbrance == 0)
                         return;
-                    if (Settings.DoEncumbrancePenaltyPhysicalLimit)
-                        await ImprovementManager.CreateImprovementAsync(
-                                                    this, "Physical", Improvement.ImprovementSource.Encumbrance,
-                                                    string.Empty, Improvement.ImprovementType.PhysicalLimit,
-                                                    "precedence-1",
-                                                    intEncumbrance * Settings.EncumbrancePenaltyPhysicalLimit,
-                                                    token: token)
-                                                .ConfigureAwait(false);
-                    if (Settings.DoEncumbrancePenaltyMovementSpeed)
+                    try
                     {
-                        await ImprovementManager.CreateImprovementAsync(
-                                                    this, "Ground", Improvement.ImprovementSource.Encumbrance,
-                                                    string.Empty, Improvement.ImprovementType.SprintBonusPercent,
-                                                    "precedence-1",
-                                                    intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
-                                                    token: token)
-                                                .ConfigureAwait(false);
-                        await ImprovementManager.CreateImprovementAsync(
-                                                    this, "Fly", Improvement.ImprovementSource.Encumbrance,
-                                                    string.Empty, Improvement.ImprovementType.SprintBonusPercent,
-                                                    "precedence-1",
-                                                    intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
-                                                    token: token)
-                                                .ConfigureAwait(false);
-                        await ImprovementManager.CreateImprovementAsync(
-                                                    this, "Swim", Improvement.ImprovementSource.Encumbrance,
-                                                    string.Empty, Improvement.ImprovementType.SprintBonusPercent,
-                                                    "precedence-1",
-                                                    intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
-                                                    token: token)
-                                                .ConfigureAwait(false);
-                        await ImprovementManager.CreateImprovementAsync(
-                                                    this, "Ground", Improvement.ImprovementSource.Encumbrance,
-                                                    string.Empty, Improvement.ImprovementType.RunMultiplierPercent,
-                                                    "precedence-1",
-                                                    intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
-                                                    token: token)
-                                                .ConfigureAwait(false);
-                        await ImprovementManager.CreateImprovementAsync(
-                                                    this, "Fly", Improvement.ImprovementSource.Encumbrance,
-                                                    string.Empty, Improvement.ImprovementType.RunMultiplierPercent,
-                                                    "precedence-1",
-                                                    intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
-                                                    token: token)
-                                                .ConfigureAwait(false);
-                        await ImprovementManager.CreateImprovementAsync(
-                                                    this, "Swim", Improvement.ImprovementSource.Encumbrance,
-                                                    string.Empty, Improvement.ImprovementType.RunMultiplierPercent,
-                                                    "precedence-1",
-                                                    intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
-                                                    token: token)
-                                                .ConfigureAwait(false);
-                        await ImprovementManager.CreateImprovementAsync(
-                                                    this, "Ground", Improvement.ImprovementSource.Encumbrance,
-                                                    string.Empty,
-                                                    Improvement.ImprovementType.WalkMultiplierPercent,
-                                                    "precedence-1",
-                                                    intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
-                                                    token: token)
-                                                .ConfigureAwait(false);
-                        await ImprovementManager.CreateImprovementAsync(
-                                                    this, "Fly", Improvement.ImprovementSource.Encumbrance,
-                                                    string.Empty,
-                                                    Improvement.ImprovementType.WalkMultiplierPercent,
-                                                    "precedence-1",
-                                                    intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
-                                                    token: token)
-                                                .ConfigureAwait(false);
-                        await ImprovementManager.CreateImprovementAsync(
-                                                    this, "Swim", Improvement.ImprovementSource.Encumbrance,
-                                                    string.Empty,
-                                                    Improvement.ImprovementType.WalkMultiplierPercent,
-                                                    "precedence-1",
-                                                    intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
-                                                    token: token)
-                                                .ConfigureAwait(false);
+                        if (Settings.DoEncumbrancePenaltyPhysicalLimit)
+                            await ImprovementManager.CreateImprovementAsync(
+                                                        this, "Physical", Improvement.ImprovementSource.Encumbrance,
+                                                        string.Empty, Improvement.ImprovementType.PhysicalLimit,
+                                                        "precedence-1",
+                                                        intEncumbrance * Settings.EncumbrancePenaltyPhysicalLimit,
+                                                        token: token)
+                                                    .ConfigureAwait(false);
+                        if (Settings.DoEncumbrancePenaltyMovementSpeed)
+                        {
+                            await ImprovementManager.CreateImprovementAsync(
+                                                        this, "Ground", Improvement.ImprovementSource.Encumbrance,
+                                                        string.Empty, Improvement.ImprovementType.SprintBonusPercent,
+                                                        "precedence-1",
+                                                        intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
+                                                        token: token)
+                                                    .ConfigureAwait(false);
+                            await ImprovementManager.CreateImprovementAsync(
+                                                        this, "Fly", Improvement.ImprovementSource.Encumbrance,
+                                                        string.Empty, Improvement.ImprovementType.SprintBonusPercent,
+                                                        "precedence-1",
+                                                        intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
+                                                        token: token)
+                                                    .ConfigureAwait(false);
+                            await ImprovementManager.CreateImprovementAsync(
+                                                        this, "Swim", Improvement.ImprovementSource.Encumbrance,
+                                                        string.Empty, Improvement.ImprovementType.SprintBonusPercent,
+                                                        "precedence-1",
+                                                        intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
+                                                        token: token)
+                                                    .ConfigureAwait(false);
+                            await ImprovementManager.CreateImprovementAsync(
+                                                        this, "Ground", Improvement.ImprovementSource.Encumbrance,
+                                                        string.Empty, Improvement.ImprovementType.RunMultiplierPercent,
+                                                        "precedence-1",
+                                                        intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
+                                                        token: token)
+                                                    .ConfigureAwait(false);
+                            await ImprovementManager.CreateImprovementAsync(
+                                                        this, "Fly", Improvement.ImprovementSource.Encumbrance,
+                                                        string.Empty, Improvement.ImprovementType.RunMultiplierPercent,
+                                                        "precedence-1",
+                                                        intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
+                                                        token: token)
+                                                    .ConfigureAwait(false);
+                            await ImprovementManager.CreateImprovementAsync(
+                                                        this, "Swim", Improvement.ImprovementSource.Encumbrance,
+                                                        string.Empty, Improvement.ImprovementType.RunMultiplierPercent,
+                                                        "precedence-1",
+                                                        intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
+                                                        token: token)
+                                                    .ConfigureAwait(false);
+                            await ImprovementManager.CreateImprovementAsync(
+                                                        this, "Ground", Improvement.ImprovementSource.Encumbrance,
+                                                        string.Empty,
+                                                        Improvement.ImprovementType.WalkMultiplierPercent,
+                                                        "precedence-1",
+                                                        intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
+                                                        token: token)
+                                                    .ConfigureAwait(false);
+                            await ImprovementManager.CreateImprovementAsync(
+                                                        this, "Fly", Improvement.ImprovementSource.Encumbrance,
+                                                        string.Empty,
+                                                        Improvement.ImprovementType.WalkMultiplierPercent,
+                                                        "precedence-1",
+                                                        intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
+                                                        token: token)
+                                                    .ConfigureAwait(false);
+                            await ImprovementManager.CreateImprovementAsync(
+                                                        this, "Swim", Improvement.ImprovementSource.Encumbrance,
+                                                        string.Empty,
+                                                        Improvement.ImprovementType.WalkMultiplierPercent,
+                                                        "precedence-1",
+                                                        intEncumbrance * Settings.EncumbrancePenaltyMovementSpeed,
+                                                        token: token)
+                                                    .ConfigureAwait(false);
+                        }
+
+                        if (Settings.DoEncumbrancePenaltyAgility)
+                            await ImprovementManager.CreateImprovementAsync(
+                                                        this, "AGI", Improvement.ImprovementSource.Encumbrance,
+                                                        string.Empty, Improvement.ImprovementType.Attribute,
+                                                        "precedence-1", 0, 1, 0, 0,
+                                                        intEncumbrance * Settings.EncumbrancePenaltyAgility,
+                                                        token: token)
+                                                    .ConfigureAwait(false);
+                        if (Settings.DoEncumbrancePenaltyReaction)
+                            await ImprovementManager.CreateImprovementAsync(
+                                                        this, "REA", Improvement.ImprovementSource.Encumbrance,
+                                                        string.Empty, Improvement.ImprovementType.Attribute,
+                                                        "precedence-1", 0, 1, 0, 0,
+                                                        intEncumbrance * Settings.EncumbrancePenaltyReaction,
+                                                        token: token)
+                                                    .ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        await ImprovementManager.RollbackAsync(this, CancellationToken.None).ConfigureAwait(false);
+                        throw;
                     }
 
-                    if (Settings.DoEncumbrancePenaltyAgility)
-                        await ImprovementManager.CreateImprovementAsync(
-                            this, "AGI", Improvement.ImprovementSource.Encumbrance,
-                            string.Empty, Improvement.ImprovementType.Attribute,
-                            "precedence-1", 0, 1, 0, 0,
-                            intEncumbrance * Settings.EncumbrancePenaltyAgility, token: token).ConfigureAwait(false);
-                    if (Settings.DoEncumbrancePenaltyReaction)
-                        await ImprovementManager.CreateImprovementAsync(
-                            this, "REA", Improvement.ImprovementSource.Encumbrance,
-                            string.Empty, Improvement.ImprovementType.Attribute,
-                            "precedence-1", 0, 1, 0, 0,
-                            intEncumbrance * Settings.EncumbrancePenaltyReaction, token: token).ConfigureAwait(false);
                     ImprovementManager.Commit(this);
                 }
                 finally
@@ -32666,31 +33751,40 @@ namespace Chummer
             }
         }
 
-        public void RefreshArmorEncumbrance()
+        public void RefreshArmorEncumbrance(CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
                 if (IsLoading)
                     return;
-                using (LockObject.EnterWriteLock())
+                using (LockObject.EnterWriteLock(token))
                 {
                     // Remove any Improvements from Armor Encumbrance.
-                    ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.ArmorEncumbrance);
+                    ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.ArmorEncumbrance, token: token);
                     // Create the Armor Encumbrance Improvements.
                     int intEncumbrance = ArmorEncumbrance;
                     if (intEncumbrance != 0)
                     {
-                        ImprovementManager.CreateImprovement(this, "AGI",
-                                                             Improvement.ImprovementSource.ArmorEncumbrance,
-                                                             string.Empty, Improvement.ImprovementType.Attribute,
-                                                             "precedence-1", 0, 1, 0, 0,
-                                                             intEncumbrance);
-                        ImprovementManager.CreateImprovement(this, "REA",
-                                                             Improvement.ImprovementSource.ArmorEncumbrance,
-                                                             string.Empty, Improvement.ImprovementType.Attribute,
-                                                             "precedence-1", 0, 1, 0, 0,
-                                                             intEncumbrance);
+                        try
+                        {
+                            ImprovementManager.CreateImprovement(this, "AGI",
+                                                                 Improvement.ImprovementSource.ArmorEncumbrance,
+                                                                 string.Empty, Improvement.ImprovementType.Attribute,
+                                                                 "precedence-1", 0, 1, 0, 0,
+                                                                 intEncumbrance, token: token);
+                            ImprovementManager.CreateImprovement(this, "REA",
+                                                                 Improvement.ImprovementSource.ArmorEncumbrance,
+                                                                 string.Empty, Improvement.ImprovementType.Attribute,
+                                                                 "precedence-1", 0, 1, 0, 0,
+                                                                 intEncumbrance, token: token);
+                        }
+                        catch
+                        {
+                            ImprovementManager.Rollback(this, CancellationToken.None);
+                            throw;
+                        }
+
                         ImprovementManager.Commit(this);
                     }
                 }
@@ -32715,16 +33809,25 @@ namespace Chummer
                     int intEncumbrance = await GetArmorEncumbranceAsync(token).ConfigureAwait(false);
                     if (intEncumbrance != 0)
                     {
-                        await ImprovementManager.CreateImprovementAsync(
-                            this, "AGI", Improvement.ImprovementSource.ArmorEncumbrance,
-                            string.Empty, Improvement.ImprovementType.Attribute,
-                            "precedence-1", 0, 1, 0, 0,
-                            intEncumbrance, token: token).ConfigureAwait(false);
-                        await ImprovementManager.CreateImprovementAsync(
-                            this, "REA", Improvement.ImprovementSource.ArmorEncumbrance,
-                            string.Empty, Improvement.ImprovementType.Attribute,
-                            "precedence-1", 0, 1, 0, 0,
-                            intEncumbrance, token: token).ConfigureAwait(false);
+                        try
+                        {
+                            await ImprovementManager.CreateImprovementAsync(
+                                this, "AGI", Improvement.ImprovementSource.ArmorEncumbrance,
+                                string.Empty, Improvement.ImprovementType.Attribute,
+                                "precedence-1", 0, 1, 0, 0,
+                                intEncumbrance, token: token).ConfigureAwait(false);
+                            await ImprovementManager.CreateImprovementAsync(
+                                this, "REA", Improvement.ImprovementSource.ArmorEncumbrance,
+                                string.Empty, Improvement.ImprovementType.Attribute,
+                                "precedence-1", 0, 1, 0, 0,
+                                intEncumbrance, token: token).ConfigureAwait(false);
+                        }
+                        catch
+                        {
+                            await ImprovementManager.RollbackAsync(this, CancellationToken.None).ConfigureAwait(false);
+                            throw;
+                        }
+
                         ImprovementManager.Commit(this);
                     }
                 }
@@ -32735,9 +33838,9 @@ namespace Chummer
             }
         }
 
-        public void RefreshWoundPenalties()
+        public void RefreshWoundPenalties(CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 // Don't hammer away with this method while this character is loading. Instead, it will be run once after everything has been loaded in.
                 if (IsLoading)
@@ -32747,13 +33850,13 @@ namespace Chummer
                 int intCMThreshold = CMThreshold;
                 int intStunCMPenalty = ImprovementManager
                                        .GetCachedImprovementListForValueOf(
-                                           this, Improvement.ImprovementType.IgnoreCMPenaltyStun)
+                                           this, Improvement.ImprovementType.IgnoreCMPenaltyStun, token: token)
                                        .Count > 0
                     ? 0
                     : Math.Min(0, StunCMThresholdOffset - intStunCMFilled) / intCMThreshold;
                 int intPhysicalCMPenalty = ImprovementManager
                                            .GetCachedImprovementListForValueOf(
-                                               this, Improvement.ImprovementType.IgnoreCMPenaltyPhysical)
+                                               this, Improvement.ImprovementType.IgnoreCMPenaltyPhysical, token: token)
                                            .Count > 0
                     ? 0
                     : Math.Min(0, PhysicalCMThresholdOffset - intPhysicalCMFilled) / intCMThreshold;
@@ -32798,13 +33901,13 @@ namespace Chummer
         /// <summary>
         /// Recalculates the Dicepool modifier for sustaining spells or complex forms
         /// </summary>
-        public bool RefreshSustainingPenalties()
+        public bool RefreshSustainingPenalties(CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 if (IsLoading) // If we are in the middle of loading, just queue a single refresh to happen at the end of the process
                 {
-                    EnqueuePostLoadMethod(RefreshSustainingPenalties);
+                    EnqueuePostLoadMethod(RefreshSustainingPenalties, token);
                     return true;
                 }
 
@@ -32815,12 +33918,13 @@ namespace Chummer
                     SustainedCollection.Where(x => x.HasSustainingPenalty).ToList();
                 // Handling of bonuses that let characters sustain some objects for free requires special handling in order to best match the bonus ensemble to the sustained spells ensemble
                 if (ImprovementManager.ValueOf(this, Improvement.ImprovementType.PenaltyFreeSustain,
-                                               out List<Improvement> lstUsedImprovements) != 0)
+                                               out List<Improvement> lstUsedImprovements, token: token) != 0)
                 {
                     // Set up a dictionary where the key is the maximum force/level of the bonus and the value is the number of objects that can be sustained
                     SortedDictionary<decimal, int> dicPenaltyFreeSustains = new SortedDictionary<decimal, int>();
                     foreach (Improvement objImprovement in lstUsedImprovements)
                     {
+                        token.ThrowIfCancellationRequested();
                         decimal decForce = objImprovement.Value;
                         if (dicPenaltyFreeSustains.TryGetValue(decForce, out int intExistingRating))
                             dicPenaltyFreeSustains[decForce] = intExistingRating + objImprovement.Rating;
@@ -32833,11 +33937,13 @@ namespace Chummer
                     // Go from lowest maximum force/level bonus to highest (that's why we use SortedDictionary) and match each one to the highest possible objects for it.
                     foreach (KeyValuePair<decimal, int> kvpLoop in dicPenaltyFreeSustains)
                     {
+                        token.ThrowIfCancellationRequested();
                         int intSupportedForce = kvpLoop.Key.StandardRound();
                         int intNumSupportsPossible = kvpLoop.Value;
                         lstSupportedObjects.Clear();
                         foreach (SustainedObject objLoopObject in lstSustainedSpells)
                         {
+                            token.ThrowIfCancellationRequested();
                             int intLoopForce = objLoopObject.Force;
                             if (intLoopForce > intSupportedForce)
                                 continue;
@@ -32864,7 +33970,7 @@ namespace Chummer
                                 }
 
                                 lstSupportedObjects.AddWithSort(objLoopObject,
-                                                                (x, y) => y.Force.CompareTo(x.Force));
+                                                                (x, y) => y.Force.CompareTo(x.Force), token: token);
                             }
                         }
 
@@ -32891,7 +33997,7 @@ namespace Chummer
             {
                 if (IsLoading) // If we are in the middle of loading, just queue a single refresh to happen at the end of the process
                 {
-                    EnqueuePostLoadAsyncMethod(RefreshSustainingPenaltiesAsync);
+                    await EnqueuePostLoadAsyncMethodAsync(RefreshSustainingPenaltiesAsync, token).ConfigureAwait(false);
                     return true;
                 }
 
@@ -32921,11 +34027,13 @@ namespace Chummer
                     // Go from lowest maximum force/level bonus to highest (that's why we use SortedDictionary) and match each one to the highest possible objects for it.
                     foreach (KeyValuePair<decimal, int> kvpLoop in dicPenaltyFreeSustains)
                     {
+                        token.ThrowIfCancellationRequested();
                         int intSupportedForce = kvpLoop.Key.StandardRound();
                         int intNumSupportsPossible = kvpLoop.Value;
                         lstSupportedObjects.Clear();
                         foreach (SustainedObject objLoopObject in lstSustainedSpells)
                         {
+                            token.ThrowIfCancellationRequested();
                             int intLoopForce = objLoopObject.Force;
                             if (intLoopForce > intSupportedForce)
                                 continue;
@@ -32951,7 +34059,7 @@ namespace Chummer
                                     lstSupportedObjects.RemoveAt(lstSupportedObjects.Count - 1);
                                 }
 
-                                lstSupportedObjects.AddWithSort(objLoopObject, (x, y) => y.Force.CompareTo(x.Force));
+                                lstSupportedObjects.AddWithSort(objLoopObject, (x, y) => y.Force.CompareTo(x.Force), token: token);
                             }
                         }
 
@@ -34494,16 +35602,16 @@ namespace Chummer
 
                                 _blnCreated =
                                     ((blnSync
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        ? xmlStatBlockBaseNode.SelectSingleNodeAndCacheExpression("karma/@total")
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        ? xmlStatBlockBaseNode.SelectSingleNodeAndCacheExpression("karma/@total", token)
                                         : await xmlStatBlockBaseNode.SelectSingleNodeAndCacheExpressionAsync(
                                             "karma/@total", token).ConfigureAwait(false))?.Value ?? "0") !=
                                     "0";
                                 if (!_blnCreated)
                                 {
                                     XPathNodeIterator xmlJournalEntries = blnSync
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        ? xmlStatBlockBaseNode.SelectAndCacheExpression("journals/journal")
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        ? xmlStatBlockBaseNode.SelectAndCacheExpression("journals/journal", token)
                                         : await xmlStatBlockBaseNode.SelectAndCacheExpressionAsync("journals/journal", token).ConfigureAwait(false);
                                     if (xmlJournalEntries.Count > 1)
                                     {
@@ -34511,8 +35619,8 @@ namespace Chummer
                                     }
                                     else if (xmlJournalEntries.Count == 1 &&
                                              (blnSync
-                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                 ? xmlJournalEntries.Current.SelectSingleNodeAndCacheExpression("@name")?.Value != "Title"
+                                                 // ReSharper disable once MethodHasAsyncOverload
+                                                 ? xmlJournalEntries.Current.SelectSingleNodeAndCacheExpression("@name", token)?.Value != "Title"
                                                  : (await xmlJournalEntries.Current
                                                                            .SelectSingleNodeAndCacheExpressionAsync(
                                                                                "@name", token).ConfigureAwait(false))?.Value != "Title"))
@@ -34522,8 +35630,8 @@ namespace Chummer
                                 }
 
                                 if (blnSync)
-                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    ResetCharacter();
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ResetCharacter(token);
                                 else
                                     await ResetCharacterAsync(token).ConfigureAwait(false);
 
@@ -34543,8 +35651,8 @@ namespace Chummer
 
                                 // Metatype information.
                                 string strRaceString = blnSync
-                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    ? xmlStatBlockBaseNode.SelectSingleNodeAndCacheExpression("race/@name")?.Value
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? xmlStatBlockBaseNode.SelectSingleNodeAndCacheExpression("race/@name", token)?.Value
                                     : (await xmlStatBlockBaseNode.SelectSingleNodeAndCacheExpressionAsync(
                                         "race/@name", token).ConfigureAwait(false))?.Value;
                                 if (!string.IsNullOrEmpty(strRaceString))
@@ -34553,50 +35661,40 @@ namespace Chummer
                                         strRaceString = "A.I.";
                                     if (blnSync)
                                     {
+                                        // ReSharper disable MethodHasAsyncOverload
                                         foreach (XPathNavigator xmlMetatype in
-                                                     // ReSharper disable once MethodHasAsyncOverload
                                                      LoadDataXPath("metatypes.xml", token: token)
-                                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                         .SelectAndCacheExpression("/chummer/metatypes/metatype"))
+                                                         .SelectAndCacheExpression("/chummer/metatypes/metatype", token))
                                         {
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             string strMetatypeName
-                                                = xmlMetatype.SelectSingleNodeAndCacheExpression("name").Value;
+                                                = xmlMetatype.SelectSingleNodeAndCacheExpression("name", token).Value;
                                             if (strMetatypeName == strRaceString)
                                             {
                                                 _strMetatype = strMetatypeName;
-                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 _strMetatypeCategory = xmlMetatype
-                                                                       .SelectSingleNodeAndCacheExpression("category")
+                                                                       .SelectSingleNodeAndCacheExpression("category", token)
                                                                        .Value;
                                                 _strMetavariant = "None";
-
-                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                
                                                 XPathNavigator objRunNode
-                                                    = xmlMetatype.SelectSingleNodeAndCacheExpression("run");
-                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                    = xmlMetatype.SelectSingleNodeAndCacheExpression("run", token);
                                                 XPathNavigator objWalkNode
-                                                    = xmlMetatype.SelectSingleNodeAndCacheExpression("walk");
-                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                    = xmlMetatype.SelectSingleNodeAndCacheExpression("walk", token);
                                                 XPathNavigator objSprintNode
-                                                    = xmlMetatype.SelectSingleNodeAndCacheExpression("sprint");
-
-                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                    = xmlMetatype.SelectSingleNodeAndCacheExpression("sprint", token);
+                                                
                                                 _strMovement
-                                                    = xmlMetatype.SelectSingleNodeAndCacheExpression("movement")?.Value
+                                                    = xmlMetatype.SelectSingleNodeAndCacheExpression("movement", token)?.Value
                                                       ??
                                                       string.Empty;
                                                 _strRun = objRunNode?.Value ?? string.Empty;
                                                 _strWalk = objWalkNode?.Value ?? string.Empty;
                                                 _strSprint = objSprintNode?.Value ?? string.Empty;
-
-                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                objRunNode = objRunNode?.SelectSingleNodeAndCacheExpression("@alt");
-                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                objWalkNode = objWalkNode?.SelectSingleNodeAndCacheExpression("@alt");
-                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                
+                                                objRunNode = objRunNode?.SelectSingleNodeAndCacheExpression("@alt", token);
+                                                objWalkNode = objWalkNode?.SelectSingleNodeAndCacheExpression("@alt", token);
                                                 objSprintNode
-                                                    = objSprintNode?.SelectSingleNodeAndCacheExpression("@alt");
+                                                    = objSprintNode?.SelectSingleNodeAndCacheExpression("@alt", token);
                                                 _strRunAlt = objRunNode?.Value ?? string.Empty;
                                                 _strWalkAlt = objWalkNode?.Value ?? string.Empty;
                                                 _strSprintAlt = objSprintNode?.Value ?? string.Empty;
@@ -34606,54 +35704,41 @@ namespace Chummer
                                             foreach (XPathNavigator xmlMetavariant in xmlMetatype.Select(
                                                          "metavariants/metavariant"))
                                             {
-                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 string strMetavariantName =
-                                                    xmlMetavariant.SelectSingleNodeAndCacheExpression("name").Value;
+                                                    xmlMetavariant.SelectSingleNodeAndCacheExpression("name", token).Value;
                                                 if (strMetavariantName == strRaceString)
                                                 {
                                                     _strMetatype = strMetatypeName;
-                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                     _strMetatypeCategory =
-                                                        xmlMetatype.SelectSingleNodeAndCacheExpression("category")
+                                                        xmlMetatype.SelectSingleNodeAndCacheExpression("category", token)
                                                                    .Value;
                                                     _strMetavariant = strMetavariantName;
-
-                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                    
                                                     XPathNavigator objRunNode =
-                                                        xmlMetavariant?.SelectSingleNodeAndCacheExpression("run") ??
-                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                        xmlMetatype?.SelectSingleNodeAndCacheExpression("run");
-                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                        xmlMetavariant?.SelectSingleNodeAndCacheExpression("run", token) ??
+                                                        xmlMetatype?.SelectSingleNodeAndCacheExpression("run", token);
                                                     XPathNavigator objWalkNode =
-                                                        xmlMetavariant?.SelectSingleNodeAndCacheExpression("walk") ??
-                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                        xmlMetatype?.SelectSingleNodeAndCacheExpression("walk");
-                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                        xmlMetavariant?.SelectSingleNodeAndCacheExpression("walk", token) ??
+                                                        xmlMetatype?.SelectSingleNodeAndCacheExpression("walk", token);
                                                     XPathNavigator objSprintNode =
-                                                        xmlMetavariant?.SelectSingleNodeAndCacheExpression("sprint") ??
-                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                        xmlMetatype?.SelectSingleNodeAndCacheExpression("sprint");
-
-                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                        xmlMetavariant?.SelectSingleNodeAndCacheExpression("sprint", token) ??
+                                                        xmlMetatype?.SelectSingleNodeAndCacheExpression("sprint", token);
+                                                    
                                                     _strMovement =
-                                                        xmlMetavariant?.SelectSingleNodeAndCacheExpression("movement")
+                                                        xmlMetavariant?.SelectSingleNodeAndCacheExpression("movement", token)
                                                                       ?.Value ??
-                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                        xmlMetatype?.SelectSingleNodeAndCacheExpression("movement")
+                                                        xmlMetatype?.SelectSingleNodeAndCacheExpression("movement", token)
                                                                    ?.Value ??
                                                         string.Empty;
                                                     _strRun = objRunNode?.Value ?? string.Empty;
                                                     _strWalk = objWalkNode?.Value ?? string.Empty;
                                                     _strSprint = objSprintNode?.Value ?? string.Empty;
-
-                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                    objRunNode = objRunNode?.SelectSingleNodeAndCacheExpression("@alt");
-                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                    
+                                                    objRunNode = objRunNode?.SelectSingleNodeAndCacheExpression("@alt", token);
                                                     objWalkNode
-                                                        = objWalkNode?.SelectSingleNodeAndCacheExpression("@alt");
-                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                        = objWalkNode?.SelectSingleNodeAndCacheExpression("@alt", token);
                                                     objSprintNode
-                                                        = objSprintNode?.SelectSingleNodeAndCacheExpression("@alt");
+                                                        = objSprintNode?.SelectSingleNodeAndCacheExpression("@alt", token);
                                                     _strRunAlt = objRunNode?.Value ?? string.Empty;
                                                     _strWalkAlt = objWalkNode?.Value ?? string.Empty;
                                                     _strSprintAlt = objSprintNode?.Value ?? string.Empty;
@@ -34661,6 +35746,7 @@ namespace Chummer
                                                 }
                                             }
                                         }
+                                        // ReSharper restore MethodHasAsyncOverload
                                     }
                                     else
                                     {
@@ -34765,23 +35851,23 @@ namespace Chummer
 
                                 if (blnSync)
                                 {
-                                    // ReSharper disable MethodHasAsyncOverloadWithCancellation
-                                    XPathNavigator xmlPersonalNode = xmlStatBlockBaseNode.SelectSingleNodeAndCacheExpression("personal");
+                                    // ReSharper disable MethodHasAsyncOverload
+                                    XPathNavigator xmlPersonalNode = xmlStatBlockBaseNode.SelectSingleNodeAndCacheExpression("personal", token);
                                     if (xmlPersonalNode != null)
                                     {
-                                        _strBackground = xmlPersonalNode.SelectSingleNodeAndCacheExpression("description")?.Value;
-                                        _strHeight = xmlPersonalNode.SelectSingleNodeAndCacheExpression("charheight/@text")?.Value;
-                                        _strWeight = xmlPersonalNode.SelectSingleNodeAndCacheExpression("charweight/@text")?.Value;
+                                        _strBackground = xmlPersonalNode.SelectSingleNodeAndCacheExpression("description", token)?.Value;
+                                        _strHeight = xmlPersonalNode.SelectSingleNodeAndCacheExpression("charheight/@text", token)?.Value;
+                                        _strWeight = xmlPersonalNode.SelectSingleNodeAndCacheExpression("charweight/@text", token)?.Value;
                                         if (xmlPersonalNode.HasAttributes)
                                         {
-                                            _strGender = xmlPersonalNode.SelectSingleNodeAndCacheExpression("@gender")?.Value;
-                                            _strAge = xmlPersonalNode.SelectSingleNodeAndCacheExpression("@age")?.Value;
-                                            _strHair = xmlPersonalNode.SelectSingleNodeAndCacheExpression("@hair")?.Value;
-                                            _strEyes = xmlPersonalNode.SelectSingleNodeAndCacheExpression("@eyes")?.Value;
-                                            _strSkin = xmlPersonalNode.SelectSingleNodeAndCacheExpression("@skin")?.Value;
+                                            _strGender = xmlPersonalNode.SelectSingleNodeAndCacheExpression("@gender", token)?.Value;
+                                            _strAge = xmlPersonalNode.SelectSingleNodeAndCacheExpression("@age", token)?.Value;
+                                            _strHair = xmlPersonalNode.SelectSingleNodeAndCacheExpression("@hair", token)?.Value;
+                                            _strEyes = xmlPersonalNode.SelectSingleNodeAndCacheExpression("@eyes", token)?.Value;
+                                            _strSkin = xmlPersonalNode.SelectSingleNodeAndCacheExpression("@skin", token)?.Value;
                                         }
                                     }
-                                    // ReSharper enable MethodHasAsyncOverloadWithCancellation
+                                    // ReSharper enable MethodHasAsyncOverload
                                 }
                                 else
                                 {
@@ -34812,13 +35898,13 @@ namespace Chummer
 
                                 _strPlayerName
                                     = (blnSync
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        ? xmlStatBlockBaseNode.SelectSingleNodeAndCacheExpression("@playername")
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        ? xmlStatBlockBaseNode.SelectSingleNodeAndCacheExpression("@playername", token)
                                         : await xmlStatBlockBaseNode.SelectSingleNodeAndCacheExpressionAsync(
                                             "@playername", token).ConfigureAwait(false))?.Value;
 
                                 foreach (XPathNavigator xmlImageFileNameNode in xmlStatBlockBaseNode.SelectAndCacheExpression(
-                                             "images/image/@filename"))
+                                             "images/image/@filename", token))
                                 {
                                     if (dicImages.TryGetValue(xmlImageFileNameNode.Value, out Bitmap objOutput))
                                     {
@@ -34837,9 +35923,9 @@ namespace Chummer
                                 {
                                     string strSettingsSummary =
                                         (blnSync
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                            // ReSharper disable once MethodHasAsyncOverload
                                             ? xmlStatBlockBaseNode.SelectSingleNodeAndCacheExpression(
-                                                "settings/@summary")
+                                                "settings/@summary", token)
                                             : await xmlStatBlockBaseNode.SelectSingleNodeAndCacheExpressionAsync(
                                                 "settings/@summary", token).ConfigureAwait(false))?.Value;
                                     if (!string.IsNullOrEmpty(strSettingsSummary))
@@ -34879,7 +35965,7 @@ namespace Chummer
                                                     }
 
                                                     bool blnIsKarmaBased = xmlStatBlockBaseNode
-                                                                           .SelectSingleNodeAndCacheExpression("creation/bp/@total")
+                                                                           .SelectSingleNodeAndCacheExpression("creation/bp/@total", token)
                                                                            ?.ValueAsInt > 100;
                                                     if (blnDoFullHouse)
                                                     {
@@ -34980,10 +36066,10 @@ namespace Chummer
                                         _strPriorityTalent = "AI";
                                     XPathNavigator xmlPriorityTalentPick =
                                         xmlLeadsBaseNode.SelectSingleNodeAndCacheExpression(
-                                            "container/pick[starts-with(@thing, \"qu\") and @source = \"heritage\"]");
+                                            "container/pick[starts-with(@thing, \"qu\") and @source = \"heritage\"]", token);
                                     if (xmlPriorityTalentPick != null)
                                     {
-                                        switch (xmlPriorityTalentPick.SelectSingleNodeAndCacheExpression("@thing")?.Value)
+                                        switch (xmlPriorityTalentPick.SelectSingleNodeAndCacheExpression("@thing", token)?.Value)
                                         {
                                             case "quAware":
                                                 _strPriorityTalent = "Aware";
@@ -35028,8 +36114,8 @@ namespace Chummer
                                         else
                                             await _lstPrioritySkills.ClearAsync(token).ConfigureAwait(false);
                                         foreach (XPathNavigator xmlField in (blnSync
-                                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                     ? xmlPriorityTalentPick.SelectAndCacheExpression("field")
+                                                     // ReSharper disable once MethodHasAsyncOverload
+                                                     ? xmlPriorityTalentPick.SelectAndCacheExpression("field", token)
                                                      : await xmlPriorityTalentPick.SelectAndCacheExpressionAsync(
                                                          "field", token).ConfigureAwait(false)))
                                         {
@@ -35098,41 +36184,41 @@ namespace Chummer
                                     }
                                 }
 
-                                XPathNavigator xmlKarmaNode = xmlStatBlockBaseNode.SelectSingleNodeAndCacheExpression("karma");
+                                XPathNavigator xmlKarmaNode = xmlStatBlockBaseNode.SelectSingleNodeAndCacheExpression("karma", token);
                                 if (xmlKarmaNode != null)
                                 {
-                                    int.TryParse(xmlKarmaNode.SelectSingleNodeAndCacheExpression("@left")?.Value, NumberStyles.Any,
+                                    int.TryParse(xmlKarmaNode.SelectSingleNodeAndCacheExpression("@left", token)?.Value, NumberStyles.Any,
                                                  GlobalSettings.InvariantCultureInfo, out _intKarma);
-                                    int.TryParse(xmlKarmaNode.SelectSingleNodeAndCacheExpression("@total")?.Value, NumberStyles.Any,
+                                    int.TryParse(xmlKarmaNode.SelectSingleNodeAndCacheExpression("@total", token)?.Value, NumberStyles.Any,
                                                  GlobalSettings.InvariantCultureInfo, out _intTotalKarma);
                                 }
 
                                 XPathNavigator xmlReputationsNode =
-                                    xmlStatBlockBaseNode.SelectSingleNodeAndCacheExpression("reputations");
+                                    xmlStatBlockBaseNode.SelectSingleNodeAndCacheExpression("reputations", token);
                                 if (xmlReputationsNode != null)
                                 {
                                     int.TryParse(
                                         xmlReputationsNode
-                                            .SelectSingleNodeAndCacheExpression("reputation[@name = \"Street Cred\"]/@value")
+                                            .SelectSingleNodeAndCacheExpression("reputation[@name = \"Street Cred\"]/@value", token)
                                             .Value,
                                         NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                                         out _intStreetCred);
                                     int.TryParse(
                                         xmlReputationsNode
-                                            .SelectSingleNodeAndCacheExpression("reputation[@name = \"Notoriety\"]/@value")
+                                            .SelectSingleNodeAndCacheExpression("reputation[@name = \"Notoriety\"]/@value", token)
                                             .Value,
                                         NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                                         out _intNotoriety);
                                     int.TryParse(
                                         xmlReputationsNode
-                                            .SelectSingleNodeAndCacheExpression("reputation[@name = \"Public Awareness\"]/@value")
+                                            .SelectSingleNodeAndCacheExpression("reputation[@name = \"Public Awareness\"]/@value", token)
                                             .Value, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                                         out _intPublicAwareness);
                                 }
 
                                 if (Created)
                                 {
-                                    decimal.TryParse(xmlStatBlockBaseNode.SelectSingleNodeAndCacheExpression("cash/@total")?.Value,
+                                    decimal.TryParse(xmlStatBlockBaseNode.SelectSingleNodeAndCacheExpression("cash/@total", token)?.Value,
                                                      NumberStyles.Any,
                                                      GlobalSettings.InvariantCultureInfo, out _decNuyen);
                                 }
@@ -35173,10 +36259,18 @@ namespace Chummer
                                     // ReSharper disable once MethodHasAsyncOverload
                                     ? LoadData("qualities.xml", token: token)
                                     : await LoadDataAsync("qualities.xml", token: token).ConfigureAwait(false);
-                                foreach (XPathNavigator xmlQualityToImport in xmlStatBlockBaseNode.SelectAndCacheExpression(
-                                             "qualities/positive/quality[traitcost/@bp != \"0\"]"))
+                                foreach (XPathNavigator xmlQualityToImport in (blnSync
+                                             ? xmlStatBlockBaseNode
+                                                 .SelectAndCacheExpression(
+                                                     "qualities/positive/quality[traitcost/@bp != \"0\"]", token)
+                                             : await xmlStatBlockBaseNode.SelectAndCacheExpressionAsync(
+                                                 "qualities/positive/quality[traitcost/@bp != \"0\"]", token)))
                                 {
-                                    string strQualityName = xmlQualityToImport.SelectSingleNodeAndCacheExpression("@name")?.Value;
+                                    string strQualityName = (blnSync
+                                        ? xmlQualityToImport.SelectSingleNodeAndCacheExpression(
+                                            "@name", token)
+                                        : await xmlQualityToImport.SelectSingleNodeAndCacheExpressionAsync(
+                                            "@name", token))?.Value;
                                     if (!string.IsNullOrEmpty(strQualityName))
                                     {
                                         int intDicepoolLabelIndex =
@@ -35251,8 +36345,13 @@ namespace Chummer
                                                                       lstWeapons,
                                                                       strForcedValue);
                                                     objQuality.Notes =
-                                                        xmlQualityToImport
-                                                            .SelectSingleNodeAndCacheExpression("description")?.Value ??
+                                                        (blnSync
+                                                            ? xmlQualityToImport
+                                                                .SelectSingleNodeAndCacheExpression(
+                                                                    "description", token)
+                                                            : await xmlQualityToImport
+                                                                .SelectSingleNodeAndCacheExpressionAsync(
+                                                                    "description", token))?.Value ??
                                                         string.Empty;
                                                     if (blnSync)
                                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -35276,9 +36375,13 @@ namespace Chummer
                                 }
 
                                 foreach (XPathNavigator xmlQualityToImport in xmlStatBlockBaseNode.SelectAndCacheExpression(
-                                             "qualities/negative/quality[traitcost/@bp != \"0\"]"))
+                                             "qualities/negative/quality[traitcost/@bp != \"0\"]", token))
                                 {
-                                    string strQualityName = xmlQualityToImport.SelectSingleNodeAndCacheExpression("@name")?.Value;
+                                    string strQualityName = (blnSync
+                                        ? xmlQualityToImport.SelectSingleNodeAndCacheExpression(
+                                            "@name", token)
+                                        : await xmlQualityToImport.SelectSingleNodeAndCacheExpressionAsync(
+                                            "@name", token))?.Value;
                                     if (!string.IsNullOrEmpty(strQualityName))
                                     {
                                         int intDicepoolLabelIndex =
@@ -35376,8 +36479,13 @@ namespace Chummer
                                                                       lstWeapons,
                                                                       strForcedValue);
                                                     objQuality.Notes =
-                                                        xmlQualityToImport
-                                                            .SelectSingleNodeAndCacheExpression("description")?.Value ??
+                                                        (blnSync
+                                                            ? xmlQualityToImport
+                                                                .SelectSingleNodeAndCacheExpression(
+                                                                    "description", token)
+                                                            : await xmlQualityToImport
+                                                                .SelectSingleNodeAndCacheExpressionAsync(
+                                                                    "description", token))?.Value ??
                                                         string.Empty;
                                                     if (blnSync)
                                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -35416,22 +36524,33 @@ namespace Chummer
                                 */
 
                                 // Attempt to load in the character's tradition
-                                if (xmlStatBlockBaseNode.SelectSingleNodeAndCacheExpression("magic/tradition") != null)
+                                XPathNavigator xmlTemp
+                                    = blnSync
+                                        ? xmlStatBlockBaseNode.SelectSingleNodeAndCacheExpression(
+                                            "magic/tradition", token)
+                                        : await xmlStatBlockBaseNode.SelectSingleNodeAndCacheExpressionAsync(
+                                            "magic/tradition", token);
+                                if (xmlTemp != null)
                                 {
-                                    _objTradition.LoadFromHeroLab(
-                                        xmlStatBlockBaseNode.SelectSingleNodeAndCacheExpression("magic/tradition"));
+                                    _objTradition.LoadFromHeroLab(xmlTemp);
                                 }
 
                                 // Attempt to load Condition Monitor Progress.
                                 XPathNavigator xmlPhysicalCMFilledNode =
-                                    xmlLeadsBaseNode.SelectSingleNodeAndCacheExpression(
-                                        "usagepool[@id = \"DmgNet\" and @pickindex=\"5\"]/@quantity");
+                                    blnSync
+                                        ? xmlLeadsBaseNode.SelectSingleNodeAndCacheExpression(
+                                            "usagepool[@id = \"DmgNet\" and @pickindex=\"5\"]/@quantity", token)
+                                        : await xmlLeadsBaseNode.SelectSingleNodeAndCacheExpressionAsync(
+                                            "usagepool[@id = \"DmgNet\" and @pickindex=\"5\"]/@quantity", token);
                                 if (xmlPhysicalCMFilledNode != null)
                                     int.TryParse(xmlPhysicalCMFilledNode.Value, NumberStyles.Any,
                                                  GlobalSettings.InvariantCultureInfo, out _intPhysicalCMFilled);
                                 XPathNavigator xmlStunCMFilledNode =
-                                    xmlLeadsBaseNode.SelectSingleNodeAndCacheExpression(
-                                        "usagepool[@id = \"DmgNet\" and @pickindex=\"6\"]/@quantity");
+                                    blnSync
+                                        ? xmlLeadsBaseNode.SelectSingleNodeAndCacheExpression(
+                                            "usagepool[@id = \"DmgNet\" and @pickindex=\"6\"]/@quantity", token)
+                                        : await xmlLeadsBaseNode.SelectSingleNodeAndCacheExpressionAsync(
+                                            "usagepool[@id = \"DmgNet\" and @pickindex=\"6\"]/@quantity", token);
                                 if (xmlStunCMFilledNode != null)
                                     int.TryParse(xmlStunCMFilledNode.Value, NumberStyles.Any,
                                                  GlobalSettings.InvariantCultureInfo, out _intStunCMFilled);
@@ -35440,8 +36559,13 @@ namespace Chummer
 
                             using (CustomActivity op_load_char_skills = Timekeeper.StartSyncron("load_char_skills", op_load)) //slightly messy
                             {
-                                SkillsSection.LoadFromHeroLab(xmlStatBlockBaseNode.SelectSingleNodeAndCacheExpression("skills"),
-                                                              op_load_char_skills);
+                                SkillsSection.LoadFromHeroLab(
+                                    blnSync
+                                        ? xmlStatBlockBaseNode.SelectSingleNodeAndCacheExpression("skills", token)
+                                        : await xmlStatBlockBaseNode
+                                                .SelectSingleNodeAndCacheExpressionAsync("skills", token)
+                                                .ConfigureAwait(false),
+                                    op_load_char_skills, token);
 
                                 //Timekeeper.Finish("load_char_skills");
                             }
@@ -35538,19 +36662,50 @@ namespace Chummer
                             {
                                 // Contacts.
                                 foreach (XPathNavigator xmlContactToImport in xmlStatBlockBaseNode.SelectAndCacheExpression(
-                                             "contacts/contact[@useradded != \"no\"]"))
+                                             "contacts/contact[@useradded != \"no\"]", token))
                                 {
                                     Contact objContact = new Contact(this)
                                     {
-                                        EntityType = ContactType.Contact,
-                                        Name = xmlContactToImport.SelectSingleNodeAndCacheExpression("@name")?.Value ?? string.Empty,
-                                        Role = xmlContactToImport.SelectSingleNodeAndCacheExpression("@type")?.Value ?? string.Empty,
-                                        Connection =
-                                            xmlContactToImport.SelectSingleNodeAndCacheExpression("@connection")?.ValueAsInt ?? 1,
-                                        Loyalty = xmlContactToImport.SelectSingleNodeAndCacheExpression("@loyalty")?.ValueAsInt ?? 1
+                                        EntityType = ContactType.Contact
                                     };
+                                    if (blnSync)
+                                    {
+                                        objContact.Name
+                                            = xmlContactToImport.SelectSingleNodeAndCacheExpression("@name", token)
+                                                                ?.Value ?? string.Empty;
+                                        objContact.Role
+                                            = xmlContactToImport.SelectSingleNodeAndCacheExpression("@type", token)
+                                                                ?.Value ?? string.Empty;
+                                        objContact.Connection =
+                                            xmlContactToImport.SelectSingleNodeAndCacheExpression("@connection", token)
+                                                              ?.ValueAsInt ?? 1;
+                                        objContact.Loyalty = xmlContactToImport
+                                                             .SelectSingleNodeAndCacheExpression("@loyalty", token)
+                                                             ?.ValueAsInt ?? 1;
+                                    }
+                                    else
+                                    {
+                                        objContact.Name
+                                            = (await xmlContactToImport.SelectSingleNodeAndCacheExpressionAsync(
+                                                "@name", token))?.Value ?? string.Empty;
+                                        objContact.Role
+                                            = (await xmlContactToImport.SelectSingleNodeAndCacheExpressionAsync(
+                                                "@type", token))?.Value ?? string.Empty;
+                                        objContact.Connection =
+                                            (await xmlContactToImport.SelectSingleNodeAndCacheExpressionAsync(
+                                                "@connection", token))?.ValueAsInt ?? 1;
+                                        objContact.Loyalty
+                                            = (await xmlContactToImport.SelectSingleNodeAndCacheExpressionAsync(
+                                                "@loyalty", token))?.ValueAsInt ?? 1;
+                                    }
+
                                     string strDescription =
-                                        xmlContactToImport.SelectSingleNodeAndCacheExpression("description")?.Value;
+                                        (blnSync
+                                            ? xmlContactToImport.SelectSingleNodeAndCacheExpression(
+                                                "description", token)
+                                            : await xmlContactToImport
+                                                    .SelectSingleNodeAndCacheExpressionAsync("description", token)
+                                                    .ConfigureAwait(false))?.Value;
                                     using (new FetchSafelyFromPool<StringBuilder>(
                                                Utils.StringBuilderPool, out StringBuilder sbdNotes))
                                     {
@@ -35622,10 +36777,19 @@ namespace Chummer
                                     // ReSharper disable once MethodHasAsyncOverload
                                     ? LoadData("armor.xml", token: token)
                                     : await LoadDataAsync("armor.xml", token: token).ConfigureAwait(false);
-                                foreach (XPathNavigator xmlArmorToImport in xmlStatBlockBaseNode.SelectAndCacheExpression(
-                                             "gear/armor/item[@useradded != \"no\"]"))
+                                foreach (XPathNavigator xmlArmorToImport in (blnSync
+                                             ? xmlStatBlockBaseNode
+                                                 .SelectAndCacheExpression(
+                                                     "gear/armor/item[@useradded != \"no\"]", token)
+                                             : await xmlStatBlockBaseNode.SelectAndCacheExpressionAsync(
+                                                 "gear/armor/item[@useradded != \"no\"]", token).ConfigureAwait(false)))
                                 {
-                                    string strArmorName = xmlArmorToImport.SelectSingleNodeAndCacheExpression("@name")?.Value;
+                                    string strArmorName = (blnSync
+                                        ? xmlArmorToImport.SelectSingleNodeAndCacheExpression(
+                                            "@name", token)
+                                        : await xmlArmorToImport
+                                                .SelectSingleNodeAndCacheExpressionAsync(
+                                                    "@name", token).ConfigureAwait(false))?.Value;
                                     if (!string.IsNullOrEmpty(strArmorName))
                                     {
                                         XmlNode xmlArmorData =
@@ -35663,11 +36827,22 @@ namespace Chummer
                                         {
                                             Armor objArmor = new Armor(this);
                                             objArmor.Create(xmlArmorData,
-                                                            xmlArmorToImport.SelectSingleNodeAndCacheExpression("@rating")?.ValueAsInt
+                                                            (blnSync
+                                                                ? xmlArmorToImport.SelectSingleNodeAndCacheExpression(
+                                                                    "@rating", token)
+                                                                : await xmlArmorToImport
+                                                                        .SelectSingleNodeAndCacheExpressionAsync(
+                                                                            "@rating", token).ConfigureAwait(false))
+                                                            ?.ValueAsInt
                                                             ?? 0,
                                                             lstWeapons);
-                                            objArmor.Notes = xmlArmorToImport.SelectSingleNodeAndCacheExpression("description")
-                                                                             ?.Value;
+                                            objArmor.Notes = (blnSync
+                                                    ? xmlArmorToImport.SelectSingleNodeAndCacheExpression(
+                                                        "description", token)
+                                                    : await xmlArmorToImport
+                                                            .SelectSingleNodeAndCacheExpressionAsync(
+                                                                "description", token).ConfigureAwait(false))
+                                                ?.Value;
                                             if (blnSync)
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 _lstArmor.Add(objArmor);
@@ -35681,7 +36856,12 @@ namespace Chummer
                                                                  strName + "/item[@useradded != \"no\"]"))
                                                 {
                                                     string strArmorModName =
-                                                        xmlArmorModToImport.SelectSingleNodeAndCacheExpression("@name")?.Value;
+                                                        (blnSync
+                                                            ? xmlArmorModToImport.SelectSingleNodeAndCacheExpression(
+                                                                "@name", token)
+                                                            : await xmlArmorModToImport
+                                                                    .SelectSingleNodeAndCacheExpressionAsync(
+                                                                        "@name", token).ConfigureAwait(false))?.Value;
                                                     if (!string.IsNullOrEmpty(strArmorModName))
                                                     {
                                                         XmlNode xmlArmorModData =
@@ -35693,17 +36873,31 @@ namespace Chummer
                                                         {
                                                             ArmorMod objArmorMod = new ArmorMod(this);
                                                             objArmorMod.Create(xmlArmorModData,
-                                                                               xmlArmorModToImport
-                                                                                   .SelectSingleNodeAndCacheExpression("@rating")
-                                                                                   ?.ValueAsInt ?? 0, lstWeapons);
-                                                            objArmorMod.Notes = xmlArmorModToImport
-                                                                .SelectSingleNodeAndCacheExpression("description")?.Value;
+                                                                               (blnSync
+                                                                                   ? xmlArmorModToImport
+                                                                                       .SelectSingleNodeAndCacheExpression(
+                                                                                           "@rating", token)
+                                                                                   : await xmlArmorModToImport
+                                                                                       .SelectSingleNodeAndCacheExpressionAsync(
+                                                                                           "@rating", token)
+                                                                                       .ConfigureAwait(false))
+                                                                               ?.ValueAsInt ?? 0, lstWeapons);
+                                                            objArmorMod.Notes = (blnSync
+                                                                    ? xmlArmorModToImport
+                                                                        .SelectSingleNodeAndCacheExpression(
+                                                                            "description", token)
+                                                                    : await xmlArmorModToImport
+                                                                            .SelectSingleNodeAndCacheExpressionAsync(
+                                                                                "description", token)
+                                                                            .ConfigureAwait(false))
+                                                                ?.Value;
                                                             objArmorMod.Parent = objArmor;
                                                             if (blnSync)
                                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                 objArmor.ArmorMods.Add(objArmorMod);
                                                             else
-                                                                await objArmor.ArmorMods.AddAsync(objArmorMod, token).ConfigureAwait(false);
+                                                                await objArmor.ArmorMods.AddAsync(objArmorMod, token)
+                                                                              .ConfigureAwait(false);
 
                                                             foreach (string strPluginNodeName in
                                                                      HeroLabPluginNodeNames)
@@ -35714,21 +36908,34 @@ namespace Chummer
                                                                                  "/item[@useradded != \"no\"]"))
                                                                 {
                                                                     Gear objPlugin = new Gear(this);
-                                                                    if (objPlugin.ImportHeroLabGear(xmlPluginToAdd,
-                                                                            xmlArmorModData,
-                                                                            lstWeapons))
+                                                                    if (blnSync)
                                                                     {
-                                                                        if (blnSync)
+                                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                                        if (objPlugin.ImportHeroLabGear(xmlPluginToAdd,
+                                                                                xmlArmorModData,
+                                                                                lstWeapons, token))
+                                                                        {
                                                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                             objArmorMod.GearChildren.Add(objPlugin);
+                                                                        }
                                                                         else
-                                                                            await objArmorMod.GearChildren.AddAsync(objPlugin, token).ConfigureAwait(false);
+                                                                            // ReSharper disable once MethodHasAsyncOverload
+                                                                            objPlugin.Dispose();
                                                                     }
-                                                                    else if (blnSync)
-                                                                        // ReSharper disable once MethodHasAsyncOverload
-                                                                        objPlugin.Dispose();
                                                                     else
-                                                                        await objPlugin.DisposeAsync().ConfigureAwait(false);
+                                                                    {
+                                                                        if (await objPlugin.ImportHeroLabGearAsync(
+                                                                                    xmlPluginToAdd,
+                                                                                    xmlArmorModData,
+                                                                                    lstWeapons, token)
+                                                                                .ConfigureAwait(false))
+                                                                            await objArmorMod.GearChildren
+                                                                                .AddAsync(objPlugin, token)
+                                                                                .ConfigureAwait(false);
+                                                                        else
+                                                                            await objPlugin.DisposeAsync()
+                                                                                .ConfigureAwait(false);
+                                                                    }
                                                                 }
 
                                                                 foreach (XPathNavigator xmlPluginToAdd in
@@ -35737,27 +36944,66 @@ namespace Chummer
                                                                                  "/item[@useradded = \"no\"]"))
                                                                 {
                                                                     string strGearName = xmlPluginToAdd
-                                                                        .SelectSingleNodeAndCacheExpression("@name")?.Value;
+                                                                        .SelectSingleNodeAndCacheExpression(
+                                                                            "@name", token)?.Value;
                                                                     if (!string.IsNullOrEmpty(strGearName))
                                                                     {
-                                                                        Gear objPlugin =
-                                                                            objArmorMod.GearChildren.FirstOrDefault(
-                                                                                x =>
-                                                                                    x.IncludedInParent &&
-                                                                                    (x.Name.Contains(strGearName) ||
-                                                                                        strGearName.Contains(
-                                                                                            x.Name)));
-                                                                        if (objPlugin != null)
+                                                                        if (blnSync)
                                                                         {
-                                                                            objPlugin.Quantity =
-                                                                                xmlPluginToAdd
-                                                                                    .SelectSingleNodeAndCacheExpression("@quantity")
+                                                                            // ReSharper disable MethodHasAsyncOverload
+                                                                            Gear objPlugin
+                                                                                = objArmorMod.GearChildren
+                                                                                    .FirstOrDefault(
+                                                                                        x =>
+                                                                                            x.IncludedInParent &&
+                                                                                            (x.Name.Contains(
+                                                                                                    strGearName) ||
+                                                                                                strGearName.Contains(
+                                                                                                    x.Name)));
+                                                                            if (objPlugin != null)
+                                                                            {
+                                                                                objPlugin.Quantity = xmlPluginToAdd
+                                                                                        .SelectSingleNodeAndCacheExpression(
+                                                                                            "@quantity", token)
+                                                                                        ?.ValueAsInt
+                                                                                    ?? 1;
+                                                                                objPlugin.Notes = xmlPluginToAdd
+                                                                                    .SelectSingleNodeAndCacheExpression(
+                                                                                        "description", token)?.Value;
+                                                                                objPlugin.ProcessHeroLabGearPlugins(
+                                                                                    xmlPluginToAdd,
+                                                                                    lstWeapons, token);
+                                                                            }
+                                                                            // ReSharper restore MethodHasAsyncOverload
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            Gear objPlugin = await objArmorMod
+                                                                                .GearChildren
+                                                                                .FirstOrDefaultAsync(
+                                                                                    x =>
+                                                                                        x.IncludedInParent &&
+                                                                                        (x.Name.Contains(strGearName) ||
+                                                                                            strGearName.Contains(
+                                                                                                x.Name)), token)
+                                                                                .ConfigureAwait(false);
+                                                                            if (objPlugin != null)
+                                                                            {
+                                                                                objPlugin.Quantity
+                                                                                    = (await xmlPluginToAdd
+                                                                                        .SelectSingleNodeAndCacheExpressionAsync(
+                                                                                            "@quantity", token))
                                                                                     ?.ValueAsInt ?? 1;
-                                                                            objPlugin.Notes = xmlPluginToAdd
-                                                                                .SelectSingleNodeAndCacheExpression("description")
-                                                                                ?.Value;
-                                                                            objPlugin.ProcessHeroLabGearPlugins(
-                                                                                xmlPluginToAdd, lstWeapons);
+                                                                                objPlugin.Notes
+                                                                                    = (await xmlPluginToAdd
+                                                                                        .SelectSingleNodeAndCacheExpressionAsync(
+                                                                                            "description", token))
+                                                                                    ?.Value;
+                                                                                await objPlugin
+                                                                                    .ProcessHeroLabGearPluginsAsync(
+                                                                                        xmlPluginToAdd,
+                                                                                        lstWeapons, token);
+                                                                            }
                                                                         }
                                                                     }
                                                                 }
@@ -35768,13 +37014,15 @@ namespace Chummer
                                                             Gear objPlugin = new Gear(this);
                                                             if (objPlugin.ImportHeroLabGear(xmlArmorModToImport,
                                                                     xmlArmorData,
-                                                                    lstWeapons))
+                                                                    lstWeapons, token))
                                                             {
                                                                 if (blnSync)
                                                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                     objArmor.GearChildren.Add(objPlugin);
                                                                 else
-                                                                    await objArmor.GearChildren.AddAsync(objPlugin, token).ConfigureAwait(false);
+                                                                    await objArmor.GearChildren
+                                                                        .AddAsync(objPlugin, token)
+                                                                        .ConfigureAwait(false);
                                                             }
                                                             else if (blnSync)
                                                                 // ReSharper disable once MethodHasAsyncOverload
@@ -35790,18 +37038,38 @@ namespace Chummer
                                                                  strName + "/item[@useradded = \"no\"]"))
                                                 {
                                                     string strArmorModName =
-                                                        xmlArmorModToImport.SelectSingleNodeAndCacheExpression("@name")?.Value;
+                                                        (blnSync
+                                                            ? xmlArmorModToImport.SelectSingleNodeAndCacheExpression(
+                                                                "@name", token)
+                                                            : await xmlArmorModToImport
+                                                                    .SelectSingleNodeAndCacheExpressionAsync(
+                                                                        "@name", token).ConfigureAwait(false))?.Value;
                                                     if (!string.IsNullOrEmpty(strArmorModName))
                                                     {
-                                                        ArmorMod objArmorMod = objArmor.ArmorMods.FirstOrDefault(
-                                                            x =>
-                                                                x.IncludedInArmor &&
-                                                                (x.Name.Contains(strArmorModName) ||
-                                                                 strArmorModName.Contains(x.Name)));
+                                                        ArmorMod objArmorMod = blnSync
+                                                            ? objArmor.ArmorMods.FirstOrDefault(
+                                                                x =>
+                                                                    x.IncludedInArmor &&
+                                                                    (x.Name.Contains(strArmorModName) ||
+                                                                     strArmorModName.Contains(x.Name)))
+                                                            : await objArmor.ArmorMods.FirstOrDefaultAsync(
+                                                                                x =>
+                                                                                    x.IncludedInArmor &&
+                                                                                    (x.Name.Contains(strArmorModName) ||
+                                                                                        strArmorModName
+                                                                                            .Contains(x.Name)), token)
+                                                                            .ConfigureAwait(false);
                                                         if (objArmorMod != null)
                                                         {
-                                                            objArmorMod.Notes = xmlArmorModToImport
-                                                                .SelectSingleNodeAndCacheExpression("description")?.Value;
+                                                            objArmorMod.Notes = (blnSync
+                                                                    ? xmlArmorModToImport
+                                                                        .SelectSingleNodeAndCacheExpression(
+                                                                            "description", token)
+                                                                    : await xmlArmorModToImport
+                                                                            .SelectSingleNodeAndCacheExpressionAsync(
+                                                                                "description", token)
+                                                                            .ConfigureAwait(false))
+                                                                ?.Value;
                                                             foreach (string strPluginNodeName in
                                                                      HeroLabPluginNodeNames)
                                                             {
@@ -35815,20 +37083,24 @@ namespace Chummer
                                                                             blnSync
                                                                                 // ReSharper disable once MethodHasAsyncOverload
                                                                                 ? objArmorMod.GetNode(token)
-                                                                                : await objArmorMod.GetNodeAsync(token).ConfigureAwait(false),
-                                                                            lstWeapons))
+                                                                                : await objArmorMod.GetNodeAsync(token)
+                                                                                    .ConfigureAwait(false),
+                                                                            lstWeapons, token))
                                                                     {
                                                                         if (blnSync)
                                                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                             objArmorMod.GearChildren.Add(objPlugin);
                                                                         else
-                                                                            await objArmorMod.GearChildren.AddAsync(objPlugin, token).ConfigureAwait(false);
+                                                                            await objArmorMod.GearChildren
+                                                                                .AddAsync(objPlugin, token)
+                                                                                .ConfigureAwait(false);
                                                                     }
                                                                     else if (blnSync)
                                                                         // ReSharper disable once MethodHasAsyncOverload
                                                                         objPlugin.Dispose();
                                                                     else
-                                                                        await objPlugin.DisposeAsync().ConfigureAwait(false);
+                                                                        await objPlugin.DisposeAsync()
+                                                                            .ConfigureAwait(false);
                                                                 }
 
                                                                 foreach (XPathNavigator xmlPluginToAdd in
@@ -35837,34 +37109,71 @@ namespace Chummer
                                                                                  "/item[@useradded = \"no\"]"))
                                                                 {
                                                                     string strGearName = xmlPluginToAdd
-                                                                        .SelectSingleNodeAndCacheExpression("@name")?.Value;
+                                                                        .SelectSingleNodeAndCacheExpression(
+                                                                            "@name", token)?.Value;
                                                                     if (!string.IsNullOrEmpty(strGearName))
                                                                     {
-                                                                        Gear objPlugin =
-                                                                            objArmorMod.GearChildren.FirstOrDefault(
-                                                                                x =>
-                                                                                    x.IncludedInParent &&
-                                                                                    (x.Name.Contains(strGearName) ||
-                                                                                        strGearName.Contains(
-                                                                                            x.Name)));
-                                                                        if (objPlugin != null)
+                                                                        if (blnSync)
                                                                         {
-                                                                            objPlugin.Quantity =
-                                                                                xmlPluginToAdd
-                                                                                    .SelectSingleNodeAndCacheExpression("@quantity")
+                                                                            // ReSharper disable MethodHasAsyncOverload
+                                                                            Gear objPlugin
+                                                                                = objArmor.GearChildren.FirstOrDefault(
+                                                                                    x =>
+                                                                                        x.IncludedInParent &&
+                                                                                        (x.Name.Contains(strGearName) ||
+                                                                                            strGearName.Contains(
+                                                                                                x.Name)));
+                                                                            if (objPlugin != null)
+                                                                            {
+                                                                                objPlugin.Quantity = xmlPluginToAdd
+                                                                                        .SelectSingleNodeAndCacheExpression(
+                                                                                            "@quantity", token)
+                                                                                        ?.ValueAsInt
+                                                                                    ?? 1;
+                                                                                objPlugin.Notes = xmlPluginToAdd
+                                                                                    .SelectSingleNodeAndCacheExpression(
+                                                                                        "description", token)?.Value;
+                                                                                objPlugin.ProcessHeroLabGearPlugins(
+                                                                                    xmlPluginToAdd,
+                                                                                    lstWeapons, token);
+                                                                            }
+                                                                            // ReSharper restore MethodHasAsyncOverload
+                                                                        }
+                                                                        else
+                                                                        {
+                                                                            Gear objPlugin = await objArmor.GearChildren
+                                                                                .FirstOrDefaultAsync(
+                                                                                    x =>
+                                                                                        x.IncludedInParent &&
+                                                                                        (x.Name.Contains(strGearName) ||
+                                                                                            strGearName.Contains(
+                                                                                                x.Name)), token)
+                                                                                .ConfigureAwait(false);
+                                                                            if (objPlugin != null)
+                                                                            {
+                                                                                objPlugin.Quantity
+                                                                                    = (await xmlPluginToAdd
+                                                                                        .SelectSingleNodeAndCacheExpressionAsync(
+                                                                                            "@quantity", token))
                                                                                     ?.ValueAsInt ?? 1;
-                                                                            objPlugin.Notes = xmlPluginToAdd
-                                                                                .SelectSingleNodeAndCacheExpression("description")
-                                                                                ?.Value;
-                                                                            objPlugin.ProcessHeroLabGearPlugins(
-                                                                                xmlPluginToAdd, lstWeapons);
+                                                                                objPlugin.Notes
+                                                                                    = (await xmlPluginToAdd
+                                                                                        .SelectSingleNodeAndCacheExpressionAsync(
+                                                                                            "description", token))
+                                                                                    ?.Value;
+                                                                                await objPlugin
+                                                                                    .ProcessHeroLabGearPluginsAsync(
+                                                                                        xmlPluginToAdd,
+                                                                                        lstWeapons, token);
+                                                                            }
                                                                         }
                                                                     }
                                                                 }
                                                             }
                                                         }
-                                                        else
+                                                        else if (blnSync)
                                                         {
+                                                            // ReSharper disable MethodHasAsyncOverload
                                                             Gear objPlugin = objArmor.GearChildren.FirstOrDefault(
                                                                 x =>
                                                                     x.IncludedInParent &&
@@ -35873,12 +37182,37 @@ namespace Chummer
                                                             if (objPlugin != null)
                                                             {
                                                                 objPlugin.Quantity = xmlArmorModToImport
-                                                                    .SelectSingleNodeAndCacheExpression("@quantity")?.ValueAsInt ?? 1;
+                                                                    .SelectSingleNodeAndCacheExpression(
+                                                                        "@quantity", token)?.ValueAsInt ?? 1;
                                                                 objPlugin.Notes = xmlArmorModToImport
-                                                                    .SelectSingleNodeAndCacheExpression("description")?.Value;
+                                                                    .SelectSingleNodeAndCacheExpression(
+                                                                        "description", token)?.Value;
                                                                 objPlugin.ProcessHeroLabGearPlugins(
                                                                     xmlArmorModToImport,
-                                                                    lstWeapons);
+                                                                    lstWeapons, token);
+                                                            }
+                                                            // ReSharper restore MethodHasAsyncOverload
+                                                        }
+                                                        else
+                                                        {
+                                                            Gear objPlugin = await objArmor.GearChildren
+                                                                .FirstOrDefaultAsync(
+                                                                    x =>
+                                                                        x.IncludedInParent &&
+                                                                        (x.Name.Contains(strArmorModName) ||
+                                                                         strArmorModName.Contains(x.Name)), token)
+                                                                .ConfigureAwait(false);
+                                                            if (objPlugin != null)
+                                                            {
+                                                                objPlugin.Quantity = (await xmlArmorModToImport
+                                                                    .SelectSingleNodeAndCacheExpressionAsync(
+                                                                        "@quantity", token))?.ValueAsInt ?? 1;
+                                                                objPlugin.Notes = (await xmlArmorModToImport
+                                                                    .SelectSingleNodeAndCacheExpressionAsync(
+                                                                        "description", token))?.Value;
+                                                                await objPlugin.ProcessHeroLabGearPluginsAsync(
+                                                                    xmlArmorModToImport,
+                                                                    lstWeapons, token);
                                                             }
                                                         }
                                                     }
@@ -35916,7 +37250,13 @@ namespace Chummer
                                 foreach (XPathNavigator xmlPluginToAdd in xmlStatBlockBaseNode.Select(
                                              "gear/weapons/item[@useradded = \"no\"]"))
                                 {
-                                    string strName = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("@name")?.Value;
+                                    string strName
+                                        = (blnSync
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            ? xmlPluginToAdd.SelectSingleNodeAndCacheExpression("@name", token)
+                                            : await xmlPluginToAdd
+                                                    .SelectSingleNodeAndCacheExpressionAsync("@name", token)
+                                                    .ConfigureAwait(false))?.Value;
                                     if (!string.IsNullOrEmpty(strName))
                                     {
                                         Weapon objWeapon = _lstWeapons.FirstOrDefault(x =>
@@ -35924,7 +37264,13 @@ namespace Chummer
                                             (x.Name.Contains(strName) || strName.Contains(x.Name)));
                                         if (objWeapon != null)
                                         {
-                                            objWeapon.Notes = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("description")?.Value;
+                                            objWeapon.Notes = (blnSync
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                ? xmlPluginToAdd.SelectSingleNodeAndCacheExpression(
+                                                    "description", token)
+                                                : await xmlPluginToAdd
+                                                        .SelectSingleNodeAndCacheExpressionAsync("description", token)
+                                                        .ConfigureAwait(false))?.Value;
                                             objWeapon.ProcessHeroLabWeaponPlugins(xmlPluginToAdd, lstWeapons);
                                         }
                                     }
@@ -35959,7 +37305,13 @@ namespace Chummer
                                 foreach (XPathNavigator xmlPluginToAdd in xmlStatBlockBaseNode.Select(
                                              "gear/augmentations/cyberware/item[@useradded = \"no\"]"))
                                 {
-                                    string strName = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("@name")?.Value;
+                                    string strName
+                                        = (blnSync
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            ? xmlPluginToAdd.SelectSingleNodeAndCacheExpression("@name", token)
+                                            : await xmlPluginToAdd
+                                                    .SelectSingleNodeAndCacheExpressionAsync("@name", token)
+                                                    .ConfigureAwait(false))?.Value;
                                     if (!string.IsNullOrEmpty(strName))
                                     {
                                         Cyberware objPlugin = _lstCyberware.FirstOrDefault(x =>
@@ -35967,7 +37319,13 @@ namespace Chummer
                                             (x.Name.Contains(strName) || strName.Contains(x.Name)));
                                         if (objPlugin != null)
                                         {
-                                            objPlugin.Notes = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("description")?.Value;
+                                            objPlugin.Notes = (blnSync
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                ? xmlPluginToAdd.SelectSingleNodeAndCacheExpression(
+                                                    "description", token)
+                                                : await xmlPluginToAdd
+                                                        .SelectSingleNodeAndCacheExpressionAsync("description", token)
+                                                        .ConfigureAwait(false))?.Value;
                                             objPlugin.ProcessHeroLabCyberwarePlugins(xmlPluginToAdd,
                                                 objPlugin.Grade,
                                                 lstWeapons,
@@ -35999,7 +37357,13 @@ namespace Chummer
                                 foreach (XPathNavigator xmlPluginToAdd in xmlStatBlockBaseNode.Select(
                                              "gear/augmentations/bioware/item[@useradded = \"no\"]"))
                                 {
-                                    string strName = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("@name")?.Value;
+                                    string strName
+                                        = (blnSync
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            ? xmlPluginToAdd.SelectSingleNodeAndCacheExpression("@name", token)
+                                            : await xmlPluginToAdd
+                                                    .SelectSingleNodeAndCacheExpressionAsync("@name", token)
+                                                    .ConfigureAwait(false))?.Value;
                                     if (!string.IsNullOrEmpty(strName))
                                     {
                                         Cyberware objPlugin = _lstCyberware.FirstOrDefault(x =>
@@ -36007,7 +37371,13 @@ namespace Chummer
                                             (x.Name.Contains(strName) || strName.Contains(x.Name)));
                                         if (objPlugin != null)
                                         {
-                                            objPlugin.Notes = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("description")?.Value;
+                                            objPlugin.Notes = (blnSync
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                ? xmlPluginToAdd.SelectSingleNodeAndCacheExpression(
+                                                    "description", token)
+                                                : await xmlPluginToAdd
+                                                        .SelectSingleNodeAndCacheExpressionAsync("description", token)
+                                                        .ConfigureAwait(false))?.Value;
                                             objPlugin.ProcessHeroLabCyberwarePlugins(xmlPluginToAdd,
                                                 objPlugin.Grade,
                                                 lstWeapons,
@@ -36024,8 +37394,8 @@ namespace Chummer
                             {
                                 // Spells.
                                 xmlNodeList = blnSync
-                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    ? xmlStatBlockBaseNode.SelectAndCacheExpression("magic/spells/spell")
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? xmlStatBlockBaseNode.SelectAndCacheExpression("magic/spells/spell", token)
                                     : await xmlStatBlockBaseNode.SelectAndCacheExpressionAsync("magic/spells/spell", token).ConfigureAwait(false);
                                 XmlDocument xmlSpellDocument = blnSync
                                     // ReSharper disable once MethodHasAsyncOverload
@@ -36033,7 +37403,13 @@ namespace Chummer
                                     : await LoadDataAsync("spells.xml", token: token).ConfigureAwait(false);
                                 foreach (XPathNavigator xmlHeroLabSpell in xmlNodeList)
                                 {
-                                    string strSpellName = xmlHeroLabSpell.SelectSingleNodeAndCacheExpression("@name")?.Value;
+                                    string strSpellName
+                                        = (blnSync
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            ? xmlHeroLabSpell.SelectSingleNodeAndCacheExpression("@name", token)
+                                            : await xmlHeroLabSpell
+                                                    .SelectSingleNodeAndCacheExpressionAsync("@name", token)
+                                                    .ConfigureAwait(false))?.Value;
                                     if (!string.IsNullOrEmpty(strSpellName))
                                     {
                                         bool blnIsLimited =
@@ -36136,7 +37512,12 @@ namespace Chummer
                                         {
                                             strForcedValue = strSpellName.TrimStartOnce("Clean ")
                                                                          .TrimEndOnce(", Extended");
-                                            if (xmlHeroLabSpell.SelectSingleNodeAndCacheExpression("@type")?.Value == "Physical")
+                                            if ((blnSync
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    ? xmlHeroLabSpell.SelectSingleNodeAndCacheExpression("@type", token)
+                                                    : await xmlHeroLabSpell
+                                                            .SelectSingleNodeAndCacheExpressionAsync("@type", token)
+                                                            .ConfigureAwait(false))?.Value == "Physical")
                                                 strSpellName = "Detect [Object]";
                                             else if (strSpellName.EndsWith(", Extended", StringComparison.Ordinal))
                                                 strSpellName = "Detect [Life Form], Extended";
@@ -36166,10 +37547,17 @@ namespace Chummer
                                         else if (strSpellName.StartsWith("Destroy ", StringComparison.Ordinal))
                                         {
                                             strForcedValue = strSpellName.TrimStartOnce("Destroy ");
-                                            strSpellName = xmlHeroLabSpell.SelectSingleNodeAndCacheExpression("@type")?.Value ==
-                                                           "Physical"
-                                                ? "Destroy [Vehicle]"
-                                                : "Destroy [Free Spirit]";
+                                            strSpellName
+                                                = (blnSync
+                                                      // ReSharper disable once MethodHasAsyncOverload
+                                                      ? xmlHeroLabSpell.SelectSingleNodeAndCacheExpression(
+                                                          "@type", token)
+                                                      : await xmlHeroLabSpell
+                                                              .SelectSingleNodeAndCacheExpressionAsync("@type", token)
+                                                              .ConfigureAwait(false))?.Value ==
+                                                  "Physical"
+                                                    ? "Destroy [Vehicle]"
+                                                    : "Destroy [Free Spirit]";
                                         }
                                         else if (strSpellName.StartsWith("Insecticide ", StringComparison.Ordinal))
                                         {
@@ -36270,7 +37658,12 @@ namespace Chummer
                                         }
 
                                         string strSpellCategory =
-                                            xmlHeroLabSpell.SelectSingleNodeAndCacheExpression("@category")?.Value;
+                                            (blnSync
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                ? xmlHeroLabSpell.SelectSingleNodeAndCacheExpression("@category", token)
+                                                : await xmlHeroLabSpell
+                                                        .SelectSingleNodeAndCacheExpressionAsync("@category", token)
+                                                        .ConfigureAwait(false))?.Value;
                                         XmlNode xmlSpellData = xmlSpellDocument.SelectSingleNode(
                                             "chummer/spells/spell[category = " + strSpellCategory.CleanXPath() +
                                             " and name = " + strSpellName.CleanXPath() + ']');
@@ -36306,7 +37699,13 @@ namespace Chummer
                                         {
                                             Spell objSpell = new Spell(this);
                                             objSpell.Create(xmlSpellData, strForcedValue, blnIsLimited);
-                                            objSpell.Notes = xmlHeroLabSpell.SelectSingleNodeAndCacheExpression("description")?.Value;
+                                            objSpell.Notes = (blnSync
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                ? xmlHeroLabSpell.SelectSingleNodeAndCacheExpression(
+                                                    "description", token)
+                                                : await xmlHeroLabSpell
+                                                        .SelectSingleNodeAndCacheExpressionAsync("description", token)
+                                                        .ConfigureAwait(false))?.Value;
                                             if (blnSync)
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 _lstSpells.Add(objSpell);
@@ -36323,8 +37722,8 @@ namespace Chummer
                             {
                                 // Powers.
                                 xmlNodeList = blnSync
-                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    ? xmlStatBlockBaseNode.SelectAndCacheExpression("magic/adeptpowers/adeptpower")
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? xmlStatBlockBaseNode.SelectAndCacheExpression("magic/adeptpowers/adeptpower", token)
                                     : await xmlStatBlockBaseNode.SelectAndCacheExpressionAsync("magic/adeptpowers/adeptpower", token).ConfigureAwait(false);
                                 XmlDocument xmlPowersDocument = blnSync
                                     // ReSharper disable once MethodHasAsyncOverload
@@ -36332,7 +37731,12 @@ namespace Chummer
                                     : await LoadDataAsync("powers.xml", token: token).ConfigureAwait(false);
                                 foreach (XPathNavigator xmlHeroLabPower in xmlNodeList)
                                 {
-                                    string strPowerName = xmlHeroLabPower.SelectSingleNodeAndCacheExpression("@name")?.Value;
+                                    string strPowerName = (blnSync
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        ? xmlHeroLabPower.SelectSingleNodeAndCacheExpression(
+                                            "@name", token)
+                                        : await xmlHeroLabPower.SelectSingleNodeAndCacheExpressionAsync("@name", token)
+                                                               .ConfigureAwait(false))?.Value;
                                     if (!string.IsNullOrEmpty(strPowerName))
                                     {
                                         int intRating = 1;
@@ -36402,7 +37806,13 @@ namespace Chummer
                                         {
                                             Power objPower = new Power(this) { Extra = strForcedValue };
                                             objPower.Create(xmlPowerData, intRating);
-                                            objPower.Notes = xmlHeroLabPower.SelectSingleNodeAndCacheExpression("description")?.Value;
+                                            objPower.Notes = (blnSync
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                ? xmlHeroLabPower.SelectSingleNodeAndCacheExpression(
+                                                    "description", token)
+                                                : await xmlHeroLabPower
+                                                        .SelectSingleNodeAndCacheExpressionAsync("description", token)
+                                                        .ConfigureAwait(false))?.Value;
                                             if (blnSync)
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 _lstPowers.Add(objPower);
@@ -36579,23 +37989,44 @@ namespace Chummer
                                 XmlNode xmlFakeLicenseDataNode =
                                     xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = 'Fake License']");
                                 xmlNodeList = blnSync
-                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    ? xmlStatBlockBaseNode.SelectAndCacheExpression("identities/identity")
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? xmlStatBlockBaseNode.SelectAndCacheExpression("identities/identity", token)
                                     : await xmlStatBlockBaseNode.SelectAndCacheExpressionAsync("identities/identity", token).ConfigureAwait(false);
                                 foreach (XPathNavigator xmlHeroLabIdentity in xmlNodeList)
                                 {
-                                    string strIdentityName = xmlHeroLabIdentity.SelectSingleNodeAndCacheExpression("@name")?.Value;
+                                    string strIdentityName
+                                        = (blnSync
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            ? xmlHeroLabIdentity.SelectSingleNodeAndCacheExpression("@name", token)
+                                            : await xmlHeroLabIdentity
+                                                    .SelectSingleNodeAndCacheExpressionAsync("@name", token)
+                                                    .ConfigureAwait(false))
+                                        ?.Value ?? string.Empty;
                                     int intIdentityNameParenthesesStart = strIdentityName.IndexOf('(');
                                     if (intIdentityNameParenthesesStart != -1)
                                         strIdentityName =
                                             strIdentityName.Substring(0, intIdentityNameParenthesesStart);
                                     XPathNavigator xmlHeroLabFakeSINNode =
-                                        xmlHeroLabIdentity.SelectSingleNodeAndCacheExpression("license[@name = \"Fake SIN\"]");
+                                        blnSync
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            ? xmlHeroLabIdentity.SelectSingleNodeAndCacheExpression(
+                                                "license[@name = \"Fake SIN\"]", token)
+                                            : await xmlHeroLabIdentity
+                                                    .SelectSingleNodeAndCacheExpressionAsync(
+                                                        "license[@name = \"Fake SIN\"]", token).ConfigureAwait(false);
                                     if (xmlHeroLabFakeSINNode != null)
                                     {
                                         Gear objFakeSIN = new Gear(this);
                                         objFakeSIN.Create(xmlFakeSINDataNode,
-                                                          xmlHeroLabFakeSINNode.SelectSingleNodeAndCacheExpression("@rating")?.ValueAsInt
+                                                          (blnSync
+                                                              // ReSharper disable once MethodHasAsyncOverload
+                                                              ? xmlHeroLabFakeSINNode
+                                                                  .SelectSingleNodeAndCacheExpression(
+                                                                      "@rating", token)
+                                                              : await xmlHeroLabFakeSINNode
+                                                                      .SelectSingleNodeAndCacheExpressionAsync(
+                                                                          "@rating", token).ConfigureAwait(false))
+                                                          ?.ValueAsInt
                                                           ?? 1,
                                                           lstWeapons,
                                                           strIdentityName);
@@ -36605,12 +38036,27 @@ namespace Chummer
                                         {
                                             Gear objFakeLicense = new Gear(this);
                                             objFakeLicense.Create(xmlFakeLicenseDataNode,
-                                                                  xmlHeroLabFakeLicenseNode.SelectSingleNodeAndCacheExpression("@rating")
-                                                                      ?.ValueAsInt ??
+                                                                  (blnSync
+                                                                      // ReSharper disable once MethodHasAsyncOverload
+                                                                      ? xmlHeroLabFakeLicenseNode
+                                                                          .SelectSingleNodeAndCacheExpression(
+                                                                              "@rating", token)
+                                                                      : await xmlHeroLabFakeLicenseNode
+                                                                              .SelectSingleNodeAndCacheExpressionAsync(
+                                                                                  "@rating", token)
+                                                                              .ConfigureAwait(false))
+                                                                  ?.ValueAsInt ??
                                                                   1,
                                                                   lstWeapons,
-                                                                  xmlHeroLabFakeLicenseNode.SelectSingleNodeAndCacheExpression("@for")
-                                                                      ?.Value);
+                                                                  (blnSync
+                                                                      // ReSharper disable once MethodHasAsyncOverload
+                                                                      ? xmlHeroLabFakeLicenseNode
+                                                                          .SelectSingleNodeAndCacheExpression(
+                                                                              "@for", token)
+                                                                      : await xmlHeroLabFakeLicenseNode
+                                                                              .SelectSingleNodeAndCacheExpressionAsync(
+                                                                                  "@for", token).ConfigureAwait(false))
+                                                                  ?.Value ?? string.Empty);
                                             objFakeLicense.Parent = objFakeSIN;
                                             if (blnSync)
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -36626,13 +38072,24 @@ namespace Chummer
                                             await _lstGear.AddAsync(objFakeSIN, token).ConfigureAwait(false);
                                     }
 
-                                    XPathNavigator xmlHeroLabLifestyleNode =
-                                        xmlHeroLabIdentity.SelectSingleNodeAndCacheExpression("lifestyle");
+                                    XPathNavigator xmlHeroLabLifestyleNode = blnSync
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        ? xmlHeroLabIdentity.SelectSingleNodeAndCacheExpression("lifestyle", token)
+                                        : await xmlHeroLabIdentity
+                                                .SelectSingleNodeAndCacheExpressionAsync("lifestyle", token)
+                                                .ConfigureAwait(false);
                                     if (xmlHeroLabLifestyleNode != null)
                                     {
-                                        string strLifestyleType = xmlHeroLabLifestyleNode.SelectSingleNodeAndCacheExpression("@name")
-                                            ?.Value
-                                            .TrimEndOnce(" Lifestyle");
+                                        string strLifestyleType
+                                            = (blnSync
+                                                  // ReSharper disable once MethodHasAsyncOverload
+                                                  ? xmlHeroLabLifestyleNode.SelectSingleNodeAndCacheExpression(
+                                                      "@name", token)
+                                                  : await xmlHeroLabLifestyleNode
+                                                          .SelectSingleNodeAndCacheExpressionAsync("@name", token)
+                                                          .ConfigureAwait(false))
+                                              ?.Value
+                                              .TrimEndOnce(" Lifestyle") ?? string.Empty;
 
                                         XmlNode xmlLifestyleDataNode =
                                             (blnSync
@@ -36648,9 +38105,9 @@ namespace Chummer
                                             objLifestyle.Create(xmlLifestyleDataNode);
                                             if (int.TryParse(
                                                     (blnSync
-                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                        // ReSharper disable once MethodHasAsyncOverload
                                                         ? xmlHeroLabLifestyleNode.SelectSingleNodeAndCacheExpression(
-                                                            "@months")
+                                                            "@months", token)
                                                         : await xmlHeroLabLifestyleNode
                                                                 .SelectSingleNodeAndCacheExpressionAsync("@months", token).ConfigureAwait(false))
                                                     ?.Value,
@@ -36679,7 +38136,7 @@ namespace Chummer
                                              "gear/equipment/item[@useradded != \"no\"]"))
                                 {
                                     Gear objGear = new Gear(this);
-                                    if (objGear.ImportHeroLabGear(xmlGearToImport, null, lstWeapons))
+                                    if (objGear.ImportHeroLabGear(xmlGearToImport, null, lstWeapons, token))
                                     {
                                         if (blnSync)
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -36692,12 +38149,12 @@ namespace Chummer
                                 if (blnSync)
                                 {
                                     foreach (XPathNavigator xmlPluginToAdd in xmlStatBlockBaseNode
-                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                 // ReSharper disable once MethodHasAsyncOverload
                                                  .SelectAndCacheExpression(
-                                                     "gear/equipment/item[@useradded = \"no\"]"))
+                                                     "gear/equipment/item[@useradded = \"no\"]", token))
                                     {
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        string strName = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("@name")
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        string strName = xmlPluginToAdd.SelectSingleNodeAndCacheExpression("@name", token)
                                                                        ?.Value;
                                         if (!string.IsNullOrEmpty(strName))
                                         {
@@ -36708,16 +38165,16 @@ namespace Chummer
                                             {
                                                 objPlugin.Quantity =
                                                     Convert.ToDecimal(
-                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                        xmlPluginToAdd.SelectSingleNodeAndCacheExpression("@quantity")
+                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                        xmlPluginToAdd.SelectSingleNodeAndCacheExpression("@quantity", token)
                                                                       ?.Value ?? "1",
                                                         GlobalSettings.InvariantCultureInfo);
                                                 objPlugin.Notes = xmlPluginToAdd
-                                                                  // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                                  .SelectSingleNodeAndCacheExpression("description")
+                                                                  // ReSharper disable once MethodHasAsyncOverload
+                                                                  .SelectSingleNodeAndCacheExpression("description", token)
                                                                   ?.Value;
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                objPlugin.ProcessHeroLabGearPlugins(xmlPluginToAdd, lstWeapons);
+                                                objPlugin.ProcessHeroLabGearPlugins(xmlPluginToAdd, lstWeapons, token);
                                             }
                                         }
                                     }
@@ -36726,26 +38183,37 @@ namespace Chummer
                                 {
                                     foreach (XPathNavigator xmlPluginToAdd in await xmlStatBlockBaseNode
                                                  .SelectAndCacheExpressionAsync(
-                                                     "gear/equipment/item[@useradded = \"no\"]", token).ConfigureAwait(false))
+                                                     "gear/equipment/item[@useradded = \"no\"]", token)
+                                                 .ConfigureAwait(false))
                                     {
-                                        string strName = (await xmlPluginToAdd.SelectSingleNodeAndCacheExpressionAsync("@name", token).ConfigureAwait(false))
-                                                                       ?.Value;
+                                        string strName = (await xmlPluginToAdd
+                                                                .SelectSingleNodeAndCacheExpressionAsync("@name", token)
+                                                                .ConfigureAwait(false))
+                                            ?.Value;
                                         if (!string.IsNullOrEmpty(strName))
                                         {
                                             Gear objPlugin = await _lstGear.FirstOrDefaultAsync(x =>
-                                                x.IncludedInParent &&
-                                                (x.Name.Contains(strName) || strName.Contains(x.Name)), token).ConfigureAwait(false);
+                                                                               x.IncludedInParent &&
+                                                                               (x.Name.Contains(strName)
+                                                                                   || strName.Contains(x.Name)), token)
+                                                                           .ConfigureAwait(false);
                                             if (objPlugin != null)
                                             {
                                                 objPlugin.Quantity =
                                                     Convert.ToDecimal(
-                                                        (await xmlPluginToAdd.SelectSingleNodeAndCacheExpressionAsync("@quantity", token).ConfigureAwait(false))
-                                                                      ?.Value ?? "1",
+                                                        (await xmlPluginToAdd
+                                                               .SelectSingleNodeAndCacheExpressionAsync(
+                                                                   "@quantity", token).ConfigureAwait(false))
+                                                        ?.Value ?? "1",
                                                         GlobalSettings.InvariantCultureInfo);
                                                 objPlugin.Notes = (await xmlPluginToAdd
-                                                                         .SelectSingleNodeAndCacheExpressionAsync("description", token).ConfigureAwait(false))
-                                                                  ?.Value;
-                                                await objPlugin.ProcessHeroLabGearPluginsAsync(xmlPluginToAdd, lstWeapons, token).ConfigureAwait(false);
+                                                                         .SelectSingleNodeAndCacheExpressionAsync(
+                                                                             "description", token)
+                                                                         .ConfigureAwait(false))
+                                                    ?.Value;
+                                                await objPlugin
+                                                      .ProcessHeroLabGearPluginsAsync(xmlPluginToAdd, lstWeapons, token)
+                                                      .ConfigureAwait(false);
                                             }
                                         }
                                     }
@@ -36914,24 +38382,28 @@ namespace Chummer
                         // Refresh certain improvements
                         using (Timekeeper.StartSyncron("load_char_improvementrefreshers2", op_load))
                         {
-                            // Refresh Black Market discounts
-                            RefreshBlackMarketDiscounts();
-                            // Refresh Dealer Connection discounts
-                            RefreshDealerConnectionDiscounts();
                             if (blnSync)
                             {
-                                // ReSharper disable MethodHasAsyncOverloadWithCancellation
+                                // ReSharper disable MethodHasAsyncOverload
+                                // Refresh Black Market discounts
+                                RefreshBlackMarketDiscounts(token);
+                                // Refresh Dealer Connection discounts
+                                RefreshDealerConnectionDiscounts(token);
                                 // Refresh permanent attribute changes due to essence loss
-                                RefreshEssenceLossImprovements();
+                                RefreshEssenceLossImprovements(token);
                                 // Refresh dicepool modifiers due to filled condition monitor boxes
-                                RefreshWoundPenalties();
+                                RefreshWoundPenalties(token);
                                 // Refresh encumbrance penalties
-                                RefreshEncumbrance();
-                                RefreshArmorEncumbrance();
-                                // ReSharper restore MethodHasAsyncOverloadWithCancellation
+                                RefreshEncumbrance(token);
+                                RefreshArmorEncumbrance(token);
+                                // ReSharper restore MethodHasAsyncOverload
                             }
                             else
                             {
+                                // Refresh Black Market discounts
+                                await RefreshBlackMarketDiscountsAsync(token).ConfigureAwait(false);
+                                // Refresh Dealer Connection discounts
+                                await RefreshDealerConnectionDiscountsAsync(token).ConfigureAwait(false);
                                 // Refresh permanent attribute changes due to essence loss
                                 await RefreshEssenceLossImprovementsAsync(token).ConfigureAwait(false);
                                 // Refresh dicepool modifiers due to filled condition monitor boxes
@@ -37527,7 +38999,7 @@ namespace Chummer
         private SourceString _objCachedSourceDetail;
         private readonly SkillsSection _objSkillsSection;
         private readonly AttributeSection _objAttributeSection;
-        private readonly ConcurrentHashSet<Func<bool>> _setPostLoadMethods = new ConcurrentHashSet<Func<bool>>();
+        private readonly ConcurrentHashSet<Func<CancellationToken, bool>> _setPostLoadMethods = new ConcurrentHashSet<Func<CancellationToken, bool>>();
         private readonly ConcurrentHashSet<Func<CancellationToken, Task<bool>>> _setPostLoadAsyncMethods = new ConcurrentHashSet<Func<CancellationToken, Task<bool>>>();
 
         public SourceString SourceDetail
@@ -37633,7 +39105,7 @@ namespace Chummer
             {
                 if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     return Page;
-                string s = this.GetNodeXPath(token)?.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? Page;
+                string s = this.GetNodeXPath(token)?.SelectSingleNodeAndCacheExpression("altpage", token)?.Value ?? Page;
                 return !string.IsNullOrWhiteSpace(s) ? s : Page;
             }
         }
@@ -37703,16 +39175,16 @@ namespace Chummer
                     return _lstCachedContactArchetypes;
                 List<ListItem> lstNew = Utils.ListItemListPool.Get();
                 lstNew.Add(ListItem.Blank);
-                XPathNavigator xmlContactsBaseNode = (await LoadDataXPathAsync("contacts.xml", strLanguage, token: token).ConfigureAwait(false))
-                    .SelectSingleNodeAndCacheExpression("/chummer");
+                XPathNavigator xmlContactsBaseNode = await (await LoadDataXPathAsync("contacts.xml", strLanguage, token: token).ConfigureAwait(false))
+                                                           .SelectSingleNodeAndCacheExpressionAsync("/chummer", token).ConfigureAwait(false);
                 if (xmlContactsBaseNode != null)
                 {
-                    foreach (XPathNavigator xmlNode in xmlContactsBaseNode.SelectAndCacheExpression("contacts/contact"))
+                    foreach (XPathNavigator xmlNode in await xmlContactsBaseNode.SelectAndCacheExpressionAsync("contacts/contact", token).ConfigureAwait(false))
                     {
                         string strName = xmlNode.Value;
                         lstNew.Add(
                             new ListItem(
-                                strName, xmlNode.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strName));
+                                strName, (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token).ConfigureAwait(false))?.Value ?? strName));
                     }
 
                     lstNew.Sort(CompareListItems.CompareNames);
@@ -37787,10 +39259,21 @@ namespace Chummer
                     intResult = (intThreshold - intWILResult) * 10;
                 }
 
-                await ImprovementManager.CreateImprovementAsync(this, string.Empty, Improvement.ImprovementSource.Cyberzombie,
-                                                                string.Empty,
-                                                                Improvement.ImprovementType.FreeNegativeQualities,
-                                                                string.Empty, intResult * -1, token: token).ConfigureAwait(false);
+                try
+                {
+                    await ImprovementManager.CreateImprovementAsync(this, string.Empty,
+                                                                    Improvement.ImprovementSource.Cyberzombie,
+                                                                    string.Empty,
+                                                                    Improvement.ImprovementType.FreeNegativeQualities,
+                                                                    string.Empty, intResult * -1, token: token)
+                                            .ConfigureAwait(false);
+                }
+                catch
+                {
+                    await ImprovementManager.RollbackAsync(this, CancellationToken.None).ConfigureAwait(false);
+                    throw;
+                }
+
                 ImprovementManager.Commit(this);
 
                 // Convert the character.

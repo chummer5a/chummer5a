@@ -289,18 +289,19 @@ namespace Chummer.UI.Table
             _objSortPausedSender = objSender;
         }
 
-        public void ResumeSort(object objSender)
+        public void ResumeSort(object objSender, CancellationToken token = default)
         {
             if (Interlocked.CompareExchange(ref _objSortPausedSender, null, objSender) == objSender
                 // prevent sort for focus loss when disposing
                 && Items != null && _lstPermutation.Count == Items.Count)
             {
-                Sort();
+                Sort(token: token);
             }
         }
 
-        private void Sort(bool blnPerformLayout = true)
+        private void Sort(bool blnPerformLayout = true, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (_objSortPausedSender != null)
                 return;
             if (_eSortType == SortOrder.None || _sortColumn == null)
@@ -313,8 +314,10 @@ namespace Chummer.UI.Table
                 Func<T, T, Task<int>> comparison = _sortColumn.CreateSorter();
 
                 _lstPermutation.Sort((i1, i2) => Utils.SafelyRunSynchronously(
-                                         async () => await comparison(await Items.GetValueAtAsync(i1).ConfigureAwait(false),
-                                                                      await Items.GetValueAtAsync(i2).ConfigureAwait(false)).ConfigureAwait(false)));
+                                         async () => await comparison(
+                                                 await Items.GetValueAtAsync(i1, token).ConfigureAwait(false),
+                                                 await Items.GetValueAtAsync(i2, token).ConfigureAwait(false))
+                                             .ConfigureAwait(false), token));
                 if (_eSortType == SortOrder.Descending)
                 {
                     _lstPermutation.Reverse();
@@ -322,7 +325,7 @@ namespace Chummer.UI.Table
             }
             if (blnPerformLayout)
             {
-                this.DoThreadSafe(x => x.PerformLayout());
+                this.DoThreadSafe((x, y) => x.PerformLayout(), token);
             }
         }
 
@@ -447,6 +450,7 @@ namespace Chummer.UI.Table
                             }
 
                             header.SortType = _eSortType;
+                            // ReSharper disable once MethodSupportsCancellation
                             Sort();
                         };
                         header.Sortable = true;

@@ -61,7 +61,7 @@ namespace Chummer.UI.Table
             Utils.SafelyRunSynchronously(() => _table.ColumnAdded(objColumn, token).AsTask(), token);
         }
 
-        public async ValueTask AddAsync(TableColumn<T> objColumn, CancellationToken token = default)
+        public ValueTask AddAsync(TableColumn<T> objColumn, CancellationToken token = default)
         {
             if (objColumn == null)
             {
@@ -69,7 +69,7 @@ namespace Chummer.UI.Table
             }
 
             _lstColumns.Add(objColumn);
-            await _table.ColumnAdded(objColumn, token).ConfigureAwait(false);
+            return _table.ColumnAdded(objColumn, token);
         }
 
         public IEnumerator<TableColumn<T>> GetEnumerator()

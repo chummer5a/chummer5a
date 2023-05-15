@@ -3538,10 +3538,21 @@ namespace Chummer
                     // Create an Improvement to reduce the CharacterAttribute's Metatype Maximum.
                     if (!frmPickAttribute.MyForm.DoNotAffectMetatypeMaximum)
                     {
-                        await ImprovementManager.CreateImprovementAsync(
-                            CharacterObject, frmPickAttribute.MyForm.SelectedAttribute,
-                            Improvement.ImprovementSource.AttributeLoss, string.Empty,
-                            Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, -1, token: GenericToken).ConfigureAwait(false);
+                        try
+                        {
+                            await ImprovementManager.CreateImprovementAsync(
+                                                        CharacterObject, frmPickAttribute.MyForm.SelectedAttribute,
+                                                        Improvement.ImprovementSource.AttributeLoss, string.Empty,
+                                                        Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0,
+                                                        -1, token: GenericToken)
+                                                    .ConfigureAwait(false);
+                        }
+                        catch
+                        {
+                            await ImprovementManager.RollbackAsync(CharacterObject, CancellationToken.None).ConfigureAwait(false);
+                            throw;
+                        }
+
                         ImprovementManager.Commit(CharacterObject);
                     }
 
@@ -5100,58 +5111,91 @@ namespace Chummer
                                 = (await (await CharacterObject.GetAttributeAsync("MAG", token: GenericToken)
                                                                .ConfigureAwait(false))
                                          .GetTotalValueAsync(GenericToken).ConfigureAwait(false)).DivAwayFromZero(2);
-                            await ImprovementManager.CreateImprovementAsync(
-                                objMerge, "BOD", Improvement.ImprovementSource.Metatype, "Possession",
-                                Improvement.ImprovementType.Attribute, string.Empty, intHalfMAGRoundedUp, 1, 0, 0,
-                                intHalfMAGRoundedUp, intHalfMAGRoundedUp, token: GenericToken).ConfigureAwait(false);
-                            await ImprovementManager.CreateImprovementAsync(
-                                objMerge, "AGI", Improvement.ImprovementSource.Metatype, "Possession",
-                                Improvement.ImprovementType.Attribute, string.Empty, intHalfMAGRoundedUp, 1, 0, 0,
-                                intHalfMAGRoundedUp, intHalfMAGRoundedUp, token: GenericToken).ConfigureAwait(false);
-                            await ImprovementManager.CreateImprovementAsync(
-                                objMerge, "STR", Improvement.ImprovementSource.Metatype, "Possession",
-                                Improvement.ImprovementType.Attribute, string.Empty, intHalfMAGRoundedUp, 1, 0, 0,
-                                intHalfMAGRoundedUp, intHalfMAGRoundedUp, token: GenericToken).ConfigureAwait(false);
-                            await ImprovementManager.CreateImprovementAsync(
-                                objMerge, "REA", Improvement.ImprovementSource.Metatype, "Possession",
-                                Improvement.ImprovementType.Attribute, string.Empty, intHalfMAGRoundedUp, 1, 0, 0,
-                                intHalfMAGRoundedUp, intHalfMAGRoundedUp, token: GenericToken).ConfigureAwait(false);
-                            await ImprovementManager.CreateImprovementAsync(
-                                                        objMerge, "INT", Improvement.ImprovementSource.Metatype,
-                                                        "Possession",
-                                                        Improvement.ImprovementType.ReplaceAttribute, string.Empty, 0,
-                                                        1,
-                                                        CharacterObject.INT.MetatypeMinimum,
-                                                        CharacterObject.INT.MetatypeMaximum, 0,
-                                                        CharacterObject.INT.MetatypeAugmentedMaximum, token: GenericToken)
-                                                    .ConfigureAwait(false);
-                            await ImprovementManager.CreateImprovementAsync(
-                                                        objMerge, "WIL", Improvement.ImprovementSource.Metatype,
-                                                        "Possession",
-                                                        Improvement.ImprovementType.ReplaceAttribute, string.Empty, 0,
-                                                        1,
-                                                        CharacterObject.WIL.MetatypeMinimum,
-                                                        CharacterObject.WIL.MetatypeMaximum, 0,
-                                                        CharacterObject.WIL.MetatypeAugmentedMaximum, token: GenericToken)
-                                                    .ConfigureAwait(false);
-                            await ImprovementManager.CreateImprovementAsync(
-                                                        objMerge, "LOG", Improvement.ImprovementSource.Metatype,
-                                                        "Possession",
-                                                        Improvement.ImprovementType.ReplaceAttribute, string.Empty, 0,
-                                                        1,
-                                                        CharacterObject.LOG.MetatypeMinimum,
-                                                        CharacterObject.LOG.MetatypeMaximum, 0,
-                                                        CharacterObject.LOG.MetatypeAugmentedMaximum, token: GenericToken)
-                                                    .ConfigureAwait(false);
-                            await ImprovementManager.CreateImprovementAsync(
-                                                        objMerge, "CHA", Improvement.ImprovementSource.Metatype,
-                                                        "Possession",
-                                                        Improvement.ImprovementType.ReplaceAttribute, string.Empty, 0,
-                                                        1,
-                                                        CharacterObject.CHA.MetatypeMinimum,
-                                                        CharacterObject.CHA.MetatypeMaximum, 0,
-                                                        CharacterObject.CHA.MetatypeAugmentedMaximum, token: GenericToken)
-                                                    .ConfigureAwait(false);
+                            try
+                            {
+                                await ImprovementManager.CreateImprovementAsync(
+                                                            objMerge, "BOD", Improvement.ImprovementSource.Metatype,
+                                                            "Possession",
+                                                            Improvement.ImprovementType.Attribute, string.Empty,
+                                                            intHalfMAGRoundedUp, 1, 0, 0,
+                                                            intHalfMAGRoundedUp, intHalfMAGRoundedUp,
+                                                            token: GenericToken)
+                                                        .ConfigureAwait(false);
+                                await ImprovementManager.CreateImprovementAsync(
+                                                            objMerge, "AGI", Improvement.ImprovementSource.Metatype,
+                                                            "Possession",
+                                                            Improvement.ImprovementType.Attribute, string.Empty,
+                                                            intHalfMAGRoundedUp, 1, 0, 0,
+                                                            intHalfMAGRoundedUp, intHalfMAGRoundedUp,
+                                                            token: GenericToken)
+                                                        .ConfigureAwait(false);
+                                await ImprovementManager.CreateImprovementAsync(
+                                                            objMerge, "STR", Improvement.ImprovementSource.Metatype,
+                                                            "Possession",
+                                                            Improvement.ImprovementType.Attribute, string.Empty,
+                                                            intHalfMAGRoundedUp, 1, 0, 0,
+                                                            intHalfMAGRoundedUp, intHalfMAGRoundedUp,
+                                                            token: GenericToken)
+                                                        .ConfigureAwait(false);
+                                await ImprovementManager.CreateImprovementAsync(
+                                                            objMerge, "REA", Improvement.ImprovementSource.Metatype,
+                                                            "Possession",
+                                                            Improvement.ImprovementType.Attribute, string.Empty,
+                                                            intHalfMAGRoundedUp, 1, 0, 0,
+                                                            intHalfMAGRoundedUp, intHalfMAGRoundedUp,
+                                                            token: GenericToken)
+                                                        .ConfigureAwait(false);
+                                await ImprovementManager.CreateImprovementAsync(
+                                                            objMerge, "INT", Improvement.ImprovementSource.Metatype,
+                                                            "Possession",
+                                                            Improvement.ImprovementType.ReplaceAttribute, string.Empty,
+                                                            0,
+                                                            1,
+                                                            CharacterObject.INT.MetatypeMinimum,
+                                                            CharacterObject.INT.MetatypeMaximum, 0,
+                                                            CharacterObject.INT.MetatypeAugmentedMaximum,
+                                                            token: GenericToken)
+                                                        .ConfigureAwait(false);
+                                await ImprovementManager.CreateImprovementAsync(
+                                                            objMerge, "WIL", Improvement.ImprovementSource.Metatype,
+                                                            "Possession",
+                                                            Improvement.ImprovementType.ReplaceAttribute, string.Empty,
+                                                            0,
+                                                            1,
+                                                            CharacterObject.WIL.MetatypeMinimum,
+                                                            CharacterObject.WIL.MetatypeMaximum, 0,
+                                                            CharacterObject.WIL.MetatypeAugmentedMaximum,
+                                                            token: GenericToken)
+                                                        .ConfigureAwait(false);
+                                await ImprovementManager.CreateImprovementAsync(
+                                                            objMerge, "LOG", Improvement.ImprovementSource.Metatype,
+                                                            "Possession",
+                                                            Improvement.ImprovementType.ReplaceAttribute, string.Empty,
+                                                            0,
+                                                            1,
+                                                            CharacterObject.LOG.MetatypeMinimum,
+                                                            CharacterObject.LOG.MetatypeMaximum, 0,
+                                                            CharacterObject.LOG.MetatypeAugmentedMaximum,
+                                                            token: GenericToken)
+                                                        .ConfigureAwait(false);
+                                await ImprovementManager.CreateImprovementAsync(
+                                                            objMerge, "CHA", Improvement.ImprovementSource.Metatype,
+                                                            "Possession",
+                                                            Improvement.ImprovementType.ReplaceAttribute, string.Empty,
+                                                            0,
+                                                            1,
+                                                            CharacterObject.CHA.MetatypeMinimum,
+                                                            CharacterObject.CHA.MetatypeMaximum, 0,
+                                                            CharacterObject.CHA.MetatypeAugmentedMaximum,
+                                                            token: GenericToken)
+                                                        .ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                await ImprovementManager.RollbackAsync(CharacterObject, CancellationToken.None).ConfigureAwait(false);
+                                throw;
+                            }
+
                             ImprovementManager.Commit(objMerge);
                             XmlDocument xmlPowerDoc
                                 = await CharacterObject.LoadDataAsync("critterpowers.xml", token: GenericToken)

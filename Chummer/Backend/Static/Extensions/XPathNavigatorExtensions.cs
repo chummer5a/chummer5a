@@ -66,11 +66,12 @@ namespace Chummer
         /// <param name="blnIsOrNode">Whether this is an OR node (true) or an AND node (false). Default is AND (false).</param>
         /// <param name="xmlOperationNode">The node containing the filter operation or a list of filter operations. Every element here is checked against corresponding elements in the parent node, using an operation specified in the element's attributes.</param>
         /// <param name="xmlParentNode">The parent node against which the filter operations are checked.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>True if the parent node passes the conditions set in the operation node/nodelist, false otherwise.</returns>
         public static bool ProcessFilterOperationNode(this XPathNavigator xmlParentNode,
-                                                      XPathNavigator xmlOperationNode, bool blnIsOrNode)
+                                                      XPathNavigator xmlOperationNode, bool blnIsOrNode, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => ProcessFilterOperationNodeCoreAsync(true, xmlParentNode, xmlOperationNode, blnIsOrNode));
+            return Utils.SafelyRunSynchronously(() => ProcessFilterOperationNodeCoreAsync(true, xmlParentNode, xmlOperationNode, blnIsOrNode, token), token);
         }
 
         /// <summary>
@@ -107,8 +108,8 @@ namespace Chummer
             {
                 bool blnInvert
                     = (blnSync
-                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                        ? xmlOperationChildNode.SelectSingleNodeAndCacheExpression("@NOT")
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? xmlOperationChildNode.SelectSingleNodeAndCacheExpression("@NOT", token)
                         : await xmlOperationChildNode.SelectSingleNodeAndCacheExpressionAsync("@NOT", token: token).ConfigureAwait(false)) != null;
 
                 bool blnOperationChildNodeResult = blnInvert;
@@ -118,8 +119,8 @@ namespace Chummer
                     case "OR":
                         blnOperationChildNodeResult =
                             (blnSync
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                ? ProcessFilterOperationNode(xmlParentNode, xmlOperationChildNode, true)
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? ProcessFilterOperationNode(xmlParentNode, xmlOperationChildNode, true, token)
                                 : await ProcessFilterOperationNodeAsync(xmlParentNode, xmlOperationChildNode, true, token).ConfigureAwait(false))
                             != blnInvert;
                         break;
@@ -127,8 +128,8 @@ namespace Chummer
                     case "NOR":
                         blnOperationChildNodeResult =
                             (blnSync
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                ? ProcessFilterOperationNode(xmlParentNode, xmlOperationChildNode, true)
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? ProcessFilterOperationNode(xmlParentNode, xmlOperationChildNode, true, token)
                                 : await ProcessFilterOperationNodeAsync(xmlParentNode, xmlOperationChildNode, true, token).ConfigureAwait(false))
                             == blnInvert;
                         break;
@@ -136,8 +137,8 @@ namespace Chummer
                     case "AND":
                         blnOperationChildNodeResult =
                             (blnSync
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                ? ProcessFilterOperationNode(xmlParentNode, xmlOperationChildNode, false)
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? ProcessFilterOperationNode(xmlParentNode, xmlOperationChildNode, false, token)
                                 : await ProcessFilterOperationNodeAsync(xmlParentNode, xmlOperationChildNode, false, token).ConfigureAwait(false))
                             != blnInvert;
                         break;
@@ -145,8 +146,8 @@ namespace Chummer
                     case "NAND":
                         blnOperationChildNodeResult =
                             (blnSync
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                ? ProcessFilterOperationNode(xmlParentNode, xmlOperationChildNode, false)
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? ProcessFilterOperationNode(xmlParentNode, xmlOperationChildNode, false, token)
                                 : await ProcessFilterOperationNodeAsync(xmlParentNode, xmlOperationChildNode, false, token).ConfigureAwait(false))
                             == blnInvert;
                         break;
@@ -160,8 +161,8 @@ namespace Chummer
                             if (xmlParentNode != null)
                             {
                                 XPathNavigator objOperationAttribute = blnSync
-                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    ? xmlOperationChildNode.SelectSingleNodeAndCacheExpression("@operation")
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    ? xmlOperationChildNode.SelectSingleNodeAndCacheExpression("@operation", token)
                                     : await xmlOperationChildNode.SelectSingleNodeAndCacheExpressionAsync("@operation", token: token).ConfigureAwait(false);
                                 string strOperationType = objOperationAttribute?.Value ?? "==";
                                 XPathNodeIterator objXmlTargetNodeList = xmlParentNode.Select(strNodeName);
@@ -174,14 +175,14 @@ namespace Chummer
                                 {
                                     bool blnOperationChildNodeAttributeOr = (blnSync
                                         ? xmlOperationChildNode
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            .SelectSingleNodeAndCacheExpression("@OR")
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            .SelectSingleNodeAndCacheExpression("@OR", token)
                                         : await xmlOperationChildNode
                                             .SelectSingleNodeAndCacheExpressionAsync("@OR", token: token).ConfigureAwait(false)) != null;
                                     // default is "any", replace with switch() if more check modes are necessary
                                     XPathNavigator objCheckTypeAttribute = blnSync
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        ? xmlOperationChildNode.SelectSingleNodeAndCacheExpression("@checktype")
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        ? xmlOperationChildNode.SelectSingleNodeAndCacheExpression("@checktype", token)
                                         : await xmlOperationChildNode.SelectSingleNodeAndCacheExpressionAsync("@checktype", token: token).ConfigureAwait(false);
                                     bool blnCheckAll = objCheckTypeAttribute?.Value == "all";
                                     blnOperationChildNodeResult = blnCheckAll;
@@ -195,10 +196,10 @@ namespace Chummer
                                         {
                                             if (xmlOperationChildNode.SelectChildren(XPathNodeType.Element).Count > 0)
                                                 boolSubNodeResult = (blnSync
-                                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                                        // ReSharper disable once MethodHasAsyncOverload
                                                                         ? ProcessFilterOperationNode(xmlTargetNode,
                                                                             xmlOperationChildNode,
-                                                                            blnOperationChildNodeAttributeOr)
+                                                                            blnOperationChildNodeAttributeOr, token)
                                                                         : await ProcessFilterOperationNodeAsync(
                                                                             xmlTargetNode,
                                                                             xmlOperationChildNode,
@@ -575,12 +576,9 @@ namespace Chummer
         /// Effectively a version of SelectSingleNode(string xpath) that is slower on the first run (and consumes some memory), but faster on subsequent runs.
         /// Only use this if there's a particular XPath expression that keeps being used over and over.
         /// </summary>
-        /// <param name="xmlNode"></param>
-        /// <param name="xpath"></param>
-        /// <returns></returns>
-        public static XPathNavigator SelectSingleNodeAndCacheExpression(this XPathNavigator xmlNode, string xpath)
+        public static XPathNavigator SelectSingleNodeAndCacheExpression(this XPathNavigator xmlNode, string xpath, CancellationToken token = default)
         {
-            XPathExpression objExpression = s_dicCachedExpressions.AddOrGet(xpath, x => XPathExpression.Compile(xpath));
+            XPathExpression objExpression = s_dicCachedExpressions.AddOrGet(xpath, x => XPathExpression.Compile(xpath), token);
             return xmlNode.SelectSingleNode(objExpression);
         }
 
@@ -589,10 +587,6 @@ namespace Chummer
         /// Effectively a version of SelectSingleNode(string xpath) that is slower on the first run (and consumes some memory), but faster on subsequent runs.
         /// Only use this if there's a particular XPath expression that keeps being used over and over.
         /// </summary>
-        /// <param name="xmlNode"></param>
-        /// <param name="xpath"></param>
-        /// <param name="token"></param>
-        /// <returns></returns>
         public static async ValueTask<XPathNavigator> SelectSingleNodeAndCacheExpressionAsync(this XPathNavigator xmlNode, string xpath, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -606,10 +600,6 @@ namespace Chummer
         /// Effectively a version of SelectSingleNode(string xpath) that is slower on the first run (and consumes some memory), but faster on subsequent runs.
         /// Only use this if there's a particular XPath expression that keeps being used over and over.
         /// </summary>
-        /// <param name="tskNode"></param>
-        /// <param name="xpath"></param>
-        /// <param name="token"></param>
-        /// <returns></returns>
         public static async ValueTask<XPathNavigator> SelectSingleNodeAndCacheExpressionAsync(this Task<XPathNavigator> tskNode, string xpath, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -624,12 +614,9 @@ namespace Chummer
         /// Effectively a version of Select(string xpath) that is slower on the first run (and consumes some memory), but faster on subsequent runs.
         /// Only use this if there's a particular XPath expression that keeps being used over and over.
         /// </summary>
-        /// <param name="xmlNode"></param>
-        /// <param name="xpath"></param>
-        /// <returns></returns>
-        public static XPathNodeIterator SelectAndCacheExpression(this XPathNavigator xmlNode, string xpath)
+        public static XPathNodeIterator SelectAndCacheExpression(this XPathNavigator xmlNode, string xpath, CancellationToken token = default)
         {
-            XPathExpression objExpression = s_dicCachedExpressions.AddOrGet(xpath, x => XPathExpression.Compile(xpath));
+            XPathExpression objExpression = s_dicCachedExpressions.AddOrGet(xpath, x => XPathExpression.Compile(xpath), token);
             return xmlNode.Select(objExpression);
         }
 
@@ -638,10 +625,6 @@ namespace Chummer
         /// Effectively a version of Select(string xpath) that is slower on the first run (and consumes some memory), but faster on subsequent runs.
         /// Only use this if there's a particular XPath expression that keeps being used over and over.
         /// </summary>
-        /// <param name="xmlNode"></param>
-        /// <param name="xpath"></param>
-        /// <param name="token"></param>
-        /// <returns></returns>
         public static async ValueTask<XPathNodeIterator> SelectAndCacheExpressionAsync(this XPathNavigator xmlNode, string xpath, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -655,10 +638,6 @@ namespace Chummer
         /// Effectively a version of Select(string xpath) that is slower on the first run (and consumes some memory), but faster on subsequent runs.
         /// Only use this if there's a particular XPath expression that keeps being used over and over.
         /// </summary>
-        /// <param name="tskNode"></param>
-        /// <param name="xpath"></param>
-        /// <param name="token"></param>
-        /// <returns></returns>
         public static async ValueTask<XPathNodeIterator> SelectAndCacheExpressionAsync(this Task<XPathNavigator> tskNode, string xpath, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();

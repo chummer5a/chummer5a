@@ -2069,50 +2069,71 @@ namespace Chummer
             if (intFreeLevels != 0)
             {
                 bool blnCommit = false;
-                if (!string.IsNullOrEmpty(strSkill1))
+                try
                 {
-                    Improvement objOldSkillImprovement = lstOldFreeSkillImprovements.Find(x => x.ImprovedName == strSkill1 && x.Value == intFreeLevels);
-                    if (objOldSkillImprovement != null)
-                        lstOldFreeSkillImprovements.Remove(objOldSkillImprovement);
-                    else
+                    if (!string.IsNullOrEmpty(strSkill1))
                     {
-                        blnCommit = true;
-                        await AddExoticSkillIfNecessary(strSkill1).ConfigureAwait(false);
-                        await ImprovementManager.CreateImprovementAsync(_objCharacter, strSkill1, Improvement.ImprovementSource.Heritage, string.Empty,
-                                                                        type, string.Empty, intFreeLevels, token: token).ConfigureAwait(false);
+                        Improvement objOldSkillImprovement
+                            = lstOldFreeSkillImprovements.Find(
+                                x => x.ImprovedName == strSkill1 && x.Value == intFreeLevels);
+                        if (objOldSkillImprovement != null)
+                            lstOldFreeSkillImprovements.Remove(objOldSkillImprovement);
+                        else
+                        {
+                            blnCommit = true;
+                            await AddExoticSkillIfNecessary(strSkill1).ConfigureAwait(false);
+                            await ImprovementManager.CreateImprovementAsync(
+                                _objCharacter, strSkill1, Improvement.ImprovementSource.Heritage, string.Empty,
+                                type, string.Empty, intFreeLevels, token: token).ConfigureAwait(false);
+                        }
                     }
+
+                    if (!string.IsNullOrEmpty(strSkill2))
+                    {
+                        Improvement objOldSkillImprovement
+                            = lstOldFreeSkillImprovements.Find(
+                                x => x.ImprovedName == strSkill2 && x.Value == intFreeLevels);
+                        if (objOldSkillImprovement != null)
+                            lstOldFreeSkillImprovements.Remove(objOldSkillImprovement);
+                        else
+                        {
+                            blnCommit = true;
+                            await AddExoticSkillIfNecessary(strSkill2).ConfigureAwait(false);
+                            await ImprovementManager.CreateImprovementAsync(
+                                _objCharacter, strSkill2, Improvement.ImprovementSource.Heritage, string.Empty,
+                                type, string.Empty, intFreeLevels, token: token).ConfigureAwait(false);
+                        }
+                    }
+
+                    if (!string.IsNullOrEmpty(strSkill3))
+                    {
+                        Improvement objOldSkillImprovement
+                            = lstOldFreeSkillImprovements.Find(
+                                x => x.ImprovedName == strSkill3 && x.Value == intFreeLevels);
+                        if (objOldSkillImprovement != null)
+                            lstOldFreeSkillImprovements.Remove(objOldSkillImprovement);
+                        else
+                        {
+                            blnCommit = true;
+                            await AddExoticSkillIfNecessary(strSkill3).ConfigureAwait(false);
+                            await ImprovementManager.CreateImprovementAsync(
+                                _objCharacter, strSkill3, Improvement.ImprovementSource.Heritage, string.Empty,
+                                type, string.Empty, intFreeLevels, token: token).ConfigureAwait(false);
+                        }
+                    }
+
+                    if (lstOldFreeSkillImprovements.Count > 0)
+                        await ImprovementManager
+                              .RemoveImprovementsAsync(_objCharacter, lstOldFreeSkillImprovements, token: token)
+                              .ConfigureAwait(false);
+                }
+                catch
+                {
+                    if (blnCommit)
+                        await ImprovementManager.RollbackAsync(_objCharacter, CancellationToken.None).ConfigureAwait(false);
+                    throw;
                 }
 
-                if (!string.IsNullOrEmpty(strSkill2))
-                {
-                    Improvement objOldSkillImprovement = lstOldFreeSkillImprovements.Find(x => x.ImprovedName == strSkill2 && x.Value == intFreeLevels);
-                    if (objOldSkillImprovement != null)
-                        lstOldFreeSkillImprovements.Remove(objOldSkillImprovement);
-                    else
-                    {
-                        blnCommit = true;
-                        await AddExoticSkillIfNecessary(strSkill2).ConfigureAwait(false);
-                        await ImprovementManager.CreateImprovementAsync(_objCharacter, strSkill2, Improvement.ImprovementSource.Heritage, string.Empty,
-                                                                        type, string.Empty, intFreeLevels, token: token).ConfigureAwait(false);
-                    }
-                }
-
-                if (!string.IsNullOrEmpty(strSkill3))
-                {
-                    Improvement objOldSkillImprovement = lstOldFreeSkillImprovements.Find(x => x.ImprovedName == strSkill3 && x.Value == intFreeLevels);
-                    if (objOldSkillImprovement != null)
-                        lstOldFreeSkillImprovements.Remove(objOldSkillImprovement);
-                    else
-                    {
-                        blnCommit = true;
-                        await AddExoticSkillIfNecessary(strSkill3).ConfigureAwait(false);
-                        await ImprovementManager.CreateImprovementAsync(_objCharacter, strSkill3, Improvement.ImprovementSource.Heritage, string.Empty,
-                                                                        type, string.Empty, intFreeLevels, token: token).ConfigureAwait(false);
-                    }
-                }
-
-                if (lstOldFreeSkillImprovements.Count > 0)
-                    await ImprovementManager.RemoveImprovementsAsync(_objCharacter, lstOldFreeSkillImprovements, token: token).ConfigureAwait(false);
                 if (blnCommit)
                     ImprovementManager.Commit(_objCharacter);
 
