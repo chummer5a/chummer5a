@@ -22,6 +22,8 @@ Application Changes:
 - Lifestyles with specified cities, districts, and/or boroughs no longer have the corresponding boxes cleared whenever they are edited.
 - Deletable Exotic skills can now be properly deleted.
 - Chummer no longer occasionally crashes when restarting the program through e.g. the updater.
+- When adding a new advanced lifestyle, all labels for costs and lifestyle points now update properly when changing the base lifestyle type.
+- Lifestyle qualities whose minimum is not reached by the attached lifestyle now properly contribute to that lifestyle's lifestyle points.
 - Attempting to delete an advanced lifestyle's quality no longer prompts the user to delete a complex form.
 
 Data Changes:
