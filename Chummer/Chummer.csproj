@@ -19066,16 +19066,21 @@
     </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>copy "$(SolutionDir)LICENSE.txt" "$(TargetDir)LICENSE.txt"</PostBuildEvent>
+    <PostBuildEvent>
+        copy "$(SolutionDir)LICENSE.txt" "$(TargetDir)LICENSE.txt"
+        if not exist "$(TargetDir)livecustomdata" mkdir "$(TargetDir)livecustomdata"
+        if not exist "$(TargetDir)packs" mkdir "$(TargetDir)packs"
+        if not exist "$(TargetDir)settings" mkdir "$(TargetDir)settings"
+</PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
     <PreBuildEvent>
-      if exist "$(SolutionDir).git\hooks\" (
-      copy /y "$(SolutionDir)git\hooks\*.*" "$(SolutionDir).git\hooks"
-      ) else (
-      echo "No .git directory found, skipping copying of hooks."
-      )
-    </PreBuildEvent>
+        if exist "$(SolutionDir).git\hooks\" (
+            copy /y "$(SolutionDir)git\hooks\*.*" "$(SolutionDir).git\hooks"
+        ) else (
+            echo "No .git directory found, skipping copying of hooks."
+        )
+</PreBuildEvent>
   </PropertyGroup>
   <Target Name="EnsureNuGetPackageBuildImports" BeforeTargets="PrepareForBuild">
     <PropertyGroup>
