@@ -234,7 +234,11 @@ namespace Chummer
             new LockingDictionary<KeyArray<string>, XmlReference>(); // Key is language + array of all file paths for the complete combination of data used
 
         private static readonly AsyncFriendlyReaderWriterLock s_objDataDirectoriesLock = new AsyncFriendlyReaderWriterLock();
-        private static readonly HashSet<string> s_SetDataDirectories = new HashSet<string>(Utils.GetDataFolderPath.Yield());
+        private static readonly HashSet<string> s_SetDataDirectories = new HashSet<string>(2)
+        {
+            Utils.GetDataFolderPath,
+            Utils.GetPacksFolderPath
+        };
         private static readonly Dictionary<string, HashSet<string>> s_DicPathsWithCustomFiles = new Dictionary<string, HashSet<string>>();
 
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
@@ -271,6 +275,9 @@ namespace Chummer
                 s_SetDataDirectories.Clear();
                 token.ThrowIfCancellationRequested();
                 s_SetDataDirectories.Add(Utils.GetDataFolderPath);
+                token.ThrowIfCancellationRequested();
+                s_SetDataDirectories.Add(Utils.GetPacksFolderPath);
+                token.ThrowIfCancellationRequested();
                 foreach (CustomDataDirectoryInfo objCustomDataDirectory in lstCustomDirectories)
                 {
                     token.ThrowIfCancellationRequested();
@@ -306,6 +313,8 @@ namespace Chummer
                 s_SetDataDirectories.Clear();
                 token.ThrowIfCancellationRequested();
                 s_SetDataDirectories.Add(Utils.GetDataFolderPath);
+                token.ThrowIfCancellationRequested();
+                s_SetDataDirectories.Add(Utils.GetPacksFolderPath);
                 token.ThrowIfCancellationRequested();
                 foreach (CustomDataDirectoryInfo objCustomDataDirectory in lstCustomDirectories)
                 {
@@ -578,6 +587,8 @@ namespace Chummer
             {
                 foreach (string strDirectory in s_SetDataDirectories)
                 {
+                    if (strDirectory.StartsWith(Utils.GetPacksFolderPath) && strFileName != "packs.xml")
+                        continue;
                     strPath = Path.Combine(strDirectory, strFileName);
                     if (File.Exists(strPath))
                     {
@@ -1188,20 +1199,14 @@ namespace Chummer
         private static IEnumerable<string> CompileRelevantCustomDataPaths(string strFileName, IEnumerable<string> lstPaths, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            switch (strFileName)
-            {
-                case "improvements.xml":
-                    yield break;
-                case "packs.xml" when Directory.Exists(Utils.GetPacksFolderPath):
-                    yield return Utils.GetPacksFolderPath;
-                    break;
-            }
-            if (lstPaths == null)
+            if (strFileName == "improvements.xml" || lstPaths == null)
                 yield break;
             foreach (string strLoopPath in lstPaths)
             {
                 token.ThrowIfCancellationRequested();
                 if (!Directory.Exists(strLoopPath))
+                    continue;
+                if (strLoopPath.StartsWith(Utils.GetPacksFolderPath) && strFileName != "packs.xml")
                     continue;
                 foreach (string strLoopFile in Directory.EnumerateFiles(strLoopPath, "*_" + strFileName,
                                                                         SearchOption.AllDirectories))
