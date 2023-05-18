@@ -517,9 +517,7 @@ namespace Chummer
                                         const string strMessage =
                                             "Please enable Plugins to use command-line arguments invoking specific plugin-functions!";
                                         Log.Warn(strMessage);
-                                        ShowScrollableMessageBox(strMessage, "Plugins not enabled",
-                                                                 MessageBoxButtons.OK,
-                                                                 MessageBoxIcon.Exclamation);
+                                        ShowScrollableMessageBox(strMessage, "Plugins not enabled", icon: MessageBoxIcon.Exclamation);
                                     }
                                     else
                                     {
@@ -568,6 +566,8 @@ namespace Chummer
                         Utils.SafeClearDirectory(Utils.GetStartupPath, "*.old");
                         // Purge the temporary directory
                         Utils.SafeClearDirectory(Utils.GetTempPath());
+                        // Fix any misplaced custom data files
+                        Utils.MoveMisplacedCustomDataFiles();
 
                         if (showMainForm)
                         {

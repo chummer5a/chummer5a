@@ -66,6 +66,14 @@
       <key>Message_Files_Cannot_Be_Removed</key>
       <text>Chummer5 could not remove the below files during update as they were inaccessible:</text>
     </string>
+    <string>
+      <key>Message_DuplicateFile</key>
+      <text>A file named "{0}" already exists at {1}.</text>
+    </string>
+    <string>
+      <key>MessageTitle_DuplicateFile</key>
+      <text>Duplicate File</text>
+    </string>
     <!-- End Region -->
     <!-- Region File Dialog Filter Strings -->
     <string>

@@ -302,6 +302,9 @@ namespace Chummer
         private static readonly Lazy<string> s_strGetDataFolderPath
             = new Lazy<string>(() => Path.Combine(GetStartupPath, "data"));
 
+        private static readonly Lazy<string> s_strGetLiveCustomDataFolderPath
+            = new Lazy<string>(() => Path.Combine(GetStartupPath, "livecustomdata"));
+
         private static readonly Lazy<string> s_strGetPacksFolderPath
             = new Lazy<string>(() => Path.Combine(GetStartupPath, "packs"));
 
@@ -317,6 +320,8 @@ namespace Chummer
         public static string GetStartupPath => s_strGetStartupPath.Value;
 
         public static string GetAutosavesFolderPath => s_strGetAutosavesFolderPath.Value;
+
+        public static string GetLiveCustomDataFolderPath => s_strGetLiveCustomDataFolderPath.Value;
 
         public static string GetDataFolderPath => s_strGetDataFolderPath.Value;
 
@@ -350,6 +355,79 @@ namespace Chummer
         });
 
         public static ReadOnlyCollection<string> BasicDataFileNames => Array.AsReadOnly(s_astrBasicDataFileNames.Value);
+
+        /// <summary>
+        /// Attempts to find any custom data files located in the base data directory (where they would be ignored) and move them to an appropriate directory.
+        /// PACKS will go into packs, character settings will go into settings, everything else will go into livecustomdata.
+        /// </summary>
+        /// <param name="blnShowErrors">If true, an error message will be displayed every time the method runs into an exception.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static void MoveMisplacedCustomDataFiles(bool blnShowErrors = false, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<string> lstToMove = new List<string>();
+            foreach (string strFilePath in Directory.EnumerateFiles(GetDataFolderPath, "*.xml"))
+            {
+                token.ThrowIfCancellationRequested();
+                string strFile = Path.GetFileName(strFilePath);
+                if (strFile.StartsWith("amend_", StringComparison.OrdinalIgnoreCase)
+                    || strFile.StartsWith("custom_", StringComparison.OrdinalIgnoreCase)
+                    || strFile.StartsWith("override_", StringComparison.OrdinalIgnoreCase))
+                {
+                    lstToMove.Add(strFilePath);
+                }
+            }
+
+            foreach (string strFilePath in lstToMove)
+            {
+                token.ThrowIfCancellationRequested();
+                string strFile = Path.GetFileName(strFilePath);
+                string strDestinationFolder;
+                if (strFile.EndsWith("_packs.xml", StringComparison.OrdinalIgnoreCase))
+                    strDestinationFolder = GetPacksFolderPath;
+                else if (strFile.EndsWith("_settings.xml", StringComparison.OrdinalIgnoreCase))
+                    strDestinationFolder = GetSettingsFolderPath;
+                else
+                    strDestinationFolder = GetLiveCustomDataFolderPath;
+
+                if (!Directory.Exists(strDestinationFolder))
+                {
+                    try
+                    {
+                        Directory.CreateDirectory(strDestinationFolder);
+                    }
+                    catch (Exception ex)
+                    {
+                        if (blnShowErrors)
+                            Program.ShowScrollableMessageBox(ex.ToString(), icon: MessageBoxIcon.Error);
+                        continue;
+                    }
+                }
+                token.ThrowIfCancellationRequested();
+                string strDestinationPath = Path.Combine(strDestinationFolder, "*.xml");
+                if (File.Exists(strDestinationPath))
+                {
+                    if (blnShowErrors)
+                        Program.ShowScrollableMessageBox(
+                            string.Format(GlobalSettings.CultureInfo,
+                                          LanguageManager.GetString("Message_DuplicateFile", token: token), strFile,
+                                          strDestinationFolder),
+                            LanguageManager.GetString("MessageTitle_DuplicateFile", token: token),
+                            icon: MessageBoxIcon.Error);
+                    continue;
+                }
+                token.ThrowIfCancellationRequested();
+                try
+                {
+                    Directory.Move(strFilePath, strDestinationPath);
+                }
+                catch (Exception ex)
+                {
+                    if (blnShowErrors)
+                        Program.ShowScrollableMessageBox(ex.ToString(), icon: MessageBoxIcon.Error);
+                }
+            }
+        }
 
         private static readonly Lazy<Version> s_ObjCurrentChummerVersion = new Lazy<Version>(() => typeof(Program).Assembly.GetName().Version);
 

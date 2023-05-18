@@ -802,7 +802,7 @@ namespace Chummer
                 bool blnHasLiveCustomData = false;
                 if (GlobalSettings.LiveCustomData)
                 {
-                    strPath = Path.Combine(Utils.GetStartupPath, "livecustomdata");
+                    strPath = Utils.GetLiveCustomDataFolderPath;
                     if (Directory.Exists(strPath))
                     {
                         blnHasLiveCustomData = DoProcessCustomDataFiles(xmlScratchpad, xmlReturn, strPath, strFileName, token: token);
