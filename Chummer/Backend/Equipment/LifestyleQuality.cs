@@ -1463,7 +1463,7 @@ namespace Chummer.Backend.Equipment
 
         public bool Remove(bool blnConfirmDelete = true)
         {
-            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteComplexForm")))
+            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteQuality")))
                 return false;
 
             ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Quality, InternalId);
@@ -1479,7 +1479,7 @@ namespace Chummer.Backend.Equipment
             if (blnConfirmDelete && !await CommonFunctions
                                            .ConfirmDeleteAsync(
                                                await LanguageManager
-                                                     .GetStringAsync("Message_DeleteComplexForm", token: token)
+                                                     .GetStringAsync("Message_DeleteQuality", token: token)
                                                      .ConfigureAwait(false), token).ConfigureAwait(false))
                 return false;
 

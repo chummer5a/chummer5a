@@ -22,6 +22,7 @@ Application Changes:
 - Lifestyles with specified cities, districts, and/or boroughs no longer have the corresponding boxes cleared whenever they are edited.
 - Deletable Exotic skills can now be properly deleted.
 - Chummer no longer occasionally crashes when restarting the program through e.g. the updater.
+- Attempting to delete an advanced lifestyle's quality no longer prompts the user to delete a complex form.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.
