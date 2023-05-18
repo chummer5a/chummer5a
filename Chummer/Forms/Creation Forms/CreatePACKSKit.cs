@@ -62,23 +62,47 @@ namespace Chummer
             }
 
             // Make sure the file name starts with custom and ends with _packs.xml.
-            if (!strFileName.StartsWith("custom_", StringComparison.OrdinalIgnoreCase) || !strFileName.EndsWith("_packs.xml", StringComparison.OrdinalIgnoreCase))
+            if (!strFileName.StartsWith("custom_", StringComparison.OrdinalIgnoreCase))
             {
-                Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_CreatePACKSKit_InvalidFileName").ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_CreatePACKSKit_InvalidFileName").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
+                strFileName = "custom_" + strFileName;
+            }
+            if (!strFileName.EndsWith("_packs.xml", StringComparison.OrdinalIgnoreCase))
+            {
+                strFileName += "_packs.xml";
             }
 
             // See if a Kit with this name already exists for the Custom category.
             // This was originally done without the XmlManager, but because amends and overrides and toggling custom data directories can change names, we need to use it.
-            if ((await XmlManager.LoadXPathAsync("packs.xml", _objCharacter.Settings.EnabledCustomDataDirectoryPaths).ConfigureAwait(false))
-                .SelectSingleNode("/chummer/packs/pack[name = " + strName.CleanXPath() + " and category = \"Custom\"]") != null)
+            if ((await _objCharacter.LoadDataXPathAsync("packs.xml").ConfigureAwait(false))
+                .SelectSingleNode("/chummer/packs/pack[name = " + strName.CleanXPath() + " and category = \"Custom\"]")
+                != null)
             {
-                Program.ShowScrollableMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_CreatePACKSKit_DuplicateName").ConfigureAwait(false), strName),
-                                                 await LanguageManager.GetStringAsync("MessageTitle_CreatePACKSKit_DuplicateName").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
+                Program.ShowScrollableMessageBox(
+                    this,
+                    string.Format(GlobalSettings.CultureInfo,
+                                  await LanguageManager.GetStringAsync("Message_CreatePACKSKit_DuplicateName")
+                                                       .ConfigureAwait(false), strName),
+                    await LanguageManager.GetStringAsync("MessageTitle_CreatePACKSKit_DuplicateName")
+                                         .ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            string strPath = Path.Combine(Utils.GetStartupPath, "data", strFileName);
+            if (!Directory.Exists(Utils.GetPacksFolderPath))
+            {
+                try
+                {
+                    Directory.CreateDirectory(Utils.GetPacksFolderPath);
+                }
+                catch (UnauthorizedAccessException)
+                {
+                    Program.ShowScrollableMessageBox(await LanguageManager
+                                                           .GetStringAsync("Message_Insufficient_Permissions_Warning")
+                                                           .ConfigureAwait(false));
+                    return;
+                }
+            }
+
+            string strPath = Path.Combine(Utils.GetPacksFolderPath, strFileName);
 
             // If this is not a new file, read in the existing contents.
             XmlDocument objXmlCurrentDocument = null;
@@ -749,8 +773,13 @@ namespace Chummer
                 }
             }
 
-            Program.ShowScrollableMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_CreatePACKSKit_SuiteCreated").ConfigureAwait(false), strName),
-                                             await LanguageManager.GetStringAsync("MessageTitle_CreatePACKSKit_SuiteCreated").ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information);
+            Program.ShowScrollableMessageBox(
+                this,
+                string.Format(GlobalSettings.CultureInfo,
+                              await LanguageManager.GetStringAsync("Message_CreatePACKSKit_SuiteCreated")
+                                                   .ConfigureAwait(false), strName),
+                await LanguageManager.GetStringAsync("MessageTitle_CreatePACKSKit_SuiteCreated").ConfigureAwait(false),
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
             await this.DoThreadSafeAsync(x =>
             {
                 x.DialogResult = DialogResult.OK;

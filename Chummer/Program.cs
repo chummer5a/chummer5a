@@ -195,6 +195,17 @@ namespace Chummer
                                 strPostErrorMessage = ex.ToString();
                             }
                         }
+                        if (!Directory.Exists(Utils.GetPacksFolderPath))
+                        {
+                            try
+                            {
+                                Directory.CreateDirectory(Utils.GetPacksFolderPath);
+                            }
+                            catch (Exception ex)
+                            {
+                                strPostErrorMessage = ex.ToString();
+                            }
+                        }
 
                         IsMono = Type.GetType("Mono.Runtime") != null;
 

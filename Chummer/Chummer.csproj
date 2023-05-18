@@ -19038,6 +19038,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="livecustomdata\" />
+    <Folder Include="packs\" />
     <Folder Include="settings\" />
   </ItemGroup>
   <ItemGroup>

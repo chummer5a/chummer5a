@@ -3,6 +3,7 @@ Application Changes:
 - The program no longer crashes when attempting to open characters from outside the program (e.g. by double-clicking a Chummer5a save file).
 - A new global setting is now available that can toggle whether or not scraped text from PDF files is automatically inserted as Notes for items newly added to a character.
 - XPath 1.0 functions like ceiling() and floor() are now properly supported in all fields that work off of the document-invariant XPath processor.
+- Custom PACKS Kits can now be properly loaded again, though the files that contain them must be placed in the "packs" directory instead of "data".
 - Having multiple conditional bonuses to the same skill now only makes the greatest conditional bonus show up in the skill pool's modified rating.
 - Corrupted save data for Cyber-Singularity Seeker and/or Redliner can no longer cause duplicates to be generated for their bonuses.
 - Characters can now have contacts with a total connection plus loyalty that is greater than 7 at character creation if they also have something that lowers said contacts' cost to 7 karma or lower.

@@ -445,6 +445,7 @@ namespace Chummer
                     }
                 }
 
+                bool blnHasCustomData = astrRelevantCustomDataPaths.Length > 0;
                 List<string> lstKey = new List<string>(2 + astrRelevantCustomDataPaths.Length) { strLanguage, strPath };
                 lstKey.AddRange(astrRelevantCustomDataPaths);
                 KeyArray<string> objDataKey = new KeyArray<string>(lstKey);
@@ -452,7 +453,9 @@ namespace Chummer
                 // Look to see if this XmlDocument is already loaded.
                 XmlDocument xmlDocumentOfReturn = null;
                 XmlReference xmlReferenceOfReturn = null;
-                bool blnDoLoad = blnLoadFile || (GlobalSettings.LiveCustomData && strFileName != "improvements.xml");
+                bool blnDoLoad = blnLoadFile || (blnHasCustomData && (strFileName == "packs.xml"
+                                                                      || (GlobalSettings.LiveCustomData
+                                                                          && strFileName != "improvements.xml")));
                 if (!blnDoLoad)
                 {
                     if (blnSync)
@@ -501,7 +504,7 @@ namespace Chummer
                 }
 
                 // Live custom data will cause the reference's document to not be the same as the actual one we need, so we'll need to remake the document returned by the Load
-                if (GlobalSettings.LiveCustomData && strFileName != "improvements.xml" && xmlDocumentOfReturn != null)
+                if (blnHasCustomData && (strFileName == "packs.xml" || (GlobalSettings.LiveCustomData && strFileName != "improvements.xml")) && xmlDocumentOfReturn != null)
                 {
                     token.ThrowIfCancellationRequested();
                     using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
@@ -769,7 +772,7 @@ namespace Chummer
                     }
 
                     // Make sure we do not override the cached document with our live data
-                    if (GlobalSettings.LiveCustomData && blnHasCustomData)
+                    if (blnHasCustomData && (GlobalSettings.LiveCustomData || strFileName == "packs.xml"))
                     {
                         XmlDocument objTemp = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
@@ -785,7 +788,7 @@ namespace Chummer
                         ? xmlReferenceOfReturn.GetXmlContent(token)
                         : await xmlReferenceOfReturn.GetXmlContentAsync(token).ConfigureAwait(false);
                     // Make sure we do not override the cached document with our live data
-                    if (GlobalSettings.LiveCustomData && blnHasCustomData)
+                    if (blnHasCustomData && (GlobalSettings.LiveCustomData || strFileName == "packs.xml"))
                         xmlReturn = objTemp.Clone() as XmlDocument;
                     else
                         xmlReturn = objTemp;
@@ -1185,7 +1188,15 @@ namespace Chummer
         private static IEnumerable<string> CompileRelevantCustomDataPaths(string strFileName, IEnumerable<string> lstPaths, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (strFileName == "improvements.xml" || lstPaths == null)
+            switch (strFileName)
+            {
+                case "improvements.xml":
+                    yield break;
+                case "packs.xml" when Directory.Exists(Utils.GetPacksFolderPath):
+                    yield return Utils.GetPacksFolderPath;
+                    break;
+            }
+            if (lstPaths == null)
                 yield break;
             foreach (string strLoopPath in lstPaths)
             {
