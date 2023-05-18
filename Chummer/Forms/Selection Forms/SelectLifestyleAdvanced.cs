@@ -699,6 +699,7 @@ namespace Chummer
             if (!(treLifestyleQualities.SelectedNode?.Tag is LifestyleQuality objQuality))
                 return;
             objQuality.UseLPCost = !chkQualityUseLPCost.Enabled || chkQualityUseLPCost.Checked;
+            lblQualityCost.Text = objQuality.Cost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + LanguageManager.GetString("String_NuyenSymbol");
             lblQualityLp.Text = objQuality.LP.ToString(GlobalSettings.CultureInfo);
         }
 

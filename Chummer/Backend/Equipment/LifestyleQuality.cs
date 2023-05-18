@@ -1088,13 +1088,13 @@ namespace Chummer.Backend.Equipment
             get
             {
                 using (EnterReadLock.Enter(LockObject))
-                    return CanBeFreeByLifestyle && _blnUseLPCost;
+                    return !CanBeFreeByLifestyle || _blnUseLPCost;
             }
             set
             {
                 using (EnterReadLock.Enter(LockObject))
                 {
-                    if (!value && !CanBeFreeByLifestyle)
+                    if (value && !CanBeFreeByLifestyle)
                         return;
                     if (_blnUseLPCost == value)
                         return;

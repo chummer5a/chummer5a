@@ -1179,6 +1179,15 @@ namespace Chummer.Backend.Equipment
                             _intBaseSecurity = 0;
                             _intSecurityMaximum = 0;
                             Create(xmlLifestyle);
+                            this.OnMultiplePropertyChanged(nameof(BaseLifestyle), nameof(Cost), nameof(Dice),
+                                                           nameof(Multiplier), nameof(SourceID), nameof(Source),
+                                                           nameof(Page), nameof(LP), nameof(CostForArea),
+                                                           nameof(CostForComforts), nameof(CostForSecurity),
+                                                           nameof(AllowBonusLP), nameof(IncrementType),
+                                                           nameof(BaseComforts), nameof(ComfortsMaximum),
+                                                           nameof(BaseArea), nameof(AreaMaximum), nameof(BaseSecurity),
+                                                           nameof(SecurityMaximum), nameof(LifestyleQualities));
+                            return;
                         }
                     }
 
