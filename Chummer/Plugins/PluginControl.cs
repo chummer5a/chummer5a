@@ -29,6 +29,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Microsoft.ApplicationInsights;
 using Microsoft.ApplicationInsights.Channel;
 using Microsoft.Win32;
 using NLog;
@@ -306,7 +307,8 @@ namespace Chummer.Plugins
                     }
                     catch (ReflectionTypeLoadException e)
                     {
-                        if (Program.ChummerTelemetryClient != null)
+                        TelemetryClient objTelemetry = Program.ChummerTelemetryClient.Value;
+                        if (objTelemetry != null)
                         {
                             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdLoaderExceptions))
@@ -318,10 +320,25 @@ namespace Chummer.Plugins
                                     sbdLoaderExceptions
                                         .AppendLine().Append("LoaderException ").Append(counter).Append(": ")
                                         .Append(except.Message);
-                                    Program.ChummerTelemetryClient.TrackException(except);
+                                    objTelemetry.TrackException(except);
                                 }
 
-                                Program.ChummerTelemetryClient.Flush();
+                                try
+                                {
+                                    using (CancellationTokenSource objTimeout
+                                           = new CancellationTokenSource(TimeSpan.FromSeconds(30)))
+                                    {
+                                        CancellationToken objTimeoutToken = objTimeout.Token;
+                                        Utils.SafelyRunSynchronously(() => objTelemetry.FlushAsync(objTimeoutToken),
+                                                                     objTimeoutToken);
+                                    }
+                                }
+                                catch (OperationCanceledException)
+                                {
+                                    //swallow this, we timed out on the flush
+                                    Utils.BreakIfDebug();
+                                }
+
                                 string msg
                                     = "Plugins (at least not all of them) could not be loaded. Logs are uploaded to the ChummerDevs. Maybe ping one of the Devs on Discord and provide your Installation-id: "
                                       + Properties.Settings.Default.UploadClientId + Environment.NewLine + "Exception: "

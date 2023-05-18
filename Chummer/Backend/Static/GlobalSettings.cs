@@ -1134,10 +1134,16 @@ namespace Chummer
             get => _eUseLoggingApplicationInsights;
             set
             {
-                if (InterlockedExtensions.Exchange(ref _eUseLoggingApplicationInsights, value) != value)
+                bool blnNewDisableTelemetry = value < UseAILogging.OnlyMetric;
+                bool blnOldDisableTelemetry = InterlockedExtensions.Exchange(ref _eUseLoggingApplicationInsights, value)
+                                              < UseAILogging.OnlyMetric;
+                if (blnOldDisableTelemetry != blnNewDisableTelemetry && Program.ChummerTelemetryClient.IsValueCreated)
+                {
                     // Sets up logging if the option is changed during runtime
-                    TelemetryConfiguration.Active.DisableTelemetry
-                        = value == UseAILogging.OnlyLocal;
+                    TelemetryConfiguration objConfiguration = Program.ActiveTelemetryConfiguration;
+                    if (objConfiguration != null)
+                        objConfiguration.DisableTelemetry = blnNewDisableTelemetry;
+                }
             }
         }
 
