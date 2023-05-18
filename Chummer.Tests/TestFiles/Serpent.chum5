@@ -4617,7 +4617,7 @@ On the backside of an apartment building, Serpent's apartment is mainly a garage
       <qty>1</qty>
       <avail>Rating * 2</avail>
       <cost>Rating * 500</cost>
-      <extra>Narcojet One</extra>
+      <extra>Narcoject One</extra>
       <bonded>False</bonded>
       <equipped>True</equipped>
       <wirelesson>False</wirelesson>
@@ -5577,7 +5577,7 @@ On the backside of an apartment building, Serpent's apartment is mainly a garage
         </gear>
       </children>
       <location>3366d597-d6e1-4c80-84d2-4037417e538a</location>
-      <notes>Narcojet One</notes>
+      <notes>Narcoject One</notes>
       <discountedcost>False</discountedcost>
       <programlimit />
       <overclocked>None</overclocked>
@@ -12994,7 +12994,7 @@ But I want it</notes>
     </improvement>
     <improvement>
       <target />
-      <improvedname>Narcojet One</improvedname>
+      <improvedname>Narcoject One</improvedname>
       <sourcename>20b8b099-4639-4cde-b97e-04a7cf5c4258</sourcename>
       <min>0</min>
       <max>0</max>
