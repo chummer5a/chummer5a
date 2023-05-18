@@ -2460,8 +2460,13 @@
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>Forbidden Arcana Stealth Errata</directoryname>
+          <directoryname>Dark Terrors Stealth Errata</directoryname>
           <order>1</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>Forbidden Arcana Stealth Errata</directoryname>
+          <order>2</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -2669,8 +2674,13 @@
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>Forbidden Arcana Stealth Errata</directoryname>
+          <directoryname>Dark Terrors Stealth Errata</directoryname>
           <order>1</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>Forbidden Arcana Stealth Errata</directoryname>
+          <order>2</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -2878,13 +2888,18 @@
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>Forbidden Arcana Stealth Errata</directoryname>
+          <directoryname>Dark Terrors Stealth Errata</directoryname>
           <order>1</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>Sum-to-Ten Improved</directoryname>
+          <directoryname>Forbidden Arcana Stealth Errata</directoryname>
           <order>2</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>Sum-to-Ten Improved</directoryname>
+          <order>3</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -3092,8 +3107,13 @@
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>Forbidden Arcana Stealth Errata</directoryname>
+          <directoryname>Dark Terrors Stealth Errata</directoryname>
           <order>1</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>Forbidden Arcana Stealth Errata</directoryname>
+          <order>2</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -3308,13 +3328,18 @@
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>Forbidden Arcana Stealth Errata</directoryname>
+          <directoryname>Dark Terrors Stealth Errata</directoryname>
           <order>1</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>German Data Changes</directoryname>
+          <directoryname>Forbidden Arcana Stealth Errata</directoryname>
           <order>2</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>German Data Changes</directoryname>
+          <order>3</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -3529,13 +3554,18 @@
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>Forbidden Arcana Stealth Errata</directoryname>
+          <directoryname>Dark Terrors Stealth Errata</directoryname>
           <order>1</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>German Data Changes</directoryname>
+          <directoryname>Forbidden Arcana Stealth Errata</directoryname>
           <order>2</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>German Data Changes</directoryname>
+          <order>3</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -3750,13 +3780,18 @@
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>Forbidden Arcana Stealth Errata</directoryname>
+          <directoryname>Dark Terrors Stealth Errata</directoryname>
           <order>1</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>German Data Changes</directoryname>
+          <directoryname>Forbidden Arcana Stealth Errata</directoryname>
           <order>2</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>German Data Changes</directoryname>
+          <order>3</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -3971,13 +4006,18 @@
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>Forbidden Arcana Stealth Errata</directoryname>
+          <directoryname>Dark Terrors Stealth Errata</directoryname>
           <order>1</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>German Data Changes</directoryname>
+          <directoryname>Forbidden Arcana Stealth Errata</directoryname>
           <order>2</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>German Data Changes</directoryname>
+          <order>3</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
