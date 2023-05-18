@@ -55,7 +55,7 @@ namespace Chummer
         private static readonly Lazy<Process> s_objMyProcess = new Lazy<Process>(Process.GetCurrentProcess);
         public static Process MyProcess => s_objMyProcess.Value;
 
-        private static Lazy<TelemetryConfiguration> s_objActiveTelemetryConfiguration = new Lazy<TelemetryConfiguration>(() => TelemetryConfiguration.Active);
+        private static Lazy<TelemetryConfiguration> s_objActiveTelemetryConfiguration = new Lazy<TelemetryConfiguration>(TelemetryConfiguration.CreateDefault);
         public static TelemetryConfiguration ActiveTelemetryConfiguration => s_objActiveTelemetryConfiguration?.Value;
 
         private static readonly Lazy<CustomTelemetryInitializer> s_objTelemetryInitializer
@@ -73,7 +73,7 @@ namespace Chummer
                 TelemetryConfiguration objActiveConfiguration = ActiveTelemetryConfiguration;
                 if (objActiveConfiguration == null)
                     return null;
-                objActiveConfiguration.ConnectionString = "InstrumentationKey=012fd080-80dc-4c10-97df-4f2cf8c805d5";
+                objActiveConfiguration.ConnectionString = "InstrumentationKey=012fd080-80dc-4c10-97df-4f2cf8c805d5;IngestionEndpoint=https://westeurope-0.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/";
 #if DEBUG
                 //If you set true as DeveloperMode (see above), you can see the sending telemetry in the debugging output window in IDE.
                 objActiveConfiguration.TelemetryChannel.DeveloperMode = true;
