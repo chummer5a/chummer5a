@@ -36,7 +36,7 @@ namespace Chummer
 
         static SettingsManager()
         {
-            string strSettingsPath = Path.Combine(Utils.GetStartupPath, "settings");
+            string strSettingsPath = Utils.GetSettingsFolderPath;
             if (!Directory.Exists(strSettingsPath))
             {
                 try
@@ -231,7 +231,7 @@ namespace Chummer
 
                 Utils.RunWithoutThreadLock(() =>
                 {
-                    string strSettingsPath = Path.Combine(Utils.GetStartupPath, "settings");
+                    string strSettingsPath = Utils.GetSettingsFolderPath;
                     if (Directory.Exists(strSettingsPath))
                     {
                         Parallel.ForEach(Directory.EnumerateFiles(strSettingsPath, "*.xml"), strSettingsFilePath =>
@@ -294,7 +294,7 @@ namespace Chummer
 
                 await Task.Run(() =>
                 {
-                    string strSettingsPath = Path.Combine(Utils.GetStartupPath, "settings");
+                    string strSettingsPath = Utils.GetSettingsFolderPath;
                     if (Directory.Exists(strSettingsPath))
                     {
                         Parallel.ForEach(Directory.EnumerateFiles(strSettingsPath, "*.xml"), strSettingsFilePath =>
@@ -436,7 +436,7 @@ namespace Chummer
                 CharacterSettings objToDelete = (await s_DicLoadedCharacterSettings.FirstOrDefaultAsync(async x => !await x.Value.GetBuiltInOptionAsync(token)
                             .ConfigureAwait(false)
                         && !File.Exists(
-                            Path.Combine(Utils.GetStartupPath, "settings",
+                            Path.Combine(Utils.GetSettingsFolderPath,
                                          await x.Value.GetFileNameAsync(token)
                                                 .ConfigureAwait(false))), token)
                     .ConfigureAwait(false)).Value;

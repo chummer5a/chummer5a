@@ -56,6 +56,7 @@ namespace Chummer
         public static Process MyProcess => s_objMyProcess.Value;
 
         private static Lazy<TelemetryConfiguration> s_objActiveTelemetryConfiguration = new Lazy<TelemetryConfiguration>(TelemetryConfiguration.CreateDefault);
+        [CLSCompliant(false)]
         public static TelemetryConfiguration ActiveTelemetryConfiguration => s_objActiveTelemetryConfiguration?.Value;
 
         private static readonly Lazy<CustomTelemetryInitializer> s_objTelemetryInitializer
@@ -183,12 +184,11 @@ namespace Chummer
                         CultureInfo.DefaultThreadCurrentCulture = GlobalSettings.CultureInfo;
                         CultureInfo.DefaultThreadCurrentUICulture = GlobalSettings.CultureInfo;
                         string strPostErrorMessage = string.Empty;
-                        string settingsDirectoryPath = Path.Combine(Utils.GetStartupPath, "settings");
-                        if (!Directory.Exists(settingsDirectoryPath))
+                        if (!Directory.Exists(Utils.GetSettingsFolderPath))
                         {
                             try
                             {
-                                Directory.CreateDirectory(settingsDirectoryPath);
+                                Directory.CreateDirectory(Utils.GetSettingsFolderPath);
                             }
                             catch (Exception ex)
                             {

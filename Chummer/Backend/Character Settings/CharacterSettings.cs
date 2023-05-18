@@ -1125,12 +1125,11 @@ namespace Chummer
         public bool Save(string strNewFileName = "", bool blnClearSourceGuid = false, CancellationToken token = default)
         {
             // Create the settings directory if it does not exist.
-            string settingsDirectoryPath = Path.Combine(Utils.GetStartupPath, "settings");
-            if (!Directory.Exists(settingsDirectoryPath))
+            if (!Directory.Exists(Utils.GetSettingsFolderPath))
             {
                 try
                 {
-                    Directory.CreateDirectory(settingsDirectoryPath);
+                    Directory.CreateDirectory(Utils.GetSettingsFolderPath);
                 }
                 catch (UnauthorizedAccessException)
                 {
@@ -1143,7 +1142,7 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(strNewFileName))
                     _strFileName = strNewFileName;
-                string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", _strFileName);
+                string strFilePath = Path.Combine(Utils.GetSettingsFolderPath, _strFileName);
                 using (FileStream objStream
                        = new FileStream(strFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
                 {
@@ -1852,12 +1851,11 @@ namespace Chummer
                                                CancellationToken token = default)
         {
             // Create the settings directory if it does not exist.
-            string settingsDirectoryPath = Path.Combine(Utils.GetStartupPath, "settings");
-            if (!Directory.Exists(settingsDirectoryPath))
+            if (!Directory.Exists(Utils.GetSettingsFolderPath))
             {
                 try
                 {
-                    Directory.CreateDirectory(settingsDirectoryPath);
+                    Directory.CreateDirectory(Utils.GetSettingsFolderPath);
                 }
                 catch (UnauthorizedAccessException)
                 {
@@ -1873,7 +1871,7 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(strNewFileName))
                     _strFileName = strNewFileName;
-                string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", _strFileName);
+                string strFilePath = Path.Combine(Utils.GetSettingsFolderPath, _strFileName);
                 using (FileStream objStream
                        = new FileStream(strFilePath, FileMode.Create, FileAccess.Write, FileShare.None))
                 {
@@ -2775,7 +2773,7 @@ namespace Chummer
             using (LockObject.EnterWriteLock(token))
             {
                 _strFileName = strFileName;
-                string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", _strFileName);
+                string strFilePath = Path.Combine(Utils.GetSettingsFolderPath, _strFileName);
                 XPathDocument objXmlDocument;
                 // Make sure the settings file exists. If not, ask the user if they would like to use the default settings file instead. A character cannot be loaded without a settings file.
                 if (File.Exists(strFilePath))
@@ -3533,7 +3531,7 @@ namespace Chummer
             try
             {
                 _strFileName = strFileName;
-                string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", _strFileName);
+                string strFilePath = Path.Combine(Utils.GetSettingsFolderPath, _strFileName);
                 XPathDocument objXmlDocument;
                 // Make sure the settings file exists. If not, ask the user if they would like to use the default settings file instead. A character cannot be loaded without a settings file.
                 if (File.Exists(strFilePath))

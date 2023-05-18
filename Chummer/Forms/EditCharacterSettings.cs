@@ -237,7 +237,7 @@ namespace Chummer
                 try
                 {
                     if (!await Utils.SafeDeleteFileAsync(
-                                        Path.Combine(Utils.GetStartupPath, "settings",
+                                        Path.Combine(Utils.GetSettingsFolderPath,
                                                      _objReferenceCharacterSettings.FileName), true)
                                     .ConfigureAwait(false))
                     {
