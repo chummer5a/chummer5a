@@ -44,7 +44,12 @@ namespace Chummer
 
         public CreateCustomDrug(Character objCharacter)
         {
-            Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstGrade);
+            Disposed += (sender, args) =>
+            {
+                if (DialogResult != DialogResult.OK)
+                    Interlocked.Exchange(ref _objDrug, null)?.Dispose();
+                Utils.ListItemListPool.Return(ref _lstGrade);
+            };
             _objDrug = new Drug(objCharacter);
             _objCharacter = objCharacter;
             InitializeComponent();

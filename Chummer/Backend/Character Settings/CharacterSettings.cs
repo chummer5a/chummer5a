@@ -422,11 +422,12 @@ namespace Chummer
                 CopyValues(objOther, blnCopySourceId, strOverrideFileName);
         }
 
-        public void CopyValues(CharacterSettings objOther, bool blnCopySourceId = true, string strOverrideFileName = "")
+        public void CopyValues(CharacterSettings objOther, bool blnCopySourceId = true, string strOverrideFileName = "", CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (objOther == null || objOther == this)
                 return;
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
                 bool blnOldDoingCopy = _blnDoingCopy;
                 _blnDoingCopy = true;
@@ -435,7 +436,7 @@ namespace Chummer
                 {
                     PropertyInfo[] aobjProperties = typeof(CharacterSettings).GetProperties();
                     lstPropertiesToUpdate = new List<string>(aobjProperties.Length);
-                    using (EnterReadLock.Enter(objOther))
+                    using (EnterReadLock.Enter(objOther, token))
                     {
                         if (blnCopySourceId && !_guiSourceId.Equals(objOther._guiSourceId))
                         {
@@ -457,9 +458,12 @@ namespace Chummer
                             _strFileName = strOverrideFileName;
                         }
 
+                        token.ThrowIfCancellationRequested();
+
                         // Copy over via properties in order to trigger OnPropertyChanged as appropriate
                         foreach (PropertyInfo objProperty in aobjProperties.Where(x => x.CanRead && x.CanWrite))
                         {
+                            token.ThrowIfCancellationRequested();
                             object objMyValue = objProperty.GetValue(this);
                             object objOtherValue = objProperty.GetValue(objOther);
                             if (objMyValue.Equals(objOtherValue))
@@ -468,8 +472,8 @@ namespace Chummer
                             objProperty.SetValue(this, objOtherValue);
                         }
 
-                        using (EnterReadLock.Enter(objOther._dicCustomDataDirectoryKeys))
-                        using (EnterReadLock.Enter(_dicCustomDataDirectoryKeys))
+                        using (EnterReadLock.Enter(objOther._dicCustomDataDirectoryKeys, token))
+                        using (EnterReadLock.Enter(_dicCustomDataDirectoryKeys, token))
                         {
                             int intMyCount = _dicCustomDataDirectoryKeys.Count;
                             bool blnDoRebuildDirectoryKeys = intMyCount != objOther._dicCustomDataDirectoryKeys.Count;
@@ -477,6 +481,7 @@ namespace Chummer
                             {
                                 for (int i = 0; i < intMyCount; ++i)
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     KeyValuePair<string, bool> kvpMine = _dicCustomDataDirectoryKeys[i];
                                     KeyValuePair<string, bool> kvpOther = objOther._dicCustomDataDirectoryKeys[i];
                                     if (!string.Equals(kvpMine.Key, kvpOther.Key, StringComparison.OrdinalIgnoreCase)
@@ -491,13 +496,15 @@ namespace Chummer
                             if (blnDoRebuildDirectoryKeys)
                             {
                                 lstPropertiesToUpdate.Add(nameof(CustomDataDirectoryKeys));
-                                using (_dicCustomDataDirectoryKeys.LockObject.EnterWriteLock())
+                                using (_dicCustomDataDirectoryKeys.LockObject.EnterWriteLock(token))
                                 {
                                     _dicCustomDataDirectoryKeys.Clear();
-                                    objOther.CustomDataDirectoryKeys.ForEach(kvpOther => _dicCustomDataDirectoryKeys.Add(kvpOther.Key, kvpOther.Value));
+                                    objOther.CustomDataDirectoryKeys.ForEach(kvpOther => _dicCustomDataDirectoryKeys.Add(kvpOther.Key, kvpOther.Value), token);
                                 }
                             }
                         }
+
+                        token.ThrowIfCancellationRequested();
 
                         if (!_setBooks.SetEquals(objOther._setBooks))
                         {
@@ -508,6 +515,8 @@ namespace Chummer
                                 _setBooks.Add(strBook);
                             }
                         }
+
+                        token.ThrowIfCancellationRequested();
 
                         if (!_setBannedWareGrades.SetEquals(objOther._setBannedWareGrades))
                         {
@@ -578,8 +587,8 @@ namespace Chummer
                             objProperty.SetValue(this, objOtherValue);
                         }
 
-                        using (await EnterReadLock.EnterAsync(objOther._dicCustomDataDirectoryKeys, token))
-                        using (await EnterReadLock.EnterAsync(_dicCustomDataDirectoryKeys, token))
+                        using (await EnterReadLock.EnterAsync(objOther._dicCustomDataDirectoryKeys, token).ConfigureAwait(false))
+                        using (await EnterReadLock.EnterAsync(_dicCustomDataDirectoryKeys, token).ConfigureAwait(false))
                         {
                             int intMyCount = await _dicCustomDataDirectoryKeys.GetCountAsync(token)
                                                                               .ConfigureAwait(false);
@@ -660,8 +669,9 @@ namespace Chummer
             }
         }
 
-        public IEnumerable<string> GetDifferingPropertyNames(CharacterSettings objOther)
+        public IEnumerable<string> GetDifferingPropertyNames(CharacterSettings objOther, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             PropertyInfo[] aobjProperties = typeof(CharacterSettings).GetProperties();
             if (objOther == null)
             {
@@ -678,22 +688,27 @@ namespace Chummer
             if (objOther == this)
                 yield break;
 
-            using (EnterReadLock.Enter(objOther))
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(objOther, token))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 if (!_guiSourceId.Equals(objOther._guiSourceId))
                 {
                     yield return nameof(SourceId);
                 }
 
+                token.ThrowIfCancellationRequested();
+
                 if (!_strFileName.Equals(objOther._strFileName))
                 {
                     yield return nameof(FileName);
                 }
 
+                token.ThrowIfCancellationRequested();
+
                 // Copy over via properties in order to trigger OnPropertyChanged as appropriate
                 foreach (PropertyInfo objProperty in aobjProperties.Where(x => x.CanRead && x.CanWrite))
                 {
+                    token.ThrowIfCancellationRequested();
                     object objMyValue = objProperty.GetValue(this);
                     object objOtherValue = objProperty.GetValue(objOther);
                     if (objMyValue.Equals(objOtherValue))
@@ -706,10 +721,14 @@ namespace Chummer
                     yield return nameof(CustomDataDirectoryKeys);
                 }
 
+                token.ThrowIfCancellationRequested();
+
                 if (!_setBooks.SetEquals(objOther._setBooks))
                 {
                     yield return nameof(Books);
                 }
+
+                token.ThrowIfCancellationRequested();
 
                 if (!_setBannedWareGrades.SetEquals(objOther._setBannedWareGrades))
                 {
@@ -718,39 +737,111 @@ namespace Chummer
             }
         }
 
-        public bool HasIdenticalSettings(CharacterSettings objOther)
+        public async ValueTask<List<string>> GetDifferingPropertyNamesAsync(CharacterSettings objOther, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
+            List<string> lstReturn = new List<string>();
+            PropertyInfo[] aobjProperties = typeof(CharacterSettings).GetProperties();
+            if (objOther == null)
+            {
+                lstReturn.Add(nameof(SourceId));
+                lstReturn.Add(nameof(FileName));
+                foreach (PropertyInfo objProperty in aobjProperties.Where(x => x.CanRead && x.CanWrite))
+                    lstReturn.Add(objProperty.Name);
+                lstReturn.Add(nameof(CustomDataDirectoryKeys));
+                lstReturn.Add(nameof(Books));
+                lstReturn.Add(nameof(BannedWareGrades));
+                return lstReturn;
+            }
+
+            if (objOther == this)
+                return lstReturn;
+
+            using (await EnterReadLock.EnterAsync(objOther, token).ConfigureAwait(false))
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (!_guiSourceId.Equals(objOther._guiSourceId))
+                {
+                    lstReturn.Add(nameof(SourceId));
+                }
+
+                token.ThrowIfCancellationRequested();
+
+                if (!_strFileName.Equals(objOther._strFileName))
+                {
+                    lstReturn.Add(nameof(FileName));
+                }
+
+                token.ThrowIfCancellationRequested();
+
+                // Copy over via properties in order to trigger OnPropertyChanged as appropriate
+                foreach (PropertyInfo objProperty in aobjProperties.Where(x => x.CanRead && x.CanWrite))
+                {
+                    token.ThrowIfCancellationRequested();
+                    object objMyValue = objProperty.GetValue(this);
+                    object objOtherValue = objProperty.GetValue(objOther);
+                    if (objMyValue.Equals(objOtherValue))
+                        continue;
+                    lstReturn.Add(objProperty.Name);
+                }
+
+                if (!_dicCustomDataDirectoryKeys.SequenceEqual(objOther.CustomDataDirectoryKeys))
+                {
+                    lstReturn.Add(nameof(CustomDataDirectoryKeys));
+                }
+
+                token.ThrowIfCancellationRequested();
+
+                if (!_setBooks.SetEquals(objOther._setBooks))
+                {
+                    lstReturn.Add(nameof(Books));
+                }
+
+                token.ThrowIfCancellationRequested();
+
+                if (!_setBannedWareGrades.SetEquals(objOther._setBannedWareGrades))
+                {
+                    lstReturn.Add(nameof(BannedWareGrades));
+                }
+            }
+            return lstReturn;
+        }
+
+        public bool HasIdenticalSettings(CharacterSettings objOther, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
             if (objOther == null)
                 return false;
-            using (EnterReadLock.Enter(objOther))
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(objOther, token))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 if (_guiSourceId != objOther._guiSourceId)
                     return false;
                 if (_strFileName != objOther._strFileName)
                     return false;
-                if (GetEquatableHashCode() != objOther.GetEquatableHashCode())
+                if (GetEquatableHashCode(token) != objOther.GetEquatableHashCode(token))
                     return false;
 
                 PropertyInfo[] aobjProperties = typeof(CharacterSettings).GetProperties();
                 foreach (PropertyInfo objProperty in aobjProperties.Where(x => x.PropertyType.IsValueType && x.CanRead))
                 {
+                    token.ThrowIfCancellationRequested();
                     object objMyValue = objProperty.GetValue(this);
                     object objOtherValue = objProperty.GetValue(objOther);
                     if (!objMyValue.Equals(objOtherValue))
                         return false;
                 }
 
-                using (EnterReadLock.Enter(objOther._dicCustomDataDirectoryKeys))
-                using (EnterReadLock.Enter(_dicCustomDataDirectoryKeys))
+                using (EnterReadLock.Enter(objOther._dicCustomDataDirectoryKeys, token))
+                using (EnterReadLock.Enter(_dicCustomDataDirectoryKeys, token))
                 {
                     int intMyCount = _dicCustomDataDirectoryKeys.Count;
                     if (intMyCount != objOther._dicCustomDataDirectoryKeys.Count)
                         return false;
                     for (int i = 0; i < intMyCount; ++i)
                     {
-                        KeyValuePair<string, bool> kvpMine = _dicCustomDataDirectoryKeys[i];
-                        KeyValuePair<string, bool> kvpOther = objOther._dicCustomDataDirectoryKeys[i];
+                        KeyValuePair<string, bool> kvpMine = _dicCustomDataDirectoryKeys.GetValueAt(i, token);
+                        KeyValuePair<string, bool> kvpOther = objOther._dicCustomDataDirectoryKeys.GetValueAt(i, token);
                         if (!string.Equals(kvpMine.Key, kvpOther.Key, StringComparison.OrdinalIgnoreCase)
                             || kvpMine.Value != kvpOther.Value)
                         {
@@ -782,6 +873,7 @@ namespace Chummer
                 PropertyInfo[] aobjProperties = typeof(CharacterSettings).GetProperties();
                 foreach (PropertyInfo objProperty in aobjProperties.Where(x => x.PropertyType.IsValueType && x.CanRead))
                 {
+                    token.ThrowIfCancellationRequested();
                     object objMyValue = objProperty.GetValue(this);
                     object objOtherValue = objProperty.GetValue(objOther);
                     if (!objMyValue.Equals(objOtherValue))
@@ -821,9 +913,9 @@ namespace Chummer
         /// Gets a number based on every single private property of the setting.
         /// If two settings have unequal Hash Codes, they will never actually be equal.
         /// </summary>
-        public int GetEquatableHashCode()
+        public int GetEquatableHashCode(CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
                 return GetEquatableHashCodeCommon();
         }
 
@@ -1029,7 +1121,8 @@ namespace Chummer
         /// </summary>
         /// <param name="strNewFileName">New file name to use. If empty, uses the existing, built-in file name.</param>
         /// <param name="blnClearSourceGuid">Whether to clear SourceId after a successful save or not. Used to turn built-in options into custom ones.</param>
-        public bool Save(string strNewFileName = "", bool blnClearSourceGuid = false)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public bool Save(string strNewFileName = "", bool blnClearSourceGuid = false, CancellationToken token = default)
         {
             // Create the settings directory if it does not exist.
             string settingsDirectoryPath = Path.Combine(Utils.GetStartupPath, "settings");
@@ -1041,12 +1134,12 @@ namespace Chummer
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    Program.ShowScrollableMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning"));
+                    Program.ShowScrollableMessageBox(LanguageManager.GetString("Message_Insufficient_Permissions_Warning", token: token));
                     return false;
                 }
             }
 
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 if (!string.IsNullOrEmpty(strNewFileName))
                     _strFileName = strNewFileName;
@@ -1056,8 +1149,10 @@ namespace Chummer
                 {
                     using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                     {
+                        token.ThrowIfCancellationRequested();
                         objWriter.WriteStartDocument();
 
+                        token.ThrowIfCancellationRequested();
                         // <settings>
                         objWriter.WriteStartElement("settings");
 
@@ -1461,6 +1556,8 @@ namespace Chummer
                                                      _intMaxHotSimInitiativeDice.ToString(
                                                          GlobalSettings.InvariantCultureInfo));
 
+                        token.ThrowIfCancellationRequested();
+
                         // <karmacost>
                         objWriter.WriteStartElement("karmacost");
                         // <karmaattribute />
@@ -1626,17 +1723,20 @@ namespace Chummer
 
                         XPathNodeIterator lstAllowedBooksCodes = XmlManager
                                                                  .LoadXPath("books.xml",
-                                                                            EnabledCustomDataDirectoryPaths)
+                                                                            EnabledCustomDataDirectoryPaths, token: token)
                                                                  .SelectAndCacheExpression(
-                                                                     "/chummer/books/book[not(hide)]/code");
+                                                                     "/chummer/books/book[not(hide)]/code", token);
                         using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                         out HashSet<string> setAllowedBooks))
                         {
                             foreach (XPathNavigator objAllowedBook in lstAllowedBooksCodes)
                             {
+                                token.ThrowIfCancellationRequested();
                                 if (_setBooks.Contains(objAllowedBook.Value))
                                     setAllowedBooks.Add(objAllowedBook.Value);
                             }
+
+                            token.ThrowIfCancellationRequested();
 
                             // <books>
                             objWriter.WriteStartElement("books");
@@ -1646,6 +1746,8 @@ namespace Chummer
                         }
 
                         objWriter.WriteEndElement();
+
+                        token.ThrowIfCancellationRequested();
 
                         string strCustomDataRootPath = Path.Combine(Utils.GetStartupPath, "customdata");
 
@@ -1669,7 +1771,7 @@ namespace Chummer
                                 "enabled", blnDirectoryIsEnabled.ToString(GlobalSettings.InvariantCultureInfo));
                             objWriter.WriteEndElement();
                             // ReSharper restore AccessToDisposedClosure
-                        });
+                        }, token);
 
                         // </customdatadirectorynames>
                         objWriter.WriteEndElement();
@@ -1703,6 +1805,8 @@ namespace Chummer
                         objWriter.WriteElementString("nuyenmaxbp",
                                                      _decNuyenMaximumBP.ToString(GlobalSettings.InvariantCultureInfo));
 
+                        token.ThrowIfCancellationRequested();
+
                         // <bannedwaregrades>
                         objWriter.WriteStartElement("bannedwaregrades");
                         foreach (string strGrade in _setBannedWareGrades)
@@ -1712,6 +1816,8 @@ namespace Chummer
 
                         // </bannedwaregrades>
                         objWriter.WriteEndElement();
+
+                        token.ThrowIfCancellationRequested();
 
                         // <redlinerexclusion>
                         objWriter.WriteStartElement("redlinerexclusion");
@@ -2663,9 +2769,10 @@ namespace Chummer
         /// </summary>
         /// <param name="strFileName">Settings file to load from.</param>
         /// <param name="blnShowDialogs">Whether or not to show message boxes on failures to load.</param>
-        public bool Load(string strFileName, bool blnShowDialogs = true)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public bool Load(string strFileName, bool blnShowDialogs = true, CancellationToken token = default)
         {
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
                 _strFileName = strFileName;
                 string strFilePath = Path.Combine(Utils.GetStartupPath, "settings", _strFileName);
@@ -2675,14 +2782,14 @@ namespace Chummer
                 {
                     try
                     {
-                        objXmlDocument = XPathDocumentExtensions.LoadStandardFromFile(strFilePath);
+                        objXmlDocument = XPathDocumentExtensions.LoadStandardFromFile(strFilePath, token: token);
                     }
                     catch (IOException)
                     {
                         if (blnShowDialogs)
                             Program.ShowScrollableMessageBox(
-                                LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"),
-                                LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"),
+                                LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", token: token),
+                                LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", token: token),
                                 MessageBoxButtons.OK,
                                 MessageBoxIcon.Error);
                         return false;
@@ -2691,8 +2798,8 @@ namespace Chummer
                     {
                         if (blnShowDialogs)
                             Program.ShowScrollableMessageBox(
-                                LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"),
-                                LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"),
+                                LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", token: token),
+                                LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", token: token),
                                 MessageBoxButtons.OK,
                                 MessageBoxIcon.Error);
                         return false;
@@ -2702,14 +2809,14 @@ namespace Chummer
                 {
                     if (blnShowDialogs)
                         Program.ShowScrollableMessageBox(
-                            LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter"),
-                            LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter"),
+                            LanguageManager.GetString("Message_CharacterOptions_CannotLoadCharacter", token: token),
+                            LanguageManager.GetString("MessageText_CharacterOptions_CannotLoadCharacter", token: token),
                             MessageBoxButtons.OK,
                             MessageBoxIcon.Error);
                     return false;
                 }
 
-                return Load(objXmlDocument.CreateNavigator().SelectSingleNodeAndCacheExpression(".//settings"));
+                return Load(objXmlDocument.CreateNavigator().SelectSingleNodeAndCacheExpression(".//settings", token), token);
             }
         }
 
@@ -2717,14 +2824,15 @@ namespace Chummer
         /// Load the settings from a settings node.
         /// </summary>
         /// <param name="objXmlNode">Settings node to load from.</param>
-        public bool Load(XPathNavigator objXmlNode)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public bool Load(XPathNavigator objXmlNode, CancellationToken token = default)
         {
             if (objXmlNode == null)
                 return false;
             string strTemp = string.Empty;
             // Setting id.
             string strId = string.Empty;
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
                 if (objXmlNode.TryGetStringFieldQuickly("id", ref strId) && Guid.TryParse(strId, out Guid guidTemp))
                     _guiSourceId = guidTemp;
@@ -3040,7 +3148,7 @@ namespace Chummer
                 objXmlNode.TryGetInt32FieldQuickly("minhotsiminitiativedice", ref _intMinHotSimInitiativeDice);
                 objXmlNode.TryGetInt32FieldQuickly("maxhotsiminitiativedice", ref _intMaxHotSimInitiativeDice);
 
-                XPathNavigator xmlKarmaCostNode = objXmlNode.SelectSingleNodeAndCacheExpression("karmacost");
+                XPathNavigator xmlKarmaCostNode = objXmlNode.SelectSingleNodeAndCacheExpression("karmacost", token);
                 // Attempt to populate the Karma values.
                 if (xmlKarmaCostNode != null)
                 {
@@ -3101,18 +3209,19 @@ namespace Chummer
 
                 XPathNavigator xmlLegacyCharacterNavigator = null;
                 // Legacy sweep by looking at MRU
-                if (!BuiltInOption && objXmlNode.SelectSingleNodeAndCacheExpression("books/book") == null
+                if (!BuiltInOption && objXmlNode.SelectSingleNodeAndCacheExpression("books/book", token) == null
                                    && objXmlNode.SelectSingleNodeAndCacheExpression(
-                                       "customdatadirectorynames/directoryname") == null)
+                                       "customdatadirectorynames/directoryname", token) == null)
                 {
                     foreach (string strMruCharacterFile in GlobalSettings.MostRecentlyUsedCharacters)
                     {
+                        token.ThrowIfCancellationRequested();
                         XPathDocument objXmlDocument;
                         if (!File.Exists(strMruCharacterFile))
                             continue;
                         try
                         {
-                            objXmlDocument = XPathDocumentExtensions.LoadStandardFromFile(strMruCharacterFile);
+                            objXmlDocument = XPathDocumentExtensions.LoadStandardFromFile(strMruCharacterFile, token: token);
                         }
                         catch (XmlException)
                         {
@@ -3120,13 +3229,13 @@ namespace Chummer
                         }
 
                         xmlLegacyCharacterNavigator = objXmlDocument.CreateNavigator()
-                                                                    .SelectSingleNodeAndCacheExpression("/character");
+                                                                    .SelectSingleNodeAndCacheExpression("/character", token);
 
                         if (xmlLegacyCharacterNavigator == null)
                             continue;
 
                         string strLoopSettingsFile = xmlLegacyCharacterNavigator
-                                                     .SelectSingleNodeAndCacheExpression("settings")?.Value;
+                                                     .SelectSingleNodeAndCacheExpression("settings", token)?.Value;
                         if (strLoopSettingsFile == _strFileName)
                             break;
                         xmlLegacyCharacterNavigator = null;
@@ -3141,7 +3250,7 @@ namespace Chummer
                                 continue;
                             try
                             {
-                                objXmlDocument = XPathDocumentExtensions.LoadStandardFromFile(strMruCharacterFile);
+                                objXmlDocument = XPathDocumentExtensions.LoadStandardFromFile(strMruCharacterFile, token: token);
                             }
                             catch (XmlException)
                             {
@@ -3150,13 +3259,13 @@ namespace Chummer
 
                             xmlLegacyCharacterNavigator = objXmlDocument.CreateNavigator()
                                                                         .SelectSingleNodeAndCacheExpression(
-                                                                            "/character");
+                                                                            "/character", token);
 
                             if (xmlLegacyCharacterNavigator == null)
                                 continue;
 
                             string strLoopSettingsFile = xmlLegacyCharacterNavigator
-                                                         .SelectSingleNodeAndCacheExpression("settings")?.Value;
+                                                         .SelectSingleNodeAndCacheExpression("settings", token)?.Value;
                             if (strLoopSettingsFile == _strFileName)
                                 break;
                             xmlLegacyCharacterNavigator = null;
@@ -3166,13 +3275,13 @@ namespace Chummer
 
                 // Load Books.
                 _setBooks.Clear();
-                foreach (XPathNavigator xmlBook in objXmlNode.SelectAndCacheExpression("books/book"))
+                foreach (XPathNavigator xmlBook in objXmlNode.SelectAndCacheExpression("books/book", token))
                     _setBooks.Add(xmlBook.Value);
                 // Legacy sweep for sourcebooks
                 if (xmlLegacyCharacterNavigator != null)
                 {
                     foreach (XPathNavigator xmlBook in xmlLegacyCharacterNavigator.SelectAndCacheExpression(
-                                 "sources/source"))
+                                 "sources/source", token))
                     {
                         if (!string.IsNullOrEmpty(xmlBook.Value))
                             _setBooks.Add(xmlBook.Value);
@@ -3186,15 +3295,15 @@ namespace Chummer
                     new Dictionary<int, Tuple<string, bool>>(GlobalSettings.CustomDataDirectoryInfos.Count);
                 bool blnNeedToProcessInfosWithoutLoadOrder = false;
                 foreach (XPathNavigator objXmlDirectoryName in objXmlNode.SelectAndCacheExpression(
-                             "customdatadirectorynames/customdatadirectoryname"))
+                             "customdatadirectorynames/customdatadirectoryname", token))
                 {
                     string strDirectoryKey
-                        = objXmlDirectoryName.SelectSingleNodeAndCacheExpression("directoryname")?.Value;
+                        = objXmlDirectoryName.SelectSingleNodeAndCacheExpression("directoryname", token)?.Value;
                     if (string.IsNullOrEmpty(strDirectoryKey))
                         continue;
                     string strLoopId = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strDirectoryKey);
                     // Only load in directories that are either present in our GlobalSettings or are enabled
-                    bool blnLoopEnabled = objXmlDirectoryName.SelectSingleNodeAndCacheExpression("enabled")?.Value
+                    bool blnLoopEnabled = objXmlDirectoryName.SelectSingleNodeAndCacheExpression("enabled", token)?.Value
                                           == bool.TrueString;
                     if (blnLoopEnabled || (string.IsNullOrEmpty(strLoopId)
                             ? GlobalSettings.CustomDataDirectoryInfos.Any(
@@ -3202,7 +3311,7 @@ namespace Chummer
                             : GlobalSettings.CustomDataDirectoryInfos.Any(
                                 x => x.InternalId.Equals(strLoopId, StringComparison.OrdinalIgnoreCase))))
                     {
-                        string strOrder = objXmlDirectoryName.SelectSingleNodeAndCacheExpression("order")?.Value;
+                        string strOrder = objXmlDirectoryName.SelectSingleNodeAndCacheExpression("order", token)?.Value;
                         if (!string.IsNullOrEmpty(strOrder)
                             && int.TryParse(strOrder, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo,
                                             out int intOrder))
@@ -3220,7 +3329,7 @@ namespace Chummer
                     }
                 }
 
-                using (_dicCustomDataDirectoryKeys.LockObject.EnterWriteLock())
+                using (_dicCustomDataDirectoryKeys.LockObject.EnterWriteLock(token))
                 {
                     _dicCustomDataDirectoryKeys.Clear();
                     for (int i = intBottomMostOrder; i <= intTopMostOrder; ++i)
@@ -3244,14 +3353,14 @@ namespace Chummer
                                 strDirectoryKey = objExistingInfo.CharacterSettingsSaveKey;
                         }
 
-                        _dicCustomDataDirectoryKeys.TryAdd(strDirectoryKey, tupLoop.Item2);
+                        _dicCustomDataDirectoryKeys.TryAdd(strDirectoryKey, tupLoop.Item2, token);
                     }
 
                     // Legacy sweep for custom data directories
                     if (xmlLegacyCharacterNavigator != null)
                     {
                         foreach (XPathNavigator xmlCustomDataDirectoryName in xmlLegacyCharacterNavigator
-                                     .SelectAndCacheExpression("customdatadirectorynames/directoryname"))
+                                     .SelectAndCacheExpression("customdatadirectorynames/directoryname", token))
                         {
                             string strDirectoryKey = xmlCustomDataDirectoryName.Value;
                             if (string.IsNullOrEmpty(strDirectoryKey))
@@ -3273,7 +3382,7 @@ namespace Chummer
                                     strDirectoryKey = objExistingInfo.CharacterSettingsSaveKey;
                             }
 
-                            _dicCustomDataDirectoryKeys.TryAdd(strDirectoryKey, true);
+                            _dicCustomDataDirectoryKeys.TryAdd(strDirectoryKey, true, token);
                         }
                     }
 
@@ -3281,23 +3390,23 @@ namespace Chummer
                     if (blnNeedToProcessInfosWithoutLoadOrder)
                     {
                         foreach (XPathNavigator objXmlDirectoryName in objXmlNode.SelectAndCacheExpression(
-                                     "customdatadirectorynames/customdatadirectoryname"))
+                                     "customdatadirectorynames/customdatadirectoryname", token))
                         {
                             string strDirectoryKey = objXmlDirectoryName
-                                                     .SelectSingleNodeAndCacheExpression("directoryname")
+                                                     .SelectSingleNodeAndCacheExpression("directoryname", token)
                                                      ?.Value;
                             if (string.IsNullOrEmpty(strDirectoryKey))
                                 continue;
                             string strLoopId
                                 = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(strDirectoryKey);
-                            string strOrder = objXmlDirectoryName.SelectSingleNodeAndCacheExpression("order")?.Value;
+                            string strOrder = objXmlDirectoryName.SelectSingleNodeAndCacheExpression("order", token)?.Value;
                             if (!string.IsNullOrEmpty(strOrder) && int.TryParse(strOrder, NumberStyles.Integer,
                                     GlobalSettings.InvariantCultureInfo,
                                     out int _))
                                 continue;
                             // Only load in directories that are either present in our GlobalSettings or are enabled
                             bool blnLoopEnabled
-                                = objXmlDirectoryName.SelectSingleNodeAndCacheExpression("enabled")?.Value
+                                = objXmlDirectoryName.SelectSingleNodeAndCacheExpression("enabled", token)?.Value
                                   == bool.TrueString;
                             if (blnLoopEnabled || (string.IsNullOrEmpty(strLoopId)
                                     ? GlobalSettings.CustomDataDirectoryInfos.Any(
@@ -3323,7 +3432,7 @@ namespace Chummer
                                         strDirectoryKey = objExistingInfo.InternalId;
                                 }
 
-                                _dicCustomDataDirectoryKeys.TryAdd(strDirectoryKey, blnLoopEnabled);
+                                _dicCustomDataDirectoryKeys.TryAdd(strDirectoryKey, blnLoopEnabled, token);
                             }
                         }
                     }
@@ -3331,7 +3440,7 @@ namespace Chummer
                     if (_dicCustomDataDirectoryKeys.Count == 0)
                     {
                         foreach (XPathNavigator objXmlDirectoryName in objXmlNode.SelectAndCacheExpression(
-                                     "customdatadirectorynames/directoryname"))
+                                     "customdatadirectorynames/directoryname", token))
                         {
                             string strDirectoryKey = objXmlDirectoryName.Value;
                             if (string.IsNullOrEmpty(strDirectoryKey))
@@ -3353,7 +3462,7 @@ namespace Chummer
                                     strDirectoryKey = objExistingInfo.InternalId;
                             }
 
-                            _dicCustomDataDirectoryKeys.TryAdd(strDirectoryKey, true);
+                            _dicCustomDataDirectoryKeys.TryAdd(strDirectoryKey, true, token);
                         }
                     }
 
@@ -3361,24 +3470,24 @@ namespace Chummer
                     foreach (string strCharacterSettingsSaveKey in GlobalSettings.CustomDataDirectoryInfos.Select(
                                  x => x.CharacterSettingsSaveKey))
                     {
-                        _dicCustomDataDirectoryKeys.TryAdd(strCharacterSettingsSaveKey, false);
+                        _dicCustomDataDirectoryKeys.TryAdd(strCharacterSettingsSaveKey, false, token);
                     }
                 }
 
-                RecalculateEnabledCustomDataDirectories();
+                RecalculateEnabledCustomDataDirectories(token);
 
-                foreach (XPathNavigator xmlBook in XmlManager.LoadXPath("books.xml", EnabledCustomDataDirectoryPaths)
+                foreach (XPathNavigator xmlBook in XmlManager.LoadXPath("books.xml", EnabledCustomDataDirectoryPaths, token: token)
                                                              .SelectAndCacheExpression(
-                                                                 "/chummer/books/book[permanent]/code"))
+                                                                 "/chummer/books/book[permanent]/code", token))
                 {
                     if (!string.IsNullOrEmpty(xmlBook.Value))
                         _setBooks.Add(xmlBook.Value);
                 }
 
-                RecalculateBookXPath();
+                RecalculateBookXPath(token);
 
                 // Used to legacy sweep build settings.
-                XPathNavigator xmlDefaultBuildNode = objXmlNode.SelectSingleNodeAndCacheExpression("defaultbuild");
+                XPathNavigator xmlDefaultBuildNode = objXmlNode.SelectSingleNodeAndCacheExpression("defaultbuild", token);
                 if (objXmlNode.TryGetStringFieldQuickly("buildmethod", ref strTemp)
                     && Enum.TryParse(strTemp, true, out CharacterBuildMethod eBuildMethod)
                     || xmlDefaultBuildNode?.TryGetStringFieldQuickly("buildmethod", ref strTemp) == true
@@ -3401,11 +3510,11 @@ namespace Chummer
                 objXmlNode.TryGetDecFieldQuickly("nuyenmaxbp", ref _decNuyenMaximumBP);
 
                 _setBannedWareGrades.Clear();
-                foreach (XPathNavigator xmlGrade in objXmlNode.SelectAndCacheExpression("bannedwaregrades/grade"))
+                foreach (XPathNavigator xmlGrade in objXmlNode.SelectAndCacheExpression("bannedwaregrades/grade", token))
                     _setBannedWareGrades.Add(xmlGrade.Value);
 
                 _setRedlinerExcludes.Clear();
-                foreach (XPathNavigator xmlLimb in objXmlNode.SelectAndCacheExpression("redlinerexclusion/limb"))
+                foreach (XPathNavigator xmlLimb in objXmlNode.SelectAndCacheExpression("redlinerexclusion/limb", token))
                     _setRedlinerExcludes.Add(xmlLimb.Value);
 
                 return true;
@@ -4870,9 +4979,9 @@ namespace Chummer
             }
         }
 
-        public void RecalculateEnabledCustomDataDirectories()
+        public void RecalculateEnabledCustomDataDirectories(CancellationToken token = default)
         {
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
                 _setEnabledCustomDataDirectoryGuids.Clear();
                 _setEnabledCustomDataDirectories.Clear();
@@ -4890,6 +4999,7 @@ namespace Chummer
                     {
                         foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
                         {
+                            token.ThrowIfCancellationRequested();
                             if (!objLoopInfo.Name.Equals(strKey, StringComparison.OrdinalIgnoreCase))
                                 continue;
                             if (objInfoToAdd == null || objLoopInfo.MyVersion > objInfoToAdd.MyVersion)
@@ -4900,6 +5010,7 @@ namespace Chummer
                     {
                         foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
                         {
+                            token.ThrowIfCancellationRequested();
                             if (!objLoopInfo.InternalId.Equals(strId, StringComparison.OrdinalIgnoreCase))
                                 continue;
                             if (objInfoToAdd == null || VersionMatchScore(objLoopInfo.MyVersion)
@@ -4929,7 +5040,7 @@ namespace Chummer
                     }
                     else
                         Utils.BreakIfDebug();
-                });
+                }, token);
             }
         }
 
@@ -4954,6 +5065,7 @@ namespace Chummer
                     {
                         foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
                         {
+                            token.ThrowIfCancellationRequested();
                             if (!objLoopInfo.Name.Equals(strKey, StringComparison.OrdinalIgnoreCase))
                                 continue;
                             if (objInfoToAdd == null || objLoopInfo.MyVersion > objInfoToAdd.MyVersion)
@@ -4964,6 +5076,7 @@ namespace Chummer
                     {
                         foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
                         {
+                            token.ThrowIfCancellationRequested();
                             if (!objLoopInfo.InternalId.Equals(strId, StringComparison.OrdinalIgnoreCase))
                                 continue;
                             if (objInfoToAdd == null || VersionMatchScore(objLoopInfo.MyVersion)

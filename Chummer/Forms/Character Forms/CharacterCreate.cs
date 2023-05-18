@@ -4717,8 +4717,8 @@ namespace Chummer
                         {
                             Program.ShowScrollableMessageBox(
                                 this,
-                                await LanguageManager.GetStringAsync("Message_ComplexFormLimit").ConfigureAwait(false),
-                                await LanguageManager.GetStringAsync("MessageTitle_ComplexFormLimit")
+                                await LanguageManager.GetStringAsync("Message_ComplexFormLimit", token: GenericToken).ConfigureAwait(false),
+                                await LanguageManager.GetStringAsync("MessageTitle_ComplexFormLimit", token: GenericToken)
                                                      .ConfigureAwait(false),
                                 MessageBoxButtons.OK, MessageBoxIcon.Information);
                             break;
@@ -5352,7 +5352,7 @@ namespace Chummer
                         objGrade.Create(await CharacterObject.GetInitiateGradeAsync(GenericToken).ConfigureAwait(false) + 1, false,
                                         await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false),
                                         await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false),
-                                        await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false));
+                                        await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false), GenericToken);
                         await CharacterObject.InitiationGrades.AddWithSortAsync(objGrade, token: GenericToken)
                                              .ConfigureAwait(false);
                     }
@@ -5390,7 +5390,7 @@ namespace Chummer
                         objGrade.Create(await CharacterObject.GetSubmersionGradeAsync(GenericToken).ConfigureAwait(false) + 1, true,
                                         await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false),
                                         await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false),
-                                        await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false));
+                                        await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken).ConfigureAwait(false), GenericToken);
                         await CharacterObject.InitiationGrades.AddWithSortAsync(objGrade, token: GenericToken)
                                              .ConfigureAwait(false);
                     }
@@ -6781,7 +6781,7 @@ namespace Chummer
                 {
                     using (ThreadSafeForm<CreateWeaponMount> frmPickVehicleMod
                            = await ThreadSafeForm<CreateWeaponMount>.GetAsync(
-                               () => new CreateWeaponMount(objVehicle, CharacterObject)).ConfigureAwait(false))
+                               () => new CreateWeaponMount(objVehicle, CharacterObject), GenericToken).ConfigureAwait(false))
                     {
                         if (await frmPickVehicleMod.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
                             == DialogResult.Cancel)
@@ -9382,7 +9382,7 @@ namespace Chummer
                         return;
 
                     Weapon objWeapon = frmCreateNaturalWeapon.MyForm.SelectedWeapon;
-                    await CharacterObject.Weapons.AddAsync(objWeapon).ConfigureAwait(false);
+                    await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -11824,7 +11824,7 @@ namespace Chummer
                                                            .ConfigureAwait(false);
                     await treViewToUse.DoThreadSafeFuncAsync(() => e.Node.Text = strName, GenericToken)
                                       .ConfigureAwait(false);
-                    await CharacterObject.Foci.AddAsync(objFocus).ConfigureAwait(false);
+                    await CharacterObject.Foci.AddAsync(objFocus, GenericToken).ConfigureAwait(false);
                     objSelectedFocus.Bonded = true;
                 }
                 else
@@ -11927,7 +11927,7 @@ namespace Chummer
                             // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
                             await ImprovementManager.RemoveImprovementsAsync(
                                                         CharacterObject, Improvement.ImprovementSource.ArmorMod,
-                                                        objMod.InternalId)
+                                                        objMod.InternalId, GenericToken)
                                                     .ConfigureAwait(false);
                             if (objMod.Bonus != null)
                                 await ImprovementManager.CreateImprovementsAsync(
@@ -11935,7 +11935,7 @@ namespace Chummer
                                                             objMod.InternalId,
                                                             objMod.Bonus, objMod.Rating,
                                                             await objMod.GetCurrentDisplayNameShortAsync(GenericToken)
-                                                                        .ConfigureAwait(false))
+                                                                        .ConfigureAwait(false), token: GenericToken)
                                                         .ConfigureAwait(false);
                             if (objMod.WirelessOn && objMod.WirelessBonus != null)
                                 await ImprovementManager.CreateImprovementsAsync(
@@ -11943,7 +11943,7 @@ namespace Chummer
                                                             objMod.InternalId,
                                                             objMod.WirelessBonus, objMod.Rating,
                                                             await objMod.GetCurrentDisplayNameShortAsync(GenericToken)
-                                                                        .ConfigureAwait(false))
+                                                                        .ConfigureAwait(false), token: GenericToken)
                                                         .ConfigureAwait(false);
                         }
 
@@ -11957,7 +11957,7 @@ namespace Chummer
                             if (!await objGear.RefreshSingleFocusRating(
                                     treFoci,
                                     await nudArmorRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)
-                                                        .ConfigureAwait(false)).ConfigureAwait(false))
+                                                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false))
                             {
                                 IsRefreshing = true;
                                 try
@@ -11989,7 +11989,7 @@ namespace Chummer
                             // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
                             await ImprovementManager.RemoveImprovementsAsync(
                                                         CharacterObject, Improvement.ImprovementSource.Gear,
-                                                        objGear.InternalId)
+                                                        objGear.InternalId, GenericToken)
                                                     .ConfigureAwait(false);
                             if (objGear.Bonus != null)
                                 await ImprovementManager.CreateImprovementsAsync(
@@ -11997,7 +11997,7 @@ namespace Chummer
                                                             objGear.InternalId,
                                                             objGear.Bonus, objGear.Rating,
                                                             await objGear.GetCurrentDisplayNameShortAsync(GenericToken)
-                                                                         .ConfigureAwait(false))
+                                                                         .ConfigureAwait(false), token: GenericToken)
                                                         .ConfigureAwait(false);
                             if (objGear.WirelessOn && objGear.WirelessBonus != null)
                                 await ImprovementManager.CreateImprovementsAsync(
@@ -12005,11 +12005,11 @@ namespace Chummer
                                                             objGear.InternalId,
                                                             objGear.WirelessBonus, objGear.Rating,
                                                             await objGear.GetCurrentDisplayNameShortAsync(GenericToken)
-                                                                         .ConfigureAwait(false))
+                                                                         .ConfigureAwait(false), token: GenericToken)
                                                         .ConfigureAwait(false);
 
                             if (!objGear.Equipped)
-                                await objGear.ChangeEquippedStatusAsync(false).ConfigureAwait(false);
+                                await objGear.ChangeEquippedStatusAsync(false, token: GenericToken).ConfigureAwait(false);
                         }
 
                         break;
@@ -12854,7 +12854,7 @@ namespace Chummer
 
             try
             {
-                Utils.SafelyRunSynchronously(() => MoveTreeNode(objSelectedNode, intNewIndex, requireParentSortable),
+                Utils.SafelyRunSynchronously(() => MoveTreeNode(objSelectedNode, intNewIndex, requireParentSortable, GenericToken),
                                              GenericToken);
             }
             catch (OperationCanceledException)
@@ -14522,12 +14522,12 @@ namespace Chummer
                             await lblCyberwareCapacity
                                   .DoThreadSafeAsync(x => x.Text = objCyberware.DisplayCapacity, token)
                                   .ConfigureAwait(false);
+                            string strNuyen = await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                             await lblCyberwareCost.DoThreadSafeAsync(x => x.Text
                                                                          = objCyberware.TotalCost.ToString(
                                                                                CharacterObjectSettings.NuyenFormat,
                                                                                GlobalSettings.CultureInfo)
-                                                                           + LanguageManager.GetString(
-                                                                               "String_NuyenSymbol"), token)
+                                                                           + strNuyen, token)
                                                   .ConfigureAwait(false);
                             if (objCyberware.Category.Equals("Cyberlimb", StringComparison.Ordinal)
                                 || objCyberware.AllowedSubsystems.Contains("Cyberlimb"))
@@ -14713,12 +14713,12 @@ namespace Chummer
 
                             await lblCyberwareCapacity.DoThreadSafeAsync(x => x.Text = objGear.DisplayCapacity, token)
                                                       .ConfigureAwait(false);
+                            string strNuyen = await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                             await lblCyberwareCost.DoThreadSafeAsync(x => x.Text =
                                                                          objGear.TotalCost.ToString(
                                                                              CharacterObjectSettings.NuyenFormat,
                                                                              GlobalSettings.CultureInfo)
-                                                                         + LanguageManager.GetString(
-                                                                             "String_NuyenSymbol"), token)
+                                                                         + strNuyen, token)
                                                   .ConfigureAwait(false);
                             await lblCyberlimbAGILabel.DoThreadSafeAsync(x => x.Visible = false, token)
                                                       .ConfigureAwait(false);
@@ -15278,12 +15278,12 @@ namespace Chummer
                             await lblWeaponAvail
                                   .DoThreadSafeAsync(x => x.Text = objSelectedAccessory.DisplayTotalAvail, token)
                                   .ConfigureAwait(false);
+                            string strNuyen = await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                             await lblWeaponCost.DoThreadSafeAsync(x => x.Text
                                                                       = objSelectedAccessory.TotalCost.ToString(
                                                                             CharacterObjectSettings.NuyenFormat,
                                                                             GlobalSettings.CultureInfo)
-                                                                        + LanguageManager.GetString(
-                                                                            "String_NuyenSymbol"),
+                                                                        + strNuyen,
                                                                   token).ConfigureAwait(false);
                             await lblWeaponSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                      .ConfigureAwait(false);
@@ -15601,12 +15601,12 @@ namespace Chummer
                             }, token).ConfigureAwait(false);
                             await lblWeaponAvail.DoThreadSafeAsync(x => x.Text = objGear.DisplayTotalAvail, token)
                                                 .ConfigureAwait(false);
+                            string strNuyen = await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                             await lblWeaponCost.DoThreadSafeAsync(x => x.Text
                                                                       = objGear.TotalCost.ToString(
                                                                             CharacterObjectSettings.NuyenFormat,
                                                                             GlobalSettings.CultureInfo)
-                                                                        + LanguageManager.GetString(
-                                                                            "String_NuyenSymbol"),
+                                                                        + strNuyen,
                                                                   token).ConfigureAwait(false);
                             await lblWeaponSlotsLabel.DoThreadSafeAsync(x => x.Visible = false, token)
                                                      .ConfigureAwait(false);
@@ -15816,11 +15816,12 @@ namespace Chummer
                         await lblArmorRatingLabel.DoThreadSafeAsync(x => x.Visible = false, token)
                                                  .ConfigureAwait(false);
                         await nudArmorRating.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                        string strNuyen = await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                         await lblArmorCost.DoThreadSafeAsync(x => x.Text
                                                                  = objArmor.TotalCost.ToString(
                                                                        CharacterObjectSettings.NuyenFormat,
                                                                        GlobalSettings.CultureInfo)
-                                                                   + LanguageManager.GetString("String_NuyenSymbol"),
+                                                                   + strNuyen,
                                                              token).ConfigureAwait(false);
                         await chkArmorEquipped.DoThreadSafeAsync(x =>
                         {
@@ -15974,12 +15975,12 @@ namespace Chummer
                             }
 
                             token.ThrowIfCancellationRequested();
+                            string strNuyen = await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                             await lblArmorCost.DoThreadSafeAsync(x => x.Text
                                                                      = objArmorMod.TotalCost.ToString(
                                                                            CharacterObjectSettings.NuyenFormat,
                                                                            GlobalSettings.CultureInfo)
-                                                                       + LanguageManager.GetString(
-                                                                           "String_NuyenSymbol"),
+                                                                       + strNuyen,
                                                                  token).ConfigureAwait(false);
                             await chkArmorEquipped.DoThreadSafeAsync(x =>
                             {
@@ -16084,12 +16085,12 @@ namespace Chummer
                                                             .ConfigureAwait(false);
                                     }
 
+                                    string strNuyen = await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                                     await lblArmorCost.DoThreadSafeAsync(x => x.Text
                                                                              = objSelectedGear.TotalCost.ToString(
                                                                                    CharacterObjectSettings.NuyenFormat,
                                                                                    GlobalSettings.CultureInfo)
-                                                                               + LanguageManager.GetString(
-                                                                                   "String_NuyenSymbol"), token)
+                                                                               + strNuyen, token)
                                                       .ConfigureAwait(false);
                                     await chkArmorEquipped.DoThreadSafeAsync(x =>
                                     {
@@ -16477,13 +16478,13 @@ namespace Chummer
                             x.Value = objGear.Quantity;
                             x.Enabled = !objGear.IncludedInParent;
                         }, token).ConfigureAwait(false);
+                        string strNuyen = await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                         try
                         {
                             await lblGearCost.DoThreadSafeAsync(x => x.Text
                                                                     = objGear.TotalCost.ToString(
                                                                         CharacterObjectSettings.NuyenFormat
-                                                                        + LanguageManager.GetString(
-                                                                            "String_NuyenSymbol"),
+                                                                        + strNuyen,
                                                                         GlobalSettings.CultureInfo), token)
                                              .ConfigureAwait(false);
                         }
@@ -16491,7 +16492,7 @@ namespace Chummer
                         {
                             await lblGearCost
                                   .DoThreadSafeAsync(
-                                      x => x.Text = objGear.Cost + LanguageManager.GetString("String_NuyenSymbol"),
+                                      x => x.Text = objGear.Cost + strNuyen,
                                       token).ConfigureAwait(false);
                         }
 
@@ -16612,7 +16613,21 @@ namespace Chummer
             }
         }
 
-        protected override string FormMode => LanguageManager.GetString("Title_CreateNewCharacter");
+        protected override string FormMode
+        {
+            get
+            {
+                try
+                {
+                    return LanguageManager.GetString("Title_CreateNewCharacter", token: GenericToken);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                    return string.Empty;
+                }
+            }
+        }
 
         /// <summary>
         /// Save the Character.
@@ -18257,12 +18272,12 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = objMod.DisplayTotalAvail, token)
                                                  .ConfigureAwait(false);
+                            string strNuyen = await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                             await lblVehicleCost.DoThreadSafeAsync(x => x.Text
                                                                        = objMod.TotalCost.ToString(
                                                                              CharacterObjectSettings.NuyenFormat,
                                                                              GlobalSettings.CultureInfo)
-                                                                         + LanguageManager.GetString(
-                                                                             "String_NuyenSymbol"), token)
+                                                                         + strNuyen, token)
                                                 .ConfigureAwait(false);
                             await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                       .ConfigureAwait(false);
@@ -18353,12 +18368,12 @@ namespace Chummer
                                                    .ConfigureAwait(false);
                             await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = objWeapon.DisplayTotalAvail, token)
                                                  .ConfigureAwait(false);
+                            string strNuyen = await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                             await lblVehicleCost.DoThreadSafeAsync(x => x.Text
                                                                        = objWeapon.TotalCost.ToString(
                                                                              CharacterObjectSettings.NuyenFormat,
                                                                              GlobalSettings.CultureInfo)
-                                                                         + LanguageManager.GetString(
-                                                                             "String_NuyenSymbol"), token)
+                                                                         + strNuyen, token)
                                                 .ConfigureAwait(false);
                             await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                       .ConfigureAwait(false);
@@ -19003,12 +19018,12 @@ namespace Chummer
                                                    .ConfigureAwait(false);
                             await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = objCyberware.DisplayTotalAvail, token)
                                                  .ConfigureAwait(false);
+                            string strNuyen = await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                             await lblVehicleCost.DoThreadSafeAsync(x => x.Text
                                                                        = objCyberware.TotalCost.ToString(
                                                                              CharacterObjectSettings.NuyenFormat,
                                                                              GlobalSettings.CultureInfo)
-                                                                         + LanguageManager.GetString(
-                                                                             "String_NuyenSymbol"), token)
+                                                                         + strNuyen, token)
                                                 .ConfigureAwait(false);
                             await cmdVehicleCyberwareChangeMount.DoThreadSafeAsync(x => x.Visible
                                                                     = !string.IsNullOrEmpty(objCyberware
@@ -19327,11 +19342,12 @@ namespace Chummer
                             = await objDrug.Grade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                         await lblDrugGrade.DoThreadSafeAsync(x => x.Text = strGradeName, token)
                                           .ConfigureAwait(false);
+                        string strNuyen = await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                         await lblDrugCost.DoThreadSafeAsync(x => x.Text
                                                                 = objDrug.Cost.ToString(
                                                                       CharacterObjectSettings.NuyenFormat,
                                                                       GlobalSettings.CultureInfo)
-                                                                  + LanguageManager.GetString("String_NuyenSymbol"),
+                                                                  + strNuyen,
                                                             token).ConfigureAwait(false);
                         await nudDrugQty.DoThreadSafeAsync(x =>
                         {
@@ -21217,7 +21233,7 @@ namespace Chummer
                             objMod.Create(objXmlModNode, intRating, lstWeapons);
 
                             foreach (XmlNode objXmlGear in objXmlArmor.SelectNodes("gears/gear"))
-                                AddPACKSGear(objXmlGearDocument, objXmlGear, objMod, blnCreateChildren);
+                                await AddPACKSGearAsync(objXmlGearDocument, objXmlGear, objMod, blnCreateChildren, token).ConfigureAwait(false);
 
                             await objArmor.ArmorMods.AddAsync(objMod, token).ConfigureAwait(false);
                         }
@@ -21229,7 +21245,7 @@ namespace Chummer
                     }
 
                     foreach (XmlNode objXmlGear in objXmlArmor.SelectNodes("gears/gear"))
-                        AddPACKSGear(objXmlGearDocument, objXmlGear, objArmor, blnCreateChildren);
+                        await AddPACKSGearAsync(objXmlGearDocument, objXmlGear, objArmor, blnCreateChildren, token).ConfigureAwait(false);
                 }
             }
 
@@ -21284,7 +21300,7 @@ namespace Chummer
                             await objWeapon.WeaponAccessories.AddAsync(objMod, token).ConfigureAwait(false);
 
                             foreach (XmlNode objXmlGear in objXmlAccessory.SelectNodes("gears/gear"))
-                                AddPACKSGear(objXmlGearDocument, objXmlGear, objMod, blnCreateChildren);
+                                await AddPACKSGearAsync(objXmlGearDocument, objXmlGear, objMod, blnCreateChildren, token).ConfigureAwait(false);
                         }
 
                         // Look for an Underbarrel Weapon.
@@ -21336,7 +21352,7 @@ namespace Chummer
                                                               .ConfigureAwait(false);
 
                                     foreach (XmlNode objXmlGear in objXmlAccessory.SelectNodes("gears/gear"))
-                                        AddPACKSGear(objXmlGearDocument, objXmlGear, objMod, blnCreateChildren);
+                                        await AddPACKSGearAsync(objXmlGearDocument, objXmlGear, objMod, blnCreateChildren, token).ConfigureAwait(false);
                                 }
                             }
                         }
@@ -21374,8 +21390,8 @@ namespace Chummer
                     await tsMain.DoThreadSafeAsync(() => pgbProgress.Value = i2, token).ConfigureAwait(false);
                     Utils.DoEventsSafe();
 
-                    AddPACKSCyberware(objXmlCyberwareDocument, objXmlBiowareDocument, objXmlGearDocument,
-                                      objXmlCyberware, CharacterObject, blnCreateChildren);
+                    await AddPACKSCyberwareAsync(objXmlCyberwareDocument, objXmlBiowareDocument, objXmlGearDocument,
+                                                 objXmlCyberware, CharacterObject, blnCreateChildren, token).ConfigureAwait(false);
 
                     Utils.DoEventsSafe();
                 }
@@ -21399,8 +21415,8 @@ namespace Chummer
                     await tsMain.DoThreadSafeAsync(() => pgbProgress.Value = i2, token).ConfigureAwait(false);
                     Utils.DoEventsSafe();
 
-                    AddPACKSCyberware(objXmlCyberwareDocument, objXmlBiowareDocument, objXmlGearDocument, objXmlBioware,
-                                      CharacterObject, blnCreateChildren);
+                    await AddPACKSCyberwareAsync(objXmlCyberwareDocument, objXmlBiowareDocument, objXmlGearDocument, objXmlBioware,
+                                                 CharacterObject, blnCreateChildren, token).ConfigureAwait(false);
 
                     Utils.DoEventsSafe();
                 }
@@ -21424,7 +21440,7 @@ namespace Chummer
                     await tsMain.DoThreadSafeAsync(() => pgbProgress.Value = i2, token).ConfigureAwait(false);
                     Utils.DoEventsSafe();
 
-                    AddPACKSGear(objXmlGearDocument, objXmlGear, CharacterObject, blnCreateChildren);
+                    await AddPACKSGearAsync(objXmlGearDocument, objXmlGear, CharacterObject, blnCreateChildren, token).ConfigureAwait(false);
 
                     Utils.DoEventsSafe();
                 }
@@ -21491,14 +21507,14 @@ namespace Chummer
                         await objVehicle.Mods.AddAsync(objMod, token).ConfigureAwait(false);
 
                         foreach (XmlNode objXmlCyberware in objXmlMod.SelectNodes("cyberwares/cyberware"))
-                            AddPACKSCyberware(objXmlCyberwareDocument, objXmlBiowareDocument, objXmlGearDocument,
-                                              objXmlCyberware, objMod, blnCreateChildren);
+                            await AddPACKSCyberwareAsync(objXmlCyberwareDocument, objXmlBiowareDocument, objXmlGearDocument,
+                                                         objXmlCyberware, objMod, blnCreateChildren, token).ConfigureAwait(false);
                     }
 
                     // Add any Vehicle Gear.
                     foreach (XmlNode objXmlGear in objXmlVehicle.SelectNodes("gears/gear"))
                     {
-                        Gear objGear = AddPACKSGear(objXmlGearDocument, objXmlGear, objVehicle, blnCreateChildren);
+                        Gear objGear = await AddPACKSGearAsync(objXmlGearDocument, objXmlGear, objVehicle, blnCreateChildren, token).ConfigureAwait(false);
                         // If this is a Sensor, it will replace the Vehicle's base sensor, so remove it.
                         if (objGear?.Category == "Sensors" && objGear.Cost == "0" && objGear.Rating == 0)
                         {
@@ -21614,7 +21630,7 @@ namespace Chummer
                                                                   .ConfigureAwait(false);
 
                                         foreach (XmlNode objXmlGear in objXmlAccessory.SelectNodes("gears/gear"))
-                                            AddPACKSGear(objXmlGearDocument, objXmlGear, objMod, blnCreateChildren);
+                                            await AddPACKSGearAsync(objXmlGearDocument, objXmlGear, objMod, blnCreateChildren, token).ConfigureAwait(false);
                                     }
                                 }
                             }
@@ -22257,8 +22273,9 @@ namespace Chummer
         /// <param name="objXmlGear">XmlNode of the Gear to add.</param>
         /// <param name="objParentObject">Object to associate the newly-created items with.</param>
         /// <param name="blnCreateChildren">Whether or not the default plugins for the Gear should be created.</param>
-        private Gear AddPACKSGear(XmlDocument objXmlGearDocument, XmlNode objXmlGear, object objParentObject,
-                                  bool blnCreateChildren)
+        /// <param name="token">Cancellation token to listen to.</param>
+        private async ValueTask<Gear> AddPACKSGearAsync(XmlDocument objXmlGearDocument, XmlNode objXmlGear, object objParentObject,
+                                  bool blnCreateChildren, CancellationToken token = default)
         {
             XmlNode objXmlGearNode = null;
             string strName = objXmlGear["name"]?.InnerText;
@@ -22267,12 +22284,12 @@ namespace Chummer
                 string strCategory = objXmlGear["category"]?.InnerText;
                 if (!string.IsNullOrEmpty(strCategory))
                     objXmlGearNode = objXmlGearDocument.SelectSingleNode(
-                        "/chummer/gears/gear[(" + CharacterObjectSettings.BookXPath() + ") and name = "
+                        "/chummer/gears/gear[(" + await CharacterObjectSettings.BookXPathAsync(token: token).ConfigureAwait(false) + ") and name = "
                         + strName.CleanXPath() +
                         " and category = " + strCategory.CleanXPath() + ']');
                 else
                     objXmlGearNode = objXmlGearDocument.SelectSingleNode(
-                        "/chummer/gears/gear[(" + CharacterObjectSettings.BookXPath() + ") and name = "
+                        "/chummer/gears/gear[(" + await CharacterObjectSettings.BookXPathAsync(token: token).ConfigureAwait(false) + ") and name = "
                         + strName.CleanXPath() + ']');
             }
 
@@ -22287,70 +22304,101 @@ namespace Chummer
 
             List<Weapon> lstWeapons = new List<Weapon>(1);
             string strForceValue = objXmlGear.SelectSingleNode("name/@select")?.InnerText ?? string.Empty;
-
             Gear objNewGear = new Gear(CharacterObject);
-            objNewGear.Create(objXmlGearNode, intRating, lstWeapons, strForceValue, true, blnCreateChildren);
-            objNewGear.Quantity = decQty;
-
-            switch (objParentObject)
+            try
             {
-                case Character objParentCharacter:
-                    objParentCharacter.Gear.Add(objNewGear);
-                    break;
-
-                case Gear objParentGear:
-                    objParentGear.Children.Add(objNewGear);
-                    break;
-
-                case Armor objParentArmor:
-                    objParentArmor.GearChildren.Add(objNewGear);
-                    break;
-
-                case ArmorMod objParentArmorMod:
-                    objParentArmorMod.GearChildren.Add(objNewGear);
-                    break;
-
-                case WeaponAccessory objParentWeaponAccessory:
-                    objParentWeaponAccessory.GearChildren.Add(objNewGear);
-                    break;
-
-                case Cyberware objParentCyberware:
-                    objParentCyberware.GearChildren.Add(objNewGear);
-                    break;
-
-                case Vehicle objParentVehicle:
-                    objNewGear.Parent = objParentVehicle;
-                    objParentVehicle.GearChildren.Add(objNewGear);
-                    break;
-            }
-
-            // Look for child components.
-            using (XmlNodeList xmlChildrenList = objXmlGear.SelectNodes("gears/gear"))
-            {
-                if (xmlChildrenList?.Count > 0)
+                try
                 {
-                    foreach (XmlNode xmlChild in xmlChildrenList)
+                    objNewGear.Create(objXmlGearNode, intRating, lstWeapons, strForceValue, true, blnCreateChildren);
+                    objNewGear.Quantity = decQty;
+
+                    switch (objParentObject)
                     {
-                        AddPACKSGear(objXmlGearDocument, xmlChild, objNewGear, blnCreateChildren);
+                        case Character objParentCharacter:
+                            await objParentCharacter.Gear.AddAsync(objNewGear, token).ConfigureAwait(false);
+                            break;
+
+                        case Gear objParentGear:
+                            await objParentGear.Children.AddAsync(objNewGear, token).ConfigureAwait(false);
+                            break;
+
+                        case Armor objParentArmor:
+                            await objParentArmor.GearChildren.AddAsync(objNewGear, token).ConfigureAwait(false);
+                            break;
+
+                        case ArmorMod objParentArmorMod:
+                            await objParentArmorMod.GearChildren.AddAsync(objNewGear, token).ConfigureAwait(false);
+                            break;
+
+                        case WeaponAccessory objParentWeaponAccessory:
+                            await objParentWeaponAccessory.GearChildren.AddAsync(objNewGear, token)
+                                                          .ConfigureAwait(false);
+                            break;
+
+                        case Cyberware objParentCyberware:
+                            await objParentCyberware.GearChildren.AddAsync(objNewGear, token).ConfigureAwait(false);
+                            break;
+
+                        case Vehicle objParentVehicle:
+                            objNewGear.Parent = objParentVehicle;
+                            await objParentVehicle.GearChildren.AddAsync(objNewGear, token).ConfigureAwait(false);
+                            break;
+                    }
+
+                    // Look for child components.
+                    using (XmlNodeList xmlChildrenList = objXmlGear.SelectNodes("gears/gear"))
+                    {
+                        if (xmlChildrenList?.Count > 0)
+                        {
+                            foreach (XmlNode xmlChild in xmlChildrenList)
+                            {
+                                await AddPACKSGearAsync(objXmlGearDocument, xmlChild, objNewGear, blnCreateChildren,
+                                                        token).ConfigureAwait(false);
+                            }
+                        }
                     }
                 }
+                catch
+                {
+                    objNewGear.Remove(false);
+                    throw;
+                }
+            }
+            catch
+            {
+                if (lstWeapons.Count > 0)
+                {
+                    foreach (Weapon objWeapon in lstWeapons)
+                    {
+                        await objWeapon.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+                throw;
             }
 
             // Add any Weapons created by the Gear.
             if (lstWeapons.Count > 0)
             {
-                foreach (Weapon objWeapon in lstWeapons)
+                try
                 {
-                    CharacterObject.Weapons.Add(objWeapon);
+                    foreach (Weapon objWeapon in lstWeapons)
+                    {
+                        await CharacterObject.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+                    }
+                }
+                catch
+                {
+                    objNewGear.Remove(false);
+                    throw;
                 }
             }
 
             return objNewGear;
         }
 
-        private void AddPACKSCyberware(XmlDocument xmlCyberwareDocument, XmlDocument xmlBiowareDocument,
+        private async ValueTask AddPACKSCyberwareAsync(XmlDocument xmlCyberwareDocument, XmlDocument xmlBiowareDocument,
                                        XmlDocument xmlGearDocument, XmlNode xmlCyberware, object objParentObject,
-                                       bool blnCreateChildren)
+                                       bool blnCreateChildren, CancellationToken token = default)
         {
             Grade objGrade = Grade.ConvertToCyberwareGrade(xmlCyberware["grade"]?.InnerText,
                                                            Improvement.ImprovementSource.Cyberware, CharacterObject);
@@ -22363,13 +22411,13 @@ namespace Chummer
                 return;
 
             XmlNode objXmlCyberwareNode = xmlCyberwareDocument.SelectSingleNode(
-                "/chummer/cyberwares/cyberware[(" + CharacterObjectSettings.BookXPath() + ") and name = "
+                "/chummer/cyberwares/cyberware[(" + await CharacterObjectSettings.BookXPathAsync(token: token).ConfigureAwait(false) + ") and name = "
                 + strName.CleanXPath() + ']');
             if (objXmlCyberwareNode == null)
             {
                 eSource = Improvement.ImprovementSource.Bioware;
                 objXmlCyberwareNode = xmlBiowareDocument.SelectSingleNode(
-                    "/chummer/biowares/bioware[(" + CharacterObjectSettings.BookXPath() + ") and name = "
+                    "/chummer/biowares/bioware[(" + await CharacterObjectSettings.BookXPathAsync(token: token).ConfigureAwait(false) + ") and name = "
                     + strName.CleanXPath() + ']');
                 if (objXmlCyberwareNode == null)
                 {
@@ -22380,58 +22428,95 @@ namespace Chummer
             List<Weapon> lstWeapons = new List<Weapon>(1);
             List<Vehicle> lstVehicles = new List<Vehicle>(1);
             Cyberware objCyberware = new Cyberware(CharacterObject);
-            objCyberware.Create(objXmlCyberwareNode, objGrade, eSource, intRating, lstWeapons, lstVehicles, true,
-                                blnCreateChildren);
-
-            switch (objParentObject)
+            try
             {
-                case Character objParentCharacter:
-                    objParentCharacter.Cyberware.Add(objCyberware);
-                    break;
-
-                case Cyberware objParentCyberware:
-                    objParentCyberware.Children.Add(objCyberware);
-                    break;
-
-                case VehicleMod objParentVehicleMod:
-                    objParentVehicleMod.Cyberware.Add(objCyberware);
-                    break;
-            }
-
-            // Add any children.
-            using (XmlNodeList xmlCyberwareList = xmlCyberware.SelectNodes("cyberwares/cyberware"))
-            {
-                if (xmlCyberwareList?.Count > 0)
+                try
                 {
-                    foreach (XmlNode objXmlChild in xmlCyberwareList)
-                        AddPACKSCyberware(xmlCyberwareDocument, xmlBiowareDocument, xmlGearDocument, objXmlChild,
-                                          objCyberware, blnCreateChildren);
+                    objCyberware.Create(objXmlCyberwareNode, objGrade, eSource, intRating, lstWeapons, lstVehicles,
+                                        true,
+                                        blnCreateChildren);
+
+                    switch (objParentObject)
+                    {
+                        case Character objParentCharacter:
+                            await objParentCharacter.Cyberware.AddAsync(objCyberware, token).ConfigureAwait(false);
+                            break;
+
+                        case Cyberware objParentCyberware:
+                            await objParentCyberware.Children.AddAsync(objCyberware, token).ConfigureAwait(false);
+                            break;
+
+                        case VehicleMod objParentVehicleMod:
+                            await objParentVehicleMod.Cyberware.AddAsync(objCyberware, token).ConfigureAwait(false);
+                            break;
+                    }
+
+                    // Add any children.
+                    using (XmlNodeList xmlCyberwareList = xmlCyberware.SelectNodes("cyberwares/cyberware"))
+                    {
+                        if (xmlCyberwareList?.Count > 0)
+                        {
+                            foreach (XmlNode objXmlChild in xmlCyberwareList)
+                                await AddPACKSCyberwareAsync(xmlCyberwareDocument, xmlBiowareDocument, xmlGearDocument,
+                                                             objXmlChild,
+                                                             objCyberware, blnCreateChildren, token).ConfigureAwait(false);
+                        }
+                    }
+
+                    using (XmlNodeList xmlGearList = xmlCyberware.SelectNodes("gears/gear"))
+                    {
+                        if (xmlGearList?.Count > 0)
+                        {
+                            foreach (XmlNode objXmlGear in xmlGearList)
+                                await AddPACKSGearAsync(xmlGearDocument, objXmlGear, objCyberware, blnCreateChildren,
+                                                        token).ConfigureAwait(false);
+                        }
+                    }
+                }
+                catch
+                {
+                    await objCyberware.DeleteCyberwareAsync(token: token).ConfigureAwait(false);
+                    throw;
                 }
             }
-
-            using (XmlNodeList xmlGearList = xmlCyberware.SelectNodes("gears/gear"))
+            catch
             {
-                if (xmlGearList?.Count > 0)
+                if (lstWeapons.Count > 0)
                 {
-                    foreach (XmlNode objXmlGear in xmlGearList)
-                        AddPACKSGear(xmlGearDocument, objXmlGear, objCyberware, blnCreateChildren);
+                    foreach (Weapon objWeapon in lstWeapons)
+                    {
+                        await objWeapon.DisposeAsync().ConfigureAwait(false);
+                    }
                 }
+
+                if (lstVehicles.Count > 0)
+                {
+                    foreach (Vehicle objVehicle in lstVehicles)
+                    {
+                        await objVehicle.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+                throw;
             }
 
-            if (lstWeapons.Count > 0)
+            try
             {
-                foreach (Weapon objWeapon in lstWeapons)
+                if (lstWeapons.Count > 0)
                 {
-                    CharacterObject.Weapons.Add(objWeapon);
+                    await lstWeapons.ForEachAsync(objWeapon => CharacterObject.Weapons.AddAsync(objWeapon, token).AsTask(),
+                                                  token).ConfigureAwait(false);
+                }
+
+                if (lstVehicles.Count > 0)
+                {
+                    await lstVehicles.ForEachAsync(objVehicle => CharacterObject.Vehicles.AddAsync(objVehicle, token).AsTask(),
+                                                   token).ConfigureAwait(false);
                 }
             }
-
-            if (lstVehicles.Count > 0)
+            catch
             {
-                foreach (Vehicle objVehicle in lstVehicles)
-                {
-                    CharacterObject.Vehicles.Add(objVehicle);
-                }
+                await objCyberware.DeleteCyberwareAsync(token: token).ConfigureAwait(false);
+                throw;
             }
         }
 
@@ -22483,7 +22568,7 @@ namespace Chummer
                     if (objNewMetamagic.InternalId.IsEmptyGuid())
                         return;
 
-                    await CharacterObject.Metamagics.AddAsync(objNewMetamagic).ConfigureAwait(false);
+                    await CharacterObject.Metamagics.AddAsync(objNewMetamagic, GenericToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -22524,7 +22609,7 @@ namespace Chummer
                     if (objArt.InternalId.IsEmptyGuid())
                         return;
 
-                    await CharacterObject.Arts.AddAsync(objArt).ConfigureAwait(false);
+                    await CharacterObject.Arts.AddAsync(objArt, GenericToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -22570,7 +22655,7 @@ namespace Chummer
                             return;
                         }
 
-                        await CharacterObject.Spells.AddAsync(objNewSpell).ConfigureAwait(false);
+                        await CharacterObject.Spells.AddAsync(objNewSpell, GenericToken).ConfigureAwait(false);
                     }
                     catch
                     {
@@ -22621,7 +22706,7 @@ namespace Chummer
                             return;
                         }
 
-                        await CharacterObject.Spells.AddAsync(objNewSpell).ConfigureAwait(false);
+                        await CharacterObject.Spells.AddAsync(objNewSpell, GenericToken).ConfigureAwait(false);
                     }
                     catch
                     {
@@ -22689,7 +22774,7 @@ namespace Chummer
                     {
                         if (objPower.Name == strPower)
                         {
-                            await objPower.Enhancements.AddAsync(objEnhancement).ConfigureAwait(false);
+                            await objPower.Enhancements.AddAsync(objEnhancement, GenericToken).ConfigureAwait(false);
                             blnPowerFound = true;
                             break;
                         }
@@ -22698,7 +22783,7 @@ namespace Chummer
                     if (!blnPowerFound)
                     {
                         // Add it to the character instead
-                        await CharacterObject.Enhancements.AddAsync(objEnhancement).ConfigureAwait(false);
+                        await CharacterObject.Enhancements.AddAsync(objEnhancement, GenericToken).ConfigureAwait(false);
                     }
                 }
             }
@@ -22870,7 +22955,14 @@ namespace Chummer
 
         private async void PowersBeforeRemove(object sender, RemovingOldEventArgs e)
         {
-            await RefreshPowerCollectionBeforeRemove(treMetamagic, e).ConfigureAwait(false);
+            try
+            {
+                await RefreshPowerCollectionBeforeRemove(treMetamagic, e, GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async void PowersListChanged(object sender, ListChangedEventArgs e)
@@ -23559,7 +23651,7 @@ namespace Chummer
                 {
                     blnAddAgain = await AddVehicle(
                         await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
-                                         .ConfigureAwait(false) as Location).ConfigureAwait(false);
+                                         .ConfigureAwait(false) as Location, GenericToken).ConfigureAwait(false);
                 } while (blnAddAgain);
             }
             catch (OperationCanceledException)
@@ -23608,18 +23700,36 @@ namespace Chummer
                         return;
 
                     Drug objCustomDrug = form.MyForm.CustomDrug;
-                    await CharacterObject.Drugs.AddAsync(objCustomDrug).ConfigureAwait(false);
+                    if (objCustomDrug != null)
+                    {
+                        try
+                        {
+                            await CharacterObject.Drugs.AddAsync(objCustomDrug, GenericToken).ConfigureAwait(false);
+                        }
+                        catch
+                        {
+                            await objCustomDrug.DisposeAsync().ConfigureAwait(false);
+                            throw;
+                        }
+                    }
                 }
             }
             catch (OperationCanceledException)
             {
-                // Swallow this
+                //swallow this
             }
         }
 
         private async void OpenSourceFromLabel(object sender, EventArgs e)
         {
-            await CommonFunctions.OpenPdfFromControl(sender).ConfigureAwait(false);
+            try
+            {
+                await CommonFunctions.OpenPdfFromControl(sender, GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private void pnlAttributes_Layout(object sender, LayoutEventArgs e)

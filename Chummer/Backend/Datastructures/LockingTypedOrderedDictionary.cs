@@ -331,17 +331,19 @@ namespace Chummer
             }
         }
 
-        public bool TryAdd(TKey key, TValue value)
+        public bool TryAdd(TKey key, TValue value, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 if (_dicUnorderedData.ContainsKey(key))
                     return false;
             }
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(token))
             {
+                token.ThrowIfCancellationRequested();
                 if (_dicUnorderedData.ContainsKey(key))
                     return false;
+                token.ThrowIfCancellationRequested();
                 _dicUnorderedData.Add(key, value);
                 _lstIndexes.Add(key);
             }
@@ -361,6 +363,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (_dicUnorderedData.ContainsKey(key))
                     return false;
+                token.ThrowIfCancellationRequested();
                 _dicUnorderedData.Add(key, value);
                 _lstIndexes.Add(key);
             }
@@ -1644,7 +1647,10 @@ namespace Chummer
             get
             {
                 using (EnterReadLock.Enter(LockObject))
-                    return new KeyValuePair<TKey, TValue>(_lstIndexes[index], _dicUnorderedData[_lstIndexes[index]]);
+                {
+                    TKey objKey = _lstIndexes[index];
+                    return new KeyValuePair<TKey, TValue>(objKey, _dicUnorderedData[objKey]);
+                }
             }
             set
             {
@@ -1686,10 +1692,22 @@ namespace Chummer
             }
         }
 
+        public KeyValuePair<TKey, TValue> GetValueAt(int index, CancellationToken token = default)
+        {
+            using (EnterReadLock.Enter(LockObject, token))
+            {
+                TKey objKey = _lstIndexes[index];
+                return new KeyValuePair<TKey, TValue>(objKey, _dicUnorderedData[objKey]);
+            }
+        }
+
         public async ValueTask<KeyValuePair<TKey, TValue>> GetValueAtAsync(int index, CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
-                return new KeyValuePair<TKey, TValue>(_lstIndexes[index], _dicUnorderedData[_lstIndexes[index]]);
+            {
+                TKey objKey = _lstIndexes[index];
+                return new KeyValuePair<TKey, TValue>(objKey, _dicUnorderedData[objKey]);
+            }
         }
 
         public async ValueTask SetValueAtAsync(int index, KeyValuePair<TKey, TValue> value, CancellationToken token = default)

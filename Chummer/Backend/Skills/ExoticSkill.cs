@@ -51,7 +51,7 @@ namespace Chummer.Backend.Skills
                 return new Tuple<bool, string>(false, string.Empty);
             XPathNodeIterator objXPathNameData = objCharacter.LoadDataXPath("skills.xml", token: token)
                                                              .SelectAndCacheExpression(
-                                                                 "/chummer/skills/skill[exotic = 'True']/name");
+                                                                 "/chummer/skills/skill[exotic = 'True']/name", token);
             foreach (XPathNavigator objData in objXPathNameData)
             {
                 token.ThrowIfCancellationRequested();

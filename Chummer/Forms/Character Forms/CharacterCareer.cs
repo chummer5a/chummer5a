@@ -2977,12 +2977,21 @@ namespace Chummer
                                           .ConfigureAwait(false);
                                 try
                                 {
-                                    await cmdAddLifestyle.DoThreadSafeAsync(x => x.SplitMenuStrip =
-                                                                                CharacterObjectSettings.BookEnabled(
-                                                                                    "RF")
-                                                                                    ? cmsAdvancedLifestyle
-                                                                                    : null, GenericToken)
-                                                         .ConfigureAwait(false);
+                                    if (await CharacterObjectSettings.BookEnabledAsync("RF", GenericToken)
+                                                                     .ConfigureAwait(false))
+                                    {
+                                        await cmdAddLifestyle
+                                              .DoThreadSafeAsync(x => x.SplitMenuStrip = cmsAdvancedLifestyle,
+                                                                 GenericToken)
+                                              .ConfigureAwait(false);
+                                    }
+                                    else
+                                    {
+                                        await cmdAddLifestyle
+                                              .DoThreadSafeAsync(x => x.SplitMenuStrip = null,
+                                                                 GenericToken)
+                                              .ConfigureAwait(false);
+                                    }
 
                                     if (!await CharacterObjectSettings.BookEnabledAsync("FA", GenericToken)
                                                                       .ConfigureAwait(false))
@@ -6589,7 +6598,7 @@ namespace Chummer
                                     await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
                                                              .ConfigureAwait(false),
                                     await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
-                                                                .ConfigureAwait(false));
+                                                                .ConfigureAwait(false), GenericToken);
                     await CharacterObject.InitiationGrades.AddWithSortAsync(objGrade, token: GenericToken).ConfigureAwait(false);
 
                     ExpenseUndo objUndo = new ExpenseUndo();
@@ -6710,7 +6719,7 @@ namespace Chummer
                                     await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
                                                              .ConfigureAwait(false),
                                     await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
-                                                                .ConfigureAwait(false));
+                                                                .ConfigureAwait(false), GenericToken);
                     await CharacterObject.InitiationGrades.AddWithSortAsync(objGrade, token: GenericToken).ConfigureAwait(false);
 
                     ExpenseUndo objUndo = new ExpenseUndo();
@@ -9399,7 +9408,7 @@ namespace Chummer
         {
             try
             {
-                ICollection<Location> destCollection;
+                ThreadSafeObservableCollection<Location> destCollection;
                 object objSelected = await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken)
                                                       .ConfigureAwait(false);
                 // Make sure a Vehicle is selected.
@@ -9436,7 +9445,15 @@ namespace Chummer
                         return;
                     Location objLocation
                         = new Location(CharacterObject, destCollection, frmPickText.MyForm.SelectedValue);
-                    destCollection.Add(objLocation);
+                    try
+                    {
+                        await destCollection.AddAsync(objLocation, GenericToken).ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        await objLocation.DisposeAsync().ConfigureAwait(false);
+                        throw;
+                    }
                 }
             }
             catch (OperationCanceledException)
@@ -17074,12 +17091,17 @@ namespace Chummer
             }
         }
 
-        private void treFoci_AfterCheck(object sender, TreeViewEventArgs e)
+        private async void treFoci_AfterCheck(object sender, TreeViewEventArgs e)
         {
-            if (!e.Node.Checked)
+            if (e.Node.Checked)
+                return;
+            if (!(e.Node.Tag is IHasInternalId objId))
+                return;
+            try
             {
-                if (!(e.Node.Tag is IHasInternalId objId)) return;
-                Focus objFocus = CharacterObject.Foci.Find(x => x.GearObject.InternalId == objId.InternalId);
+                Focus objFocus
+                    = await CharacterObject.Foci.FindAsync(x => x.GearObject.InternalId == objId.InternalId,
+                                                           GenericToken).ConfigureAwait(false);
 
                 // Mark the Gear as not Bonded and remove any Improvements.
                 Gear objGear = objFocus?.GearObject;
@@ -17087,23 +17109,27 @@ namespace Chummer
                 if (objGear != null)
                 {
                     objGear.Bonded = false;
-                    ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Gear,
-                                                          objGear.InternalId);
-                    CharacterObject.Foci.Remove(objFocus);
+                    await ImprovementManager.RemoveImprovementsAsync(CharacterObject, Improvement.ImprovementSource.Gear,
+                                                                     objGear.InternalId, GenericToken).ConfigureAwait(false);
+                    await CharacterObject.Foci.RemoveAsync(objFocus, GenericToken).ConfigureAwait(false);
                 }
                 else
                 {
                     // This is a Stacked Focus.
-                    StackedFocus objStack = CharacterObject.StackedFoci.Find(x => x.InternalId == objId.InternalId);
+                    StackedFocus objStack = await CharacterObject.StackedFoci.FindAsync(x => x.InternalId == objId.InternalId, GenericToken).ConfigureAwait(false);
 
                     if (objStack != null)
                     {
                         objStack.Bonded = false;
-                        ImprovementManager.RemoveImprovements(CharacterObject,
-                                                              Improvement.ImprovementSource.StackedFocus,
-                                                              objStack.InternalId);
+                        await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
+                                                                         Improvement.ImprovementSource.StackedFocus,
+                                                                         objStack.InternalId, GenericToken).ConfigureAwait(false);
                     }
                 }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
@@ -22101,7 +22127,21 @@ namespace Chummer
             }
         }
 
-        protected override string FormMode => LanguageManager.GetString("Title_CareerMode");
+        protected override string FormMode
+        {
+            get
+            {
+                try
+                {
+                    return LanguageManager.GetString("Title_CareerMode", token: GenericToken);
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                    return string.Empty;
+                }
+            }
+        }
 
         /// <summary>
         /// Open the Select Cyberware window and handle adding to the Tree and Character.
@@ -27328,9 +27368,18 @@ namespace Chummer
                         return;
 
                     Drug objCustomDrug = form.MyForm.CustomDrug;
-                    objCustomDrug.Quantity = 0;
-                    await CharacterObject.Drugs.AddAsync(objCustomDrug, GenericToken).ConfigureAwait(false);
-                    objCustomDrug.GenerateImprovement();
+                    if (objCustomDrug != null)
+                    {
+                        try
+                        {
+                            await CharacterObject.Drugs.AddAsync(objCustomDrug, GenericToken).ConfigureAwait(false);
+                        }
+                        catch
+                        {
+                            await objCustomDrug.DisposeAsync().ConfigureAwait(false);
+                            throw;
+                        }
+                    }
                 }
             }
             catch (OperationCanceledException)

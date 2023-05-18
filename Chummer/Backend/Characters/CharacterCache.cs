@@ -632,9 +632,9 @@ namespace Chummer
                         XPathDocument LoadXPathDocument()
                         {
                             if (strFile.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
-                                return XPathDocumentExtensions.LoadStandardFromFile(strFile);
+                                return XPathDocumentExtensions.LoadStandardFromFile(strFile, token: token);
                             if (strFile.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
-                                return XPathDocumentExtensions.LoadStandardFromLzmaCompressedFile(strFile);
+                                return XPathDocumentExtensions.LoadStandardFromLzmaCompressedFile(strFile, token: token);
                             Utils.BreakIfDebug();
                             throw new InvalidOperationException();
                         }

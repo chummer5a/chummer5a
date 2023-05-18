@@ -2202,7 +2202,7 @@ namespace Chummer
                 XPathDocument xmlDocument;
                 try
                 {
-                    xmlDocument = XPathDocumentExtensions.LoadStandardFromFile(filePath);
+                    xmlDocument = XPathDocumentExtensions.LoadStandardFromFile(filePath, token: token);
                 }
                 catch (IOException)
                 {
@@ -2215,7 +2215,7 @@ namespace Chummer
 
                 token.ThrowIfCancellationRequested();
 
-                XPathNavigator node = xmlDocument.CreateNavigator().SelectSingleNodeAndCacheExpression("/chummer/name");
+                XPathNavigator node = xmlDocument.CreateNavigator().SelectSingleNodeAndCacheExpression("/chummer/name", token);
 
                 if (node == null)
                     continue;

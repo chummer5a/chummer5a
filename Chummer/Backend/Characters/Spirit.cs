@@ -1874,7 +1874,7 @@ namespace Chummer
             using (LockObject.EnterWriteLock(token))
             {
                 xmlSavedNode.TryGetInt32FieldQuickly("mainmugshotindex", ref _intMainMugshotIndex);
-                XPathNodeIterator xmlMugshotsList = xmlSavedNode.SelectAndCacheExpression("mugshots/mugshot");
+                XPathNodeIterator xmlMugshotsList = xmlSavedNode.SelectAndCacheExpression("mugshots/mugshot", token);
                 List<string> lstMugshotsBase64 = new List<string>(xmlMugshotsList.Count);
                 foreach (XPathNavigator objXmlMugshot in xmlMugshotsList)
                 {

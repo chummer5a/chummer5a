@@ -34,14 +34,28 @@ namespace Chummer
         /// </summary>
         /// <param name="strFileName">The file to use.</param>
         /// <param name="blnSafe">Whether or not to check characters for validity while loading.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static XPathDocument LoadStandardFromFile(string strFileName, bool blnSafe = true)
+        public static XPathDocument LoadStandardFromFile(string strFileName, bool blnSafe = true, CancellationToken token = default)
         {
-            using (FileStream objFileStream = new FileStream(strFileName, FileMode.Open, FileAccess.Read, FileShare.Read))
-            using (StreamReader objStreamReader = new StreamReader(objFileStream, Encoding.UTF8, true))
-            using (XmlReader objReader = XmlReader.Create(objStreamReader,
-                blnSafe ? GlobalSettings.SafeXmlReaderSettings : GlobalSettings.UnSafeXmlReaderSettings))
-                return new XPathDocument(objReader);
+            token.ThrowIfCancellationRequested();
+            using (FileStream objFileStream
+                   = new FileStream(strFileName, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                token.ThrowIfCancellationRequested();
+                using (StreamReader objStreamReader = new StreamReader(objFileStream, Encoding.UTF8, true))
+                {
+                    token.ThrowIfCancellationRequested();
+                    using (XmlReader objReader = XmlReader.Create(objStreamReader,
+                                                                  blnSafe
+                                                                      ? GlobalSettings.SafeXmlReaderSettings
+                                                                      : GlobalSettings.UnSafeXmlReaderSettings))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        return new XPathDocument(objReader);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -80,21 +94,38 @@ namespace Chummer
         /// </summary>
         /// <param name="strFileName">The file to use.</param>
         /// <param name="blnSafe">Whether or not to check characters for validity while loading.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static XPathDocument LoadStandardFromLzmaCompressedFile(string strFileName, bool blnSafe = true)
+        public static XPathDocument LoadStandardFromLzmaCompressedFile(string strFileName, bool blnSafe = true, CancellationToken token = default)
         {
-            using (FileStream objFileStream = new FileStream(strFileName, FileMode.Open, FileAccess.Read, FileShare.Read))
-            using (RecyclableMemoryStream objMemoryStream = new RecyclableMemoryStream(Utils.MemoryStreamManager, "LzmaMemoryStream", (int)objFileStream.Length))
+            token.ThrowIfCancellationRequested();
+            using (FileStream objFileStream
+                   = new FileStream(strFileName, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                objFileStream.DecompressLzmaFile(objMemoryStream);
-                objMemoryStream.Seek(0, SeekOrigin.Begin);
-                using (StreamReader objStreamReader
-                       = new StreamReader(objMemoryStream, Encoding.UTF8, true))
-                using (XmlReader objReader = XmlReader.Create(objStreamReader,
-                                                              blnSafe
-                                                                  ? GlobalSettings.SafeXmlReaderSettings
-                                                                  : GlobalSettings.UnSafeXmlReaderSettings))
-                    return new XPathDocument(objReader);
+                token.ThrowIfCancellationRequested();
+                using (RecyclableMemoryStream objMemoryStream
+                       = new RecyclableMemoryStream(Utils.MemoryStreamManager, "LzmaMemoryStream",
+                                                    (int) objFileStream.Length))
+                {
+                    token.ThrowIfCancellationRequested();
+                    objFileStream.DecompressLzmaFile(objMemoryStream);
+                    token.ThrowIfCancellationRequested();
+                    objMemoryStream.Seek(0, SeekOrigin.Begin);
+                    token.ThrowIfCancellationRequested();
+                    using (StreamReader objStreamReader
+                           = new StreamReader(objMemoryStream, Encoding.UTF8, true))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        using (XmlReader objReader = XmlReader.Create(objStreamReader,
+                                                                      blnSafe
+                                                                          ? GlobalSettings.SafeXmlReaderSettings
+                                                                          : GlobalSettings.UnSafeXmlReaderSettings))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            return new XPathDocument(objReader);
+                        }
+                    }
+                }
             }
         }
 

@@ -742,7 +742,11 @@ namespace Chummer
                                                                              .Select("/chummer/chummer[@file = "
                                                                                  + strFileName.CleanXPath() + "]/*"))
                                 {
-                                    AppendTranslations(xmlReturn, objType, xmlBaseChummerNode, token);
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        AppendTranslations(xmlReturn, objType, xmlBaseChummerNode, token);
+                                    else
+                                        await AppendTranslationsAsync(xmlReturn, objType, xmlBaseChummerNode, token).ConfigureAwait(false);
                                 }
                             }
                         }
@@ -940,19 +944,19 @@ namespace Chummer
         private static void AppendTranslations(XmlDocument xmlDataDocument, XPathNavigator xmlTranslationListParentNode, XmlNode xmlDataParentNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            foreach (XPathNavigator objChild in xmlTranslationListParentNode.SelectAndCacheExpression("*"))
+            foreach (XPathNavigator objChild in xmlTranslationListParentNode.SelectAndCacheExpression("*", token))
             {
                 token.ThrowIfCancellationRequested();
                 XmlNode xmlItem = null;
                 string strXPathPrefix = xmlTranslationListParentNode.Name + '/' + objChild.Name + '[';
-                string strChildName = objChild.SelectSingleNodeAndCacheExpression("id")?.Value;
+                string strChildName = objChild.SelectSingleNodeAndCacheExpression("id", token)?.Value;
                 if (!string.IsNullOrEmpty(strChildName))
                 {
                     xmlItem = xmlDataParentNode.SelectSingleNode(strXPathPrefix + "id = " + strChildName.CleanXPath() + ']');
                 }
                 if (xmlItem == null)
                 {
-                    strChildName = objChild.SelectSingleNodeAndCacheExpression("name")?.Value.Replace("&amp;", "&");
+                    strChildName = objChild.SelectSingleNodeAndCacheExpression("name", token)?.Value.Replace("&amp;", "&");
                     if (!string.IsNullOrEmpty(strChildName))
                     {
                         xmlItem = xmlDataParentNode.SelectSingleNode(strXPathPrefix + "name = " + strChildName.CleanXPath() + ']');
@@ -961,39 +965,39 @@ namespace Chummer
                 // If this is a translatable item, find the proper node and add/update this information.
                 if (xmlItem != null)
                 {
-                    XPathNavigator xmlLoopNode = objChild.SelectSingleNodeAndCacheExpression("translate");
+                    XPathNavigator xmlLoopNode = objChild.SelectSingleNodeAndCacheExpression("translate", token);
                     if (xmlLoopNode != null)
                         xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
 
-                    xmlLoopNode = objChild.SelectSingleNodeAndCacheExpression("altpage");
+                    xmlLoopNode = objChild.SelectSingleNodeAndCacheExpression("altpage", token);
                     if (xmlLoopNode != null)
                         xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
 
-                    xmlLoopNode = objChild.SelectSingleNodeAndCacheExpression("altcode");
+                    xmlLoopNode = objChild.SelectSingleNodeAndCacheExpression("altcode", token);
                     if (xmlLoopNode != null)
                         xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
 
-                    xmlLoopNode = objChild.SelectSingleNodeAndCacheExpression("altnotes");
+                    xmlLoopNode = objChild.SelectSingleNodeAndCacheExpression("altnotes", token);
                     if (xmlLoopNode != null)
                         xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
 
-                    xmlLoopNode = objChild.SelectSingleNodeAndCacheExpression("altadvantage");
+                    xmlLoopNode = objChild.SelectSingleNodeAndCacheExpression("altadvantage", token);
                     if (xmlLoopNode != null)
                         xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
 
-                    xmlLoopNode = objChild.SelectSingleNodeAndCacheExpression("altdisadvantage");
+                    xmlLoopNode = objChild.SelectSingleNodeAndCacheExpression("altdisadvantage", token);
                     if (xmlLoopNode != null)
                         xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
 
-                    xmlLoopNode = objChild.SelectSingleNodeAndCacheExpression("altnameonpage");
+                    xmlLoopNode = objChild.SelectSingleNodeAndCacheExpression("altnameonpage", token);
                     if (xmlLoopNode != null)
                         xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
 
-                    xmlLoopNode = objChild.SelectSingleNodeAndCacheExpression("alttexts");
+                    xmlLoopNode = objChild.SelectSingleNodeAndCacheExpression("alttexts", token);
                     if (xmlLoopNode != null)
                         xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
 
-                    string strTranslate = objChild.SelectSingleNodeAndCacheExpression("@translate")?.InnerXml;
+                    string strTranslate = objChild.SelectSingleNodeAndCacheExpression("@translate", token)?.InnerXml;
                     if (!string.IsNullOrEmpty(strTranslate))
                     {
                         // Handle Category name translations.
@@ -1001,27 +1005,27 @@ namespace Chummer
                     }
 
                     // Sub-children to also process with the translation
-                    XPathNavigator xmlSubItemsNode = objChild.SelectSingleNodeAndCacheExpression("specs");
+                    XPathNavigator xmlSubItemsNode = objChild.SelectSingleNodeAndCacheExpression("specs", token);
                     if (xmlSubItemsNode != null)
                     {
                         AppendTranslations(xmlDataDocument, xmlSubItemsNode, xmlItem, token);
                     }
-                    xmlSubItemsNode = objChild.SelectSingleNodeAndCacheExpression("metavariants");
+                    xmlSubItemsNode = objChild.SelectSingleNodeAndCacheExpression("metavariants", token);
                     if (xmlSubItemsNode != null)
                     {
                         AppendTranslations(xmlDataDocument, xmlSubItemsNode, xmlItem, token);
                     }
-                    xmlSubItemsNode = objChild.SelectSingleNodeAndCacheExpression("choices");
+                    xmlSubItemsNode = objChild.SelectSingleNodeAndCacheExpression("choices", token);
                     if (xmlSubItemsNode != null)
                     {
                         AppendTranslations(xmlDataDocument, xmlSubItemsNode, xmlItem, token);
                     }
-                    xmlSubItemsNode = objChild.SelectSingleNodeAndCacheExpression("talents");
+                    xmlSubItemsNode = objChild.SelectSingleNodeAndCacheExpression("talents", token);
                     if (xmlSubItemsNode != null)
                     {
                         AppendTranslations(xmlDataDocument, xmlSubItemsNode, xmlItem, token);
                     }
-                    xmlSubItemsNode = objChild.SelectSingleNodeAndCacheExpression("versions");
+                    xmlSubItemsNode = objChild.SelectSingleNodeAndCacheExpression("versions", token);
                     if (xmlSubItemsNode != null)
                     {
                         AppendTranslations(xmlDataDocument, xmlSubItemsNode, xmlItem, token);
@@ -1029,7 +1033,111 @@ namespace Chummer
                 }
                 else
                 {
-                    string strTranslate = objChild.SelectSingleNodeAndCacheExpression("@translate")?.InnerXml;
+                    string strTranslate = objChild.SelectSingleNodeAndCacheExpression("@translate", token)?.InnerXml;
+                    if (!string.IsNullOrEmpty(strTranslate))
+                    {
+                        // Handle Category name translations.
+                        XmlElement objItem = xmlDataParentNode.SelectSingleNode(strXPathPrefix + ". = " + objChild.InnerXml.Replace("&amp;", "&").CleanXPath() + ']') as XmlElement;
+                        // Expected result is null if not found.
+                        objItem?.SetAttribute("translate", strTranslate);
+                    }
+                }
+            }
+        }
+
+        private static async ValueTask AppendTranslationsAsync(XmlDocument xmlDataDocument, XPathNavigator xmlTranslationListParentNode, XmlNode xmlDataParentNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            foreach (XPathNavigator objChild in await xmlTranslationListParentNode.SelectAndCacheExpressionAsync("*", token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                XmlNode xmlItem = null;
+                string strXPathPrefix = xmlTranslationListParentNode.Name + '/' + objChild.Name + '[';
+                string strChildName = (await objChild.SelectSingleNodeAndCacheExpressionAsync("id", token).ConfigureAwait(false))?.Value;
+                if (!string.IsNullOrEmpty(strChildName))
+                {
+                    xmlItem = xmlDataParentNode.SelectSingleNode(strXPathPrefix + "id = " + strChildName.CleanXPath() + ']');
+                }
+                if (xmlItem == null)
+                {
+                    strChildName = (await objChild.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value.Replace("&amp;", "&");
+                    if (!string.IsNullOrEmpty(strChildName))
+                    {
+                        xmlItem = xmlDataParentNode.SelectSingleNode(strXPathPrefix + "name = " + strChildName.CleanXPath() + ']');
+                    }
+                }
+                // If this is a translatable item, find the proper node and add/update this information.
+                if (xmlItem != null)
+                {
+                    XPathNavigator xmlLoopNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false);
+                    if (xmlLoopNode != null)
+                        xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
+
+                    xmlLoopNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("altpage", token).ConfigureAwait(false);
+                    if (xmlLoopNode != null)
+                        xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
+
+                    xmlLoopNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("altcode", token).ConfigureAwait(false);
+                    if (xmlLoopNode != null)
+                        xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
+
+                    xmlLoopNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("altnotes", token).ConfigureAwait(false);
+                    if (xmlLoopNode != null)
+                        xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
+
+                    xmlLoopNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("altadvantage", token).ConfigureAwait(false);
+                    if (xmlLoopNode != null)
+                        xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
+
+                    xmlLoopNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("altdisadvantage", token).ConfigureAwait(false);
+                    if (xmlLoopNode != null)
+                        xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
+
+                    xmlLoopNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("altnameonpage", token).ConfigureAwait(false);
+                    if (xmlLoopNode != null)
+                        xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
+
+                    xmlLoopNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("alttexts", token).ConfigureAwait(false);
+                    if (xmlLoopNode != null)
+                        xmlItem.AppendChild(xmlLoopNode.ToXmlNode(xmlDataDocument));
+
+                    string strTranslate = (await objChild.SelectSingleNodeAndCacheExpressionAsync("@translate", token).ConfigureAwait(false))?.InnerXml;
+                    if (!string.IsNullOrEmpty(strTranslate))
+                    {
+                        // Handle Category name translations.
+                        (xmlItem as XmlElement)?.SetAttribute("translate", strTranslate);
+                    }
+
+                    // Sub-children to also process with the translation
+                    XPathNavigator xmlSubItemsNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("specs", token).ConfigureAwait(false);
+                    if (xmlSubItemsNode != null)
+                    {
+                        await AppendTranslationsAsync(xmlDataDocument, xmlSubItemsNode, xmlItem, token).ConfigureAwait(false);
+                    }
+                    xmlSubItemsNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("metavariants", token).ConfigureAwait(false);
+                    if (xmlSubItemsNode != null)
+                    {
+                        await AppendTranslationsAsync(xmlDataDocument, xmlSubItemsNode, xmlItem, token).ConfigureAwait(false);
+                    }
+                    xmlSubItemsNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("choices", token).ConfigureAwait(false);
+                    if (xmlSubItemsNode != null)
+                    {
+                        await AppendTranslationsAsync(xmlDataDocument, xmlSubItemsNode, xmlItem, token).ConfigureAwait(false);
+                    }
+                    xmlSubItemsNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("talents", token).ConfigureAwait(false);
+                    if (xmlSubItemsNode != null)
+                    {
+                        await AppendTranslationsAsync(xmlDataDocument, xmlSubItemsNode, xmlItem, token).ConfigureAwait(false);
+                    }
+                    xmlSubItemsNode = await objChild.SelectSingleNodeAndCacheExpressionAsync("versions", token).ConfigureAwait(false);
+                    if (xmlSubItemsNode != null)
+                    {
+                        await AppendTranslationsAsync(xmlDataDocument, xmlSubItemsNode, xmlItem, token).ConfigureAwait(false);
+                    }
+                }
+                else
+                {
+                    string strTranslate = (await objChild.SelectSingleNodeAndCacheExpressionAsync("@translate", token).ConfigureAwait(false))?.InnerXml;
                     if (!string.IsNullOrEmpty(strTranslate))
                     {
                         // Handle Category name translations.
@@ -1943,10 +2051,10 @@ namespace Chummer
                                                                         .SelectAndCacheExpression(
                                                                             "/chummer/sheets[@lang="
                                                                             + strLanguage.CleanXPath()
-                                                                            + "]/sheet[not(hide)]"))
+                                                                            + "]/sheet[not(hide)]", token))
                         {
                             token.ThrowIfCancellationRequested();
-                            string strSheetFileName = xmlSheet.SelectSingleNodeAndCacheExpression("filename")?.Value;
+                            string strSheetFileName = xmlSheet.SelectSingleNodeAndCacheExpression("filename", token)?.Value;
                             if (string.IsNullOrEmpty(strSheetFileName))
                                 continue;
                             if (!blnDoList)
@@ -1964,7 +2072,7 @@ namespace Chummer
                                                                   StringComparison.OrdinalIgnoreCase)
                                                   ? Path.Combine(strLanguage, strSheetFileName)
                                                   : strSheetFileName,
-                                              xmlSheet.SelectSingleNodeAndCacheExpression("name")?.Value
+                                              xmlSheet.SelectSingleNodeAndCacheExpression("name", token)?.Value
                                               ?? LanguageManager.GetString("String_Unknown", token: token)));
                         }
                     }
@@ -1973,7 +2081,7 @@ namespace Chummer
                 {
                     XPathNodeIterator xmlIterator = LoadXPath("sheets.xml", null, strLanguage, token: token)
                         .SelectAndCacheExpression(
-                            "/chummer/sheets[@lang=" + strLanguage.CleanXPath() + "]/sheet[not(hide)]");
+                            "/chummer/sheets[@lang=" + strLanguage.CleanXPath() + "]/sheet[not(hide)]", token);
                     if (blnDoList)
                         lstSheets = blnUsePool ? Utils.ListItemListPool.Get() : new List<ListItem>(xmlIterator.Count);
                     else
@@ -1982,7 +2090,7 @@ namespace Chummer
                     foreach (XPathNavigator xmlSheet in xmlIterator)
                     {
                         token.ThrowIfCancellationRequested();
-                        string strSheetFileName = xmlSheet.SelectSingleNodeAndCacheExpression("filename")?.Value;
+                        string strSheetFileName = xmlSheet.SelectSingleNodeAndCacheExpression("filename", token)?.Value;
                         if (string.IsNullOrEmpty(strSheetFileName))
                             continue;
                         if (!blnDoList)
@@ -2000,7 +2108,7 @@ namespace Chummer
                                                               StringComparison.OrdinalIgnoreCase)
                                               ? Path.Combine(strLanguage, strSheetFileName)
                                               : strSheetFileName,
-                                          xmlSheet.SelectSingleNodeAndCacheExpression("name")?.Value
+                                          xmlSheet.SelectSingleNodeAndCacheExpression("name", token)?.Value
                                           ?? LanguageManager.GetString("String_Unknown", token: token)));
                     }
                 }

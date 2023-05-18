@@ -503,14 +503,14 @@ namespace Chummer
                 objNode.TryGetBoolFieldQuickly("family", ref _blnFamily);
                 objNode.TryGetBoolFieldQuickly("blackmail", ref _blnBlackmail);
                 objNode.TryGetBoolFieldQuickly("free", ref _blnFree);
-                if (objNode.SelectSingleNodeAndCacheExpression("colour") != null)
+                if (objNode.SelectSingleNodeAndCacheExpression("colour", token) != null)
                 {
                     int intTmp = _objColor.ToArgb();
                     if (objNode.TryGetInt32FieldQuickly("colour", ref intTmp))
                         _objColor = Color.FromArgb(intTmp);
                 }
 
-                _blnReadOnly = objNode.SelectSingleNodeAndCacheExpression("readonly") != null;
+                _blnReadOnly = objNode.SelectSingleNodeAndCacheExpression("readonly", token) != null;
 
                 if (!objNode.TryGetBoolFieldQuickly("groupenabled", ref _blnGroupEnabled))
                 {
@@ -2367,7 +2367,7 @@ namespace Chummer
             using (LockObject.EnterWriteLock(token))
             {
                 xmlSavedNode.TryGetInt32FieldQuickly("mainmugshotindex", ref _intMainMugshotIndex);
-                XPathNodeIterator xmlMugshotsList = xmlSavedNode.SelectAndCacheExpression("mugshots/mugshot");
+                XPathNodeIterator xmlMugshotsList = xmlSavedNode.SelectAndCacheExpression("mugshots/mugshot", token);
                 List<string> lstMugshotsBase64 = new List<string>(xmlMugshotsList.Count);
                 foreach (XPathNavigator objXmlMugshot in xmlMugshotsList)
                 {

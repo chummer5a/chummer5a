@@ -1871,7 +1871,6 @@ namespace Chummer
         /// <param name="strText">String to search for as an opener</param>
         /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns></returns>
         private static async Task<string> GetTextFromPdfCoreAsync(bool blnSync, string strSource, string strText, Character objCharacter, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();

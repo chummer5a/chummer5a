@@ -3531,7 +3531,7 @@ namespace Chummer
                             objWriter.WriteElementString("settings", _strSettingsKey);
                             // <settingshashcode />
                             objWriter.WriteElementString("settingshashcode",
-                                                         Settings.GetEquatableHashCode()
+                                                         Settings.GetEquatableHashCode(token)
                                                                  .ToString(GlobalSettings.InvariantCultureInfo));
                             // <buildmethod />
                             objWriter.WriteElementString("buildmethod", Settings.BuildMethod.ToString());
@@ -6522,8 +6522,8 @@ namespace Chummer
                                                          Application.ProductVersion.FastEscapeOnceFromStart("0.0.")))
                                                  == 0
                                                  && (blnSync
-                                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                     ? objProspectiveSettings.GetEquatableHashCode()
+                                                     // ReSharper disable once MethodHasAsyncOverload
+                                                     ? objProspectiveSettings.GetEquatableHashCode(token)
                                                      : await objProspectiveSettings.GetEquatableHashCodeAsync(
                                                          token).ConfigureAwait(false))
                                                  != intSettingsHashCode)
@@ -15028,7 +15028,7 @@ namespace Chummer
                             {
                                 Utils.SafelyRunSynchronously(async () =>
                                 {
-                                    foreach (string strProperty in value.GetDifferingPropertyNames(objOldSettings))
+                                    foreach (string strProperty in await value.GetDifferingPropertyNamesAsync(objOldSettings).ConfigureAwait(false))
                                         await DoOptionsOnPropertyChanged(
                                                 this, new PropertyChangedEventArgs(strProperty))
                                             .ConfigureAwait(false);
@@ -15038,7 +15038,7 @@ namespace Chummer
                             {
                                 Utils.SafelyRunSynchronously(async () =>
                                 {
-                                    foreach (string strProperty in objOldSettings.GetDifferingPropertyNames(null))
+                                    foreach (string strProperty in await objOldSettings.GetDifferingPropertyNamesAsync(null).ConfigureAwait(false))
                                         await DoOptionsOnPropertyChanged(
                                                 this, new PropertyChangedEventArgs(strProperty))
                                             .ConfigureAwait(false);
@@ -15121,13 +15121,13 @@ namespace Chummer
                         OnPropertyChanged();
                         if (value != null)
                         {
-                            foreach (string strProperty in value.GetDifferingPropertyNames(objOldSettings))
+                            foreach (string strProperty in await value.GetDifferingPropertyNamesAsync(objOldSettings, token).ConfigureAwait(false))
                                 await DoOptionsOnPropertyChanged(this, new PropertyChangedEventArgs(strProperty))
                                     .ConfigureAwait(false);
                         }
                         else
                         {
-                            foreach (string strProperty in objOldSettings.GetDifferingPropertyNames(null))
+                            foreach (string strProperty in await objOldSettings.GetDifferingPropertyNamesAsync(null, token).ConfigureAwait(false))
                                 await DoOptionsOnPropertyChanged(this, new PropertyChangedEventArgs(strProperty))
                                     .ConfigureAwait(false);
                         }
