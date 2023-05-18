@@ -39,6 +39,7 @@ Data Changes:
 - Added spidersilk spec to the Exotic Ranged Weapon skill. Closes #5000
 - Added Semi-Automatics spec to Streetline Special.
 - Added missing Infected Advanced Powers from Dark Terrors (Immunity (Cold), Mimicry, Pounce, Psychokinesis, Secretion/Substance Extrusion (Anti-Coagulant), Silence, Tunneling Claws)
+- No Future's stealth errata additions to Cybereyes Basic System, Cyberears, Vision Enhancement, and Audio Enhancement cyberware have been moved to a dedicated custom dataset.
 
 Changed/New Strings:
 - LimitCondition_SkillsActiveLeadership

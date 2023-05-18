@@ -538,7 +538,7 @@
       <ess>(Rating * 0.1) + 0.1</ess>
       <capacity>(Rating * 4)</capacity>
       <avail>(Rating * 3)</avail>
-      <cost>FixedValues(4000,6000,10000,14000,18000,22000)</cost>
+      <cost>4000 * (Rating + 1) - 2000 * number(Rating > 1)</cost>
       <source>SR5</source>
       <page>453</page>
       <allowgear>
@@ -558,7 +558,7 @@
         <disablequality>4390735f-54fa-44a5-bce7-d23a67427f25</disablequality>
       </bonus>
       <minrating>1</minrating>
-      <rating>6</rating>
+      <rating>4</rating>
       <subsystems>
         <cyberware>
           <name>Image Link</name>
@@ -660,10 +660,10 @@
       <name>Vision Enhancement</name>
       <limit>False</limit>
       <category>Eyeware</category>
-      <ess>FixedValues(0.1,0.1,0.1,0.2,0.2,0.2)</ess>
-      <capacity>FixedValues([1],[2],[3],[8],[10],[12])</capacity>
+      <ess>0.1</ess>
+      <capacity>[Rating]</capacity>
       <avail>Rating * 3</avail>
-      <cost>FixedValues(4000,8000,12000,20000,25000,30000)</cost>
+      <cost>Rating * 4000</cost>
       <source>SR5</source>
       <page>453</page>
       <bonus>
@@ -673,7 +673,7 @@
           <condition>LimitCondition_SkillsActivePerceptionVisual</condition>
         </limitmodifier>
       </bonus>
-      <rating>6</rating>
+      <rating>3</rating>
     </cyberware>
     <cyberware>
       <id>2c578376-1219-468d-b76b-4c0da44dfca2</id>
@@ -694,7 +694,7 @@
       <ess>(Rating * 0.1) + 0.1</ess>
       <capacity>Rating * 4</capacity>
       <avail>Rating * 3</avail>
-      <cost>FixedValues(3000,4500,7500,11000,15500,21000)</cost>
+      <cost>3000 + 500 * ((Rating - 1) * (Rating + 1) + number(Rating > 2))</cost>
       <source>SR5</source>
       <page>453</page>
       <allowgear>
@@ -705,7 +705,7 @@
         <category>Earware</category>
       </allowsubsystems>
       <minrating>1</minrating>
-      <rating>6</rating>
+      <rating>4</rating>
       <subsystems>
         <cyberware>
           <name>Sound Link</name>
@@ -717,10 +717,10 @@
       <name>Audio Enhancement</name>
       <limit>False</limit>
       <category>Earware</category>
-      <ess>FixedValues(0.1,0.1,0.1,0.2,0.2,0.2)</ess>
-      <capacity>FixedValues([1],[2],[3],[8],[10],[12])</capacity>
+      <ess>0.1</ess>
+      <capacity>[Rating]</capacity>
       <avail>Rating * 3</avail>
-      <cost>FixedValues(4000,8000,12000,20000,25000,30000)</cost>
+      <cost>Rating * 4000</cost>
       <source>SR5</source>
       <page>453</page>
       <bonus>
@@ -730,7 +730,7 @@
           <condition>LimitCondition_SkillsActivePerceptionHearing</condition>
         </limitmodifier>
       </bonus>
-      <rating>6</rating>
+      <rating>3</rating>
     </cyberware>
     <cyberware>
       <id>31d82330-4650-4550-aa90-c314a189f897</id>

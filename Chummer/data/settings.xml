@@ -2469,6 +2469,11 @@
           <order>2</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>No Future Stealth Errata</directoryname>
+          <order>3</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
       </customdatadirectorynames>
       <buildmethod>Priority</buildmethod>
       <buildpoints>25</buildpoints>
@@ -2681,6 +2686,11 @@
         <customdatadirectoryname>
           <directoryname>Forbidden Arcana Stealth Errata</directoryname>
           <order>2</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>No Future Stealth Errata</directoryname>
+          <order>3</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -2898,8 +2908,13 @@
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>Sum-to-Ten Improved</directoryname>
+          <directoryname>No Future Stealth Errata</directoryname>
           <order>3</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>Sum-to-Ten Improved</directoryname>
+          <order>4</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -3114,6 +3129,11 @@
         <customdatadirectoryname>
           <directoryname>Forbidden Arcana Stealth Errata</directoryname>
           <order>2</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>No Future Stealth Errata</directoryname>
+          <order>3</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -3338,8 +3358,13 @@
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>German Data Changes</directoryname>
+          <directoryname>No Future Stealth Errata</directoryname>
           <order>3</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>German Data Changes</directoryname>
+          <order>4</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -3564,8 +3589,13 @@
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>German Data Changes</directoryname>
+          <directoryname>No Future Stealth Errata</directoryname>
           <order>3</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>German Data Changes</directoryname>
+          <order>4</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -3790,8 +3820,13 @@
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>German Data Changes</directoryname>
+          <directoryname>No Future Stealth Errata</directoryname>
           <order>3</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>German Data Changes</directoryname>
+          <order>4</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -4016,8 +4051,13 @@
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>German Data Changes</directoryname>
+          <directoryname>No Future Stealth Errata</directoryname>
           <order>3</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>German Data Changes</directoryname>
+          <order>4</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -4561,8 +4601,13 @@
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>Shadowrun Missions Rules</directoryname>
+          <directoryname>No Future Stealth Errata</directoryname>
           <order>2</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>Shadowrun Missions Rules</directoryname>
+          <order>3</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -4772,8 +4817,13 @@
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>Shadowrun Missions Rules</directoryname>
+          <directoryname>No Future Stealth Errata</directoryname>
           <order>2</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>Shadowrun Missions Rules</directoryname>
+          <order>3</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -4983,13 +5033,18 @@
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>Shadowrun Missions Rules</directoryname>
+          <directoryname>No Future Stealth Errata</directoryname>
           <order>2</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>Shadowrun Missions Neotokyo Rules</directoryname>
+          <directoryname>Shadowrun Missions Rules</directoryname>
           <order>3</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>Shadowrun Missions Neotokyo Rules</directoryname>
+          <order>4</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -5200,13 +5255,18 @@
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>Shadowrun Missions Rules</directoryname>
+          <directoryname>No Future Stealth Errata</directoryname>
           <order>2</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>Shadowrun Missions Neotokyo Rules</directoryname>
+          <directoryname>Shadowrun Missions Rules</directoryname>
           <order>3</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>Shadowrun Missions Neotokyo Rules</directoryname>
+          <order>4</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>

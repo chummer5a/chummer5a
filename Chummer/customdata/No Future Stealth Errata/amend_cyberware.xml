@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <cyberwares>
+    <cyberware>
+      <!-- Cybereyes Basic System -->
+      <id>8e414ade-2764-4dc7-bdc4-83bb4a086034</id>
+      <rating>6</rating>
+    </cyberware>
+    <cyberware>
+      <!-- Vision Enhancement -->
+      <id>35c9c51e-5364-41b4-b3c9-4d1f080bd48c</id>
+      <ess>0.1 * (1 + number(Rating > 3))</ess>
+      <capacity>[Rating * (1 + number(Rating > 3))]</capacity>
+      <cost>Rating * (4000 + 1000 * number(Rating > 3))</cost>
+      <rating>6</rating>
+    </cyberware>
+    <cyberware>
+      <!-- Cyberears -->
+      <id>2767fdaf-4f49-4403-a799-e91b9e6c8fa2</id>
+      <rating>6</rating>
+    </cyberware>
+    <cyberware>
+      <!-- Audio Enhancement -->
+      <id>9cdee6a3-a04e-40a1-95ce-e509b26b192c</id>
+      <ess>0.1 * (1 + number(Rating > 3))</ess>
+      <capacity>[Rating * (1 + number(Rating > 3))]</capacity>
+      <cost>Rating * (4000 + 1000 * number(Rating > 3))</cost>
+      <rating>6</rating>
+    </cyberware>
+  </cyberwares>
+</chummer>
