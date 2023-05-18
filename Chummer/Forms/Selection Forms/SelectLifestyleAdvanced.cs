@@ -840,7 +840,22 @@ namespace Chummer
 
             if (_objLifestyle.AllowBonusLP)
             {
-                await lblBonusLP.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                string strBonusLP = await LanguageManager.GetStringAsync("Label_BonusLP", token: token).ConfigureAwait(false);
+                string strBaseLifestyleName
+                    = await cboBaseLifestyle.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false);
+                if (string.IsNullOrWhiteSpace(strBaseLifestyleName))
+                    strBonusLP = string.Format(GlobalSettings.CultureInfo, strBonusLP, string.Empty);
+                else
+                {
+                    string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
+                                                           .ConfigureAwait(false);
+                    strBonusLP = string.Format(GlobalSettings.CultureInfo, strBonusLP, strBaseLifestyleName + strSpace);
+                }
+                await lblBonusLP.DoThreadSafeAsync(x =>
+                {
+                    x.Text = strBonusLP;
+                    x.Visible = true;
+                }, token).ConfigureAwait(false);
                 await nudBonusLP.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
                 await chkBonusLPRandomize.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
 

@@ -46,6 +46,7 @@ Changed/New Strings:
 - Label_Options_MaximumMartialArts
 - Label_Options_MaximumMartialTechniques
 - String_MasteryPointsAcronym
+- Label_BonusLP
 
 Build 225
 Application Changes:

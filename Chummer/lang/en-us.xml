@@ -592,7 +592,7 @@
     </string>
     <string>
       <key>Label_BonusLP</key>
-      <text>Bonus Lifestyle Points:</text>
+      <text>{0}Bonus\nLifestyle Points:</text>
     </string>
     <string>
       <key>Label_QualityLP</key>

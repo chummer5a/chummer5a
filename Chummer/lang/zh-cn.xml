@@ -8415,7 +8415,7 @@
     </string>
     <string>
       <key>Label_BonusLP</key>
-      <text>奖励LP：</text>
+      <text>{0}奖励LP：</text>
     </string>
     <string>
       <key>Label_QualityLP</key>

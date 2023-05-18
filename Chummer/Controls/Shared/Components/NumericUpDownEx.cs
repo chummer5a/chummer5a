@@ -126,8 +126,8 @@ namespace Chummer
             finally
             {
                 _objSavedMargins = Margin;
-                Interlocked.Decrement(ref _intSkipOnMarginChanged);
                 _blnMarginsSaved = true;
+                Interlocked.Decrement(ref _intSkipOnMarginChanged);
             }
         }
 

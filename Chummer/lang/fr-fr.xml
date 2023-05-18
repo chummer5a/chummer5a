@@ -533,7 +533,7 @@
     </string>
     <string>
       <key>Label_BonusLP</key>
-      <text>PV bonus :</text>
+      <text>PV bonus {0}:</text>
     </string>
     <string>
       <key>Label_QualityLP</key>

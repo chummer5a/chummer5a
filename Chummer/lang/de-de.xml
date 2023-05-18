@@ -124,7 +124,7 @@
     </string>
     <string>
       <key>Label_BonusLP</key>
-      <text>Bonus LP:</text>
+      <text>{0}Bonus LP:</text>
     </string>
     <string>
       <key>Label_QualityLP</key>
