@@ -26,6 +26,7 @@ using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Equipment;
 using NLog;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Chummer
 {
@@ -40,7 +41,13 @@ namespace Chummer
 
         private readonly XmlDocument _objXmlDocument;
 
-        private bool _blnSkipRefresh = true;
+        private int _intSkipRefresh = 1;
+        private int _intUpdatingCity = 1;
+        private int _intUpdatingDistrict = 1;
+        private int _intUpdatingBorough = 1;
+        private readonly Timer _tmrCityChangeTimer;
+        private readonly Timer _tmrDistrictChangeTimer;
+        private readonly Timer _tmrBoroughChangeTimer;
 
         #region Control Events
 
@@ -53,6 +60,18 @@ namespace Chummer
             _objLifestyle = new Lifestyle(objCharacter);
             // Load the Lifestyles information.
             _objXmlDocument = objCharacter.LoadData("lifestyles.xml");
+            _tmrCityChangeTimer = new Timer { Interval = 1000 };
+            _tmrDistrictChangeTimer = new Timer { Interval = 1000 };
+            _tmrBoroughChangeTimer = new Timer { Interval = 1000 };
+            Disposed += (o, args) =>
+            {
+                _tmrCityChangeTimer?.Dispose();
+                _tmrDistrictChangeTimer?.Dispose();
+                _tmrBoroughChangeTimer?.Dispose();
+            };
+            _tmrCityChangeTimer.Tick += CityChangeTimer_Tick;
+            _tmrCityChangeTimer.Tick += DistrictChangeTimer_Tick;
+            _tmrCityChangeTimer.Tick += BoroughChangeTimer_Tick;
         }
 
         private async void SelectLifestyle_Load(object sender, EventArgs e)
@@ -183,12 +202,33 @@ namespace Chummer
                 }).ConfigureAwait(false);
                 await chkPrimaryTenant.DoThreadSafeAsync(x => x.Checked = _objSourceLifestyle.PrimaryTenant).ConfigureAwait(false);
                 await chkTrustFund.DoThreadSafeAsync(x => x.Checked = _objSourceLifestyle.TrustFund).ConfigureAwait(false);
-                await cboCity.DoThreadSafeFuncAsync(x => x.SelectedValue = _objSourceLifestyle.City).ConfigureAwait(false);
-                await cboDistrict.DoThreadSafeFuncAsync(x => x.SelectedValue = _objSourceLifestyle.District).ConfigureAwait(false);
-                await cboBorough.DoThreadSafeFuncAsync(x => x.SelectedValue = _objSourceLifestyle.Borough).ConfigureAwait(false);
+                string strCity = await _objSourceLifestyle.GetCityAsync().ConfigureAwait(false);
+                string strDistrict = await _objSourceLifestyle.GetDistrictAsync().ConfigureAwait(false);
+                string strBorough = await _objSourceLifestyle.GetBoroughAsync().ConfigureAwait(false);
+                await cboCity.DoThreadSafeAsync(x =>
+                {
+                    x.SelectedValue = strCity;
+                    if (x.SelectedIndex < 0)
+                        x.SelectedText = strCity;
+                }).ConfigureAwait(false);
+                await cboDistrict.DoThreadSafeAsync(x =>
+                {
+                    x.SelectedValue = strDistrict;
+                    if (x.SelectedIndex < 0)
+                        x.SelectedText = strDistrict;
+                }).ConfigureAwait(false);
+                await cboBorough.DoThreadSafeAsync(x =>
+                {
+                    x.SelectedValue = strBorough;
+                    if (x.SelectedIndex < 0)
+                        x.SelectedText = strBorough;
+                }).ConfigureAwait(false);
             }
 
-            _blnSkipRefresh = false;
+            Interlocked.Decrement(ref _intSkipRefresh);
+            Interlocked.Decrement(ref _intUpdatingCity);
+            Interlocked.Decrement(ref _intUpdatingDistrict);
+            Interlocked.Decrement(ref _intUpdatingBorough);
             await CalculateValues().ConfigureAwait(false);
         }
 
@@ -220,14 +260,14 @@ namespace Chummer
 
         private async void treQualities_AfterCheck(object sender, TreeViewEventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (_intSkipRefresh > 0)
                 return;
             await CalculateValues().ConfigureAwait(false);
         }
 
         private async void RefreshValues(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (_intSkipRefresh > 0)
                 return;
             await CalculateValues().ConfigureAwait(false);
         }
@@ -245,7 +285,7 @@ namespace Chummer
             else
                 await chkPrimaryTenant.DoThreadSafeAsync(x => x.Enabled = true).ConfigureAwait(false);
 
-            if (_blnSkipRefresh)
+            if (_intSkipRefresh > 0)
                 return;
             await CalculateValues().ConfigureAwait(false);
         }
@@ -263,7 +303,7 @@ namespace Chummer
             else
                 await nudRoommates.DoThreadSafeAsync(x => x.Enabled = true).ConfigureAwait(false);
 
-            if (_blnSkipRefresh)
+            if (_intSkipRefresh > 0)
                 return;
             await CalculateValues().ConfigureAwait(false);
         }
@@ -298,18 +338,88 @@ namespace Chummer
             }
         }
 
-        private async void cboCity_SelectedIndexChanged(object sender, EventArgs e)
+        // Hacky solutions to data binding causing cursor to reset whenever the user is typing something in: have text changes start a timer, and have a 1s delay in the timer update fire the text update
+        private void cboCity_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
+            if (_tmrCityChangeTimer == null)
                 return;
+            if (_tmrCityChangeTimer.Enabled)
+                _tmrCityChangeTimer.Stop();
+            if (_intSkipRefresh > 0 || _intUpdatingCity > 0)
+                return;
+            _tmrCityChangeTimer.Start();
+        }
+
+        private void cboDistrict_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_tmrDistrictChangeTimer == null)
+                return;
+            if (_tmrDistrictChangeTimer.Enabled)
+                _tmrDistrictChangeTimer.Stop();
+            if (_intSkipRefresh > 0 || _intUpdatingDistrict > 0)
+                return;
+            _tmrDistrictChangeTimer.Start();
+        }
+
+        private void cboBorough_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_tmrBoroughChangeTimer == null)
+                return;
+            if (_tmrBoroughChangeTimer.Enabled)
+                _tmrBoroughChangeTimer.Stop();
+            if (_intSkipRefresh > 0 || _intUpdatingBorough > 0)
+                return;
+            _tmrBoroughChangeTimer.Start();
+        }
+
+        private async void CityChangeTimer_Tick(object sender, EventArgs e)
+        {
+            _tmrCityChangeTimer.Stop();
+            Interlocked.Increment(ref _intUpdatingCity);
+            try
+            {
+                string strText = await cboCity.DoThreadSafeFuncAsync(x => x.Text)
+                                              .ConfigureAwait(false);
+                await _objLifestyle.SetCityAsync(strText).ConfigureAwait(false);
+            }
+            finally
+            {
+                Interlocked.Decrement(ref _intUpdatingCity);
+            }
             await RefreshDistrictList().ConfigureAwait(false);
         }
 
-        private async void cboDistrict_SelectedIndexChanged(object sender, EventArgs e)
+        private async void DistrictChangeTimer_Tick(object sender, EventArgs e)
         {
-            if (_blnSkipRefresh)
-                return;
+            _tmrDistrictChangeTimer.Stop();
+            Interlocked.Increment(ref _intUpdatingDistrict);
+            try
+            {
+                string strText = await cboDistrict.DoThreadSafeFuncAsync(x => x.Text)
+                                              .ConfigureAwait(false);
+                await _objLifestyle.SetDistrictAsync(strText).ConfigureAwait(false);
+            }
+            finally
+            {
+                Interlocked.Decrement(ref _intUpdatingDistrict);
+            }
             await RefreshBoroughList().ConfigureAwait(false);
+        }
+
+        private async void BoroughChangeTimer_Tick(object sender, EventArgs e)
+        {
+            _tmrBoroughChangeTimer.Stop();
+            Interlocked.Increment(ref _intUpdatingBorough);
+            try
+            {
+                string strText = await cboBorough.DoThreadSafeFuncAsync(x => x.Text)
+                                              .ConfigureAwait(false);
+                await _objLifestyle.SetBoroughAsync(strText).ConfigureAwait(false);
+            }
+            finally
+            {
+                Interlocked.Decrement(ref _intUpdatingBorough);
+            }
         }
 
         #endregion Control Events
@@ -420,7 +530,7 @@ namespace Chummer
         /// </summary>
         private async ValueTask CalculateValues(bool blnIncludePercentage = true, CancellationToken token = default)
         {
-            if (_blnSkipRefresh)
+            if (_intSkipRefresh > 0)
                 return;
 
             decimal decRoommates
@@ -617,7 +727,9 @@ namespace Chummer
         /// </summary>
         private async ValueTask RefreshDistrictList(CancellationToken token = default)
         {
-            string strSelectedCityRefresh = await cboCity.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false) ?? string.Empty;
+            string strSelectedCityRefresh = await cboCity.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString() ?? x.SelectedText, token: token).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(strSelectedCityRefresh))
+                strSelectedCityRefresh = string.Empty;
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstDistrict))
             {
@@ -646,8 +758,12 @@ namespace Chummer
         /// </summary>
         private async ValueTask RefreshBoroughList(CancellationToken token = default)
         {
-            string strSelectedCityRefresh = await cboCity.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false) ?? string.Empty;
-            string strSelectedDistrictRefresh = await cboDistrict.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false) ?? string.Empty;
+            string strSelectedCityRefresh = await cboCity.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString() ?? x.SelectedText, token: token).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(strSelectedCityRefresh))
+                strSelectedCityRefresh = string.Empty;
+            string strSelectedDistrictRefresh = await cboDistrict.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString() ?? x.SelectedText, token: token).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(strSelectedDistrictRefresh))
+                strSelectedDistrictRefresh = string.Empty;
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstBorough))
             {

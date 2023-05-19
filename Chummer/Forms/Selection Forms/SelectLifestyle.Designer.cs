@@ -470,6 +470,7 @@ namespace Chummer
             this.cboBorough.Size = new System.Drawing.Size(241, 21);
             this.cboBorough.TabIndex = 32;
             this.cboBorough.TooltipText = "";
+            this.cboBorough.SelectedIndexChanged += new System.EventHandler(this.cboBorough_SelectedIndexChanged);
             // 
             // tlpRightTop
             // 

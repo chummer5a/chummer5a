@@ -1913,6 +1913,21 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        public async ValueTask<string> GetCityAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _strCity;
+        }
+
+        public async ValueTask SetCityAsync(string value, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (Interlocked.Exchange(ref _strCity, value) != value)
+                    OnPropertyChanged(nameof(City));
+            }
+        }
+
         public string District
         {
             get
@@ -1930,6 +1945,21 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        public async ValueTask<string> GetDistrictAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _strDistrict;
+        }
+
+        public async ValueTask SetDistrictAsync(string value, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (Interlocked.Exchange(ref _strDistrict, value) != value)
+                    OnPropertyChanged(nameof(District));
+            }
+        }
+
         public string Borough
         {
             get
@@ -1944,6 +1974,21 @@ namespace Chummer.Backend.Equipment
                     if (Interlocked.Exchange(ref _strBorough, value) != value)
                         OnPropertyChanged();
                 }
+            }
+        }
+
+        public async ValueTask<string> GetBoroughAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _strBorough;
+        }
+
+        public async ValueTask SetBoroughAsync(string value, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (Interlocked.Exchange(ref _strBorough, value) != value)
+                    OnPropertyChanged(nameof(Borough));
             }
         }
 

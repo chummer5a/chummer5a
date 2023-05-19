@@ -26,6 +26,7 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Backend.Equipment;
+using Timer = System.Windows.Forms.Timer;
 
 namespace Chummer
 {
@@ -36,6 +37,13 @@ namespace Chummer
         private readonly Lifestyle _objLifestyle;
         private readonly XmlDocument _xmlDocument;
         private int _intSkipRefresh = 1;
+
+        private int _intUpdatingCity = 1;
+        private int _intUpdatingDistrict = 1;
+        private int _intUpdatingBorough = 1;
+        private readonly Timer _tmrCityChangeTimer;
+        private readonly Timer _tmrDistrictChangeTimer;
+        private readonly Timer _tmrBoroughChangeTimer;
 
         #region Control Events
 
@@ -48,6 +56,18 @@ namespace Chummer
             _objLifestyle = objLifestyle;
             // Load the Lifestyles information.
             _xmlDocument = _objCharacter.LoadData("lifestyles.xml");
+            _tmrCityChangeTimer = new Timer { Interval = 1000 };
+            _tmrDistrictChangeTimer = new Timer { Interval = 1000 };
+            _tmrBoroughChangeTimer = new Timer { Interval = 1000 };
+            Disposed += (o, args) =>
+            {
+                _tmrCityChangeTimer?.Dispose();
+                _tmrDistrictChangeTimer?.Dispose();
+                _tmrBoroughChangeTimer?.Dispose();
+            };
+            _tmrCityChangeTimer.Tick += CityChangeTimer_Tick;
+            _tmrCityChangeTimer.Tick += DistrictChangeTimer_Tick;
+            _tmrCityChangeTimer.Tick += BoroughChangeTimer_Tick;
         }
 
         private void SelectLifestyleAdvanced_FormClosing(object sender, FormClosingEventArgs e)
@@ -568,28 +588,6 @@ namespace Chummer
             await RefreshSelectedLifestyle().ConfigureAwait(false);
         }
 
-        private async void cboCity_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (_intSkipRefresh > 0)
-                return;
-            await RefreshDistrictList().ConfigureAwait(false);
-        }
-
-        private async void cboDistrict_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (_intSkipRefresh > 0)
-                return;
-            await RefreshBoroughList().ConfigureAwait(false);
-            _objLifestyle.District = await cboDistrict.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false) ?? string.Empty;
-        }
-
-        private void cboBorough_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (_intSkipRefresh > 0)
-                return;
-            _objLifestyle.Borough = cboBorough.SelectedValue?.ToString() ?? string.Empty;
-        }
-
         private void nudRoommates_ValueChanged(object sender, EventArgs e)
         {
             if (_intSkipRefresh > 0)
@@ -717,6 +715,90 @@ namespace Chummer
             else
             {
                 await nudBonusLP.DoThreadSafeAsync(x => x.Enabled = true).ConfigureAwait(false);
+            }
+        }
+
+        // Hacky solutions to data binding causing cursor to reset whenever the user is typing something in: have text changes start a timer, and have a 1s delay in the timer update fire the text update
+        private void cboCity_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_tmrCityChangeTimer == null)
+                return;
+            if (_tmrCityChangeTimer.Enabled)
+                _tmrCityChangeTimer.Stop();
+            if (_intSkipRefresh > 0 || _intUpdatingCity > 0)
+                return;
+            _tmrCityChangeTimer.Start();
+        }
+
+        private void cboDistrict_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_tmrDistrictChangeTimer == null)
+                return;
+            if (_tmrDistrictChangeTimer.Enabled)
+                _tmrDistrictChangeTimer.Stop();
+            if (_intSkipRefresh > 0 || _intUpdatingDistrict > 0)
+                return;
+            _tmrDistrictChangeTimer.Start();
+        }
+
+        private void cboBorough_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_tmrBoroughChangeTimer == null)
+                return;
+            if (_tmrBoroughChangeTimer.Enabled)
+                _tmrBoroughChangeTimer.Stop();
+            if (_intSkipRefresh > 0 || _intUpdatingBorough > 0)
+                return;
+            _tmrBoroughChangeTimer.Start();
+        }
+
+        private async void CityChangeTimer_Tick(object sender, EventArgs e)
+        {
+            _tmrCityChangeTimer.Stop();
+            Interlocked.Increment(ref _intUpdatingCity);
+            try
+            {
+                string strText = await cboCity.DoThreadSafeFuncAsync(x => x.Text)
+                                              .ConfigureAwait(false);
+                await _objLifestyle.SetCityAsync(strText).ConfigureAwait(false);
+            }
+            finally
+            {
+                Interlocked.Decrement(ref _intUpdatingCity);
+            }
+            await RefreshDistrictList().ConfigureAwait(false);
+        }
+
+        private async void DistrictChangeTimer_Tick(object sender, EventArgs e)
+        {
+            _tmrDistrictChangeTimer.Stop();
+            Interlocked.Increment(ref _intUpdatingDistrict);
+            try
+            {
+                string strText = await cboDistrict.DoThreadSafeFuncAsync(x => x.Text)
+                                              .ConfigureAwait(false);
+                await _objLifestyle.SetDistrictAsync(strText).ConfigureAwait(false);
+            }
+            finally
+            {
+                Interlocked.Decrement(ref _intUpdatingDistrict);
+            }
+            await RefreshBoroughList().ConfigureAwait(false);
+        }
+
+        private async void BoroughChangeTimer_Tick(object sender, EventArgs e)
+        {
+            _tmrBoroughChangeTimer.Stop();
+            Interlocked.Increment(ref _intUpdatingBorough);
+            try
+            {
+                string strText = await cboBorough.DoThreadSafeFuncAsync(x => x.Text)
+                                              .ConfigureAwait(false);
+                await _objLifestyle.SetBoroughAsync(strText).ConfigureAwait(false);
+            }
+            finally
+            {
+                Interlocked.Decrement(ref _intUpdatingBorough);
             }
         }
 
@@ -900,7 +982,9 @@ namespace Chummer
         /// </summary>
         private async ValueTask RefreshDistrictList(CancellationToken token = default)
         {
-            string strSelectedCityRefresh = await cboCity.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false) ?? string.Empty;
+            string strSelectedCityRefresh = await cboCity.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString() ?? x.SelectedText, token: token).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(strSelectedCityRefresh))
+                strSelectedCityRefresh = string.Empty;
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstDistrict))
             {
                 using (XmlNodeList xmlDistrictList
@@ -928,8 +1012,12 @@ namespace Chummer
         /// </summary>
         private async ValueTask RefreshBoroughList(CancellationToken token = default)
         {
-            string strSelectedCityRefresh = await cboCity.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false) ?? string.Empty;
-            string strSelectedDistrictRefresh = await cboDistrict.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false) ?? string.Empty;
+            string strSelectedCityRefresh = await cboCity.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString() ?? x.SelectedText, token: token).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(strSelectedCityRefresh))
+                strSelectedCityRefresh = string.Empty;
+            string strSelectedDistrictRefresh = await cboDistrict.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString() ?? x.SelectedText, token: token).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(strSelectedDistrictRefresh))
+                strSelectedDistrictRefresh = string.Empty;
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstBorough))
             {
                 using (XmlNodeList xmlBoroughList = _xmlDocument.SelectNodes(
