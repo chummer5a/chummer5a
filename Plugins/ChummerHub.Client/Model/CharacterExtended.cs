@@ -169,9 +169,9 @@ namespace ChummerHub.Client.Sinners
             Settings.Default.Save();
         }
 
-        internal IList<Tag> PopulateTags()
+        internal List<Tag> PopulateTags()
         {
-            Tag tag = new Tag()
+            Tag tag = new Tag
             {
                 MyRuntimeObject = MyCharacter,
                 SiNnerId = MySINnerFile.Id,

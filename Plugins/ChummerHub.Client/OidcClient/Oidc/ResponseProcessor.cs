@@ -32,7 +32,7 @@ namespace IdentityModel.OidcClient
             _crypto = new CryptoHelper(options);
         }
 
-        public async Task<ResponseValidationResult> ProcessResponseAsync(
+        public Task<ResponseValidationResult> ProcessResponseAsync(
             AuthorizeResponse authorizeResponse, 
             AuthorizeState state,
             Parameters backChannelParameters, 
@@ -46,20 +46,20 @@ namespace IdentityModel.OidcClient
 
             if (string.IsNullOrEmpty(authorizeResponse.Code))
             {
-                return new ResponseValidationResult("Missing authorization code.");
+                return Task.FromResult(new ResponseValidationResult("Missing authorization code."));
             }
 
             if (string.IsNullOrEmpty(authorizeResponse.State))
             {
-                return new ResponseValidationResult("Missing state.");
+                return Task.FromResult(new ResponseValidationResult("Missing state."));
             }
 
             if (!string.Equals(state.State, authorizeResponse.State, StringComparison.Ordinal))
             {
-                return new ResponseValidationResult("Invalid state.");
+                return Task.FromResult(new ResponseValidationResult("Invalid state."));
             }
 
-            return await ProcessCodeFlowResponseAsync(authorizeResponse, state, backChannelParameters, cancellationToken);
+            return ProcessCodeFlowResponseAsync(authorizeResponse, state, backChannelParameters, cancellationToken);
         }
 
         private async Task<ResponseValidationResult> ProcessCodeFlowResponseAsync(

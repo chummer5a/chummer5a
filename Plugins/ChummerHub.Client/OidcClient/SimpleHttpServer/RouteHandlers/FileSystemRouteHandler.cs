@@ -87,7 +87,7 @@ namespace SimpleHttpServer.RouteHandlers
                     FileInfo fileInfo = new FileInfo(entry);
 
                     string filename = fileInfo.Name;
-                    output.AppendFormat("<a href=\"{0}\">{0}</a> <br>", filename);
+                    output.AppendFormat(GlobalSettings.InvariantCultureInfo, "<a href=\"{0}\">{0}</a> <br>", filename);
                 }
 
                 return new HttpResponse
@@ -122,7 +122,7 @@ namespace SimpleHttpServer.RouteHandlers
         }
 
 
-        private static readonly IDictionary<string, string> _mappings = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase)
+        private static readonly Dictionary<string, string> _mappings = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase)
         {
 
         #region Big freaking list of mime types

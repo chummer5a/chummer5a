@@ -398,7 +398,11 @@ namespace Codaxy.WkHtmlToPdf
                         {
                             process.OutputDataReceived -= OutputHandler;
                             process.ErrorDataReceived -= ErrorHandler;
-                            tskAsyncProcess?.Dispose();
+                            if (tskAsyncProcess != null)
+                            {
+                                await tskAsyncProcess.ConfigureAwait(false); // To throw any internal exceptions
+                                tskAsyncProcess.Dispose();
+                            }
                         }
                     }
                 }

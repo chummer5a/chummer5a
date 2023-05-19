@@ -502,8 +502,10 @@ namespace IdentityModel.OidcClient
 
             HashSet<Claim> combinedClaims = new HashSet<Claim>(new ClaimComparer(new ClaimComparer.Options { IgnoreIssuer = true }));
 
-            user.Claims.ToList().ForEach(c => combinedClaims.Add(c));
-            userInfoClaims.ToList().ForEach(c => combinedClaims.Add(c));
+            foreach (Claim objClaim in user.Claims)
+                combinedClaims.Add(objClaim);
+            foreach (Claim objClaim in userInfoClaims)
+                combinedClaims.Add(objClaim);
 
             List<Claim> userClaims = Options.FilterClaims
                 ? combinedClaims.Where(c => !Options.FilteredClaims.Contains(c.Type)).ToList()

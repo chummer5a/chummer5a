@@ -274,38 +274,43 @@ namespace Chummer
                             if (intBaseRating < _intMinimumRating || intBaseRating > _intMaximumRating)
                                 continue;
                             if (!string.IsNullOrEmpty(_strIncludeCategory)
-                                && _strIncludeCategory.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
-                                                      .All(x => x != objSkill.SkillCategory))
+                                && !_strIncludeCategory.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
+                                                       .Contains(objSkill.SkillCategory))
                             {
                                 continue;
                             }
+
                             if (!string.IsNullOrEmpty(_strExcludeCategory)
                                 && _strExcludeCategory.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
-                                                      .Any(x => x == objSkill.SkillCategory))
+                                                      .Contains(objSkill.SkillCategory))
                             {
                                 continue;
                             }
+
                             if (!string.IsNullOrEmpty(_strIncludeSkillGroup)
-                                && _strIncludeSkillGroup.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
-                                                        .All(x => x != objSkill.SkillGroup))
+                                && !_strIncludeSkillGroup.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
+                                                         .Contains(objSkill.SkillGroup))
                             {
                                 continue;
                             }
+
                             if (!string.IsNullOrEmpty(_strExcludeSkillGroup)
                                 && _strExcludeSkillGroup.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
-                                                        .Any(x => x == objSkill.SkillGroup))
+                                                        .Contains(objSkill.SkillGroup))
                             {
                                 continue;
                             }
+
                             if (!string.IsNullOrEmpty(_strLimitToSkill)
-                                && _strLimitToSkill.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
-                                                   .All(x => x != strLoopName))
+                                && !_strLimitToSkill.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
+                                                    .Contains(strLoopName))
                             {
                                 continue;
                             }
+
                             if (!string.IsNullOrEmpty(_strExcludeSkill)
                                 && _strExcludeSkill.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
-                                                   .Any(x => x == strLoopName))
+                                                   .Contains(strLoopName))
                             {
                                 continue;
                             }

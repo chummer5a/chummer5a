@@ -20087,13 +20087,15 @@ namespace Chummer
                         }
                     }
 
+                    List<int> lstToRemove = new List<int>(dicRestrictedGearLimits.Count);
                     // Remove all Restricted Gear availabilities with non-positive counts
-                    foreach (int intLoopAvailability in dicRestrictedGearLimits.Keys.ToList())
+                    foreach (KeyValuePair<int, int> kvpLoop in dicRestrictedGearLimits)
                     {
-                        if (dicRestrictedGearLimits.TryGetValue(intLoopAvailability, out int intLoopCount)
-                            && intLoopCount <= 0)
-                            dicRestrictedGearLimits.Remove(intLoopAvailability);
+                        if (kvpLoop.Value <= 0)
+                            lstToRemove.Add(kvpLoop.Key);
                     }
+                    foreach (int intLoop in lstToRemove)
+                        dicRestrictedGearLimits.Remove(intLoop);
 
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdAvailItems))
