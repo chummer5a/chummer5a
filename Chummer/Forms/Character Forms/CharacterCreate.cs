@@ -7788,7 +7788,11 @@ namespace Chummer
                 if (!(objSelectedNode?.Tag is Gear objGear))
                     return;
                 using (ThreadSafeForm<SelectText> frmPickText
-                       = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText(), GenericToken)
+                       = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
+                                                         {
+                                                             DefaultString = objGear.Extra,
+                                                             AllowEmptyString = true
+                                                         }, GenericToken)
                                                          .ConfigureAwait(false))
                 {
                     if (await frmPickText.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
