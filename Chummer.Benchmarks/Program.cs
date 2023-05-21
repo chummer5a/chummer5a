@@ -41,7 +41,7 @@ namespace Chummer.Benchmarks
     /// Replace with a more suitable name in practice. You can also benchmark as many methods as you like.
     /// </summary>
     [MemoryDiagnoser]
-    [SimpleJob(RuntimeMoniker.Net472, baseline: true)]
+    [SimpleJob(RuntimeMoniker.Net48, baseline: true)]
     public class ForeachSplitComparison
     {
         private readonly string _strLongWord;
