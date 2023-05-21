@@ -3639,8 +3639,7 @@ namespace Chummer.Backend.Skills
                             .Append(objShowOnlyCyberware.GetAttributeTotalValue(att.Abbrev)
                                 .ToString(GlobalSettings.CultureInfo)).Append(')');
                         if ((objShowOnlyCyberware.LimbSlot == "arm"
-                             || objShowOnlyCyberware.Name.Contains(" Arm")
-                             || objShowOnlyCyberware.Name.Contains(" Hand"))
+                             || objShowOnlyCyberware.Name.ContainsAny(" Arm", " Hand"))
                             && objShowOnlyCyberware.Location != CharacterObject.PrimaryArm
                             && !CharacterObject.Ambidextrous
                             && objShowOnlyCyberware.LimbSlotCount <= 1)
@@ -3744,8 +3743,7 @@ namespace Chummer.Backend.Skills
                             int pool = PoolOtherAttribute(att.Abbrev, false,
                                 cyberware.GetAttributeTotalValue(att.Abbrev));
                             if ((cyberware.LimbSlot != "arm"
-                                 && !cyberware.Name.Contains(" Arm")
-                                 && !cyberware.Name.Contains(" Hand"))
+                                 && !cyberware.Name.ContainsAny(" Arm", " Hand"))
                                 || cyberware.Location == CharacterObject.PrimaryArm
                                 || CharacterObject.Ambidextrous
                                 || cyberware.LimbSlotCount > 1)
@@ -3834,8 +3832,7 @@ namespace Chummer.Backend.Skills
                             }
 
                             if ((cyberware.LimbSlot != "arm"
-                                 && !cyberware.Name.Contains(" Arm")
-                                 && !cyberware.Name.Contains(" Hand"))
+                                 && !cyberware.Name.ContainsAny(" Arm", " Hand"))
                                 || cyberware.Location == CharacterObject.PrimaryArm
                                 || CharacterObject.Ambidextrous
                                 || cyberware.LimbSlotCount > 1)
@@ -3962,8 +3959,7 @@ namespace Chummer.Backend.Skills
                                     .ConfigureAwait(false))
                                 .ToString(GlobalSettings.CultureInfo)).Append(')');
                         if ((objShowOnlyCyberware.LimbSlot == "arm"
-                             || objShowOnlyCyberware.Name.Contains(" Arm")
-                             || objShowOnlyCyberware.Name.Contains(" Hand"))
+                             || objShowOnlyCyberware.Name.ContainsAny(" Arm", " Hand"))
                             && objShowOnlyCyberware.Location != CharacterObject.PrimaryArm
                             && !CharacterObject.Ambidextrous
                             && objShowOnlyCyberware.LimbSlotCount <= 1)
@@ -4066,8 +4062,7 @@ namespace Chummer.Backend.Skills
                                 await cyberware.GetAttributeTotalValueAsync(att.Abbrev, token).ConfigureAwait(false),
                                 token).ConfigureAwait(false);
                             if ((cyberware.LimbSlot != "arm"
-                                 && !cyberware.Name.Contains(" Arm")
-                                 && !cyberware.Name.Contains(" Hand"))
+                                 && !cyberware.Name.ContainsAny(" Arm", " Hand"))
                                 || cyberware.Location == CharacterObject.PrimaryArm
                                 || blnAmbi
                                 || cyberware.LimbSlotCount > 1)
@@ -4171,8 +4166,7 @@ namespace Chummer.Backend.Skills
                             }
 
                             if ((cyberware.LimbSlot != "arm"
-                                 && !cyberware.Name.Contains(" Arm")
-                                 && !cyberware.Name.Contains(" Hand"))
+                                 && !cyberware.Name.ContainsAny(" Arm", " Hand"))
                                 || cyberware.Location == CharacterObject.PrimaryArm
                                 || blnAmbi
                                 || cyberware.LimbSlotCount > 1)

@@ -3025,7 +3025,7 @@ namespace Chummer.Backend.Equipment
 
                 decimal decGearWeight = 0;
                 decimal decParentWeight = 0;
-                if (Parent != null && (strWeightExpression.Contains("Parent Weight") || strWeightExpression.Contains("Gear Weight")))
+                if (Parent != null && (strWeightExpression.ContainsAny("Parent Weight", "Gear Weight")))
                 {
                     decParentWeight = ((Gear)Parent).OwnWeight;
                     decGearWeight = decParentWeight * ((Gear)Parent).Quantity;

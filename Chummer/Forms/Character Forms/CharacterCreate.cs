@@ -19563,19 +19563,21 @@ namespace Chummer
                         if (objWareGrade.Adapsin)
                             continue;
 
-                        if ((await ImprovementManager
-                                   .GetCachedImprovementListForValueOfAsync(CharacterObject,
-                                                                            Improvement.ImprovementType
-                                                                                .DisableBiowareGrade, token: token)
-                                   .ConfigureAwait(false)).Any(
-                                x => objWareGrade.Name.Contains(x.ImprovedName)))
+                        if (objWareGrade.Name.ContainsAny((await ImprovementManager
+                                                                 .GetCachedImprovementListForValueOfAsync(
+                                                                     CharacterObject,
+                                                                     Improvement.ImprovementType
+                                                                         .DisableBiowareGrade, token: token)
+                                                                 .ConfigureAwait(false)).Select(x => x.ImprovedName)))
                             continue;
                     }
                     else
                     {
                         if (CharacterObject.AdapsinEnabled)
                         {
-                            if (!objWareGrade.Adapsin && objGradeList.Any(x => objWareGrade.Name.Contains(x.Name)))
+                            if (!objWareGrade.Adapsin
+                                && objWareGrade.Name.ContainsAny(
+                                    objGradeList.Where(x => x.Adapsin).Select(x => x.Name)))
                             {
                                 continue;
                             }
@@ -19583,19 +19585,19 @@ namespace Chummer
                         else if (objWareGrade.Adapsin)
                             continue;
 
-                        if ((await ImprovementManager
-                                   .GetCachedImprovementListForValueOfAsync(CharacterObject,
-                                                                            Improvement.ImprovementType
-                                                                                .DisableCyberwareGrade, token: token)
-                                   .ConfigureAwait(false)).Any(
-                                x => objWareGrade.Name.Contains(x.ImprovedName)))
+                        if (objWareGrade.Name.ContainsAny((await ImprovementManager
+                                                                 .GetCachedImprovementListForValueOfAsync(
+                                                                     CharacterObject,
+                                                                     Improvement.ImprovementType
+                                                                         .DisableCyberwareGrade, token: token)
+                                                                 .ConfigureAwait(false)).Select(x => x.ImprovedName)))
                             continue;
                     }
 
                     if (CharacterObject.BurnoutEnabled)
                     {
                         if (!objWareGrade.Burnout
-                            && objGradeList.Any(x => objWareGrade.Burnout && objWareGrade.Name.Contains(x.Name)))
+                            && objWareGrade.Name.ContainsAny(objGradeList.Where(x => x.Burnout).Select(x => x.Name)))
                         {
                             continue;
                         }
@@ -19603,7 +19605,7 @@ namespace Chummer
                     else if (objWareGrade.Burnout)
                         continue;
 
-                    if (CharacterObjectSettings.BannedWareGrades.Any(s => objWareGrade.Name.Contains(s))
+                    if (objWareGrade.Name.ContainsAny(CharacterObjectSettings.BannedWareGrades)
                         && !CharacterObject.IgnoreRules)
                         continue;
 

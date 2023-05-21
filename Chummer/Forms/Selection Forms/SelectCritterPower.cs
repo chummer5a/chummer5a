@@ -68,18 +68,24 @@ namespace Chummer
             foreach (XPathNavigator objXmlCategory in await _xmlBaseCritterPowerDataNode.SelectAndCacheExpressionAsync("categories/category").ConfigureAwait(false))
             {
                 string strInnerText = objXmlCategory.Value;
-                if ((await ImprovementManager
-                           .GetCachedImprovementListForValueOfAsync(_objCharacter,
-                                                                    Improvement.ImprovementType.AllowCritterPowerCategory).ConfigureAwait(false))
-                    .Any(imp => strInnerText.Contains(imp.ImprovedName))
-                    && (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@whitelist").ConfigureAwait(false))?.Value == bool.TrueString
-                    || (await ImprovementManager
-                              .GetCachedImprovementListForValueOfAsync(_objCharacter,
-                                                                       Improvement.ImprovementType.LimitCritterPowerCategory).ConfigureAwait(false))
-                       .Any(imp => strInnerText.Contains(imp.ImprovedName)))
+                if (strInnerText.ContainsAny((await ImprovementManager
+                                                    .GetCachedImprovementListForValueOfAsync(_objCharacter,
+                                                        Improvement.ImprovementType.AllowCritterPowerCategory)
+                                                    .ConfigureAwait(false))
+                                             .Select(imp => imp.ImprovedName))
+                    && (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@whitelist")
+                                            .ConfigureAwait(false))?.Value == bool.TrueString
+                    || strInnerText.ContainsAny((await ImprovementManager
+                                                       .GetCachedImprovementListForValueOfAsync(_objCharacter,
+                                                           Improvement.ImprovementType
+                                                                      .LimitCritterPowerCategory)
+                                                       .ConfigureAwait(false))
+                                                .Select(imp => imp.ImprovedName)))
                 {
                     _lstCategory.Add(new ListItem(strInnerText,
-                        (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate").ConfigureAwait(false))?.Value ?? strInnerText));
+                                                  (await objXmlCategory
+                                                         .SelectSingleNodeAndCacheExpressionAsync("@translate")
+                                                         .ConfigureAwait(false))?.Value ?? strInnerText));
                     continue;
                 }
 

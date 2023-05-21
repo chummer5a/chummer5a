@@ -1561,8 +1561,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                string strName = Name.ToUpperInvariant();
-                if (!strName.Contains("ARM") && !strName.Contains("LEG"))
+                if (!Name.ContainsAny(new []{"ARM", "LEG"}, StringComparison.OrdinalIgnoreCase))
                     return 0;
                 int intAttribute = 0;
                 int bod = 1;
@@ -1598,8 +1597,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                string strName = Name.ToUpperInvariant();
-                if (!strName.Contains("ARM") && !strName.Contains("LEG"))
+                if (!Name.ContainsAny(new[] { "ARM", "LEG" }, StringComparison.OrdinalIgnoreCase))
                     return 0;
 
                 int intAttribute = 0;
@@ -1635,8 +1633,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async ValueTask<int> GetTotalStrengthAsync(CancellationToken token = default)
         {
-            string strName = Name.ToUpperInvariant();
-            if (!strName.Contains("ARM") && !strName.Contains("LEG"))
+            token.ThrowIfCancellationRequested();
+            if (!Name.ContainsAny(new[] { "ARM", "LEG" }, StringComparison.OrdinalIgnoreCase))
                 return 0;
             int intAttribute = 0;
             int bod = 1;
@@ -1671,8 +1669,8 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async ValueTask<int> GetTotalAgilityAsync(CancellationToken token = default)
         {
-            string strName = Name.ToUpperInvariant();
-            if (!strName.Contains("ARM") && !strName.Contains("LEG"))
+            token.ThrowIfCancellationRequested();
+            if (!Name.ContainsAny(new[] { "ARM", "LEG" }, StringComparison.OrdinalIgnoreCase))
                 return 0;
 
             int intAttribute = 0;

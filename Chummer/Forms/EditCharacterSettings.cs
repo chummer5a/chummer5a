@@ -1577,7 +1577,7 @@ namespace Chummer
                             if (!string.IsNullOrEmpty(strBook)
                                 && treSourcebook.Nodes.Cast<TreeNode>().All(x => x.Tag.ToString() != strBook))
                                 continue;
-                            if (lstGrades.Any(x => strName.Contains(x.Value.ToString())))
+                            if (strName.ContainsAny(lstGrades.Select(x => x.Value.ToString())))
                                 continue;
                             ListItem objExistingCoveredGrade =
                                 lstGrades.Find(x => x.Value.ToString().Contains(strName));
@@ -1613,7 +1613,7 @@ namespace Chummer
                             if (!string.IsNullOrEmpty(strBook)
                                 && treSourcebook.Nodes.Cast<TreeNode>().All(x => x.Tag.ToString() != strBook))
                                 continue;
-                            if (lstGrades.Any(x => strName.Contains(x.Value.ToString())))
+                            if (strName.ContainsAny(lstGrades.Select(x => x.Value.ToString())))
                                 continue;
                             ListItem objExistingCoveredGrade =
                                 lstGrades.Find(x => x.Value.ToString().Contains(strName));

@@ -1224,9 +1224,7 @@ namespace Chummer.Backend.Equipment
             // we instead display them as if they were one of the CRB mounts, but give them a different name
             if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !await _objCharacter.Settings.BookEnabledAsync(Source, token).ConfigureAwait(false))
             {
-                string strOverrideId = AllowedWeaponCategories.Contains("Machine Guns") ||
-                                       AllowedWeaponCategories.Contains("Launchers") ||
-                                       AllowedWeaponCategories.Contains("Cannons")
+                string strOverrideId = AllowedWeaponCategories.ContainsAny("Machine Guns", "Launchers", "Cannons")
                     // Id for Heavy [SR5] mount
                     ? "a567c5d3-38b8-496a-add8-1e176384e935"
                     // Id for Standard [SR5] mount
@@ -1275,9 +1273,7 @@ namespace Chummer.Backend.Equipment
             // we instead display them as if they were one of the CRB mounts, but give them a different name
             if (IncludedInVehicle && !string.IsNullOrEmpty(Source) && !await _objCharacter.Settings.BookEnabledAsync(Source, token).ConfigureAwait(false))
             {
-                string strOverrideId = AllowedWeaponCategories.Contains("Machine Guns") ||
-                                       AllowedWeaponCategories.Contains("Launchers") ||
-                                       AllowedWeaponCategories.Contains("Cannons")
+                string strOverrideId = AllowedWeaponCategories.ContainsAny("Machine Guns", "Launchers", "Cannons")
                     // Id for Heavy [SR5] mount
                     ? "a567c5d3-38b8-496a-add8-1e176384e935"
                     // Id for Standard [SR5] mount

@@ -2784,7 +2784,7 @@ namespace Chummer.Backend.Equipment
             }
 
             // Look for splash damage info.
-            if (strDamage.Contains("/m)") || strDamage.Contains(" Radius)"))
+            if (strDamage.ContainsAny("/m)", " Radius)"))
             {
                 int intPos = strDamage.IndexOf('(');
                 string strSplash = strDamage.Substring(intPos, strDamage.IndexOf(')') - intPos + 1);
@@ -8621,7 +8621,7 @@ namespace Chummer.Backend.Equipment
             if (string.IsNullOrEmpty(strOriginal))
                 strOriginal = sbdInput.ToString();
             Dictionary<string, int> dicAttributeOverrides = null;
-            if (strOriginal.Contains("{STR") || strOriginal.Contains("{AGI"))
+            if (strOriginal.ContainsAny("{STR", "{AGI"))
             {
                 int intUseSTR = 0;
                 int intUseAGI = 0;
@@ -8770,7 +8770,7 @@ namespace Chummer.Backend.Equipment
             if (string.IsNullOrEmpty(strOriginal))
                 strOriginal = sbdInput.ToString();
             Dictionary<string, int> dicAttributeOverrides = null;
-            if (strOriginal.Contains("{STR") || strOriginal.Contains("{AGI"))
+            if (strOriginal.ContainsAny("{STR", "{AGI"))
             {
                 int intUseSTR = 0;
                 int intUseAGI = 0;

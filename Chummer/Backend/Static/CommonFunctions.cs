@@ -2108,8 +2108,7 @@ namespace Chummer
                                 token.ThrowIfCancellationRequested();
                                 // if it is header or footer information just remove it
                                 // do we also include lines with just numbers as probably page numbers??
-                                if (strCurrentLine.All(char.IsDigit) || strCurrentLine.Contains(">>") ||
-                                    strCurrentLine.Contains("<<"))
+                                if (strCurrentLine.All(char.IsDigit) || strCurrentLine.ContainsAny(">>", "<<"))
                                 {
                                     lstStringFromPdf.RemoveAt(i);
                                     // rewind and go again

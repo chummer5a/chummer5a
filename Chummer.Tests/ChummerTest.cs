@@ -75,7 +75,8 @@ namespace Chummer.Tests
             foreach (FileInfo objFileInfo in TestFiles)
             {
                 Debug.WriteLine("Loading " + objFileInfo.Name);
-                Character objLoopCharacter = _lstCharacters.FirstOrDefault(x => x.FileName == objFileInfo.FullName);
+                string strFile = objFileInfo.FullName;
+                Character objLoopCharacter = _lstCharacters.FirstOrDefault(x => x.FileName == strFile);
                 if (objLoopCharacter == null)
                 {
                     objLoopCharacter = LoadCharacter(objFileInfo);

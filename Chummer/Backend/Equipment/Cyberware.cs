@@ -4119,7 +4119,7 @@ namespace Chummer.Backend.Equipment
                 {
                     try
                     {
-                        if ((blnDoGrade || (blnDoRating && (ESS.Contains("Rating") || ESS.Contains("FixedValues")))) &&
+                        if ((blnDoGrade || (blnDoRating && (ESS.ContainsAny("Rating", "FixedValues")))) &&
                             (Parent == null || AddToParentESS) && string.IsNullOrEmpty(PlugsIntoModularMount))
                         {
                             if (!dicChangedProperties.TryGetValue(_objCharacter,

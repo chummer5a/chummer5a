@@ -1529,18 +1529,18 @@ namespace Chummer
                         {
                             if (WindowMode == Mode.Bioware)
                             {
-                                if ((await ImprovementManager
-                                           .GetCachedImprovementListForValueOfAsync(_objCharacter,
-                                               Improvement.ImprovementType.DisableBiowareGrade, token: token)
-                                           .ConfigureAwait(false))
-                                    .Any(x => objCurrentGrade.Name.Contains(x.ImprovedName)))
+                                if (objCurrentGrade.Name.ContainsAny((await ImprovementManager
+                                                                         .GetCachedImprovementListForValueOfAsync(_objCharacter,
+                                                                             Improvement.ImprovementType.DisableBiowareGrade, token: token)
+                                                                         .ConfigureAwait(false))
+                                                                  .Select(x => x.ImprovedName)))
                                     continue;
                             }
-                            else if ((await ImprovementManager
-                                            .GetCachedImprovementListForValueOfAsync(_objCharacter,
-                                                Improvement.ImprovementType
-                                                           .DisableCyberwareGrade, token: token).ConfigureAwait(false))
-                                     .Any(x => objCurrentGrade.Name.Contains(x.ImprovedName)))
+                            else if (objCurrentGrade.Name.ContainsAny((await ImprovementManager
+                                                                          .GetCachedImprovementListForValueOfAsync(_objCharacter,
+                                                                              Improvement.ImprovementType
+                                                                                  .DisableCyberwareGrade, token: token).ConfigureAwait(false))
+                                                                   .Select(x => x.ImprovedName)))
                                 continue;
                         }
 
@@ -1994,25 +1994,32 @@ namespace Chummer
                                 continue;
                             if (WindowMode == Mode.Bioware)
                             {
-                                if ((await ImprovementManager
-                                           .GetCachedImprovementListForValueOfAsync(_objCharacter,
-                                               Improvement.ImprovementType.DisableBiowareGrade, token: token).ConfigureAwait(false))
-                                    .Any(x => objWareGrade.Name.Contains(x.ImprovedName)))
+                                if (objWareGrade.Name.ContainsAny((await ImprovementManager
+                                                                         .GetCachedImprovementListForValueOfAsync(
+                                                                             _objCharacter,
+                                                                             Improvement.ImprovementType
+                                                                                 .DisableBiowareGrade, token: token)
+                                                                         .ConfigureAwait(false))
+                                                                  .Select(x => x.ImprovedName)))
                                     continue;
                                 if (objWareGrade.Adapsin)
                                     continue;
                             }
                             else
                             {
-                                if ((await ImprovementManager
-                                           .GetCachedImprovementListForValueOfAsync(_objCharacter,
-                                               Improvement.ImprovementType
-                                                          .DisableCyberwareGrade, token: token).ConfigureAwait(false))
-                                    .Any(x => objWareGrade.Name.Contains(x.ImprovedName)))
+                                if (objWareGrade.Name.ContainsAny((await ImprovementManager
+                                                                         .GetCachedImprovementListForValueOfAsync(
+                                                                             _objCharacter,
+                                                                             Improvement.ImprovementType
+                                                                                 .DisableCyberwareGrade, token: token)
+                                                                         .ConfigureAwait(false))
+                                                                  .Select(x => x.ImprovedName)))
                                     continue;
                                 if (_objCharacter.AdapsinEnabled)
                                 {
-                                    if (!objWareGrade.Adapsin && _lstGrades.Any(x => x.Adapsin && objWareGrade.Name.Contains(x.Name)))
+                                    if (!objWareGrade.Adapsin
+                                        && objWareGrade.Name.ContainsAny(
+                                            _lstGrades.Where(x => x.Adapsin).Select(x => x.Name)))
                                         continue;
                                 }
                                 else if (objWareGrade.Adapsin)
@@ -2021,14 +2028,16 @@ namespace Chummer
 
                             if (_objCharacter.BurnoutEnabled)
                             {
-                                if (!objWareGrade.Burnout && _lstGrades.Any(x => x.Burnout && objWareGrade.Name.Contains(x.Name)))
+                                if (!objWareGrade.Burnout
+                                    && objWareGrade.Name.ContainsAny(
+                                        _lstGrades.Where(x => x.Burnout).Select(x => x.Name)))
                                     continue;
                             }
                             else if (objWareGrade.Burnout)
                                 continue;
 
                             if (blnHideBannedGrades && !_objCharacter.Created && !_objCharacter.IgnoreRules &&
-                                _objCharacter.Settings.BannedWareGrades.Any(s => objWareGrade.Name.Contains(s)))
+                                objWareGrade.Name.ContainsAny(_objCharacter.Settings.BannedWareGrades))
                                 continue;
                         }
 
@@ -2038,7 +2047,7 @@ namespace Chummer
                         }
 
                         if (!blnHideBannedGrades && !_objCharacter.Created && !_objCharacter.IgnoreRules
-                            && _objCharacter.Settings.BannedWareGrades.Any(s => objWareGrade.Name.Contains(s)))
+                            && objWareGrade.Name.ContainsAny(_objCharacter.Settings.BannedWareGrades))
                         {
                             lstGrade.Add(new ListItem(objWareGrade.SourceIDString,
                                                       '*' + await objWareGrade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)));

@@ -853,14 +853,14 @@ namespace Chummer
                 foreach (XPathNavigator xmlDrug in _xmlBaseDrugDataNode.Select(_strNodeXPath + strFilter))
                 {
                     bool blnIsForceGrade = await xmlDrug.SelectSingleNodeAndCacheExpressionAsync("forcegrade", token).ConfigureAwait(false) == null;
-                    if (objCurrentGrade != null && blnIsForceGrade && (await ImprovementManager
-                                                                             .GetCachedImprovementListForValueOfAsync(
-                                                                                 _objCharacter,
-                                                                                 Improvement.ImprovementType
-                                                                                     .DisableDrugGrade, token: token)
-                                                                             .ConfigureAwait(false))
-                        .Any(x => objCurrentGrade.Name.Contains(
-                                 x.ImprovedName)))
+                    if (objCurrentGrade != null && blnIsForceGrade && objCurrentGrade.Name.ContainsAny(
+                            (await ImprovementManager
+                                   .GetCachedImprovementListForValueOfAsync(
+                                       _objCharacter,
+                                       Improvement.ImprovementType
+                                                  .DisableDrugGrade, token: token)
+                                   .ConfigureAwait(false))
+                            .Select(x => x.ImprovedName)))
                         continue;
 
                     string strMaxRating = (await xmlDrug.SelectSingleNodeAndCacheExpressionAsync("rating", token).ConfigureAwait(false))?.Value;

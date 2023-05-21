@@ -1451,7 +1451,7 @@ namespace Chummer
                 strValue = strValues[Math.Max(Math.Min(strValues.Length, intRating) - 1, 0)];
             }
 
-            if (strValue.Contains("Rating") || AttributeSection.AttributeStrings.Any(strValue.Contains))
+            if (strValue.ContainsAny("Rating".Yield().Concat(AttributeSection.AttributeStrings)))
             {
                 string strReturn = strValue.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 // If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
@@ -1494,7 +1494,7 @@ namespace Chummer
                 strValue = strValues[Math.Max(Math.Min(strValues.Length, intRating) - 1, 0)];
             }
 
-            if (strValue.Contains("Rating") || AttributeSection.AttributeStrings.Any(strValue.Contains))
+            if (strValue.ContainsAny("Rating".Yield().Concat(AttributeSection.AttributeStrings)))
             {
                 string strReturn = strValue.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 // If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.

@@ -327,6 +327,146 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="astrNeedles">Array of strings to match.</param>
+        /// <param name="eComparison">Comparison rules by which to find instances of the substring to remove. Useful for when case-insensitive removal is required.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, IReadOnlyCollection<string> astrNeedles, StringComparison eComparison)
+        {
+            if (string.IsNullOrEmpty(strHaystack))
+                return -1;
+            int intHaystackLength = strHaystack.Length;
+            if (intHaystackLength == 0)
+                return -1;
+            if (astrNeedles == null)
+                return -1;
+            int intNumNeedles = astrNeedles.Count;
+            if (intNumNeedles == 0)
+                return -1;
+
+            // While one might think this is the slowest, worst-scaling way of checking for multiple needles, it's actually faster
+            // in C# than a more detailed approach where characters of the haystack are progressively checked against all needles.
+            
+            if (astrNeedles.All(x => x.Length > intHaystackLength))
+                return -1;
+
+            int intEarliestNeedleIndex = intHaystackLength;
+            foreach (string strNeedle in astrNeedles)
+            {
+                int intNeedleIndex = strHaystack.IndexOf(strNeedle, 0, Math.Min(intHaystackLength, intEarliestNeedleIndex + strNeedle.Length), eComparison);
+                if (intNeedleIndex >= 0 && intNeedleIndex < intEarliestNeedleIndex)
+                    intEarliestNeedleIndex = intNeedleIndex;
+            }
+            return intEarliestNeedleIndex != intHaystackLength ? intEarliestNeedleIndex : -1;
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="astrNeedles">Array of strings to match.</param>
+        /// <param name="eComparison">Comparison rules by which to find instances of the substring to remove. Useful for when case-insensitive removal is required.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, IEnumerable<string> astrNeedles, StringComparison eComparison = StringComparison.Ordinal)
+        {
+            if (string.IsNullOrEmpty(strHaystack))
+                return -1;
+            int intHaystackLength = strHaystack.Length;
+            if (intHaystackLength == 0)
+                return -1;
+            if (astrNeedles == null)
+                return -1;
+
+            // While one might think this is the slowest, worst-scaling way of checking for multiple needles, it's actually faster
+            // in C# than a more detailed approach where characters of the haystack are progressively checked against all needles.
+
+            int intEarliestNeedleIndex = intHaystackLength;
+            foreach (string strNeedle in astrNeedles)
+            {
+                int intNeedleIndex = strHaystack.IndexOf(strNeedle, 0, Math.Min(intHaystackLength, intEarliestNeedleIndex + strNeedle.Length), eComparison);
+                if (intNeedleIndex >= 0 && intNeedleIndex < intEarliestNeedleIndex)
+                    intEarliestNeedleIndex = intNeedleIndex;
+            }
+            return intEarliestNeedleIndex != intHaystackLength ? intEarliestNeedleIndex : -1;
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="astrNeedles">Array of strings to match.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, params string[] astrNeedles)
+        {
+            return strHaystack.IndexOfAny(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="astrNeedles">Array of strings to match.</param>
+        /// <param name="eComparison">Comparison rules by which to find instances of the substring to remove. Useful for when case-insensitive removal is required.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAny(this string strHaystack, IReadOnlyCollection<string> astrNeedles, StringComparison eComparison)
+        {
+            if (string.IsNullOrEmpty(strHaystack))
+                return false;
+            int intHaystackLength = strHaystack.Length;
+            if (intHaystackLength == 0)
+                return false;
+            if (astrNeedles == null)
+                return false;
+            int intNumNeedles = astrNeedles.Count;
+            if (intNumNeedles == 0)
+                return false;
+
+            // While one might think this is the slowest, worst-scaling way of checking for multiple needles, it's actually faster
+            // in C# than a more detailed approach where characters of the haystack are progressively checked against all needles.
+
+            return !astrNeedles.All(x => x.Length > intHaystackLength) && astrNeedles.Any(strNeedle => strHaystack.IndexOf(strNeedle, eComparison) >= 0);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="astrNeedles">Array of strings to match.</param>
+        /// <param name="eComparison">Comparison rules by which to find instances of the substring to remove. Useful for when case-insensitive removal is required.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAny(this string strHaystack, IEnumerable<string> astrNeedles, StringComparison eComparison = StringComparison.Ordinal)
+        {
+            if (string.IsNullOrEmpty(strHaystack))
+                return false;
+            int intHaystackLength = strHaystack.Length;
+            if (intHaystackLength == 0)
+                return false;
+            return astrNeedles != null &&
+                   // While one might think this is the slowest, worst-scaling way of checking for multiple needles, it's actually faster
+                   // in C# than a more detailed approach where characters of the haystack are progressively checked against all needles.
+                   astrNeedles.Any(strNeedle => strHaystack.IndexOf(strNeedle, eComparison) >= 0);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="astrNeedles">Array of strings to match.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAny(this string strHaystack, params string[] astrNeedles)
+        {
+            return strHaystack.ContainsAny(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
         /// Syntactic sugar for string::Split that uses one separator char in its argument in addition to StringSplitOptions.
         /// </summary>
         /// <param name="strInput">String to search.</param>

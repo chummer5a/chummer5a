@@ -7010,12 +7010,13 @@ namespace Chummer
                                         if (!string.IsNullOrEmpty(strLoopSourceName)
                                             && strLoopSourceName.IsGuid())
                                         {
-                                            string strNeedle = "<guid>" + strLoopSourceName + "</guid>";
-                                            string strNeedle2 = "<metatypeid>" + strLoopSourceName + "</metatypeid>";
-                                            string strNeedle3 = "<metavariantid>" + strLoopSourceName + "</metavariantid>";
-                                            if (!strCharacterInnerXml.Contains(strNeedle, StringComparison.OrdinalIgnoreCase)
-                                                && !strCharacterInnerXml.Contains(strNeedle2, StringComparison.OrdinalIgnoreCase)
-                                                && !strCharacterInnerXml.Contains(strNeedle3, StringComparison.OrdinalIgnoreCase))
+                                            string[] astrToCheck =
+                                            {
+                                                "<guid>" + strLoopSourceName + "</guid>",
+                                                "<metatypeid>" + strLoopSourceName + "</metatypeid>",
+                                                "<metavariantid>" + strLoopSourceName + "</metavariantid>"
+                                            };
+                                            if (!strCharacterInnerXml.ContainsAny(astrToCheck, StringComparison.OrdinalIgnoreCase))
                                             {
                                                 //Utils.BreakIfDebug();
                                                 if (blnRemoveImprovements
