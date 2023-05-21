@@ -27,17 +27,15 @@ namespace Chummer
 {
     public partial class DiceRoller : Form
     {
-        private readonly ChummerMainForm _frmMain;
         private readonly List<DiceRollerListViewItem> _lstResults = new List<DiceRollerListViewItem>(40);
 
         #region Control Events
 
-        public DiceRoller(ChummerMainForm frmMainForm, IEnumerable<Quality> lstQualities = null, int intDice = 1)
+        public DiceRoller(IEnumerable<Quality> lstQualities = null, int intDice = 1)
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _frmMain = frmMainForm;
             nudDice.Value = intDice;
             ProcessGremlins(lstQualities);
 

@@ -1993,13 +1993,22 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                     }
                     // All sorts of weird things can happen when we hammer I/O from constantly running tasks, and there's no good way of handling these without this very broad try-catch
+#if DEBUG
                     catch (Exception e)
                     {
                         // Make sure we throw the cancellation token if it was triggered first
                         token.ThrowIfCancellationRequested();
                         Utils.BreakIfDebug();
+                        return e.ToString();
+                    }
+#else
+                    catch (Exception)
+                    {
+                        // Make sure we throw the cancellation token if it was triggered first
+                        token.ThrowIfCancellationRequested();
                         return string.Empty;
                     }
+#endif
                     token.ThrowIfCancellationRequested();
 
                     strPageText = strPageText.CleanStylisticLigatures().NormalizeWhiteSpace()

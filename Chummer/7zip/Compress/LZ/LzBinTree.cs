@@ -169,33 +169,29 @@ namespace SevenZip.Compression.LZ
                 uint matchMinPos = _pos > _cyclicBufferSize ? _pos - _cyclicBufferSize : 0;
                 uint cur = _bufferOffset + _pos;
                 uint maxLen = kStartMaxLen; // to avoid items for len < hashSize;
-                uint hashValue, hash2Value = 0, hash3Value = 0;
+                uint hashValue;
+                uint curMatch;
 
                 if (HASH_ARRAY)
                 {
-                    uint temp = CRC.Table[_bufferBase[cur]] ^ _bufferBase[cur + 1];
-                    hash2Value = temp & (kHash2Size - 1);
+                    byte curValue = _bufferBase[cur];
+                    uint temp = CRC.Table[curValue] ^ _bufferBase[cur + 1];
+                    uint hash2Value = temp & (kHash2Size - 1);
                     temp ^= (uint)_bufferBase[cur + 2] << 8;
-                    hash3Value = temp & (kHash3Size - 1);
+                    uint hash3Value = temp & (kHash3Size - 1);
                     hashValue = (temp ^ (CRC.Table[_bufferBase[cur + 3]] << 5)) & _hashMask;
-                }
-                else
-                    hashValue = _bufferBase[cur] ^ ((uint)_bufferBase[cur + 1] << 8);
-
-                uint curMatch = _hash[kFixHashSize + hashValue];
-                if (HASH_ARRAY)
-                {
+                    curMatch = _hash[kFixHashSize + hashValue];
                     uint curMatch2 = _hash[hash2Value];
                     uint curMatch3 = _hash[kHash3Offset + hash3Value];
                     _hash[hash2Value] = _pos;
                     _hash[kHash3Offset + hash3Value] = _pos;
-                    if (curMatch2 > matchMinPos && _bufferBase[_bufferOffset + curMatch2] == _bufferBase[cur])
+                    if (curMatch2 > matchMinPos && _bufferBase[_bufferOffset + curMatch2] == curValue)
                     {
                         distances[offset++] = maxLen = 2;
                         distances[offset++] = _pos - curMatch2 - 1;
                     }
 
-                    if (curMatch3 > matchMinPos && _bufferBase[_bufferOffset + curMatch3] == _bufferBase[cur])
+                    if (curMatch3 > matchMinPos && _bufferBase[_bufferOffset + curMatch3] == curValue)
                     {
                         if (curMatch3 == curMatch2)
                             offset -= 2;
@@ -209,6 +205,11 @@ namespace SevenZip.Compression.LZ
                         offset -= 2;
                         maxLen = kStartMaxLen;
                     }
+                }
+                else
+                {
+                    hashValue = _bufferBase[cur] ^ ((uint)_bufferBase[cur + 1] << 8);
+                    curMatch = _hash[kFixHashSize + hashValue];
                 }
 
                 _hash[kFixHashSize + hashValue] = _pos;
@@ -244,11 +245,18 @@ namespace SevenZip.Compression.LZ
 
                     uint pby1 = _bufferOffset + curMatch;
                     uint len = Math.Min(len0, len1);
-                    if (_bufferBase[pby1 + len] == _bufferBase[cur + len])
+                    byte left = _bufferBase[pby1 + len];
+                    byte right = _bufferBase[cur + len];
+                    if (left == right)
                     {
                         while (++len != lenLimit)
-                            if (_bufferBase[pby1 + len] != _bufferBase[cur + len])
+                        {
+                            left = _bufferBase[pby1 + len];
+                            right = _bufferBase[cur + len];
+                            if (left != right)
                                 break;
+                        }
+
                         if (maxLen < len)
                         {
                             distances[offset++] = maxLen = len;
@@ -262,7 +270,7 @@ namespace SevenZip.Compression.LZ
                         }
                     }
 
-                    if (_bufferBase[pby1 + len] < _bufferBase[cur + len])
+                    if (left < right)
                     {
                         _son[ptr1] = curMatch;
                         ptr1 = cyclicPos + 1;
@@ -346,11 +354,17 @@ namespace SevenZip.Compression.LZ
 
                         uint pby1 = _bufferOffset + curMatch;
                         uint len = Math.Min(len0, len1);
-                        if (_bufferBase[pby1 + len] == _bufferBase[cur + len])
+                        byte left = _bufferBase[pby1 + len];
+                        byte right = _bufferBase[cur + len];
+                        if (left == right)
                         {
                             while (++len != lenLimit)
-                                if (_bufferBase[pby1 + len] != _bufferBase[cur + len])
+                            {
+                                left = _bufferBase[pby1 + len];
+                                right = _bufferBase[cur + len];
+                                if (left != right)
                                     break;
+                            }
                             if (len == lenLimit)
                             {
                                 _son[ptr1] = _son[cyclicPos];
@@ -359,7 +373,7 @@ namespace SevenZip.Compression.LZ
                             }
                         }
 
-                        if (_bufferBase[pby1 + len] < _bufferBase[cur + len])
+                        if (left < right)
                         {
                             _son[ptr1] = curMatch;
                             ptr1 = cyclicPos + 1;

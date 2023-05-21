@@ -720,17 +720,23 @@ namespace Chummer.Backend.Skills
         protected Skill(Character character)
         {
             CharacterObject = character ?? throw new ArgumentNullException(nameof(character));
-            using (character.LockObject.EnterWriteLock())
-                character.PropertyChanged += OnCharacterChanged;
             using (character.Settings.LockObject.EnterWriteLock())
                 character.Settings.PropertyChanged += OnCharacterSettingsPropertyChanged;
-            using (character.AttributeSection.LockObject.EnterWriteLock())
+            using (character.LockObject.EnterWriteLock())
             {
-                character.AttributeSection.PropertyChanged += OnAttributeSectionChanged;
-                character.AttributeSection.Attributes.CollectionChanged += OnAttributesCollectionChanged;
+                character.PropertyChanged += OnCharacterChanged;
+                using (character.AttributeSection.LockObject.EnterWriteLock())
+                {
+                    character.AttributeSection.PropertyChanged += OnAttributeSectionChanged;
+                    character.AttributeSection.Attributes.CollectionChanged += OnAttributesCollectionChanged;
+                }
             }
-            Specializations.CollectionChanged += SpecializationsOnCollectionChanged;
-            Specializations.BeforeClearCollectionChanged += SpecializationsOnBeforeClearCollectionChanged;
+
+            using (Specializations.LockObject.EnterWriteLock())
+            {
+                Specializations.CollectionChanged += SpecializationsOnCollectionChanged;
+                Specializations.BeforeClearCollectionChanged += SpecializationsOnBeforeClearCollectionChanged;
+            }
         }
 
         private async void OnAttributesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
@@ -6616,14 +6622,16 @@ namespace Chummer.Backend.Skills
         {
             if (disposing)
             {
-                using (CharacterObject.LockObject.EnterWriteLock())
-                    CharacterObject.PropertyChanged -= OnCharacterChanged;
                 using (CharacterObject.Settings.LockObject.EnterWriteLock())
                     CharacterObject.Settings.PropertyChanged -= OnCharacterSettingsPropertyChanged;
-                using (CharacterObject.AttributeSection.LockObject.EnterWriteLock())
+                using (CharacterObject.LockObject.EnterWriteLock())
                 {
-                    CharacterObject.AttributeSection.PropertyChanged -= OnAttributeSectionChanged;
-                    CharacterObject.AttributeSection.Attributes.CollectionChanged -= OnAttributesCollectionChanged;
+                    CharacterObject.PropertyChanged -= OnCharacterChanged;
+                    using (CharacterObject.AttributeSection.LockObject.EnterWriteLock())
+                    {
+                        CharacterObject.AttributeSection.PropertyChanged -= OnAttributeSectionChanged;
+                        CharacterObject.AttributeSection.Attributes.CollectionChanged -= OnAttributesCollectionChanged;
+                    }
                 }
 
                 if (AttributeObject != null)
@@ -6652,8 +6660,13 @@ namespace Chummer.Backend.Skills
                     }
                 }
 
-                foreach (SkillSpecialization objSpec in _lstSpecializations)
-                    objSpec.Dispose();
+                using (_lstSpecializations.LockObject.EnterWriteLock())
+                {
+                    _lstSpecializations.CollectionChanged -= SpecializationsOnCollectionChanged;
+                    _lstSpecializations.BeforeClearCollectionChanged -= SpecializationsOnBeforeClearCollectionChanged;
+                    _lstSpecializations.ForEach(x => x.Dispose());
+                }
+
                 _lstSpecializations.Dispose();
                 if (_lstCachedSuggestedSpecializations != null)
                     Utils.ListItemListPool.Return(ref _lstCachedSuggestedSpecializations);
@@ -6676,16 +6689,7 @@ namespace Chummer.Backend.Skills
         {
             if (disposing)
             {
-                IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
-                try
-                {
-                    CharacterObject.PropertyChanged -= OnCharacterChanged;
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
-                objLocker = await CharacterObject.Settings.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                IAsyncDisposable objLocker = await CharacterObject.Settings.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {
                     CharacterObject.Settings.PropertyChanged -= OnCharacterSettingsPropertyChanged;
@@ -6694,11 +6698,22 @@ namespace Chummer.Backend.Skills
                 {
                     await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
-                objLocker = await CharacterObject.AttributeSection.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                objLocker = await CharacterObject.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
                 try
                 {
-                    CharacterObject.AttributeSection.PropertyChanged -= OnAttributeSectionChanged;
-                    CharacterObject.AttributeSection.Attributes.CollectionChanged -= OnAttributesCollectionChanged;
+                    CharacterObject.PropertyChanged -= OnCharacterChanged;
+                    IAsyncDisposable objLocker2 = await CharacterObject.AttributeSection.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                    try
+                    {
+                        AttributeSection objSection = await CharacterObject.GetAttributeSectionAsync().ConfigureAwait(false);
+                        objSection.PropertyChanged -= OnAttributeSectionChanged;
+                        ThreadSafeObservableCollection<CharacterAttrib> objAttributes = await objSection.GetAttributesAsync().ConfigureAwait(false);
+                        objAttributes.CollectionChanged -= OnAttributesCollectionChanged;
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
                 }
                 finally
                 {
@@ -6745,7 +6760,17 @@ namespace Chummer.Backend.Skills
                     }
                 }
 
-                await _lstSpecializations.ForEachAsync(x => x.Dispose()).ConfigureAwait(false);
+                objLocker = await _lstSpecializations.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                try
+                {
+                    _lstSpecializations.CollectionChanged -= SpecializationsOnCollectionChanged;
+                    _lstSpecializations.BeforeClearCollectionChanged -= SpecializationsOnBeforeClearCollectionChanged;
+                    await _lstSpecializations.ForEachAsync(x => x.DisposeAsync().AsTask()).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
                 await _lstSpecializations.DisposeAsync().ConfigureAwait(false);
                 if (_lstCachedSuggestedSpecializations != null)
                     Utils.ListItemListPool.Return(ref _lstCachedSuggestedSpecializations);

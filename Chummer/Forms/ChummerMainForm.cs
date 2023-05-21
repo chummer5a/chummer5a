@@ -1307,11 +1307,10 @@ namespace Chummer
                         objTemp.Dispose();
                     }
                 }
-
-                Task tskOld;
+                
                 try
                 {
-                    tskOld = Interlocked.Exchange(ref _tskVersionUpdate, null);
+                    Task tskOld = Interlocked.Exchange(ref _tskVersionUpdate, null);
                     if (tskOld != null)
                     {
                         while (!tskOld.IsCompleted)
@@ -3936,29 +3935,29 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                DiceRoller frmDiceRoller = RollerWindow;
-                if (frmDiceRoller == null)
-                {
-                    DiceRoller frmNewDiceRoller = await this.DoThreadSafeFuncAsync(() => new DiceRoller(this, objCharacter?.Qualities, intDice), token).ConfigureAwait(false);
-                    try
-                    {
-                        frmDiceRoller = Interlocked.CompareExchange(ref _frmDiceRoller, frmNewDiceRoller, null);
-                        if (frmDiceRoller == null)
-                        {
-                            frmNewDiceRoller.FormClosing += (o, args) =>
-                                Interlocked.CompareExchange(ref _frmDiceRoller, null, frmNewDiceRoller);
-                            await frmNewDiceRoller.DoThreadSafeAsync(x => x.Show(), token).ConfigureAwait(false);
-                            return;
-                        }
-                    }
-                    finally
-                    {
-                        if (frmDiceRoller != null)
-                            await frmNewDiceRoller.DoThreadSafeAsync(x => x.Close(), CancellationToken.None).ConfigureAwait(false);
-                    }
-                }
                 if (GlobalSettings.SingleDiceRoller)
                 {
+                    DiceRoller frmDiceRoller = RollerWindow;
+                    if (frmDiceRoller == null)
+                    {
+                        DiceRoller frmNewDiceRoller = await this.DoThreadSafeFuncAsync(() => new DiceRoller(objCharacter?.Qualities, intDice), token).ConfigureAwait(false);
+                        try
+                        {
+                            frmDiceRoller = Interlocked.CompareExchange(ref _frmDiceRoller, frmNewDiceRoller, null);
+                            if (frmDiceRoller == null)
+                            {
+                                frmNewDiceRoller.FormClosing += (o, args) =>
+                                    Interlocked.CompareExchange(ref _frmDiceRoller, null, frmNewDiceRoller);
+                                await frmNewDiceRoller.DoThreadSafeAsync(x => x.Show(), token).ConfigureAwait(false);
+                                return;
+                            }
+                        }
+                        finally
+                        {
+                            if (frmDiceRoller != null)
+                                await frmNewDiceRoller.DoThreadSafeAsync(x => x.Close(), CancellationToken.None).ConfigureAwait(false);
+                        }
+                    }
                     await frmDiceRoller.DoThreadSafeAsync(x =>
                     {
                         x.Dice = intDice;
@@ -3969,7 +3968,7 @@ namespace Chummer
                 else
                 {
                     DiceRoller frmRoller
-                        = await this.DoThreadSafeFuncAsync(() => new DiceRoller(this, objCharacter?.Qualities, intDice),
+                        = await this.DoThreadSafeFuncAsync(() => new DiceRoller(objCharacter?.Qualities, intDice),
                                                            token).ConfigureAwait(false);
                     try
                     {
