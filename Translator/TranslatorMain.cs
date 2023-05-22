@@ -257,12 +257,12 @@ namespace Translator
                             try
                             {
                                 string strPath = Path.Combine(Utils.GetLanguageFolderPath, strLowerCode + "_data.xml");
-                                if (Utils.SafeDeleteFile(strPath + ".old", true))
+                                if (FileExtensions.SafeDelete(strPath + ".old", true))
                                     File.Move(strPath, strPath + ".old");
                                 else
                                     throw new IOException();
                                 strPath = Path.Combine(Utils.GetLanguageFolderPath, strLowerCode + "xml");
-                                if (Utils.SafeDeleteFile(strPath + ".old", true))
+                                if (FileExtensions.SafeDelete(strPath + ".old", true))
                                     File.Move(strPath, strPath + ".old");
                                 else
                                     throw new IOException();
@@ -449,7 +449,7 @@ namespace Translator
                         string strPath = Path.Combine(Utils.GetLanguageFolderPath, strCode + "_data.xml");
                         if (File.Exists(strPath + ".old"))
                         {
-                            if (Utils.SafeDeleteFile(strPath, true))
+                            if (FileExtensions.SafeDelete(strPath, true))
                                 File.Move(strPath, strPath + ".old");
                             else
                                 throw new IOException();
@@ -458,7 +458,7 @@ namespace Translator
                         strPath = Path.Combine(Utils.GetLanguageFolderPath, strCode + "xml");
                         if (File.Exists(strPath + ".old"))
                         {
-                            if (Utils.SafeDeleteFile(strPath, true))
+                            if (FileExtensions.SafeDelete(strPath, true))
                                 File.Move(strPath, strPath + ".old");
                             else
                                 throw new IOException();

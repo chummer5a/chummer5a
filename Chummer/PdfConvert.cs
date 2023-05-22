@@ -450,10 +450,10 @@ namespace Codaxy.WkHtmlToPdf
                 {
                     if (blnSync)
                         // ReSharper disable once MethodHasAsyncOverload
-                        Utils.SafeDeleteFile(outputPdfFilePath, true, token: CancellationToken.None);
+                        FileExtensions.SafeDelete(outputPdfFilePath, true, token: CancellationToken.None);
                     else
-                        await Utils.SafeDeleteFileAsync(outputPdfFilePath, true, token: CancellationToken.None)
-                                   .ConfigureAwait(false);
+                        await FileExtensions.SafeDeleteAsync(outputPdfFilePath, true, token: CancellationToken.None)
+                                            .ConfigureAwait(false);
                 }
             }
         }

@@ -19,6 +19,7 @@
 using System;
 using System.IO;
 using System.IO.Pipes;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using NLog;
@@ -170,19 +171,33 @@ namespace ChummerHub.Client.Backend
                 try
                 {
                     string text;
-                    using (NamedPipeServerStream server = new NamedPipeServerStream(NamedPipeName,
-                        PipeDirection.InOut, 1,
-                        PipeTransmissionMode.Message, PipeOptions.None,
-                        4028, 4028, ps))
+                    using (new Chummer.FetchSafelyFromPool<StringBuilder>(Chummer.Utils.StringBuilderPool, out StringBuilder sbdText))
                     {
-                        await server.WaitForConnectionAsync(token);
-
                         token.ThrowIfCancellationRequested();
-
-                        using (StreamReader reader = new StreamReader(server))
+                        using (NamedPipeServerStream objServerStream = new NamedPipeServerStream(NamedPipeName,
+                                   PipeDirection.InOut, 1,
+                                   PipeTransmissionMode.Message, PipeOptions.None,
+                                   4028, 4028, ps))
                         {
-                            text = await reader.ReadToEndAsync();
+                            await objServerStream.WaitForConnectionAsync(token).ConfigureAwait(false);
+
+                            token.ThrowIfCancellationRequested();
+
+                            using (StreamReader objReader = new StreamReader(objServerStream))
+                            {
+                                token.ThrowIfCancellationRequested();
+                                for (string strLine = await objReader.ReadLineAsync().ConfigureAwait(false);
+                                     strLine != null;
+                                     strLine = await objReader.ReadLineAsync().ConfigureAwait(false))
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    if (!string.IsNullOrEmpty(strLine))
+                                        sbdText.AppendLine(strLine);
+                                }
+                            }
                         }
+
+                        text = sbdText.ToString();
                     }
 
                     if (text == EXIT_STRING)
@@ -195,12 +210,12 @@ namespace ChummerHub.Client.Backend
                 catch (IOException e)
                 {
                     Log.Warn(e);
-                    await Chummer.Utils.SafeSleepAsync(token);
+                    await Chummer.Utils.SafeSleepAsync(token).ConfigureAwait(false);
                 }
                 catch (Exception e)
                 {
                     Log.Error(e);
-                    await Chummer.Utils.SafeSleepAsync(token);
+                    await Chummer.Utils.SafeSleepAsync(token).ConfigureAwait(false);
                 }
             }
         }

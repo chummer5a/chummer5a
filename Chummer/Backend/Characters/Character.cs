@@ -35421,20 +35421,30 @@ namespace Chummer
                                                  && !strKey.Contains('.'))
                                         {
                                             lstTextStatBlockLines = new List<string>(30);
-                                            using (StreamReader objReader = File.OpenText(strEntryFullName))
+                                            using (FileStream objFileStream
+                                                   = new FileStream(strEntryFullName, FileMode.Open, FileAccess.Read,
+                                                                    FileShare.Read, 4096, !blnSync))
                                             {
                                                 token.ThrowIfCancellationRequested();
-                                                string strLine;
-                                                while ((strLine = blnSync
-                                                           // ReSharper disable once MethodHasAsyncOverload
-                                                           ? objReader.ReadLine()
-                                                           : await objReader.ReadLineAsync().ConfigureAwait(false)) != null)
+                                                using (StreamReader objReader = new StreamReader(objFileStream))
                                                 {
                                                     token.ThrowIfCancellationRequested();
-                                                    // Trim away the newlines and empty spaces at the beginning and end of lines
-                                                    strLine = strLine.Trim('\n', '\r', ' ').Trim();
+                                                    for (string strLine = blnSync
+                                                             // ReSharper disable once MethodHasAsyncOverload
+                                                             ? objReader.ReadLine()
+                                                             : await objReader.ReadLineAsync().ConfigureAwait(false);
+                                                         strLine != null;
+                                                         strLine = blnSync
+                                                             // ReSharper disable once MethodHasAsyncOverload
+                                                             ? objReader.ReadLine()
+                                                             : await objReader.ReadLineAsync().ConfigureAwait(false))
+                                                    {
+                                                        token.ThrowIfCancellationRequested();
+                                                        // Trim away the newlines and empty spaces at the beginning and end of lines
+                                                        strLine = strLine.Trim('\n', '\r', ' ').Trim();
 
-                                                    lstTextStatBlockLines.Add(strLine);
+                                                        lstTextStatBlockLines.Add(strLine);
+                                                    }
                                                 }
                                             }
                                         }

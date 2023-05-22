@@ -487,7 +487,7 @@ namespace Chummer
                         return;
                     }
 
-                    if (!await Utils.SafeDeleteFileAsync(strSaveFile, true, token: _objGenericToken).ConfigureAwait(false))
+                    if (!await FileExtensions.SafeDeleteAsync(strSaveFile, true, token: _objGenericToken).ConfigureAwait(false))
                     {
                         Program.ShowScrollableMessageBox(this,
                                                string.Format(GlobalSettings.CultureInfo,
@@ -1025,10 +1025,9 @@ namespace Chummer
 
                 // The DocumentStream method fails when using Wine, so we'll instead dump everything out a temporary HTML file, have the WebBrowser load that, then delete the temporary file.
                 // Delete any old versions of the file
-                if (GlobalSettings.PrintToFileFirst && !await Utils
-                                                              .SafeDeleteFileAsync(
-                                                                  _strTempSheetFilePath, true, token: token)
-                                                              .ConfigureAwait(false))
+                if (GlobalSettings.PrintToFileFirst && !await FileExtensions.SafeDeleteAsync(
+                                                                                _strTempSheetFilePath, true, token: token)
+                                                                            .ConfigureAwait(false))
                 {
                     await SetDocumentText(
                         await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token)
@@ -1053,11 +1052,23 @@ namespace Chummer
                         objStream.Position = 0;
 
                         // Read in the resulting code and pass it to the browser.
-                        using (StreamReader objReader
-                               = new StreamReader(objStream, Encoding.UTF8, true))
+                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                         {
-                            return await objReader.ReadToEndAsync()
-                                                  .ConfigureAwait(false);
+                            token.ThrowIfCancellationRequested();
+                            using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                            {
+                                token.ThrowIfCancellationRequested();
+                                for (string strLine = await objReader.ReadLineAsync().ConfigureAwait(false);
+                                     strLine != null;
+                                     strLine = await objReader.ReadLineAsync().ConfigureAwait(false))
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    if (!string.IsNullOrEmpty(strLine))
+                                        sbdReturn.AppendLine(strLine);
+                                }
+                            }
+
+                            return sbdReturn.ToString();
                         }
                     }
                 }, token).ConfigureAwait(false);

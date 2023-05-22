@@ -409,6 +409,7 @@
     <Compile Include="Backend\Static\Extensions\DictionaryExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\EnumeratorExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\EnumExtensions.cs" />
+    <Compile Include="Backend\Static\Extensions\FileExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\FloatExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\IntegerExtensions.cs" />
     <Compile Include="Backend\Static\Extensions\InterlockedExtensions.cs" />

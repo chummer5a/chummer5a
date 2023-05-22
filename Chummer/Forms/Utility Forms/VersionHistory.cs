@@ -39,8 +39,8 @@ namespace Chummer
             // Display the contents of the changelog.txt file in the TextBox.
             try
             {
-                await txtHistory.DoThreadSafeAsync(
-                    x => x.Text = File.ReadAllText(Path.Combine(Utils.GetStartupPath, "changelog.txt"))).ConfigureAwait(false);
+                string strText = await FileExtensions.ReadAllTextAsync(Path.Combine(Utils.GetStartupPath, "changelog.txt")).ConfigureAwait(false);
+                await txtHistory.DoThreadSafeAsync(x => x.Text = strText).ConfigureAwait(false);
             }
             catch
             {

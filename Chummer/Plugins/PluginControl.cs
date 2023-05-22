@@ -260,13 +260,15 @@ namespace Chummer.Plugins
                         {
                             Log.Trace(infofile + " found: parsing it!");
 
-                            using (StreamReader file = new StreamReader(infofile))
+                            using (FileStream objFileStream
+                                   = new FileStream(infofile, FileMode.Open, FileAccess.Read, FileShare.Read))
+                            using (StreamReader file = new StreamReader(objFileStream))
                             {
-                                string line;
-                                while ((line = file.ReadLine()) != null)
+                                for (string line = file.ReadLine(); line != null; line = file.ReadLine())
                                 {
                                     string plugindll = Path.Combine(plugindir, line);
-                                    Log.Trace(infofile + " containes line: " + plugindll + " - trying to find it...");
+                                    Log.Trace(
+                                        infofile + " containes line: " + plugindll + " - trying to find it...");
                                     if (File.Exists(plugindll))
                                     {
                                         FileInfo fi = new FileInfo(plugindll);

@@ -236,10 +236,10 @@ namespace Chummer
                     return;
                 try
                 {
-                    if (!await Utils.SafeDeleteFileAsync(
-                                        Path.Combine(Utils.GetSettingsFolderPath,
-                                                     _objReferenceCharacterSettings.FileName), true)
-                                    .ConfigureAwait(false))
+                    if (!await FileExtensions.SafeDeleteAsync(
+                                                 Path.Combine(Utils.GetSettingsFolderPath,
+                                                              _objReferenceCharacterSettings.FileName), true)
+                                             .ConfigureAwait(false))
                     {
                         // Revert removal of setting if we cannot delete the file
                         await dicCharacterSettings.AddAsync(

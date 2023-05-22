@@ -644,8 +644,9 @@ namespace Chummer
                     using (StreamReader objFile = new StreamReader(objFileStream, Encoding.UTF8, true))
                     {
                         token.ThrowIfCancellationRequested();
-                        string strLine;
-                        while ((strLine = await objFile.ReadLineAsync().ConfigureAwait(false)) != null)
+                        for (string strLine = await objFile.ReadLineAsync().ConfigureAwait(false);
+                             strLine != null;
+                             strLine = await objFile.ReadLineAsync().ConfigureAwait(false))
                         {
                             token.ThrowIfCancellationRequested();
                             if (strLine.StartsWith("<!-- ext:", StringComparison.Ordinal))
@@ -772,8 +773,24 @@ namespace Chummer
                             objStream.Position = 0;
 
                             // Read in the resulting code and pass it to the browser.
-                            using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                                return await objReader.ReadToEndAsync().ConfigureAwait(false);
+                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                            {
+                                token.ThrowIfCancellationRequested();
+                                using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    for (string strLine = await objReader.ReadLineAsync().ConfigureAwait(false);
+                                         strLine != null;
+                                         strLine = await objReader.ReadLineAsync().ConfigureAwait(false))
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        if (!string.IsNullOrEmpty(strLine))
+                                            sbdReturn.AppendLine(strLine);
+                                    }
+                                }
+
+                                return sbdReturn.ToString();
+                            }
                         }
                     }, token).ConfigureAwait(false);
 
@@ -863,11 +880,12 @@ namespace Chummer
 
             (bool blnSuccess, Tuple<string, string> strBoxText)
                 = await _dicCache.TryGetValueAsync(new Tuple<string, string>(_strExportLanguage, _strXslt), token).ConfigureAwait(false);
-            File.WriteAllText(strSaveFile, // Change this to a proper path.
-                              blnSuccess
-                                  ? strBoxText.Item1
-                                  : txtText.Text,
-                              Encoding.UTF8);
+            // Change this to a proper path.
+            await FileExtensions.WriteAllTextAsync(strSaveFile,
+                                                   blnSuccess
+                                                       ? strBoxText.Item1
+                                                       : await txtText.DoThreadSafeFuncAsync(x => x.Text, token: token)
+                                                                      .ConfigureAwait(false), Encoding.UTF8);
         }
 
         #endregion JSON

@@ -820,7 +820,7 @@ namespace Chummer
                                             foreach (string strOldAutosave in lstOldAutosaves)
                                             {
                                                 lstTasks.Add(
-                                                    Utils.SafeDeleteFileAsync(
+                                                    FileExtensions.SafeDeleteAsync(
                                                         strOldAutosave, token: _objGenericToken));
                                             }
 
@@ -1224,23 +1224,30 @@ namespace Chummer
                             token.ThrowIfCancellationRequested();
 
                             // Open the stream using a StreamReader for easy access.
-                            using (StreamReader reader = new StreamReader(dataStream, System.Text.Encoding.UTF8, true))
+                            using (StreamReader objReader = new StreamReader(dataStream, System.Text.Encoding.UTF8, true))
                             {
                                 token.ThrowIfCancellationRequested();
 
+                                string strVersionLine = null;
                                 // Read the content.
-                                string responseFromServer = await reader.ReadToEndAsync();
-
-                                string line = responseFromServer
-                                              .SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
-                                              .FirstOrDefault(x => x.Contains("tag_name"));
+                                for (string strLine = await objReader.ReadLineAsync().ConfigureAwait(false);
+                                     strLine != null;
+                                     strLine = await objReader.ReadLineAsync().ConfigureAwait(false))
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    if (strLine.Contains("tag_name"))
+                                    {
+                                        strVersionLine = strLine.Substring(strLine.IndexOf(':') + 1).TrimEnd(',');
+                                        break;
+                                    }
+                                }
 
                                 token.ThrowIfCancellationRequested();
 
                                 Version verLatestVersion = null;
-                                if (!string.IsNullOrEmpty(line))
+                                if (!string.IsNullOrEmpty(strVersionLine))
                                 {
-                                    string strVersion = line.Substring(line.IndexOf(':') + 1);
+                                    string strVersion = strVersionLine.Substring(strVersionLine.IndexOf(':') + 1);
                                     int intPos = strVersion.IndexOf('}');
                                     if (intPos != -1)
                                         strVersion = strVersion.Substring(0, intPos);

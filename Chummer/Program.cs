@@ -309,7 +309,7 @@ namespace Chummer
                         sw.TaskEnd("Startup");
 
                         // Delete old ProfileOptimization file because we don't want it anymore, instead we restart profiling for each newly generated assembly
-                        Utils.SafeDeleteFile(Path.Combine(Utils.GetStartupPath, "chummerprofile"));
+                        FileExtensions.SafeDelete(Path.Combine(Utils.GetStartupPath, "chummerprofile"));
                         // We avoid weird issues with ProfileOptimization pointing JIT to the wrong place by checking for and removing all profile optimization files that
                         // were made in an older version (i.e. an older assembly)
                         string strProfileOptimizationName
@@ -318,7 +318,7 @@ namespace Chummer
                         {
                             if (!string.Equals(strProfileFile, strProfileOptimizationName,
                                                StringComparison.OrdinalIgnoreCase))
-                                Utils.SafeDeleteFile(strProfileFile);
+                                FileExtensions.SafeDelete(strProfileFile);
                         }
 
                         // Mono, non-Windows native stuff, and Win11 don't always play nice with ProfileOptimization, so it's better to just not bother with it when running under them

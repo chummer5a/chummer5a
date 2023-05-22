@@ -342,11 +342,14 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (File.Exists(_strTempLatestVersionChangelogPath))
                 {
-                    string strUpdateLog = File.ReadAllText(_strTempLatestVersionChangelogPath).CleanForHtml();
+                    string strDocumentText = "<font size=\"-1\" face=\"Courier New,Serif\">"
+                                             + (await FileExtensions
+                                                      .ReadAllTextAsync(_strTempLatestVersionChangelogPath, token)
+                                                      .ConfigureAwait(false)).CleanForHtml()
+                                             + "</font>";
                     token.ThrowIfCancellationRequested();
-                    await webNotes.DoThreadSafeAsync(x => x.DocumentText
-                                                         = "<font size=\"-1\" face=\"Courier New,Serif\">"
-                                                           + strUpdateLog + "</font>", token).ConfigureAwait(false);
+                    await webNotes.DoThreadSafeAsync(x => x.DocumentText = strDocumentText, token)
+                                  .ConfigureAwait(false);
                 }
                 token.ThrowIfCancellationRequested();
                 await DoVersionTextUpdate(token).ConfigureAwait(false);
@@ -408,8 +411,24 @@ namespace Chummer
 
                             // Open the stream using a StreamReader for easy access.
                             string responseFromServer;
-                            using (StreamReader reader = new StreamReader(dataStream, Encoding.UTF8, true))
-                                responseFromServer = await reader.ReadToEndAsync().ConfigureAwait(false);
+                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                            {
+                                token.ThrowIfCancellationRequested();
+                                using (StreamReader objReader = new StreamReader(dataStream, Encoding.UTF8, true))
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    for (string strLine = await objReader.ReadLineAsync().ConfigureAwait(false);
+                                         strLine != null;
+                                         strLine = await objReader.ReadLineAsync().ConfigureAwait(false))
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        if (!string.IsNullOrEmpty(strLine))
+                                            sbdReturn.AppendLine(strLine);
+                                    }
+                                }
+
+                                responseFromServer = sbdReturn.ToString();
+                            }
 
                             token.ThrowIfCancellationRequested();
 
@@ -486,9 +505,8 @@ namespace Chummer
 
             if (File.Exists(_strTempLatestVersionChangelogPath))
             {
-                if (!await Utils
-                           .SafeDeleteFileAsync(_strTempLatestVersionChangelogPath + ".old", !SilentMode, token: token)
-                           .ConfigureAwait(false))
+                if (!await FileExtensions.SafeDeleteAsync(_strTempLatestVersionChangelogPath + ".old", !SilentMode, token: token)
+                                         .ConfigureAwait(false))
                     return;
                 File.Move(_strTempLatestVersionChangelogPath, _strTempLatestVersionChangelogPath + ".old");
             }
@@ -497,9 +515,8 @@ namespace Chummer
             try
             {
                 Uri uriConnectionAddress = new Uri(strUrl);
-                if (!await Utils
-                           .SafeDeleteFileAsync(_strTempLatestVersionChangelogPath + ".tmp", !SilentMode, token: token)
-                           .ConfigureAwait(false))
+                if (!await FileExtensions.SafeDeleteAsync(_strTempLatestVersionChangelogPath + ".tmp", !SilentMode, token: token)
+                                         .ConfigureAwait(false))
                     return;
                 await _clientChangelogDownloader
                       .DownloadFileTaskAsync(uriConnectionAddress, _strTempLatestVersionChangelogPath + ".tmp")
@@ -1060,7 +1077,7 @@ namespace Chummer
                                     Directory.CreateDirectory(strLoopDirectory);
                                 if (File.Exists(strLoopPath))
                                 {
-                                    if (!await Utils.SafeDeleteFileAsync(
+                                    if (!await FileExtensions.SafeDeleteAsync(
                                             strLoopPath + ".old", !SilentMode, token: token).ConfigureAwait(false))
                                     {
                                         blnDoRestart = false;
@@ -1181,7 +1198,7 @@ namespace Chummer
                     int intCounter = 0;
                     foreach (string strFileToDelete in lstFilesToDelete)
                     {
-                        dicTasks.Add(strFileToDelete, Utils.SafeDeleteFileAsync(strFileToDelete, token: token));
+                        dicTasks.Add(strFileToDelete, FileExtensions.SafeDeleteAsync(strFileToDelete, token: token));
                         if (++intCounter != Utils.MaxParallelBatchSize)
                             continue;
                         await Task.WhenAll(dicTasks.Values).ConfigureAwait(false);
@@ -1207,7 +1224,7 @@ namespace Chummer
                         try
                         {
                             if (File.Exists(strBlockedFile + ".old")
-                                && !await Utils.SafeDeleteFileAsync(strBlockedFile + ".old", !SilentMode, token: token)
+                                && !await FileExtensions.SafeDeleteAsync(strBlockedFile + ".old", !SilentMode, token: token)
                                                .ConfigureAwait(false))
                             {
                                 continue;
@@ -1260,7 +1277,7 @@ namespace Chummer
                     {
                         try
                         {
-                            await Utils.SafeDeleteFileAsync(strToDelete, token: token).ConfigureAwait(false);
+                            await FileExtensions.SafeDeleteAsync(strToDelete, token: token).ConfigureAwait(false);
                         }
                         catch (IOException)
                         {
@@ -1281,7 +1298,7 @@ namespace Chummer
                         {
                             string strOriginal = Path.GetFileNameWithoutExtension(strBackupFileName);
                             if (File.Exists(strOriginal)
-                                && !await Utils.SafeDeleteFileAsync(strOriginal, token: token)
+                                && !await FileExtensions.SafeDeleteAsync(strOriginal, token: token)
                                                .ConfigureAwait(false))
                                 continue;
                             File.Move(strBackupFileName, strOriginal);
@@ -1390,13 +1407,13 @@ namespace Chummer
                 {
                     if (e.Cancelled || e.Error != null)
                     {
-                        await Utils.SafeDeleteFileAsync(_strTempLatestVersionZipPath, !SilentMode,
+                        await FileExtensions.SafeDeleteAsync(_strTempLatestVersionZipPath, !SilentMode,
                                                         token: _objGenericToken).ConfigureAwait(false);
                         File.Move(_strTempLatestVersionZipPath + ".old", _strTempLatestVersionZipPath);
                     }
                     else
                     {
-                        await Utils.SafeDeleteFileAsync(_strTempLatestVersionZipPath + ".old", !SilentMode,
+                        await FileExtensions.SafeDeleteAsync(_strTempLatestVersionZipPath + ".old", !SilentMode,
                                                         token: _objGenericToken).ConfigureAwait(false);
                     }
                 }

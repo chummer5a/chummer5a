@@ -515,130 +515,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Wait for an open file to be available for deletion and then delete it.
-        /// </summary>
-        /// <param name="strPath">File path to delete.</param>
-        /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if the file cannot be accessed because of permissions.</param>
-        /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
-        /// <param name="token">Cancellation token to use</param>
-        /// <returns>True if file does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
-        public static bool SafeDeleteFile(string strPath, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60, CancellationToken token = default)
-        {
-            return SafelyRunSynchronously(() => SafeDeleteFileCoreAsync(true, strPath, blnShowUnauthorizedAccess, intTimeout, token), token);
-        }
-
-        /// <summary>
-        /// Wait for an open file to be available for deletion and then delete it.
-        /// </summary>
-        /// <param name="strPath">File path to delete.</param>
-        /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if the file cannot be accessed because of permissions.</param>
-        /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
-        /// <param name="token">Cancellation token to use</param>
-        /// <returns>True if file does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
-        public static Task<bool> SafeDeleteFileAsync(string strPath, bool blnShowUnauthorizedAccess = false, int intTimeout = DefaultSleepDuration * 60, CancellationToken token = default)
-        {
-            return SafeDeleteFileCoreAsync(false, strPath, blnShowUnauthorizedAccess, intTimeout, token);
-        }
-
-        /// <summary>
-        /// Wait for an open file to be available for deletion and then delete it.
-        /// Uses flag hack method design outlined here to avoid locking:
-        /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development
-        /// </summary>
-        /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
-        /// <param name="strPath">File path to delete.</param>
-        /// <param name="blnShowUnauthorizedAccess">Whether or not to show a message if the file cannot be accessed because of permissions.</param>
-        /// <param name="intTimeout">Amount of time to wait for deletion, in milliseconds</param>
-        /// <param name="token">Cancellation token to use</param>
-        /// <returns>True if file does not exist or deletion was successful. False if deletion was unsuccessful.</returns>
-        private static async Task<bool> SafeDeleteFileCoreAsync(bool blnSync, string strPath, bool blnShowUnauthorizedAccess, int intTimeout, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            if (string.IsNullOrEmpty(strPath))
-                return true;
-            int intWaitInterval = Math.Max(intTimeout / DefaultSleepDuration, DefaultSleepDuration);
-            while (File.Exists(strPath))
-            {
-                token.ThrowIfCancellationRequested();
-                try
-                {
-                    if (!strPath.StartsWith(GetStartupPath, StringComparison.OrdinalIgnoreCase)
-                        && !strPath.StartsWith(GetTempPath(), StringComparison.OrdinalIgnoreCase))
-                    {
-                        token.ThrowIfCancellationRequested();
-                        // For safety purposes, do not allow unprompted deleting of any files outside of the Chummer folder itself
-                        if (blnShowUnauthorizedAccess)
-                        {
-                            if (Program.ShowScrollableMessageBox(
-                                    string.Format(GlobalSettings.CultureInfo,
-                                                  blnSync
-                                                      // ReSharper disable once MethodHasAsyncOverload
-                                                      ? LanguageManager.GetString("Message_Prompt_Delete_Existing_File", token: token)
-                                                      : await LanguageManager.GetStringAsync(
-                                                          "Message_Prompt_Delete_Existing_File", token: token).ConfigureAwait(false), strPath),
-                                    buttons: MessageBoxButtons.YesNo, icon: MessageBoxIcon.Warning) != DialogResult.Yes)
-                                return false;
-                        }
-                        else
-                        {
-                            BreakIfDebug();
-                            return false;
-                        }
-                    }
-
-                    token.ThrowIfCancellationRequested();
-                    if (blnSync)
-                        File.Delete(strPath);
-                    else
-                        await Task.Run(() => File.Delete(strPath), token).ConfigureAwait(false);
-                }
-                catch (PathTooLongException)
-                {
-                    // File path is somehow too long? File is not deleted, so return false.
-                    return false;
-                }
-                catch (UnauthorizedAccessException)
-                {
-                    // We do not have sufficient privileges to delete this file.
-                    if (blnShowUnauthorizedAccess)
-                        Program.ShowScrollableMessageBox(blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? LanguageManager.GetString("Message_Insufficient_Permissions_Warning", token: token)
-                            : await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token).ConfigureAwait(false));
-                    return false;
-                }
-                catch (DirectoryNotFoundException)
-                {
-                    // File doesn't exist.
-                    return true;
-                }
-                catch (FileNotFoundException)
-                {
-                    // File doesn't exist.
-                    return true;
-                }
-                catch (IOException)
-                {
-                    //the file is unavailable because it is:
-                    //still being written to
-                    //or being processed by another thread
-                    //or does not exist (has already been processed)
-                    if (blnSync)
-                        SafeSleep(intWaitInterval, token);
-                    else
-                        await SafeSleepAsync(intWaitInterval, token).ConfigureAwait(false);
-                    intTimeout -= intWaitInterval;
-                }
-                if (intTimeout < 0)
-                {
-                    BreakIfDebug();
-                    return false;
-                }
-            }
-            return true;
-        }
-
-        /// <summary>
         /// Wait for an open directory to be available for deletion and then delete it.
         /// </summary>
         /// <param name="strPath">Directory path to delete.</param>
@@ -862,7 +738,7 @@ namespace Chummer
                 RunWithoutThreadLock(() =>
                 {
                     Parallel.ForEach(astrFilesToDelete, () => true,
-                                     (strToDelete, x, y) => SafeDeleteFile(strToDelete, false, intTimeout, token),
+                                     (strToDelete, x, y) => FileExtensions.SafeDelete(strToDelete, false, intTimeout, token),
                                      blnLoop =>
                                      {
                                          if (!blnLoop)
@@ -876,7 +752,7 @@ namespace Chummer
             for (int i = 0; i < astrFilesToDelete.Length; i++)
             {
                 string strToDelete = astrFilesToDelete[i];
-                atskSuccesses[i] = SafeDeleteFileAsync(strToDelete, false, intTimeout, token);
+                atskSuccesses[i] = FileExtensions.SafeDeleteAsync(strToDelete, false, intTimeout, token);
             }
             foreach (Task<bool> x in atskSuccesses)
             {
