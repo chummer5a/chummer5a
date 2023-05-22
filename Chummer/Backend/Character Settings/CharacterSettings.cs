@@ -6665,8 +6665,8 @@ namespace Chummer
                     {
                         using (LockObject.EnterWriteLock())
                             WeightFormat
-                                = EssenceFormat.Substring(
-                                    0, EssenceFormat.Length - (intCurrentWeightDecimals - intNewWeightDecimals));
+                                = WeightFormat.Substring(
+                                    0, WeightFormat.Length - (intCurrentWeightDecimals - intNewWeightDecimals));
                     }
                     else if (intNewWeightDecimals > intCurrentWeightDecimals)
                     {
