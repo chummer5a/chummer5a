@@ -275,7 +275,7 @@ namespace Chummer
             Encoder encoder = s_LzyEncoder.Value;
             token.ThrowIfCancellationRequested();
             encoder.SetCoderProperties(propIDs, properties);
-            encoder.WriteCoderProperties(objOutStream);
+            await encoder.WriteCoderPropertiesAsync(objOutStream, token).ConfigureAwait(false);
             long fileSize = eos || stdInMode ? -1 : objInStream.Length;
             await objOutStream.WriteAsync(BitConverter.GetBytes(fileSize), 0, 8, token).ConfigureAwait(false);
             token.ThrowIfCancellationRequested();

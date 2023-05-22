@@ -20,6 +20,8 @@
 
 using System;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SevenZip.Compression.LZ
 {
@@ -83,11 +85,31 @@ namespace SevenZip.Compression.LZ
             ReduceOffsets(-1);
         }
 
+        public new async ValueTask InitAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            await base.InitAsync(token).ConfigureAwait(false);
+            for (uint i = 0; i < _hashSizeSum; i++)
+                _hash[i] = kEmptyHashValue;
+            _cyclicBufferPos = 0;
+            ReduceOffsets(-1);
+        }
+
         public new void MovePos()
         {
             if (++_cyclicBufferPos >= _cyclicBufferSize)
                 _cyclicBufferPos = 0;
             base.MovePos();
+            if (_pos == kMaxValForNormalize)
+                Normalize();
+        }
+
+        public new async ValueTask MovePosAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (++_cyclicBufferPos >= _cyclicBufferSize)
+                _cyclicBufferPos = 0;
+            await base.MovePosAsync(token).ConfigureAwait(false);
             if (_pos == kMaxValForNormalize)
                 Normalize();
         }
@@ -292,6 +314,153 @@ namespace SevenZip.Compression.LZ
         }
 
         [CLSCompliant(false)]
+        public async ValueTask<uint> GetMatchesAsync(uint[] distances, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            unchecked
+            {
+                uint lenLimit;
+                if (_pos + _matchMaxLen <= _streamPos)
+                    lenLimit = _matchMaxLen;
+                else
+                {
+                    lenLimit = _streamPos - _pos;
+                    if (lenLimit < kMinMatchCheck)
+                    {
+                        await MovePosAsync(token).ConfigureAwait(false);
+                        return 0;
+                    }
+                }
+
+                uint offset = 0;
+                uint matchMinPos = _pos > _cyclicBufferSize ? _pos - _cyclicBufferSize : 0;
+                uint cur = _bufferOffset + _pos;
+                uint maxLen = kStartMaxLen; // to avoid items for len < hashSize;
+                uint hashValue;
+                uint curMatch;
+
+                if (HASH_ARRAY)
+                {
+                    byte curValue = _bufferBase[cur];
+                    uint temp = CRC.Table[curValue] ^ _bufferBase[cur + 1];
+                    uint hash2Value = temp & (kHash2Size - 1);
+                    temp ^= (uint)_bufferBase[cur + 2] << 8;
+                    uint hash3Value = temp & (kHash3Size - 1);
+                    hashValue = (temp ^ (CRC.Table[_bufferBase[cur + 3]] << 5)) & _hashMask;
+                    curMatch = _hash[kFixHashSize + hashValue];
+                    uint curMatch2 = _hash[hash2Value];
+                    uint curMatch3 = _hash[kHash3Offset + hash3Value];
+                    _hash[hash2Value] = _pos;
+                    _hash[kHash3Offset + hash3Value] = _pos;
+                    if (curMatch2 > matchMinPos && _bufferBase[_bufferOffset + curMatch2] == curValue)
+                    {
+                        distances[offset++] = maxLen = 2;
+                        distances[offset++] = _pos - curMatch2 - 1;
+                    }
+
+                    if (curMatch3 > matchMinPos && _bufferBase[_bufferOffset + curMatch3] == curValue)
+                    {
+                        if (curMatch3 == curMatch2)
+                            offset -= 2;
+                        distances[offset++] = maxLen = 3;
+                        distances[offset++] = _pos - curMatch3 - 1;
+                        curMatch2 = curMatch3;
+                    }
+
+                    if (offset != 0 && curMatch2 == curMatch)
+                    {
+                        offset -= 2;
+                        maxLen = kStartMaxLen;
+                    }
+                }
+                else
+                {
+                    hashValue = _bufferBase[cur] ^ ((uint)_bufferBase[cur + 1] << 8);
+                    curMatch = _hash[kFixHashSize + hashValue];
+                }
+
+                _hash[kFixHashSize + hashValue] = _pos;
+
+                uint ptr0 = (_cyclicBufferPos << 1) + 1;
+                uint ptr1 = _cyclicBufferPos << 1;
+
+                uint len1;
+                uint len0 = len1 = kNumHashDirectBytes;
+
+                if (kNumHashDirectBytes != 0 && curMatch > matchMinPos
+                                             && _bufferBase[_bufferOffset + curMatch + kNumHashDirectBytes] !=
+                                             _bufferBase[cur + kNumHashDirectBytes])
+                {
+                    distances[offset++] = maxLen = kNumHashDirectBytes;
+                    distances[offset++] = _pos - curMatch - 1;
+                }
+
+                uint count = _cutValue;
+
+                while (true)
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (curMatch <= matchMinPos || count-- == 0)
+                    {
+                        _son[ptr0] = _son[ptr1] = kEmptyHashValue;
+                        break;
+                    }
+
+                    uint delta = _pos - curMatch;
+                    uint cyclicPos = (delta <= _cyclicBufferPos
+                        ? _cyclicBufferPos - delta
+                        : _cyclicBufferPos - delta + _cyclicBufferSize) << 1;
+
+                    uint pby1 = _bufferOffset + curMatch;
+                    uint len = Math.Min(len0, len1);
+                    byte left = _bufferBase[pby1 + len];
+                    byte right = _bufferBase[cur + len];
+                    if (left == right)
+                    {
+                        while (++len != lenLimit)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            left = _bufferBase[pby1 + len];
+                            right = _bufferBase[cur + len];
+                            if (left != right)
+                                break;
+                        }
+
+                        if (maxLen < len)
+                        {
+                            distances[offset++] = maxLen = len;
+                            distances[offset++] = delta - 1;
+                            if (len == lenLimit)
+                            {
+                                _son[ptr1] = _son[cyclicPos];
+                                _son[ptr0] = _son[cyclicPos + 1];
+                                break;
+                            }
+                        }
+                    }
+
+                    if (left < right)
+                    {
+                        _son[ptr1] = curMatch;
+                        ptr1 = cyclicPos + 1;
+                        curMatch = _son[ptr1];
+                        len1 = len;
+                    }
+                    else
+                    {
+                        _son[ptr0] = curMatch;
+                        ptr0 = cyclicPos;
+                        curMatch = _son[ptr0];
+                        len0 = len;
+                    }
+                }
+
+                await MovePosAsync(token).ConfigureAwait(false);
+                return offset;
+            }
+        }
+
+        [CLSCompliant(false)]
         public void Skip(uint num)
         {
             unchecked
@@ -390,6 +559,112 @@ namespace SevenZip.Compression.LZ
                     }
 
                     MovePos();
+                } while (--num != 0);
+            }
+        }
+
+        [CLSCompliant(false)]
+        public async ValueTask SkipAsync(uint num, CancellationToken token = default)
+        {
+            unchecked
+            {
+                do
+                {
+                    token.ThrowIfCancellationRequested();
+                    uint lenLimit;
+                    if (_pos + _matchMaxLen <= _streamPos)
+                        lenLimit = _matchMaxLen;
+                    else
+                    {
+                        lenLimit = _streamPos - _pos;
+                        if (lenLimit < kMinMatchCheck)
+                        {
+                            await MovePosAsync(token).ConfigureAwait(false);
+                            continue;
+                        }
+                    }
+
+                    uint matchMinPos = _pos > _cyclicBufferSize ? _pos - _cyclicBufferSize : 0;
+                    uint cur = _bufferOffset + _pos;
+
+                    uint hashValue;
+
+                    if (HASH_ARRAY)
+                    {
+                        uint temp = CRC.Table[_bufferBase[cur]] ^ _bufferBase[cur + 1];
+                        uint hash2Value = temp & (kHash2Size - 1);
+                        _hash[hash2Value] = _pos;
+                        temp ^= (uint)_bufferBase[cur + 2] << 8;
+                        uint hash3Value = temp & (kHash3Size - 1);
+                        _hash[kHash3Offset + hash3Value] = _pos;
+                        hashValue = (temp ^ (CRC.Table[_bufferBase[cur + 3]] << 5)) & _hashMask;
+                    }
+                    else
+                        hashValue = _bufferBase[cur] ^ ((uint)_bufferBase[cur + 1] << 8);
+
+                    uint curMatch = _hash[kFixHashSize + hashValue];
+                    _hash[kFixHashSize + hashValue] = _pos;
+
+                    uint ptr0 = (_cyclicBufferPos << 1) + 1;
+                    uint ptr1 = _cyclicBufferPos << 1;
+
+                    uint len1;
+                    uint len0 = len1 = kNumHashDirectBytes;
+
+                    uint count = _cutValue;
+                    while (true)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (curMatch <= matchMinPos || count-- == 0)
+                        {
+                            _son[ptr0] = _son[ptr1] = kEmptyHashValue;
+                            break;
+                        }
+
+                        uint delta = _pos - curMatch;
+                        uint cyclicPos = (delta <= _cyclicBufferPos
+                            ? _cyclicBufferPos - delta
+                            : _cyclicBufferPos - delta + _cyclicBufferSize) << 1;
+
+                        uint pby1 = _bufferOffset + curMatch;
+                        uint len = Math.Min(len0, len1);
+                        byte left = _bufferBase[pby1 + len];
+                        byte right = _bufferBase[cur + len];
+                        if (left == right)
+                        {
+                            while (++len != lenLimit)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                left = _bufferBase[pby1 + len];
+                                right = _bufferBase[cur + len];
+                                if (left != right)
+                                    break;
+                            }
+                            if (len == lenLimit)
+                            {
+                                _son[ptr1] = _son[cyclicPos];
+                                _son[ptr0] = _son[cyclicPos + 1];
+                                break;
+                            }
+                        }
+
+                        if (left < right)
+                        {
+                            _son[ptr1] = curMatch;
+                            ptr1 = cyclicPos + 1;
+                            curMatch = _son[ptr1];
+                            len1 = len;
+                        }
+                        else
+                        {
+                            _son[ptr0] = curMatch;
+                            ptr0 = cyclicPos;
+                            curMatch = _son[ptr0];
+                            len0 = len;
+                        }
+                    }
+
+                    await MovePosAsync(token).ConfigureAwait(false);
                 } while (--num != 0);
             }
         }

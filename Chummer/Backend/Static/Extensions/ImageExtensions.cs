@@ -510,7 +510,7 @@ namespace Chummer
                 break;
             }
 
-            return await Task.Run(() =>
+            return await Task.Run(async () =>
             {
                 try
                 {
@@ -529,7 +529,7 @@ namespace Chummer
 
                         bmpClone.Save(objImageStream, eOverrideFormat);
                         token.ThrowIfCancellationRequested();
-                        return objImageStream.ToBase64String(token: token);
+                        return await objImageStream.ToBase64StringAsync(token: token).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -570,7 +570,7 @@ namespace Chummer
                 break;
             }
 
-            return await Task.Run(() =>
+            return await Task.Run(async () =>
             {
                 try
                 {
@@ -578,7 +578,7 @@ namespace Chummer
                     {
                         bmpClone.Save(objImageStream, objCodecInfo, lstEncoderParameters);
                         token.ThrowIfCancellationRequested();
-                        return objImageStream.ToBase64String(token: token);
+                        return await objImageStream.ToBase64StringAsync(token: token).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -669,7 +669,7 @@ namespace Chummer
                 Param = { [0] = new EncoderParameter(Encoder.Quality, ProcessJpegQualitySetting(bmpClone, intQuality)) }
             };
             token.ThrowIfCancellationRequested();
-            return await Task.Run(() =>
+            return await Task.Run(async () =>
             {
                 try
                 {
@@ -677,7 +677,7 @@ namespace Chummer
                     {
                         bmpClone.Save(objImageStream, s_LzyJpegEncoder.Value, lstJpegParameters);
                         token.ThrowIfCancellationRequested();
-                        return objImageStream.ToBase64String(token: token);
+                        return await objImageStream.ToBase64StringAsync(token: token).ConfigureAwait(false);
                     }
                 }
                 finally

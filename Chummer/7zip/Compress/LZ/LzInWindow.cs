@@ -20,6 +20,8 @@
 
 using System;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SevenZip.Compression.LZ
 {
@@ -89,6 +91,38 @@ namespace SevenZip.Compression.LZ
             }
         }
 
+        public virtual async ValueTask ReadBlockAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_streamEndWasReached)
+                return;
+            unchecked
+            {
+                while (true)
+                {
+                    token.ThrowIfCancellationRequested();
+                    int size = (int)(0 - _bufferOffset + _blockSize - _streamPos);
+                    if (size == 0)
+                        return;
+                    int numReadBytes = await _stream.ReadAsync(_bufferBase, (int)(_bufferOffset + _streamPos), size, token).ConfigureAwait(false);
+                    if (numReadBytes == 0)
+                    {
+                        _posLimit = _streamPos;
+                        uint pointerToPosition = _bufferOffset + _posLimit;
+                        if (pointerToPosition > _pointerToLastSafePosition)
+                            _posLimit = _pointerToLastSafePosition - _bufferOffset;
+
+                        _streamEndWasReached = true;
+                        return;
+                    }
+
+                    _streamPos += (uint)numReadBytes;
+                    if (_streamPos >= _pos + _keepSizeAfter)
+                        _posLimit = _streamPos - _keepSizeAfter;
+                }
+            }
+        }
+
         private void Free()
         { _bufferBase = null; }
 
@@ -122,6 +156,16 @@ namespace SevenZip.Compression.LZ
             ReadBlock();
         }
 
+        public ValueTask InitAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            _bufferOffset = 0;
+            _pos = 0;
+            _streamPos = 0;
+            _streamEndWasReached = false;
+            return ReadBlockAsync(token);
+        }
+
         public void MovePos()
         {
             unchecked
@@ -133,6 +177,21 @@ namespace SevenZip.Compression.LZ
                     if (pointerToPosition > _pointerToLastSafePosition)
                         MoveBlock();
                     ReadBlock();
+                }
+            }
+        }
+
+        public async ValueTask MovePosAsync(CancellationToken token = default)
+        {
+            unchecked
+            {
+                _pos++;
+                if (_pos > _posLimit)
+                {
+                    uint pointerToPosition = _bufferOffset + _pos;
+                    if (pointerToPosition > _pointerToLastSafePosition)
+                        MoveBlock();
+                    await ReadBlockAsync(token).ConfigureAwait(false);
                 }
             }
         }

@@ -229,6 +229,8 @@ namespace SevenZip
     public interface IWriteCoderProperties
     {
         void WriteCoderProperties(System.IO.Stream outStream);
+
+        Task WriteCoderPropertiesAsync(System.IO.Stream outStream, CancellationToken token = default);
     }
 
     public interface ISetDecoderProperties

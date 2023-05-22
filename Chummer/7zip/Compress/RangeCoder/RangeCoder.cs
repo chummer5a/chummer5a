@@ -18,6 +18,8 @@
  */
 
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SevenZip.Compression.RangeCoder
 {
@@ -63,6 +65,11 @@ namespace SevenZip.Compression.RangeCoder
         public void FlushStream()
         {
             Stream.Flush();
+        }
+
+        public Task FlushStreamAsync(CancellationToken token = default)
+        {
+            return Stream.FlushAsync(token);
         }
 
         public void CloseStream()
@@ -177,6 +184,22 @@ namespace SevenZip.Compression.RangeCoder
             }
         }
 
+        public async ValueTask InitAsync(Stream stream, CancellationToken token = default)
+        {
+            // Stream.Init(stream);
+            Stream = stream;
+
+            Code = 0;
+            Range = 0xFFFFFFFF;
+            byte[] achrBuffer = new byte[5];
+            _ = await Stream.ReadAsync(achrBuffer, 0, 5, token).ConfigureAwait(false);
+            unchecked
+            {
+                for (int i = 0; i < 5; i++)
+                    Code = (Code << 8) | achrBuffer[i];
+            }
+        }
+
         public void ReleaseStream()
         {
             // Stream.ReleaseStream();
@@ -197,6 +220,25 @@ namespace SevenZip.Compression.RangeCoder
                     return;
                 byte[] achrBuffer = new byte[intNumReads];
                 _ = Stream.Read(achrBuffer, 0, intNumReads);
+                int i = 0;
+                while (Range < kTopValue)
+                {
+                    Code = (Code << 8) | achrBuffer[i++];
+                    Range <<= 8;
+                }
+            }
+        }
+
+        public async ValueTask NormalizeAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            unchecked
+            {
+                int intNumReads = Chummer.IntegerExtensions.DivAwayFromZero((int)(kTopValue / Range), 8);
+                if (intNumReads <= 0)
+                    return;
+                byte[] achrBuffer = new byte[intNumReads];
+                _ = await Stream.ReadAsync(achrBuffer, 0, intNumReads, token).ConfigureAwait(false);
                 int i = 0;
                 while (Range < kTopValue)
                 {
@@ -230,6 +272,17 @@ namespace SevenZip.Compression.RangeCoder
                 Code -= start * Range;
                 Range *= size;
                 Normalize();
+            }
+        }
+
+        public ValueTask DecodeAsync(uint start, uint size, uint total, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            unchecked
+            {
+                Code -= start * Range;
+                Range *= size;
+                return NormalizeAsync(token);
             }
         }
 
@@ -287,6 +340,31 @@ namespace SevenZip.Compression.RangeCoder
                 }
 
                 Normalize();
+
+                return symbol;
+            }
+        }
+
+        public async ValueTask<uint> DecodeBitAsync(uint size0, int numTotalBits, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            unchecked
+            {
+                uint newBound = (Range >> numTotalBits) * size0;
+                uint symbol;
+                if (Code < newBound)
+                {
+                    symbol = 0;
+                    Range = newBound;
+                }
+                else
+                {
+                    symbol = 1;
+                    Code -= newBound;
+                    Range -= newBound;
+                }
+
+                await NormalizeAsync(token).ConfigureAwait(false);
 
                 return symbol;
             }

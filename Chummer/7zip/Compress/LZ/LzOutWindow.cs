@@ -20,6 +20,8 @@
 
 using System;
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SevenZip.Compression.LZ
 {
@@ -59,6 +61,18 @@ namespace SevenZip.Compression.LZ
             }
         }
 
+        public async ValueTask InitAsync(Stream stream, bool solid, CancellationToken token = default)
+        {
+            await ReleaseStreamAsync(token).ConfigureAwait(false);
+            _stream = stream;
+            if (!solid)
+            {
+                _streamPos = 0;
+                _pos = 0;
+                TrainSize = 0;
+            }
+        }
+
         public bool Train(Stream stream)
         {
             unchecked
@@ -86,9 +100,44 @@ namespace SevenZip.Compression.LZ
             return true;
         }
 
+        public async ValueTask<bool> TrainAsync(Stream stream, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            unchecked
+            {
+                long len = stream.Length;
+                uint size = len < _windowSize ? (uint)len : _windowSize;
+                TrainSize = size;
+                stream.Position = len - size;
+                _streamPos = _pos = 0;
+                while (size > 0)
+                {
+                    token.ThrowIfCancellationRequested();
+                    uint curSize = _windowSize - _pos;
+                    if (size < curSize)
+                        curSize = size;
+                    int numReadBytes = await stream.ReadAsync(_buffer, (int)_pos, (int)curSize, token).ConfigureAwait(false);
+                    if (numReadBytes == 0)
+                        return false;
+                    size -= (uint)numReadBytes;
+                    _pos += (uint)numReadBytes;
+                    _streamPos += (uint)numReadBytes;
+                    if (_pos == _windowSize)
+                        _streamPos = _pos = 0;
+                }
+            }
+            return true;
+        }
+
         public void ReleaseStream()
         {
             Flush();
+            _stream = null;
+        }
+
+        public async ValueTask ReleaseStreamAsync(CancellationToken token = default)
+        {
+            await FlushAsync(token).ConfigureAwait(false);
             _stream = null;
         }
 
@@ -98,6 +147,18 @@ namespace SevenZip.Compression.LZ
             if (size == 0)
                 return;
             _stream.Write(_buffer, (int)_streamPos, (int)size);
+            if (_pos >= _windowSize)
+                _pos = 0;
+            _streamPos = _pos;
+        }
+
+        public async ValueTask FlushAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            uint size = _pos - _streamPos;
+            if (size == 0)
+                return;
+            await _stream.WriteAsync(_buffer, (int)_streamPos, (int)size, token).ConfigureAwait(false);
             if (_pos >= _windowSize)
                 _pos = 0;
             _streamPos = _pos;
@@ -122,11 +183,39 @@ namespace SevenZip.Compression.LZ
             }
         }
 
+        [CLSCompliant(false)]
+        public async ValueTask CopyBlockAsync(uint distance, uint len, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            unchecked
+            {
+                uint pos = _pos - distance - 1;
+                if (pos >= _windowSize)
+                    pos += _windowSize;
+                for (; len > 0; len--)
+                {
+                    if (pos >= _windowSize)
+                        pos = 0;
+                    _buffer[_pos++] = _buffer[pos++];
+                    if (_pos >= _windowSize)
+                        await FlushAsync(token).ConfigureAwait(false);
+                }
+            }
+        }
+
         public void PutByte(byte b)
         {
             _buffer[_pos++] = b;
             if (_pos >= _windowSize)
                 Flush();
+        }
+
+        public async ValueTask PutByteAsync(byte b, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            _buffer[_pos++] = b;
+            if (_pos >= _windowSize)
+                await FlushAsync(token).ConfigureAwait(false);
         }
 
         [CLSCompliant(false)]

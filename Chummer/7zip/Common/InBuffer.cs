@@ -19,6 +19,8 @@
 // InBuffer.cs
 
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SevenZip.Buffer
 {
@@ -60,6 +62,19 @@ namespace SevenZip.Buffer
             return !m_StreamWasExhausted;
         }
 
+        public async ValueTask<bool> ReadBlockAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (m_StreamWasExhausted)
+                return false;
+            m_ProcessedSize += m_Pos;
+            int aNumProcessedBytes = await m_Stream.ReadAsync(m_Buffer, 0, (int)m_BufferSize, token).ConfigureAwait(false);
+            m_Pos = 0;
+            m_Limit = (uint)aNumProcessedBytes;
+            m_StreamWasExhausted = aNumProcessedBytes == 0;
+            return !m_StreamWasExhausted;
+        }
+
         public void ReleaseStream()
         {
             // m_Stream.Close();
@@ -80,6 +95,13 @@ namespace SevenZip.Buffer
             if (m_Pos >= m_Limit && !ReadBlock())
                 return 0xFF;
             return m_Buffer[m_Pos++];
+        }
+
+        public async ValueTask<Tuple<bool, byte>> ReadByteAsync(CancellationToken token = default)
+        {
+            if (m_Pos >= m_Limit && !await ReadBlockAsync(token).ConfigureAwait(false))
+                return new Tuple<bool, byte>(false, 0xFF);
+            return new Tuple<bool, byte>(true, m_Buffer[m_Pos++]);
         }
 
         [CLSCompliant(false)]

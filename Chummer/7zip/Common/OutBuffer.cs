@@ -19,6 +19,8 @@
 // OutBuffer.cs
 
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SevenZip.Buffer
 {
@@ -43,6 +45,9 @@ namespace SevenZip.Buffer
         public void FlushStream()
         { m_Stream.Flush(); }
 
+        public Task FlushStreamAsync(CancellationToken token = default)
+        { return m_Stream.FlushAsync(token); }
+
         public void CloseStream()
         { m_Stream.Close(); }
 
@@ -62,11 +67,27 @@ namespace SevenZip.Buffer
                 FlushData();
         }
 
+        public async ValueTask WriteByteAsync(byte b, CancellationToken token = default)
+        {
+            m_Buffer[m_Pos++] = b;
+            if (m_Pos >= m_BufferSize)
+                await FlushDataAsync(token);
+        }
+
         public void FlushData()
         {
             if (m_Pos == 0)
                 return;
             m_Stream.Write(m_Buffer, 0, (int)m_Pos);
+            m_Pos = 0;
+        }
+
+        public async ValueTask FlushDataAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (m_Pos == 0)
+                return;
+            await m_Stream.WriteAsync(m_Buffer, 0, (int)m_Pos, token);
             m_Pos = 0;
         }
 

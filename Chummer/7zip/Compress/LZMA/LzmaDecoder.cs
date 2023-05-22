@@ -274,6 +274,42 @@ namespace SevenZip.Compression.LZMA
             m_PosAlignDecoder.Init();
         }
 
+        private async ValueTask InitAsync(Stream inStream, Stream outStream, CancellationToken token = default)
+        {
+            await m_RangeDecoder.InitAsync(inStream, token).ConfigureAwait(false);
+            await m_OutWindow.InitAsync(outStream, _solid, token).ConfigureAwait(false);
+
+            uint i;
+            for (i = 0; i < Base.kNumStates; i++)
+            {
+                unchecked
+                {
+                    for (uint j = 0; j <= m_PosStateMask; j++)
+                    {
+                        uint index = (i << Base.kNumPosStatesBitsMax) + j;
+                        m_IsMatchDecoders[index].Init();
+                        m_IsRep0LongDecoders[index].Init();
+                    }
+                }
+
+                m_IsRepDecoders[i].Init();
+                m_IsRepG0Decoders[i].Init();
+                m_IsRepG1Decoders[i].Init();
+                m_IsRepG2Decoders[i].Init();
+            }
+
+            m_LiteralDecoder.Init();
+            for (i = 0; i < Base.kNumLenToPosStates; i++)
+                m_PosSlotDecoder[i].Init();
+            // m_PosSpecDecoder.Init();
+            for (i = 0; i < Base.kNumFullDistances - Base.kEndPosModelIndex; i++)
+                m_PosDecoders[i].Init();
+
+            m_LenDecoder.Init();
+            m_RepLenDecoder.Init();
+            m_PosAlignDecoder.Init();
+        }
+
         public void Code(Stream inStream, Stream outStream,
                          long inSize, long outSize, ICodeProgress progress)
         {
@@ -290,7 +326,11 @@ namespace SevenZip.Compression.LZMA
                                          long inSize, long outSize, ICodeProgress progress, IAsyncCodeProgress progressAsync, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
-            Init(inStream, outStream);
+            if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                Init(inStream, outStream);
+            else
+                await InitAsync(inStream, outStream, token).ConfigureAwait(false);
 
             Base.State state = new Base.State();
             state.Init();
@@ -308,7 +348,11 @@ namespace SevenZip.Compression.LZMA
                             throw new DataErrorException();
                         state.UpdateChar();
                         byte b = m_LiteralDecoder.DecodeNormal(m_RangeDecoder, 0, 0);
-                        m_OutWindow.PutByte(b);
+                        if (blnSync)
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                            m_OutWindow.PutByte(b);
+                        else
+                            await m_OutWindow.PutByteAsync(b, token).ConfigureAwait(false);
                         nowPos64++;
                     }
 
@@ -332,7 +376,11 @@ namespace SevenZip.Compression.LZMA
                                 else
                                     b = m_LiteralDecoder.DecodeNormal(m_RangeDecoder, (uint)nowPos64, prevByte);
                                 token.ThrowIfCancellationRequested();
-                                m_OutWindow.PutByte(b);
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    m_OutWindow.PutByte(b);
+                                else
+                                    await m_OutWindow.PutByteAsync(b, token).ConfigureAwait(false);
                                 state.UpdateChar();
                                 nowPos64++;
                             }
@@ -348,7 +396,11 @@ namespace SevenZip.Compression.LZMA
                                         {
                                             state.UpdateShortRep();
                                             token.ThrowIfCancellationRequested();
-                                            m_OutWindow.PutByte(m_OutWindow.GetByte(rep0));
+                                            if (blnSync)
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                m_OutWindow.PutByte(m_OutWindow.GetByte(rep0));
+                                            else
+                                                await m_OutWindow.PutByteAsync(m_OutWindow.GetByte(rep0), token).ConfigureAwait(false);
                                             nowPos64++;
                                             if (blnSync)
                                             {
@@ -422,7 +474,11 @@ namespace SevenZip.Compression.LZMA
                                 }
 
                                 token.ThrowIfCancellationRequested();
-                                m_OutWindow.CopyBlock(rep0, len);
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    m_OutWindow.CopyBlock(rep0, len);
+                                else
+                                    await m_OutWindow.CopyBlockAsync(rep0, len, token).ConfigureAwait(false);
                                 nowPos64 += len;
                             }
                         }
@@ -439,8 +495,8 @@ namespace SevenZip.Compression.LZMA
             }
             finally
             {
-                m_OutWindow.Flush();
-                m_OutWindow.ReleaseStream();
+                await m_OutWindow.FlushAsync(token).ConfigureAwait(false);
+                await m_OutWindow.ReleaseStreamAsync(token).ConfigureAwait(false);
                 m_RangeDecoder.ReleaseStream();
             }
         }
@@ -471,6 +527,12 @@ namespace SevenZip.Compression.LZMA
         {
             _solid = true;
             return m_OutWindow.Train(stream);
+        }
+
+        public ValueTask<bool> TrainAsync(Stream stream, CancellationToken token = default)
+        {
+            _solid = true;
+            return m_OutWindow.TrainAsync(stream, token);
         }
 
         /*

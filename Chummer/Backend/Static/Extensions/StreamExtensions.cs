@@ -232,5 +232,140 @@ namespace Chummer
                 return num3;
             }
         }
+
+        /// <summary>
+        /// Converts a stream directly to a Base64-encoded string without needing to allocate a byte array as an intermediate.
+        /// More memory efficient than using some byte array converter on the stream followed by Convert.ToBase64String().
+        /// </summary>
+        /// <param name="objStream">Some stream to convert.</param>
+        /// <param name="eFormattingOptions">Base64 formatting options to use in the output string.</param>
+        /// <param name="token">Cancellation token to listen to, if any.</param>
+        /// <returns>The string representation, in base 64, of the contents of <paramref name="objStream"/>.</returns>
+        /// <exception cref="ArgumentNullException"><paramref name="objStream"/> is null.</exception>
+        /// <exception cref="OutOfMemoryException"><paramref name="objStream"/> is too large to be converted to a base64-encoded string.</exception>
+        public static async Task<string> ToBase64StringAsync(this Stream objStream,
+                                            Base64FormattingOptions eFormattingOptions = Base64FormattingOptions.None,
+                                            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objStream == null)
+            {
+                throw new ArgumentNullException(nameof(objStream));
+            }
+
+            long intLength = objStream.Length;
+            if (intLength == 0)
+            {
+                return string.Empty;
+            }
+
+            bool blnInsertLineBreaks = eFormattingOptions == Base64FormattingOptions.InsertLineBreaks;
+            int intStringLength = ToBase64_CalculateAndValidateOutputLength(intLength, blnInsertLineBreaks);
+            token.ThrowIfCancellationRequested();
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            {
+                sbdReturn.Capacity = intStringLength;
+                _ = await ConvertToBase64ArrayAsync(sbdReturn, objStream, 0, (int)intLength, blnInsertLineBreaks).ConfigureAwait(false);
+                return sbdReturn.ToString();
+            }
+
+            int ToBase64_CalculateAndValidateOutputLength(long inputLength, bool insertLineBreaks)
+            {
+                long num = inputLength / 3L * 4;
+                num += inputLength % 3 != 0 ? 4 : 0;
+                if (num == 0L)
+                {
+                    return 0;
+                }
+
+                if (insertLineBreaks)
+                {
+                    long num2 = num / 76;
+                    if (num % 76 == 0L)
+                    {
+                        num2--;
+                    }
+
+                    num += num2 * 2;
+                }
+
+                if (num > int.MaxValue)
+                {
+                    throw new OutOfMemoryException();
+                }
+
+                return (int)num;
+            }
+
+            async ValueTask<int> ConvertToBase64ArrayAsync(StringBuilder sbdChars, Stream inData, int offset, int length,
+                                            bool insertLineBreaks)
+            {
+                int num = length % 3;
+                int num2 = offset + (length - num);
+                int num3 = 0;
+                int num4 = 0;
+                {
+                    inData.Position = offset;
+                    byte[] achrBuffer = new byte[3];
+                    while (inData.Position < num2)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        _ = await inData.ReadAsync(achrBuffer, 0, 3, token).ConfigureAwait(false);
+
+                        if (insertLineBreaks)
+                        {
+                            if (num4 == 76)
+                            {
+                                sbdChars.Append("\r\n");
+                                num3 += 2;
+                                num4 = 0;
+                            }
+
+                            num4 += 4;
+                        }
+
+                        sbdChars.Append(s_Base64Table[(achrBuffer[0] & 0xFC) >> 2])
+                                .Append(s_Base64Table[((achrBuffer[0] & 3) << 4) | ((achrBuffer[1] & 0xF0) >> 4)])
+                                .Append(s_Base64Table[((achrBuffer[1] & 0xF) << 2) | ((achrBuffer[2] & 0xC0) >> 6)])
+                                .Append(s_Base64Table[achrBuffer[2] & 0x3F]);
+                        num3 += 4;
+                    }
+
+                    token.ThrowIfCancellationRequested();
+
+                    if (insertLineBreaks && num != 0 && num4 == 76)
+                    {
+                        sbdChars.Append("\r\n");
+                        num3 += 2;
+                    }
+
+                    switch (num)
+                    {
+                        case 2:
+                            {
+                                _ = await inData.ReadAsync(achrBuffer, 0, 2, token).ConfigureAwait(false);
+                                sbdChars.Append(s_Base64Table[(achrBuffer[0] & 0xFC) >> 2])
+                                        .Append(s_Base64Table[((achrBuffer[0] & 3) << 4) | ((achrBuffer[1] & 0xF0) >> 4)])
+                                        .Append(s_Base64Table[(achrBuffer[1] & 0xF) << 2])
+                                        .Append(s_Base64Table[64]);
+                                num3 += 4;
+                                break;
+                            }
+                        case 1:
+                            {
+                                _ = await inData.ReadAsync(achrBuffer, 0, 1, token).ConfigureAwait(false);
+                                sbdChars.Append(s_Base64Table[(achrBuffer[0] & 0xFC) >> 2])
+                                        .Append(s_Base64Table[(achrBuffer[0] & 3) << 4])
+                                        .Append(s_Base64Table[64])
+                                        .Append(s_Base64Table[64]);
+                                num3 += 4;
+                                break;
+                            }
+                    }
+                }
+
+                return num3;
+            }
+        }
     }
 }

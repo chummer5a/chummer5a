@@ -19,6 +19,8 @@
 // IMatchFinder.cs
 
 using System.IO;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace SevenZip.Compression.LZ
 {
@@ -27,6 +29,8 @@ namespace SevenZip.Compression.LZ
         void SetStream(Stream inStream);
 
         void Init();
+
+        ValueTask InitAsync(CancellationToken token = default);
 
         void ReleaseStream();
 
@@ -44,6 +48,10 @@ namespace SevenZip.Compression.LZ
 
         uint GetMatches(uint[] distances);
 
+        ValueTask<uint> GetMatchesAsync(uint[] distances, CancellationToken token = default);
+
         void Skip(uint num);
+
+        ValueTask SkipAsync(uint num, CancellationToken token = default);
     }
 }
