@@ -125,7 +125,7 @@ namespace Chummer
                             x.DropDownStyle = ComboBoxStyle.DropDown;
                             x.AutoCompleteMode = AutoCompleteMode.Suggest;
                         }).ConfigureAwait(false);
-                        if (!_objCharacter.Settings.LicenseRestricted)
+                        if (!(await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).LicenseRestricted)
                         {
                             foreach (XPathNavigator objNode in await (await _objCharacter.LoadDataXPathAsync("licenses.xml").ConfigureAwait(false))
                                                                      .SelectAndCacheExpressionAsync(
@@ -145,7 +145,7 @@ namespace Chummer
                         else
                         {
                             // Cyberware/Bioware.
-                            foreach (Cyberware objCyberware in _objCharacter.Cyberware.GetAllDescendants(
+                            foreach (Cyberware objCyberware in (await _objCharacter.GetCyberwareAsync().ConfigureAwait(false)).GetAllDescendants(
                                          x => x.Children))
                             {
                                 if (objCyberware.TotalAvailTuple(false).Suffix == 'R')

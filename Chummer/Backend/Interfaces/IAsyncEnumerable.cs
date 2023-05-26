@@ -7552,5 +7552,35 @@ namespace Chummer
             }
             return objReturn;
         }
+
+        /// <summary>
+        /// Gets all relatives in the list, including the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<List<T>> GetAllDescendantsAsync<T>([ItemNotNull] this IAsyncEnumerable<T> objParentList, Func<T, IAsyncEnumerable<T>> funcGetChildrenMethod, CancellationToken token = default)
+        {
+            List<T> lstReturn = new List<T>();
+            await objParentList.ForEachAsync(async objLoopChild =>
+            {
+                lstReturn.Add(objLoopChild);
+                lstReturn.AddRange(await funcGetChildrenMethod(objLoopChild)
+                                         .GetAllDescendantsAsync(funcGetChildrenMethod, token).ConfigureAwait(false));
+            }, token).ConfigureAwait(false);
+            return lstReturn;
+        }
+
+        /// <summary>
+        /// Gets all relatives in the list, including the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<List<T>> GetAllDescendantsAsync<T>([ItemNotNull] this IAsyncEnumerable<T> objParentList, Func<T, Task<IAsyncEnumerable<T>>> funcGetChildrenMethod, CancellationToken token = default)
+        {
+            List<T> lstReturn = new List<T>();
+            await objParentList.ForEachAsync(async objLoopChild =>
+            {
+                lstReturn.Add(objLoopChild);
+                lstReturn.AddRange(await (await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false))
+                                         .GetAllDescendantsAsync(funcGetChildrenMethod, token).ConfigureAwait(false));
+            }, token).ConfigureAwait(false);
+            return lstReturn;
+        }
     }
 }

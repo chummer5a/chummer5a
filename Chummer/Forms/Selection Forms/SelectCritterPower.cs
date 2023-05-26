@@ -292,26 +292,36 @@ namespace Chummer
                     lstPowerWhitelist.Add(xmlNode.Value);
 
                 // Determine if the Critter has a physical presence Power (Materialization, Possession, or Inhabitation).
-                bool blnPhysicalPresence = _objCharacter.CritterPowers.Any(x => x.Name == "Materialization" || x.Name == "Possession" || x.Name == "Inhabitation");
+                bool blnPhysicalPresence = await (await _objCharacter.GetCritterPowersAsync(token).ConfigureAwait(false))
+                                                 .AnyAsync(
+                                                     x => x.Name == "Materialization" || x.Name == "Possession"
+                                                         || x.Name == "Inhabitation", token).ConfigureAwait(false);
 
                 // Add any Critter Powers the Critter comes with that have been manually deleted so they can be re-added.
                 foreach (XPathNavigator objXmlCritterPower in await _xmlMetatypeDataNode.SelectAndCacheExpressionAsync("powers/power", token: token).ConfigureAwait(false))
                 {
                     bool blnAddPower = true;
                     // Make sure the Critter doesn't already have the Power.
-                    foreach (string strCheckPowerName in _objCharacter.CritterPowers.Select(x => x.Name))
-                    {
-                        if (strCheckPowerName == objXmlCritterPower.Value)
+                    await (await _objCharacter.GetCritterPowersAsync(token).ConfigureAwait(false)).ForEachWithBreakAsync(
+                        objCheckPower =>
                         {
-                            blnAddPower = false;
-                            break;
-                        }
-                        if ((strCheckPowerName == "Materialization" || strCheckPowerName == "Possession" || strCheckPowerName == "Inhabitation") && blnPhysicalPresence)
-                        {
-                            blnAddPower = false;
-                            break;
-                        }
-                    }
+                            string strCheckPowerName = objCheckPower.Name;
+                            if (strCheckPowerName == objXmlCritterPower.Value)
+                            {
+                                blnAddPower = false;
+                                return false;
+                            }
+
+                            if ((strCheckPowerName == "Materialization" || strCheckPowerName == "Possession"
+                                                                        || strCheckPowerName == "Inhabitation")
+                                && blnPhysicalPresence)
+                            {
+                                blnAddPower = false;
+                                return false;
+                            }
+
+                            return true;
+                        }, token).ConfigureAwait(false);
 
                     if (blnAddPower)
                     {

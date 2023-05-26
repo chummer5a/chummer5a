@@ -4346,21 +4346,23 @@ namespace Chummer
                             // <settings />
                             await objWriter.WriteElementStringAsync("settings", _strSettingsKey, token: innerToken)
                                            .ConfigureAwait(false);
+                            CharacterSettings objSettings
+                                = await GetSettingsAsync(innerToken).ConfigureAwait(false);
                             // <settingshashcode />
                             await objWriter
                                   .WriteElementStringAsync("settingshashcode",
-                                                           (await Settings.GetEquatableHashCodeAsync(innerToken)
-                                                                          .ConfigureAwait(false))
+                                                           (await objSettings.GetEquatableHashCodeAsync(innerToken)
+                                                                             .ConfigureAwait(false))
                                                            .ToString(GlobalSettings.InvariantCultureInfo),
                                                            token: innerToken).ConfigureAwait(false);
                             // <buildmethod />
                             await objWriter
-                                  .WriteElementStringAsync("buildmethod", Settings.BuildMethod.ToString(),
+                                  .WriteElementStringAsync("buildmethod", (await objSettings.GetBuildMethodAsync(innerToken).ConfigureAwait(false)).ToString(),
                                                            token: innerToken).ConfigureAwait(false);
 
                             // <sources>
                             await objWriter.WriteStartElementAsync("sources", token: innerToken).ConfigureAwait(false);
-                            foreach (string strBook in Settings.Books)
+                            foreach (string strBook in await objSettings.GetBooksAsync(innerToken).ConfigureAwait(false))
                             {
                                 await objWriter.WriteElementStringAsync("source", strBook, token: innerToken)
                                                .ConfigureAwait(false);
@@ -4369,13 +4371,14 @@ namespace Chummer
                             // </sources>
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
-                            if (Settings.EnabledCustomDataDirectoryInfos.Count > 0)
+                            IReadOnlyList<CustomDataDirectoryInfo> lstInfos = await objSettings.GetEnabledCustomDataDirectoryInfosAsync(innerToken)
+                                                                                               .ConfigureAwait(false);
+                            if (lstInfos.Count > 0)
                             {
                                 // <customdatadirectorynames>
                                 await objWriter.WriteStartElementAsync("customdatadirectorynames", token: innerToken)
                                                .ConfigureAwait(false);
-                                foreach (string strDirectoryName in Settings.EnabledCustomDataDirectoryInfos.Select(x =>
-                                             x.Name))
+                                foreach (string strDirectoryName in lstInfos.Select(x => x.Name))
                                 {
                                     await objWriter
                                           .WriteElementStringAsync("directoryname", strDirectoryName, token: innerToken)
@@ -6099,8 +6102,9 @@ namespace Chummer
                                     xmlCharacterNavigator.TryGetInt32FieldQuickly("maxkarma",
                                         ref intLegacyMaxKarma);
 
-                                    // Calculate a score for a character option that roughly coincides with how suitable it is as a replacement for the current one the character save contains
-                                    // Settings with a negative score should not be considered suitable at all
+                                    // Calculate a score for a character option that roughly coincides with how suitable it is as a
+                                    // replacement for the current one the character save contains Settings with a negative score
+                                    // should not be considered suitable at all
                                     int CalculateCharacterSettingsMatchScore(CharacterSettings objOptionsToCheck)
                                     {
                                         int intReturn = int.MaxValue
@@ -6197,6 +6201,110 @@ namespace Chummer
 
                                         return intReturn;
                                     }
+                                    // Calculate a score for a character option that roughly coincides with how suitable it is as a
+                                    // replacement for the current one the character save contains Settings with a negative score
+                                    // should not be considered suitable at all
+                                    async ValueTask<int> CalculateCharacterSettingsMatchScoreAsync(CharacterSettings objOptionsToCheck)
+                                    {
+                                        int intReturn = int.MaxValue
+                                                        - ((intLegacyMaxKarma - objOptionsToCheck.BuildKarma)
+                                                           .RaiseToPower(2)
+                                                           + (decLegacyMaxNuyen - objOptionsToCheck.NuyenMaximumBP)
+                                                           .RaiseToPower(2))
+                                                          .RaiseToPower(0.5m).StandardRound();
+
+                                        int intBaseline = objOptionsToCheck.BuiltInOption ? 5 : 4;
+
+                                        if (Created && eSavedBuildMethod != CharacterBuildMethod.LifeModule)
+                                        {
+                                            if (objOptionsToCheck.BuildMethod != eSavedBuildMethod)
+                                            {
+                                                if (objOptionsToCheck.BuildMethod.UsesPriorityTables() ==
+                                                    eSavedBuildMethod.UsesPriorityTables())
+                                                    intReturn -= 2;
+                                                else
+                                                    intReturn -= 4;
+                                            }
+                                        }
+                                        else if (objOptionsToCheck.BuildMethod != eSavedBuildMethod)
+                                        {
+                                            if (objOptionsToCheck.BuildMethod.UsesPriorityTables() ==
+                                                eSavedBuildMethod.UsesPriorityTables())
+                                            {
+                                                intBaseline += 2;
+                                                intReturn -= int.MaxValue / 2;
+                                            }
+                                            else
+                                            {
+                                                intBaseline += 4;
+                                                intReturn -= int.MaxValue;
+                                            }
+                                        }
+
+                                        IReadOnlyList<CustomDataDirectoryInfo> lstOtherEnabledCustomDataDirectoryInfos
+                                            = await objOptionsToCheck
+                                                    .GetEnabledCustomDataDirectoryInfosAsync(token)
+                                                    .ConfigureAwait(false);
+                                        int intBaselineCustomDataCount = lstOtherEnabledCustomDataDirectoryInfos.Count;
+                                        if (intBaselineCustomDataCount == 0)
+                                        {
+                                            intBaselineCustomDataCount = lstSavedCustomDataDirectoryNames.Count;
+                                            if (intBaselineCustomDataCount > 0)
+                                            {
+                                                intReturn -= intBaselineCustomDataCount.RaiseToPower(2) * intBaseline;
+                                            }
+                                        }
+                                        else if (lstSavedCustomDataDirectoryNames.Count == 0)
+                                        {
+                                            intReturn -= intBaselineCustomDataCount.RaiseToPower(2) * intBaseline;
+                                        }
+                                        else
+                                        {
+                                            intBaselineCustomDataCount
+                                                = Math.Max(lstSavedCustomDataDirectoryNames.Count,
+                                                           intBaselineCustomDataCount);
+                                            for (int i = 0;
+                                                 i < lstOtherEnabledCustomDataDirectoryInfos.Count;
+                                                 ++i)
+                                            {
+                                                string strLoopCustomDataName =
+                                                    lstOtherEnabledCustomDataDirectoryInfos[i].Name;
+                                                int intLoopIndex =
+                                                    lstSavedCustomDataDirectoryNames.IndexOf(strLoopCustomDataName);
+                                                if (intLoopIndex < 0)
+                                                    intReturn -= intBaselineCustomDataCount * intBaseline;
+                                                else
+                                                    intReturn -= Math.Abs(i - intLoopIndex) * intBaseline;
+                                            }
+
+                                            foreach (string strLoopCustomDataName in lstSavedCustomDataDirectoryNames)
+                                            {
+                                                if (lstOtherEnabledCustomDataDirectoryInfos.All(
+                                                        x => x.Name != strLoopCustomDataName))
+                                                    intReturn -= intBaselineCustomDataCount * intBaseline;
+                                            }
+                                        }
+
+                                        using (new FetchSafelyFromPool<HashSet<string>>(
+                                                   Utils.StringHashSetPool, out HashSet<string> setDummyBooks))
+                                        {
+                                            setDummyBooks.AddRange(setSavedBooks);
+                                            int intExtraBooks = 0;
+                                            IReadOnlyCollection<string> setOtherBooks
+                                                = await objOptionsToCheck.GetBooksAsync(token).ConfigureAwait(false);
+                                            foreach (string strBook in setOtherBooks)
+                                            {
+                                                if (setDummyBooks.Remove(strBook))
+                                                    ++intExtraBooks;
+                                            }
+
+                                            setDummyBooks.IntersectWith(setOtherBooks);
+                                            intReturn -= (setDummyBooks.Count * (intBaselineCustomDataCount + 1)
+                                                          + intExtraBooks) * intBaseline;
+                                        }
+
+                                        return intReturn;
+                                    }
 
                                     if (blnSync)
                                         blnSuccess = SettingsManager.LoadedCharacterSettings.TryGetValue(
@@ -6280,10 +6388,10 @@ namespace Chummer
                                         }
                                         else
                                         {
-                                            await SettingsManager.LoadedCharacterSettings.ForEachAsync(kvpLoopOptions =>
+                                            await SettingsManager.LoadedCharacterSettings.ForEachAsync(async kvpLoopOptions =>
                                             {
                                                 int intLoopScore
-                                                    = CalculateCharacterSettingsMatchScore(kvpLoopOptions.Value);
+                                                    = await CalculateCharacterSettingsMatchScoreAsync(kvpLoopOptions.Value).ConfigureAwait(false);
                                                 if (intLoopScore > intMostSuitable)
                                                 {
                                                     intMostSuitable = intLoopScore;
@@ -6391,17 +6499,32 @@ namespace Chummer
                                         // Set up interim options for selection by build method
                                         string strReplacementSettingsKey = string.Empty;
                                         int intMostSuitable = int.MinValue;
-                                        foreach (KeyValuePair<string, CharacterSettings> kvpLoopOptions in
-                                                 SettingsManager
-                                                     .LoadedCharacterSettings)
+                                        if (blnSync)
                                         {
-                                            int intLoopScore
-                                                = CalculateCharacterSettingsMatchScore(kvpLoopOptions.Value);
-                                            if (intLoopScore > intMostSuitable)
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            SettingsManager.LoadedCharacterSettings.ForEach(kvpLoopOptions =>
                                             {
-                                                intMostSuitable = intLoopScore;
-                                                strReplacementSettingsKey = kvpLoopOptions.Key;
-                                            }
+                                                int intLoopScore
+                                                    = CalculateCharacterSettingsMatchScore(kvpLoopOptions.Value);
+                                                if (intLoopScore > intMostSuitable)
+                                                {
+                                                    intMostSuitable = intLoopScore;
+                                                    strReplacementSettingsKey = kvpLoopOptions.Key;
+                                                }
+                                            }, token);
+                                        }
+                                        else
+                                        {
+                                            await SettingsManager.LoadedCharacterSettings.ForEachAsync(async kvpLoopOptions =>
+                                            {
+                                                int intLoopScore
+                                                    = await CalculateCharacterSettingsMatchScoreAsync(kvpLoopOptions.Value).ConfigureAwait(false);
+                                                if (intLoopScore > intMostSuitable)
+                                                {
+                                                    intMostSuitable = intLoopScore;
+                                                    strReplacementSettingsKey = kvpLoopOptions.Key;
+                                                }
+                                            }, token).ConfigureAwait(false);
                                         }
 
                                         if (string.IsNullOrEmpty(strReplacementSettingsKey))
@@ -13353,7 +13476,7 @@ namespace Chummer
                     if (Settings != null)
                     {
                         sbdFilter.Append('(').Append(await (await GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false)).Append(") and ");
-                        if (!IgnoreRules && !Created && !blnIgnoreBannedGrades)
+                        if (!blnIgnoreBannedGrades && !await GetCreatedAsync(token).ConfigureAwait(false) && !await GetIgnoreRulesAsync(token).ConfigureAwait(false))
                         {
                             foreach (string strBannedGrade in (await GetSettingsAsync(token).ConfigureAwait(false)).BannedWareGrades)
                             {
@@ -13588,7 +13711,7 @@ namespace Chummer
 
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                foreach (Cyberware objLoopCyberware in (await GetCyberwareAsync(token).ConfigureAwait(false)).GetAllDescendants(x => x.Children))
+                await (await GetCyberwareAsync(token).ConfigureAwait(false)).GetAllDescendants(x => x.Children).ForEachAsync(async objLoopCyberware =>
                 {
                     // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
                     if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount
@@ -13597,47 +13720,22 @@ namespace Chummer
                         && objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name
                         && objLoopCyberware != objModularCyberware
                         // Make sure it's not the place where the mount is already occupied (either by us or something else)
-                        && objLoopCyberware.Children.All(
-                            x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount))
+                        && await objLoopCyberware.Children.AllAsync(
+                            x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount, token).ConfigureAwait(false))
                     {
                         string strName = objLoopCyberware.Parent != null
                             ? await objLoopCyberware.Parent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)
                             : await objLoopCyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                         lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
                     }
-                }
+                }, token).ConfigureAwait(false);
 
-                foreach (Vehicle objLoopVehicle in await GetVehiclesAsync(token).ConfigureAwait(false))
+                await (await GetVehiclesAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopVehicle =>
                 {
-                    foreach (VehicleMod objLoopVehicleMod in objLoopVehicle.Mods)
+                    await objLoopVehicle.Mods.ForEachAsync(async objLoopVehicleMod =>
                     {
-                        foreach (Cyberware objLoopCyberware in objLoopVehicleMod.Cyberware.GetAllDescendants(
-                                     x => x.Children))
-                        {
-                            // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
-                            if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount
-                                && objLoopCyberware.Location == objModularCyberware.Location
-                                && objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name
-                                && objLoopCyberware != objModularCyberware
-                                // Make sure it's not the place where the mount is already occupied (either by us or something else)
-                                && objLoopCyberware.Children.All(
-                                    x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount))
-                            {
-                                string strName = await objLoopVehicle.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)
-                                                 + strSpace + (objLoopCyberware.Parent != null
-                                                     ? await objLoopCyberware.Parent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)
-                                                     : await objLoopVehicleMod.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
-                                lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
-                            }
-                        }
-                    }
-
-                    foreach (WeaponMount objLoopWeaponMount in objLoopVehicle.WeaponMounts)
-                    {
-                        foreach (VehicleMod objLoopVehicleMod in objLoopWeaponMount.Mods)
-                        {
-                            foreach (Cyberware objLoopCyberware in objLoopVehicleMod.Cyberware.GetAllDescendants(
-                                         x => x.Children))
+                        await objLoopVehicleMod.Cyberware.GetAllDescendants(x => x.Children).ForEachAsync(
+                            async objLoopCyberware =>
                             {
                                 // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
                                 if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount
@@ -13645,19 +13743,52 @@ namespace Chummer
                                     && objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name
                                     && objLoopCyberware != objModularCyberware
                                     // Make sure it's not the place where the mount is already occupied (either by us or something else)
-                                    && objLoopCyberware.Children.All(
-                                        x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount))
+                                    && await objLoopCyberware.Children.AllAsync(
+                                                                 x => x.PlugsIntoModularMount
+                                                                      != objLoopCyberware.HasModularMount, token)
+                                                             .ConfigureAwait(false))
                                 {
-                                    string strName = await objLoopVehicle.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)
-                                                     + strSpace + (objLoopCyberware.Parent != null
-                                                         ? await objLoopCyberware.Parent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)
-                                                         : await objLoopVehicleMod.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
+                                    string strName
+                                        = await objLoopVehicle.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)
+                                          + strSpace + (objLoopCyberware.Parent != null
+                                              ? await objLoopCyberware.Parent.GetCurrentDisplayNameAsync(token)
+                                                                      .ConfigureAwait(false)
+                                              : await objLoopVehicleMod.GetCurrentDisplayNameAsync(token)
+                                                                       .ConfigureAwait(false));
                                     lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
                                 }
-                            }
-                        }
-                    }
-                }
+                            }, token).ConfigureAwait(false);
+                    }, token).ConfigureAwait(false);
+
+                    await objLoopVehicle.WeaponMounts.ForEachAsync(async objLoopWeaponMount =>
+                    {
+                        await objLoopVehicle.Mods.ForEachAsync(async objLoopVehicleMod =>
+                        {
+                            await objLoopVehicleMod.Cyberware.GetAllDescendants(x => x.Children).ForEachAsync(
+                                async objLoopCyberware =>
+                            {
+                                // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
+                                if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount
+                                    && objLoopCyberware.Location == objModularCyberware.Location
+                                    && objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name
+                                    && objLoopCyberware != objModularCyberware
+                                    // Make sure it's not the place where the mount is already occupied (either by us or something else)
+                                    && await objLoopCyberware.Children.AllAsync(
+                                        x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount, token).ConfigureAwait(false))
+                                {
+                                    string strName
+                                        = await objLoopVehicle.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)
+                                          + strSpace + (objLoopCyberware.Parent != null
+                                              ? await objLoopCyberware.Parent.GetCurrentDisplayNameAsync(token)
+                                                                      .ConfigureAwait(false)
+                                              : await objLoopVehicleMod.GetCurrentDisplayNameAsync(token)
+                                                                       .ConfigureAwait(false));
+                                    lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
+                                }
+                            }, token).ConfigureAwait(false);
+                        }, token).ConfigureAwait(false);
+                    }, token).ConfigureAwait(false);
+                }, token).ConfigureAwait(false);
             }
 
             return lstReturn;
@@ -13906,25 +14037,34 @@ namespace Chummer
 
                         int intSkillPointsKarma = 0;
                         // Value from skill points
-                        foreach (Skill objLoopActiveSkill in SkillsSection.Skills)
+                        await (await (await GetSkillsSectionAsync(token).ConfigureAwait(false)).GetSkillsAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopActiveSkill =>
                         {
-                            if (!(objLoopActiveSkill.SkillGroupObject?.Base > 0))
+                            SkillGroup objLoopGroup = objLoopActiveSkill.SkillGroupObject;
+                            if (objLoopGroup == null || await objLoopGroup.GetBaseAsync(token).ConfigureAwait(false) <= 0)
                             {
                                 int intLoopRating = await objLoopActiveSkill.GetBaseAsync(token).ConfigureAwait(false);
                                 if (intLoopRating > 0)
                                 {
-                                    intSkillPointsKarma += await objSettings.GetKarmaNewActiveSkillAsync(token).ConfigureAwait(false);
+                                    intSkillPointsKarma += await objSettings.GetKarmaNewActiveSkillAsync(token)
+                                                                            .ConfigureAwait(false);
                                     intSkillPointsKarma += ((intLoopRating + 1) * intLoopRating / 2 - 1)
-                                                           * await objSettings.GetKarmaImproveActiveSkillAsync(token).ConfigureAwait(false);
+                                                           * await objSettings.GetKarmaImproveActiveSkillAsync(token)
+                                                                              .ConfigureAwait(false);
                                     if (await GetEffectiveBuildMethodIsLifeModuleAsync(token).ConfigureAwait(false))
-                                        intSkillPointsKarma += await objLoopActiveSkill.Specializations.CountAsync(x => x.Free, token: token).ConfigureAwait(false) *
-                                                               await objSettings.GetKarmaSpecializationAsync(token).ConfigureAwait(false);
-                                    else if (!await objLoopActiveSkill.GetBuyWithKarmaAsync(token).ConfigureAwait(false))
+                                        intSkillPointsKarma
+                                            += await objLoopActiveSkill.Specializations
+                                                                       .CountAsync(x => x.Free, token: token)
+                                                                       .ConfigureAwait(false) *
+                                               await objSettings.GetKarmaSpecializationAsync(token)
+                                                                .ConfigureAwait(false);
+                                    else if (!await objLoopActiveSkill.GetBuyWithKarmaAsync(token)
+                                                                      .ConfigureAwait(false))
                                         intSkillPointsKarma += objLoopActiveSkill.Specializations.Count
-                                                               * await objSettings.GetKarmaSpecializationAsync(token).ConfigureAwait(false);
+                                                               * await objSettings.GetKarmaSpecializationAsync(token)
+                                                                   .ConfigureAwait(false);
                                 }
                             }
-                        }
+                        }, token).ConfigureAwait(false);
 
                         if (intSkillPointsKarma != 0)
                         {
@@ -13937,13 +14077,17 @@ namespace Chummer
 
                         int intSkillGroupPointsKarma = 0;
                         // Value from skill group points
-                        foreach (int intLoopRating in SkillsSection.SkillGroups.Select(x => x.Base))
+                        await (await (await GetSkillsSectionAsync(token).ConfigureAwait(false)).GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopGroup =>
                         {
+                            int intLoopRating = await objLoopGroup.GetBaseAsync(token).ConfigureAwait(false);
                             if (intLoopRating <= 0)
-                                continue;
-                            intSkillGroupPointsKarma += await objSettings.GetKarmaNewSkillGroupAsync(token).ConfigureAwait(false);
-                            intSkillGroupPointsKarma += ((intLoopRating + 1) * intLoopRating / 2 - 1) * await objSettings.GetKarmaImproveSkillGroupAsync(token).ConfigureAwait(false);
-                        }
+                                return;
+                            intSkillGroupPointsKarma
+                                += await objSettings.GetKarmaNewSkillGroupAsync(token).ConfigureAwait(false);
+                            intSkillGroupPointsKarma += ((intLoopRating + 1) * intLoopRating / 2 - 1)
+                                                        * await objSettings.GetKarmaImproveSkillGroupAsync(token)
+                                                                           .ConfigureAwait(false);
+                        }, token).ConfigureAwait(false);
 
                         if (intSkillGroupPointsKarma != 0)
                         {
@@ -13999,22 +14143,30 @@ namespace Chummer
                     }
 
                     int intKnowledgePointsValue = 0;
-                    foreach (KnowledgeSkill objLoopKnowledgeSkill in SkillsSection.KnowledgeSkills)
-                    {
-                        int intLoopRating = await objLoopKnowledgeSkill.GetBaseAsync(token).ConfigureAwait(false);
-                        if (intLoopRating > 0)
+                    await (await (await GetSkillsSectionAsync(token).ConfigureAwait(false)).GetKnowledgeSkillsAsync(token).ConfigureAwait(false)).ForEachAsync(
+                        async objLoopKnowledgeSkill =>
                         {
-                            intKnowledgePointsValue += await objSettings.GetKarmaNewKnowledgeSkillAsync(token).ConfigureAwait(false);
-                            intKnowledgePointsValue += ((intLoopRating + 1) * intLoopRating / 2 - 1) *
-                                                       await objSettings.GetKarmaImproveKnowledgeSkillAsync(token).ConfigureAwait(false);
-                            if (await GetEffectiveBuildMethodIsLifeModuleAsync(token).ConfigureAwait(false))
-                                intKnowledgePointsValue += await objLoopKnowledgeSkill.Specializations.CountAsync(x => x.Free, token).ConfigureAwait(false) *
-                                                           await objSettings.GetKarmaKnowledgeSpecializationAsync(token).ConfigureAwait(false);
-                            else if (!await objLoopKnowledgeSkill.GetBuyWithKarmaAsync(token).ConfigureAwait(false))
-                                intKnowledgePointsValue += objLoopKnowledgeSkill.Specializations.Count *
-                                                           await objSettings.GetKarmaKnowledgeSpecializationAsync(token).ConfigureAwait(false);
-                        }
-                    }
+                            int intLoopRating = await objLoopKnowledgeSkill.GetBaseAsync(token).ConfigureAwait(false);
+                            if (intLoopRating > 0)
+                            {
+                                intKnowledgePointsValue += await objSettings.GetKarmaNewKnowledgeSkillAsync(token)
+                                                                            .ConfigureAwait(false);
+                                intKnowledgePointsValue += ((intLoopRating + 1) * intLoopRating / 2 - 1) *
+                                                           await objSettings.GetKarmaImproveKnowledgeSkillAsync(token)
+                                                                            .ConfigureAwait(false);
+                                if (await GetEffectiveBuildMethodIsLifeModuleAsync(token).ConfigureAwait(false))
+                                    intKnowledgePointsValue
+                                        += await objLoopKnowledgeSkill.Specializations.CountAsync(x => x.Free, token)
+                                                                      .ConfigureAwait(false) *
+                                           await objSettings.GetKarmaKnowledgeSpecializationAsync(token)
+                                                            .ConfigureAwait(false);
+                                else if (!await objLoopKnowledgeSkill.GetBuyWithKarmaAsync(token).ConfigureAwait(false))
+                                    intKnowledgePointsValue += objLoopKnowledgeSkill.Specializations.Count *
+                                                               await objSettings
+                                                                     .GetKarmaKnowledgeSpecializationAsync(token)
+                                                                     .ConfigureAwait(false);
+                            }
+                        }, token).ConfigureAwait(false);
 
                     if (intKnowledgePointsValue != 0)
                     {
@@ -28130,7 +28282,7 @@ namespace Chummer
                     int intTempAGI = int.MaxValue;
                     int intTempSTR = int.MaxValue;
                     int intLegs = 0;
-                    await Cyberware.ForEachAsync(async objCyber =>
+                    await (await GetCyberwareAsync(token).ConfigureAwait(false)).ForEachAsync(async objCyber =>
                     {
                         if (objCyber.LimbSlot != "leg")
                             return;

@@ -4947,6 +4947,13 @@ namespace Chummer
             }
         }
 
+        public async ValueTask<LockingTypedOrderedDictionary<string, bool>> GetCustomDataDirectoryKeysAsync(
+            CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _dicCustomDataDirectoryKeys;
+        }
+
         public IReadOnlyList<string> EnabledCustomDataDirectoryPaths
         {
             get
@@ -4956,6 +4963,13 @@ namespace Chummer
             }
         }
 
+        public async ValueTask<IReadOnlyList<string>> GetEnabledCustomDataDirectoryPathsAsync(
+            CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _lstEnabledCustomDataDirectoryPaths;
+        }
+
         public IReadOnlyList<CustomDataDirectoryInfo> EnabledCustomDataDirectoryInfos
         {
             get
@@ -4963,6 +4977,13 @@ namespace Chummer
                 using (EnterReadLock.Enter(LockObject))
                     return _setEnabledCustomDataDirectories;
             }
+        }
+
+        public async ValueTask<IReadOnlyList<CustomDataDirectoryInfo>> GetEnabledCustomDataDirectoryInfosAsync(
+            CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _setEnabledCustomDataDirectories;
         }
 
         /// <summary>
@@ -4975,6 +4996,16 @@ namespace Chummer
                 using (EnterReadLock.Enter(LockObject))
                     return _setEnabledCustomDataDirectoryGuids;
             }
+        }
+
+        /// <summary>
+        /// A HashSet that can be used for fast queries, which content is (and should) always identical to the IReadOnlyList EnabledCustomDataDirectoryInfos
+        /// </summary>
+        public async ValueTask<IReadOnlyCollection<Guid>> GetEnabledCustomDataDirectoryInfoGuidsAsync(
+            CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _setEnabledCustomDataDirectoryGuids;
         }
 
         public void RecalculateEnabledCustomDataDirectories(CancellationToken token = default)
@@ -5970,6 +6001,24 @@ namespace Chummer
                 using (EnterReadLock.Enter(LockObject))
                     return _setBooks;
             }
+        }
+
+        /// <summary>
+        /// Sourcebooks.
+        /// </summary>
+        public async ValueTask<HashSet<string>> GetBooksWritableAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _setBooks;
+        }
+
+        /// <summary>
+        /// Sourcebooks.
+        /// </summary>
+        public async ValueTask<IReadOnlyCollection<string>> GetBooksAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _setBooks;
         }
 
         /// <summary>

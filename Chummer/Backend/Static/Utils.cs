@@ -866,7 +866,7 @@ namespace Chummer
 
                 strFileName = GetStartupPath + Path.DirectorySeparatorChar + AppDomain.CurrentDomain.FriendlyName;
                 // Restart current application, with same arguments/parameters
-                foreach (Form objForm in Program.MainForm.MdiChildren)
+                foreach (Form objForm in await Program.MainForm.DoThreadSafeFuncAsync(x => x.MdiChildren, token).ConfigureAwait(false))
                 {
                     await objForm.DoThreadSafeAsync(x => x.Close(), token: token).ConfigureAwait(false);
                 }
