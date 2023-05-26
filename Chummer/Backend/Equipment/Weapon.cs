@@ -6564,7 +6564,7 @@ namespace Chummer.Backend.Equipment
                             if (objUnderbarrel.ParentID != InternalId)
                             {
                                 AvailabilityValue objLoopAvail = objUnderbarrel.TotalAvailTuple();
-                                if (!objLoopAvail.AddToParent)
+                                if (objLoopAvail.AddToParent)
                                     intAvail += objLoopAvail.Value;
                                 else if (objLoopAvail.Value > intMaxChildAvail)
                                     intMaxChildAvail = objLoopAvail.Value;
