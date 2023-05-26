@@ -513,7 +513,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("slots", Slots);
             objWriter.WriteElementString("rating", Rating.ToString(objCulture));
             objWriter.WriteElementString("ratinglabel", RatingLabel);
-            objWriter.WriteElementString("avail", TotalAvail(objCulture, strLanguageToPrint));
+            objWriter.WriteElementString("avail", await TotalAvailAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false));
             objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
             objWriter.WriteElementString("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token).ConfigureAwait(false));
@@ -967,6 +967,14 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Calculated Availability of the Vehicle.
+        /// </summary>
+        public async ValueTask<string> TotalAvailAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        {
+            return (await TotalAvailTupleAsync(token: token).ConfigureAwait(false)).ToString(objCulture, strLanguage);
+        }
+
+        /// <summary>
         /// Total Availability as a triple.
         /// </summary>
         public AvailabilityValue TotalAvailTuple(bool blnCheckChildren = true)
@@ -1084,6 +1092,142 @@ namespace Chummer.Backend.Equipment
                             chrLastAvailChar = 'R';
                     }
                 }
+            }
+
+            return new AvailabilityValue(intAvail, chrLastAvailChar, blnModifyParentAvail, IncludedInVehicle);
+        }
+
+        /// <summary>
+        /// Total Availability as a triple.
+        /// </summary>
+        public async ValueTask<AvailabilityValue> TotalAvailTupleAsync(bool blnCheckChildren = true, CancellationToken token = default)
+        {
+            bool blnModifyParentAvail = false;
+            string strAvail = Avail;
+            char chrLastAvailChar = ' ';
+            int intAvail = 0;
+            if (strAvail.Length > 0)
+            {
+                // Reordered to process fixed value strings
+                if (strAvail.StartsWith("FixedValues(", StringComparison.Ordinal))
+                {
+                    string[] strValues = strAvail.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
+                    strAvail = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
+                }
+
+                if (strAvail.StartsWith("Range(", StringComparison.Ordinal))
+                {
+                    // If the Availability code is based on the current Rating of the item, separate the Availability string into an array and find the first bracket that the Rating is lower than or equal to.
+                    string[] strValues = strAvail.Replace("MaxRating", MaxRating).TrimStartOnce("Range(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
+                    foreach (string strValue in strValues)
+                    {
+                        string[] astrValue = strValue.Split('[');
+                        string strAvailCode = astrValue[1].Trim('[', ']');
+                        int.TryParse(astrValue[0], NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                            out int intMax);
+                        if (Rating > intMax)
+                            continue;
+                        strAvail = Rating.ToString(GlobalSettings.InvariantCultureInfo) + strAvailCode;
+                        break;
+                    }
+                }
+
+                chrLastAvailChar = strAvail[strAvail.Length - 1];
+                if (chrLastAvailChar == 'F' || chrLastAvailChar == 'R')
+                {
+                    strAvail = strAvail.Substring(0, strAvail.Length - 1);
+                }
+
+                blnModifyParentAvail = strAvail.StartsWith('+', '-');
+
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
+                {
+                    sbdAvail.Append(strAvail.TrimStart('+'));
+                    sbdAvail.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+
+                    AttributeSection objAttributeSection = await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false);
+                    await (await objAttributeSection.GetAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopAttribute =>
+                    {
+                        await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev,
+                                                         async () => (await objLoopAttribute.GetTotalValueAsync(token)
+                                                             .ConfigureAwait(false)).ToString(
+                                                             GlobalSettings.InvariantCultureInfo), token: token)
+                                      .ConfigureAwait(false);
+                        await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev + "Base",
+                                                         async () => (await objLoopAttribute.GetTotalBaseAsync(token)
+                                                             .ConfigureAwait(false)).ToString(
+                                                             GlobalSettings.InvariantCultureInfo), token: token)
+                                      .ConfigureAwait(false);
+                    }, token).ConfigureAwait(false);
+                    await (await objAttributeSection.GetSpecialAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopAttribute =>
+                    {
+                        await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev,
+                                                         async () => (await objLoopAttribute.GetTotalValueAsync(token)
+                                                             .ConfigureAwait(false)).ToString(
+                                                             GlobalSettings.InvariantCultureInfo), token: token)
+                                      .ConfigureAwait(false);
+                        await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev + "Base",
+                                                         async () => (await objLoopAttribute.GetTotalBaseAsync(token)
+                                                             .ConfigureAwait(false)).ToString(
+                                                             GlobalSettings.InvariantCultureInfo), token: token)
+                                      .ConfigureAwait(false);
+                    }, token).ConfigureAwait(false);
+
+                    // If the availability is determined by the Rating, evaluate the expression.
+                    await sbdAvail.CheapReplaceAsync(strAvail, "Vehicle Cost",
+                                                     () => Parent?.OwnCost.ToString(GlobalSettings.InvariantCultureInfo) ?? "0", token: token).ConfigureAwait(false);
+                    // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
+                    await sbdAvail.CheapReplaceAsync(strAvail, "Body",
+                                                     () => Parent?.Body > 0
+                                                         ? Parent.Body.ToString(GlobalSettings.InvariantCultureInfo)
+                                                         : "0.5", token: token).ConfigureAwait(false);
+                    await sbdAvail.CheapReplaceAsync(strAvail, "Armor",
+                                                     () => Parent?.Armor.ToString(GlobalSettings.InvariantCultureInfo) ?? "0", token: token).ConfigureAwait(false);
+                    await sbdAvail.CheapReplaceAsync(strAvail, "Speed",
+                                                     () => Parent?.Speed.ToString(GlobalSettings.InvariantCultureInfo) ?? "0", token: token).ConfigureAwait(false);
+                    await sbdAvail.CheapReplaceAsync(strAvail, "Acceleration",
+                                                     () => Parent?.Accel.ToString(GlobalSettings.InvariantCultureInfo) ?? "0", token: token).ConfigureAwait(false);
+                    await sbdAvail.CheapReplaceAsync(strAvail, "Handling",
+                                                     () => Parent?.Handling.ToString(GlobalSettings.InvariantCultureInfo) ?? "0", token: token).ConfigureAwait(false);
+                    await sbdAvail.CheapReplaceAsync(strAvail, "Sensor",
+                                                     () => Parent?.BaseSensor.ToString(GlobalSettings.InvariantCultureInfo)
+                                                           ?? "0", token: token).ConfigureAwait(false);
+                    await sbdAvail.CheapReplaceAsync(strAvail, "Pilot",
+                                                     () => Parent?.Pilot.ToString(GlobalSettings.InvariantCultureInfo) ?? "0", token: token).ConfigureAwait(false);
+                    (bool blnIsSuccess, object objProcess)
+                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAvail.ToString(), token).ConfigureAwait(false);
+                    if (blnIsSuccess)
+                        intAvail += ((double)objProcess).StandardRound();
+                }
+            }
+
+            if (blnCheckChildren)
+            {
+                // Run through cyberware children and increase the Avail by any Mod whose Avail starts with "+" or "-".
+                intAvail += await Cyberware.SumAsync(async objChild =>
+                {
+                    if (objChild.ParentID == InternalId)
+                        return 0;
+                    AvailabilityValue objLoopAvailTuple
+                        = await objChild.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
+                    if (objLoopAvailTuple.Suffix == 'F')
+                        chrLastAvailChar = 'F';
+                    else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
+                        chrLastAvailChar = 'R';
+                    return objLoopAvailTuple.AddToParent ? objLoopAvailTuple.Value : 0;
+
+                }, token).ConfigureAwait(false) + await Weapons.SumAsync(async objChild =>
+                {
+                    if (objChild.ParentID == InternalId)
+                        return 0;
+                    AvailabilityValue objLoopAvailTuple
+                        = await objChild.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
+                    if (objLoopAvailTuple.Suffix == 'F')
+                        chrLastAvailChar = 'F';
+                    else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
+                        chrLastAvailChar = 'R';
+                    return objLoopAvailTuple.AddToParent ? objLoopAvailTuple.Value : 0;
+                }, token).ConfigureAwait(false);
             }
 
             return new AvailabilityValue(intAvail, chrLastAvailChar, blnModifyParentAvail, IncludedInVehicle);
@@ -1823,12 +1967,13 @@ namespace Chummer.Backend.Equipment
         /// <param name="dicRestrictedGearLimits">Dictionary of Restricted Gear availabilities still available with the amount of items that can still use that availability.</param>
         /// <param name="sbdAvailItems">StringBuilder used to list names of gear that are currently over the availability limit.</param>
         /// <param name="sbdRestrictedItems">StringBuilder used to list names of gear that are being used for Restricted Gear.</param>
-        /// <param name="intRestrictedCount">Number of items that are above availability limits.</param>
-        public void CheckRestrictedGear(IDictionary<int, int> dicRestrictedGearLimits, StringBuilder sbdAvailItems, StringBuilder sbdRestrictedItems, ref int intRestrictedCount)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async ValueTask<int> CheckRestrictedGear(IDictionary<int, int> dicRestrictedGearLimits, StringBuilder sbdAvailItems, StringBuilder sbdRestrictedItems, CancellationToken token = default)
         {
+            int intRestrictedCount = 0;
             if (!IncludedInVehicle)
             {
-                AvailabilityValue objTotalAvail = TotalAvailTuple();
+                AvailabilityValue objTotalAvail = await TotalAvailTupleAsync(token: token);
                 if (!objTotalAvail.AddToParent)
                 {
                     int intAvailInt = objTotalAvail.Value;
@@ -1842,9 +1987,9 @@ namespace Chummer.Backend.Equipment
                                 intLowestValidRestrictedGearAvail = intValidAvail;
                         }
 
-                        string strNameToUse = CurrentDisplayName;
+                        string strNameToUse = await GetCurrentDisplayNameAsync(token);
                         if (Parent != null)
-                            strNameToUse += LanguageManager.GetString("String_Space") + '(' + Parent.CurrentDisplayName + ')';
+                            strNameToUse += await LanguageManager.GetStringAsync("String_Space", token: token) + '(' + await Parent.GetCurrentDisplayNameAsync(token) + ')';
 
                         if (intLowestValidRestrictedGearAvail >= 0
                             && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)
@@ -1862,15 +2007,28 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            foreach (Weapon objChild in Weapons)
-            {
-                objChild.CheckRestrictedGear(dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems, ref intRestrictedCount);
-            }
+            intRestrictedCount += await Weapons
+                                        .SumAsync(
+                                            async objChild =>
+                                                await objChild
+                                                      .CheckRestrictedGear(
+                                                          dicRestrictedGearLimits, sbdAvailItems,
+                                                          sbdRestrictedItems,
+                                                          token).ConfigureAwait(false), token: token)
+                                        .ConfigureAwait(false)
+                                  + await Cyberware
+                                          .SumAsync(
+                                              async objChild =>
+                                                  await objChild
+                                                        .CheckRestrictedGear(
+                                                            dicRestrictedGearLimits,
+                                                            sbdAvailItems,
+                                                            sbdRestrictedItems,
+                                                            token).ConfigureAwait(false),
+                                              token: token)
+                                          .ConfigureAwait(false);
 
-            foreach (Cyberware objChild in Cyberware)
-            {
-                objChild.CheckRestrictedGear(dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems, ref intRestrictedCount);
-            }
+            return intRestrictedCount;
         }
 
         #region UI Methods

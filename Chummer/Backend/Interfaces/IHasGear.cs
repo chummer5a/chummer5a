@@ -19,6 +19,8 @@
 
 using System.Collections.Generic;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Chummer.Backend.Equipment;
 
 namespace Chummer
@@ -28,6 +30,6 @@ namespace Chummer
         TaggedObservableCollection<Gear> GearChildren { get; }
 
         //TODO: Make this dynamically update without having to validate the character.
-        void CheckRestrictedGear(IDictionary<int, int> dicRestrictedGearLimits, StringBuilder sbdAvailItems, StringBuilder sbdRestrictedItems, ref int intRestrictedCount);
+        ValueTask<int> CheckRestrictedGear(IDictionary<int, int> dicRestrictedGearLimits, StringBuilder sbdAvailItems, StringBuilder sbdRestrictedItems, CancellationToken token = default);
     }
 }

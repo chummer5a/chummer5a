@@ -733,7 +733,7 @@ namespace Chummer
                                             if (sbdWeaponMounts.Length > 0)
                                                 sbdWeaponMounts.Length -= Environment.NewLine.Length;
 
-                                            AvailabilityValue objAvail = objVehicle.TotalAvailTuple();
+                                            AvailabilityValue objAvail = await objVehicle.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                                             SourceString strSource = await SourceString.GetSourceStringAsync(
                                                 objVehicle.Source,
                                                 objVehicle.DisplayPage(GlobalSettings.Language),

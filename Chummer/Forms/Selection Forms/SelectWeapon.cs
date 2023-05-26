@@ -386,7 +386,7 @@ namespace Chummer
                                 .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strWeaponCost), token: token)
                                 .ConfigureAwait(false);
 
-                        AvailabilityValue objTotalAvail = objSelectedWeapon.TotalAvailTuple();
+                        AvailabilityValue objTotalAvail = await objSelectedWeapon.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                         string strAvail = objTotalAvail.ToString();
                         await lblWeaponAvail.DoThreadSafeAsync(x => x.Text = strAvail, token: token)
                                             .ConfigureAwait(false);
@@ -560,7 +560,7 @@ namespace Chummer
 
                                 if (sbdAccessories.Length > 0)
                                     sbdAccessories.Length -= Environment.NewLine.Length;
-                                AvailabilityValue objAvail = objWeapon.TotalAvailTuple();
+                                AvailabilityValue objAvail = await objWeapon.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                                 SourceString strSource = await SourceString.GetSourceStringAsync(objWeapon.Source,
                                     await objWeapon.DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false),
                                     GlobalSettings.Language,

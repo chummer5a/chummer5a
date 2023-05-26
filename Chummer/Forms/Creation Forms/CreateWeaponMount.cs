@@ -454,7 +454,7 @@ namespace Chummer
                         decimal decCost = _objVehicle.TotalCost - _decOldBaseCost;
 
                         // Multiply the cost if applicable.
-                        switch (_objMount.TotalAvailTuple().Suffix)
+                        switch ((await _objMount.TotalAvailTupleAsync(token: _objGenericToken).ConfigureAwait(false)).Suffix)
                         {
                             case 'R' when _objCharacter.Settings.MultiplyRestrictedCost:
                                 decCost *= _objCharacter.Settings.RestrictedCostMultiplier;
@@ -801,7 +801,7 @@ namespace Chummer
                     if (objMod.IncludedInVehicle)
                         continue;
                     intSlots += objMod.CalculatedSlots;
-                    AvailabilityValue objLoopAvail = objMod.TotalAvailTuple();
+                    AvailabilityValue objLoopAvail = await objMod.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                     char chrLoopAvailSuffix = objLoopAvail.Suffix;
                     if (chrLoopAvailSuffix == 'F')
                         chrAvailSuffix = 'F';

@@ -2803,7 +2803,7 @@ namespace Chummer
                                               && (!string.IsNullOrEmpty(x.PlugsIntoModularMount)
                                                   || x.CanRemoveThroughImprovements)).ToList())
                             {
-                                char chrAvail = objCyberware.TotalAvailTuple(false).Suffix;
+                                char chrAvail = (await objCyberware.TotalAvailTupleAsync(false, GenericToken).ConfigureAwait(false)).Suffix;
                                 if (chrAvail != 'R' && chrAvail != 'F')
                                     continue;
                                 if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
@@ -5984,7 +5984,7 @@ namespace Chummer
                     }
 
                     // Multiply the cost if applicable.
-                    char chrAvail = objWeapon.TotalAvailTuple().Suffix;
+                    char chrAvail = (await objWeapon.TotalAvailTupleAsync(token: token).ConfigureAwait(false)).Suffix;
                     switch (chrAvail)
                     {
                         case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
@@ -6177,7 +6177,7 @@ namespace Chummer
                     }
 
                     // Multiply the cost if applicable.
-                    char chrAvail = objVehicle.TotalAvailTuple().Suffix;
+                    char chrAvail = (await objVehicle.TotalAvailTupleAsync(token: token).ConfigureAwait(false)).Suffix;
                     switch (chrAvail)
                     {
                         case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
@@ -9735,7 +9735,7 @@ namespace Chummer
                             }
 
                             // Multiply the cost if applicable.
-                            char chrAvail = objAccessory.TotalAvailTuple().Suffix;
+                            char chrAvail = (await objAccessory.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false)).Suffix;
                             switch (chrAvail)
                             {
                                 case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
@@ -9823,7 +9823,7 @@ namespace Chummer
                     }
 
                     // Multiply the cost if applicable.
-                    char chrAvail = objArmor.TotalAvailTuple().Suffix;
+                    char chrAvail = (await objArmor.TotalAvailTupleAsync(token: token).ConfigureAwait(false)).Suffix;
                     switch (chrAvail)
                     {
                         case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
@@ -10010,7 +10010,7 @@ namespace Chummer
                             }
 
                             // Multiply the cost if applicable.
-                            char chrAvail = objMod.TotalAvailTuple().Suffix;
+                            char chrAvail = (await objMod.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false)).Suffix;
                             switch (chrAvail)
                             {
                                 case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
@@ -10250,7 +10250,7 @@ namespace Chummer
                             decimal decCost = objVehicle.TotalCost - decOriginalCost;
 
                             // Multiply the cost if applicable.
-                            char chrAvail = objMod.TotalAvailTuple().Suffix;
+                            char chrAvail = (await objMod.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false)).Suffix;
                             switch (chrAvail)
                             {
                                 case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
@@ -10403,7 +10403,7 @@ namespace Chummer
                     }
 
                     // Multiply the cost if applicable.
-                    char chrAvail = objWeapon.TotalAvailTuple().Suffix;
+                    char chrAvail = (await objWeapon.TotalAvailTupleAsync(token: token).ConfigureAwait(false)).Suffix;
                     switch (chrAvail)
                     {
                         case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
@@ -10495,7 +10495,7 @@ namespace Chummer
                 decCost += objVehicle.TotalCost;
 
                 // Multiply the cost if applicable.
-                char chrAvail = objNewWeaponMount.TotalAvailTuple().Suffix;
+                char chrAvail = (await objNewWeaponMount.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false)).Suffix;
                 switch (chrAvail)
                 {
                     case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
@@ -10611,7 +10611,7 @@ namespace Chummer
                             }
 
                             // Multiply the cost if applicable.
-                            char chrAvail = objAccessory.TotalAvailTuple().Suffix;
+                            char chrAvail = (await objAccessory.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false)).Suffix;
                             switch (chrAvail)
                             {
                                 case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
@@ -10708,7 +10708,7 @@ namespace Chummer
                     }
 
                     // Multiply the cost if applicable.
-                    char chrAvail = objWeapon.TotalAvailTuple().Suffix;
+                    char chrAvail = (await objWeapon.TotalAvailTupleAsync(token: token).ConfigureAwait(false)).Suffix;
                     switch (chrAvail)
                     {
                         case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
@@ -27406,7 +27406,7 @@ namespace Chummer
                 }*/
 
                 // Multiply the cost if applicable.
-                char chrAvail = selectedDrug.TotalAvailTuple().Suffix;
+                char chrAvail = (await selectedDrug.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false)).Suffix;
                 switch (chrAvail)
                 {
                     case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:

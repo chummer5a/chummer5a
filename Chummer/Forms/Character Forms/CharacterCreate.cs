@@ -2296,7 +2296,7 @@ namespace Chummer
                                                                                       && x.CanRemoveThroughImprovements)
                                                                               .ToList())
                             {
-                                char chrAvail = objCyberware.TotalAvailTuple(false).Suffix;
+                                char chrAvail = (await objCyberware.TotalAvailTupleAsync(false, GenericToken).ConfigureAwait(false)).Suffix;
                                 if (chrAvail != 'R' && chrAvail != 'F')
                                     continue;
                                 if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
@@ -6925,7 +6925,7 @@ namespace Chummer
                                 // Multiply the cost if applicable.
                                 decimal decOldCost = objMod.TotalCost;
                                 decimal decCost = decOldCost;
-                                char chrAvail = objMod.TotalAvailTuple().Suffix;
+                                char chrAvail = (await objMod.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false)).Suffix;
                                 switch (chrAvail)
                                 {
                                     case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
@@ -20108,42 +20108,38 @@ namespace Chummer
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdRestrictedItems))
                     {
-                        int intRestrictedCount = 0;
-
                         // Gear Availability.
-                        foreach (Gear objGear in CharacterObject.Gear)
-                        {
-                            objGear.CheckRestrictedGear(dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems,
-                                                        ref intRestrictedCount);
-                        }
-
-                        // Cyberware Availability.
-                        foreach (Cyberware objCyberware in CharacterObject.Cyberware)
-                        {
-                            objCyberware.CheckRestrictedGear(dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems,
-                                                             ref intRestrictedCount);
-                        }
-
-                        // Armor Availability.
-                        foreach (Armor objArmor in CharacterObject.Armor)
-                        {
-                            objArmor.CheckRestrictedGear(dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems,
-                                                         ref intRestrictedCount);
-                        }
-
-                        // Weapon Availability.
-                        foreach (Weapon objWeapon in CharacterObject.Weapons)
-                        {
-                            objWeapon.CheckRestrictedGear(dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems,
-                                                          ref intRestrictedCount);
-                        }
-
-                        // Vehicle Availability.
-                        foreach (Vehicle objVehicle in CharacterObject.Vehicles)
-                        {
-                            objVehicle.CheckRestrictedGear(dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems,
-                                                           ref intRestrictedCount);
-                        }
+                        int intRestrictedCount = await (await CharacterObject.GetGearAsync(token).ConfigureAwait(false))
+                                                       .SumAsync(
+                                                           async objGear => await objGear.CheckRestrictedGear(
+                                                               dicRestrictedGearLimits, sbdAvailItems,
+                                                               sbdRestrictedItems,
+                                                               token).ConfigureAwait(false), token)
+                                                       .ConfigureAwait(false)
+                                                 // Cyberware Availability.
+                                                 + await (await CharacterObject.GetCyberwareAsync(token)
+                                                                               .ConfigureAwait(false)).SumAsync(
+                                                     async objGear => await objGear.CheckRestrictedGear(
+                                                         dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems,
+                                                         token).ConfigureAwait(false), token).ConfigureAwait(false)
+                                                 // Armor Availability.
+                                                 + await (await CharacterObject.GetArmorAsync(token)
+                                                                               .ConfigureAwait(false)).SumAsync(
+                                                     async objGear => await objGear.CheckRestrictedGear(
+                                                         dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems,
+                                                         token).ConfigureAwait(false), token).ConfigureAwait(false)
+                                                 // Weapon Availability.
+                                                 + await (await CharacterObject.GetWeaponsAsync(token)
+                                                                               .ConfigureAwait(false)).SumAsync(
+                                                     async objGear => await objGear.CheckRestrictedGear(
+                                                         dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems,
+                                                         token).ConfigureAwait(false), token).ConfigureAwait(false)
+                                                 // Vehicle Availability.
+                                                 + await (await CharacterObject.GetVehiclesAsync(token)
+                                                                               .ConfigureAwait(false)).SumAsync(
+                                                     async objGear => await objGear.CheckRestrictedGear(
+                                                         dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems,
+                                                         token).ConfigureAwait(false), token).ConfigureAwait(false);
 
                         // Make sure the character is not carrying more items over the allowed Avail than they are allowed.
                         if (intRestrictedCount > 0)

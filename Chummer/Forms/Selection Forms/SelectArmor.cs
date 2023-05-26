@@ -614,7 +614,7 @@ namespace Chummer
                                 int intArmor = objArmor.TotalArmor;
                                 decimal decCapacity
                                     = Convert.ToDecimal(objArmor.CalculatedCapacity(GlobalSettings.InvariantCultureInfo), GlobalSettings.InvariantCultureInfo);
-                                AvailabilityValue objAvail = objArmor.TotalAvailTuple();
+                                AvailabilityValue objAvail = await objArmor.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                               out StringBuilder sbdAccessories))
                                 {
@@ -819,7 +819,7 @@ namespace Chummer
                     }
                     await lblCost.DoThreadSafeAsync(x => x.Text = strCost, token).ConfigureAwait(false);
 
-                    AvailabilityValue objTotalAvail = objSelectedArmor.TotalAvailTuple();
+                    AvailabilityValue objTotalAvail = await objSelectedArmor.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                     string strAvail = objTotalAvail.ToString();
                     await lblAvail.DoThreadSafeAsync(x => x.Text = strAvail, token: token)
                                         .ConfigureAwait(false);

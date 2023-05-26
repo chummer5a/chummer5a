@@ -2653,25 +2653,33 @@ namespace Chummer.Backend.Equipment
                                                          GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     sbdAvail.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
                     // Keeping enumerations separate reduces heap allocations
-                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList)
+                    AttributeSection objAttributeSection = await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false);
+                    await (await objAttributeSection.GetAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopAttribute =>
                     {
                         await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev,
-                                                         () => objLoopAttribute.TotalValue.ToString(
-                                                             GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                                         async () => (await objLoopAttribute.GetTotalValueAsync(token)
+                                                             .ConfigureAwait(false)).ToString(
+                                                             GlobalSettings.InvariantCultureInfo), token: token)
+                                      .ConfigureAwait(false);
                         await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev + "Base",
-                                                         () => objLoopAttribute.TotalBase.ToString(
-                                                             GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                    }
-
-                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.SpecialAttributeList)
+                                                         async () => (await objLoopAttribute.GetTotalBaseAsync(token)
+                                                             .ConfigureAwait(false)).ToString(
+                                                             GlobalSettings.InvariantCultureInfo), token: token)
+                                      .ConfigureAwait(false);
+                    }, token).ConfigureAwait(false);
+                    await (await objAttributeSection.GetSpecialAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopAttribute =>
                     {
                         await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev,
-                                                         () => objLoopAttribute.TotalValue.ToString(
-                                                             GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                                         async () => (await objLoopAttribute.GetTotalValueAsync(token)
+                                                             .ConfigureAwait(false)).ToString(
+                                                             GlobalSettings.InvariantCultureInfo), token: token)
+                                      .ConfigureAwait(false);
                         await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev + "Base",
-                                                         () => objLoopAttribute.TotalBase.ToString(
-                                                             GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                    }
+                                                         async () => (await objLoopAttribute.GetTotalBaseAsync(token)
+                                                             .ConfigureAwait(false)).ToString(
+                                                             GlobalSettings.InvariantCultureInfo), token: token)
+                                      .ConfigureAwait(false);
+                    }, token).ConfigureAwait(false);
 
                     (bool blnIsSuccess, object objProcess)
                         = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAvail.ToString(), token).ConfigureAwait(false);
@@ -2683,19 +2691,18 @@ namespace Chummer.Backend.Equipment
             if (blnCheckChildren)
             {
                 // Run through the child items and increase the Avail by any Mod whose Avail contains "+".
-                foreach (Gear objChild in Children)
+                intAvail += await Children.SumAsync(async objChild =>
                 {
-                    if (objChild.ParentID != InternalId)
-                    {
-                        AvailabilityValue objLoopAvailTuple = await objChild.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
-                        if (objLoopAvailTuple.AddToParent)
-                            intAvail += objLoopAvailTuple.Value;
-                        if (objLoopAvailTuple.Suffix == 'F')
-                            chrLastAvailChar = 'F';
-                        else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
-                            chrLastAvailChar = 'R';
-                    }
-                }
+                    if (objChild.ParentID == InternalId)
+                        return 0;
+                    AvailabilityValue objLoopAvailTuple
+                        = await objChild.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
+                    if (objLoopAvailTuple.Suffix == 'F')
+                        chrLastAvailChar = 'F';
+                    else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
+                        chrLastAvailChar = 'R';
+                    return objLoopAvailTuple.AddToParent ? objLoopAvailTuple.Value : 0;
+                }, token);
             }
 
             // Avail cannot go below 0. This typically happens when an item with Avail 0 is given the Second Hand category.
@@ -4246,12 +4253,13 @@ namespace Chummer.Backend.Equipment
         /// <param name="dicRestrictedGearLimits">Dictionary of Restricted Gear availabilities still available with the amount of items that can still use that availability.</param>
         /// <param name="sbdAvailItems">StringBuilder used to list names of gear that are currently over the availability limit.</param>
         /// <param name="sbdRestrictedItems">StringBuilder used to list names of gear that are being used for Restricted Gear.</param>
-        /// <param name="intRestrictedCount">Number of items that are above availability limits.</param>
-        public void CheckRestrictedGear(IDictionary<int, int> dicRestrictedGearLimits, StringBuilder sbdAvailItems, StringBuilder sbdRestrictedItems, ref int intRestrictedCount)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async ValueTask<int> CheckRestrictedGear(IDictionary<int, int> dicRestrictedGearLimits, StringBuilder sbdAvailItems, StringBuilder sbdRestrictedItems, CancellationToken token = default)
         {
+            int intRestrictedCount = 0;
             if (!IncludedInParent)
             {
-                AvailabilityValue objTotalAvail = TotalAvailTuple();
+                AvailabilityValue objTotalAvail = await TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                 if (!objTotalAvail.AddToParent)
                 {
                     int intAvailInt = objTotalAvail.Value;
@@ -4285,17 +4293,17 @@ namespace Chummer.Backend.Equipment
                         if (decIllegalQuantity > 0)
                         {
                             ++intRestrictedCount;
-                            sbdAvailItems.AppendLine().Append("\t\t").Append(DisplayName(GlobalSettings.CultureInfo, GlobalSettings.Language, true, decIllegalQuantity));
+                            sbdAvailItems.AppendLine().Append("\t\t").Append(await DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, true, decIllegalQuantity, token).ConfigureAwait(false));
                         }
                         if (intRestrictedGearQuantityUsed > 0)
                         {
                             string strNameToUse = Parent == null
-                                ? DisplayName(GlobalSettings.CultureInfo, GlobalSettings.Language, true,
-                                              intRestrictedGearQuantityUsed)
+                                ? await DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, true,
+                                                         intRestrictedGearQuantityUsed, token).ConfigureAwait(false)
                                 : string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})",
-                                                DisplayName(GlobalSettings.CultureInfo, GlobalSettings.Language, true,
-                                                            intRestrictedGearQuantityUsed),
-                                                LanguageManager.GetString("String_Space"),
+                                                await DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, true,
+                                                                       intRestrictedGearQuantityUsed, token).ConfigureAwait(false),
+                                                await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false),
                                                 Parent);
                             sbdRestrictedItems.AppendLine().Append("\t\t").Append(strNameToUse);
                         }
@@ -4303,10 +4311,16 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            foreach (Gear objChild in Children)
-            {
-                objChild.CheckRestrictedGear(dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems, ref intRestrictedCount);
-            }
+            intRestrictedCount += await Children
+                                        .SumAsync(
+                                            async objChild =>
+                                                await objChild
+                                                      .CheckRestrictedGear(
+                                                          dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems,
+                                                          token).ConfigureAwait(false), token: token)
+                                        .ConfigureAwait(false);
+
+            return intRestrictedCount;
         }
 
         #region UI Methods

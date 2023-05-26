@@ -477,7 +477,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("category_english", Category);
             objWriter.WriteElementString("limit", Limit);
             objWriter.WriteElementString("slots", Slots.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("avail", TotalAvail(objCulture, strLanguageToPrint));
+            objWriter.WriteElementString("avail", await TotalAvailAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false));
             objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
             objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
@@ -886,6 +886,14 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Calculated Availability of the Vehicle.
+        /// </summary>
+        public async ValueTask<string> TotalAvailAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        {
+            return (await TotalAvailTupleAsync(token: token).ConfigureAwait(false)).ToString(objCulture, strLanguage);
+        }
+
+        /// <summary>
         /// Total Availability as a triple.
         /// </summary>
         public AvailabilityValue TotalAvailTuple(bool blnCheckChildren = true)
@@ -966,6 +974,110 @@ namespace Chummer.Backend.Equipment
                             chrLastAvailChar = 'R';
                     }
                 }
+            }
+
+            return new AvailabilityValue(intAvail, chrLastAvailChar, blnModifyParentAvail, IncludedInVehicle);
+        }
+
+        /// <summary>
+        /// Total Availability as a triple.
+        /// </summary>
+        public async ValueTask<AvailabilityValue> TotalAvailTupleAsync(bool blnCheckChildren = true, CancellationToken token = default)
+        {
+            bool blnModifyParentAvail = false;
+            string strAvail = Avail;
+            char chrLastAvailChar = ' ';
+            int intAvail = 0;
+            if (strAvail.Length > 0)
+            {
+                chrLastAvailChar = strAvail[strAvail.Length - 1];
+                if (chrLastAvailChar == 'F' || chrLastAvailChar == 'R')
+                {
+                    strAvail = strAvail.Substring(0, strAvail.Length - 1);
+                }
+
+                blnModifyParentAvail = strAvail.StartsWith('+', '-');
+
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
+                {
+                    sbdAvail.Append(strAvail.TrimStart('+'));
+                    AttributeSection objAttributeSection = await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false);
+                    await (await objAttributeSection.GetAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopAttribute =>
+                    {
+                        await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev,
+                                                         async () => (await objLoopAttribute.GetTotalValueAsync(token)
+                                                             .ConfigureAwait(false)).ToString(
+                                                             GlobalSettings.InvariantCultureInfo), token: token)
+                                      .ConfigureAwait(false);
+                        await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev + "Base",
+                                                         async () => (await objLoopAttribute.GetTotalBaseAsync(token)
+                                                             .ConfigureAwait(false)).ToString(
+                                                             GlobalSettings.InvariantCultureInfo), token: token)
+                                      .ConfigureAwait(false);
+                    }, token).ConfigureAwait(false);
+                    await (await objAttributeSection.GetSpecialAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopAttribute =>
+                    {
+                        await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev,
+                                                         async () => (await objLoopAttribute.GetTotalValueAsync(token)
+                                                             .ConfigureAwait(false)).ToString(
+                                                             GlobalSettings.InvariantCultureInfo), token: token)
+                                      .ConfigureAwait(false);
+                        await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev + "Base",
+                                                         async () => (await objLoopAttribute.GetTotalBaseAsync(token)
+                                                             .ConfigureAwait(false)).ToString(
+                                                             GlobalSettings.InvariantCultureInfo), token: token)
+                                      .ConfigureAwait(false);
+                    }, token).ConfigureAwait(false);
+
+                    await sbdAvail.CheapReplaceAsync(strAvail, "Vehicle Cost",
+                                                     () => Parent?.OwnCost.ToString(GlobalSettings.InvariantCultureInfo) ?? "0", token: token);
+                    // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
+                    await sbdAvail.CheapReplaceAsync(strAvail, "Body",
+                                                     () => Parent?.Body > 0
+                                                         ? Parent.Body.ToString(GlobalSettings.InvariantCultureInfo)
+                                                         : "0.5", token: token);
+                    await sbdAvail.CheapReplaceAsync(strAvail, "Speed",
+                                                     () => Parent?.Speed.ToString(GlobalSettings.InvariantCultureInfo) ?? "0", token: token);
+                    await sbdAvail.CheapReplaceAsync(strAvail, "Acceleration",
+                                                     () => Parent?.Accel.ToString(GlobalSettings.InvariantCultureInfo) ?? "0", token: token);
+                    await sbdAvail.CheapReplaceAsync(strAvail, "Handling",
+                                                () => Parent?.Handling.ToString(GlobalSettings.InvariantCultureInfo) ?? "0", token: token);
+
+                    (bool blnIsSuccess, object objProcess)
+                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAvail.ToString(), token);
+                    if (blnIsSuccess)
+                        intAvail += ((double)objProcess).StandardRound();
+                }
+            }
+
+            // Run through the Accessories and add in their availability.
+            foreach (WeaponMountOption objLoopOption in WeaponMountOptions)
+            {
+                AvailabilityValue objLoopAvailTuple
+                    = await objLoopOption.GetTotalAvailTupleAsync(token).ConfigureAwait(false);
+                //if (objLoopAvailTuple.Item3)
+                intAvail += objLoopAvailTuple.Value;
+                if (objLoopAvailTuple.Suffix == 'F')
+                    chrLastAvailChar = 'F';
+                else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
+                    chrLastAvailChar = 'R';
+            }
+
+            if (blnCheckChildren)
+            {
+                // Run through the Vehicle Mods and add in their availability.
+                intAvail += await Mods.SumAsync(async objVehicleMod =>
+                {
+                    if (objVehicleMod.IncludedInVehicle || !objVehicleMod.Equipped)
+                        return 0;
+                    AvailabilityValue objLoopAvailTuple
+                        = await objVehicleMod.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
+                    if (objLoopAvailTuple.Suffix == 'F')
+                        chrLastAvailChar = 'F';
+                    else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
+                        chrLastAvailChar = 'R';
+                    return objLoopAvailTuple.AddToParent ? objLoopAvailTuple.Value : 0;
+                }, token).ConfigureAwait(false);
             }
 
             return new AvailabilityValue(intAvail, chrLastAvailChar, blnModifyParentAvail, IncludedInVehicle);
@@ -1360,12 +1472,13 @@ namespace Chummer.Backend.Equipment
         /// <param name="dicRestrictedGearLimits">Dictionary of Restricted Gear availabilities still available with the amount of items that can still use that availability.</param>
         /// <param name="sbdAvailItems">StringBuilder used to list names of gear that are currently over the availability limit.</param>
         /// <param name="sbdRestrictedItems">StringBuilder used to list names of gear that are being used for Restricted Gear.</param>
-        /// <param name="intRestrictedCount">Number of items that are above availability limits.</param>
-        public void CheckRestrictedGear(IDictionary<int, int> dicRestrictedGearLimits, StringBuilder sbdAvailItems, StringBuilder sbdRestrictedItems, ref int intRestrictedCount)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async ValueTask<int> CheckRestrictedGear(IDictionary<int, int> dicRestrictedGearLimits, StringBuilder sbdAvailItems, StringBuilder sbdRestrictedItems, CancellationToken token = default)
         {
+            int intRestrictedCount = 0;
             if (!IncludedInVehicle)
             {
-                AvailabilityValue objTotalAvail = TotalAvailTuple();
+                AvailabilityValue objTotalAvail = await TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                 if (!objTotalAvail.AddToParent)
                 {
                     int intAvailInt = objTotalAvail.Value;
@@ -1379,9 +1492,9 @@ namespace Chummer.Backend.Equipment
                                 intLowestValidRestrictedGearAvail = intValidAvail;
                         }
 
-                        string strNameToUse = CurrentDisplayName;
+                        string strNameToUse = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                         if (Parent != null)
-                            strNameToUse += LanguageManager.GetString("String_Space") + '(' + Parent.CurrentDisplayName + ')';
+                            strNameToUse += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' + await Parent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) + ')';
 
                         if (intLowestValidRestrictedGearAvail >= 0
                             && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)
@@ -1399,15 +1512,19 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            foreach (Weapon objChild in Weapons)
-            {
-                objChild.CheckRestrictedGear(dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems, ref intRestrictedCount);
-            }
+            intRestrictedCount += await Weapons.SumAsync(async objChild =>
+                                                             await objChild.CheckRestrictedGear(
+                                                                               dicRestrictedGearLimits, sbdAvailItems,
+                                                                               sbdRestrictedItems, token)
+                                                                           .ConfigureAwait(false), token)
+                                               .ConfigureAwait(false);
 
             foreach (WeaponMountOption objChild in WeaponMountOptions)
             {
-                objChild.CheckRestrictedGear(dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems, ref intRestrictedCount);
+                intRestrictedCount += await objChild.CheckRestrictedGear(dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems, token).ConfigureAwait(false);
             }
+
+            return intRestrictedCount;
         }
 
         #region UI Methods
@@ -1880,6 +1997,14 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Calculated Availability of the Vehicle.
+        /// </summary>
+        public async ValueTask<string> TotalAvailAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        {
+            return (await GetTotalAvailTupleAsync(token: token).ConfigureAwait(false)).ToString(objCulture, strLanguage);
+        }
+
+        /// <summary>
         /// Total Availability as a triple.
         /// </summary>
         public AvailabilityValue TotalAvailTuple
@@ -1924,6 +2049,66 @@ namespace Chummer.Backend.Equipment
 
                 return new AvailabilityValue(intAvail, chrLastAvailChar, blnModifyParentAvail);
             }
+        }
+
+        /// <summary>
+        /// Total Availability as a triple.
+        /// </summary>
+        public async ValueTask<AvailabilityValue> GetTotalAvailTupleAsync(CancellationToken token = default)
+        {
+            bool blnModifyParentAvail = false;
+            string strAvail = Avail;
+            char chrLastAvailChar = ' ';
+            int intAvail = 0;
+            if (strAvail.Length > 0)
+            {
+                chrLastAvailChar = strAvail[strAvail.Length - 1];
+                if (chrLastAvailChar == 'F' || chrLastAvailChar == 'R')
+                {
+                    strAvail = strAvail.Substring(0, strAvail.Length - 1);
+                }
+
+                blnModifyParentAvail = strAvail.StartsWith('+', '-');
+
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
+                {
+                    sbdAvail.Append(strAvail.TrimStart('+'));
+                    AttributeSection objAttributeSection = await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false);
+                    await (await objAttributeSection.GetAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopAttribute =>
+                    {
+                        await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev,
+                                                         async () => (await objLoopAttribute.GetTotalValueAsync(token)
+                                                             .ConfigureAwait(false)).ToString(
+                                                             GlobalSettings.InvariantCultureInfo), token: token)
+                                      .ConfigureAwait(false);
+                        await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev + "Base",
+                                                         async () => (await objLoopAttribute.GetTotalBaseAsync(token)
+                                                             .ConfigureAwait(false)).ToString(
+                                                             GlobalSettings.InvariantCultureInfo), token: token)
+                                      .ConfigureAwait(false);
+                    }, token).ConfigureAwait(false);
+                    await (await objAttributeSection.GetSpecialAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopAttribute =>
+                    {
+                        await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev,
+                                                         async () => (await objLoopAttribute.GetTotalValueAsync(token)
+                                                             .ConfigureAwait(false)).ToString(
+                                                             GlobalSettings.InvariantCultureInfo), token: token)
+                                      .ConfigureAwait(false);
+                        await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev + "Base",
+                                                         async () => (await objLoopAttribute.GetTotalBaseAsync(token)
+                                                             .ConfigureAwait(false)).ToString(
+                                                             GlobalSettings.InvariantCultureInfo), token: token)
+                                      .ConfigureAwait(false);
+                    }, token).ConfigureAwait(false);
+
+                    (bool blnIsSuccess, object objProcess)
+                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAvail.ToString(), token).ConfigureAwait(false);
+                    if (blnIsSuccess)
+                        intAvail += ((double)objProcess).StandardRound();
+                }
+            }
+
+            return new AvailabilityValue(intAvail, chrLastAvailChar, blnModifyParentAvail);
         }
 
         private XmlNode _objCachedMyXmlNode;
@@ -1988,12 +2173,13 @@ namespace Chummer.Backend.Equipment
         /// <param name="dicRestrictedGearLimits">Dictionary of Restricted Gear availabilities still available with the amount of items that can still use that availability.</param>
         /// <param name="sbdAvailItems">StringBuilder used to list names of gear that are currently over the availability limit.</param>
         /// <param name="sbdRestrictedItems">StringBuilder used to list names of gear that are being used for Restricted Gear.</param>
-        /// <param name="intRestrictedCount">Number of items that are above availability limits.</param>
-        public void CheckRestrictedGear(IDictionary<int, int> dicRestrictedGearLimits, StringBuilder sbdAvailItems, StringBuilder sbdRestrictedItems, ref int intRestrictedCount)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async ValueTask<int> CheckRestrictedGear(IDictionary<int, int> dicRestrictedGearLimits, StringBuilder sbdAvailItems, StringBuilder sbdRestrictedItems, CancellationToken token = default)
         {
+            int intRestrictedCount = 0;
             if (!IncludedInParent)
             {
-                AvailabilityValue objTotalAvail = TotalAvailTuple;
+                AvailabilityValue objTotalAvail = await GetTotalAvailTupleAsync(token).ConfigureAwait(false);
                 if (!objTotalAvail.AddToParent)
                 {
                     int intAvailInt = objTotalAvail.Value;
@@ -2011,17 +2197,19 @@ namespace Chummer.Backend.Equipment
                             && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)
                         {
                             --dicRestrictedGearLimits[intLowestValidRestrictedGearAvail];
-                            sbdRestrictedItems.AppendLine().Append("\t\t").Append(CurrentDisplayName);
+                            sbdRestrictedItems.AppendLine().Append("\t\t").Append(await GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
                         }
                         else
                         {
                             dicRestrictedGearLimits.Remove(intLowestValidRestrictedGearAvail);
                             ++intRestrictedCount;
-                            sbdAvailItems.AppendLine().Append("\t\t").Append(CurrentDisplayName);
+                            sbdAvailItems.AppendLine().Append("\t\t").Append(await GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
                         }
                     }
                 }
             }
+
+            return intRestrictedCount;
         }
 
         #endregion Methods

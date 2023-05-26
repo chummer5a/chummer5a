@@ -148,165 +148,203 @@ namespace Chummer
                             foreach (Cyberware objCyberware in (await _objCharacter.GetCyberwareAsync().ConfigureAwait(false)).GetAllDescendants(
                                          x => x.Children))
                             {
-                                if (objCyberware.TotalAvailTuple(false).Suffix == 'R')
+                                if ((await objCyberware.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
                                 {
                                     lstItems.Add(
                                         new ListItem(objCyberware.InternalId, await objCyberware.GetCurrentDisplayNameAsync().ConfigureAwait(false)));
                                 }
 
-                                foreach (Gear objGear in objCyberware.GearChildren.DeepWhere(
-                                             x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
+                                foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(
+                                             x => x.Children))
                                 {
-                                    lstItems.Add(new ListItem(objGear.InternalId, await objGear.GetCurrentDisplayNameAsync().ConfigureAwait(false)));
+                                    if ((await objGear.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
+                                            lstItems.Add(new ListItem(objGear.InternalId, await objGear.GetCurrentDisplayNameAsync().ConfigureAwait(false)));
                                 }
                             }
 
                             // Armor.
-                            foreach (Armor objArmor in _objCharacter.Armor)
+                            await (await _objCharacter.GetArmorAsync().ConfigureAwait(false)).ForEachAsync(async objArmor =>
                             {
-                                if (objArmor.TotalAvailTuple(false).Suffix == 'R')
+                                if ((await objArmor.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
                                 {
-                                    lstItems.Add(new ListItem(objArmor.InternalId, await objArmor.GetCurrentDisplayNameAsync().ConfigureAwait(false)));
+                                    lstItems.Add(new ListItem(objArmor.InternalId,
+                                                              await objArmor.GetCurrentDisplayNameAsync()
+                                                                  .ConfigureAwait(false)));
                                 }
 
-                                foreach (ArmorMod objMod in objArmor.ArmorMods)
+                                await objArmor.ArmorMods.ForEachAsync(async objMod =>
                                 {
-                                    if (objMod.TotalAvailTuple(false).Suffix == 'R')
+                                    if ((await objMod.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
                                     {
-                                        lstItems.Add(new ListItem(objMod.InternalId, await objMod.GetCurrentDisplayNameAsync().ConfigureAwait(false)));
+                                        lstItems.Add(new ListItem(objMod.InternalId,
+                                                                  await objMod.GetCurrentDisplayNameAsync()
+                                                                      .ConfigureAwait(false)));
                                     }
 
-                                    foreach (Gear objGear in objMod.GearChildren.DeepWhere(
-                                                 x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
+                                    foreach (Gear objGear in objMod.GearChildren.GetAllDescendants(
+                                                 x => x.Children))
                                     {
-                                        lstItems.Add(new ListItem(objGear.InternalId, await objGear.GetCurrentDisplayNameAsync().ConfigureAwait(false)));
+                                        if ((await objGear.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
+                                            lstItems.Add(new ListItem(objGear.InternalId,
+                                                                  await objGear.GetCurrentDisplayNameAsync()
+                                                                      .ConfigureAwait(false)));
                                     }
-                                }
+                                }).ConfigureAwait(false);
 
-                                foreach (Gear objGear in objArmor.GearChildren.DeepWhere(
-                                             x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
+                                foreach (Gear objGear in objArmor.GearChildren.GetAllDescendants(
+                                             x => x.Children))
                                 {
-                                    lstItems.Add(new ListItem(objGear.InternalId, await objGear.GetCurrentDisplayNameAsync().ConfigureAwait(false)));
+                                    if ((await objGear.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
+                                        lstItems.Add(new ListItem(objGear.InternalId,
+                                                              await objGear.GetCurrentDisplayNameAsync()
+                                                                           .ConfigureAwait(false)));
                                 }
-                            }
+                            }).ConfigureAwait(false);
 
                             // Weapons.
-                            foreach (Weapon objWeapon in _objCharacter.Weapons.GetAllDescendants(x => x.Children))
+                            foreach (Weapon objWeapon in (await _objCharacter.GetWeaponsAsync().ConfigureAwait(false)).GetAllDescendants(x => x.Children))
                             {
-                                if (objWeapon.TotalAvailTuple(false).Suffix == 'R')
+                                if ((await objWeapon.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
                                 {
                                     lstItems.Add(new ListItem(objWeapon.InternalId, await objWeapon.GetCurrentDisplayNameAsync().ConfigureAwait(false)));
                                 }
 
-                                foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                                await objWeapon.WeaponAccessories.ForEachAsync(async objAccessory =>
                                 {
                                     if (!objAccessory.IncludedInWeapon
-                                        && objAccessory.TotalAvailTuple(false).Suffix == 'R')
+                                        && (await objAccessory.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
                                     {
                                         lstItems.Add(
-                                            new ListItem(objAccessory.InternalId, await objAccessory.GetCurrentDisplayNameAsync().ConfigureAwait(false)));
+                                            new ListItem(objAccessory.InternalId,
+                                                         await objAccessory.GetCurrentDisplayNameAsync()
+                                                                           .ConfigureAwait(false)));
                                     }
 
-                                    foreach (Gear objGear in objAccessory.GearChildren.DeepWhere(
-                                                 x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
+                                    foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(
+                                                 x => x.Children))
                                     {
-                                        lstItems.Add(new ListItem(objGear.InternalId, await objGear.GetCurrentDisplayNameAsync().ConfigureAwait(false)));
+                                        if ((await objGear.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
+                                            lstItems.Add(new ListItem(objGear.InternalId,
+                                                                  await objGear.GetCurrentDisplayNameAsync()
+                                                                               .ConfigureAwait(false)));
                                     }
-                                }
+                                }).ConfigureAwait(false);
                             }
 
                             // Gear.
-                            foreach (Gear objGear in _objCharacter.Gear.DeepWhere(
-                                         x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
+                            foreach (Gear objGear in (await _objCharacter.GetGearAsync().ConfigureAwait(false)).GetAllDescendants(x => x.Children))
                             {
-                                lstItems.Add(new ListItem(objGear.InternalId, await objGear.GetCurrentDisplayNameAsync().ConfigureAwait(false)));
+                                if ((await objGear.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
+                                    lstItems.Add(new ListItem(objGear.InternalId, await objGear.GetCurrentDisplayNameAsync().ConfigureAwait(false)));
                             }
 
                             // Vehicles.
-                            foreach (Vehicle objVehicle in _objCharacter.Vehicles)
+                            await (await _objCharacter.GetVehiclesAsync().ConfigureAwait(false)).ForEachAsync(async objVehicle =>
                             {
-                                if (objVehicle.TotalAvailTuple(false).Suffix == 'R')
+                                if ((await objVehicle.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
                                 {
-                                    lstItems.Add(new ListItem(objVehicle.InternalId, await objVehicle.GetCurrentDisplayNameAsync().ConfigureAwait(false)));
+                                    lstItems.Add(new ListItem(objVehicle.InternalId,
+                                                              await objVehicle.GetCurrentDisplayNameAsync()
+                                                                              .ConfigureAwait(false)));
                                 }
 
-                                foreach (VehicleMod objMod in objVehicle.Mods)
+                                await objVehicle.Mods.ForEachAsync(async objMod =>
                                 {
-                                    if (!objMod.IncludedInVehicle && objMod.TotalAvailTuple(false).Suffix == 'R')
+                                    if (!objMod.IncludedInVehicle && (await objMod.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
                                     {
-                                        lstItems.Add(new ListItem(objMod.InternalId, await objMod.GetCurrentDisplayNameAsync().ConfigureAwait(false)));
+                                        lstItems.Add(new ListItem(objMod.InternalId,
+                                                                  await objMod.GetCurrentDisplayNameAsync()
+                                                                              .ConfigureAwait(false)));
                                     }
 
                                     foreach (Weapon objWeapon in objMod.Weapons.GetAllDescendants(x => x.Children))
                                     {
-                                        if (objWeapon.TotalAvailTuple(false).Suffix == 'R')
+                                        if ((await objWeapon.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
                                         {
                                             lstItems.Add(
-                                                new ListItem(objWeapon.InternalId, await objWeapon.GetCurrentDisplayNameAsync().ConfigureAwait(false)));
+                                                new ListItem(objWeapon.InternalId,
+                                                             await objWeapon.GetCurrentDisplayNameAsync()
+                                                                            .ConfigureAwait(false)));
                                         }
 
-                                        foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                                        await objWeapon.WeaponAccessories.ForEachAsync(async objAccessory =>
                                         {
                                             if (!objAccessory.IncludedInWeapon
-                                                && objAccessory.TotalAvailTuple(false).Suffix == 'R')
+                                                && (await objAccessory.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
                                             {
                                                 lstItems.Add(new ListItem(objAccessory.InternalId,
-                                                                          await objAccessory.GetCurrentDisplayNameAsync().ConfigureAwait(false)));
+                                                                          await objAccessory
+                                                                              .GetCurrentDisplayNameAsync()
+                                                                              .ConfigureAwait(false)));
                                             }
 
-                                            foreach (Gear objGear in objAccessory.GearChildren.DeepWhere(
-                                                         x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
+                                            foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(
+                                                         x => x.Children))
                                             {
-                                                lstItems.Add(
-                                                    new ListItem(objGear.InternalId, await objGear.GetCurrentDisplayNameAsync().ConfigureAwait(false)));
+                                                if ((await objGear.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
+                                                    lstItems.Add(
+                                                    new ListItem(objGear.InternalId,
+                                                                 await objGear.GetCurrentDisplayNameAsync()
+                                                                              .ConfigureAwait(false)));
                                             }
-                                        }
+                                        }).ConfigureAwait(false);
                                     }
-                                }
+                                }).ConfigureAwait(false);
 
-                                foreach (WeaponMount objWeaponMount in objVehicle.WeaponMounts)
+                                await objVehicle.WeaponMounts.ForEachAsync(async objWeaponMount =>
                                 {
                                     if (!objWeaponMount.IncludedInVehicle
-                                        && objWeaponMount.TotalAvailTuple(false).Suffix == 'R')
+                                        && (await objWeaponMount.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
                                     {
                                         lstItems.Add(new ListItem(objWeaponMount.InternalId,
-                                                                  await objWeaponMount.GetCurrentDisplayNameAsync().ConfigureAwait(false)));
+                                                                  await objWeaponMount.GetCurrentDisplayNameAsync()
+                                                                      .ConfigureAwait(false)));
                                     }
 
                                     foreach (Weapon objWeapon in objWeaponMount.Weapons.GetAllDescendants(
                                                  x => x.Children))
                                     {
-                                        if (objWeapon.TotalAvailTuple(false).Suffix == 'R')
+                                        if ((await objWeapon.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
                                         {
                                             lstItems.Add(
-                                                new ListItem(objWeapon.InternalId, await objWeapon.GetCurrentDisplayNameAsync().ConfigureAwait(false)));
+                                                new ListItem(objWeapon.InternalId,
+                                                             await objWeapon.GetCurrentDisplayNameAsync()
+                                                                            .ConfigureAwait(false)));
                                         }
 
-                                        foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                                        await objWeapon.WeaponAccessories.ForEachAsync(async objAccessory =>
                                         {
                                             if (!objAccessory.IncludedInWeapon
-                                                && objAccessory.TotalAvailTuple(false).Suffix == 'R')
+                                                && (await objAccessory.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
                                             {
                                                 lstItems.Add(new ListItem(objAccessory.InternalId,
-                                                                          await objAccessory.GetCurrentDisplayNameAsync().ConfigureAwait(false)));
+                                                                          await objAccessory
+                                                                              .GetCurrentDisplayNameAsync()
+                                                                              .ConfigureAwait(false)));
                                             }
 
-                                            foreach (Gear objGear in objAccessory.GearChildren.DeepWhere(
-                                                         x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
+                                            foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(
+                                                         x => x.Children))
                                             {
-                                                lstItems.Add(
-                                                    new ListItem(objGear.InternalId, await objGear.GetCurrentDisplayNameAsync().ConfigureAwait(false)));
+                                                if ((await objGear.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
+                                                    lstItems.Add(
+                                                        new ListItem(objGear.InternalId,
+                                                                     await objGear.GetCurrentDisplayNameAsync()
+                                                                         .ConfigureAwait(false)));
                                             }
-                                        }
+                                        }).ConfigureAwait(false);
                                     }
-                                }
+                                }).ConfigureAwait(false);
 
-                                foreach (Gear objGear in objVehicle.GearChildren.DeepWhere(
-                                             x => x.Children, x => x.TotalAvailTuple(false).Suffix == 'R'))
+                                foreach (Gear objGear in objVehicle.GearChildren.GetAllDescendants(
+                                             x => x.Children))
                                 {
-                                    lstItems.Add(new ListItem(objGear.InternalId, await objGear.GetCurrentDisplayNameAsync().ConfigureAwait(false)));
+                                    if ((await objGear.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
+                                        lstItems.Add(new ListItem(objGear.InternalId,
+                                                                  await objGear.GetCurrentDisplayNameAsync()
+                                                                               .ConfigureAwait(false)));
                                 }
-                            }
+                            }).ConfigureAwait(false);
                         }
 
                         break;

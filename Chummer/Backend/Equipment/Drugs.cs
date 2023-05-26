@@ -217,10 +217,10 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("duration", Duration.ToString(objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("crashdamage", CrashDamage.ToString(objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync(
-                    "avail", TotalAvail(GlobalSettings.CultureInfo, strLanguageToPrint), token).ConfigureAwait(false);
+                    "avail", await TotalAvailAsync(GlobalSettings.CultureInfo, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("avail_english",
-                                                        TotalAvail(GlobalSettings.CultureInfo,
-                                                                   GlobalSettings.DefaultLanguage), token).ConfigureAwait(false);
+                                                        await TotalAvailAsync(GlobalSettings.CultureInfo,
+                                                                              GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync(
                     "cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
 
@@ -523,6 +523,14 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Calculated Availability of the Vehicle.
+        /// </summary>
+        public async ValueTask<string> TotalAvailAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        {
+            return (await TotalAvailTupleAsync(token: token).ConfigureAwait(false)).ToString(objCulture, strLanguage);
+        }
+
+        /// <summary>
         /// Total Availability as a triple.
         /// </summary>
         public AvailabilityValue TotalAvailTuple(bool blnCheckChildren = true)
@@ -570,6 +578,63 @@ namespace Chummer.Backend.Equipment
                     else if (chrLastAvailChar != 'F' && objLoopAvail.Suffix == 'R')
                         chrLastAvailChar = 'R';
                 }
+            }
+
+            if (intAvail < 0)
+                intAvail = 0;
+
+            return new AvailabilityValue(intAvail, chrLastAvailChar, blnModifyParentAvail);
+        }
+
+        /// <summary>
+        /// Total Availability as a triple.
+        /// </summary>
+        public async ValueTask<AvailabilityValue> TotalAvailTupleAsync(bool blnCheckChildren = true, CancellationToken token = default)
+        {
+            bool blnModifyParentAvail = false;
+            string strAvail = Availability;
+            char chrLastAvailChar = ' ';
+            int intAvail = 0;
+            if (strAvail.Length > 0)
+            {
+                chrLastAvailChar = strAvail[strAvail.Length - 1];
+                if (chrLastAvailChar == 'F' || chrLastAvailChar == 'R')
+                {
+                    strAvail = strAvail.Substring(0, strAvail.Length - 1);
+                }
+
+                blnModifyParentAvail = strAvail.StartsWith('+', '-');
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
+                {
+                    sbdAvail.Append(strAvail.TrimStart('+'));
+
+                    /*
+                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                    {
+                        sbdAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString());
+                        sbdAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString());
+                    }
+                    */
+
+                    (bool blnIsSuccess, object objProcess)
+                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAvail.ToString(), token).ConfigureAwait(false);
+                    if (blnIsSuccess)
+                        intAvail += ((double)objProcess).StandardRound();
+                }
+            }
+            if (blnCheckChildren)
+            {
+                // Run through the Accessories and add in their availability.
+                intAvail += await Components.SumAsync(async objComponent =>
+                {
+                    AvailabilityValue objLoopAvail
+                        = await objComponent.GetTotalAvailTupleAsync(token).ConfigureAwait(false);
+                    if (objLoopAvail.Suffix == 'F')
+                        chrLastAvailChar = 'F';
+                    else if (chrLastAvailChar != 'F' && objLoopAvail.Suffix == 'R')
+                        chrLastAvailChar = 'R';
+                    return objLoopAvail.AddToParent ? objLoopAvail.Value : 0;
+                }, token);
             }
 
             if (intAvail < 0)
@@ -1223,7 +1288,7 @@ namespace Chummer.Backend.Equipment
                                       .Append((Cost * (intLevel + 1)).ToString(
                                                   _objCharacter.Settings.NuyenFormat, objCulture)).AppendLine(await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false))
                                       .Append(await LanguageManager.GetStringAsync("Label_Avail", strLanguage, token: token).ConfigureAwait(false)).Append(strSpace)
-                                      .AppendLine(TotalAvail(objCulture, strLanguage));
+                                      .AppendLine(await TotalAvailAsync(objCulture, strLanguage, token).ConfigureAwait(false));
                     }
                 }
                 else if (!blnEffectsOnly)
@@ -1238,7 +1303,7 @@ namespace Chummer.Backend.Equipment
                                               _objCharacter.Settings.NuyenFormat, objCulture))
                                   .AppendLine(await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false))
                                   .Append(await LanguageManager.GetStringAsync("Label_Avail", strLanguage, token: token).ConfigureAwait(false)).Append(strSpace)
-                                  .AppendLine(TotalAvail(objCulture, strLanguage));
+                                  .AppendLine(await TotalAvailAsync(objCulture, strLanguage, token).ConfigureAwait(false));
                 }
 
                 string strReturn = sbdDescription.ToString();
@@ -1885,6 +1950,14 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Calculated Availability of the Vehicle.
+        /// </summary>
+        public async ValueTask<string> TotalAvailAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        {
+            return (await GetTotalAvailTupleAsync(token: token).ConfigureAwait(false)).ToString(objCulture, strLanguage);
+        }
+
+        /// <summary>
         /// Total Availability as a triple.
         /// </summary>
         public AvailabilityValue TotalAvailTuple
@@ -1928,6 +2001,49 @@ namespace Chummer.Backend.Equipment
 
                 return new AvailabilityValue(intAvail, chrLastAvailChar, blnModifyParentAvail);
             }
+        }
+
+        /// <summary>
+        /// Total Availability as a triple.
+        /// </summary>
+        public async ValueTask<AvailabilityValue> GetTotalAvailTupleAsync(CancellationToken token = default)
+        {
+            bool blnModifyParentAvail = false;
+            string strAvail = Availability;
+            char chrLastAvailChar = ' ';
+            int intAvail = 0;
+            if (strAvail.Length > 0)
+            {
+                chrLastAvailChar = strAvail[strAvail.Length - 1];
+                if (chrLastAvailChar == 'F' || chrLastAvailChar == 'R')
+                {
+                    strAvail = strAvail.Substring(0, strAvail.Length - 1);
+                }
+
+                blnModifyParentAvail = strAvail.StartsWith('+', '-');
+                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
+                {
+                    sbdAvail.Append(strAvail.TrimStart('+'));
+
+                    /*
+                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(_objCharacter.AttributeSection.SpecialAttributeList))
+                    {
+                        sbdAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev, () => objLoopAttribute.TotalValue.ToString());
+                        sbdAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev + "Base", () => objLoopAttribute.TotalBase.ToString());
+                    }
+                    */
+
+                    (bool blnIsSuccess, object objProcess)
+                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAvail.ToString(), token).ConfigureAwait(false);
+                    if (blnIsSuccess)
+                        intAvail += ((double) objProcess).StandardRound();
+                }
+            }
+
+            if (intAvail < 0)
+                intAvail = 0;
+
+            return new AvailabilityValue(intAvail, chrLastAvailChar, blnModifyParentAvail);
         }
 
         public int AddictionThreshold
