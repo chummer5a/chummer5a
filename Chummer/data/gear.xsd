@@ -87,6 +87,7 @@
                                                     <xs:element name="pool" type="xs:string" minOccurs="0" maxOccurs="1" />
                                                     <xs:element name="rangebonus" type="xs:integer" minOccurs="0" maxOccurs="1" />
                                                     <xs:element name="rc" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                                    <xs:element name="smartlinkpool" type="xs:string" minOccurs="0" maxOccurs="1" />
                                                     <xs:element name="userange" type="xs:string" minOccurs="0" maxOccurs="1" />
                                                 </xs:sequence>
                                             </xs:complexType>
@@ -107,6 +108,7 @@
                                               <xs:element name="pool" type="xs:string" minOccurs="0" maxOccurs="1" />
                                               <xs:element name="rangebonus" type="xs:integer" minOccurs="0" maxOccurs="1" />
                                               <xs:element name="rc" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                              <xs:element name="smartlinkpool" type="xs:string" minOccurs="0" maxOccurs="1" />
                                               <xs:element name="userange" type="xs:string" minOccurs="0" maxOccurs="1" />
                                             </xs:sequence>
                                           </xs:complexType>

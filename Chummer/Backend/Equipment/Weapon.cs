@@ -4170,27 +4170,57 @@ namespace Chummer.Backend.Equipment
                     // Check if the Weapon has Ammunition loaded and look for any Damage bonus/replacement.
                     // Look for Ammo on the character.
                     Gear objGear = AmmoLoaded;
-                    if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objGear?.FlechetteWeaponBonus != null)
+                    if (objGear != null)
                     {
-                        // Change the Weapon's Damage Type.
-                        string strAPReplace = objGear.FlechetteWeaponBonus["apreplace"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strAPReplace))
-                            strAP = strAPReplace;
-                        // Adjust the Weapon's Damage.
-                        string strAPAdd = objGear.FlechetteWeaponBonus["ap"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strAPAdd))
-                            sbdBonusAP.Append(" + ").Append(strAPAdd.TrimStartOnce('+'));
-                    }
-                    else if (objGear?.WeaponBonus != null)
-                    {
-                        // Change the Weapon's Damage Type.
-                        string strAPReplace = objGear.WeaponBonus["apreplace"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strAPReplace))
-                            strAP = strAPReplace;
-                        // Adjust the Weapon's Damage.
-                        string strAPAdd = objGear.WeaponBonus["ap"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strAPAdd))
-                            sbdBonusAP.Append(" + ").Append(strAPAdd.TrimStartOnce('+'));
+                        if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objGear.FlechetteWeaponBonus != null)
+                        {
+                            // Change the Weapon's Damage Type.
+                            string strAPReplace = objGear.FlechetteWeaponBonus["apreplace"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strAPReplace))
+                                strAP = strAPReplace;
+                            // Adjust the Weapon's Damage.
+                            string strAPAdd = objGear.FlechetteWeaponBonus["ap"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strAPAdd))
+                                sbdBonusAP.Append(" + ").Append(strAPAdd.TrimStartOnce('+'));
+                        }
+                        else if (objGear.WeaponBonus != null)
+                        {
+                            // Change the Weapon's Damage Type.
+                            string strAPReplace = objGear.WeaponBonus["apreplace"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strAPReplace))
+                                strAP = strAPReplace;
+                            // Adjust the Weapon's Damage.
+                            string strAPAdd = objGear.WeaponBonus["ap"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strAPAdd))
+                                sbdBonusAP.Append(" + ").Append(strAPAdd.TrimStartOnce('+'));
+                        }
+
+                        // Do the same for any plugins.
+                        foreach (Gear objChild in objGear.Children.GetAllDescendants(x => x.Children))
+                        {
+                            if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objChild.FlechetteWeaponBonus != null)
+                            {
+                                // Change the Weapon's Damage Type.
+                                string strAPReplace = objChild.FlechetteWeaponBonus["apreplace"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strAPReplace))
+                                    strAP = strAPReplace;
+                                // Adjust the Weapon's Damage.
+                                string strAPAdd = objChild.FlechetteWeaponBonus["ap"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strAPAdd))
+                                    sbdBonusAP.Append(" + ").Append(strAPAdd.TrimStartOnce('+'));
+                            }
+                            else if (objChild.WeaponBonus != null)
+                            {
+                                // Change the Weapon's Damage Type.
+                                string strAPReplace = objChild.WeaponBonus["apreplace"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strAPReplace))
+                                    strAP = strAPReplace;
+                                // Adjust the Weapon's Damage.
+                                string strAPAdd = objChild.WeaponBonus["ap"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strAPAdd))
+                                    sbdBonusAP.Append(" + ").Append(strAPAdd.TrimStartOnce('+'));
+                            }
+                        }
                     }
                 }
 
@@ -4473,6 +4503,51 @@ namespace Chummer.Backend.Equipment
                                             .Append('(').Append(strRCBonus).Append(')');
                             }
                         }
+
+                        // Do the same for any plugins.
+                        foreach (Gear objChild in objGear.Children.GetAllDescendants(x => x.Children))
+                        {
+                            if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objChild.FlechetteWeaponBonus != null)
+                            {
+                                string strRCBonus = objChild.FlechetteWeaponBonus["rc"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strRCBonus) && int.TryParse(strRCBonus, out int intLoopRCBonus))
+                                {
+                                    intRCBase += intLoopRCBonus;
+                                    intRCFull += intLoopRCBonus;
+
+                                    if (blnRefreshRCToolTip)
+                                        sbdRCTip.Append(strSpace).Append('+').Append(strSpace)
+                                                .Append(blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                            ? objChild.DisplayName(objCulture, strLanguage)
+                                                            : await objChild
+                                                                    .DisplayNameAsync(objCulture, strLanguage, token: token)
+                                                                    .ConfigureAwait(false))
+                                                .Append(strSpace)
+                                                .Append('(').Append(strRCBonus).Append(')');
+                                }
+                            }
+                            else if (objChild.WeaponBonus != null)
+                            {
+                                string strRCBonus = objChild.WeaponBonus["rc"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strRCBonus) && int.TryParse(strRCBonus, out int intLoopRCBonus))
+                                {
+                                    intRCBase += intLoopRCBonus;
+                                    intRCFull += intLoopRCBonus;
+
+                                    if (blnRefreshRCToolTip)
+                                        sbdRCTip.Append(strSpace).Append('+').Append(strSpace)
+                                                .Append(blnSync
+                                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                            ? objChild.DisplayName(objCulture, strLanguage)
+                                                            : await objChild
+                                                                    .DisplayNameAsync(objCulture, strLanguage, token: token)
+                                                                    .ConfigureAwait(false))
+                                                .Append(strSpace)
+                                                .Append('(').Append(strRCBonus).Append(')');
+                                }
+                            }
+                        }
                     }
                 }
 
@@ -4741,27 +4816,57 @@ namespace Chummer.Backend.Equipment
                     // Check if the Weapon has Ammunition loaded and look for any Damage bonus/replacement.
                     // Look for Ammo on the character.
                     Gear objGear = AmmoLoaded;
-                    if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objGear?.FlechetteWeaponBonus != null)
+                    if (objGear != null)
                     {
-                        // Change the Weapon's Damage Type.
-                        string strAccuracyReplace = objGear.FlechetteWeaponBonus["accuracyreplace"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strAccuracyReplace))
-                            strAccuracy = strAccuracyReplace;
-                        // Adjust the Weapon's Damage.
-                        string strAccuracyAdd = objGear.FlechetteWeaponBonus["accuracy"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strAccuracyAdd))
-                            sbdBonusAccuracy.Append(" + ").Append(strAccuracyAdd.TrimStartOnce('+'));
-                    }
-                    else if (objGear?.WeaponBonus != null)
-                    {
-                        // Change the Weapon's Damage Type.
-                        string strAccuracyReplace = objGear.WeaponBonus["accuracyreplace"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strAccuracyReplace))
-                            strAccuracy = strAccuracyReplace;
-                        // Adjust the Weapon's Damage.
-                        string strAccuracyAdd = objGear.WeaponBonus["accuracy"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strAccuracyAdd))
-                            sbdBonusAccuracy.Append(" + ").Append(strAccuracyAdd.TrimStartOnce('+'));
+                        if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objGear.FlechetteWeaponBonus != null)
+                        {
+                            // Change the Weapon's Damage Type.
+                            string strAccuracyReplace = objGear.FlechetteWeaponBonus["accuracyreplace"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strAccuracyReplace))
+                                strAccuracy = strAccuracyReplace;
+                            // Adjust the Weapon's Damage.
+                            string strAccuracyAdd = objGear.FlechetteWeaponBonus["accuracy"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strAccuracyAdd))
+                                sbdBonusAccuracy.Append(" + ").Append(strAccuracyAdd.TrimStartOnce('+'));
+                        }
+                        else if (objGear.WeaponBonus != null)
+                        {
+                            // Change the Weapon's Damage Type.
+                            string strAccuracyReplace = objGear.WeaponBonus["accuracyreplace"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strAccuracyReplace))
+                                strAccuracy = strAccuracyReplace;
+                            // Adjust the Weapon's Damage.
+                            string strAccuracyAdd = objGear.WeaponBonus["accuracy"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strAccuracyAdd))
+                                sbdBonusAccuracy.Append(" + ").Append(strAccuracyAdd.TrimStartOnce('+'));
+                        }
+
+                        // Do the same for any plugins.
+                        foreach (Gear objChild in objGear.Children.GetAllDescendants(x => x.Children))
+                        {
+                            if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objChild.FlechetteWeaponBonus != null)
+                            {
+                                // Change the Weapon's Damage Type.
+                                string strAccuracyReplace = objChild.FlechetteWeaponBonus["accuracyreplace"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strAccuracyReplace))
+                                    strAccuracy = strAccuracyReplace;
+                                // Adjust the Weapon's Damage.
+                                string strAccuracyAdd = objChild.FlechetteWeaponBonus["accuracy"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strAccuracyAdd))
+                                    sbdBonusAccuracy.Append(" + ").Append(strAccuracyAdd.TrimStartOnce('+'));
+                            }
+                            else if (objChild.WeaponBonus != null)
+                            {
+                                // Change the Weapon's Damage Type.
+                                string strAccuracyReplace = objChild.WeaponBonus["accuracyreplace"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strAccuracyReplace))
+                                    strAccuracy = strAccuracyReplace;
+                                // Adjust the Weapon's Damage.
+                                string strAccuracyAdd = objChild.WeaponBonus["accuracy"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strAccuracyAdd))
+                                    sbdBonusAccuracy.Append(" + ").Append(strAccuracyAdd.TrimStartOnce('+'));
+                            }
+                        }
                     }
 
                     if (sbdBonusAccuracy.Length != 0)
@@ -4876,27 +4981,57 @@ namespace Chummer.Backend.Equipment
                     // Check if the Weapon has Ammunition loaded and look for any Damage bonus/replacement.
                     // Look for Ammo on the character.
                     Gear objGear = AmmoLoaded;
-                    if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objGear?.FlechetteWeaponBonus != null)
+                    if (objGear != null)
                     {
-                        // Change the Weapon's Damage Type.
-                        string strAccuracyReplace = objGear.FlechetteWeaponBonus["accuracyreplace"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strAccuracyReplace))
-                            strAccuracy = strAccuracyReplace;
-                        // Adjust the Weapon's Damage.
-                        string strAccuracyAdd = objGear.FlechetteWeaponBonus["accuracy"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strAccuracyAdd))
-                            sbdBonusAccuracy.Append(" + ").Append(strAccuracyAdd.TrimStartOnce('+'));
-                    }
-                    else if (objGear?.WeaponBonus != null)
-                    {
-                        // Change the Weapon's Damage Type.
-                        string strAccuracyReplace = objGear.WeaponBonus["accuracyreplace"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strAccuracyReplace))
-                            strAccuracy = strAccuracyReplace;
-                        // Adjust the Weapon's Damage.
-                        string strAccuracyAdd = objGear.WeaponBonus["accuracy"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strAccuracyAdd))
-                            sbdBonusAccuracy.Append(" + ").Append(strAccuracyAdd.TrimStartOnce('+'));
+                        if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objGear.FlechetteWeaponBonus != null)
+                        {
+                            // Change the Weapon's Damage Type.
+                            string strAccuracyReplace = objGear.FlechetteWeaponBonus["accuracyreplace"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strAccuracyReplace))
+                                strAccuracy = strAccuracyReplace;
+                            // Adjust the Weapon's Damage.
+                            string strAccuracyAdd = objGear.FlechetteWeaponBonus["accuracy"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strAccuracyAdd))
+                                sbdBonusAccuracy.Append(" + ").Append(strAccuracyAdd.TrimStartOnce('+'));
+                        }
+                        else if (objGear.WeaponBonus != null)
+                        {
+                            // Change the Weapon's Damage Type.
+                            string strAccuracyReplace = objGear.WeaponBonus["accuracyreplace"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strAccuracyReplace))
+                                strAccuracy = strAccuracyReplace;
+                            // Adjust the Weapon's Damage.
+                            string strAccuracyAdd = objGear.WeaponBonus["accuracy"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strAccuracyAdd))
+                                sbdBonusAccuracy.Append(" + ").Append(strAccuracyAdd.TrimStartOnce('+'));
+                        }
+
+                        // Do the same for any plugins.
+                        foreach (Gear objChild in objGear.Children.GetAllDescendants(x => x.Children))
+                        {
+                            if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objChild.FlechetteWeaponBonus != null)
+                            {
+                                // Change the Weapon's Damage Type.
+                                string strAccuracyReplace = objChild.FlechetteWeaponBonus["accuracyreplace"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strAccuracyReplace))
+                                    strAccuracy = strAccuracyReplace;
+                                // Adjust the Weapon's Damage.
+                                string strAccuracyAdd = objChild.FlechetteWeaponBonus["accuracy"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strAccuracyAdd))
+                                    sbdBonusAccuracy.Append(" + ").Append(strAccuracyAdd.TrimStartOnce('+'));
+                            }
+                            else if (objChild.WeaponBonus != null)
+                            {
+                                // Change the Weapon's Damage Type.
+                                string strAccuracyReplace = objChild.WeaponBonus["accuracyreplace"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strAccuracyReplace))
+                                    strAccuracy = strAccuracyReplace;
+                                // Adjust the Weapon's Damage.
+                                string strAccuracyAdd = objChild.WeaponBonus["accuracy"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strAccuracyAdd))
+                                    sbdBonusAccuracy.Append(" + ").Append(strAccuracyAdd.TrimStartOnce('+'));
+                            }
+                        }
                     }
 
                     if (sbdBonusAccuracy.Length != 0)
@@ -5939,15 +6074,60 @@ namespace Chummer.Backend.Equipment
                 Gear objAmmo = AmmoLoaded;
                 if (objAmmo != null)
                 {
-                    string strWeaponBonusPool = string.Empty;
+                    string strWeaponBonusPool;
                     if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objAmmo.FlechetteWeaponBonus != null)
-                        strWeaponBonusPool = objAmmo.FlechetteWeaponBonus?["pool"]?.InnerText;
+                    {
+                        strWeaponBonusPool = objAmmo.FlechetteWeaponBonus["pool"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                            decDicePoolModifier += Convert.ToDecimal(strWeaponBonusPool, GlobalSettings.InvariantCultureInfo);
+                        if (WirelessOn && HasWirelessSmartgun)
+                        {
+                            strWeaponBonusPool = objAmmo.FlechetteWeaponBonus["smartlinkpool"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                                decDicePoolModifier += Convert.ToDecimal(strWeaponBonusPool, GlobalSettings.InvariantCultureInfo);
+                        }
+                    }
                     else if (objAmmo.WeaponBonus != null)
-                        strWeaponBonusPool = objAmmo.WeaponBonus?["pool"]?.InnerText;
+                    {
+                        strWeaponBonusPool = objAmmo.WeaponBonus["pool"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                            decDicePoolModifier += Convert.ToDecimal(strWeaponBonusPool, GlobalSettings.InvariantCultureInfo);
+                        if (WirelessOn && HasWirelessSmartgun)
+                        {
+                            strWeaponBonusPool = objAmmo.WeaponBonus["smartlinkpool"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                                decDicePoolModifier += Convert.ToDecimal(strWeaponBonusPool, GlobalSettings.InvariantCultureInfo);
+                        }
+                    }
 
-                    if (!string.IsNullOrEmpty(strWeaponBonusPool))
-                        decDicePoolModifier
-                            += Convert.ToDecimal(strWeaponBonusPool, GlobalSettings.InvariantCultureInfo);
+                    // Do the same for any plugins.
+                    foreach (Gear objChild in objAmmo.Children.GetAllDescendants(x => x.Children))
+                    {
+                        if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objChild.FlechetteWeaponBonus != null)
+                        {
+                            strWeaponBonusPool = objChild.FlechetteWeaponBonus["pool"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                                decDicePoolModifier += Convert.ToDecimal(strWeaponBonusPool, GlobalSettings.InvariantCultureInfo);
+                            if (WirelessOn && HasWirelessSmartgun)
+                            {
+                                strWeaponBonusPool = objChild.FlechetteWeaponBonus["smartlinkpool"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                                    decDicePoolModifier += Convert.ToDecimal(strWeaponBonusPool, GlobalSettings.InvariantCultureInfo);
+                            }
+                        }
+                        else if (objChild.WeaponBonus != null)
+                        {
+                            strWeaponBonusPool = objChild.WeaponBonus["pool"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                                decDicePoolModifier += Convert.ToDecimal(strWeaponBonusPool, GlobalSettings.InvariantCultureInfo);
+                            if (WirelessOn && HasWirelessSmartgun)
+                            {
+                                strWeaponBonusPool = objChild.WeaponBonus["smartlinkpool"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                                    decDicePoolModifier += Convert.ToDecimal(strWeaponBonusPool, GlobalSettings.InvariantCultureInfo);
+                            }
+                        }
+                    }
                 }
             }
 
@@ -6122,15 +6302,60 @@ namespace Chummer.Backend.Equipment
                 Gear objAmmo = AmmoLoaded;
                 if (objAmmo != null)
                 {
-                    string strWeaponBonusPool = string.Empty;
+                    string strWeaponBonusPool;
                     if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objAmmo.FlechetteWeaponBonus != null)
-                        strWeaponBonusPool = objAmmo.FlechetteWeaponBonus?["pool"]?.InnerText;
+                    {
+                        strWeaponBonusPool = objAmmo.FlechetteWeaponBonus["pool"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                            decDicePoolModifier += Convert.ToDecimal(strWeaponBonusPool, GlobalSettings.InvariantCultureInfo);
+                        if (WirelessOn && HasWirelessSmartgun)
+                        {
+                            strWeaponBonusPool = objAmmo.FlechetteWeaponBonus["smartlinkpool"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                                decDicePoolModifier += Convert.ToDecimal(strWeaponBonusPool, GlobalSettings.InvariantCultureInfo);
+                        }
+                    }
                     else if (objAmmo.WeaponBonus != null)
-                        strWeaponBonusPool = objAmmo.WeaponBonus?["pool"]?.InnerText;
+                    {
+                        strWeaponBonusPool = objAmmo.WeaponBonus["pool"]?.InnerText;
+                        if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                            decDicePoolModifier += Convert.ToDecimal(strWeaponBonusPool, GlobalSettings.InvariantCultureInfo);
+                        if (WirelessOn && HasWirelessSmartgun)
+                        {
+                            strWeaponBonusPool = objAmmo.WeaponBonus["smartlinkpool"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                                decDicePoolModifier += Convert.ToDecimal(strWeaponBonusPool, GlobalSettings.InvariantCultureInfo);
+                        }
+                    }
 
-                    if (!string.IsNullOrEmpty(strWeaponBonusPool))
-                        decDicePoolModifier
-                            += Convert.ToDecimal(strWeaponBonusPool, GlobalSettings.InvariantCultureInfo);
+                    // Do the same for any plugins.
+                    foreach (Gear objChild in objAmmo.Children.GetAllDescendants(x => x.Children))
+                    {
+                        if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objChild.FlechetteWeaponBonus != null)
+                        {
+                            strWeaponBonusPool = objChild.FlechetteWeaponBonus["pool"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                                decDicePoolModifier += Convert.ToDecimal(strWeaponBonusPool, GlobalSettings.InvariantCultureInfo);
+                            if (WirelessOn && HasWirelessSmartgun)
+                            {
+                                strWeaponBonusPool = objChild.FlechetteWeaponBonus["smartlinkpool"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                                    decDicePoolModifier += Convert.ToDecimal(strWeaponBonusPool, GlobalSettings.InvariantCultureInfo);
+                            }
+                        }
+                        else if (objChild.WeaponBonus != null)
+                        {
+                            strWeaponBonusPool = objChild.WeaponBonus["pool"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                                decDicePoolModifier += Convert.ToDecimal(strWeaponBonusPool, GlobalSettings.InvariantCultureInfo);
+                            if (WirelessOn && HasWirelessSmartgun)
+                            {
+                                strWeaponBonusPool = objChild.WeaponBonus["smartlinkpool"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                                    decDicePoolModifier += Convert.ToDecimal(strWeaponBonusPool, GlobalSettings.InvariantCultureInfo);
+                            }
+                        }
+                    }
                 }
             }
 
@@ -6298,18 +6523,207 @@ namespace Chummer.Backend.Equipment
                     Gear objLoadedAmmo = AmmoLoaded;
                     if (objLoadedAmmo != null)
                     {
-                        string strWeaponBonusPool = string.Empty;
-                        if (Damage.Contains("(f)") && AmmoCategory != "Gear"
-                                                   && objLoadedAmmo.FlechetteWeaponBonus != null)
-                            strWeaponBonusPool = objLoadedAmmo.FlechetteWeaponBonus?["pool"]?.InnerText;
-                        else if (objLoadedAmmo.WeaponBonus != null)
-                            strWeaponBonusPool = objLoadedAmmo.WeaponBonus?["pool"]?.InnerText;
-
-                        if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                        string strWeaponBonusPool;
+                        if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objLoadedAmmo.FlechetteWeaponBonus != null)
                         {
-                            sbdExtra.Append(strSpace).Append('+').Append(strSpace)
-                                    .Append(objLoadedAmmo.CurrentDisplayNameShort).Append(strSpace).Append('(')
-                                    .Append(strWeaponBonusPool).Append(')');
+                            strWeaponBonusPool = objLoadedAmmo.FlechetteWeaponBonus["pool"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                            {
+                                if (WirelessOn && HasWirelessSmartgun)
+                                {
+                                    string strInner = objLoadedAmmo.FlechetteWeaponBonus["smartlinkpool"]?.InnerText;
+                                    if (!string.IsNullOrEmpty(strInner))
+                                    {
+                                        if (decimal.TryParse(strWeaponBonusPool, out decimal decTemp)
+                                            && decimal.TryParse(strInner, out decimal decTemp2))
+                                        {
+                                            sbdExtra.Append(strSpace).Append('+').Append(strSpace)
+                                                    .Append(objLoadedAmmo.CurrentDisplayNameShort).Append(strSpace).Append('(')
+                                                    .Append((decTemp + decTemp2).StandardRound().ToString(GlobalSettings.CultureInfo)).Append(')');
+                                        }
+                                        else
+                                            sbdExtra.Append(strSpace).Append('+').Append(strSpace)
+                                                    .Append(objLoadedAmmo.CurrentDisplayNameShort).Append(strSpace)
+                                                    .Append('(')
+                                                    .Append(strWeaponBonusPool).Append(strSpace).Append('+')
+                                                    .Append(strSpace).Append(strInner).Append(')');
+                                    }
+                                    else
+                                    {
+                                        sbdExtra.Append(strSpace).Append('+').Append(strSpace)
+                                                .Append(objLoadedAmmo.CurrentDisplayNameShort).Append(strSpace).Append('(')
+                                                .Append(strWeaponBonusPool).Append(')');
+                                    }
+                                }
+                                else
+                                {
+                                    sbdExtra.Append(strSpace).Append('+').Append(strSpace)
+                                            .Append(objLoadedAmmo.CurrentDisplayNameShort).Append(strSpace).Append('(')
+                                            .Append(strWeaponBonusPool).Append(')');
+                                }
+                            }
+                            else if (WirelessOn && HasWirelessSmartgun)
+                            {
+                                strWeaponBonusPool = objLoadedAmmo.FlechetteWeaponBonus["smartlinkpool"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                                {
+                                    sbdExtra.Append(strSpace).Append('+').Append(strSpace)
+                                            .Append(objLoadedAmmo.CurrentDisplayNameShort).Append(strSpace).Append('(')
+                                            .Append(strWeaponBonusPool).Append(')');
+                                }
+                            }
+                        }
+                        else if (objLoadedAmmo.WeaponBonus != null)
+                        {
+                            strWeaponBonusPool = objLoadedAmmo.WeaponBonus["pool"]?.InnerText;
+                            if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                            {
+                                if (WirelessOn && HasWirelessSmartgun)
+                                {
+                                    string strInner = objLoadedAmmo.WeaponBonus["smartlinkpool"]?.InnerText;
+                                    if (!string.IsNullOrEmpty(strInner))
+                                    {
+                                        if (decimal.TryParse(strWeaponBonusPool, out decimal decTemp)
+                                            && decimal.TryParse(strInner, out decimal decTemp2))
+                                        {
+                                            sbdExtra.Append(strSpace).Append('+').Append(strSpace)
+                                                    .Append(objLoadedAmmo.CurrentDisplayNameShort).Append(strSpace).Append('(')
+                                                    .Append((decTemp + decTemp2).StandardRound().ToString(GlobalSettings.CultureInfo)).Append(')');
+                                        }
+                                        else
+                                            sbdExtra.Append(strSpace).Append('+').Append(strSpace)
+                                                    .Append(objLoadedAmmo.CurrentDisplayNameShort).Append(strSpace)
+                                                    .Append('(')
+                                                    .Append(strWeaponBonusPool).Append(strSpace).Append('+')
+                                                    .Append(strSpace).Append(strInner).Append(')');
+                                    }
+                                    else
+                                    {
+                                        sbdExtra.Append(strSpace).Append('+').Append(strSpace)
+                                                .Append(objLoadedAmmo.CurrentDisplayNameShort).Append(strSpace).Append('(')
+                                                .Append(strWeaponBonusPool).Append(')');
+                                    }
+                                }
+                                else
+                                {
+                                    sbdExtra.Append(strSpace).Append('+').Append(strSpace)
+                                            .Append(objLoadedAmmo.CurrentDisplayNameShort).Append(strSpace).Append('(')
+                                            .Append(strWeaponBonusPool).Append(')');
+                                }
+                            }
+                            else if (WirelessOn && HasWirelessSmartgun)
+                            {
+                                strWeaponBonusPool = objLoadedAmmo.WeaponBonus["smartlinkpool"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                                {
+                                    sbdExtra.Append(strSpace).Append('+').Append(strSpace)
+                                            .Append(objLoadedAmmo.CurrentDisplayNameShort).Append(strSpace).Append('(')
+                                            .Append(strWeaponBonusPool).Append(')');
+                                }
+                            }
+                        }
+
+                        // Do the same for any plugins.
+                        foreach (Gear objChild in objLoadedAmmo.Children.GetAllDescendants(x => x.Children))
+                        {
+                            if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objChild.FlechetteWeaponBonus != null)
+                            {
+                                strWeaponBonusPool = objChild.FlechetteWeaponBonus["pool"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                                {
+                                    if (WirelessOn && HasWirelessSmartgun)
+                                    {
+                                        string strInner = objChild.FlechetteWeaponBonus["smartlinkpool"]?.InnerText;
+                                        if (!string.IsNullOrEmpty(strInner))
+                                        {
+                                            if (decimal.TryParse(strWeaponBonusPool, out decimal decTemp)
+                                                && decimal.TryParse(strInner, out decimal decTemp2))
+                                            {
+                                                sbdExtra.Append(strSpace).Append('+').Append(strSpace)
+                                                        .Append(objChild.CurrentDisplayNameShort).Append(strSpace).Append('(')
+                                                        .Append((decTemp + decTemp2).StandardRound().ToString(GlobalSettings.CultureInfo)).Append(')');
+                                            }
+                                            else
+                                                sbdExtra.Append(strSpace).Append('+').Append(strSpace)
+                                                        .Append(objChild.CurrentDisplayNameShort).Append(strSpace)
+                                                        .Append('(')
+                                                        .Append(strWeaponBonusPool).Append(strSpace).Append('+')
+                                                        .Append(strSpace).Append(strInner).Append(')');
+                                        }
+                                        else
+                                        {
+                                            sbdExtra.Append(strSpace).Append('+').Append(strSpace)
+                                                    .Append(objChild.CurrentDisplayNameShort).Append(strSpace).Append('(')
+                                                    .Append(strWeaponBonusPool).Append(')');
+                                        }
+                                    }
+                                    else
+                                    {
+                                        sbdExtra.Append(strSpace).Append('+').Append(strSpace)
+                                                .Append(objChild.CurrentDisplayNameShort).Append(strSpace).Append('(')
+                                                .Append(strWeaponBonusPool).Append(')');
+                                    }
+                                }
+                                else if (WirelessOn && HasWirelessSmartgun)
+                                {
+                                    strWeaponBonusPool = objChild.FlechetteWeaponBonus["smartlinkpool"]?.InnerText;
+                                    if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                                    {
+                                        sbdExtra.Append(strSpace).Append('+').Append(strSpace)
+                                                .Append(objChild.CurrentDisplayNameShort).Append(strSpace).Append('(')
+                                                .Append(strWeaponBonusPool).Append(')');
+                                    }
+                                }
+                            }
+                            else if (objChild.WeaponBonus != null)
+                            {
+                                strWeaponBonusPool = objChild.WeaponBonus["pool"]?.InnerText;
+                                if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                                {
+                                    if (WirelessOn && HasWirelessSmartgun)
+                                    {
+                                        string strInner = objChild.WeaponBonus["smartlinkpool"]?.InnerText;
+                                        if (!string.IsNullOrEmpty(strInner))
+                                        {
+                                            if (decimal.TryParse(strWeaponBonusPool, out decimal decTemp)
+                                                && decimal.TryParse(strInner, out decimal decTemp2))
+                                            {
+                                                sbdExtra.Append(strSpace).Append('+').Append(strSpace)
+                                                        .Append(objChild.CurrentDisplayNameShort).Append(strSpace).Append('(')
+                                                        .Append((decTemp + decTemp2).StandardRound().ToString(GlobalSettings.CultureInfo)).Append(')');
+                                            }
+                                            else
+                                                sbdExtra.Append(strSpace).Append('+').Append(strSpace)
+                                                        .Append(objChild.CurrentDisplayNameShort).Append(strSpace)
+                                                        .Append('(')
+                                                        .Append(strWeaponBonusPool).Append(strSpace).Append('+')
+                                                        .Append(strSpace).Append(strInner).Append(')');
+                                        }
+                                        else
+                                        {
+                                            sbdExtra.Append(strSpace).Append('+').Append(strSpace)
+                                                    .Append(objChild.CurrentDisplayNameShort).Append(strSpace).Append('(')
+                                                    .Append(strWeaponBonusPool).Append(')');
+                                        }
+                                    }
+                                    else
+                                    {
+                                        sbdExtra.Append(strSpace).Append('+').Append(strSpace)
+                                                .Append(objChild.CurrentDisplayNameShort).Append(strSpace).Append('(')
+                                                .Append(strWeaponBonusPool).Append(')');
+                                    }
+                                }
+                                else if (WirelessOn && HasWirelessSmartgun)
+                                {
+                                    strWeaponBonusPool = objChild.WeaponBonus["smartlinkpool"]?.InnerText;
+                                    if (!string.IsNullOrEmpty(strWeaponBonusPool))
+                                    {
+                                        sbdExtra.Append(strSpace).Append('+').Append(strSpace)
+                                                .Append(objChild.CurrentDisplayNameShort).Append(strSpace).Append('(')
+                                                .Append(strWeaponBonusPool).Append(')');
+                                    }
+                                }
+                            }
                         }
                     }
 

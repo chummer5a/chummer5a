@@ -57,7 +57,7 @@ namespace Chummer
         private static readonly LockingDictionary<string, Tuple<bool, object>> s_DicCompiledEvaluations =
             new LockingDictionary<string, Tuple<bool, object>>();
 
-        private static readonly ReadOnlyCollection<char> s_LstInvariantXPathLegalChars = Array.AsReadOnly("1234567890+-*abcdefghilmnorstuvw()[]{}!=<>&;. ".ToCharArray());
+        private static readonly ReadOnlyCollection<char> s_LstInvariantXPathLegalChars = Array.AsReadOnly("1234567890+-*abcdefghilmnorstuvw()[]{}!=<>&;,. ".ToCharArray());
 
         /// <summary>
         /// Evaluate a string consisting of an XPath Expression that could be evaluated on an empty document.
