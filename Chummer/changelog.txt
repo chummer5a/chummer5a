@@ -27,6 +27,8 @@ Application Changes:
 - Lifestyle qualities whose minimum is not reached by the attached lifestyle now properly contribute to that lifestyle's lifestyle points.
 - Attempting to delete an advanced lifestyle's quality no longer prompts the user to delete a complex form.
 - Weight formatting no longer accidentally uses Essence formatting instead.
+- Gear plugins and addons that modify weapon stats now also always have those modifications applied to a weapon when they are present in the ammunition that is currently loaded into the weapon.
+- Weapon bonus nodes for gear that serves as ammunition can now modify the weapon's dice pool conditional to whether or not the weapon has smartlink enabled. This is done through a `smartlinkpool` node.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.
@@ -43,6 +45,7 @@ Data Changes:
 - The built-in settings for Shadowrun Missions rules now properly enable No Future and Krime Katalog content as per the combined FAQ 1.4.
 - Added stealth errata from Dark Terrors to Run Faster's infected powers as a custom dataset.
 - No Future's stealth errata additions to Cybereyes Basic System, Cyberears, Vision Enhancement, and Audio Enhancement cyberware have been moved to a dedicated custom dataset.
+- Seeker Shafts from Hard Targets are now properly meant as plugins for arrows instead of a dedicated arrow type and now properly affect the dice pool of smartgun/smartlink bows when their parent arrow gear is "loaded".
 
 Changed/New Strings:
 - LimitCondition_SkillsActiveLeadership
@@ -95,8 +98,6 @@ Application Changes:
 - Fixed various bugs where some parts of a character's contacts would not get saved properly.
 - Notes added to gear attached to weapon accessories can now be properly edited.
 - Improvements and bonuses that are chosen to affect an exotic skill's dice or skill rating now properly work.
-- Gear plugins and addons that modify weapon stats now also always have those modifications applied to a weapon when they are present in the ammunition that is currently loaded into the weapon.
-- Weapon bonus nodes for gear that serves as ammunition can now modify the weapon's dice pool conditional to whether or not the weapon has smartlink enabled. This is done through a `smartlinkpool` node.
 
 Data Changes:
 - Added Quick-Start Rules content: 15 scrumptious menu items brought to you by McHughes™!
@@ -131,7 +132,6 @@ Data Changes:
 - Added previously missing Stolen Souls entries for items that have nominal duplicates in other books, but these duplicates often don't have the exact same mechanics as the ones listed in Stolen Souls.
 - Added entries for the non-combat versions of the combat chainsaws from Run & Gun.
 - Bio-Weapons from Chrome Flesh now all have appropriate reach and AP.
-- Seeker Shafts from Hard Targets are now properly meant as plugins for arrows instead of a dedicated arrow type and now properly affect the dice pool of smartgun/smartlink bows when their parent arrow gear is "loaded".
 
 Changed/New Strings:
 - LimitCondition_SoldierParagon
