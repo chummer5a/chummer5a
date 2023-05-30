@@ -351,7 +351,7 @@ namespace Chummer
                         string strSpellCategory = (await objXmlSpell.SelectSingleNodeAndCacheExpressionAsync("category", token).ConfigureAwait(false))?.Value ?? string.Empty;
                         if (!_blnIgnoreRequirements)
                         {
-                            if (!objXmlSpell.RequirementsMet(_objCharacter))
+                            if (!await objXmlSpell.RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false))
                                 continue;
 
                             if ((await ImprovementManager.GetCachedImprovementListForValueOfAsync(
@@ -500,7 +500,7 @@ namespace Chummer
                         return;
                     }
                 }
-                if (!objXmlSpell.RequirementsMet(_objCharacter, null, await LanguageManager.GetStringAsync("String_DescSpell", token: token).ConfigureAwait(false)))
+                if (!await objXmlSpell.RequirementsMetAsync(_objCharacter, null, await LanguageManager.GetStringAsync("String_DescSpell", token: token).ConfigureAwait(false), token: token).ConfigureAwait(false))
                 {
                     return;
                 }

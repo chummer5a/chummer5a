@@ -188,7 +188,7 @@ namespace Chummer
                 {
                     string strId = (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("id", token: token).ConfigureAwait(false))?.Value;
                     if (!string.IsNullOrEmpty(strId)
-                        && (!blnLimitList || objXmlMetamagic.RequirementsMet(_objCharacter)))
+                        && (!blnLimitList || await objXmlMetamagic.RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false)))
                     {
                         lstArts.Add(new ListItem((await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("id", token: token).ConfigureAwait(false))?.Value,
                                                  (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value

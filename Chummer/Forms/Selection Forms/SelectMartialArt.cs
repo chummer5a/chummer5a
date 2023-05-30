@@ -249,7 +249,7 @@ namespace Chummer
                 foreach (XPathNavigator objXmlArt in objArtList)
                 {
                     string strId = (await objXmlArt.SelectSingleNodeAndCacheExpressionAsync("id", token: token).ConfigureAwait(false))?.Value;
-                    if (!string.IsNullOrEmpty(strId) && objXmlArt.RequirementsMet(_objCharacter))
+                    if (!string.IsNullOrEmpty(strId) && await objXmlArt.RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false))
                     {
                         lstMartialArt.Add(new ListItem(
                                               strId,

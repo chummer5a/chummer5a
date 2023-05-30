@@ -199,7 +199,7 @@ namespace Chummer
                         if (_setAllowedTechniques?.Contains(strTechniqueName) == false)
                             continue;
 
-                        if (xmlTechnique.RequirementsMet(_objCharacter, _objMartialArt))
+                        if (await xmlTechnique.RequirementsMetAsync(_objCharacter, _objMartialArt, token: token).ConfigureAwait(false))
                         {
                             lstTechniqueItems.Add(new ListItem(
                                                       strId,

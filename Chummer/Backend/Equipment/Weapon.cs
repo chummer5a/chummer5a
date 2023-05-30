@@ -3963,6 +3963,25 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Weapon Cost to use when working with Total Cost price modifiers for Weapon Mods.
+        /// </summary>
+        public async ValueTask<decimal> MultipliableCostAsync(WeaponAccessory objExcludeAccessory, CancellationToken token = default)
+        {
+            decimal decReturn = await GetOwnCostAsync(token);
+
+            // Run through the list of Weapon Mods.
+            foreach (WeaponAccessory objAccessory in WeaponAccessories)
+            {
+                if (objExcludeAccessory != objAccessory && objAccessory.Equipped && !objAccessory.IncludedInWeapon)
+                {
+                    decReturn += objAccessory.TotalCost;
+                }
+            }
+
+            return decReturn;
+        }
+
+        /// <summary>
         /// Weapon Weight to use when working with Total Weight price modifiers for Weapon Mods.
         /// </summary>
         public decimal MultipliableWeight(WeaponAccessory objExcludeAccessory)
@@ -4032,6 +4051,26 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// The Weapon's total cost including Accessories and Modifications.
+        /// </summary>
+        public async ValueTask<decimal> GetTotalCostAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            decimal decReturn = await GetOwnCostAsync(token).ConfigureAwait(false);
+
+            // Run through the Accessories and add in their cost. If the cost is "Weapon Cost", the Weapon's base cost is added in again.
+            decReturn += await WeaponAccessories.SumAsync(objAccessory => objAccessory.GetTotalCostAsync(token).AsTask(), token).ConfigureAwait(false);
+
+            // Include the cost of any Underbarrel Weapon.
+            if (await Children.GetCountAsync(token) > 0)
+            {
+                decReturn += await Children.SumAsync(objUnderbarrel => objUnderbarrel.GetTotalCostAsync(token).AsTask(), token).ConfigureAwait(false);
+            }
+
+            return decReturn;
+        }
+
+        /// <summary>
         /// The cost of just the Weapon itself.
         /// </summary>
         public decimal OwnCost
@@ -4083,6 +4122,77 @@ namespace Chummer.Backend.Equipment
 
                 return decReturn;
             }
+        }
+
+        /// <summary>
+        /// The cost of just the Weapon itself.
+        /// </summary>
+        public async ValueTask<decimal> GetOwnCostAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // If this is a Cyberware or Gear Weapon, remove the Weapon Cost from this since it has already been paid for through the parent item (but is needed to calculate Mod price).
+            if (Cyberware || Category == "Gear")
+                return 0;
+            decimal decReturn = 0;
+            string strCostExpression = Cost;
+
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
+            {
+                sbdCost.Append(strCostExpression.TrimStart('+'));
+
+                AttributeSection objAttributeSection = await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false);
+                await (await objAttributeSection.GetAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopAttribute =>
+                {
+                    await sbdCost.CheapReplaceAsync(strCostExpression, objLoopAttribute.Abbrev,
+                                                    async () => (await objLoopAttribute.GetTotalValueAsync(token)
+                                                        .ConfigureAwait(false)).ToString(
+                                                        GlobalSettings.InvariantCultureInfo), token: token)
+                                 .ConfigureAwait(false);
+                    await sbdCost.CheapReplaceAsync(strCostExpression, objLoopAttribute.Abbrev + "Base",
+                                                    async () => (await objLoopAttribute.GetTotalBaseAsync(token)
+                                                        .ConfigureAwait(false)).ToString(
+                                                        GlobalSettings.InvariantCultureInfo), token: token)
+                                 .ConfigureAwait(false);
+                }, token).ConfigureAwait(false);
+                await (await objAttributeSection.GetSpecialAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopAttribute =>
+                {
+                    await sbdCost.CheapReplaceAsync(strCostExpression, objLoopAttribute.Abbrev,
+                                                    async () => (await objLoopAttribute.GetTotalValueAsync(token)
+                                                        .ConfigureAwait(false)).ToString(
+                                                        GlobalSettings.InvariantCultureInfo), token: token)
+                                 .ConfigureAwait(false);
+                    await sbdCost.CheapReplaceAsync(strCostExpression, objLoopAttribute.Abbrev + "Base",
+                                                    async () => (await objLoopAttribute.GetTotalBaseAsync(token)
+                                                        .ConfigureAwait(false)).ToString(
+                                                        GlobalSettings.InvariantCultureInfo), token: token)
+                                 .ConfigureAwait(false);
+                }, token).ConfigureAwait(false);
+
+                await sbdCost.CheapReplaceAsync("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+
+                // Replace the division sign with "div" since we're using XPath.
+                sbdCost.Replace("/", " div ");
+                (bool blnIsSuccess, object objProcess)
+                    = await CommonFunctions.EvaluateInvariantXPathAsync(sbdCost.ToString(), token).ConfigureAwait(false);
+                if (blnIsSuccess)
+                    decReturn = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+            }
+
+            if (DiscountCost)
+                decReturn *= 0.9m;
+
+            if (!string.IsNullOrEmpty(Parent?.DoubledCostModificationSlots))
+            {
+                string[] astrParentDoubledCostModificationSlots
+                    = Parent.DoubledCostModificationSlots.Split('/', StringSplitOptions.RemoveEmptyEntries);
+                if (astrParentDoubledCostModificationSlots.Contains(Mount)
+                    || astrParentDoubledCostModificationSlots.Contains(ExtraMount))
+                {
+                    decReturn *= 2;
+                }
+            }
+
+            return decReturn;
         }
 
         /// <summary>
@@ -9154,6 +9264,66 @@ namespace Chummer.Backend.Equipment
             xmlTestNode = objXmlAccessory.SelectSingleNodeAndCacheExpression("required/weapondetails");
             // Assumes topmost parent is an AND node
             return xmlTestNode == null || this.GetNodeXPath().ProcessFilterOperationNode(xmlTestNode, false);
+        }
+
+        /// <summary>
+        /// Checks whether a given WeaponAccessory is allowed to be added to this weapon.
+        /// </summary>
+        public async ValueTask<bool> CheckAccessoryRequirementsAsync(XPathNavigator objXmlAccessory,
+                                                                     CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objXmlAccessory == null)
+                return false;
+            string[] lstMounts = AccessoryMounts.Split('/', StringSplitOptions.RemoveEmptyEntries);
+            XPathNavigator xmlMountNode = await objXmlAccessory.SelectSingleNodeAndCacheExpressionAsync("mount", token)
+                                                               .ConfigureAwait(false);
+            if (!string.IsNullOrEmpty(xmlMountNode?.Value) && (lstMounts.Length == 0 || xmlMountNode.Value
+                    .SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries).All(strItem =>
+                        !string.IsNullOrEmpty(strItem)
+                        && lstMounts.All(strAllowedMount => strAllowedMount != strItem))))
+            {
+                return false;
+            }
+
+            xmlMountNode = await objXmlAccessory.SelectSingleNodeAndCacheExpressionAsync("extramount", token)
+                                                .ConfigureAwait(false);
+            if (!string.IsNullOrEmpty(xmlMountNode?.Value) && (lstMounts.Length == 0 || xmlMountNode.Value
+                    .SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries).All(strItem =>
+                        !string.IsNullOrEmpty(strItem)
+                        && lstMounts.All(strAllowedMount => strAllowedMount != strItem))))
+            {
+                return false;
+            }
+
+            if (!await objXmlAccessory.RequirementsMetAsync(_objCharacter, this, string.Empty, string.Empty, token: token).ConfigureAwait(false))
+                return false;
+
+            XPathNavigator xmlTestNode = await objXmlAccessory
+                                               .SelectSingleNodeAndCacheExpressionAsync(
+                                                   "forbidden/weapondetails", token).ConfigureAwait(false);
+            if (xmlTestNode != null)
+            {
+                XPathNavigator xmlRequirementsNode = await this.GetNodeXPathAsync(token).ConfigureAwait(false);
+                // Assumes topmost parent is an AND node
+                if (await xmlRequirementsNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token)
+                                             .ConfigureAwait(false))
+                    return false;
+                xmlTestNode = await objXmlAccessory
+                                    .SelectSingleNodeAndCacheExpressionAsync("required/weapondetails", token)
+                                    .ConfigureAwait(false);
+                // Assumes topmost parent is an AND node
+                return xmlTestNode == null || await xmlRequirementsNode
+                                                    .ProcessFilterOperationNodeAsync(xmlTestNode, false, token)
+                                                    .ConfigureAwait(false);
+            }
+
+            xmlTestNode = await objXmlAccessory.SelectSingleNodeAndCacheExpressionAsync("required/weapondetails", token)
+                                               .ConfigureAwait(false);
+            // Assumes topmost parent is an AND node
+            return xmlTestNode == null || await (await this.GetNodeXPathAsync(token).ConfigureAwait(false))
+                                                .ProcessFilterOperationNodeAsync(xmlTestNode, false, token)
+                                                .ConfigureAwait(false);
         }
 
         public void ProcessAttributesInXPath(StringBuilder sbdInput, string strOriginal = "", bool blnForRange = false)

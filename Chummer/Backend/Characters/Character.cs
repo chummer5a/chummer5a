@@ -17930,13 +17930,13 @@ namespace Chummer
         /// <param name="strAttribute">CharacterAttribute name to retrieve.</param>
         /// <param name="blnExplicit">Whether to force looking for a specific attribute name.
         /// Mostly expected to be used for gutting Mystic Adept power points.</param>
-        public CharacterAttrib GetAttribute(string strAttribute, bool blnExplicit = false)
+        public CharacterAttrib GetAttribute(string strAttribute, bool blnExplicit = false, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 if (strAttribute == "MAGAdept" && !blnExplicit && (!IsMysticAdept || !Settings.MysAdeptSecondMAGAttribute))
                     strAttribute = "MAG";
-                return AttributeSection.GetAttributeByName(strAttribute);
+                return AttributeSection.GetAttributeByName(strAttribute, token);
             }
         }
 
@@ -18988,6 +18988,15 @@ namespace Chummer
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Magician's Tradition.
+        /// </summary>
+        public async ValueTask<Tradition> GetMagicTraditionAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _objTradition;
         }
 
         /// <summary>

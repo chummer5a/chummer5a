@@ -413,7 +413,7 @@ namespace Chummer
                 string strPowerName = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                 if (!lstPowerWhitelist.Contains(strPowerName) && lstPowerWhitelist.Count != 0)
                     continue;
-                if (!objXmlPower.RequirementsMet(_objCharacter, string.Empty, string.Empty)) continue;
+                if (!await objXmlPower.RequirementsMetAsync(_objCharacter, string.Empty, string.Empty, token: token).ConfigureAwait(false)) continue;
                 TreeNode objNode = new TreeNode
                 {
                     Tag = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("id", token: token).ConfigureAwait(false))?.Value ?? string.Empty,

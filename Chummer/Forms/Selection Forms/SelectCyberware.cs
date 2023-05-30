@@ -1403,7 +1403,7 @@ namespace Chummer
                 objOldCancellationTokenSource.Dispose();
             }
             using (CancellationTokenSource objJoinedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(token, objNewToken))
-                return await RefreshList(strCategory, true, objJoinedCancellationTokenSource.Token);
+                return await RefreshList(strCategory, true, objJoinedCancellationTokenSource.Token).ConfigureAwait(false);
         }
 
         private async ValueTask<bool> RefreshList(string strCategory, bool blnDoUIUpdate,
@@ -1759,7 +1759,7 @@ namespace Chummer
                             }
                         }
 
-                        if (!Upgrading && ParentVehicle == null && !xmlCyberware.RequirementsMet(_objCharacter))
+                        if (!Upgrading && ParentVehicle == null && !await xmlCyberware.RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false))
                             continue;
 
                         if (!blnDoUIUpdate)
@@ -1921,7 +1921,7 @@ namespace Chummer
                     }
                 }
             }
-            if (!Upgrading && ParentVehicle == null && !objCyberwareNode.RequirementsMet(_objCharacter, null, await LanguageManager.GetStringAsync(_eMode == Mode.Cyberware ? "String_SelectPACKSKit_Cyberware" : "String_SelectPACKSKit_Bioware", token: token).ConfigureAwait(false)))
+            if (!Upgrading && ParentVehicle == null && !await objCyberwareNode.RequirementsMetAsync(_objCharacter, null, await LanguageManager.GetStringAsync(_eMode == Mode.Cyberware ? "String_SelectPACKSKit_Cyberware" : "String_SelectPACKSKit_Bioware", token: token).ConfigureAwait(false), token: token).ConfigureAwait(false))
                 return;
 
             string strForceGrade = (await objCyberwareNode.SelectSingleNodeAndCacheExpressionAsync("forcegrade", token: token).ConfigureAwait(false))?.Value;
@@ -2036,17 +2036,21 @@ namespace Chummer
                             else if (objWareGrade.Burnout)
                                 continue;
 
-                            if (blnHideBannedGrades && !_objCharacter.Created && !_objCharacter.IgnoreRules &&
-                                objWareGrade.Name.ContainsAny(_objCharacter.Settings.BannedWareGrades))
+                            if (blnHideBannedGrades
+                                && !await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)
+                                && !await _objCharacter.GetIgnoreRulesAsync(token).ConfigureAwait(false)
+                                && objWareGrade.Name.ContainsAny(_objCharacter.Settings.BannedWareGrades))
                                 continue;
                         }
 
-                        if (!(await objWareGrade.GetNodeXPathAsync(token: token).ConfigureAwait(false)).RequirementsMet(_objCharacter))
+                        if (!await (await objWareGrade.GetNodeXPathAsync(token: token).ConfigureAwait(false)).RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false))
                         {
                             continue;
                         }
 
-                        if (!blnHideBannedGrades && !_objCharacter.Created && !_objCharacter.IgnoreRules
+                        if (blnHideBannedGrades
+                            && !await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false)
+                            && !await _objCharacter.GetIgnoreRulesAsync(token).ConfigureAwait(false)
                             && objWareGrade.Name.ContainsAny(_objCharacter.Settings.BannedWareGrades))
                         {
                             lstGrade.Add(new ListItem(objWareGrade.SourceIDString,

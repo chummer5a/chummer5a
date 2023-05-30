@@ -2706,7 +2706,7 @@ namespace Chummer.Backend.Equipment
                     else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
                         chrLastAvailChar = 'R';
                     return objLoopAvailTuple.AddToParent ? objLoopAvailTuple.Value : 0;
-                }, token);
+                }, token).ConfigureAwait(false);
             }
 
             // Avail cannot go below 0. This typically happens when an item with Avail 0 is given the Second Hand category.
@@ -2950,9 +2950,104 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Total cost of the just the Gear itself before we factor in any multipliers.
+        /// </summary>
+        public async ValueTask<decimal> GetOwnCostPreMultipliersAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strCostExpression = Cost;
+
+            if (strCostExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
+            {
+                string[] strValues = strCostExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
+                                                      .Split(',', StringSplitOptions.RemoveEmptyEntries);
+                strCostExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)].Trim('[', ']');
+            }
+
+            decimal decGearCost = 0;
+            decimal decParentCost = 0;
+            if (Parent != null)
+            {
+                if (strCostExpression.Contains("Gear Cost"))
+                    decGearCost = await ((Gear) Parent).GetCalculatedCostAsync(token).ConfigureAwait(false);
+                if (strCostExpression.Contains("Parent Cost"))
+                    decParentCost = await ((Gear) Parent).GetOwnCostPreMultipliersAsync(token).ConfigureAwait(false);
+            }
+
+            decimal decTotalChildrenCost = 0;
+            if (await Children.GetCountAsync(token).ConfigureAwait(false) > 0 && strCostExpression.Contains("Children Cost"))
+            {
+                decTotalChildrenCost += await Children.SumAsync(x => x.GetCalculatedCostAsync(token).AsTask(), token).ConfigureAwait(false);
+            }
+
+            if (string.IsNullOrEmpty(strCostExpression))
+                return 0;
+
+            decimal decReturn = 0;
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
+            {
+                sbdCost.Append(strCostExpression.TrimStart('+'));
+                sbdCost.Replace("Gear Cost", decGearCost.ToString(GlobalSettings.InvariantCultureInfo));
+                sbdCost.Replace("Children Cost",
+                                decTotalChildrenCost.ToString(GlobalSettings.InvariantCultureInfo));
+                sbdCost.Replace("Parent Rating",
+                                (Parent as IHasRating)?.Rating.ToString(GlobalSettings.InvariantCultureInfo)
+                                ?? "0");
+                sbdCost.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                sbdCost.Replace("Parent Cost", decParentCost.ToString(GlobalSettings.InvariantCultureInfo));
+
+                // Keeping enumerations separate reduces heap allocations
+                AttributeSection objAttributeSection = await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false);
+                await (await objAttributeSection.GetAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopAttribute =>
+                {
+                    await sbdCost.CheapReplaceAsync(strCostExpression, objLoopAttribute.Abbrev,
+                                                    async () => (await objLoopAttribute.GetTotalValueAsync(token)
+                                                        .ConfigureAwait(false)).ToString(
+                                                        GlobalSettings.InvariantCultureInfo), token: token)
+                                 .ConfigureAwait(false);
+                    await sbdCost.CheapReplaceAsync(strCostExpression, objLoopAttribute.Abbrev + "Base",
+                                                    async () => (await objLoopAttribute.GetTotalBaseAsync(token)
+                                                        .ConfigureAwait(false)).ToString(
+                                                        GlobalSettings.InvariantCultureInfo), token: token)
+                                 .ConfigureAwait(false);
+                }, token).ConfigureAwait(false);
+                await (await objAttributeSection.GetSpecialAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopAttribute =>
+                {
+                    await sbdCost.CheapReplaceAsync(strCostExpression, objLoopAttribute.Abbrev,
+                                                    async () => (await objLoopAttribute.GetTotalValueAsync(token)
+                                                        .ConfigureAwait(false)).ToString(
+                                                        GlobalSettings.InvariantCultureInfo), token: token)
+                                 .ConfigureAwait(false);
+                    await sbdCost.CheapReplaceAsync(strCostExpression, objLoopAttribute.Abbrev + "Base",
+                                                    async () => (await objLoopAttribute.GetTotalBaseAsync(token)
+                                                        .ConfigureAwait(false)).ToString(
+                                                        GlobalSettings.InvariantCultureInfo), token: token)
+                                 .ConfigureAwait(false);
+                }, token).ConfigureAwait(false);
+
+                // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
+                (bool blnIsSuccess, object objProcess)
+                    = await CommonFunctions.EvaluateInvariantXPathAsync(sbdCost.ToString(), token).ConfigureAwait(false);
+                if (blnIsSuccess)
+                    decReturn = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+            }
+
+            if (DiscountCost)
+                decReturn *= 0.9m;
+
+            return decReturn;
+        }
+
+        /// <summary>
         /// Total cost of the just the Gear itself.
         /// </summary>
         public decimal CalculatedCost => (OwnCostPreMultipliers * Quantity) / CostFor;
+
+        public async ValueTask<decimal> GetCalculatedCostAsync(CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+            return (await GetOwnCostPreMultipliersAsync(token).ConfigureAwait(false) * Quantity) / CostFor;
+        }
 
         /// <summary>
         /// Total cost of the Gear and its accessories.
@@ -2979,6 +3074,30 @@ namespace Chummer.Backend.Equipment
 
                 return decReturn;
             }
+        }
+
+        /// <summary>
+        /// Total cost of the Gear and its accessories.
+        /// </summary>
+        public async ValueTask<decimal> GetTotalCostAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            decimal decReturn = await GetOwnCostPreMultipliersAsync(token).ConfigureAwait(false);
+
+            decimal decPlugin = 0;
+            if (await Children.GetCountAsync(token).ConfigureAwait(false) > 0)
+            {
+                // Add in the cost of all child components.
+                decPlugin += await Children.SumAsync(x => x.GetTotalCostAsync(token).AsTask(), token).ConfigureAwait(false);
+            }
+            // The number is divided at the end for ammo purposes. This is done since the cost is per "costfor" but is being multiplied by the actual number of rounds.
+            int intParentMultiplier = (Parent as IHasChildrenAndCost<Gear>)?.ChildCostMultiplier ?? 1;
+
+            decReturn = (decReturn * Quantity * intParentMultiplier) / CostFor;
+            // Add in the cost of the plugins separate since their value is not based on the Cost For number (it is always cost x qty).
+            decReturn += decPlugin * Quantity;
+
+            return decReturn;
         }
 
         public decimal StolenTotalCost => CalculatedStolenTotalCost(true);
@@ -3008,11 +3127,45 @@ namespace Chummer.Backend.Equipment
             return decReturn;
         }
 
+        public async ValueTask<decimal> CalculatedStolenTotalCostAsync(bool blnStolen, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            decimal decReturn = 0;
+            if (Stolen == blnStolen)
+                decReturn = await GetOwnCostPreMultipliersAsync(token).ConfigureAwait(false);
+
+            decimal decPlugin = 0;
+            if (await Children.GetCountAsync(token).ConfigureAwait(false) > 0)
+            {
+                // Add in the cost of all child components.
+                decPlugin += await Children.SumAsync(x => x.CalculatedStolenTotalCostAsync(blnStolen, token).AsTask(), token).ConfigureAwait(false);
+            }
+
+            // The number is divided at the end for ammo purposes. This is done since the cost is per "costfor" but is being multiplied by the actual number of rounds.
+            int intParentMultiplier = (Parent as IHasChildrenAndCost<Gear>)?.ChildCostMultiplier ?? 1;
+
+            decReturn = (decReturn * Quantity * intParentMultiplier) / CostFor;
+            // Add in the cost of the plugins separate since their value is not based on the Cost For number (it is always cost x qty).
+            decReturn += decPlugin * Quantity;
+
+            return decReturn;
+        }
+
         /// <summary>
         /// The cost of just the Gear itself.
         /// </summary>
         public decimal OwnCost =>
             (OwnCostPreMultipliers * (Parent as IHasChildrenAndCost<Gear>)?.ChildCostMultiplier ?? 1) / CostFor;
+
+        /// <summary>
+        /// The cost of just the Gear itself.
+        /// </summary>
+        public async ValueTask<decimal> GetOwnCostAsync(CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+            return (await GetOwnCostPreMultipliersAsync(token).ConfigureAwait(false)
+                * (Parent as IHasChildrenAndCost<Gear>)?.ChildCostMultiplier ?? 1) / CostFor;
+        }
 
         /// <summary>
         /// Total weight of the just the Gear itself

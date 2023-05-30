@@ -1423,6 +1423,19 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        /// <summary>
+        /// Total cost of the Weapon Accessory.
+        /// </summary>
+        public async ValueTask<decimal> GetTotalCostAsync(CancellationToken token = default)
+        {
+            decimal decReturn = await GetOwnCostAsync(token).ConfigureAwait(false);
+
+            // Add in the cost of any Gear the Weapon Accessory has attached to it.
+            decReturn += await GearChildren.SumAsync(g => g.GetTotalCostAsync(token).AsTask(), token).ConfigureAwait(false);
+
+            return decReturn;
+        }
+
         public decimal StolenTotalCost => CalculatedStolenTotalCost(true);
 
         public decimal NonStolenTotalCost => CalculatedStolenTotalCost(false);
@@ -1435,6 +1448,18 @@ namespace Chummer.Backend.Equipment
 
             // Add in the cost of any Gear the Weapon Accessory has attached to it.
             decReturn += GearChildren.Sum(g => g.CalculatedStolenTotalCost(blnStolen));
+
+            return decReturn;
+        }
+
+        public async ValueTask<decimal> CalculatedStolenTotalCostAsync(bool blnStolen, CancellationToken token = default)
+        {
+            decimal decReturn = 0;
+            if (Stolen == blnStolen)
+                decReturn = await GetOwnCostAsync(token).ConfigureAwait(false);
+
+            // Add in the cost of any Gear the Weapon Accessory has attached to it.
+            decReturn += await GearChildren.SumAsync(g => g.CalculatedStolenTotalCostAsync(blnStolen, token).AsTask(), token).ConfigureAwait(false);
 
             return decReturn;
         }
@@ -1501,6 +1526,93 @@ namespace Chummer.Backend.Equipment
 
                 return decReturn;
             }
+        }
+
+        /// <summary>
+        /// The cost of just the Weapon Accessory itself.
+        /// </summary>
+        public async ValueTask<decimal> GetOwnCostAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (IncludedInWeapon)
+                return 0;
+            decimal decReturn = 0;
+            string strCostExpr = Cost;
+            if (strCostExpr.StartsWith("FixedValues(", StringComparison.Ordinal))
+            {
+                string[] strValues = strCostExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
+                                                .Split(',', StringSplitOptions.RemoveEmptyEntries);
+                strCostExpr = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
+            }
+
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
+            {
+                sbdCost.Append(strCostExpr.TrimStart('+'));
+                await sbdCost.CheapReplaceAsync(strCostExpr, "Rating",
+                                                () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                await sbdCost.CheapReplaceAsync(strCostExpr, "Weapon Cost",
+                                                async () => (Parent != null
+                                                    ? await Parent.GetOwnCostAsync(token).ConfigureAwait(false)
+                                                    : 0.0m).ToString(GlobalSettings.InvariantCultureInfo),
+                                                token: token).ConfigureAwait(false);
+                await sbdCost.CheapReplaceAsync(strCostExpr, "Weapon Total Cost",
+                                                async () => (Parent != null
+                                                    ? await Parent.MultipliableCostAsync(this, token).ConfigureAwait(false)
+                                                    : 0.0m).ToString(
+                                                    GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+
+                AttributeSection objAttributeSection = await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false);
+                await (await objAttributeSection.GetAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopAttribute =>
+                {
+                    await sbdCost.CheapReplaceAsync(strCostExpr, objLoopAttribute.Abbrev,
+                                                    async () => (await objLoopAttribute.GetTotalValueAsync(token)
+                                                        .ConfigureAwait(false)).ToString(
+                                                        GlobalSettings.InvariantCultureInfo), token: token)
+                                 .ConfigureAwait(false);
+                    await sbdCost.CheapReplaceAsync(strCostExpr, objLoopAttribute.Abbrev + "Base",
+                                                    async () => (await objLoopAttribute.GetTotalBaseAsync(token)
+                                                        .ConfigureAwait(false)).ToString(
+                                                        GlobalSettings.InvariantCultureInfo), token: token)
+                                 .ConfigureAwait(false);
+                }, token).ConfigureAwait(false);
+                await (await objAttributeSection.GetSpecialAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopAttribute =>
+                {
+                    await sbdCost.CheapReplaceAsync(strCostExpr, objLoopAttribute.Abbrev,
+                                                    async () => (await objLoopAttribute.GetTotalValueAsync(token)
+                                                        .ConfigureAwait(false)).ToString(
+                                                        GlobalSettings.InvariantCultureInfo), token: token)
+                                 .ConfigureAwait(false);
+                    await sbdCost.CheapReplaceAsync(strCostExpr, objLoopAttribute.Abbrev + "Base",
+                                                    async () => (await objLoopAttribute.GetTotalBaseAsync(token)
+                                                        .ConfigureAwait(false)).ToString(
+                                                        GlobalSettings.InvariantCultureInfo), token: token)
+                                 .ConfigureAwait(false);
+                }, token).ConfigureAwait(false);
+
+                (bool blnIsSuccess, object objProcess)
+                    = await CommonFunctions.EvaluateInvariantXPathAsync(sbdCost.ToString(), token).ConfigureAwait(false);
+                if (blnIsSuccess)
+                    decReturn = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+            }
+
+            if (DiscountCost)
+                decReturn *= 0.9m;
+            if (Parent != null)
+            {
+                decReturn *= Parent.AccessoryMultiplier;
+                if (!string.IsNullOrEmpty(Parent.DoubledCostModificationSlots))
+                {
+                    string[] astrParentDoubledCostModificationSlots
+                        = Parent.DoubledCostModificationSlots.Split('/', StringSplitOptions.RemoveEmptyEntries);
+                    if (astrParentDoubledCostModificationSlots.Contains(Mount)
+                        || astrParentDoubledCostModificationSlots.Contains(ExtraMount))
+                    {
+                        decReturn *= 2;
+                    }
+                }
+            }
+
+            return decReturn;
         }
 
         /// <summary>

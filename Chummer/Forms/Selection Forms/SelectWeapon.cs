@@ -488,7 +488,7 @@ namespace Chummer
                         : null;
                     foreach (XmlNode objXmlWeapon in objNodeList)
                     {
-                        if (!objXmlWeapon.CreateNavigator().RequirementsMet(_objCharacter, ParentWeapon))
+                        if (!await objXmlWeapon.CreateNavigator().RequirementsMetAsync(_objCharacter, ParentWeapon, token: token).ConfigureAwait(false))
                             continue;
 
                         XmlNode xmlTestNode = objXmlWeapon.SelectSingleNode("forbidden/weapondetails");
@@ -623,7 +623,7 @@ namespace Chummer
                             : null;
                         foreach (XmlNode objXmlWeapon in objNodeList)
                         {
-                            if (!objXmlWeapon.CreateNavigator().RequirementsMet(_objCharacter, ParentWeapon))
+                            if (!await objXmlWeapon.CreateNavigator().RequirementsMetAsync(_objCharacter, ParentWeapon, token: token).ConfigureAwait(false))
                                 continue;
 
                             XmlNode xmlTestNode = objXmlWeapon.SelectSingleNode("forbidden/weapondetails");

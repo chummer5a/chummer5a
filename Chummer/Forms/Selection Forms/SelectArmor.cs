@@ -810,7 +810,7 @@ namespace Chummer
                     if (await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
                     {
                         strCost = (0.0m).ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
-                                        + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token);
+                                        + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                     }
                     else
                     {

@@ -362,10 +362,7 @@
 			<name>Mystic Foreman</name>
 			<required amendoperation="replace">
 				<allof>
-					<attribute>
-						<name>MAG</name>
-						<total>1</total>
-					</attribute>
+                    <magenabled />
 					<skill>
 						<name>Mechanic</name>
 						<val>4</val>
@@ -394,10 +391,7 @@
 			<name>Potion Maker</name>
 			<required amendoperation="replace">
 				<allof>
-					<attribute>
-						<name>MAG</name>
-						<total>1</total>
-					</attribute>
+                    <magenabled />
 					<skill>
 						<name>Alchemy</name>
 						<val>4</val>

@@ -90,10 +90,7 @@
           <quality>Infected: Mutaqua</quality>
           <quality>Infected: Nosferatu</quality>
           <quality>Infected: Wendigo</quality>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </oneof>
       </required>
       <forbidden>
@@ -1222,10 +1219,7 @@
           <quality>Infected: Mutaqua</quality>
           <quality>Infected: Nosferatu</quality>
           <quality>Infected: Wendigo</quality>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </oneof>
       </required>
       <source>SR5</source>
@@ -14213,10 +14207,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
         <oneof>
           <power>Empathic Healing</power>
@@ -14237,10 +14228,7 @@
       </bonus>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
           <metamagic>Advanced Alchemy</metamagic>
           <skill>
             <name>Alchemy</name>
@@ -14265,10 +14253,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
           <metamagic>Advanced Alchemy</metamagic>
         </allof>
         <oneof>
@@ -14296,10 +14281,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
         <oneof>
           <skill>
@@ -14321,10 +14303,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
           <skill>
             <name>Arcana</name>
             <val>6</val>
@@ -14361,10 +14340,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
           <skill>
             <name>Counterspelling</name>
             <val>4</val>
@@ -14384,10 +14360,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
           <spellcategory>
             <name>Combat</name>
             <count>4</count>
@@ -14485,10 +14458,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
           <skill>
             <name>Arcana</name>
             <val>5</val>
@@ -14508,10 +14478,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
         <oneof>
           <skill>
@@ -14538,10 +14505,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
           <initiategrade>1</initiategrade>
         </allof>
         <oneof>
@@ -14573,10 +14537,7 @@
       </bonus>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
         <oneof>
           <group>
@@ -14624,10 +14585,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
           <metamagicart>Blood Magic</metamagicart>
         </allof>
         <oneof>
@@ -14667,10 +14625,7 @@
       </bonus>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
       </required>
       <source>FA</source>
@@ -14686,10 +14641,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
         <oneof>
           <group>
@@ -14770,10 +14722,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
           <skill>
             <name>Assensing</name>
             <val>5</val>
@@ -14813,10 +14762,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
         <oneof>
           <quality>Mentor Spirit</quality>
@@ -14839,10 +14785,7 @@
       </bonus>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
         <oneof>
           <metamagic>Spell Shaping</metamagic>
@@ -14867,10 +14810,7 @@
       </bonus>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
         <oneof>
           <skill>
@@ -14912,10 +14852,7 @@
       </forbidden>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
         <oneof>
           <skill>
@@ -14955,10 +14892,7 @@
       </bonus>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
           <power>Critical Strike</power>
         </allof>
         <oneof>
@@ -14993,10 +14927,7 @@
       </bonus>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
         <oneof>
           <skill>
@@ -15035,10 +14966,7 @@
       </bonus>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
         <oneof>
           <skill>
@@ -15060,10 +14988,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
         <oneof>
           <critterpower>Dual Natured</critterpower>
@@ -15086,10 +15011,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
         <oneof>
           <skill>
@@ -15111,10 +15033,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
         <oneof>
           <group>
@@ -15200,10 +15119,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
           <skill>
             <name>Zoology</name>
             <val>5</val>
@@ -15258,10 +15174,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
           <skill>
             <name>First Aid</name>
             <val>3</val>
@@ -15295,10 +15208,7 @@
       </bonus>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
         <oneof>
           <skill>
@@ -15325,10 +15235,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
         <oneof>
           <skill>
@@ -15350,10 +15257,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
         <oneof>
           <skill>
@@ -15380,10 +15284,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
           <quality>Mage Hunter I</quality>
         </allof>
         <oneof>
@@ -15411,10 +15312,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
           <quality>Mage Hunter II</quality>
         </allof>
         <oneof>
@@ -15442,10 +15340,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
           <power>Missile Parry</power>
           <power>Counterstrike</power>
         </allof>
@@ -15463,10 +15358,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
           <skill>
             <name>Industrial Mechanic</name>
             <val>4</val>
@@ -15501,10 +15393,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
           <spell>Fling</spell>
         </allof>
         <oneof>
@@ -15532,10 +15421,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
           <power>Cool Resolve</power>
         </allof>
         <oneof>
@@ -15556,10 +15442,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
           <skill>
             <name>Chemistry</name>
             <val>4</val>
@@ -15583,10 +15466,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
         <oneof>
           <group>
@@ -15616,10 +15496,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
         <oneof>
           <group>
@@ -15692,10 +15569,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
         <oneof>
           <skill>
@@ -15717,10 +15591,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
         <oneof>
           <group>
@@ -15769,10 +15640,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
         <oneof>
           <power>Rapid Healing</power>
@@ -15791,10 +15659,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
         <oneof>
           <skill>
@@ -15817,10 +15682,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
           <spell>[Critter] Form</spell>
         </allof>
         <oneof>
@@ -15882,10 +15744,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
       </required>
       <source>FA</source>
@@ -15901,10 +15760,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
         <oneof>
           <skill>
@@ -15926,10 +15782,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
         <oneof>
           <power>Killing Hands</power>
@@ -15961,10 +15814,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
           <quality>Spirit Hunter I</quality>
         </allof>
         <oneof>
@@ -15997,10 +15847,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
           <quality>Spirit Hunter II</quality>
         </allof>
         <oneof>
@@ -16033,10 +15880,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
           <skill>
             <name>Ritual Spellcasting</name>
             <val>6</val>
@@ -16060,10 +15904,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
         <oneof>
           <group>
@@ -16150,10 +15991,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
         <oneof>
           <skill>
@@ -16175,10 +16013,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
           <skill>
             <name>Binding</name>
             <val>4</val>
@@ -16199,10 +16034,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
         <oneof>
           <group>
@@ -16324,10 +16156,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
         <oneof>
           <skill>
@@ -16349,10 +16178,7 @@
       <bonus />
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
           <skill>
             <name>Leadership</name>
             <val>4</val>
@@ -16385,10 +16211,7 @@
       </bonus>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
       </required>
       <source>FA</source>
@@ -16412,10 +16235,7 @@
       </bonus>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
       </required>
       <source>FA</source>
@@ -16444,10 +16264,7 @@
       </forbidden>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
       </required>
       <source>FA</source>
@@ -16483,10 +16300,7 @@
       </forbidden>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
       </required>
       <source>FA</source>
@@ -16522,10 +16336,7 @@
       </forbidden>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
       </required>
       <source>FA</source>
@@ -16561,10 +16372,7 @@
       </forbidden>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
       </required>
       <source>FA</source>
@@ -16599,10 +16407,7 @@
       </forbidden>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
       </required>
       <source>FA</source>
@@ -16643,10 +16448,7 @@
       </forbidden>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
       </required>
       <source>FA</source>
@@ -16687,10 +16489,7 @@
       </forbidden>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
       </required>
       <source>FA</source>
@@ -16730,10 +16529,7 @@
       </forbidden>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
       </required>
       <source>FA</source>
@@ -16774,10 +16570,7 @@
       </forbidden>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
       </required>
       <source>FA</source>
@@ -16817,10 +16610,7 @@
       </forbidden>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
       </required>
       <source>FA</source>
@@ -16860,10 +16650,7 @@
       </forbidden>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
       </required>
       <source>FA</source>
@@ -16907,10 +16694,7 @@
       </forbidden>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
       </required>
       <source>FA</source>
@@ -16953,10 +16737,7 @@
       </forbidden>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
       </required>
       <source>FA</source>
@@ -16999,10 +16780,7 @@
       </forbidden>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
       </required>
       <source>FA</source>
@@ -17045,10 +16823,7 @@
       </forbidden>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
       </required>
       <source>FA</source>
@@ -17093,10 +16868,7 @@
       </forbidden>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
       </required>
       <source>FA</source>
@@ -17131,10 +16903,7 @@
       </bonus>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
       </required>
       <source>FA</source>
@@ -17160,10 +16929,7 @@
       </bonus>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
       </required>
       <source>FA</source>
@@ -17189,10 +16955,7 @@
       </bonus>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
       </required>
       <source>FA</source>
@@ -17217,10 +16980,7 @@
       </bonus>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
       </required>
       <source>FA</source>
@@ -17247,10 +17007,7 @@
       </naturalweapons>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
           <quality>Crystal Limb (Arm)</quality>
           <quality>Crystalline Claws</quality>
         </allof>
@@ -17279,10 +17036,7 @@
       </naturalweapons>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
       </required>
       <source>FA</source>
@@ -17297,10 +17051,7 @@
       <doublecareer>False</doublecareer>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
         <oneof>
           <quality>Crystal Breath</quality>
@@ -17318,10 +17069,7 @@
       <doublecareer>False</doublecareer>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
         <oneof>
           <quality>Crystal Limb (Leg)</quality>
@@ -17342,10 +17090,7 @@
       </bonus>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
       </required>
       <source>FA</source>
@@ -17372,10 +17117,7 @@
       </naturalweapons>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
         <oneof>
           <quality>Crystal Limb (Arm)</quality>
@@ -17396,10 +17138,7 @@
       </bonus>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
         <oneof>
           <quality>Crystal Eye (One Eye)</quality>
@@ -19323,10 +19062,7 @@
       </bonus>
       <required>
         <allof>
-          <attribute>
-            <name>RES</name>
-            <total>1</total>
-          </attribute>
+          <resenabled />
           <submersiongrade>1</submersiongrade>
         </allof>
       </required>

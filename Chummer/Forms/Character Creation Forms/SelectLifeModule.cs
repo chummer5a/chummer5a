@@ -85,7 +85,7 @@ namespace Chummer
             {
                 XmlNode xmlNode = xmlNodes[i];
 
-                if (!blnLimitList || xmlNode.CreateNavigator().RequirementsMet(_objCharacter))
+                if (!blnLimitList || await xmlNode.CreateNavigator().RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false))
                 {
                     TreeNode treNode = new TreeNode
                     {

@@ -7847,7 +7847,7 @@ namespace Chummer
                             {
                                 objXmlQuality.TryGetInt32FieldQuickly("karma", ref intQualityBP);
                                 XmlNode xmlDiscountNode = objXmlQuality["costdiscount"];
-                                if (xmlDiscountNode?.CreateNavigator().RequirementsMet(CharacterObject) == true)
+                                if (xmlDiscountNode != null && await xmlDiscountNode.CreateNavigator().RequirementsMetAsync(CharacterObject, token: GenericToken).ConfigureAwait(false))
                                 {
                                     int intTemp = 0;
                                     xmlDiscountNode.TryGetInt32FieldQuickly("value", ref intTemp);
@@ -8455,10 +8455,10 @@ namespace Chummer
                         {
                             XPathNavigator objXmlSelectedQuality
                                 = await objSelectedQuality.GetNodeXPathAsync(GenericToken).ConfigureAwait(false);
-                            if (!objXmlSelectedQuality.RequirementsMet(CharacterObject,
-                                                                       await LanguageManager.GetStringAsync(
-                                                                               "String_Quality", token: GenericToken)
-                                                                           .ConfigureAwait(false)))
+                            if (!await objXmlSelectedQuality.RequirementsMetAsync(CharacterObject,
+                                    await LanguageManager.GetStringAsync(
+                                                             "String_Quality", token: GenericToken)
+                                                         .ConfigureAwait(false), token: GenericToken).ConfigureAwait(false))
                             {
                                 await UpdateQualityLevelValue(objSelectedQuality, GenericToken).ConfigureAwait(false);
                                 break;
@@ -8476,7 +8476,7 @@ namespace Chummer
                                     = await objXmlSelectedQuality
                                             .SelectSingleNodeAndCacheExpressionAsync("costdiscount", GenericToken)
                                             .ConfigureAwait(false);
-                                if (xpnDiscountNode?.RequirementsMet(CharacterObject) == true)
+                                if (xpnDiscountNode != null && await xpnDiscountNode.RequirementsMetAsync(CharacterObject, token: GenericToken).ConfigureAwait(false))
                                 {
                                     int intTemp = 0;
                                     xpnDiscountNode.TryGetInt32FieldQuickly("value", ref intTemp);

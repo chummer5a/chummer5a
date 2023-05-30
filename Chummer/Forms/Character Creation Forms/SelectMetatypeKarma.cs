@@ -475,8 +475,10 @@ namespace Chummer
                                                  : string.Empty, token);
                         foreach (Quality objQuality in lstQualitiesToCheck)
                         {
-                            if ((await objQuality.GetNodeXPathAsync(token: token).ConfigureAwait(false))?.RequirementsMet(_objCharacter, strIgnoreQuality: objQuality.Name)
-                                == false)
+                            XPathNavigator objLoopNode
+                                = await objQuality.GetNodeXPathAsync(token: token).ConfigureAwait(false);
+                            // Set strIgnoreQuality to quality's name to make sure limit counts are not an issue
+                            if (objLoopNode != null && !await objLoopNode.RequirementsMetAsync(_objCharacter, strIgnoreQuality: objQuality.Name, token: token).ConfigureAwait(false))
                                 await objQuality.DeleteQualityAsync(token: token).ConfigureAwait(false);
                         }
                     }

@@ -291,7 +291,7 @@ namespace Chummer
                     if (string.IsNullOrEmpty(strId))
                         continue;
 
-                    if (!xmlComplexForm.RequirementsMet(_objCharacter))
+                    if (!await xmlComplexForm.RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false))
                         continue;
 
                     string strName = (await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value

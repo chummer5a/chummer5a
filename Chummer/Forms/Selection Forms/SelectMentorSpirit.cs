@@ -218,7 +218,8 @@ namespace Chummer
                 foreach (XPathNavigator objXmlMentor in _xmlBaseMentorSpiritDataNode.Select(
                              "mentors/mentor[" + strFilter + ']'))
                 {
-                    if (!objXmlMentor.RequirementsMet(_objCharacter)) continue;
+                    if (!await objXmlMentor.RequirementsMetAsync(_objCharacter).ConfigureAwait(false))
+                        continue;
 
                     string strName = (await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false))?.Value
                                      ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);

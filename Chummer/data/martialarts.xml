@@ -1646,10 +1646,7 @@
       </techniques>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
         <oneof>
           <quality>Adept</quality>
@@ -2442,10 +2439,7 @@
       <page>102</page>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
       </required>
     </technique>
@@ -2456,10 +2450,7 @@
       <page>102</page>
       <required>
         <allof>
-          <attribute>
-            <name>MAG</name>
-            <total>1</total>
-          </attribute>
+          <magenabled />
         </allof>
       </required>
     </technique>

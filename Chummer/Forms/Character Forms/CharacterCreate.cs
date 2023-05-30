@@ -9737,10 +9737,10 @@ namespace Chummer
                         // Adding new levels
                         for (; intSelectedLevels > intCurrentLevels; ++intCurrentLevels)
                         {
-                            if (!(await objSelectedQuality.GetNodeXPathAsync(GenericToken).ConfigureAwait(false))
-                                .RequirementsMet(CharacterObject,
-                                                 await LanguageManager.GetStringAsync("String_Quality", token: GenericToken)
-                                                                      .ConfigureAwait(false)))
+                            if (!await (await objSelectedQuality.GetNodeXPathAsync(GenericToken).ConfigureAwait(false))
+                                       .RequirementsMetAsync(CharacterObject,
+                                                             await LanguageManager.GetStringAsync("String_Quality", token: GenericToken)
+                                                                 .ConfigureAwait(false), token: GenericToken).ConfigureAwait(false))
                             {
                                 await UpdateQualityLevelValue(objSelectedQuality, GenericToken).ConfigureAwait(false);
                                 break;
@@ -19609,8 +19609,8 @@ namespace Chummer
                         && !CharacterObject.IgnoreRules)
                         continue;
 
-                    if (!(await objWareGrade.GetNodeXPathAsync(token).ConfigureAwait(false)).RequirementsMet(
-                            CharacterObject))
+                    if (!await (await objWareGrade.GetNodeXPathAsync(token).ConfigureAwait(false)).RequirementsMetAsync(
+                            CharacterObject, token: token).ConfigureAwait(false))
                     {
                         continue;
                     }

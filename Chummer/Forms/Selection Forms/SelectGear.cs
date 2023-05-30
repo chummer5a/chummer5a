@@ -1252,7 +1252,7 @@ namespace Chummer
                 objOldCancellationTokenSource.Dispose();
             }
             using (CancellationTokenSource objJoinedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(token, objNewToken))
-                return await RefreshList(strCategory, true, objJoinedCancellationTokenSource.Token);
+                return await RefreshList(strCategory, true, objJoinedCancellationTokenSource.Token).ConfigureAwait(false);
         }
 
         private async ValueTask<bool> RefreshList(string strCategory, bool blnDoUIUpdate, CancellationToken token = default)
@@ -1369,7 +1369,7 @@ namespace Chummer
                         continue;
                     }
 
-                    if (!objXmlGear.RequirementsMet(_objCharacter))
+                    if (!await objXmlGear.RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false))
                         continue;
 
                     if (!blnDoUIUpdate)

@@ -3480,9 +3480,9 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public bool HasSpecialization(string strSpecialization)
+        public bool HasSpecialization(string strSpecialization, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (EnterReadLock.Enter(LockObject, token))
             {
                 if (IsExoticSkill)
                 {
@@ -3492,7 +3492,7 @@ namespace Chummer.Backend.Skills
                 return Specializations.Any(
                            x => x.Name == strSpecialization || x.CurrentDisplayName == strSpecialization)
                        && ImprovementManager.GetCachedImprovementListForValueOf(CharacterObject,
-                           Improvement.ImprovementType.DisableSpecializationEffects, DictionaryKey).Count == 0;
+                           Improvement.ImprovementType.DisableSpecializationEffects, DictionaryKey, token: token).Count == 0;
             }
         }
 

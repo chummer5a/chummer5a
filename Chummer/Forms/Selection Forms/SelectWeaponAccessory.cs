@@ -132,7 +132,7 @@ namespace Chummer
                     string strId = (await objXmlAccessory.SelectSingleNodeAndCacheExpressionAsync("id", token: token).ConfigureAwait(false))?.Value;
                     if (string.IsNullOrEmpty(strId))
                         continue;
-                    if (!_objParentWeapon.CheckAccessoryRequirements(objXmlAccessory))
+                    if (!await _objParentWeapon.CheckAccessoryRequirementsAsync(objXmlAccessory, token).ConfigureAwait(false))
                         continue;
 
                     decimal decCostMultiplier = decBaseCostMultiplier;
@@ -542,10 +542,10 @@ namespace Chummer
                 if (xmlAccessory.TryGetStringFieldQuickly("cost", ref strCost))
                 {
                     strCost = (await strCost.CheapReplaceAsync("Weapon Cost",
-                                                               () => _objParentWeapon.OwnCost.ToString(
+                                                               async () => (await _objParentWeapon.GetOwnCostAsync(token).ConfigureAwait(false)).ToString(
                                                                    GlobalSettings.InvariantCultureInfo), token: token)
                                             .CheapReplaceAsync("Weapon Total Cost",
-                                                               () => _objParentWeapon.MultipliableCost(null)
+                                                               async () => (await _objParentWeapon.MultipliableCostAsync(null, token).ConfigureAwait(false))
                                                                    .ToString(GlobalSettings.InvariantCultureInfo),
                                                                token: token).ConfigureAwait(false))
                         .Replace("Rating", intRating.ToString(GlobalSettings.CultureInfo));

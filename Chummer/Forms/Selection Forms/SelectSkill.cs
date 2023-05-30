@@ -73,7 +73,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(_strForceSkill))
                 {
                     (blnForcedExotic, strForcedExoticSkillName)
-                        = await ExoticSkill.IsExoticSkillNameTupleAsync(_objCharacter, _strForceSkill);
+                        = await ExoticSkill.IsExoticSkillNameTupleAsync(_objCharacter, _strForceSkill).ConfigureAwait(false);
                     if (blnForcedExotic)
                     {
                         objXmlSkillList = _objXmlDocument.Select("/chummer/skills/skill[name = "
@@ -362,7 +362,7 @@ namespace Chummer
                         x.Close();
                     }).ConfigureAwait(false);
                 }
-                else if (blnForcedExotic || await cboExtra.DoThreadSafeFuncAsync(x => x.DropDownStyle == ComboBoxStyle.DropDownList))
+                else if (blnForcedExotic || await cboExtra.DoThreadSafeFuncAsync(x => x.DropDownStyle == ComboBoxStyle.DropDownList).ConfigureAwait(false))
                 {
                     await BuildExtraList(tupSelected.Item1).ConfigureAwait(false);
                     int intCount = await cboExtra.DoThreadSafeFuncAsync(x => x.Items.Count).ConfigureAwait(false);
@@ -551,11 +551,11 @@ namespace Chummer
             Tuple<string, bool> tupSelected = (Tuple<string, bool>)await cboSkill.DoThreadSafeFuncAsync(x => x.SelectedValue).ConfigureAwait(false);
             if (tupSelected.Item2)
             {
-                await BuildExtraList(tupSelected.Item1);
-                await cboExtra.DoThreadSafeAsync(x => x.Visible = true);
+                await BuildExtraList(tupSelected.Item1).ConfigureAwait(false);
+                await cboExtra.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
             }
             else
-                await cboExtra.DoThreadSafeAsync(x => x.Visible = false);
+                await cboExtra.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
         }
 
         private async ValueTask BuildExtraList(string strSelectedCategory, CancellationToken token = default)

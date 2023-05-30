@@ -8871,6 +8871,10 @@
       <key>Message_SelectGeneric_CareerOnlyRestriction</key>
       <text>You cannot select this {0} because your character has not been created yet.</text>
     </string>
+    <string>
+      <key>Message_SelectGeneric_HaveAttributeEnabled</key>
+      <text>Have the {0} attribute enabled.</text>
+    </string>
     <!-- End Region-->
     <!-- Region Select Number Window -->
     <string>

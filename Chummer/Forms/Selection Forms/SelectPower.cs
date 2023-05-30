@@ -52,7 +52,7 @@ namespace Chummer
 
         private async void SelectPower_Load(object sender, EventArgs e)
         {
-            await cmdOKAdd.DoThreadSafeAsync(x => x.Visible = !ForBonus);
+            await cmdOKAdd.DoThreadSafeAsync(x => x.Visible = !ForBonus).ConfigureAwait(false);
             _blnLoading = false;
             await BuildPowerList().ConfigureAwait(false);
         }
@@ -262,7 +262,7 @@ namespace Chummer
                                                                          "levels", token: token).ConfigureAwait(false))
                                                            ?.Value == bool.TrueString);
 
-                    if (!objXmlPower.RequirementsMet(_objCharacter, blnIgnoreLimit: blnIgnoreLimit))
+                    if (!await objXmlPower.RequirementsMetAsync(_objCharacter, blnIgnoreLimit: blnIgnoreLimit, token: token).ConfigureAwait(false))
                         continue;
 
                     lstPower.Add(new ListItem(
@@ -296,7 +296,7 @@ namespace Chummer
                 // Check to see if the user needs to select anything for the Power.
                 XPathNavigator objXmlPower = _xmlBasePowerDataNode.SelectSingleNode("powers/power[id = " + strSelectedId.CleanXPath() + ']');
 
-                if (objXmlPower.RequirementsMet(_objCharacter, null, await LanguageManager.GetStringAsync("String_Power", token: token).ConfigureAwait(false), string.Empty, string.Empty, string.Empty, IgnoreLimits))
+                if (await objXmlPower.RequirementsMetAsync(_objCharacter, null, await LanguageManager.GetStringAsync("String_Power", token: token).ConfigureAwait(false), string.Empty, string.Empty, string.Empty, IgnoreLimits, token: token).ConfigureAwait(false))
                 {
                     SelectedPower = strSelectedId;
                     await this.DoThreadSafeAsync(x =>

@@ -405,7 +405,7 @@ namespace Chummer
                     {
                         int.TryParse(strKarma, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intBP);
 
-                        if ((await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("costdiscount", token).ConfigureAwait(false)).RequirementsMet(_objCharacter))
+                        if (await (await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("costdiscount", token).ConfigureAwait(false)).RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false))
                         {
                             XPathNavigator xmlValueNode = await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("costdiscount/value", token).ConfigureAwait(false);
                             if (xmlValueNode != null)
@@ -636,7 +636,7 @@ namespace Chummer
                             strCategoryLower + "/quality[. = " + strLoopName.CleanXPath() + ']') == null)
                         continue;
                     if (!blnLimitList
-                        || objXmlQuality.RequirementsMet(_objCharacter, string.Empty, string.Empty, IgnoreQuality))
+                        || await objXmlQuality.RequirementsMetAsync(_objCharacter, string.Empty, string.Empty, IgnoreQuality, token: token).ConfigureAwait(false))
                     {
                         lstQuality.Add(new ListItem(
                                            (await objXmlQuality
@@ -680,7 +680,7 @@ namespace Chummer
 
             XPathNavigator objNode = _xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[id = " + strSelectedQuality.CleanXPath() + ']');
 
-            if (objNode?.RequirementsMet(_objCharacter, null, await LanguageManager.GetStringAsync("String_Quality", token: token).ConfigureAwait(false), IgnoreQuality) != true)
+            if (objNode == null || !await objNode.RequirementsMetAsync(_objCharacter, null, await LanguageManager.GetStringAsync("String_Quality", token: token).ConfigureAwait(false), IgnoreQuality, token: token).ConfigureAwait(false))
                 return;
 
             _strSelectedQuality = strSelectedQuality;

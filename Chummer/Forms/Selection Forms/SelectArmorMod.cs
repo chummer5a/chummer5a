@@ -530,7 +530,7 @@ namespace Chummer
                         if (!blnHideOverAvailLimit || await objXmlMod.CheckAvailRestrictionAsync(_objCharacter, token: token).ConfigureAwait(false) &&
                             (blnFreeItem || !blnShowOnlyAffordItems ||
                              await objXmlMod.CheckNuyenRestrictionAsync(_objCharacter.Nuyen, decCostMultiplier, token: token).ConfigureAwait(false))
-                            && objXmlMod.RequirementsMet(_objCharacter, _objArmor))
+                            && await objXmlMod.RequirementsMetAsync(_objCharacter, _objArmor, token: token).ConfigureAwait(false))
                         {
                             lstMods.Add(new ListItem(
                                             strId,
