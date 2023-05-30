@@ -2952,7 +2952,7 @@ namespace Chummer.Backend.Equipment
                         }
 
                         // Do the same for any plugins.
-                        foreach (Gear objChild in objGear.Children.GetAllDescendants(x => x.Children))
+                        foreach (Gear objChild in objGear.Children.DeepWhere(x => x.Children, x => x.Equipped))
                         {
                             if (Damage.Contains("(f)") && AmmoCategory != "Gear"
                                                        && objChild.FlechetteWeaponBonus != null)
@@ -3764,7 +3764,7 @@ namespace Chummer.Backend.Equipment
                         }
 
                         // Do the same for any plugins.
-                        foreach (Gear objChild in objGear.Children.GetAllDescendants(x => x.Children))
+                        foreach (Gear objChild in objGear.Children.DeepWhere(x => x.Children, x => x.Equipped))
                         {
                             if (Damage.Contains("(f)") && AmmoCategory != "Gear"
                                                        && objChild.FlechetteWeaponBonus != null)
@@ -4196,7 +4196,7 @@ namespace Chummer.Backend.Equipment
                         }
 
                         // Do the same for any plugins.
-                        foreach (Gear objChild in objGear.Children.GetAllDescendants(x => x.Children))
+                        foreach (Gear objChild in objGear.Children.DeepWhere(x => x.Children, x => x.Equipped))
                         {
                             if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objChild.FlechetteWeaponBonus != null)
                             {
@@ -4505,7 +4505,7 @@ namespace Chummer.Backend.Equipment
                         }
 
                         // Do the same for any plugins.
-                        foreach (Gear objChild in objGear.Children.GetAllDescendants(x => x.Children))
+                        foreach (Gear objChild in objGear.Children.DeepWhere(x => x.Children, x => x.Equipped))
                         {
                             if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objChild.FlechetteWeaponBonus != null)
                             {
@@ -4842,7 +4842,7 @@ namespace Chummer.Backend.Equipment
                         }
 
                         // Do the same for any plugins.
-                        foreach (Gear objChild in objGear.Children.GetAllDescendants(x => x.Children))
+                        foreach (Gear objChild in objGear.Children.DeepWhere(x => x.Children, x => x.Equipped))
                         {
                             if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objChild.FlechetteWeaponBonus != null)
                             {
@@ -5007,7 +5007,7 @@ namespace Chummer.Backend.Equipment
                         }
 
                         // Do the same for any plugins.
-                        foreach (Gear objChild in objGear.Children.GetAllDescendants(x => x.Children))
+                        foreach (Gear objChild in objGear.Children.DeepWhere(x => x.Children, x => x.Equipped))
                         {
                             if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objChild.FlechetteWeaponBonus != null)
                             {
@@ -5357,7 +5357,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                     // Do the same for any plugins.
-                    foreach (Gear objChild in objGear.Children.GetAllDescendants(x => x.Children))
+                    foreach (Gear objChild in objGear.Children.DeepWhere(x => x.Children, x => x.Equipped))
                     {
                         if (Damage.Contains("(f)") && AmmoCategory != "Gear"
                                                    && objChild.FlechetteWeaponBonus != null)
@@ -5446,7 +5446,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                     // Do the same for any plugins.
-                    foreach (Gear objChild in objGear.Children.GetAllDescendants(x => x.Children))
+                    foreach (Gear objChild in objGear.Children.DeepWhere(x => x.Children, x => x.Equipped))
                     {
                         if (Damage.Contains("(f)") && AmmoCategory != "Gear"
                                                    && objChild.FlechetteWeaponBonus != null)
@@ -6101,7 +6101,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                     // Do the same for any plugins.
-                    foreach (Gear objChild in objAmmo.Children.GetAllDescendants(x => x.Children))
+                    foreach (Gear objChild in objAmmo.Children.DeepWhere(x => x.Children, x => x.Equipped))
                     {
                         if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objChild.FlechetteWeaponBonus != null)
                         {
@@ -6329,7 +6329,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                     // Do the same for any plugins.
-                    foreach (Gear objChild in objAmmo.Children.GetAllDescendants(x => x.Children))
+                    foreach (Gear objChild in objAmmo.Children.DeepWhere(x => x.Children, x => x.Equipped))
                     {
                         if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objChild.FlechetteWeaponBonus != null)
                         {
@@ -6624,7 +6624,7 @@ namespace Chummer.Backend.Equipment
                         }
 
                         // Do the same for any plugins.
-                        foreach (Gear objChild in objLoadedAmmo.Children.GetAllDescendants(x => x.Children))
+                        foreach (Gear objChild in objLoadedAmmo.Children.DeepWhere(x => x.Children, x => x.Equipped))
                         {
                             if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objChild.FlechetteWeaponBonus != null)
                             {

@@ -1505,7 +1505,7 @@ namespace Chummer.Backend.Equipment
             if (objWriter == null)
                 return;
 
-            if (_nodWeaponBonus != null || blnForcePrintAllBlocks)
+            if (WeaponBonus != null || blnForcePrintAllBlocks)
             {
                 await objWriter.WriteElementStringAsync("weaponbonusdamage", await WeaponBonusDamageAsync(strLanguageToPrint, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("weaponbonusdamage_english",
@@ -1513,9 +1513,11 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("weaponbonusap", WeaponBonusAP, token: token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("weaponbonusacc", WeaponBonusAcc, token: token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("weaponbonusrange", WeaponBonusRange.ToString(objCulture), token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("weaponbonuspool", WeaponBonusPool.ToString(objCulture), token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("weaponbonussmartlinkpool", WeaponBonusSmartlinkPool.ToString(objCulture), token: token).ConfigureAwait(false);
             }
 
-            if (_nodFlechetteWeaponBonus != null || blnForcePrintAllBlocks)
+            if (FlechetteWeaponBonus != null || blnForcePrintAllBlocks)
             {
                 await objWriter.WriteElementStringAsync("flechetteweaponbonusdamage",
                                                         await FlechetteWeaponBonusDamageAsync(strLanguageToPrint, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
@@ -1524,6 +1526,8 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("flechetteweaponbonusap", FlechetteWeaponBonusAP, token: token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("flechetteweaponbonusacc", FlechetteWeaponBonusAcc, token: token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("flechetteweaponbonusrange", FlechetteWeaponBonusRange.ToString(objCulture), token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("flechetteweaponbonuspool", FlechetteWeaponBonusPool.ToString(objCulture), token: token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("flechetteweaponbonussmartlinkpool", FlechetteWeaponBonusSmartlinkPool.ToString(objCulture), token: token).ConfigureAwait(false);
             }
         }
 
@@ -3302,17 +3306,17 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string WeaponBonusDamage(string strLanguage)
         {
-            if (_nodWeaponBonus == null)
+            if (WeaponBonus == null)
                 return string.Empty;
-            string strReturn = _nodWeaponBonus["damagereplace"]?.InnerText ?? "0";
+            string strReturn = WeaponBonus["damagereplace"]?.InnerText ?? "0";
             // Use the damagereplace value if applicable.
             if (strReturn == "0")
             {
                 // Use the damage bonus if available, otherwise use 0.
-                strReturn = _nodWeaponBonus["damage"]?.InnerText ?? "0";
+                strReturn = WeaponBonus["damage"]?.InnerText ?? "0";
 
                 // Attach the type if applicable.
-                strReturn += _nodWeaponBonus["damagetype"]?.InnerText ?? string.Empty;
+                strReturn += WeaponBonus["damagetype"]?.InnerText ?? string.Empty;
 
                 // If this does not start with "-", add a "+" to the string.
                 if (!strReturn.StartsWith('-', '+'))
@@ -3336,17 +3340,17 @@ namespace Chummer.Backend.Equipment
         public async ValueTask<string> WeaponBonusDamageAsync(string strLanguage, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (_nodWeaponBonus == null)
+            if (WeaponBonus == null)
                 return string.Empty;
-            string strReturn = _nodWeaponBonus["damagereplace"]?.InnerText ?? "0";
+            string strReturn = WeaponBonus["damagereplace"]?.InnerText ?? "0";
             // Use the damagereplace value if applicable.
             if (strReturn == "0")
             {
                 // Use the damage bonus if available, otherwise use 0.
-                strReturn = _nodWeaponBonus["damage"]?.InnerText ?? "0";
+                strReturn = WeaponBonus["damage"]?.InnerText ?? "0";
 
                 // Attach the type if applicable.
-                strReturn += _nodWeaponBonus["damagetype"]?.InnerText ?? string.Empty;
+                strReturn += WeaponBonus["damagetype"]?.InnerText ?? string.Empty;
 
                 // If this does not start with "-", add a "+" to the string.
                 if (!strReturn.StartsWith('-', '+'))
@@ -3373,11 +3377,11 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (_nodWeaponBonus == null)
+                if (WeaponBonus == null)
                     return string.Empty;
                 // Use the apreplace value if applicable.
                 // Use the ap bonus if available, otherwise use 0.
-                string strReturn = _nodWeaponBonus["apreplace"]?.InnerText ?? _nodWeaponBonus["ap"]?.InnerText ?? "0";
+                string strReturn = WeaponBonus["apreplace"]?.InnerText ?? WeaponBonus["ap"]?.InnerText ?? "0";
 
                 // If this does not start with "-", add a "+" to the string.
                 if (!strReturn.StartsWith('-', '+'))
@@ -3394,12 +3398,12 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (_nodWeaponBonus == null)
+                if (WeaponBonus == null)
                     return string.Empty;
                 // Use the apreplace value if applicable.
                 // Use the ap bonus if available, otherwise use 0.
-                string strReturn = _nodWeaponBonus["accuracyreplace"]?.InnerText
-                                   ?? _nodWeaponBonus["accuracy"]?.InnerText ?? "0";
+                string strReturn = WeaponBonus["accuracyreplace"]?.InnerText
+                                   ?? WeaponBonus["accuracy"]?.InnerText ?? "0";
 
                 // If this does not start with "-", add a "+" to the string.
                 if (!strReturn.StartsWith('-', '+'))
@@ -3417,7 +3421,33 @@ namespace Chummer.Backend.Equipment
             get
             {
                 int intReturn = 0;
-                _nodWeaponBonus?.TryGetInt32FieldQuickly("rangebonus", ref intReturn);
+                WeaponBonus?.TryGetInt32FieldQuickly("rangebonus", ref intReturn);
+                return intReturn;
+            }
+        }
+
+        /// <summary>
+        /// Weapon Bonus Dice pool.
+        /// </summary>
+        public int WeaponBonusPool
+        {
+            get
+            {
+                int intReturn = 0;
+                WeaponBonus?.TryGetInt32FieldQuickly("pool", ref intReturn);
+                return intReturn;
+            }
+        }
+
+        /// <summary>
+        /// Weapon Bonus Dice pool for smartlink only.
+        /// </summary>
+        public int WeaponBonusSmartlinkPool
+        {
+            get
+            {
+                int intReturn = 0;
+                WeaponBonus?.TryGetInt32FieldQuickly("smartlinkpool", ref intReturn);
                 return intReturn;
             }
         }
@@ -3427,17 +3457,17 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string FlechetteWeaponBonusDamage(string strLanguage)
         {
-            if (_nodFlechetteWeaponBonus == null)
+            if (FlechetteWeaponBonus == null)
                 return string.Empty;
-            string strReturn = _nodFlechetteWeaponBonus["damagereplace"]?.InnerText ?? "0";
+            string strReturn = FlechetteWeaponBonus["damagereplace"]?.InnerText ?? "0";
             // Use the damagereplace value if applicable.
             if (strReturn == "0")
             {
                 // Use the damage bonus if available, otherwise use 0.
-                strReturn = _nodFlechetteWeaponBonus["damage"]?.InnerText ?? "0";
+                strReturn = FlechetteWeaponBonus["damage"]?.InnerText ?? "0";
 
                 // Attach the type if applicable.
-                strReturn += _nodFlechetteWeaponBonus["damagetype"]?.InnerText ?? string.Empty;
+                strReturn += FlechetteWeaponBonus["damagetype"]?.InnerText ?? string.Empty;
 
                 // If this does not start with "-", add a "+" to the string.
                 if (!strReturn.StartsWith('-'))
@@ -3461,17 +3491,17 @@ namespace Chummer.Backend.Equipment
         public async ValueTask<string> FlechetteWeaponBonusDamageAsync(string strLanguage, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (_nodFlechetteWeaponBonus == null)
+            if (FlechetteWeaponBonus == null)
                 return string.Empty;
-            string strReturn = _nodFlechetteWeaponBonus["damagereplace"]?.InnerText ?? "0";
+            string strReturn = FlechetteWeaponBonus["damagereplace"]?.InnerText ?? "0";
             // Use the damagereplace value if applicable.
             if (strReturn == "0")
             {
                 // Use the damage bonus if available, otherwise use 0.
-                strReturn = _nodFlechetteWeaponBonus["damage"]?.InnerText ?? "0";
+                strReturn = FlechetteWeaponBonus["damage"]?.InnerText ?? "0";
 
                 // Attach the type if applicable.
-                strReturn += _nodFlechetteWeaponBonus["damagetype"]?.InnerText ?? string.Empty;
+                strReturn += FlechetteWeaponBonus["damagetype"]?.InnerText ?? string.Empty;
 
                 // If this does not start with "-", add a "+" to the string.
                 if (!strReturn.StartsWith('-'))
@@ -3495,12 +3525,12 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (_nodFlechetteWeaponBonus == null)
+                if (FlechetteWeaponBonus == null)
                     return string.Empty;
                 // Use the apreplace value if applicable.
                 // Use the ap bonus if available, otherwise use 0.
-                string strReturn = _nodFlechetteWeaponBonus["apreplace"]?.InnerText ??
-                                   _nodFlechetteWeaponBonus["ap"]?.InnerText ?? "0";
+                string strReturn = FlechetteWeaponBonus["apreplace"]?.InnerText ??
+                                   FlechetteWeaponBonus["ap"]?.InnerText ?? "0";
 
                 // If this does not start with "-", add a "+" to the string.
                 if (!strReturn.StartsWith('-'))
@@ -3517,12 +3547,12 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                if (_nodFlechetteWeaponBonus == null)
+                if (FlechetteWeaponBonus == null)
                     return string.Empty;
                 // Use the apreplace value if applicable.
                 // Use the ap bonus if available, otherwise use 0.
-                string strReturn = _nodFlechetteWeaponBonus["accuracyreplace"]?.InnerText ??
-                                   _nodFlechetteWeaponBonus["accuracy"]?.InnerText ?? "0";
+                string strReturn = FlechetteWeaponBonus["accuracyreplace"]?.InnerText ??
+                                   FlechetteWeaponBonus["accuracy"]?.InnerText ?? "0";
 
                 // If this does not start with "-", add a "+" to the string.
                 if (!strReturn.StartsWith('-', '+'))
@@ -3540,7 +3570,33 @@ namespace Chummer.Backend.Equipment
             get
             {
                 int intReturn = 0;
-                _nodFlechetteWeaponBonus?.TryGetInt32FieldQuickly("rangebonus", ref intReturn);
+                FlechetteWeaponBonus?.TryGetInt32FieldQuickly("rangebonus", ref intReturn);
+                return intReturn;
+            }
+        }
+
+        /// <summary>
+        /// Weapon Bonus Dice pool.
+        /// </summary>
+        public int FlechetteWeaponBonusPool
+        {
+            get
+            {
+                int intReturn = 0;
+                FlechetteWeaponBonus?.TryGetInt32FieldQuickly("pool", ref intReturn);
+                return intReturn;
+            }
+        }
+
+        /// <summary>
+        /// Weapon Bonus Dice pool for smartlink only.
+        /// </summary>
+        public int FlechetteWeaponBonusSmartlinkPool
+        {
+            get
+            {
+                int intReturn = 0;
+                FlechetteWeaponBonus?.TryGetInt32FieldQuickly("smartlinkpool", ref intReturn);
                 return intReturn;
             }
         }
