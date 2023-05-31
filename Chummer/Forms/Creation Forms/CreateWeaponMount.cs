@@ -451,7 +451,7 @@ namespace Chummer
                             await _objVehicle.WeaponMounts.AddAsync(_objMount, _objGenericToken).ConfigureAwait(false);
                         }
 
-                        decimal decCost = _objVehicle.TotalCost - _decOldBaseCost;
+                        decimal decCost = await _objVehicle.GetTotalCostAsync(_objGenericToken).ConfigureAwait(false) - _decOldBaseCost;
 
                         // Multiply the cost if applicable.
                         switch ((await _objMount.TotalAvailTupleAsync(token: _objGenericToken).ConfigureAwait(false)).Suffix)
@@ -659,7 +659,8 @@ namespace Chummer
                     {
                         await cmdDeleteMod.DoThreadSafeAsync(x => x.Enabled = !objMod.IncludedInVehicle, token).ConfigureAwait(false);
                         await lblSlots.DoThreadSafeAsync(x => x.Text = objMod.CalculatedSlots.ToString(GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
-                        await lblAvailability.DoThreadSafeAsync(x => x.Text = objMod.DisplayTotalAvail, token).ConfigureAwait(false);
+                        string strModAvail = await objMod.GetDisplayTotalAvailAsync(token).ConfigureAwait(false);
+                        await lblAvailability.DoThreadSafeAsync(x => x.Text = strModAvail, token).ConfigureAwait(false);
 
                         if (await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
                         {
@@ -693,7 +694,7 @@ namespace Chummer
                             }
 
                             decimal decMarkup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token).ConfigureAwait(false);
-                            string strCostInner = (objMod.TotalCostInMountCreation(intTotalSlots) * (1 + decMarkup / 100.0m))
+                            string strCostInner = (await objMod.TotalCostInMountCreation(intTotalSlots, token).ConfigureAwait(false) * (1 + decMarkup / 100.0m))
                                     .ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
                                     + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                             await lblCost.DoThreadSafeAsync(x => x.Text = strCostInner, token).ConfigureAwait(false);
@@ -815,7 +816,7 @@ namespace Chummer
                     {
                         if (objMod.IncludedInVehicle)
                             continue;
-                        decCost += objMod.TotalCostInMountCreation(intSlots);
+                        decCost += await objMod.TotalCostInMountCreation(intSlots, token).ConfigureAwait(false);
                     }
                 }
 

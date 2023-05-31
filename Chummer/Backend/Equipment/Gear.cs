@@ -1442,8 +1442,8 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("avail", await TotalAvailAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("avail_english",
                                                         await TotalAvailAsync(GlobalSettings.InvariantCultureInfo, GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("cost", (await GetTotalCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("owncost", (await GetOwnCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("weight", TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("ownweight", OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("extra", await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
@@ -2519,6 +2519,11 @@ namespace Chummer.Backend.Equipment
         public string DisplayTotalAvail => TotalAvail(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
         /// <summary>
+        /// Total Availability in the program's current language.
+        /// </summary>
+        public ValueTask<string> GetDisplayTotalAvailAsync(CancellationToken token = default) => TotalAvailAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
+
+        /// <summary>
         /// Total Availability of the Gear and its accessories.
         /// </summary>
         public string TotalAvail(CultureInfo objCulture, string strLanguage)
@@ -2531,7 +2536,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async ValueTask<string> TotalAvailAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            return (await TotalAvailTupleAsync(token: token).ConfigureAwait(false)).ToString(objCulture, strLanguage);
+            return await (await TotalAvailTupleAsync(token: token).ConfigureAwait(false)).ToStringAsync(objCulture, strLanguage, token);
         }
 
         /// <summary>
@@ -3056,23 +3061,14 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                decimal decReturn = OwnCostPreMultipliers;
-
-                decimal decPlugin = 0;
-                if (Children.Count > 0)
-                {
-                    // Add in the cost of all child components.
-                    decPlugin += Children.Sum(x => x.TotalCost);
-                }
+                // Add in the cost of all child components.
+                decimal decPlugin = Children.Sum(x => x.TotalCost);
 
                 // The number is divided at the end for ammo purposes. This is done since the cost is per "costfor" but is being multiplied by the actual number of rounds.
                 int intParentMultiplier = (Parent as IHasChildrenAndCost<Gear>)?.ChildCostMultiplier ?? 1;
-
-                decReturn = (decReturn * Quantity * intParentMultiplier) / CostFor;
+                
                 // Add in the cost of the plugins separate since their value is not based on the Cost For number (it is always cost x qty).
-                decReturn += decPlugin * Quantity;
-
-                return decReturn;
+                return (OwnCostPreMultipliers * Quantity * intParentMultiplier) / CostFor + decPlugin * Quantity;
             }
         }
 
@@ -3082,22 +3078,15 @@ namespace Chummer.Backend.Equipment
         public async ValueTask<decimal> GetTotalCostAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            decimal decReturn = await GetOwnCostPreMultipliersAsync(token).ConfigureAwait(false);
 
-            decimal decPlugin = 0;
-            if (await Children.GetCountAsync(token).ConfigureAwait(false) > 0)
-            {
-                // Add in the cost of all child components.
-                decPlugin += await Children.SumAsync(x => x.GetTotalCostAsync(token).AsTask(), token).ConfigureAwait(false);
-            }
+            // Add in the cost of all child components.
+            decimal decPlugin = await Children.SumAsync(x => x.GetTotalCostAsync(token).AsTask(), token).ConfigureAwait(false);
+
             // The number is divided at the end for ammo purposes. This is done since the cost is per "costfor" but is being multiplied by the actual number of rounds.
             int intParentMultiplier = (Parent as IHasChildrenAndCost<Gear>)?.ChildCostMultiplier ?? 1;
 
-            decReturn = (decReturn * Quantity * intParentMultiplier) / CostFor;
             // Add in the cost of the plugins separate since their value is not based on the Cost For number (it is always cost x qty).
-            decReturn += decPlugin * Quantity;
-
-            return decReturn;
+            return (await GetOwnCostPreMultipliersAsync(token).ConfigureAwait(false) * Quantity * intParentMultiplier) / CostFor + decPlugin * Quantity;
         }
 
         public decimal StolenTotalCost => CalculatedStolenTotalCost(true);
@@ -3106,49 +3095,36 @@ namespace Chummer.Backend.Equipment
 
         public decimal CalculatedStolenTotalCost(bool blnStolen)
         {
-            decimal decReturn = 0;
-            if (Stolen == blnStolen)
-                decReturn = OwnCostPreMultipliers;
-
-            decimal decPlugin = 0;
-            if (Children.Count > 0)
-            {
-                // Add in the cost of all child components.
-                decPlugin += Children.Sum(x => x.CalculatedStolenTotalCost(blnStolen));
-            }
+            // Add in the cost of all child components.
+            decimal decPlugin = Children.Sum(x => x.CalculatedStolenTotalCost(blnStolen));
+            if (Stolen != blnStolen)
+                return decPlugin * Quantity;
 
             // The number is divided at the end for ammo purposes. This is done since the cost is per "costfor" but is being multiplied by the actual number of rounds.
             int intParentMultiplier = (Parent as IHasChildrenAndCost<Gear>)?.ChildCostMultiplier ?? 1;
-
-            decReturn = (decReturn * Quantity * intParentMultiplier) / CostFor;
+            
             // Add in the cost of the plugins separate since their value is not based on the Cost For number (it is always cost x qty).
-            decReturn += decPlugin * Quantity;
-
-            return decReturn;
+            return (OwnCostPreMultipliers * Quantity * intParentMultiplier) / CostFor + decPlugin * Quantity;
         }
+
+        public ValueTask<decimal> GetStolenTotalCostAsync(CancellationToken token = default) => CalculatedStolenTotalCostAsync(true, token);
+
+        public ValueTask<decimal> GetNonStolenTotalCostAsync(CancellationToken token = default) => CalculatedStolenTotalCostAsync(false, token);
 
         public async ValueTask<decimal> CalculatedStolenTotalCostAsync(bool blnStolen, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            decimal decReturn = 0;
-            if (Stolen == blnStolen)
-                decReturn = await GetOwnCostPreMultipliersAsync(token).ConfigureAwait(false);
 
-            decimal decPlugin = 0;
-            if (await Children.GetCountAsync(token).ConfigureAwait(false) > 0)
-            {
-                // Add in the cost of all child components.
-                decPlugin += await Children.SumAsync(x => x.CalculatedStolenTotalCostAsync(blnStolen, token).AsTask(), token).ConfigureAwait(false);
-            }
+            // Add in the cost of all child components.
+            decimal decPlugin = await Children.SumAsync(x => x.CalculatedStolenTotalCostAsync(blnStolen, token).AsTask(), token).ConfigureAwait(false);
+            if (Stolen != blnStolen)
+                return decPlugin * Quantity;
 
             // The number is divided at the end for ammo purposes. This is done since the cost is per "costfor" but is being multiplied by the actual number of rounds.
             int intParentMultiplier = (Parent as IHasChildrenAndCost<Gear>)?.ChildCostMultiplier ?? 1;
 
-            decReturn = (decReturn * Quantity * intParentMultiplier) / CostFor;
             // Add in the cost of the plugins separate since their value is not based on the Cost For number (it is always cost x qty).
-            decReturn += decPlugin * Quantity;
-
-            return decReturn;
+            return (await GetOwnCostPreMultipliersAsync(token).ConfigureAwait(false) * Quantity * intParentMultiplier) / CostFor + decPlugin * Quantity;
         }
 
         /// <summary>
@@ -4259,54 +4235,66 @@ namespace Chummer.Backend.Equipment
                                                                 .DeepWhere(x => x.Children,
                                                                            x => x.ParentID == InternalId).ToList())
                 {
-                    decReturn += objDeleteWeapon.TotalCost
+                    decReturn += await objDeleteWeapon.GetTotalCostAsync(token).ConfigureAwait(false)
                                  + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
                 }
 
-                foreach (Vehicle objVehicle in _objCharacter.Vehicles)
+                decReturn += await _objCharacter.Vehicles.SumAsync(async objVehicle =>
                 {
+                    decimal decInner = 0;
                     foreach (Weapon objDeleteWeapon in objVehicle.Weapons
                                                                  .DeepWhere(x => x.Children,
                                                                             x => x.ParentID == InternalId).ToList())
                     {
-                        decReturn += objDeleteWeapon.TotalCost
-                                     + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
+                        decInner += await objDeleteWeapon.GetTotalCostAsync(token).ConfigureAwait(false)
+                                    + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
                     }
 
-                    foreach (VehicleMod objMod in objVehicle.Mods)
+                    decInner += await objVehicle.Mods.SumAsync(async objMod =>
                     {
+                        decimal decInner2 = 0;
                         foreach (Weapon objDeleteWeapon in objMod.Weapons
                                                                  .DeepWhere(x => x.Children,
                                                                             x => x.ParentID == InternalId).ToList())
                         {
-                            decReturn += objDeleteWeapon.TotalCost
+                            decInner2 += await objDeleteWeapon.GetTotalCostAsync(token).ConfigureAwait(false)
                                          + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
                         }
-                    }
 
-                    foreach (WeaponMount objMount in objVehicle.WeaponMounts)
+                        return decInner2;
+                    }, token).ConfigureAwait(false);
+
+                    decInner += await objVehicle.WeaponMounts.SumAsync(async objMount =>
                     {
+                        decimal decInner2 = 0;
                         foreach (Weapon objDeleteWeapon in objMount.Weapons
                                                                    .DeepWhere(x => x.Children,
                                                                               x => x.ParentID == InternalId).ToList())
                         {
-                            decReturn += objDeleteWeapon.TotalCost
+                            decInner2 += await objDeleteWeapon.GetTotalCostAsync(token).ConfigureAwait(false)
                                          + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
                         }
 
-                        foreach (VehicleMod objMod in objMount.Mods)
+                        decInner2 += await objMount.Mods.SumAsync(async objMod =>
                         {
+                            decimal decInner3 = 0;
                             foreach (Weapon objDeleteWeapon in objMod.Weapons
                                                                      .DeepWhere(x => x.Children,
                                                                          x => x.ParentID == InternalId).ToList())
                             {
-                                decReturn += objDeleteWeapon.TotalCost
+                                decInner3 += await objDeleteWeapon.GetTotalCostAsync(token).ConfigureAwait(false)
                                              + await objDeleteWeapon.DeleteWeaponAsync(token: token)
                                                                     .ConfigureAwait(false);
                             }
-                        }
-                    }
-                }
+
+                            return decInner3;
+                        }, token).ConfigureAwait(false);
+
+                        return decInner2;
+                    }, token).ConfigureAwait(false);
+
+                    return decInner;
+                }, token).ConfigureAwait(false);
             }
 
             decReturn +=

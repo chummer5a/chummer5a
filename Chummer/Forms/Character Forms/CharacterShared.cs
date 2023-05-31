@@ -9223,9 +9223,9 @@ namespace Chummer
                         if (frmPickGear.MyForm.FreeCost)
                             objGear.Cost = "0";
 
-                        if (CharacterObject.Created)
+                        if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
                         {
-                            decimal decCost = objGear.TotalCost;
+                            decimal decCost = await objGear.GetTotalCostAsync(token).ConfigureAwait(false);
 
                             // Multiply the cost if applicable.
                             char chrAvail = (await objGear.TotalAvailTupleAsync(token: token).ConfigureAwait(false)).Suffix;

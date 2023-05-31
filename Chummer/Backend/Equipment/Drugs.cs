@@ -222,7 +222,7 @@ namespace Chummer.Backend.Equipment
                                                         await TotalAvailAsync(GlobalSettings.CultureInfo,
                                                                               GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync(
-                    "cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
+                    "cost", (await GetTotalCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
 
                 // <attributes>
                 XmlElementWriteHelper objAttributesElement = await objWriter.StartElementAsync("attributes", token).ConfigureAwait(false);
@@ -481,9 +481,20 @@ namespace Chummer.Backend.Equipment
             {
                 if (_decCachedCost != decimal.MinValue)
                     return _decCachedCost;
-                _decCachedCost = Components.Sum(d => d.ActiveDrugEffect != null, d => d.CostPerLevel);
-                return _decCachedCost;
+                return _decCachedCost = Components.Sum(d => d.ActiveDrugEffect != null, d => d.CostPerLevel);
             }
+        }
+
+        /// <summary>
+        /// Base cost of the Drug.
+        /// </summary>
+        public async ValueTask<decimal> GetCostAsync(CancellationToken token = default)
+        {
+            if (_decCachedCost != decimal.MinValue)
+                return _decCachedCost;
+            return _decCachedCost
+                = await Components.SumAsync(d => d.ActiveDrugEffect != null,
+                                            d => d.GetCostPerLevelAsync(token).AsTask(), token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -491,9 +502,21 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public decimal TotalCost => Cost * Quantity;
 
+        /// <summary>
+        /// Total cost of the Drug.
+        /// </summary>
+        public async ValueTask<decimal> GetTotalCostAsync(CancellationToken token = default) =>
+            await GetCostAsync(token).ConfigureAwait(false) * Quantity;
+
         public decimal StolenTotalCost => Stolen ? TotalCost : 0;
 
         public decimal NonStolenTotalCost => Stolen ? 0 : TotalCost;
+
+        public async ValueTask<decimal> GetStolenTotalCostAsync(CancellationToken token = default) =>
+            Stolen ? await GetTotalCostAsync(token).ConfigureAwait(false) : 0;
+
+        public async ValueTask<decimal> GetNonStolenTotalCostAsync(CancellationToken token = default) =>
+            Stolen ? 0 : await GetTotalCostAsync(token).ConfigureAwait(false);
 
         /// <summary>
         /// Total amount of the Drug held by the character.
@@ -515,6 +538,11 @@ namespace Chummer.Backend.Equipment
         public string DisplayTotalAvail => TotalAvail(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
         /// <summary>
+        /// Total Availability in the program's current language.
+        /// </summary>
+        public ValueTask<string> GetDisplayTotalAvailAsync(CancellationToken token = default) => TotalAvailAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
+
+        /// <summary>
         /// Total Availability.
         /// </summary>
         public string TotalAvail(CultureInfo objCulture, string strLanguage)
@@ -527,7 +555,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async ValueTask<string> TotalAvailAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            return (await TotalAvailTupleAsync(token: token).ConfigureAwait(false)).ToString(objCulture, strLanguage);
+            return await (await TotalAvailTupleAsync(token: token).ConfigureAwait(false)).ToStringAsync(objCulture, strLanguage, token);
         }
 
         /// <summary>
@@ -634,7 +662,7 @@ namespace Chummer.Backend.Equipment
                     else if (chrLastAvailChar != 'F' && objLoopAvail.Suffix == 'R')
                         chrLastAvailChar = 'R';
                     return objLoopAvail.AddToParent ? objLoopAvail.Value : 0;
-                }, token);
+                }, token).ConfigureAwait(false);
             }
 
             if (intAvail < 0)
@@ -1930,6 +1958,67 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        /// <summary>
+        /// Cost of the drug component per level
+        /// </summary>
+        public async ValueTask<decimal> GetCostPerLevelAsync(CancellationToken token = default)
+        {
+            string strCostExpression = Cost;
+            if (string.IsNullOrEmpty(strCostExpression))
+                return 0;
+
+            if (strCostExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
+            {
+                string[] strValues = strCostExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
+                                                      .Split(',', StringSplitOptions.RemoveEmptyEntries);
+                strCostExpression = strValues[Math.Max(Math.Min(Level, strValues.Length) - 1, 0)].Trim('[', ']');
+            }
+
+            if (string.IsNullOrEmpty(strCostExpression))
+                return 0;
+
+            decimal decReturn = 0;
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
+            {
+                sbdCost.Append(strCostExpression.TrimStart('+'));
+                sbdCost.Replace("Level", Level.ToString(GlobalSettings.InvariantCultureInfo));
+                AttributeSection objAttributeSection = await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false);
+                await (await objAttributeSection.GetAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopAttribute =>
+                {
+                    await sbdCost.CheapReplaceAsync(strCostExpression, objLoopAttribute.Abbrev,
+                                                    async () => (await objLoopAttribute.GetTotalValueAsync(token)
+                                                        .ConfigureAwait(false)).ToString(
+                                                        GlobalSettings.InvariantCultureInfo), token: token)
+                                 .ConfigureAwait(false);
+                    await sbdCost.CheapReplaceAsync(strCostExpression, objLoopAttribute.Abbrev + "Base",
+                                                    async () => (await objLoopAttribute.GetTotalBaseAsync(token)
+                                                        .ConfigureAwait(false)).ToString(
+                                                        GlobalSettings.InvariantCultureInfo), token: token)
+                                 .ConfigureAwait(false);
+                }, token).ConfigureAwait(false);
+                await (await objAttributeSection.GetSpecialAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopAttribute =>
+                {
+                    await sbdCost.CheapReplaceAsync(strCostExpression, objLoopAttribute.Abbrev,
+                                                    async () => (await objLoopAttribute.GetTotalValueAsync(token)
+                                                        .ConfigureAwait(false)).ToString(
+                                                        GlobalSettings.InvariantCultureInfo), token: token)
+                                 .ConfigureAwait(false);
+                    await sbdCost.CheapReplaceAsync(strCostExpression, objLoopAttribute.Abbrev + "Base",
+                                                    async () => (await objLoopAttribute.GetTotalBaseAsync(token)
+                                                        .ConfigureAwait(false)).ToString(
+                                                        GlobalSettings.InvariantCultureInfo), token: token)
+                                 .ConfigureAwait(false);
+                }, token).ConfigureAwait(false);
+
+                (bool blnIsSuccess, object objProcess)
+                    = await CommonFunctions.EvaluateInvariantXPathAsync(sbdCost.ToString(), token).ConfigureAwait(false);
+                if (blnIsSuccess)
+                    decReturn = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+            }
+
+            return decReturn;
+        }
+
         public string Availability
         {
             get => _strAvailability;
@@ -1940,6 +2029,11 @@ namespace Chummer.Backend.Equipment
         /// Total Availability in the program's current language.
         /// </summary>
         public string DisplayTotalAvail => TotalAvail(GlobalSettings.CultureInfo, GlobalSettings.Language);
+
+        /// <summary>
+        /// Total Availability in the program's current language.
+        /// </summary>
+        public ValueTask<string> GetDisplayTotalAvailAsync(CancellationToken token = default) => TotalAvailAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
 
         /// <summary>
         /// Total Availability.
@@ -1954,7 +2048,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async ValueTask<string> TotalAvailAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            return (await GetTotalAvailTupleAsync(token: token).ConfigureAwait(false)).ToString(objCulture, strLanguage);
+            return await (await GetTotalAvailTupleAsync(token: token).ConfigureAwait(false)).ToStringAsync(objCulture, strLanguage, token);
         }
 
         /// <summary>
@@ -2359,7 +2453,7 @@ namespace Chummer.Backend.Equipment
                                   .AppendLine(
                                       (AddictionThreshold * (intLevel + 1)).ToString(GlobalSettings.CultureInfo));
                     sbdDescription.Append(await LanguageManager.GetStringAsync("Label_Cost", token: token).ConfigureAwait(false)).Append(strSpace)
-                                  .Append((CostPerLevel * (intLevel + 1)).ToString(
+                                  .Append((await GetCostPerLevelAsync(token).ConfigureAwait(false) * (intLevel + 1)).ToString(
                                               _objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo))
                                   .AppendLine(await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false));
                     sbdDescription.Append(await LanguageManager.GetStringAsync("Label_Avail", token: token).ConfigureAwait(false)).Append(strSpace)
@@ -2375,7 +2469,7 @@ namespace Chummer.Backend.Equipment
                                   .Append(0.ToString(GlobalSettings.CultureInfo)).Append(strSpace)
                                   .AppendLine(strPerLevel);
                     sbdDescription.Append(await LanguageManager.GetStringAsync("Label_Cost", token: token).ConfigureAwait(false)).Append(strSpace)
-                                  .Append((CostPerLevel * (intLevel + 1)).ToString(
+                                  .Append((await GetCostPerLevelAsync(token).ConfigureAwait(false) * (intLevel + 1)).ToString(
                                               _objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo))
                                   .Append(await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false))
                                   .Append(strSpace).AppendLine(strPerLevel);

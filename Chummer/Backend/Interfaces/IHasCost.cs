@@ -17,10 +17,15 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System.Threading.Tasks;
+using System.Threading;
+
 namespace Chummer
 {
     public interface IHasCost
     {
         decimal TotalCost { get; }
+
+        ValueTask<decimal> GetTotalCostAsync(CancellationToken token = default);
     }
 }

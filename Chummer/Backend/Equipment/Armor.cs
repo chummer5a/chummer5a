@@ -967,8 +967,8 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("calculatedcapacity", CalculatedCapacity(objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("capacityremaining", CapacityRemaining.ToString(objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("avail", await TotalAvailAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("cost", (await GetTotalCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("owncost", (await GetOwnCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("weight", TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("ownweight", OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
@@ -1580,25 +1580,39 @@ namespace Chummer.Backend.Equipment
             return decTotalCost;
         }
 
+        public ValueTask<decimal> GetStolenTotalCostAsync(CancellationToken token = default) => CalculatedStolenTotalCostAsync(true, token);
+
+        public ValueTask<decimal> GetNonStolenTotalCostAsync(CancellationToken token = default) => CalculatedStolenTotalCostAsync(false, token);
+
+        public async ValueTask<decimal> CalculatedStolenTotalCostAsync(bool blnStolen, CancellationToken token = default)
+        {
+            decimal decTotalCost = 0;
+            if (Stolen == blnStolen)
+                decTotalCost += await GetOwnCostAsync(token).ConfigureAwait(false);
+
+            // Go through all of the Mods for this piece of Armor and add the Cost value.
+            decTotalCost += await ArmorMods.SumAsync(mod => mod.CalculatedStolenTotalCostAsync(blnStolen, token).AsTask(), token).ConfigureAwait(false);
+
+            // Go through all of the Gear for this piece of Armor and add the Cost value.
+            decTotalCost += await GearChildren.SumAsync(g => g.CalculatedStolenTotalCostAsync(blnStolen, token).AsTask(), token).ConfigureAwait(false);
+
+            return decTotalCost;
+        }
+
         /// <summary>
         /// The Armor's total Cost including Modifications.
         /// </summary>
-        public decimal TotalCost
+        public decimal TotalCost => OwnCost + ArmorMods.Sum(x => x.TotalCost) + GearChildren.Sum(x => x.TotalCost);
+
+        /// <summary>
+        /// The Armor's total Cost including Modifications.
+        /// </summary>
+        public async ValueTask<decimal> GetTotalCostAsync(CancellationToken token = default)
         {
-            get
-            {
-                decimal decTotalCost = OwnCost;
-
-                // Go through all of the Mods for this piece of Armor and add the Cost value.
-                foreach (ArmorMod objMod in ArmorMods)
-                    decTotalCost += objMod.TotalCost;
-
-                // Go through all of the Gear for this piece of Armor and add the Cost value.
-                foreach (Gear objGear in GearChildren)
-                    decTotalCost += objGear.TotalCost;
-
-                return decTotalCost;
-            }
+            token.ThrowIfCancellationRequested();
+            return await GetOwnCostAsync(token).ConfigureAwait(false)
+                   + await ArmorMods.SumAsync(x => x.GetTotalCostAsync(token).AsTask(), token).ConfigureAwait(false)
+                   + await GearChildren.SumAsync(x => x.GetTotalCostAsync(token).AsTask(), token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1644,6 +1658,64 @@ namespace Chummer.Backend.Equipment
 
                 return decReturn;
             }
+        }
+
+        /// <summary>
+        /// Cost for just the Armor.
+        /// </summary>
+        public async ValueTask<decimal> GetOwnCostAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // If the cost is determined by the Rating, evaluate the expression.
+            string strCostExpression = Cost;
+
+            decimal decReturn = 0;
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
+            {
+                sbdCost.Append(strCostExpression.TrimStart('+'));
+                sbdCost.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+
+                AttributeSection objAttributeSection
+                    = await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false);
+                await (await objAttributeSection.GetAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(
+                    async objLoopAttribute =>
+                    {
+                        await sbdCost.CheapReplaceAsync(strCostExpression, objLoopAttribute.Abbrev,
+                                                        async () => (await objLoopAttribute.GetTotalValueAsync(token)
+                                                            .ConfigureAwait(false)).ToString(
+                                                            GlobalSettings.InvariantCultureInfo), token: token)
+                                     .ConfigureAwait(false);
+                        await sbdCost.CheapReplaceAsync(strCostExpression, objLoopAttribute.Abbrev + "Base",
+                                                        async () => (await objLoopAttribute.GetTotalBaseAsync(token)
+                                                            .ConfigureAwait(false)).ToString(
+                                                            GlobalSettings.InvariantCultureInfo), token: token)
+                                     .ConfigureAwait(false);
+                    }, token).ConfigureAwait(false);
+                await (await objAttributeSection.GetSpecialAttributeListAsync(token).ConfigureAwait(false))
+                      .ForEachAsync(async objLoopAttribute =>
+                      {
+                          await sbdCost.CheapReplaceAsync(strCostExpression, objLoopAttribute.Abbrev,
+                                                          async () => (await objLoopAttribute.GetTotalValueAsync(token)
+                                                              .ConfigureAwait(false)).ToString(
+                                                              GlobalSettings.InvariantCultureInfo), token: token)
+                                       .ConfigureAwait(false);
+                          await sbdCost.CheapReplaceAsync(strCostExpression, objLoopAttribute.Abbrev + "Base",
+                                                          async () => (await objLoopAttribute.GetTotalBaseAsync(token)
+                                                              .ConfigureAwait(false)).ToString(
+                                                              GlobalSettings.InvariantCultureInfo), token: token)
+                                       .ConfigureAwait(false);
+                      }, token).ConfigureAwait(false);
+
+                (bool blnIsSuccess, object objProcess)
+                    = await CommonFunctions.EvaluateInvariantXPathAsync(sbdCost.ToString(), token).ConfigureAwait(false);
+                if (blnIsSuccess)
+                    decReturn = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+            }
+
+            if (DiscountCost)
+                decReturn *= 0.9m;
+
+            return decReturn;
         }
 
         /// <summary>
@@ -1975,6 +2047,11 @@ namespace Chummer.Backend.Equipment
         public string DisplayTotalAvail => TotalAvail(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
         /// <summary>
+        /// Total Availability in the program's current language.
+        /// </summary>
+        public ValueTask<string> GetDisplayTotalAvailAsync(CancellationToken token = default) => TotalAvailAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
+
+        /// <summary>
         /// Total Availability.
         /// </summary>
         public string TotalAvail(CultureInfo objCulture, string strLanguage)
@@ -1987,7 +2064,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async ValueTask<string> TotalAvailAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            return (await TotalAvailTupleAsync(token: token).ConfigureAwait(false)).ToString(objCulture, strLanguage);
+            return await (await TotalAvailTupleAsync(token: token).ConfigureAwait(false)).ToStringAsync(objCulture, strLanguage, token);
         }
 
         /// <summary>
@@ -2301,12 +2378,12 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the object as it should appear on printouts (translated name only).
         /// </summary>
-        public string DisplayNameShort(string strLanguage)
+        public string DisplayNameShort(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            return this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
+            return this.GetNodeXPath(strLanguage, token)?.SelectSingleNodeAndCacheExpression("translate", token)?.Value ?? Name;
         }
 
         /// <summary>
@@ -2324,16 +2401,16 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the object as it should be displayed in lists. Qty Name (Rating) (Extra).
         /// </summary>
-        public string DisplayName(CultureInfo objCulture, string strLanguage)
+        public string DisplayName(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            string strReturn = DisplayNameShort(strLanguage);
-            string strSpace = LanguageManager.GetString("String_Space", strLanguage);
+            string strReturn = DisplayNameShort(strLanguage, token);
+            string strSpace = LanguageManager.GetString("String_Space", strLanguage, token: token);
             if (!string.IsNullOrEmpty(CustomName))
                 strReturn += strSpace + "(\"" + CustomName + "\")";
             if (Rating > 0)
-                strReturn += strSpace + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpace + Rating.ToString(objCulture) + ')';
+                strReturn += strSpace + '(' + LanguageManager.GetString(RatingLabel, strLanguage, token: token) + strSpace + Rating.ToString(objCulture) + ')';
             if (!string.IsNullOrEmpty(Extra))
-                strReturn += strSpace + '(' + _objCharacter.TranslateExtra(Extra, strLanguage) + ')';
+                strReturn += strSpace + '(' + _objCharacter.TranslateExtra(Extra, strLanguage, token: token) + ')';
             return strReturn;
         }
 
@@ -2602,42 +2679,66 @@ namespace Chummer.Backend.Equipment
                                                                 .DeepWhere(x => x.Children,
                                                                            x => x.ParentID == InternalId).ToList())
                 {
-                    decReturn += objDeleteWeapon.TotalCost
+                    decReturn += await objDeleteWeapon.GetTotalCostAsync(token).ConfigureAwait(false)
                                  + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
                 }
 
-                foreach (Vehicle objVehicle in _objCharacter.Vehicles)
+                decReturn += await _objCharacter.Vehicles.SumAsync(async objVehicle =>
                 {
+                    decimal decInner = 0;
                     foreach (Weapon objDeleteWeapon in objVehicle.Weapons
                                                                  .DeepWhere(x => x.Children,
                                                                             x => x.ParentID == InternalId).ToList())
                     {
-                        decReturn += objDeleteWeapon.TotalCost
-                                     + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
+                        decInner += await objDeleteWeapon.GetTotalCostAsync(token).ConfigureAwait(false)
+                                    + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
                     }
 
-                    foreach (VehicleMod objMod in objVehicle.Mods)
+                    decInner += await objVehicle.Mods.SumAsync(async objMod =>
                     {
+                        decimal decInner2 = 0;
                         foreach (Weapon objDeleteWeapon in objMod.Weapons
                                                                  .DeepWhere(x => x.Children,
                                                                             x => x.ParentID == InternalId).ToList())
                         {
-                            decReturn += objDeleteWeapon.TotalCost
+                            decInner2 += await objDeleteWeapon.GetTotalCostAsync(token).ConfigureAwait(false)
                                          + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
                         }
-                    }
 
-                    foreach (WeaponMount objMount in objVehicle.WeaponMounts)
+                        return decInner2;
+                    }, token).ConfigureAwait(false);
+
+                    decInner += await objVehicle.WeaponMounts.SumAsync(async objMount =>
                     {
+                        decimal decInner2 = 0;
                         foreach (Weapon objDeleteWeapon in objMount.Weapons
                                                                    .DeepWhere(x => x.Children,
                                                                               x => x.ParentID == InternalId).ToList())
                         {
-                            decReturn += objDeleteWeapon.TotalCost
+                            decInner2 += await objDeleteWeapon.GetTotalCostAsync(token).ConfigureAwait(false)
                                          + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
                         }
-                    }
-                }
+
+                        decInner2 += await objMount.Mods.SumAsync(async objMod =>
+                        {
+                            decimal decInner3 = 0;
+                            foreach (Weapon objDeleteWeapon in objMod.Weapons
+                                                                     .DeepWhere(x => x.Children,
+                                                                         x => x.ParentID == InternalId).ToList())
+                            {
+                                decInner3 += await objDeleteWeapon.GetTotalCostAsync(token).ConfigureAwait(false)
+                                             + await objDeleteWeapon.DeleteWeaponAsync(token: token)
+                                                                    .ConfigureAwait(false);
+                            }
+
+                            return decInner3;
+                        }, token).ConfigureAwait(false);
+
+                        return decInner2;
+                    }, token).ConfigureAwait(false);
+
+                    return decInner;
+                }, token).ConfigureAwait(false);
             }
 
             await DisposeSelfAsync().ConfigureAwait(false);

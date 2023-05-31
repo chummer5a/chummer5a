@@ -478,22 +478,16 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("limit", Limit);
             objWriter.WriteElementString("slots", Slots.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("avail", await TotalAvailAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false));
-            objWriter.WriteElementString("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
-            objWriter.WriteElementString("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture));
+            objWriter.WriteElementString("cost", (await GetTotalCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat, objCulture));
+            objWriter.WriteElementString("owncost", (await GetOwnCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat, objCulture));
             objWriter.WriteElementString("page", DisplayPage(strLanguageToPrint));
             objWriter.WriteElementString("location", Location);
             objWriter.WriteElementString("included", IncludedInVehicle.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteStartElement("weapons");
-            foreach (Weapon objWeapon in Weapons)
-            {
-                await objWeapon.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
-            }
+            await Weapons.ForEachAsync(objWeapon => objWeapon.Print(objWriter, objCulture, strLanguageToPrint, token).AsTask(), token).ConfigureAwait(false);
             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
             objWriter.WriteStartElement("mods");
-            foreach (VehicleMod objVehicleMod in Mods)
-            {
-                await objVehicleMod.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
-            }
+            await Mods.ForEachAsync(objVehicleMod => objVehicleMod.Print(objWriter, objCulture, strLanguageToPrint, token).AsTask(), token).ConfigureAwait(false);
             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
             if (GlobalSettings.PrintNotes)
                 objWriter.WriteElementString("notes", Notes);
@@ -873,9 +867,22 @@ namespace Chummer.Backend.Equipment
         public int CalculatedSlots => Slots + WeaponMountOptions.Sum(w => w.Slots) + Mods.Sum(x => !x.IncludedInVehicle, m => m.CalculatedSlots);
 
         /// <summary>
+        /// The number of Slots the Mount consumes, including all child items.
+        /// </summary>
+        public async ValueTask<int> GetCalculcatedSlots(CancellationToken token = default)
+        {
+            return Slots + WeaponMountOptions.Sum(w => w.Slots) + await Mods.SumAsync(x => !x.IncludedInVehicle, m => m.GetCalculatedSlotsAsync(token).AsTask(), token).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// Total Availability in the program's current language.
         /// </summary>
         public string DisplayTotalAvail => TotalAvail(GlobalSettings.CultureInfo, GlobalSettings.Language);
+
+        /// <summary>
+        /// Total Availability in the program's current language.
+        /// </summary>
+        public ValueTask<string> GetDisplayTotalAvailAsync(CancellationToken token = default) => TotalAvailAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
 
         /// <summary>
         /// Total Availability.
@@ -890,7 +897,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async ValueTask<string> TotalAvailAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            return (await TotalAvailTupleAsync(token: token).ConfigureAwait(false)).ToString(objCulture, strLanguage);
+            return await (await TotalAvailTupleAsync(token: token).ConfigureAwait(false)).ToStringAsync(objCulture, strLanguage, token);
         }
 
         /// <summary>
@@ -1030,21 +1037,21 @@ namespace Chummer.Backend.Equipment
                     }, token).ConfigureAwait(false);
 
                     await sbdAvail.CheapReplaceAsync(strAvail, "Vehicle Cost",
-                                                     () => Parent?.OwnCost.ToString(GlobalSettings.InvariantCultureInfo) ?? "0", token: token);
+                                                     () => Parent?.OwnCost.ToString(GlobalSettings.InvariantCultureInfo) ?? "0", token: token).ConfigureAwait(false);
                     // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
                     await sbdAvail.CheapReplaceAsync(strAvail, "Body",
                                                      () => Parent?.Body > 0
                                                          ? Parent.Body.ToString(GlobalSettings.InvariantCultureInfo)
-                                                         : "0.5", token: token);
+                                                         : "0.5", token: token).ConfigureAwait(false);
                     await sbdAvail.CheapReplaceAsync(strAvail, "Speed",
-                                                     () => Parent?.Speed.ToString(GlobalSettings.InvariantCultureInfo) ?? "0", token: token);
+                                                     () => Parent?.Speed.ToString(GlobalSettings.InvariantCultureInfo) ?? "0", token: token).ConfigureAwait(false);
                     await sbdAvail.CheapReplaceAsync(strAvail, "Acceleration",
-                                                     () => Parent?.Accel.ToString(GlobalSettings.InvariantCultureInfo) ?? "0", token: token);
+                                                     () => Parent?.Accel.ToString(GlobalSettings.InvariantCultureInfo) ?? "0", token: token).ConfigureAwait(false);
                     await sbdAvail.CheapReplaceAsync(strAvail, "Handling",
-                                                () => Parent?.Handling.ToString(GlobalSettings.InvariantCultureInfo) ?? "0", token: token);
+                                                     () => Parent?.Handling.ToString(GlobalSettings.InvariantCultureInfo) ?? "0", token: token).ConfigureAwait(false);
 
                     (bool blnIsSuccess, object objProcess)
-                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAvail.ToString(), token);
+                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAvail.ToString(), token).ConfigureAwait(false);
                     if (blnIsSuccess)
                         intAvail += ((double)objProcess).StandardRound();
                 }
@@ -1090,28 +1097,48 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                decimal cost = 0;
-                if (!IncludedInVehicle)
-                {
-                    cost += OwnCost;
-                    decimal decOptionCost = 0;
-                    if (!FreeCost)
-                    {
-                        decOptionCost = WeaponMountOptions.Sum(w => w.TotalCost);
-                        if (DiscountCost)
-                            decOptionCost *= 0.9m;
+                if (IncludedInVehicle || FreeCost)
+                    return Weapons.Sum(w => w.TotalCost) + Mods.Sum(m => m.TotalCost);
+                
+                decimal decOptionCost = WeaponMountOptions.Sum(w => w.TotalCost);
+                if (DiscountCost)
+                    decOptionCost *= 0.9m;
 
-                        // Apply a markup if applicable.
-                        if (_decMarkup != 0)
-                        {
-                            decOptionCost *= 1 + (_decMarkup / 100.0m);
-                        }
-                    }
-                    cost += decOptionCost;
+                // Apply a markup if applicable.
+                if (_decMarkup != 0)
+                {
+                    decOptionCost *= 1 + (_decMarkup / 100.0m);
                 }
 
-                return cost + Weapons.Sum(w => w.TotalCost) + Mods.Sum(m => m.TotalCost);
+                return OwnCost + decOptionCost + Weapons.Sum(w => w.TotalCost) + Mods.Sum(m => m.TotalCost);
             }
+        }
+
+        /// <summary>
+        /// Total cost of the WeaponMount.
+        /// </summary>
+        public async ValueTask<decimal> GetTotalCostAsync(CancellationToken token = default)
+        {
+            if (IncludedInVehicle || FreeCost)
+                return await Weapons.SumAsync(w => w.GetTotalCostAsync(token).AsTask(), token).ConfigureAwait(false)
+                       + await Mods.SumAsync(m => m.GetTotalCostAsync(token).AsTask(), token).ConfigureAwait(false);
+
+            decimal decOptionCost = 0;
+            foreach (WeaponMountOption objOption in WeaponMountOptions)
+                decOptionCost += await objOption.GetTotalCostAsync(token).ConfigureAwait(false);
+            if (DiscountCost)
+                decOptionCost *= 0.9m;
+
+            // Apply a markup if applicable.
+            if (_decMarkup != 0)
+            {
+                decOptionCost *= 1 + (_decMarkup / 100.0m);
+            }
+
+            return await GetOwnCostAsync(token).ConfigureAwait(false)
+                   + decOptionCost
+                   + await Weapons.SumAsync(w => w.GetTotalCostAsync(token).AsTask(), token).ConfigureAwait(false)
+                   + await Mods.SumAsync(m => m.GetTotalCostAsync(token).AsTask(), token).ConfigureAwait(false);
         }
 
         public decimal StolenTotalCost => CalculatedStolenTotalCost(true);
@@ -1147,6 +1174,37 @@ namespace Chummer.Backend.Equipment
             return d;
         }
 
+        public ValueTask<decimal> GetStolenTotalCostAsync(CancellationToken token = default) => CalculatedStolenTotalCostAsync(true, token);
+
+        public ValueTask<decimal> GetNonStolenTotalCostAsync(CancellationToken token = default) => CalculatedStolenTotalCostAsync(false, token);
+
+        public async ValueTask<decimal> CalculatedStolenTotalCostAsync(bool blnStolen, CancellationToken token = default)
+        {
+            if (Stolen != blnStolen || IncludedInVehicle || FreeCost)
+                return await Weapons.SumAsync(w => w.CalculatedStolenTotalCostAsync(blnStolen, token).AsTask(),
+                                              token).ConfigureAwait(false)
+                       + await Mods.SumAsync(m => m.CalculatedStolenTotalCostAsync(blnStolen, token).AsTask(), token).ConfigureAwait(false);
+            
+            decimal decOptionCost = 0;
+            foreach (WeaponMountOption objOption in WeaponMountOptions)
+                decOptionCost += await objOption.GetTotalCostAsync(token).ConfigureAwait(false);
+            if (DiscountCost)
+                decOptionCost *= 0.9m;
+
+            // Apply a markup if applicable.
+            if (_decMarkup != 0)
+            {
+                decOptionCost *= 1 + (_decMarkup / 100.0m);
+            }
+
+            return await GetOwnCostAsync(token).ConfigureAwait(false) + decOptionCost
+                                                                      + await Weapons.SumAsync(
+                                                                          w => w.CalculatedStolenTotalCostAsync(blnStolen, token).AsTask(),
+                                                                          token).ConfigureAwait(false) + await Mods.SumAsync(
+                                                                          m => m.CalculatedStolenTotalCostAsync(blnStolen, token).AsTask(),
+                                                                          token).ConfigureAwait(false);
+        }
+
         /// <summary>
         /// The cost of just the Vehicle Mod itself.
         /// </summary>
@@ -1180,12 +1238,18 @@ namespace Chummer.Backend.Equipment
                                          () => Parent?.Body > 0
                                              ? Parent.Body.ToString(GlobalSettings.InvariantCultureInfo)
                                              : "0.5");
+                    sbdCost.CheapReplace(strCost, "Armor",
+                                         () => Parent?.Armor.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
                     sbdCost.CheapReplace(strCost, "Speed",
                                          () => Parent?.Speed.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
                     sbdCost.CheapReplace(strCost, "Acceleration",
                                          () => Parent?.Accel.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
                     sbdCost.CheapReplace(strCost, "Handling",
                                          () => Parent?.Handling.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
+                    sbdCost.CheapReplace(strCost, "Sensor",
+                                         () => Parent?.BaseSensor.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
+                    sbdCost.CheapReplace(strCost, "Pilot",
+                                         () => Parent?.Pilot.ToString(GlobalSettings.InvariantCultureInfo) ?? "0");
 
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString());
@@ -1204,6 +1268,94 @@ namespace Chummer.Backend.Equipment
 
                 return decReturn;
             }
+        }
+
+        /// <summary>
+        /// The cost of just the Vehicle Mod itself.
+        /// </summary>
+        public async ValueTask<decimal> GetOwnCostAsync(CancellationToken token = default)
+        {
+            if (FreeCost)
+                return 0;
+            decimal decReturn = 0;
+            // If the cost is determined by the Rating, evaluate the expression.
+            string strCost = Cost;
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
+            {
+                sbdCost.Append(strCost);
+                AttributeSection objAttributeSection = await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false);
+                await (await objAttributeSection.GetAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopAttribute =>
+                {
+                    await sbdCost.CheapReplaceAsync(strCost, objLoopAttribute.Abbrev,
+                                                    async () => (await objLoopAttribute.GetTotalValueAsync(token)
+                                                        .ConfigureAwait(false)).ToString(
+                                                        GlobalSettings.InvariantCultureInfo), token: token)
+                                 .ConfigureAwait(false);
+                    await sbdCost.CheapReplaceAsync(strCost, objLoopAttribute.Abbrev + "Base",
+                                                    async () => (await objLoopAttribute.GetTotalBaseAsync(token)
+                                                        .ConfigureAwait(false)).ToString(
+                                                        GlobalSettings.InvariantCultureInfo), token: token)
+                                 .ConfigureAwait(false);
+                }, token).ConfigureAwait(false);
+                await (await objAttributeSection.GetSpecialAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopAttribute =>
+                {
+                    await sbdCost.CheapReplaceAsync(strCost, objLoopAttribute.Abbrev,
+                                                    async () => (await objLoopAttribute.GetTotalValueAsync(token)
+                                                        .ConfigureAwait(false)).ToString(
+                                                        GlobalSettings.InvariantCultureInfo), token: token)
+                                 .ConfigureAwait(false);
+                    await sbdCost.CheapReplaceAsync(strCost, objLoopAttribute.Abbrev + "Base",
+                                                    async () => (await objLoopAttribute.GetTotalBaseAsync(token)
+                                                        .ConfigureAwait(false)).ToString(
+                                                        GlobalSettings.InvariantCultureInfo), token: token)
+                                 .ConfigureAwait(false);
+                }, token).ConfigureAwait(false);
+
+                await sbdCost.CheapReplaceAsync(strCost, "Vehicle Cost",
+                                                async () => Parent != null
+                                                    ? (await Parent.GetOwnCostAsync(token).ConfigureAwait(false)).ToString(
+                                                        GlobalSettings.InvariantCultureInfo)
+                                                    : "0", token: token).ConfigureAwait(false);
+                // If the Body is 0 (Microdrone), treat it as 0.5 for the purposes of determine Modification cost.
+                await sbdCost.CheapReplaceAsync(strCost, "Body",
+                                                () => Parent?.Body > 0
+                                                    ? Parent.Body.ToString(GlobalSettings.InvariantCultureInfo)
+                                                    : "0.5", token: token).ConfigureAwait(false);
+                await sbdCost.CheapReplaceAsync(strCost, "Armor",
+                                                () => Parent?.Armor.ToString(GlobalSettings.InvariantCultureInfo)
+                                                      ?? "0", token: token).ConfigureAwait(false);
+                await sbdCost.CheapReplaceAsync(strCost, "Speed",
+                                                () => Parent?.Speed.ToString(GlobalSettings.InvariantCultureInfo)
+                                                      ?? "0", token: token).ConfigureAwait(false);
+                await sbdCost.CheapReplaceAsync(strCost, "Acceleration",
+                                                () => Parent?.Accel.ToString(GlobalSettings.InvariantCultureInfo)
+                                                      ?? "0", token: token).ConfigureAwait(false);
+                await sbdCost.CheapReplaceAsync(strCost, "Handling",
+                                                () => Parent?.Handling.ToString(GlobalSettings.InvariantCultureInfo)
+                                                      ?? "0", token: token).ConfigureAwait(false);
+                await sbdCost.CheapReplaceAsync(strCost, "Sensor",
+                                                () => Parent?.BaseSensor.ToString(GlobalSettings.InvariantCultureInfo)
+                                                      ?? "0", token: token).ConfigureAwait(false);
+                await sbdCost.CheapReplaceAsync(strCost, "Pilot",
+                                                () => Parent?.Pilot.ToString(GlobalSettings.InvariantCultureInfo)
+                                                      ?? "0", token: token).ConfigureAwait(false);
+
+                (bool blnIsSuccess, object objProcess)
+                    = await CommonFunctions.EvaluateInvariantXPathAsync(sbdCost.ToString(), token).ConfigureAwait(false);
+                if (blnIsSuccess)
+                    decReturn = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+            }
+
+            if (DiscountCost)
+                decReturn *= 0.9m;
+
+            // Apply a markup if applicable.
+            if (_decMarkup != 0)
+            {
+                decReturn *= 1 + (_decMarkup / 100.0m);
+            }
+
+            return decReturn;
         }
 
         public TaggedObservableCollection<VehicleMod> Mods
@@ -1710,7 +1862,7 @@ namespace Chummer.Backend.Equipment
     }
 
     [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public class WeaponMountOption : IHasName, IHasXmlDataNode
+    public class WeaponMountOption : IHasName, IHasXmlDataNode, IHasCost
     {
         private readonly Character _objCharacter;
         private string _strAvail;
@@ -1941,7 +2093,55 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        /// <summary>
+        /// The cost of just the WeaponMountOption itself.
+        /// </summary>
+        public async ValueTask<decimal> GetCostAsync(CancellationToken token = default)
+        {
+            string strCost = _strCost;
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
+            {
+                sbdCost.Append(strCost);
+                AttributeSection objAttributeSection
+                    = await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false);
+                await (await objAttributeSection.GetAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(
+                    async objLoopAttribute =>
+                    {
+                        await sbdCost.CheapReplaceAsync(strCost, objLoopAttribute.Abbrev,
+                                                        async () => (await objLoopAttribute.GetTotalValueAsync(token)
+                                                            .ConfigureAwait(false)).ToString(
+                                                            GlobalSettings.InvariantCultureInfo), token: token)
+                                     .ConfigureAwait(false);
+                        await sbdCost.CheapReplaceAsync(strCost, objLoopAttribute.Abbrev + "Base",
+                                                        async () => (await objLoopAttribute.GetTotalBaseAsync(token)
+                                                            .ConfigureAwait(false)).ToString(
+                                                            GlobalSettings.InvariantCultureInfo), token: token)
+                                     .ConfigureAwait(false);
+                    }, token).ConfigureAwait(false);
+                await (await objAttributeSection.GetSpecialAttributeListAsync(token).ConfigureAwait(false))
+                      .ForEachAsync(async objLoopAttribute =>
+                      {
+                          await sbdCost.CheapReplaceAsync(strCost, objLoopAttribute.Abbrev,
+                                                          async () => (await objLoopAttribute.GetTotalValueAsync(token)
+                                                              .ConfigureAwait(false)).ToString(
+                                                              GlobalSettings.InvariantCultureInfo), token: token)
+                                       .ConfigureAwait(false);
+                          await sbdCost.CheapReplaceAsync(strCost, objLoopAttribute.Abbrev + "Base",
+                                                          async () => (await objLoopAttribute.GetTotalBaseAsync(token)
+                                                              .ConfigureAwait(false)).ToString(
+                                                              GlobalSettings.InvariantCultureInfo), token: token)
+                                       .ConfigureAwait(false);
+                      }, token).ConfigureAwait(false);
+
+                (bool blnIsSuccess, object objProcess)
+                    = await CommonFunctions.EvaluateInvariantXPathAsync(sbdCost.ToString(), token).ConfigureAwait(false);
+                return blnIsSuccess ? Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo) : 0;
+            }
+        }
+
         public decimal TotalCost => IncludedInParent ? 0 : Cost;
+
+        public async ValueTask<decimal> GetTotalCostAsync(CancellationToken token = default) => IncludedInParent ? 0 : await GetCostAsync(token).ConfigureAwait(false);
 
         /// <summary>
         /// Slots consumed by the WeaponMountOption.
@@ -1989,6 +2189,16 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Total Availability in the program's current language.
+        /// </summary>
+        public string DisplayTotalAvail => TotalAvail(GlobalSettings.CultureInfo, GlobalSettings.Language);
+
+        /// <summary>
+        /// Total Availability in the program's current language.
+        /// </summary>
+        public ValueTask<string> GetDisplayTotalAvailAsync(CancellationToken token = default) => TotalAvailAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
+
+        /// <summary>
         /// Total Availability.
         /// </summary>
         public string TotalAvail(CultureInfo objCulture, string strLanguage)
@@ -2001,7 +2211,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async ValueTask<string> TotalAvailAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            return (await GetTotalAvailTupleAsync(token: token).ConfigureAwait(false)).ToString(objCulture, strLanguage);
+            return await (await GetTotalAvailTupleAsync(token: token).ConfigureAwait(false)).ToStringAsync(objCulture, strLanguage, token);
         }
 
         /// <summary>

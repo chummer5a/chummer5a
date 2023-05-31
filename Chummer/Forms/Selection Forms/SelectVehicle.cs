@@ -741,7 +741,7 @@ namespace Chummer
                                                 _objCharacter, token).ConfigureAwait(false);
                                             NuyenString strCost =
                                                 new NuyenString(
-                                                    objVehicle.TotalCost.ToString(GlobalSettings.CultureInfo));
+                                                    (await objVehicle.GetTotalCostAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo));
 
                                             tabVehicles.Rows.Add(strID, strVehicleName, strAccel, strArmor, strBody,
                                                                  strHandling, strPilot, strSensor, strSpeed, strSeats,

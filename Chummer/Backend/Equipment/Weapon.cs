@@ -35,7 +35,9 @@ using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Skills;
 using ExternalUtils.RegularExpressions.Weapons;
+using Microsoft.VisualStudio.Threading;
 using NLog;
+using IAsyncDisposable = System.IAsyncDisposable;
 
 namespace Chummer.Backend.Equipment
 {
@@ -1550,16 +1552,16 @@ namespace Chummer.Backend.Equipment
                 if (objGear != null)
                 {
                     await objWriter.WriteElementStringAsync("avail", await objGear.TotalAvailAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("cost", objGear.TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("owncost", objGear.OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("cost", (await objGear.GetTotalCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("owncost", (await objGear.GetOwnCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("weight", objGear.TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture), token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("ownweight", objGear.OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture), token).ConfigureAwait(false);
                 }
                 else
                 {
                     await objWriter.WriteElementStringAsync("avail", TotalAvail(objCulture, strLanguageToPrint), token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("cost", (await GetTotalCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("owncost", (await GetOwnCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("weight", TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture), token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("ownweight", OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture), token).ConfigureAwait(false);
                 }
@@ -3126,194 +3128,177 @@ namespace Chummer.Backend.Equipment
                 if (blnSync)
                 {
                     // ReSharper disable MethodHasAsyncOverloadWithCancellation
-                    strReturn = ReplaceStrings(strReturn, strLanguage)
-                                .CheapReplace(
-                                    "0S", () => '0' + LanguageManager.GetString("String_DamageStun", strLanguage))
-                                .CheapReplace(
-                                    "1S", () => '1' + LanguageManager.GetString("String_DamageStun", strLanguage))
-                                .CheapReplace(
-                                    "2S", () => '2' + LanguageManager.GetString("String_DamageStun", strLanguage))
-                                .CheapReplace(
-                                    "3S", () => '3' + LanguageManager.GetString("String_DamageStun", strLanguage))
-                                .CheapReplace(
-                                    "4S", () => '4' + LanguageManager.GetString("String_DamageStun", strLanguage))
-                                .CheapReplace(
-                                    "5S", () => '5' + LanguageManager.GetString("String_DamageStun", strLanguage))
-                                .CheapReplace(
-                                    "6S", () => '6' + LanguageManager.GetString("String_DamageStun", strLanguage))
-                                .CheapReplace(
-                                    "7S", () => '7' + LanguageManager.GetString("String_DamageStun", strLanguage))
-                                .CheapReplace(
-                                    "8S", () => '8' + LanguageManager.GetString("String_DamageStun", strLanguage))
-                                .CheapReplace(
-                                    "9S", () => '9' + LanguageManager.GetString("String_DamageStun", strLanguage))
-                                .CheapReplace(
-                                    "0P", () => '0' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
-                                .CheapReplace(
-                                    "1P", () => '1' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
-                                .CheapReplace(
-                                    "2P", () => '2' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
-                                .CheapReplace(
-                                    "3P", () => '3' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
-                                .CheapReplace(
-                                    "4P", () => '4' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
-                                .CheapReplace(
-                                    "5P", () => '5' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
-                                .CheapReplace(
-                                    "6P", () => '6' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
-                                .CheapReplace(
-                                    "7P", () => '7' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
-                                .CheapReplace(
-                                    "8P", () => '8' + LanguageManager.GetString("String_DamagePhysical", strLanguage))
-                                .CheapReplace(
-                                    "9P", () => '9' + LanguageManager.GetString("String_DamagePhysical", strLanguage));
+                    Lazy<string> strStun
+                        = new Lazy<string>(
+                            () => LanguageManager.GetString("String_DamageStun", strLanguage, token: token));
+                    Lazy<string> strPhysical
+                        = new Lazy<string>(
+                            () => LanguageManager.GetString("String_DamagePhysical", strLanguage, token: token));
+                    // ReSharper disable once MethodHasAsyncOverload
+                    strReturn = ReplaceStrings(strReturn, strLanguage, token)
+                                .CheapReplace("0S", () => '0' + strStun.Value)
+                                .CheapReplace("1S", () => '1' + strStun.Value)
+                                .CheapReplace("2S", () => '2' + strStun.Value)
+                                .CheapReplace("3S", () => '3' + strStun.Value)
+                                .CheapReplace("4S", () => '4' + strStun.Value)
+                                .CheapReplace("5S", () => '5' + strStun.Value)
+                                .CheapReplace("6S", () => '6' + strStun.Value)
+                                .CheapReplace("7S", () => '7' + strStun.Value)
+                                .CheapReplace("8S", () => '8' + strStun.Value)
+                                .CheapReplace("9S", () => '9' + strStun.Value)
+                                .CheapReplace("0P", () => '0' + strPhysical.Value)
+                                .CheapReplace("1P", () => '1' + strPhysical.Value)
+                                .CheapReplace("2P", () => '2' + strPhysical.Value)
+                                .CheapReplace("3P", () => '3' + strPhysical.Value)
+                                .CheapReplace("4P", () => '4' + strPhysical.Value)
+                                .CheapReplace("5P", () => '5' + strPhysical.Value)
+                                .CheapReplace("6P", () => '6' + strPhysical.Value)
+                                .CheapReplace("7P", () => '7' + strPhysical.Value)
+                                .CheapReplace("8P", () => '8' + strPhysical.Value)
+                                .CheapReplace("9P", () => '9' + strPhysical.Value);
                     // ReSharper restore MethodHasAsyncOverloadWithCancellation
                 }
                 else
                 {
+                    AsyncLazy<string> strStun = new AsyncLazy<string>(
+                        () => LanguageManager.GetStringAsync("String_DamageStun", strLanguage, token: token),
+                        Utils.JoinableTaskFactory);
+                    AsyncLazy<string> strPhysical = new AsyncLazy<string>(
+                        () => LanguageManager.GetStringAsync("String_DamagePhysical", strLanguage, token: token),
+                        Utils.JoinableTaskFactory);
                     strReturn = await ReplaceStringsAsync(strReturn, strLanguage, token).ConfigureAwait(false);
                     strReturn = await strReturn
                                       .CheapReplaceAsync(
                                           "0S",
-                                          async () => '0'
-                                                      + await LanguageManager.GetStringAsync(
-                                                          "String_DamageStun", strLanguage, token: token).ConfigureAwait(false), token: token)
+                                          async () => '0' + await strStun.GetValueAsync(token).ConfigureAwait(false),
+                                          token: token)
                                       .CheapReplaceAsync(
                                           "1S",
-                                          async () => '1'
-                                                      + await LanguageManager.GetStringAsync(
-                                                          "String_DamageStun", strLanguage, token: token).ConfigureAwait(false), token: token)
+                                          async () => '1' + await strStun.GetValueAsync(token).ConfigureAwait(false),
+                                          token: token)
                                       .CheapReplaceAsync(
                                           "2S",
-                                          async () => '2'
-                                                      + await LanguageManager.GetStringAsync(
-                                                          "String_DamageStun", strLanguage, token: token).ConfigureAwait(false), token: token)
+                                          async () => '2' + await strStun.GetValueAsync(token).ConfigureAwait(false),
+                                          token: token)
                                       .CheapReplaceAsync(
                                           "3S",
-                                          async () => '3'
-                                                      + await LanguageManager.GetStringAsync(
-                                                          "String_DamageStun", strLanguage, token: token).ConfigureAwait(false), token: token)
+                                          async () => '3' + await strStun.GetValueAsync(token).ConfigureAwait(false),
+                                          token: token)
                                       .CheapReplaceAsync(
                                           "4S",
-                                          async () => '4'
-                                                      + await LanguageManager.GetStringAsync(
-                                                          "String_DamageStun", strLanguage, token: token).ConfigureAwait(false), token: token)
+                                          async () => '4' + await strStun.GetValueAsync(token).ConfigureAwait(false),
+                                          token: token)
                                       .CheapReplaceAsync(
                                           "5S",
-                                          async () => '5'
-                                                      + await LanguageManager.GetStringAsync(
-                                                          "String_DamageStun", strLanguage, token: token).ConfigureAwait(false), token: token)
+                                          async () => '5' + await strStun.GetValueAsync(token).ConfigureAwait(false),
+                                          token: token)
                                       .CheapReplaceAsync(
                                           "6S",
-                                          async () => '6'
-                                                      + await LanguageManager.GetStringAsync(
-                                                          "String_DamageStun", strLanguage, token: token).ConfigureAwait(false), token: token)
+                                          async () => '6' + await strStun.GetValueAsync(token).ConfigureAwait(false),
+                                          token: token)
                                       .CheapReplaceAsync(
                                           "7S",
-                                          async () => '7'
-                                                      + await LanguageManager.GetStringAsync(
-                                                          "String_DamageStun", strLanguage, token: token).ConfigureAwait(false), token: token)
+                                          async () => '7' + await strStun.GetValueAsync(token).ConfigureAwait(false),
+                                          token: token)
                                       .CheapReplaceAsync(
                                           "8S",
-                                          async () => '8'
-                                                      + await LanguageManager.GetStringAsync(
-                                                          "String_DamageStun", strLanguage, token: token).ConfigureAwait(false), token: token)
+                                          async () => '8' + await strStun.GetValueAsync(token).ConfigureAwait(false),
+                                          token: token)
                                       .CheapReplaceAsync(
                                           "9S",
-                                          async () => '9'
-                                                      + await LanguageManager.GetStringAsync(
-                                                          "String_DamageStun", strLanguage, token: token).ConfigureAwait(false), token: token)
+                                          async () => '9' + await strStun.GetValueAsync(token).ConfigureAwait(false),
+                                          token: token)
                                       .CheapReplaceAsync(
                                           "0P",
                                           async () => '0'
-                                                      + await LanguageManager.GetStringAsync(
-                                                          "String_DamagePhysical", strLanguage, token: token).ConfigureAwait(false), token: token)
+                                                      + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
+                                          token: token)
                                       .CheapReplaceAsync(
                                           "1P",
                                           async () => '1'
-                                                      + await LanguageManager.GetStringAsync(
-                                                          "String_DamagePhysical", strLanguage, token: token).ConfigureAwait(false), token: token)
+                                                      + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
+                                          token: token)
                                       .CheapReplaceAsync(
                                           "2P",
                                           async () => '2'
-                                                      + await LanguageManager.GetStringAsync(
-                                                          "String_DamagePhysical", strLanguage, token: token).ConfigureAwait(false), token: token)
+                                                      + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
+                                          token: token)
                                       .CheapReplaceAsync(
                                           "3P",
                                           async () => '3'
-                                                      + await LanguageManager.GetStringAsync(
-                                                          "String_DamagePhysical", strLanguage, token: token).ConfigureAwait(false), token: token)
+                                                      + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
+                                          token: token)
                                       .CheapReplaceAsync(
                                           "4P",
                                           async () => '4'
-                                                      + await LanguageManager.GetStringAsync(
-                                                          "String_DamagePhysical", strLanguage, token: token).ConfigureAwait(false), token: token)
+                                                      + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
+                                          token: token)
                                       .CheapReplaceAsync(
                                           "5P",
                                           async () => '5'
-                                                      + await LanguageManager.GetStringAsync(
-                                                          "String_DamagePhysical", strLanguage, token: token).ConfigureAwait(false), token: token)
+                                                      + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
+                                          token: token)
                                       .CheapReplaceAsync(
                                           "6P",
                                           async () => '6'
-                                                      + await LanguageManager.GetStringAsync(
-                                                          "String_DamagePhysical", strLanguage, token: token).ConfigureAwait(false), token: token)
+                                                      + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
+                                          token: token)
                                       .CheapReplaceAsync(
                                           "7P",
                                           async () => '7'
-                                                      + await LanguageManager.GetStringAsync(
-                                                          "String_DamagePhysical", strLanguage, token: token).ConfigureAwait(false), token: token)
+                                                      + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
+                                          token: token)
                                       .CheapReplaceAsync(
                                           "8P",
                                           async () => '8'
-                                                      + await LanguageManager.GetStringAsync(
-                                                          "String_DamagePhysical", strLanguage, token: token).ConfigureAwait(false), token: token)
+                                                      + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
+                                          token: token)
                                       .CheapReplaceAsync(
                                           "9P",
                                           async () => '9'
-                                                      + await LanguageManager.GetStringAsync(
-                                                          "String_DamagePhysical", strLanguage, token: token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                                                      + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
+                                          token: token).ConfigureAwait(false);
                 }
             }
 
             return strReturn;
         }
 
-        public static string ReplaceStrings(string strInput, string strLanguage)
+        public static string ReplaceStrings(string strInput, string strLanguage, CancellationToken token = default)
         {
             return strLanguage == GlobalSettings.DefaultLanguage
                 ? strInput
                 : strInput
                   .CheapReplace(
-                      "Special", () => LanguageManager.GetString("String_DamageSpecial", strLanguage))
+                      "Special", () => LanguageManager.GetString("String_DamageSpecial", strLanguage, token: token))
                   .CheapReplace(
-                      "P or S", () => LanguageManager.GetString("String_DamagePOrS", strLanguage))
+                      "P or S", () => LanguageManager.GetString("String_DamagePOrS", strLanguage, token: token))
                   .CheapReplace(
-                      "Chemical", () => LanguageManager.GetString("String_DamageChemical", strLanguage))
+                      "Chemical", () => LanguageManager.GetString("String_DamageChemical", strLanguage, token: token))
                   .CheapReplace(
-                      "(e)", () => LanguageManager.GetString("String_DamageElectric", strLanguage))
+                      "(e)", () => LanguageManager.GetString("String_DamageElectric", strLanguage, token: token))
                   .CheapReplace(
-                      "(f)", () => LanguageManager.GetString("String_DamageFlechette", strLanguage))
+                      "(f)", () => LanguageManager.GetString("String_DamageFlechette", strLanguage, token: token))
                   .CheapReplace(
-                      "Grenade", () => LanguageManager.GetString("String_DamageGrenade", strLanguage))
+                      "Grenade", () => LanguageManager.GetString("String_DamageGrenade", strLanguage, token: token))
                   .CheapReplace(
-                      "Missile", () => LanguageManager.GetString("String_DamageMissile", strLanguage))
+                      "Missile", () => LanguageManager.GetString("String_DamageMissile", strLanguage, token: token))
                   .CheapReplace(
-                      "Mortar", () => LanguageManager.GetString("String_DamageMortar", strLanguage))
+                      "Mortar", () => LanguageManager.GetString("String_DamageMortar", strLanguage, token: token))
                   .CheapReplace(
-                      "Rocket", () => LanguageManager.GetString("String_DamageRocket", strLanguage))
+                      "Rocket", () => LanguageManager.GetString("String_DamageRocket", strLanguage, token: token))
                   .CheapReplace(
-                      "Torpedo", () => LanguageManager.GetString("String_DamageTorpedo", strLanguage))
+                      "Torpedo", () => LanguageManager.GetString("String_DamageTorpedo", strLanguage, token: token))
                   .CheapReplace(
-                      "Radius", () => LanguageManager.GetString("String_DamageRadius", strLanguage))
+                      "Radius", () => LanguageManager.GetString("String_DamageRadius", strLanguage, token: token))
                   .CheapReplace("As Drug/Toxin",
-                                () => LanguageManager.GetString("String_DamageAsDrugToxin", strLanguage))
+                                () => LanguageManager.GetString("String_DamageAsDrugToxin", strLanguage, token: token))
                   .CheapReplace(
-                      "as round", () => LanguageManager.GetString("String_DamageAsRound", strLanguage))
+                      "as round", () => LanguageManager.GetString("String_DamageAsRound", strLanguage, token: token))
                   .CheapReplace(
-                      "/m", () => '/' + LanguageManager.GetString("String_DamageMeter", strLanguage))
+                      "/m", () => '/' + LanguageManager.GetString("String_DamageMeter", strLanguage, token: token))
                   .CheapReplace(
-                      "(M)", () => LanguageManager.GetString("String_DamageMatrix", strLanguage));
+                      "(M)", () => LanguageManager.GetString("String_DamageMatrix", strLanguage, token: token));
         }
 
         public static async ValueTask<string> ReplaceStringsAsync(string strInput, string strLanguage, CancellationToken token = default)
@@ -3368,9 +3353,9 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Calculated Ammo capacity.
         /// </summary>
-        public string CalculatedAmmo(CultureInfo objCulture, string strLanguage)
+        public string CalculatedAmmo(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => CalculatedAmmoCoreAsync(true, objCulture, strLanguage));
+            return Utils.SafelyRunSynchronously(() => CalculatedAmmoCoreAsync(true, objCulture, strLanguage, token), token);
         }
 
         /// <summary>
@@ -3659,9 +3644,9 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Weapon's Firing Mode including Modifications.
         /// </summary>
-        public string CalculatedMode(string strLanguage, bool blnIncludeAmmo = true)
+        public string CalculatedMode(string strLanguage, bool blnIncludeAmmo = true, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => CalculatedModeCoreAsync(true, strLanguage, blnIncludeAmmo));
+            return Utils.SafelyRunSynchronously(() => CalculatedModeCoreAsync(true, strLanguage, blnIncludeAmmo, token), token);
         }
 
         /// <summary>
@@ -3946,20 +3931,12 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapon Cost to use when working with Total Cost price modifiers for Weapon Mods.
         /// </summary>
-        public decimal MultipliableCost(WeaponAccessory objExcludeAccessory)
+        public decimal MultipliableCost(WeaponAccessory objExcludeAccessory, CancellationToken token = default)
         {
-            decimal decReturn = OwnCost;
-
-            // Run through the list of Weapon Mods.
-            foreach (WeaponAccessory objAccessory in WeaponAccessories)
-            {
-                if (objExcludeAccessory != objAccessory && objAccessory.Equipped && !objAccessory.IncludedInWeapon)
-                {
-                    decReturn += objAccessory.TotalCost;
-                }
-            }
-
-            return decReturn;
+            token.ThrowIfCancellationRequested();
+            return OwnCost
+                   // Run through the list of Weapon Mods.
+                   + WeaponAccessories.Sum(x => objExcludeAccessory != x && x.Equipped && !x.IncludedInWeapon, x => x.TotalCost, token);
         }
 
         /// <summary>
@@ -3967,37 +3944,21 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async ValueTask<decimal> MultipliableCostAsync(WeaponAccessory objExcludeAccessory, CancellationToken token = default)
         {
-            decimal decReturn = await GetOwnCostAsync(token);
-
-            // Run through the list of Weapon Mods.
-            foreach (WeaponAccessory objAccessory in WeaponAccessories)
-            {
-                if (objExcludeAccessory != objAccessory && objAccessory.Equipped && !objAccessory.IncludedInWeapon)
-                {
-                    decReturn += objAccessory.TotalCost;
-                }
-            }
-
-            return decReturn;
+            token.ThrowIfCancellationRequested();
+            return await GetOwnCostAsync(token).ConfigureAwait(false)
+                   // Run through the list of Weapon Mods.
+                   + await WeaponAccessories.SumAsync(x => objExcludeAccessory != x && x.Equipped && !x.IncludedInWeapon, x => x.GetTotalCostAsync(token).AsTask(), token).ConfigureAwait(false);
         }
 
         /// <summary>
         /// Weapon Weight to use when working with Total Weight price modifiers for Weapon Mods.
         /// </summary>
-        public decimal MultipliableWeight(WeaponAccessory objExcludeAccessory)
+        public decimal MultipliableWeight(WeaponAccessory objExcludeAccessory, CancellationToken token = default)
         {
-            decimal decReturn = OwnWeight;
-
-            // Run through the list of Weapon Mods.
-            foreach (WeaponAccessory objAccessory in WeaponAccessories)
-            {
-                if (objExcludeAccessory != objAccessory && objAccessory.Equipped)
-                {
-                    decReturn += objAccessory.TotalWeight;
-                }
-            }
-
-            return decReturn;
+            token.ThrowIfCancellationRequested();
+            return OwnWeight
+                   // Run through the list of Weapon Mods.
+                   + WeaponAccessories.Sum(x => objExcludeAccessory != x && x.Equipped, x => x.TotalWeight, token);
         }
 
         public string AccessoryMounts
@@ -4031,24 +3992,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Weapon's total cost including Accessories and Modifications.
         /// </summary>
-        public decimal TotalCost
-        {
-            get
-            {
-                decimal decReturn = OwnCost;
-
-                // Run through the Accessories and add in their cost. If the cost is "Weapon Cost", the Weapon's base cost is added in again.
-                decReturn += WeaponAccessories.Sum(objAccessory => objAccessory.TotalCost);
-
-                // Include the cost of any Underbarrel Weapon.
-                if (Children.Count > 0)
-                {
-                    decReturn += Children.Sum(objUnderbarrel => objUnderbarrel.TotalCost);
-                }
-
-                return decReturn;
-            }
-        }
+        public decimal TotalCost => OwnCost + WeaponAccessories.Sum(x => x.TotalCost) + Children.Sum(x => x.TotalCost);
 
         /// <summary>
         /// The Weapon's total cost including Accessories and Modifications.
@@ -4056,18 +4000,15 @@ namespace Chummer.Backend.Equipment
         public async ValueTask<decimal> GetTotalCostAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            decimal decReturn = await GetOwnCostAsync(token).ConfigureAwait(false);
-
-            // Run through the Accessories and add in their cost. If the cost is "Weapon Cost", the Weapon's base cost is added in again.
-            decReturn += await WeaponAccessories.SumAsync(objAccessory => objAccessory.GetTotalCostAsync(token).AsTask(), token).ConfigureAwait(false);
-
-            // Include the cost of any Underbarrel Weapon.
-            if (await Children.GetCountAsync(token) > 0)
-            {
-                decReturn += await Children.SumAsync(objUnderbarrel => objUnderbarrel.GetTotalCostAsync(token).AsTask(), token).ConfigureAwait(false);
-            }
-
-            return decReturn;
+            return await GetOwnCostAsync(token).ConfigureAwait(false)
+                   // Run through the Accessories and add in their cost. If the cost is "Weapon Cost", the Weapon's base cost is added in again.
+                   + await WeaponAccessories
+                           .SumAsync(objAccessory => objAccessory.GetTotalCostAsync(token).AsTask(), token)
+                           .ConfigureAwait(false)
+                   // Include the cost of any Underbarrel Weapon.
+                   + await Children
+                           .SumAsync(objUnderbarrel => objUnderbarrel.GetTotalCostAsync(token).AsTask(),
+                                     token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -4371,10 +4312,10 @@ namespace Chummer.Backend.Equipment
                 if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     return strAP.Replace("//", "/");
                 return blnSync
-                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                    // ReSharper disable once MethodHasAsyncOverload
                     ? ReplaceStrings(strAP.Replace("//", "/")
                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                           .CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage)), strLanguage)
+                           .CheapReplace("-half", () => LanguageManager.GetString("String_APHalf", strLanguage)), strLanguage, token)
                     : await ReplaceStringsAsync(await strAP.Replace("//", "/")
                                                            .CheapReplaceAsync(
                                                                "-half",
@@ -4414,12 +4355,12 @@ namespace Chummer.Backend.Equipment
                         return strAP;
                     else
                         return blnSync
-                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                            // ReSharper disable once MethodHasAsyncOverload
                             ? ReplaceStrings(
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 strAP.CheapReplace(
                                     "-half", () => LanguageManager.GetString("String_APHalf", strLanguage)),
-                                strLanguage)
+                                strLanguage, token)
                             : await ReplaceStringsAsync(await strAP.CheapReplaceAsync(
                                                             "-half",
                                                             () => LanguageManager.GetStringAsync(
@@ -4432,12 +4373,12 @@ namespace Chummer.Backend.Equipment
                     if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                         return strAP;
                     return blnSync
-                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                        // ReSharper disable once MethodHasAsyncOverload
                         ? ReplaceStrings(
                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             strAP.CheapReplace(
                                 "-half", () => LanguageManager.GetString("String_APHalf", strLanguage)),
-                            strLanguage)
+                            strLanguage, token)
                         : await ReplaceStringsAsync(await strAP.CheapReplaceAsync(
                                                         "-half",
                                                         () => LanguageManager.GetStringAsync(
@@ -4450,12 +4391,12 @@ namespace Chummer.Backend.Equipment
                     if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                         return strAP;
                     return blnSync
-                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                        // ReSharper disable once MethodHasAsyncOverload
                         ? ReplaceStrings(
                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             strAP.CheapReplace(
                                 "-half", () => LanguageManager.GetString("String_APHalf", strLanguage)),
-                            strLanguage)
+                            strLanguage, token)
                         : await ReplaceStringsAsync(await strAP.CheapReplaceAsync(
                                                         "-half",
                                                         () => LanguageManager.GetStringAsync(
@@ -4468,12 +4409,12 @@ namespace Chummer.Backend.Equipment
                     if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                         return strAP;
                     return blnSync
-                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                        // ReSharper disable once MethodHasAsyncOverload
                         ? ReplaceStrings(
                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             strAP.CheapReplace(
                                 "-half", () => LanguageManager.GetString("String_APHalf", strLanguage)),
-                            strLanguage)
+                            strLanguage, token)
                         : await ReplaceStringsAsync(await strAP.CheapReplaceAsync(
                                                         "-half",
                                                         () => LanguageManager.GetStringAsync(
@@ -7048,11 +6989,25 @@ namespace Chummer.Backend.Equipment
         public string DisplayTotalAvail => TotalAvail(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
         /// <summary>
+        /// Total Availability in the program's current language.
+        /// </summary>
+        public ValueTask<string> GetDisplayTotalAvailAsync(CancellationToken token = default) => TotalAvailAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
+
+        /// <summary>
         /// Total Availability.
         /// </summary>
         public string TotalAvail(CultureInfo objCulture, string strLanguage)
         {
             return TotalAvailTuple().ToString(objCulture, strLanguage);
+        }
+
+        /// <summary>
+        /// Total Availability.
+        /// </summary>
+        public async ValueTask<string> TotalAvailAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        {
+            return await (await TotalAvailTupleAsync(token: token).ConfigureAwait(false))
+                         .ToStringAsync(objCulture, strLanguage, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -7952,45 +7907,69 @@ namespace Chummer.Backend.Equipment
                                         .ConfigureAwait(false);
 
             foreach (Weapon objDeleteWeapon in _objCharacter.Weapons
-                                                            .DeepWhere(x => x.Children, x => x.ParentID == InternalId)
-                                                            .ToList())
+                                                                .DeepWhere(x => x.Children,
+                                                                           x => x.ParentID == InternalId).ToList())
             {
-                decReturn += objDeleteWeapon.TotalCost
+                decReturn += await objDeleteWeapon.GetTotalCostAsync(token).ConfigureAwait(false)
                              + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
             }
 
-            foreach (Vehicle objVehicle in _objCharacter.Vehicles)
+            decReturn += await _objCharacter.Vehicles.SumAsync(async objVehicle =>
             {
+                decimal decInner = 0;
                 foreach (Weapon objDeleteWeapon in objVehicle.Weapons
-                                                             .DeepWhere(x => x.Children, x => x.ParentID == InternalId)
-                                                             .ToList())
+                                                             .DeepWhere(x => x.Children,
+                                                                        x => x.ParentID == InternalId).ToList())
                 {
-                    decReturn += objDeleteWeapon.TotalCost
-                                 + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
+                    decInner += await objDeleteWeapon.GetTotalCostAsync(token).ConfigureAwait(false)
+                                + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
                 }
 
-                foreach (VehicleMod objMod in objVehicle.Mods)
+                decInner += await objVehicle.Mods.SumAsync(async objMod =>
                 {
+                    decimal decInner2 = 0;
                     foreach (Weapon objDeleteWeapon in objMod.Weapons
-                                                             .DeepWhere(x => x.Children, x => x.ParentID == InternalId)
-                                                             .ToList())
+                                                             .DeepWhere(x => x.Children,
+                                                                        x => x.ParentID == InternalId).ToList())
                     {
-                        decReturn += objDeleteWeapon.TotalCost
+                        decInner2 += await objDeleteWeapon.GetTotalCostAsync(token).ConfigureAwait(false)
                                      + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
                     }
-                }
 
-                foreach (WeaponMount objMount in objVehicle.WeaponMounts)
+                    return decInner2;
+                }, token).ConfigureAwait(false);
+
+                decInner += await objVehicle.WeaponMounts.SumAsync(async objMount =>
                 {
+                    decimal decInner2 = 0;
                     foreach (Weapon objDeleteWeapon in objMount.Weapons
                                                                .DeepWhere(x => x.Children,
                                                                           x => x.ParentID == InternalId).ToList())
                     {
-                        decReturn += objDeleteWeapon.TotalCost
+                        decInner2 += await objDeleteWeapon.GetTotalCostAsync(token).ConfigureAwait(false)
                                      + await objDeleteWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
                     }
-                }
-            }
+
+                    decInner2 += await objMount.Mods.SumAsync(async objMod =>
+                    {
+                        decimal decInner3 = 0;
+                        foreach (Weapon objDeleteWeapon in objMod.Weapons
+                                                                 .DeepWhere(x => x.Children,
+                                                                            x => x.ParentID == InternalId).ToList())
+                        {
+                            decInner3 += await objDeleteWeapon.GetTotalCostAsync(token).ConfigureAwait(false)
+                                         + await objDeleteWeapon.DeleteWeaponAsync(token: token)
+                                                                .ConfigureAwait(false);
+                        }
+
+                        return decInner3;
+                    }, token).ConfigureAwait(false);
+
+                    return decInner2;
+                }, token).ConfigureAwait(false);
+
+                return decInner;
+            }, token).ConfigureAwait(false);
 
             decReturn += await ImprovementManager
                                .RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Weapon,
@@ -8987,6 +8966,23 @@ namespace Chummer.Backend.Equipment
 
             // Include the cost of any Underbarrel Weapon.
             decReturn += Children.Sum(objUnderbarrel => objUnderbarrel.CalculatedStolenTotalCost(blnStolen));
+
+            return decReturn;
+        }
+
+        public ValueTask<decimal> GetStolenTotalCostAsync(CancellationToken token = default) => CalculatedStolenTotalCostAsync(true, token);
+
+        public ValueTask<decimal> GetNonStolenTotalCostAsync(CancellationToken token = default) => CalculatedStolenTotalCostAsync(false, token);
+
+        public async ValueTask<decimal> CalculatedStolenTotalCostAsync(bool blnStolen, CancellationToken token = default)
+        {
+            decimal decReturn = Stolen == blnStolen ? await GetOwnCostAsync(token).ConfigureAwait(false) : 0;
+
+            // Run through the Accessories and add in their cost. If the cost is "Weapon Cost", the Weapon's base cost is added in again.
+            decReturn += await WeaponAccessories.SumAsync(objAccessory => objAccessory.CalculatedStolenTotalCostAsync(blnStolen, token).AsTask(), token).ConfigureAwait(false);
+
+            // Include the cost of any Underbarrel Weapon.
+            decReturn += await Children.SumAsync(objUnderbarrel => objUnderbarrel.CalculatedStolenTotalCostAsync(blnStolen, token).AsTask(), token).ConfigureAwait(false);
 
             return decReturn;
         }

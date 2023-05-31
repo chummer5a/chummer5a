@@ -2008,6 +2008,9 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        /// <summary>
+        /// Total cost of the Lifestyle, counting all purchased months.
+        /// </summary>
         public async ValueTask<decimal> GetTotalCostAsync(CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))

@@ -1080,10 +1080,10 @@ namespace Chummer.Backend.Equipment
             await objWriter.WriteElementStringAsync("avail", await TotalAvailAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token)
                            .ConfigureAwait(false);
             await objWriter
-                  .WriteElementStringAsync("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture),
+                  .WriteElementStringAsync("cost", (await GetTotalCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat, objCulture),
                                            token).ConfigureAwait(false);
             await objWriter
-                  .WriteElementStringAsync("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture),
+                  .WriteElementStringAsync("owncost", (await GetOwnCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat, objCulture),
                                            token).ConfigureAwait(false);
             await objWriter
                   .WriteElementStringAsync(
@@ -1538,6 +1538,11 @@ namespace Chummer.Backend.Equipment
         public string DisplayTotalAvail => TotalAvail(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
         /// <summary>
+        /// Total Availability in the program's current language.
+        /// </summary>
+        public ValueTask<string> GetDisplayTotalAvailAsync(CancellationToken token = default) => TotalAvailAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
+
+        /// <summary>
         /// Calculated Availability of the Vehicle.
         /// </summary>
         public string TotalAvail(CultureInfo objCulture, string strLanguage)
@@ -1550,7 +1555,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async ValueTask<string> TotalAvailAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            return (await TotalAvailTupleAsync(token: token).ConfigureAwait(false)).ToString(objCulture, strLanguage);
+            return await (await TotalAvailTupleAsync(token: token).ConfigureAwait(false)).ToStringAsync(objCulture, strLanguage, token);
         }
 
         /// <summary>
@@ -2257,27 +2262,42 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                decimal decCost = OwnCost;
-
-                foreach (VehicleMod objMod in Mods)
+                return OwnCost + Mods.Sum(objMod =>
                 {
                     // Do not include the price of Mods that are part of the base configuration.
                     if (!objMod.IncludedInVehicle)
                     {
-                        decCost += objMod.TotalCost;
+                        return objMod.TotalCost;
                     }
-                    else
-                    {
-                        // If the Mod is a part of the base config, check the items attached to it since their cost still counts.
-                        decCost += objMod.Weapons.Sum(objWeapon => objWeapon.TotalCost);
-                        decCost += objMod.Cyberware.Sum(objCyberware => objCyberware.TotalCost);
-                    }
-                }
-                decCost += WeaponMounts.Sum(wm => wm.TotalCost);
-                decCost += GearChildren.Sum(objGear => objGear.TotalCost);
 
-                return decCost;
+                    // If the Mod is a part of the base config, check the items attached to it since their cost still counts.
+                    return objMod.Weapons.Sum(objWeapon => objWeapon.TotalCost)
+                           + objMod.Cyberware.Sum(objCyberware => objCyberware.TotalCost);
+                }) + WeaponMounts.Sum(wm => wm.TotalCost) + GearChildren.Sum(objGear => objGear.TotalCost);
             }
+        }
+
+        /// <summary>
+        /// Total cost of the Vehicle including all after-market Modification.
+        /// </summary>
+        public async ValueTask<decimal> GetTotalCostAsync(CancellationToken token = default)
+        {
+            return await GetOwnCostAsync(token).ConfigureAwait(false) + await Mods.SumAsync(async objMod =>
+                   {
+                       // Do not include the price of Mods that are part of the base configuration.
+                       if (!objMod.IncludedInVehicle)
+                       {
+                           return await objMod.GetTotalCostAsync(token).ConfigureAwait(false);
+                       }
+
+                       // If the Mod is a part of the base config, check the items attached to it since their cost still counts.
+                       return await objMod.Weapons.SumAsync(objWeapon => objWeapon.GetTotalCostAsync(token).AsTask(),
+                                                            token).ConfigureAwait(false)
+                              + await objMod.Cyberware.SumAsync(
+                                  objCyberware => objCyberware.GetTotalCostAsync(token).AsTask(),
+                                  token).ConfigureAwait(false);
+                   }, token).ConfigureAwait(false) + await WeaponMounts.SumAsync(wm => wm.GetTotalCostAsync(token).AsTask(), token).ConfigureAwait(false)
+                   + await GearChildren.SumAsync(objGear => objGear.GetTotalCostAsync(token).AsTask(), token).ConfigureAwait(false);
         }
 
         public decimal StolenTotalCost => CalculatedStolenCost(true);
@@ -2306,6 +2326,36 @@ namespace Chummer.Backend.Equipment
             }
             decCost += WeaponMounts.Sum(wm => wm.CalculatedStolenTotalCost(blnStolen));
             decCost += GearChildren.Sum(objGear => objGear.CalculatedStolenTotalCost(blnStolen));
+
+            return decCost;
+        }
+
+        public ValueTask<decimal> GetStolenTotalCostAsync(CancellationToken token = default) => CalculatedStolenCostAsync(true, token);
+
+        public ValueTask<decimal> GetNonStolenTotalCostAsync(CancellationToken token = default) => CalculatedStolenCostAsync(false, token);
+
+        public async ValueTask<decimal> CalculatedStolenCostAsync(bool blnStolen, CancellationToken token = default)
+        {
+            decimal decCost = Stolen == blnStolen ? await GetOwnCostAsync(token).ConfigureAwait(false) : 0;
+
+            decCost += await Mods.SumAsync(async objMod =>
+            {
+                // Do not include the price of Mods that are part of the base configureation.
+                if (!objMod.IncludedInVehicle)
+                {
+                    return await objMod.CalculatedStolenTotalCostAsync(blnStolen, token).ConfigureAwait(false);
+                }
+
+                // If the Mod is a part of the base config, check the items attached to it since their cost still counts.
+                return await objMod.Weapons.SumAsync(
+                           objWeapon => objWeapon.CalculatedStolenTotalCostAsync(blnStolen, token).AsTask(), token).ConfigureAwait(false)
+                       + await objMod.Cyberware.SumAsync(
+                           objCyberware => objCyberware.CalculatedStolenTotalCostAsync(blnStolen, token).AsTask(),
+                           token).ConfigureAwait(false);
+            }, token).ConfigureAwait(false);
+
+            decCost += await WeaponMounts.SumAsync(wm => wm.CalculatedStolenTotalCostAsync(blnStolen, token).AsTask(), token).ConfigureAwait(false);
+            decCost += await GearChildren.SumAsync(objGear => objGear.CalculatedStolenTotalCostAsync(blnStolen, token).AsTask(), token).ConfigureAwait(false);
 
             return decCost;
         }
@@ -2357,6 +2407,63 @@ namespace Chummer.Backend.Equipment
 
                 return decCost;
             }
+        }
+
+        /// <summary>
+        /// The cost of just the Vehicle itself.
+        /// </summary>
+        public async ValueTask<decimal> GetOwnCostAsync(CancellationToken token = default)
+        {
+            decimal decCost = 0;
+            string strCost = Cost;
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
+            {
+                sbdCost.Append(strCost);
+                // Keeping enumerations separate reduces heap allocations
+                AttributeSection objAttributeSection
+                    = await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false);
+                await (await objAttributeSection.GetAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(
+                    async objLoopAttribute =>
+                    {
+                        await sbdCost.CheapReplaceAsync(strCost, objLoopAttribute.Abbrev,
+                                                        async () => (await objLoopAttribute.GetTotalValueAsync(token)
+                                                            .ConfigureAwait(false)).ToString(
+                                                            GlobalSettings.InvariantCultureInfo), token: token)
+                                     .ConfigureAwait(false);
+                        await sbdCost.CheapReplaceAsync(strCost, objLoopAttribute.Abbrev + "Base",
+                                                        async () => (await objLoopAttribute.GetTotalBaseAsync(token)
+                                                            .ConfigureAwait(false)).ToString(
+                                                            GlobalSettings.InvariantCultureInfo), token: token)
+                                     .ConfigureAwait(false);
+                    }, token).ConfigureAwait(false);
+                await (await objAttributeSection.GetSpecialAttributeListAsync(token).ConfigureAwait(false))
+                      .ForEachAsync(async objLoopAttribute =>
+                      {
+                          await sbdCost.CheapReplaceAsync(strCost, objLoopAttribute.Abbrev,
+                                                          async () => (await objLoopAttribute.GetTotalValueAsync(token)
+                                                              .ConfigureAwait(false)).ToString(
+                                                              GlobalSettings.InvariantCultureInfo), token: token)
+                                       .ConfigureAwait(false);
+                          await sbdCost.CheapReplaceAsync(strCost, objLoopAttribute.Abbrev + "Base",
+                                                          async () => (await objLoopAttribute.GetTotalBaseAsync(token)
+                                                              .ConfigureAwait(false)).ToString(
+                                                              GlobalSettings.InvariantCultureInfo), token: token)
+                                       .ConfigureAwait(false);
+                      }, token).ConfigureAwait(false);
+
+                (bool blnIsSuccess, object objProcess)
+                    = await CommonFunctions.EvaluateInvariantXPathAsync(sbdCost.ToString(), token).ConfigureAwait(false);
+                if (blnIsSuccess)
+                    decCost = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
+            }
+
+            if (DiscountCost)
+                decCost *= 0.9m;
+
+            if (DealerConnectionDiscount)
+                decCost *= 0.9m;
+
+            return decCost;
         }
 
         /// <summary>

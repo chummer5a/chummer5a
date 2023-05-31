@@ -19,6 +19,8 @@
 
 using System;
 using System.Globalization;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Chummer
 {
@@ -83,7 +85,7 @@ namespace Chummer
             return ToString(GlobalSettings.CultureInfo, GlobalSettings.Language);
         }
 
-        public string ToString(CultureInfo objCulture, string strLanguage)
+        public string ToString(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
             string strBaseAvail = Value.ToString(objCulture);
             if (AddToParent && Value >= 0)
@@ -91,10 +93,26 @@ namespace Chummer
             switch (Suffix)
             {
                 case 'F':
-                    return strBaseAvail + LanguageManager.GetString("String_AvailForbidden", strLanguage);
+                    return strBaseAvail + LanguageManager.GetString("String_AvailForbidden", strLanguage, token: token);
 
                 case 'R':
-                    return strBaseAvail + LanguageManager.GetString("String_AvailRestricted", strLanguage);
+                    return strBaseAvail + LanguageManager.GetString("String_AvailRestricted", strLanguage, token: token);
+            }
+            return strBaseAvail;
+        }
+
+        public async ValueTask<string> ToStringAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        {
+            string strBaseAvail = Value.ToString(objCulture);
+            if (AddToParent && Value >= 0)
+                strBaseAvail = '+' + strBaseAvail;
+            switch (Suffix)
+            {
+                case 'F':
+                    return strBaseAvail + await LanguageManager.GetStringAsync("String_AvailForbidden", strLanguage, token: token);
+
+                case 'R':
+                    return strBaseAvail + await LanguageManager.GetStringAsync("String_AvailRestricted", strLanguage, token: token);
             }
             return strBaseAvail;
         }

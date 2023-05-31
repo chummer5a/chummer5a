@@ -17,6 +17,9 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace Chummer
 {
     internal interface IHasStolenProperty : IHasCost
@@ -26,5 +29,9 @@ namespace Chummer
         decimal StolenTotalCost { get; }
 
         decimal NonStolenTotalCost { get; }
+
+        ValueTask<decimal> GetStolenTotalCostAsync(CancellationToken token = default);
+
+        ValueTask<decimal> GetNonStolenTotalCostAsync(CancellationToken token = default);
     }
 }

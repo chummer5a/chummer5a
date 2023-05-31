@@ -1123,13 +1123,16 @@ namespace Chummer
                                     }
 
                                     strCost = decMax == decimal.MaxValue
-                                                                        ? decMin.ToString(_objCharacter.Settings.NuyenFormat,
-                                                                              GlobalSettings.CultureInfo)
-                                                                          + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false) + '+'
-                                                                        : decMin.ToString(_objCharacter.Settings.NuyenFormat,
-                                                                              GlobalSettings.CultureInfo)
-                                                                          + " - " + decMax.ToString(_objCharacter.Settings.NuyenFormat,
-                                                                              GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
+                                        ? decMin.ToString(_objCharacter.Settings.NuyenFormat,
+                                                          GlobalSettings.CultureInfo)
+                                          + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token)
+                                                                 .ConfigureAwait(false) + '+'
+                                        : decMin.ToString(_objCharacter.Settings.NuyenFormat,
+                                                          GlobalSettings.CultureInfo)
+                                          + " - " + decMax.ToString(_objCharacter.Settings.NuyenFormat,
+                                                                    GlobalSettings.CultureInfo)
+                                          + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token)
+                                                                 .ConfigureAwait(false);
 
                                     decItemCost = decMin;
                                 }
@@ -1142,7 +1145,7 @@ namespace Chummer
                                                                         async () => CyberwareParent != null
                                                                             ? (await CyberwareParent.GearChildren
                                                                                 .SumParallelAsync(
-                                                                                    x => x.TotalCost, token: token)
+                                                                                    x => x.GetTotalCostAsync(token).AsTask(), token: token)
                                                                                 .ConfigureAwait(false))
                                                                             .ToString(GlobalSettings.InvariantCultureInfo)
                                                                             : "0", token: token)

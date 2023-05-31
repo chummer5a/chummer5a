@@ -5976,7 +5976,7 @@ namespace Chummer
                 // Check the item's Cost and make sure the character can afford it.
                 if (!frmPickWeapon.MyForm.FreeCost)
                 {
-                    decimal decCost = objWeapon.TotalCost;
+                    decimal decCost = await objWeapon.GetTotalCostAsync(token).ConfigureAwait(false);
                     // Apply a markup if applicable.
                     if (frmPickWeapon.MyForm.Markup != 0)
                     {
@@ -6169,7 +6169,7 @@ namespace Chummer
                 // Check the item's Cost and make sure the character can afford it.
                 if (!frmPickVehicle.MyForm.FreeCost)
                 {
-                    decimal decCost = objVehicle.TotalCost;
+                    decimal decCost = await objVehicle.GetTotalCostAsync(token).ConfigureAwait(false);
                     // Apply a markup if applicable.
                     if (frmPickVehicle.MyForm.Markup != 0)
                     {
@@ -9050,7 +9050,7 @@ namespace Chummer
                 decimal decCost = 0.0m;
                 foreach (Gear objGear in lstStack)
                 {
-                    decCost += objGear.TotalCost;
+                    decCost += await objGear.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
                     await CharacterObject.Gear.RemoveAsync(objGear, GenericToken).ConfigureAwait(false);
                 }
 
@@ -9721,13 +9721,13 @@ namespace Chummer
                         objAccessory.DiscountCost = frmPickWeaponAccessory.MyForm.BlackMarketDiscount;
 
                         // Check the item's Cost and make sure the character can afford it.
-                        decimal decOriginalCost = objWeapon.TotalCost;
+                        decimal decOriginalCost = await objWeapon.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
 
                         await objWeapon.WeaponAccessories.AddAsync(objAccessory, GenericToken).ConfigureAwait(false);
 
                         if (!frmPickWeaponAccessory.MyForm.FreeCost)
                         {
-                            decimal decCost = objWeapon.TotalCost - decOriginalCost;
+                            decimal decCost = await objWeapon.GetTotalCostAsync(GenericToken).ConfigureAwait(false) - decOriginalCost;
                             // Apply a markup if applicable.
                             if (frmPickWeaponAccessory.MyForm.Markup != 0)
                             {
@@ -9815,7 +9815,7 @@ namespace Chummer
                 // Check the item's Cost and make sure the character can afford it.
                 if (!frmPickArmor.MyForm.FreeCost)
                 {
-                    decimal decCost = objArmor.TotalCost;
+                    decimal decCost = await objArmor.GetTotalCostAsync(token).ConfigureAwait(false);
                     // Apply a markup if applicable.
                     if (frmPickArmor.MyForm.Markup != 0)
                     {
@@ -9984,7 +9984,7 @@ namespace Chummer
                             continue;
 
                         // Check the item's Cost and make sure the character can afford it.
-                        decimal decOriginalCost = objArmor.TotalCost;
+                        decimal decOriginalCost = await objArmor.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
                         await objArmor.ArmorMods.AddAsync(objMod, GenericToken).ConfigureAwait(false);
 
                         // Do not allow the user to add a new piece of Armor if its Capacity has been reached.
@@ -10002,7 +10002,7 @@ namespace Chummer
 
                         if (!frmPickArmorMod.MyForm.FreeCost)
                         {
-                            decimal decCost = objArmor.TotalCost - decOriginalCost;
+                            decimal decCost = await objArmor.GetTotalCostAsync(GenericToken).ConfigureAwait(false) - decOriginalCost;
                             // Apply a markup if applicable.
                             if (frmPickArmorMod.MyForm.Markup != 0)
                             {
@@ -10212,7 +10212,7 @@ namespace Chummer
                         }
 
                         // Check the item's Cost and make sure the character can afford it.
-                        decimal decOriginalCost = objVehicle.TotalCost;
+                        decimal decOriginalCost = await objVehicle.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
 
                         await objVehicle.Mods.AddAsync(objMod, GenericToken).ConfigureAwait(false);
 
@@ -10247,7 +10247,7 @@ namespace Chummer
 
                         if (!frmPickVehicleMod.MyForm.FreeCost)
                         {
-                            decimal decCost = objVehicle.TotalCost - decOriginalCost;
+                            decimal decCost = await objVehicle.GetTotalCostAsync(GenericToken).ConfigureAwait(false) - decOriginalCost;
 
                             // Multiply the cost if applicable.
                             char chrAvail = (await objMod.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false)).Suffix;
@@ -10395,7 +10395,7 @@ namespace Chummer
 
                 if (!frmPickWeapon.MyForm.FreeCost)
                 {
-                    decimal decCost = objWeapon.TotalCost;
+                    decimal decCost = await objWeapon.GetTotalCostAsync(token).ConfigureAwait(false);
                     // Apply a markup if applicable.
                     if (frmPickWeapon.MyForm.Markup != 0)
                     {
@@ -10490,9 +10490,9 @@ namespace Chummer
                 }
 
                 // Calculate cost based on total vehicle cost change to make sure we capture everything
-                decimal decCost = -objVehicle.TotalCost;
+                decimal decCost = -await objVehicle.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
                 await objVehicle.WeaponMounts.AddAsync(objNewWeaponMount, GenericToken).ConfigureAwait(false);
-                decCost += objVehicle.TotalCost;
+                decCost += await objVehicle.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
 
                 // Multiply the cost if applicable.
                 char chrAvail = (await objNewWeaponMount.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false)).Suffix;
@@ -10598,12 +10598,12 @@ namespace Chummer
                         objAccessory.Parent = objWeapon;
 
                         // Check the item's Cost and make sure the character can afford it.
-                        decimal intOriginalCost = objWeapon.TotalCost;
+                        decimal intOriginalCost = await objWeapon.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
                         await objWeapon.WeaponAccessories.AddAsync(objAccessory, GenericToken).ConfigureAwait(false);
 
                         if (!frmPickWeaponAccessory.MyForm.FreeCost)
                         {
-                            decimal decCost = objWeapon.TotalCost - intOriginalCost;
+                            decimal decCost = await objWeapon.GetTotalCostAsync(GenericToken).ConfigureAwait(false) - intOriginalCost;
                             // Apply a markup if applicable.
                             if (frmPickWeaponAccessory.MyForm.Markup != 0)
                             {
@@ -10700,7 +10700,7 @@ namespace Chummer
                 // Check the item's Cost and make sure the character can afford it.
                 if (!frmPickWeapon.MyForm.FreeCost)
                 {
-                    decimal decCost = objWeapon.TotalCost;
+                    decimal decCost = await objWeapon.GetTotalCostAsync(token).ConfigureAwait(false);
                     // Apply a markup if applicable.
                     if (frmPickWeapon.MyForm.Markup != 0)
                     {
@@ -11006,7 +11006,7 @@ namespace Chummer
                             // Check the item's Cost and make sure the character can afford it.
                             if (!frmPickGear.MyForm.FreeCost)
                             {
-                                decimal decCost = objGear.TotalCost;
+                                decimal decCost = await objGear.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
 
                                 // Multiply the cost if applicable.
                                 char chrAvail = (await objGear.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false)).Suffix;
@@ -13831,7 +13831,7 @@ namespace Chummer
                             // Check the item's Cost and make sure the character can afford it.
                             if (!frmPickGear.MyForm.FreeCost)
                             {
-                                decimal decCost = objGear.TotalCost;
+                                decimal decCost = await objGear.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
 
                                 // Multiply the cost if applicable.
                                 char chrAvail = (await objGear.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false)).Suffix;
@@ -13985,7 +13985,7 @@ namespace Chummer
                             // Check the item's Cost and make sure the character can afford it.
                             if (!frmPickGear.MyForm.FreeCost)
                             {
-                                decimal decCost = objGear.TotalCost;
+                                decimal decCost = await objGear.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
 
                                 // Multiply the cost if applicable.
                                 char chrAvail = (await objGear.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false)).Suffix;
@@ -14149,7 +14149,7 @@ namespace Chummer
                             // Check the item's Cost and make sure the character can afford it.
                             if (!frmPickGear.MyForm.FreeCost)
                             {
-                                decimal decCost = objGear.TotalCost;
+                                decimal decCost = await objGear.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
 
                                 // Multiply the cost if applicable.
                                 char chrAvail = (await objGear.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false)).Suffix;
@@ -14299,7 +14299,7 @@ namespace Chummer
                             // Check the item's Cost and make sure the character can afford it.
                             if (!frmPickGear.MyForm.FreeCost)
                             {
-                                decimal decCost = objGear.TotalCost;
+                                decimal decCost = await objGear.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
 
                                 // Multiply the cost if applicable.
                                 char chrAvail = (await objGear.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false)).Suffix;
@@ -14444,7 +14444,7 @@ namespace Chummer
                             // Check the item's Cost and make sure the character can afford it.
                             if (!frmPickGear.MyForm.FreeCost)
                             {
-                                decimal decCost = objGear.TotalCost;
+                                decimal decCost = await objGear.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
 
                                 // Multiply the cost if applicable.
                                 char chrAvail = (await objGear.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false)).Suffix;
@@ -14596,7 +14596,7 @@ namespace Chummer
                             // Check the item's Cost and make sure the character can afford it.
                             if (!frmPickGear.MyForm.FreeCost)
                             {
-                                decimal decCost = objGear.TotalCost;
+                                decimal decCost = await objGear.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
 
                                 // Multiply the cost if applicable.
                                 char chrAvail = (await objGear.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false)).Suffix;
@@ -14807,7 +14807,7 @@ namespace Chummer
                             // Check the item's Cost and make sure the character can afford it.
                             if (!frmPickGear.MyForm.FreeCost)
                             {
-                                decimal decCost = objGear.TotalCost;
+                                decimal decCost = await objGear.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
 
                                 // Multiply the cost if applicable.
                                 char chrAvail = (await objGear.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false)).Suffix;
@@ -14954,7 +14954,7 @@ namespace Chummer
                             // Check the item's Cost and make sure the character can afford it.
                             if (!frmPickGear.MyForm.FreeCost)
                             {
-                                decimal decCost = objGear.TotalCost;
+                                decimal decCost = await objGear.GetTotalCostAsync(GenericToken).ConfigureAwait(false);
 
                                 // Multiply the cost if applicable.
                                 char chrAvail = (await objGear.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false)).Suffix;
@@ -19539,7 +19539,8 @@ namespace Chummer
                         await flpDrugs.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
                         await btnDeleteCustomDrug.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
                         await lblDrugName.DoThreadSafeAsync(x => x.Text = objDrug.Name, token).ConfigureAwait(false);
-                        await lblDrugAvail.DoThreadSafeAsync(x => x.Text = objDrug.DisplayTotalAvail, token)
+                        string strAvail = await objDrug.GetDisplayTotalAvailAsync(token).ConfigureAwait(false);
+                        await lblDrugAvail.DoThreadSafeAsync(x => x.Text = strAvail, token)
                                           .ConfigureAwait(false);
                         string strGradeName
                             = await objDrug.Grade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
@@ -19918,8 +19919,9 @@ namespace Chummer
                                                                  GlobalSettings.CultureInfo), token)
                                                          .ConfigureAwait(false);
 
+                            string strAvail = await objCyberware.GetDisplayTotalAvailAsync(token).ConfigureAwait(false);
                             await lblCyberwareAvail
-                                  .DoThreadSafeAsync(x => x.Text = objCyberware.DisplayTotalAvail, token)
+                                  .DoThreadSafeAsync(x => x.Text = strAvail, token)
                                   .ConfigureAwait(false);
                             await cmdCyberwareChangeMount.DoThreadSafeAsync(
                                                              x => x.Visible
@@ -19933,7 +19935,7 @@ namespace Chummer
                             await lblCyberwareCapacity
                                   .DoThreadSafeAsync(x => x.Text = objCyberware.DisplayCapacity, token)
                                   .ConfigureAwait(false);
-                            string strCost = objCyberware.TotalCost.ToString(
+                            string strCost = (await objCyberware.GetTotalCostAsync(token).ConfigureAwait(false)).ToString(
                                                                     CharacterObjectSettings.NuyenFormat,
                                                                     GlobalSettings.CultureInfo)
                                                                 + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
@@ -20045,7 +20047,8 @@ namespace Chummer
                                                           .ConfigureAwait(false);
                             await lblCyberwareEssence.DoThreadSafeAsync(x => x.Visible = false, token)
                                                      .ConfigureAwait(false);
-                            await lblCyberwareAvail.DoThreadSafeAsync(x => x.Text = objGear.DisplayTotalAvail, token)
+                            string strAvail = await objGear.GetDisplayTotalAvailAsync(token).ConfigureAwait(false);
+                            await lblCyberwareAvail.DoThreadSafeAsync(x => x.Text = strAvail, token)
                                                    .ConfigureAwait(false);
                             token.ThrowIfCancellationRequested();
                             await lblCyberwareRating.DoThreadSafeAsync(
@@ -20054,10 +20057,11 @@ namespace Chummer
                                                     .ConfigureAwait(false);
                             await lblCyberwareCapacity.DoThreadSafeAsync(x => x.Text = objGear.DisplayCapacity, token)
                                                       .ConfigureAwait(false);
-                            string strCost = objGear.TotalCost.ToString(
-                                                                    CharacterObjectSettings.NuyenFormat,
-                                                                    GlobalSettings.CultureInfo)
-                                                                + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
+                            string strCost = (await objGear.GetTotalCostAsync(token).ConfigureAwait(false)).ToString(
+                                                 CharacterObjectSettings.NuyenFormat,
+                                                 GlobalSettings.CultureInfo)
+                                             + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token)
+                                                                    .ConfigureAwait(false);
                             await lblCyberwareCost.DoThreadSafeAsync(x => x.Text = strCost, token).ConfigureAwait(false);
                             await lblCyberlimbAGILabel.DoThreadSafeAsync(x => x.Visible = false, token)
                                                       .ConfigureAwait(false);
@@ -20299,14 +20303,15 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             await lblWeaponCapacity.DoThreadSafeAsync(x => x.Visible = false, token)
                                                    .ConfigureAwait(false);
-                            await lblWeaponAvail.DoThreadSafeAsync(x => x.Text = objWeapon.DisplayTotalAvail, token)
-                                                .ConfigureAwait(false);
-                            await lblWeaponCost.DoThreadSafeAsync(x => x.Text
-                                                                      = objWeapon.TotalCost.ToString(
-                                                                            CharacterObjectSettings.NuyenFormat,
-                                                                            GlobalSettings.CultureInfo)
-                                                                        + LanguageManager.GetString(
-                                                                            "String_NuyenSymbol", token: token), token)
+                            string strAvail = await objWeapon.GetDisplayTotalAvailAsync(token).ConfigureAwait(false);
+                            await lblWeaponAvail.DoThreadSafeAsync(x => x.Text = strAvail, token)
+                                            .ConfigureAwait(false);
+                            string strCost = (await objWeapon.GetTotalCostAsync(token).ConfigureAwait(false)).ToString(
+                                                 CharacterObjectSettings.NuyenFormat,
+                                                 GlobalSettings.CultureInfo)
+                                             + await LanguageManager.GetStringAsync(
+                                                 "String_NuyenSymbol", token: token).ConfigureAwait(false);
+                            await lblWeaponCost.DoThreadSafeAsync(x => x.Text = strCost, token)
                                                .ConfigureAwait(false);
                             await lblWeaponSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                      .ConfigureAwait(false);
@@ -20807,15 +20812,16 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                             await lblWeaponCapacity.DoThreadSafeAsync(x => x.Visible = false, token)
                                                    .ConfigureAwait(false);
+                            string strAvail = await objSelectedAccessory.GetDisplayTotalAvailAsync(token).ConfigureAwait(false);
                             await lblWeaponAvail
-                                  .DoThreadSafeAsync(x => x.Text = objSelectedAccessory.DisplayTotalAvail, token)
-                                  .ConfigureAwait(false);
-                            await lblWeaponCost.DoThreadSafeAsync(x => x.Text
-                                                                      = objSelectedAccessory.TotalCost.ToString(
-                                                                            CharacterObjectSettings.NuyenFormat,
-                                                                            GlobalSettings.CultureInfo)
-                                                                        + LanguageManager.GetString(
-                                                                            "String_NuyenSymbol", token: token), token)
+                              .DoThreadSafeAsync(x => x.Text = strAvail, token)
+                              .ConfigureAwait(false);
+                            string strCost = (await objSelectedAccessory.GetTotalCostAsync(token).ConfigureAwait(false)).ToString(
+                                                 CharacterObjectSettings.NuyenFormat,
+                                                 GlobalSettings.CultureInfo)
+                                             + await LanguageManager.GetStringAsync(
+                                                 "String_NuyenSymbol", token: token).ConfigureAwait(false);
+                            await lblWeaponCost.DoThreadSafeAsync(x => x.Text = strCost, token: token)
                                                .ConfigureAwait(false);
                             await lblWeaponSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                      .ConfigureAwait(false);
@@ -21104,14 +21110,15 @@ namespace Chummer
                                 x.Visible = true;
                                 x.Text = objGear.DisplayCapacity;
                             }, token).ConfigureAwait(false);
-                            await lblWeaponAvail.DoThreadSafeAsync(x => x.Text = objGear.DisplayTotalAvail, token)
+                            string strAvail = await objGear.GetDisplayTotalAvailAsync(token).ConfigureAwait(false);
+                            await lblWeaponAvail.DoThreadSafeAsync(x => x.Text = strAvail, token)
                                                 .ConfigureAwait(false);
-                            await lblWeaponCost.DoThreadSafeAsync(x => x.Text
-                                                                      = objGear.TotalCost.ToString(
-                                                                            CharacterObjectSettings.NuyenFormat,
-                                                                            GlobalSettings.CultureInfo)
-                                                                        + LanguageManager.GetString(
-                                                                            "String_NuyenSymbol", token: token), token)
+                            string strCost = (await objGear.GetTotalCostAsync(token).ConfigureAwait(false)).ToString(
+                                                 CharacterObjectSettings.NuyenFormat,
+                                                 GlobalSettings.CultureInfo)
+                                             + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token)
+                                                                    .ConfigureAwait(false);
+                            await lblWeaponCost.DoThreadSafeAsync(x => x.Text = strCost, token)
                                                .ConfigureAwait(false);
                             await lblWeaponSlotsLabel.DoThreadSafeAsync(x => x.Visible = false, token)
                                                      .ConfigureAwait(false);
@@ -21360,19 +21367,19 @@ namespace Chummer
                                                   .ConfigureAwait(false);
                         }
 
-                        await lblArmorAvail.DoThreadSafeAsync(x => x.Text = objArmor.DisplayTotalAvail, token)
+                        string strAvail = await objArmor.GetDisplayTotalAvailAsync(token).ConfigureAwait(false);
+                        await lblArmorAvail.DoThreadSafeAsync(x => x.Text = strAvail, token)
                                            .ConfigureAwait(false);
                         await lblArmorCapacity.DoThreadSafeAsync(x => x.Text = objArmor.DisplayCapacity, token)
                                               .ConfigureAwait(false);
                         await lblArmorRatingLabel.DoThreadSafeAsync(x => x.Visible = false, token)
                                                  .ConfigureAwait(false);
                         await lblArmorRating.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
-                        await lblArmorCost.DoThreadSafeAsync(x => x.Text
-                                                                 = objArmor.TotalCost.ToString(
-                                                                       CharacterObjectSettings.NuyenFormat,
-                                                                       GlobalSettings.CultureInfo)
-                                                                   + LanguageManager.GetString(
-                                                                       "String_NuyenSymbol", token: token), token)
+                        string strCost = (await objArmor.GetTotalCostAsync(token).ConfigureAwait(false)).ToString(
+                                             CharacterObjectSettings.NuyenFormat,
+                                             GlobalSettings.CultureInfo)
+                                         + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
+                        await lblArmorCost.DoThreadSafeAsync(x => x.Text = strCost, token)
                                           .ConfigureAwait(false);
                         await chkArmorEquipped.DoThreadSafeAsync(x =>
                         {
@@ -21422,7 +21429,8 @@ namespace Chummer
                                                   .ConfigureAwait(false);
                             await cmdArmorDecrease.DoThreadSafeAsync(x => x.Visible = false, token)
                                                   .ConfigureAwait(false);
-                            await lblArmorAvail.DoThreadSafeAsync(x => x.Text = objArmorMod.DisplayTotalAvail, token)
+                            string strAvail = await objArmorMod.GetDisplayTotalAvailAsync(token).ConfigureAwait(false);
+                            await lblArmorAvail.DoThreadSafeAsync(x => x.Text = strAvail, token)
                                                .ConfigureAwait(false);
                             string strCapacity = objArmorMod.Parent.CapacityDisplayStyle == CapacityStyle.Zero
                                 ? "[0]"
@@ -21454,12 +21462,12 @@ namespace Chummer
                             }
 
                             token.ThrowIfCancellationRequested();
-                            await lblArmorCost.DoThreadSafeAsync(x => x.Text
-                                                                     = objArmorMod.TotalCost.ToString(
-                                                                           CharacterObjectSettings.NuyenFormat,
-                                                                           GlobalSettings.CultureInfo)
-                                                                       + LanguageManager.GetString(
-                                                                           "String_NuyenSymbol", token: token), token)
+                            string strCost = (await objArmorMod.GetTotalCostAsync(token).ConfigureAwait(false)).ToString(
+                                                 CharacterObjectSettings.NuyenFormat,
+                                                 GlobalSettings.CultureInfo)
+                                             + await LanguageManager.GetStringAsync(
+                                                 "String_NuyenSymbol", token: token).ConfigureAwait(false);
+                            await lblArmorCost.DoThreadSafeAsync(x => x.Text = strCost, token)
                                               .ConfigureAwait(false);
                             await chkArmorEquipped.DoThreadSafeAsync(x =>
                             {
@@ -21494,8 +21502,9 @@ namespace Chummer
                                                             .ConfigureAwait(false);
                                     await flpArmorValue.DoThreadSafeAsync(x => x.Visible = false, token)
                                                        .ConfigureAwait(false);
+                                    string strAvail = await objSelectedGear.GetDisplayTotalAvailAsync(token).ConfigureAwait(false);
                                     await lblArmorAvail
-                                          .DoThreadSafeAsync(x => x.Text = objSelectedGear.DisplayTotalAvail, token)
+                                          .DoThreadSafeAsync(x => x.Text = strAvail, token)
                                           .ConfigureAwait(false);
                                     CharacterObject.Armor.FindArmorGear(objSelectedGear.InternalId, out objArmor,
                                                                         out objArmorMod);
@@ -21960,26 +21969,26 @@ namespace Chummer
                             x.Enabled = !objGear.IncludedInParent && objGear.LoadedIntoClip == null
                                                                   && CharacterObject.Vehicles.Count > 0;
                         }, token).ConfigureAwait(false);
-                        await lblGearAvail.DoThreadSafeAsync(x => x.Text = objGear.DisplayTotalAvail, token)
+                        string strAvail = await objGear.GetDisplayTotalAvailAsync(token).ConfigureAwait(false);
+                        await lblGearAvail.DoThreadSafeAsync(x => x.Text = strAvail, token)
                                           .ConfigureAwait(false);
+                        string strCost;
                         try
                         {
-                            await lblGearCost.DoThreadSafeAsync(x => x.Text
-                                                                    = objGear.TotalCost.ToString(
-                                                                          CharacterObjectSettings.NuyenFormat,
-                                                                          GlobalSettings.CultureInfo)
-                                                                      + LanguageManager.GetString(
-                                                                          "String_NuyenSymbol", token: token), token)
-                                             .ConfigureAwait(false);
+                            strCost = (await objGear.GetTotalCostAsync(token).ConfigureAwait(false)).ToString(
+                                                 CharacterObjectSettings.NuyenFormat,
+                                                 GlobalSettings.CultureInfo)
+                                             + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token)
+                                                                    .ConfigureAwait(false);
                         }
                         catch (FormatException)
                         {
-                            await lblGearCost
-                                  .DoThreadSafeAsync(
-                                      x => x.Text = objGear.Cost
-                                                    + LanguageManager.GetString("String_NuyenSymbol", token: token),
-                                      token).ConfigureAwait(false);
+                            strCost = objGear.Cost + await LanguageManager
+                                                           .GetStringAsync("String_NuyenSymbol", token: token)
+                                                           .ConfigureAwait(false);
                         }
+                        await lblGearCost.DoThreadSafeAsync(x => x.Text = strCost, token)
+                                         .ConfigureAwait(false);
 
                         await lblGearCapacity.DoThreadSafeAsync(x => x.Text = objGear.DisplayCapacity, token)
                                              .ConfigureAwait(false);
@@ -22681,17 +22690,17 @@ namespace Chummer
                     if (objGear.Cost.Contains("Gear Cost"))
                     {
                         string strCost = objGear.Cost.Replace("Gear Cost",
-                                                              (objSelectedGear?.CalculatedCost ?? 0).ToString(
+                                                              (objSelectedGear != null ? await objSelectedGear.GetCalculatedCostAsync(token).ConfigureAwait(false) : 0).ToString(
                                                                   GlobalSettings.InvariantCultureInfo));
                         (bool blnIsSuccess, object objProcess)
                             = await CommonFunctions.EvaluateInvariantXPathAsync(strCost, token).ConfigureAwait(false);
                         decCost = blnIsSuccess
                             ? Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo)
-                            : objGear.TotalCost;
+                            : await objGear.GetTotalCostAsync(token).ConfigureAwait(false);
                     }
                     else
                     {
-                        decCost = objGear.TotalCost;
+                        decCost = await objGear.GetTotalCostAsync(token).ConfigureAwait(false);
                     }
 
                     Gear objStackWith = null;
@@ -22708,8 +22717,8 @@ namespace Chummer
                         if (objStackWith.InternalId.IsEmptyGuid())
                             return frmPickGear.MyForm.AddAgain;
                         // If a match was found, we need to use the cost of a single item in the stack which can include plugins.
-                        foreach (Gear objPlugin in objStackWith.Children)
-                            decCost += objPlugin.TotalCost * frmPickGear.MyForm.SelectedQty;
+                        decCost += await objStackWith.Children.SumAsync(x => x.GetTotalCostAsync(token).AsTask(), token).ConfigureAwait(false)
+                                   * frmPickGear.MyForm.SelectedQty;
                     }
 
                     // Apply a markup if applicable.
@@ -22965,7 +22974,7 @@ namespace Chummer
                         objGear.Cost = '(' + objGear.Cost + ") * 0.5";
 
                     // Apply a markup if applicable.
-                    decimal decCost = objGear.TotalCost;
+                    decimal decCost = await objGear.GetTotalCostAsync(token).ConfigureAwait(false);
                     if (frmPickGear.MyForm.Markup != 0)
                     {
                         decCost *= 1 + frmPickGear.MyForm.Markup / 100.0m;
@@ -23427,12 +23436,14 @@ namespace Chummer
                                                    .ConfigureAwait(false);
                             await cmdVehicleGearReduceQty.DoThreadSafeAsync(x => x.Visible = false, token)
                                                          .ConfigureAwait(false);
-                            await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = objVehicle.DisplayTotalAvail, token)
+                            string strAvail = await objVehicle.GetDisplayTotalAvailAsync(token).ConfigureAwait(false);
+                            await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = strAvail, token)
                                                  .ConfigureAwait(false);
-                            string strCost = objVehicle.TotalCost.ToString(
-                                                            CharacterObjectSettings.NuyenFormat,
-                                                            GlobalSettings.CultureInfo)
-                                                        + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
+                            string strCost = (await objVehicle.GetTotalCostAsync(token).ConfigureAwait(false)).ToString(
+                                                 CharacterObjectSettings.NuyenFormat,
+                                                 GlobalSettings.CultureInfo)
+                                             + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token)
+                                                                    .ConfigureAwait(false);
                             await lblVehicleCost.DoThreadSafeAsync(x => x.Text = strCost, token)
                                             .ConfigureAwait(false);
                             if (await CharacterObjectSettings.BookEnabledAsync("R5", token).ConfigureAwait(false))
@@ -23685,13 +23696,16 @@ namespace Chummer
                                                    .ConfigureAwait(false);
                             await cmdVehicleGearReduceQty.DoThreadSafeAsync(x => x.Visible = false, token)
                                                          .ConfigureAwait(false);
+                            string strAvail = await objWeaponMount.GetDisplayTotalAvailAsync(token).ConfigureAwait(false);
                             await lblVehicleAvail
-                                  .DoThreadSafeAsync(x => x.Text = objWeaponMount.DisplayTotalAvail, token)
+                                  .DoThreadSafeAsync(x => x.Text = strAvail, token)
                                   .ConfigureAwait(false);
-                            await lblVehicleCost.DoThreadSafeAsync(x => x.Text
-                                                                       = objWeaponMount.TotalCost.ToString(
-                                                                           CharacterObjectSettings.NuyenFormat,
-                                                                           GlobalSettings.CultureInfo), token)
+                            string strCost = (await objWeaponMount.GetTotalCostAsync(token).ConfigureAwait(false)).ToString(
+                                                 CharacterObjectSettings.NuyenFormat,
+                                                 GlobalSettings.CultureInfo)
+                                             + await LanguageManager.GetStringAsync(
+                                                 "String_NuyenSymbol", token: token).ConfigureAwait(false);
+                            await lblVehicleCost.DoThreadSafeAsync(x => x.Text = strCost, token)
                                                 .ConfigureAwait(false);
                             await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                       .ConfigureAwait(false);
@@ -23791,9 +23805,10 @@ namespace Chummer
                                                    .ConfigureAwait(false);
                             await cmdVehicleGearReduceQty.DoThreadSafeAsync(x => x.Visible = false, token)
                                                          .ConfigureAwait(false);
-                            await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = objMod.DisplayTotalAvail, token)
+                            string strAvail = await objMod.GetDisplayTotalAvailAsync(token).ConfigureAwait(false);
+                            await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = strAvail, token)
                                                  .ConfigureAwait(false);
-                            string strCost = objMod.TotalCost.ToString(
+                            string strCost = (await objMod.GetTotalCostAsync(token).ConfigureAwait(false)).ToString(
                                                         CharacterObjectSettings.NuyenFormat,
                                                         GlobalSettings.CultureInfo)
                                                     + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
@@ -23858,14 +23873,15 @@ namespace Chummer
                                                    .ConfigureAwait(false);
                             await cmdVehicleGearReduceQty.DoThreadSafeAsync(x => x.Visible = false, token)
                                                          .ConfigureAwait(false);
-                            await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = objWeapon.DisplayTotalAvail, token)
+                            string strAvail = await objWeapon.GetDisplayTotalAvailAsync(token).ConfigureAwait(false);
+                            await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = strAvail, token)
                                                  .ConfigureAwait(false);
-                            await lblVehicleCost.DoThreadSafeAsync(x => x.Text
-                                                                       = objWeapon.TotalCost.ToString(
-                                                                             CharacterObjectSettings.NuyenFormat,
-                                                                             GlobalSettings.CultureInfo)
-                                                                         + LanguageManager.GetString(
-                                                                             "String_NuyenSymbol", token: token), token)
+                            string strCost = (await objWeapon.GetTotalCostAsync(token).ConfigureAwait(false)).ToString(
+                                                 CharacterObjectSettings.NuyenFormat,
+                                                 GlobalSettings.CultureInfo)
+                                             + await LanguageManager.GetStringAsync(
+                                                 "String_NuyenSymbol", token: token).ConfigureAwait(false);
+                            await lblVehicleCost.DoThreadSafeAsync(x => x.Text = strCost, token)
                                                 .ConfigureAwait(false);
                             await lblVehicleSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                       .ConfigureAwait(false);
@@ -24343,14 +24359,15 @@ namespace Chummer
                                                    .ConfigureAwait(false);
                             await cmdVehicleGearReduceQty.DoThreadSafeAsync(x => x.Visible = false, token)
                                                          .ConfigureAwait(false);
-                            await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = objAccessory.DisplayTotalAvail, token)
+                            string strAvail = await objAccessory.GetDisplayTotalAvailAsync(token).ConfigureAwait(false);
+                            await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = strAvail, token)
                                                  .ConfigureAwait(false);
-                            await lblVehicleCost.DoThreadSafeAsync(x => x.Text
-                                                                       = objAccessory.TotalCost.ToString(
-                                                                             CharacterObjectSettings.NuyenFormat,
-                                                                             GlobalSettings.CultureInfo)
-                                                                         + LanguageManager.GetString(
-                                                                             "String_NuyenSymbol", token: token), token)
+                            string strCost = (await objAccessory.GetTotalCostAsync(token).ConfigureAwait(false)).ToString(
+                                                 CharacterObjectSettings.NuyenFormat,
+                                                 GlobalSettings.CultureInfo)
+                                             + await LanguageManager.GetStringAsync(
+                                                 "String_NuyenSymbol", token: token).ConfigureAwait(false);
+                            await lblVehicleCost.DoThreadSafeAsync(x => x.Text = strCost, token)
                                                 .ConfigureAwait(false);
                             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdMount))
@@ -24630,14 +24647,13 @@ namespace Chummer
                                                    .ConfigureAwait(false);
                             await cmdVehicleGearReduceQty.DoThreadSafeAsync(x => x.Visible = false, token)
                                                          .ConfigureAwait(false);
-                            string strAvail = objCyberware.DisplayTotalAvail;
+                            string strAvail = await objCyberware.GetDisplayTotalAvailAsync(token).ConfigureAwait(false);
                             await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = strAvail, token)
                                                  .ConfigureAwait(false);
-                            string strCost = objCyberware.TotalCost.ToString(
-                                                                            CharacterObjectSettings.NuyenFormat,
-                                                                            GlobalSettings.CultureInfo)
-                                                                        + await LanguageManager.GetStringAsync(
-                                                                            "String_NuyenSymbol", token: token).ConfigureAwait(false);
+                            string strCost = (await objCyberware.GetTotalCostAsync(token).ConfigureAwait(false)).ToString(
+                                                                    CharacterObjectSettings.NuyenFormat,
+                                                                    GlobalSettings.CultureInfo)
+                                                                + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                             await lblVehicleCost.DoThreadSafeAsync(x => x.Text
                                                                        = strCost, token)
                                                 .ConfigureAwait(false);
@@ -24721,7 +24737,8 @@ namespace Chummer
                             await cmdVehicleGearReduceQty
                                   .DoThreadSafeAsync(x => x.Visible = !objGear.IncludedInParent, token)
                                   .ConfigureAwait(false);
-                            await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = objGear.DisplayTotalAvail, token)
+                            string strAvail = await objGear.GetDisplayTotalAvailAsync(token).ConfigureAwait(false);
+                            await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = strAvail, token)
                                                  .ConfigureAwait(false);
                             await lblVehicleCost.DoThreadSafeAsync(x => x.Text
                                                                        = objGear.TotalCost.ToString(

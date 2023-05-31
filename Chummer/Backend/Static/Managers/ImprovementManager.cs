@@ -4635,7 +4635,7 @@ namespace Chummer
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     decReturn += objGear.TotalCost + objGear.DeleteGear();
                                 else
-                                    decReturn += objGear.TotalCost
+                                    decReturn += await objGear.GetTotalCostAsync(token).ConfigureAwait(false)
                                                  + await objGear.DeleteGearAsync(token: token).ConfigureAwait(false);
                             }
 
@@ -4654,8 +4654,8 @@ namespace Chummer
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     decReturn += objWeapon.TotalCost + objWeapon.DeleteWeapon();
                                 else
-                                    decReturn += objWeapon.TotalCost + await objWeapon.DeleteWeaponAsync(token: token)
-                                        .ConfigureAwait(false);
+                                    decReturn += await objWeapon.GetTotalCostAsync(token).ConfigureAwait(false)
+                                                 + await objWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
                             }
                         }
                             break;
@@ -4876,7 +4876,7 @@ namespace Chummer
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     decReturn += objCyberware.TotalCost + objCyberware.DeleteCyberware();
                                 else
-                                    decReturn += objCyberware.TotalCost + await objCyberware
+                                    decReturn += await objCyberware.GetTotalCostAsync(token).ConfigureAwait(false) + await objCyberware
                                         .DeleteCyberwareAsync(token: token).ConfigureAwait(false);
                             }
                         }

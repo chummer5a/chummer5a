@@ -604,8 +604,8 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("conceal", TotalConcealability.ToString("+#,0;-#,0;0", objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("avail", await TotalAvailAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("ratinglabel", RatingLabel, token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("cost", TotalCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("owncost", OwnCost.ToString(_objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("cost", (await GetTotalCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("owncost", (await GetOwnCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("weight", TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("ownweight", OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("included", IncludedInWeapon.ToString(GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
@@ -1172,6 +1172,11 @@ namespace Chummer.Backend.Equipment
         public string DisplayTotalAvail => TotalAvail(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
         /// <summary>
+        /// Total Availability in the program's current language.
+        /// </summary>
+        public ValueTask<string> GetDisplayTotalAvailAsync(CancellationToken token = default) => TotalAvailAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
+
+        /// <summary>
         /// Total Availability.
         /// </summary>
         public string TotalAvail(CultureInfo objCulture, string strLanguage)
@@ -1184,7 +1189,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async ValueTask<string> TotalAvailAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            return (await TotalAvailTupleAsync(token: token).ConfigureAwait(false)).ToString(objCulture, strLanguage);
+            return await (await TotalAvailTupleAsync(token: token).ConfigureAwait(false)).ToStringAsync(objCulture, strLanguage, token);
         }
 
         /// <summary>
@@ -1409,31 +1414,16 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total cost of the Weapon Accessory.
         /// </summary>
-        public decimal TotalCost
-        {
-            get
-            {
-                decimal decReturn = OwnCost;
-
-                // Add in the cost of any Gear the Weapon Accessory has attached to it.
-                foreach (Gear objGear in GearChildren)
-                    decReturn += objGear.TotalCost;
-
-                return decReturn;
-            }
-        }
+        public decimal TotalCost => OwnCost + GearChildren.Sum(x => x.TotalCost);
 
         /// <summary>
         /// Total cost of the Weapon Accessory.
         /// </summary>
         public async ValueTask<decimal> GetTotalCostAsync(CancellationToken token = default)
         {
-            decimal decReturn = await GetOwnCostAsync(token).ConfigureAwait(false);
-
-            // Add in the cost of any Gear the Weapon Accessory has attached to it.
-            decReturn += await GearChildren.SumAsync(g => g.GetTotalCostAsync(token).AsTask(), token).ConfigureAwait(false);
-
-            return decReturn;
+            token.ThrowIfCancellationRequested();
+            return await GetOwnCostAsync(token).ConfigureAwait(false)
+                   + await GearChildren.SumAsync(g => g.GetTotalCostAsync(token).AsTask(), token).ConfigureAwait(false);
         }
 
         public decimal StolenTotalCost => CalculatedStolenTotalCost(true);
@@ -1442,26 +1432,28 @@ namespace Chummer.Backend.Equipment
 
         public decimal CalculatedStolenTotalCost(bool blnStolen)
         {
-            decimal decReturn = 0;
-            if (Stolen == blnStolen)
-                decReturn = OwnCost;
+            decimal decPlugin = GearChildren.Sum(g => g.CalculatedStolenTotalCost(blnStolen));
+            if (Stolen != blnStolen)
+                return decPlugin;
 
             // Add in the cost of any Gear the Weapon Accessory has attached to it.
-            decReturn += GearChildren.Sum(g => g.CalculatedStolenTotalCost(blnStolen));
-
-            return decReturn;
+            return OwnCost + decPlugin;
         }
+
+        public ValueTask<decimal> GetStolenTotalCostAsync(CancellationToken token = default) => CalculatedStolenTotalCostAsync(true, token);
+
+        public ValueTask<decimal> GetNonStolenTotalCostAsync(CancellationToken token = default) => CalculatedStolenTotalCostAsync(false, token);
 
         public async ValueTask<decimal> CalculatedStolenTotalCostAsync(bool blnStolen, CancellationToken token = default)
         {
-            decimal decReturn = 0;
-            if (Stolen == blnStolen)
-                decReturn = await GetOwnCostAsync(token).ConfigureAwait(false);
+            decimal decPlugin = await GearChildren
+                                      .SumAsync(g => g.CalculatedStolenTotalCostAsync(blnStolen, token).AsTask(), token)
+                                      .ConfigureAwait(false);
+            if (Stolen != blnStolen)
+                return decPlugin;
 
             // Add in the cost of any Gear the Weapon Accessory has attached to it.
-            decReturn += await GearChildren.SumAsync(g => g.CalculatedStolenTotalCostAsync(blnStolen, token).AsTask(), token).ConfigureAwait(false);
-
-            return decReturn;
+            return await GetOwnCostAsync(token).ConfigureAwait(false) + decPlugin;
         }
 
         /// <summary>

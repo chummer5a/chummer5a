@@ -169,7 +169,7 @@ namespace Chummer
                 foreach (Cyberware objCyberware in lstSuiteCyberwares)
                 {
                     await WriteList(sbdCyberwareLabelString, objCyberware, 0).ConfigureAwait(false);
-                    decTotalCost += objCyberware.TotalCost;
+                    decTotalCost += await objCyberware.GetTotalCostAsync().ConfigureAwait(false);
                     decTotalESS += await objCyberware.GetCalculatedESSAsync().ConfigureAwait(false);
                 }
                 await lblCyberware.DoThreadSafeAsync(x => x.Text = sbdCyberwareLabelString.ToString()).ConfigureAwait(false);
