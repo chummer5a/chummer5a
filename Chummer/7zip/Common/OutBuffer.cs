@@ -71,7 +71,7 @@ namespace SevenZip.Buffer
         {
             m_Buffer[m_Pos++] = b;
             if (m_Pos >= m_BufferSize)
-                await FlushDataAsync(token);
+                await FlushDataAsync(token).ConfigureAwait(false);
         }
 
         public void FlushData()
@@ -87,7 +87,7 @@ namespace SevenZip.Buffer
             token.ThrowIfCancellationRequested();
             if (m_Pos == 0)
                 return;
-            await m_Stream.WriteAsync(m_Buffer, 0, (int)m_Pos, token);
+            await m_Stream.WriteAsync(m_Buffer, 0, (int)m_Pos, token).ConfigureAwait(false);
             m_Pos = 0;
         }
 

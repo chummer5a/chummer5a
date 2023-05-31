@@ -36436,13 +36436,13 @@ namespace Chummer
                                                  .SelectAndCacheExpression(
                                                      "qualities/positive/quality[traitcost/@bp != \"0\"]", token)
                                              : await xmlStatBlockBaseNode.SelectAndCacheExpressionAsync(
-                                                 "qualities/positive/quality[traitcost/@bp != \"0\"]", token)))
+                                                 "qualities/positive/quality[traitcost/@bp != \"0\"]", token).ConfigureAwait(false)))
                                 {
                                     string strQualityName = (blnSync
                                         ? xmlQualityToImport.SelectSingleNodeAndCacheExpression(
                                             "@name", token)
                                         : await xmlQualityToImport.SelectSingleNodeAndCacheExpressionAsync(
-                                            "@name", token))?.Value;
+                                            "@name", token).ConfigureAwait(false))?.Value;
                                     if (!string.IsNullOrEmpty(strQualityName))
                                     {
                                         int intDicepoolLabelIndex =
@@ -36522,8 +36522,8 @@ namespace Chummer
                                                                 .SelectSingleNodeAndCacheExpression(
                                                                     "description", token)
                                                             : await xmlQualityToImport
-                                                                .SelectSingleNodeAndCacheExpressionAsync(
-                                                                    "description", token))?.Value ??
+                                                                    .SelectSingleNodeAndCacheExpressionAsync(
+                                                                        "description", token).ConfigureAwait(false))?.Value ??
                                                         string.Empty;
                                                     if (blnSync)
                                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -36553,7 +36553,7 @@ namespace Chummer
                                         ? xmlQualityToImport.SelectSingleNodeAndCacheExpression(
                                             "@name", token)
                                         : await xmlQualityToImport.SelectSingleNodeAndCacheExpressionAsync(
-                                            "@name", token))?.Value;
+                                            "@name", token).ConfigureAwait(false))?.Value;
                                     if (!string.IsNullOrEmpty(strQualityName))
                                     {
                                         int intDicepoolLabelIndex =
@@ -36656,8 +36656,8 @@ namespace Chummer
                                                                 .SelectSingleNodeAndCacheExpression(
                                                                     "description", token)
                                                             : await xmlQualityToImport
-                                                                .SelectSingleNodeAndCacheExpressionAsync(
-                                                                    "description", token))?.Value ??
+                                                                    .SelectSingleNodeAndCacheExpressionAsync(
+                                                                        "description", token).ConfigureAwait(false))?.Value ??
                                                         string.Empty;
                                                     if (blnSync)
                                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -36701,7 +36701,7 @@ namespace Chummer
                                         ? xmlStatBlockBaseNode.SelectSingleNodeAndCacheExpression(
                                             "magic/tradition", token)
                                         : await xmlStatBlockBaseNode.SelectSingleNodeAndCacheExpressionAsync(
-                                            "magic/tradition", token);
+                                            "magic/tradition", token).ConfigureAwait(false);
                                 if (xmlTemp != null)
                                 {
                                     _objTradition.LoadFromHeroLab(xmlTemp);
@@ -36713,7 +36713,7 @@ namespace Chummer
                                         ? xmlLeadsBaseNode.SelectSingleNodeAndCacheExpression(
                                             "usagepool[@id = \"DmgNet\" and @pickindex=\"5\"]/@quantity", token)
                                         : await xmlLeadsBaseNode.SelectSingleNodeAndCacheExpressionAsync(
-                                            "usagepool[@id = \"DmgNet\" and @pickindex=\"5\"]/@quantity", token);
+                                            "usagepool[@id = \"DmgNet\" and @pickindex=\"5\"]/@quantity", token).ConfigureAwait(false);
                                 if (xmlPhysicalCMFilledNode != null)
                                     int.TryParse(xmlPhysicalCMFilledNode.Value, NumberStyles.Any,
                                                  GlobalSettings.InvariantCultureInfo, out _intPhysicalCMFilled);
@@ -36722,7 +36722,7 @@ namespace Chummer
                                         ? xmlLeadsBaseNode.SelectSingleNodeAndCacheExpression(
                                             "usagepool[@id = \"DmgNet\" and @pickindex=\"6\"]/@quantity", token)
                                         : await xmlLeadsBaseNode.SelectSingleNodeAndCacheExpressionAsync(
-                                            "usagepool[@id = \"DmgNet\" and @pickindex=\"6\"]/@quantity", token);
+                                            "usagepool[@id = \"DmgNet\" and @pickindex=\"6\"]/@quantity", token).ConfigureAwait(false);
                                 if (xmlStunCMFilledNode != null)
                                     int.TryParse(xmlStunCMFilledNode.Value, NumberStyles.Any,
                                                  GlobalSettings.InvariantCultureInfo, out _intStunCMFilled);
@@ -36859,16 +36859,16 @@ namespace Chummer
                                     {
                                         objContact.Name
                                             = (await xmlContactToImport.SelectSingleNodeAndCacheExpressionAsync(
-                                                "@name", token))?.Value ?? string.Empty;
+                                                "@name", token).ConfigureAwait(false))?.Value ?? string.Empty;
                                         objContact.Role
                                             = (await xmlContactToImport.SelectSingleNodeAndCacheExpressionAsync(
-                                                "@type", token))?.Value ?? string.Empty;
+                                                "@type", token).ConfigureAwait(false))?.Value ?? string.Empty;
                                         objContact.Connection =
                                             (await xmlContactToImport.SelectSingleNodeAndCacheExpressionAsync(
-                                                "@connection", token))?.ValueAsInt ?? 1;
+                                                "@connection", token).ConfigureAwait(false))?.ValueAsInt ?? 1;
                                         objContact.Loyalty
                                             = (await xmlContactToImport.SelectSingleNodeAndCacheExpressionAsync(
-                                                "@loyalty", token))?.ValueAsInt ?? 1;
+                                                "@loyalty", token).ConfigureAwait(false))?.ValueAsInt ?? 1;
                                     }
 
                                     string strDescription =
@@ -37164,17 +37164,17 @@ namespace Chummer
                                                                                 objPlugin.Quantity
                                                                                     = (await xmlPluginToAdd
                                                                                         .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                            "@quantity", token))
+                                                                                            "@quantity", token).ConfigureAwait(false))
                                                                                     ?.ValueAsInt ?? 1;
                                                                                 objPlugin.Notes
                                                                                     = (await xmlPluginToAdd
                                                                                         .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                            "description", token))
+                                                                                            "description", token).ConfigureAwait(false))
                                                                                     ?.Value;
                                                                                 await objPlugin
                                                                                     .ProcessHeroLabGearPluginsAsync(
                                                                                         xmlPluginToAdd,
-                                                                                        lstWeapons, token);
+                                                                                        lstWeapons, token).ConfigureAwait(false);
                                                                             }
                                                                         }
                                                                     }
@@ -37326,17 +37326,17 @@ namespace Chummer
                                                                                 objPlugin.Quantity
                                                                                     = (await xmlPluginToAdd
                                                                                         .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                            "@quantity", token))
+                                                                                            "@quantity", token).ConfigureAwait(false))
                                                                                     ?.ValueAsInt ?? 1;
                                                                                 objPlugin.Notes
                                                                                     = (await xmlPluginToAdd
                                                                                         .SelectSingleNodeAndCacheExpressionAsync(
-                                                                                            "description", token))
+                                                                                            "description", token).ConfigureAwait(false))
                                                                                     ?.Value;
                                                                                 await objPlugin
                                                                                     .ProcessHeroLabGearPluginsAsync(
                                                                                         xmlPluginToAdd,
-                                                                                        lstWeapons, token);
+                                                                                        lstWeapons, token).ConfigureAwait(false);
                                                                             }
                                                                         }
                                                                     }
@@ -37378,13 +37378,13 @@ namespace Chummer
                                                             {
                                                                 objPlugin.Quantity = (await xmlArmorModToImport
                                                                     .SelectSingleNodeAndCacheExpressionAsync(
-                                                                        "@quantity", token))?.ValueAsInt ?? 1;
+                                                                        "@quantity", token).ConfigureAwait(false))?.ValueAsInt ?? 1;
                                                                 objPlugin.Notes = (await xmlArmorModToImport
                                                                     .SelectSingleNodeAndCacheExpressionAsync(
-                                                                        "description", token))?.Value;
+                                                                        "description", token).ConfigureAwait(false))?.Value;
                                                                 await objPlugin.ProcessHeroLabGearPluginsAsync(
                                                                     xmlArmorModToImport,
-                                                                    lstWeapons, token);
+                                                                    lstWeapons, token).ConfigureAwait(false);
                                                             }
                                                         }
                                                     }

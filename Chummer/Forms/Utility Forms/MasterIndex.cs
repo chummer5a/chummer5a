@@ -544,7 +544,7 @@ namespace Chummer
                                                                () => XmlManager.LoadXPathAsync(
                                                                    x,
                                                                    _objSelectedSetting.EnabledCustomDataDirectoryPaths,
-                                                                   token: token), token)));
+                                                                   token: token), token))).ConfigureAwait(false);
                                     await Task.WhenAll(_astrFileNames.Select(strFileName => Task.Run(async () =>
                                     {
                                         XPathNavigator xmlBaseNode

@@ -1496,10 +1496,10 @@ namespace Chummer
                            // ReSharper disable once MethodHasAsyncOverload
                            + ImprovementManager.ValueOf(objCharacter, Improvement.ImprovementType.DamageResistance,
                                                         token: token).StandardRound())
-                        : (await (await objCharacter.GetAttributeAsync("BOD", token: token)).GetTotalValueAsync(token)
+                        : (await (await objCharacter.GetAttributeAsync("BOD", token: token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false)
                            + (await ImprovementManager.ValueOfAsync(objCharacter,
                                                                     Improvement.ImprovementType.DamageResistance,
-                                                                    token: token)).StandardRound());
+                                                                    token: token).ConfigureAwait(false)).StandardRound());
                     return new Tuple<bool, string>(intDR >= xmlNode.ValueAsInt, strName);
                 }
                 case "depenabled":

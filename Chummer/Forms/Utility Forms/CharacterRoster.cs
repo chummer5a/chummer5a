@@ -1616,7 +1616,7 @@ namespace Chummer
                             objCache = await _dicSavedCharacterCaches
                                              .AddOrGetAsync(
                                                  strFile,
-                                                 async x => objTemp = await objGeneratedCache.GetValueAsync(token),
+                                                 async x => objTemp = await objGeneratedCache.GetValueAsync(token).ConfigureAwait(false),
                                                  token)
                                              .ConfigureAwait(false);
                         }

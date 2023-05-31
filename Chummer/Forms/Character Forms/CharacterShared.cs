@@ -3082,7 +3082,7 @@ namespace Chummer
                                     objLoop.Remove();
                                 }
                             }
-                        }, token);
+                        }, token).ConfigureAwait(false);
                         if (lstNodesNeedingProcessing.Count > 0)
                         {
                             if (nodRoot == null)

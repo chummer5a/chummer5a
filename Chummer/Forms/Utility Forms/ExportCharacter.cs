@@ -885,7 +885,7 @@ namespace Chummer
                                                    blnSuccess
                                                        ? strBoxText.Item1
                                                        : await txtText.DoThreadSafeFuncAsync(x => x.Text, token: token)
-                                                                      .ConfigureAwait(false), Encoding.UTF8);
+                                                                      .ConfigureAwait(false), Encoding.UTF8).ConfigureAwait(false);
         }
 
         #endregion JSON

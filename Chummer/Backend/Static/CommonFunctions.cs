@@ -71,19 +71,19 @@ namespace Chummer
             if (string.IsNullOrWhiteSpace(strXPath))
             {
                 Tuple<bool, object> tupReturn = new Tuple<bool, object>(false, null);
-                await s_DicCompiledEvaluations.TryAddAsync(strXPath, tupReturn, token);
+                await s_DicCompiledEvaluations.TryAddAsync(strXPath, tupReturn, token).ConfigureAwait(false);
                 return tupReturn;
             }
             if (!strXPath.IsLegalCharsOnly(true, s_LstInvariantXPathLegalChars))
             {
                 Tuple<bool, object> tupReturn = new Tuple<bool, object>(false, strXPath);
-                await s_DicCompiledEvaluations.TryAddAsync(strXPath, tupReturn, token);
+                await s_DicCompiledEvaluations.TryAddAsync(strXPath, tupReturn, token).ConfigureAwait(false);
                 return tupReturn;
             }
             if (strXPath == "-")
             {
                 Tuple<bool, object> tupReturn = new Tuple<bool, object>(true, 0.0);
-                await s_DicCompiledEvaluations.TryAddAsync(strXPath, tupReturn, token);
+                await s_DicCompiledEvaluations.TryAddAsync(strXPath, tupReturn, token).ConfigureAwait(false);
                 return tupReturn;
             }
             return await s_DicCompiledEvaluations.AddOrGetAsync(strXPath, async x =>
@@ -130,7 +130,7 @@ namespace Chummer
                 }
 
                 return new Tuple<bool, object>(blnIsSuccess, objReturn); // don't want to store managed objects, only primitives
-            }, token);
+            }, token).ConfigureAwait(false);
         }
 
         /// <summary>

@@ -1953,8 +1953,8 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Matrix Condition Monitor boxes.
         /// </summary>
-        public int MatrixCM => BaseMatrixBoxes + (this.GetTotalMatrixAttribute("Device Rating") + 1) / 2 +
-                               TotalBonusMatrixBoxes;
+        public int MatrixCM => BaseMatrixBoxes + (this.GetTotalMatrixAttribute("Device Rating") + 1) / 2
+                                               + TotalBonusMatrixBoxes;
 
         /// <summary>
         /// Matrix Condition Monitor boxes filled.
