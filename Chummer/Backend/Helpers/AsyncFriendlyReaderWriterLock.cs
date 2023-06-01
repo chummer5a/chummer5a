@@ -53,6 +53,8 @@ namespace Chummer
         private int _intCountActiveReaders;
         private int _intDisposedStatus;
 
+        private const int ReadLockHeartbeatDelay = 2000;
+
         /// <summary>
         /// Try to synchronously obtain a lock for writing.
         /// The returned SafeSemaphoreWriterRelease must be stored for when the write lock is to be released.
@@ -247,7 +249,19 @@ namespace Chummer
             {
                 // Temporarily acquiring a write lock just to mess with the read locks is a bottleneck, so don't do any such setting unless we need it
                 DebuggableSemaphoreSlim objCurrentSemaphore = _objCurrentWriterSemaphore.Value?.Item2 ?? _objTopLevelWriterSemaphore;
-                objCurrentSemaphore.SafeWait(token);
+                bool blnReleaseSemaphore = true;
+                while (!objCurrentSemaphore.SafeWait(ReadLockHeartbeatDelay / 2, token))
+                {
+                    // Do a heartbeat update to sanity-check for longer waits and skip the longer lock if we'd be able to safely reset
+                    Utils.SafeSleep(ReadLockHeartbeatDelay / 2, token);
+                    if (_objTopLevelWriterSemaphore.CurrentCount == 0)
+                        objCurrentSemaphore = _objCurrentWriterSemaphore.Value?.Item2 ?? _objTopLevelWriterSemaphore;
+                    else
+                    {
+                        blnReleaseSemaphore = false;
+                        break;
+                    }
+                }
                 try
                 {
                     if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
@@ -265,7 +279,8 @@ namespace Chummer
                 }
                 finally
                 {
-                    objCurrentSemaphore.Release();
+                    if (blnReleaseSemaphore)
+                        objCurrentSemaphore.Release();
                 }
             }
             else if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
@@ -298,16 +313,33 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (_objTopLevelWriterSemaphore.CurrentCount != 0)
                 return TakeReadLockCoreLightAsync(token);
+            // We will need to store the current execution context so that we can switch back to it whenever we wish to update objCurrentSemaphore
+            ExecutionContext objCurrentContext = ExecutionContext.Capture();
             DebuggableSemaphoreSlim objCurrentSemaphore = _objCurrentWriterSemaphore.Value?.Item2 ?? _objTopLevelWriterSemaphore;
-            return TakeReadLockCoreAsync(objCurrentSemaphore, token);
+            return TakeReadLockCoreAsync(objCurrentSemaphore, objCurrentContext, token);
         }
 
         /// <summary>
         /// Heavier read lock entrant, used if a write lock is already being held somewhere
         /// </summary>
-        private async Task TakeReadLockCoreAsync(DebuggableSemaphoreSlim objCurrentSemaphore, CancellationToken token = default)
+        private async Task TakeReadLockCoreAsync(DebuggableSemaphoreSlim objCurrentSemaphore, ExecutionContext objOriginalContext, CancellationToken token = default)
         {
-            await objCurrentSemaphore.WaitAsync(token).ConfigureAwait(false);
+            bool blnReleaseSemaphore = true;
+            while (!await objCurrentSemaphore.WaitAsync(ReadLockHeartbeatDelay / 2, token).ConfigureAwait(false))
+            {
+                // Do a heartbeat update to sanity-check for longer waits and skip the longer lock if we'd be able to safely reset
+                await Utils.SafeSleepAsync(ReadLockHeartbeatDelay / 2, token).ConfigureAwait(false);
+                if (_objTopLevelWriterSemaphore.CurrentCount == 0)
+                {
+                    // We need to switch back to the original execution context to make sure we fetch from the proper AsyncLocal
+                    ExecutionContext.Run(objOriginalContext, state => objCurrentSemaphore = _objCurrentWriterSemaphore.Value?.Item2 ?? _objTopLevelWriterSemaphore, null);
+                }
+                else
+                {
+                    blnReleaseSemaphore = false;
+                    break;
+                }
+            }
             try
             {
                 if (Interlocked.Increment(ref _intCountActiveReaders) == 1)
@@ -325,7 +357,8 @@ namespace Chummer
             }
             finally
             {
-                objCurrentSemaphore.Release();
+                if (blnReleaseSemaphore)
+                    objCurrentSemaphore.Release();
             }
         }
 
