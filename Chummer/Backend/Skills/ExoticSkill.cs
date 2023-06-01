@@ -118,28 +118,6 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public override int CurrentSpCost
-        {
-            get
-            {
-                using (EnterReadLock.Enter(LockObject))
-                    return Math.Max(BasePoints, 0);
-            }
-        }
-
-        /// <summary>
-        /// How much karma this costs. Return value during career mode is undefined
-        /// </summary>
-        /// <returns></returns>
-        public override int CurrentKarmaCost
-        {
-            get
-            {
-                using (EnterReadLock.Enter(LockObject))
-                    return Math.Max(RangeCost(Base + FreeKarma, TotalBaseRating), 0);
-            }
-        }
-
         public override void WriteToDerived(XmlWriter objWriter)
         {
             objWriter.WriteElementString("specific", Specific);

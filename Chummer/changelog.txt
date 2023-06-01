@@ -31,6 +31,7 @@ Application Changes:
 - Weapon bonus nodes for gear that serves as ammunition can now modify the weapon's dice pool conditional to whether or not the weapon has smartlink enabled. This is done through a `smartlinkpool` node.
 - Requirement and forbidden node checks for attributes values of 1 or more for special attributes now take proper consideration of characters who have burned their special attribute values to 0 but still have not fully burned out. They can therefore no longer be used just to check for if a character has access to a certain special attribute or not.
 - Complex Forms targeting icons now properly say as such instead of saying they target "None". Fixes #5017.
+- The house rule to compensate karma costs when increasing the lowest-ranked skill in a skill group no longer applies the karma discount multiple times during character creation.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.

@@ -2143,15 +2143,27 @@ namespace Chummer.Backend.Skills
 
                     int intCost;
                     int intLower;
-                    if (SkillGroupObject?.Karma > 0)
+                    if (SkillGroupObject != null)
                     {
-                        int intGroupUpper =
-                            SkillGroupObject.SkillList.Min(x => x.Base + x.Karma + x.RatingModifiers(x.Attribute));
-                        int intGroupLower = intGroupUpper - SkillGroupObject.Karma;
+                        bool blnForceOffSkillGroupKarmaCompensation = !CharacterObject.Settings.CompensateSkillGroupKarmaDifference
+                                                                      // Only count our discount if we are the first skill in the list
+                                                                      || !ReferenceEquals(SkillGroupObject.SkillList.FirstOrDefault(x => x.Enabled), this);
+                        if (SkillGroupObject.Karma > 0)
+                        {
+                            int intGroupUpper =
+                                SkillGroupObject.SkillList.Min(x => x.Base + x.Karma + x.RatingModifiers(x.Attribute));
+                            int intGroupLower = intGroupUpper - SkillGroupObject.Karma;
 
-                        intLower = Base + FreeKarma + RatingModifiers(Attribute); //Might be an error here
+                            intLower = Base + FreeKarma + RatingModifiers(Attribute); //Might be an error here
 
-                        intCost = RangeCost(intLower, intGroupLower) + RangeCost(intGroupUpper, intTotalBaseRating);
+                            intCost = RangeCost(intLower, intGroupLower, blnForceOffSkillGroupKarmaCompensation) + RangeCost(intGroupUpper, intTotalBaseRating, blnForceOffSkillGroupKarmaCompensation);
+                        }
+                        else
+                        {
+                            intLower = Base + FreeKarma + RatingModifiers(Attribute);
+
+                            intCost = RangeCost(intLower, intTotalBaseRating, blnForceOffSkillGroupKarmaCompensation);
+                        }
                     }
                     else
                     {
@@ -2163,6 +2175,10 @@ namespace Chummer.Backend.Skills
                     //Don't think this is going to happen, but if it happens i want to know
                     if (intCost < 0)
                         Utils.BreakIfDebug();
+
+                    // Exotic skills don't charge for specializations
+                    if (IsExoticSkill)
+                        return Math.Max(0, intCost);
 
                     int intSpecCount = BuyWithKarma || !CharacterObject.EffectiveBuildMethodUsesPriorityTables
                         ? Specializations.Count(objSpec => !objSpec.Free)
@@ -2219,25 +2235,45 @@ namespace Chummer.Backend.Skills
 
                 int intCost;
                 int intLower;
-                if (SkillGroupObject != null && await SkillGroupObject.GetKarmaAsync(token).ConfigureAwait(false) > 0)
+                if (SkillGroupObject != null)
                 {
-                    int intGroupUpper
-                        = await SkillGroupObject.SkillList.MinAsync(
-                                async x => await x.GetBaseAsync(token).ConfigureAwait(false) +
-                                           await x.GetKarmaAsync(token).ConfigureAwait(false)
-                                           + await x.RatingModifiersAsync(
-                                               x.Attribute, token: token).ConfigureAwait(false), token: token)
-                            .ConfigureAwait(false);
-                    int intGroupLower =
-                        intGroupUpper - await SkillGroupObject.GetKarmaAsync(token).ConfigureAwait(false);
+                    bool blnForceOffSkillGroupKarmaCompensation
+                        = !await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false))
+                                 .GetCompensateSkillGroupKarmaDifferenceAsync(token).ConfigureAwait(false)
+                          // Only count our discount if we are the first skill in the list
+                          || !ReferenceEquals(
+                              await SkillGroupObject.SkillList
+                                                    .FirstOrDefaultAsync(x => x.GetEnabledAsync(token).AsTask(), token)
+                                                    .ConfigureAwait(false), this);
+                    if (await SkillGroupObject.GetKarmaAsync(token).ConfigureAwait(false) > 0)
+                    {
+                        int intGroupUpper
+                            = await SkillGroupObject.SkillList.MinAsync(
+                                                        async x => await x.GetBaseAsync(token).ConfigureAwait(false) +
+                                                                   await x.GetKarmaAsync(token).ConfigureAwait(false)
+                                                                   + await x.RatingModifiersAsync(
+                                                                       x.Attribute, token: token).ConfigureAwait(false),
+                                                        token: token)
+                                                    .ConfigureAwait(false);
+                        int intGroupLower =
+                            intGroupUpper - await SkillGroupObject.GetKarmaAsync(token).ConfigureAwait(false);
 
-                    intLower = await GetBaseAsync(token).ConfigureAwait(false) +
-                               await GetFreeKarmaAsync(token).ConfigureAwait(false) +
-                               await RatingModifiersAsync(Attribute, token: token)
-                                   .ConfigureAwait(false); //Might be an error here
+                        intLower = await GetBaseAsync(token).ConfigureAwait(false) +
+                                   await GetFreeKarmaAsync(token).ConfigureAwait(false) +
+                                   await RatingModifiersAsync(Attribute, token: token)
+                                       .ConfigureAwait(false); //Might be an error here
 
-                    intCost = await RangeCostAysnc(intLower, intGroupLower, token).ConfigureAwait(false) +
-                              await RangeCostAysnc(intGroupUpper, intTotalBaseRating, token).ConfigureAwait(false);
+                        intCost = await RangeCostAsync(intLower, intGroupLower, blnForceOffSkillGroupKarmaCompensation, token).ConfigureAwait(false) +
+                                  await RangeCostAsync(intGroupUpper, intTotalBaseRating, blnForceOffSkillGroupKarmaCompensation, token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        intLower = await GetBaseAsync(token).ConfigureAwait(false) +
+                                   await GetFreeKarmaAsync(token).ConfigureAwait(false) +
+                                   await RatingModifiersAsync(Attribute, token: token).ConfigureAwait(false);
+
+                        intCost = await RangeCostAsync(intLower, intTotalBaseRating, blnForceOffSkillGroupKarmaCompensation, token).ConfigureAwait(false);
+                    }
                 }
                 else
                 {
@@ -2245,12 +2281,16 @@ namespace Chummer.Backend.Skills
                                await GetFreeKarmaAsync(token).ConfigureAwait(false) +
                                await RatingModifiersAsync(Attribute, token: token).ConfigureAwait(false);
 
-                    intCost = await RangeCostAysnc(intLower, intTotalBaseRating, token).ConfigureAwait(false);
+                    intCost = await RangeCostAsync(intLower, intTotalBaseRating, token: token).ConfigureAwait(false);
                 }
 
                 //Don't think this is going to happen, but if it happens i want to know
                 if (intCost < 0)
                     Utils.BreakIfDebug();
+
+                // Exotic skills don't charge for specializations
+                if (IsExoticSkill)
+                    return Math.Max(0, intCost);
 
                 int intSpecCount = await GetBuyWithKarmaAsync(token).ConfigureAwait(false)
                                    || !await CharacterObject.GetEffectiveBuildMethodUsesPriorityTablesAsync(token).ConfigureAwait(false)
@@ -5570,7 +5610,8 @@ namespace Chummer.Backend.Skills
         /// </summary>
         /// <param name="lower">Staring rating of skill</param>
         /// <param name="upper">End rating of the skill</param>
-        protected int RangeCost(int lower, int upper)
+        /// <param name="blnForceOffCompensateSkillGroupKarmaDifference">Whether to force skill group karma compensation off. Needed to work around an issue in create mode.</param>
+        protected int RangeCost(int lower, int upper, bool blnForceOffCompensateSkillGroupKarmaDifference = false)
         {
             if (lower >= upper)
                 return 0;
@@ -5589,7 +5630,7 @@ namespace Chummer.Backend.Skills
             using (EnterReadLock.Enter(LockObject))
             {
                 int intSkillGroupCostAdjustment = 0;
-                if (CharacterObject.Settings.CompensateSkillGroupKarmaDifference && SkillGroupObject != null)
+                if (!blnForceOffCompensateSkillGroupKarmaDifference && CharacterObject.Settings.CompensateSkillGroupKarmaDifference && SkillGroupObject != null)
                 {
                     int intSkillGroupUpper = int.MaxValue;
                     foreach (Skill objSkillGroupMember in SkillGroupObject.SkillList)
@@ -5694,8 +5735,9 @@ namespace Chummer.Backend.Skills
         /// </summary>
         /// <param name="lower">Staring rating of skill</param>
         /// <param name="upper">End rating of the skill</param>
+        /// <param name="blnForceOffCompensateSkillGroupKarmaDifference">Whether to force skill group karma compensation off. Needed to work around an issue in create mode.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        protected async ValueTask<int> RangeCostAysnc(int lower, int upper, CancellationToken token = default)
+        protected async ValueTask<int> RangeCostAsync(int lower, int upper, bool blnForceOffCompensateSkillGroupKarmaDifference = false, CancellationToken token = default)
         {
             if (lower >= upper)
                 return 0;
@@ -5715,8 +5757,9 @@ namespace Chummer.Backend.Skills
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
                 int intSkillGroupCostAdjustment = 0;
-                if (await objSettings.GetCompensateSkillGroupKarmaDifferenceAsync(token).ConfigureAwait(false) &&
-                    SkillGroupObject != null)
+                if (!blnForceOffCompensateSkillGroupKarmaDifference
+                    && await objSettings.GetCompensateSkillGroupKarmaDifferenceAsync(token).ConfigureAwait(false)
+                    && SkillGroupObject != null)
                 {
                     int intSkillGroupUpper = int.MaxValue;
                     foreach (Skill objSkillGroupMember in SkillGroupObject.SkillList)
