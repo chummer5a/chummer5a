@@ -614,6 +614,9 @@ namespace Chummer
                 case "IC":
                     return LanguageManager.GetString("String_ComplexFormTargetIC", strLanguage);
 
+                case "Icon":
+                    return LanguageManager.GetString("String_ComplexFormTargetIcon", strLanguage);
+
                 case "Special":
                     return LanguageManager.GetString("String_Special", strLanguage);
 
@@ -649,6 +652,9 @@ namespace Chummer
 
                 case "IC":
                     return LanguageManager.GetStringAsync("String_ComplexFormTargetIC", strLanguage, token: token);
+
+                case "Icon":
+                    return LanguageManager.GetStringAsync("String_ComplexFormTargetIcon", strLanguage, token: token);
 
                 case "Special":
                     return LanguageManager.GetStringAsync("String_Special", strLanguage, token: token);

@@ -30,6 +30,7 @@ Application Changes:
 - Gear plugins and addons that modify weapon stats now also always have those modifications applied to a weapon when they are present in the ammunition that is currently loaded into the weapon.
 - Weapon bonus nodes for gear that serves as ammunition can now modify the weapon's dice pool conditional to whether or not the weapon has smartlink enabled. This is done through a `smartlinkpool` node.
 - Requirement and forbidden node checks for attributes values of 1 or more for special attributes now take proper consideration of characters who have burned their special attribute values to 0 but still have not fully burned out. They can therefore no longer be used just to check for if a character has access to a certain special attribute or not.
+- Complex Forms targeting icons now properly say as such instead of saying they target "None". Fixes #5017.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.
@@ -59,6 +60,7 @@ Changed/New Strings:
 - Message_DuplicateFile
 - MessageTitle_DuplicateFile
 - Message_SelectGeneric_HaveAttributeEnabled
+- String_ComplexFormTargetIcon
 
 Build 225
 Application Changes:

@@ -4324,6 +4324,10 @@
       <text>IC</text>
     </string>
     <string>
+      <key>String_ComplexFormTargetIcon</key>
+      <text>Icon</text>
+    </string>
+    <string>
       <key>String_ActionAutomatic</key>
       <text>Auto</text>
     </string>
