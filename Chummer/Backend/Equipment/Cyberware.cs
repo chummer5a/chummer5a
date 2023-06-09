@@ -1648,13 +1648,12 @@ namespace Chummer.Backend.Equipment
 
                 #region Children
 
-                objWriter.WriteStartElement("children");
-                foreach (Cyberware objChild in _lstChildren)
+                if (_lstChildren.Count > 0)
                 {
-                    objChild.Save(objWriter);
+                    objWriter.WriteStartElement("children");
+                    _lstChildren.ForEach(x => x.Save(objWriter));
+                    objWriter.WriteEndElement();
                 }
-
-                objWriter.WriteEndElement();
 
                 #endregion Children
 
@@ -1663,11 +1662,7 @@ namespace Chummer.Backend.Equipment
                 if (_lstGear.Count > 0)
                 {
                     objWriter.WriteStartElement("gears");
-                    foreach (Gear objGear in _lstGear)
-                    {
-                        objGear.Save(objWriter);
-                    }
-
+                    _lstGear.ForEach(x => x.Save(objWriter));
                     objWriter.WriteEndElement();
                 }
 
@@ -1896,7 +1891,7 @@ namespace Chummer.Backend.Equipment
                         _guiVehicleID = Guid.Empty;
                     }
 
-                    if (objNode.InnerXml.Contains("<cyberware>"))
+                    if (objNode.InnerXml.Contains("<children>") || objNode.InnerXml.Contains("<cyberware>"))
                     {
                         XmlNodeList nodChildren = objNode.SelectNodes("children/cyberware");
                         foreach (XmlNode nodChild in nodChildren)

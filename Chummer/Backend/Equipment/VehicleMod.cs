@@ -354,8 +354,7 @@ namespace Chummer.Backend.Equipment
             if (_lstCyberware.Count > 0)
             {
                 objWriter.WriteStartElement("cyberwares");
-                foreach (Cyberware objCyberware in _lstCyberware)
-                    objCyberware.Save(objWriter);
+                _lstCyberware.ForEach(x => x.Save(objWriter));
                 objWriter.WriteEndElement();
             }
             if (_nodBonus != null)
