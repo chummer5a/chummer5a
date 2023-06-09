@@ -543,7 +543,8 @@ namespace Chummer.Backend.Skills
                     }
 
                     await Skills
-                          .AddWithSortAsync(objSkill, CompareSkills, (x, y) => MergeSkillsAsync(x, y, token), token)
+                          .AddWithSortAsync(objSkill, (x, y) => CompareSkillsAsync(x, y, token).AsTask(),
+                                            (x, y) => MergeSkillsAsync(x, y, token), token)
                           .ConfigureAwait(false);
                 }
             }
@@ -586,7 +587,8 @@ namespace Chummer.Backend.Skills
                     {
                         Specific = strSpecific
                     };
-                    await Skills.AddWithSortAsync(objExoticSkill, CompareSkills, (x, y) => MergeSkillsAsync(x, y, token),
+                    await Skills.AddWithSortAsync(objExoticSkill, (x, y) => CompareSkillsAsync(x, y, token).AsTask(),
+                                                  (x, y) => MergeSkillsAsync(x, y, token),
                                                   token: token).ConfigureAwait(false);
                     return objExoticSkill;
                 }
@@ -746,20 +748,22 @@ namespace Chummer.Backend.Skills
                                 await strKnowledgeSkillTypeToUse.GetValueAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                             await objNewKnowledgeSkill.SetWritableNameAsync(await objSkill.GetNameAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                             await objNewKnowledgeSkill.Specializations.AddRangeAsync(objSkill.Specializations, token: token).ConfigureAwait(false);
-                            await (await GetKnowledgeSkillsAsync(token).ConfigureAwait(false)).AddWithSortAsync(objNewKnowledgeSkill, (x, y) =>
-                            {
-                                switch (string.CompareOrdinal(x.Type, y.Type))
+                            await (await GetKnowledgeSkillsAsync(token).ConfigureAwait(false)).AddWithSortAsync(
+                                objNewKnowledgeSkill, async (x, y) =>
                                 {
-                                    case 0:
-                                        return CompareSkills(x, y);
+                                    switch (string.CompareOrdinal(await x.GetTypeAsync(token).ConfigureAwait(false),
+                                                                  await y.GetTypeAsync(token).ConfigureAwait(false)))
+                                    {
+                                        case 0:
+                                            return await CompareSkillsAsync(x, y, token).ConfigureAwait(false);
 
-                                    case -1:
-                                        return -1;
+                                        case -1:
+                                            return -1;
 
-                                    default:
-                                        return 1;
-                                }
-                            }, (x, y) => MergeSkillsAsync(x, y, token), token: token).ConfigureAwait(false);
+                                        default:
+                                            return 1;
+                                    }
+                                }, (x, y) => MergeSkillsAsync(x, y, token), token: token).ConfigureAwait(false);
                         }
                     }
 
@@ -844,27 +848,32 @@ namespace Chummer.Backend.Skills
                                                     SkillGroups.AddWithSort(objGroup, CompareSkillGroups,
                                                                             (objExistingSkillGroup, objNewSkillGroup) =>
                                                                             {
-                                                                                foreach
-                                                                                    (Skill x in objExistingSkillGroup
-                                                                                        .SkillList
-                                                                                        .Where(
-                                                                                            x => !objExistingSkillGroup
-                                                                                                .SkillList.Contains(x)))
-                                                                                    objExistingSkillGroup.Add(x);
+                                                                                foreach (Skill x in objExistingSkillGroup.SkillList)
+                                                                                {
+                                                                                    if (!objExistingSkillGroup.SkillList.Contains(x))
+                                                                                    {
+                                                                                        objExistingSkillGroup.Add(x);
+                                                                                    }
+                                                                                }
+
                                                                                 objNewSkillGroup.Dispose();
                                                                             }, token);
                                                 }
                                                 else
                                                 {
-                                                    await SkillGroups.AddWithSortAsync(objGroup, CompareSkillGroups,
+                                                    await SkillGroups.AddWithSortAsync(objGroup,
+                                                        (x, y) => CompareSkillGroupsAsync(x, y, token).AsTask(),
                                                         async (objExistingSkillGroup, objNewSkillGroup) =>
                                                         {
-                                                            foreach (Skill x in objExistingSkillGroup
-                                                                         .SkillList
-                                                                         .Where(x => !objExistingSkillGroup
-                                                                             .SkillList.Contains(x)))
-                                                                await objExistingSkillGroup.AddAsync(x, token)
-                                                                    .ConfigureAwait(false);
+                                                            foreach (Skill x in objExistingSkillGroup.SkillList)
+                                                            {
+                                                                if (!objExistingSkillGroup.SkillList.Contains(x))
+                                                                {
+                                                                    await objExistingSkillGroup.AddAsync(x, token)
+                                                                                               .ConfigureAwait(false);
+                                                                }
+                                                            }
+
                                                             await objNewSkillGroup.DisposeAsync().ConfigureAwait(false);
                                                         }, token: token).ConfigureAwait(false);
                                                 }
@@ -922,7 +931,8 @@ namespace Chummer.Backend.Skills
                                         foreach (Skill objSkill in lstNewSkills)
                                         {
                                             await Skills.AddWithSortAsync(
-                                                objSkill, CompareSkills, (x, y) => MergeSkillsAsync(x, y, token),
+                                                objSkill, (x, y) => CompareSkillsAsync(x, y, token).AsTask(),
+                                                (x, y) => MergeSkillsAsync(x, y, token),
                                                 token: token).ConfigureAwait(false);
                                         }
                                     }
@@ -1962,8 +1972,9 @@ namespace Chummer.Backend.Skills
                                         }
 
                                         await _lstSkills
-                                              .AddWithSortAsync(objSkill, CompareSkills,
-                                                                (x, y) => MergeSkillsAsync(x, y, token), token: token)
+                                              .AddWithSortAsync(
+                                                  objSkill, (x, y) => CompareSkillsAsync(x, y, token).AsTask(),
+                                                  (x, y) => MergeSkillsAsync(x, y, token), token: token)
                                               .ConfigureAwait(false);
                                     }
                                 }
@@ -2498,6 +2509,54 @@ namespace Chummer.Backend.Skills
                 GlobalSettings.CultureInfo);
         }
 
+        public static async ValueTask<int> CompareSpecializationsAsync(SkillSpecialization lhs, SkillSpecialization rhs, CancellationToken token = default)
+        {
+            if (lhs == null)
+                return rhs == null ? 0 : 1;
+            if (rhs == null)
+                return -1;
+            Skill objLhsParent = await lhs.GetParentAsync(token).ConfigureAwait(false);
+            Skill objRhsParent = await lhs.GetParentAsync(token).ConfigureAwait(false);
+            if (objLhsParent != objRhsParent)
+                return await CompareSkillsAsync(objRhsParent, objLhsParent, token).ConfigureAwait(false);
+            if (lhs.Free != rhs.Free)
+                return lhs.Free ? 1 : -1;
+            return string.Compare(await lhs.GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
+                                  await rhs.GetCurrentDisplayNameAsync(token).ConfigureAwait(false), false,
+                                  GlobalSettings.CultureInfo);
+        }
+
+        public static async ValueTask<int> CompareSkillsAsync(Skill rhs, Skill lhs, CancellationToken token = default)
+        {
+            if (rhs == null && lhs == null)
+                return 0;
+            ExoticSkill lhsExoticSkill = lhs as ExoticSkill;
+            if (rhs is ExoticSkill rhsExoticSkill)
+            {
+                return lhsExoticSkill != null
+                    ? string.Compare(await rhsExoticSkill.GetCurrentDisplaySpecificAsync(token).ConfigureAwait(false),
+                                     await lhsExoticSkill.GetCurrentDisplaySpecificAsync(token).ConfigureAwait(false) ?? string.Empty, false,
+                                     GlobalSettings.CultureInfo)
+                    : 1;
+            }
+            if (lhsExoticSkill != null)
+                return -1;
+            return string.Compare(rhs != null ? await rhs.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) : string.Empty,
+                                  lhs != null ? await lhs.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) : string.Empty, false,
+                                  GlobalSettings.CultureInfo);
+        }
+
+        public static async ValueTask<int> CompareSkillGroupsAsync(SkillGroup objXGroup, SkillGroup objYGroup, CancellationToken token = default)
+        {
+            if (objXGroup == null)
+                return objYGroup == null ? 0 : 1;
+            if (objYGroup == null)
+                return -1;
+            return string.Compare(await objXGroup.GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
+                                  await objYGroup.GetCurrentDisplayNameAsync(token).ConfigureAwait(false), false,
+                                  GlobalSettings.CultureInfo);
+        }
+
         private static string SkillFilter(FilterOption eFilter, string strName = "")
         {
             switch (eFilter)
@@ -2580,7 +2639,9 @@ namespace Chummer.Backend.Skills
                 objExistingSkill.Notes += objNewSkill.Notes;
                 objExistingSkill.NotesColor = objNewSkill.NotesColor;
                 await objExistingSkill.Specializations
-                                      .AddAsyncRangeWithSortAsync(objNewSkill.Specializations, CompareSpecializations,
+                                      .AddAsyncRangeWithSortAsync(objNewSkill.Specializations,
+                                                                  (x, y) => CompareSpecializationsAsync(x, y, token)
+                                                                      .AsTask(),
                                                                   token: token).ConfigureAwait(false);
             }
             await objNewSkill.RemoveAsync(token).ConfigureAwait(false);

@@ -3459,7 +3459,7 @@ namespace Chummer.Backend.Skills
             {
                 if (IsExoticSkill)
                 {
-                    return await ((ExoticSkill) this).GetCurrentDisplaySpecific(token).ConfigureAwait(false);
+                    return await ((ExoticSkill) this).GetCurrentDisplaySpecificAsync(token).ConfigureAwait(false);
                 }
 
                 SkillSpecialization objSpec = await Specializations.FirstOrDefaultAsync(x => !x.Free, token: token).ConfigureAwait(false);

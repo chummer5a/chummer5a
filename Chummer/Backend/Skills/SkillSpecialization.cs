@@ -202,6 +202,15 @@ namespace Chummer.Backend.Skills
             }
         }
 
+        /// <summary>
+        /// The Skill to which this specialization belongs
+        /// </summary>
+        public async ValueTask<Skill> GetParentAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _objParent;
+        }
+
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 

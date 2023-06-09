@@ -182,7 +182,7 @@ namespace Chummer.Backend.Skills
 
         public string CurrentDisplaySpecific => DisplaySpecific(GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplaySpecific(CancellationToken token = default) => DisplaySpecificAsync(GlobalSettings.Language, token);
+        public ValueTask<string> GetCurrentDisplaySpecificAsync(CancellationToken token = default) => DisplaySpecificAsync(GlobalSettings.Language, token);
 
         public override string DisplaySpecialization(string strLanguage)
         {

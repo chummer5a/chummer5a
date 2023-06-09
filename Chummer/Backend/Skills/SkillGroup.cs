@@ -1125,7 +1125,7 @@ namespace Chummer.Backend.Skills
                     objSkillGroup = new SkillGroup(objSkill.CharacterObject, objSkill.SkillGroup);
                     await objSkillGroup.AddAsync(objSkill, token).ConfigureAwait(false);
                     await objSkill.CharacterObject.SkillsSection.SkillGroups.AddWithSortAsync(objSkillGroup,
-                        SkillsSection.CompareSkillGroups,
+                        (x , y) => SkillsSection.CompareSkillGroupsAsync(x, y, token).AsTask(),
                         async (objExistingSkillGroup, objNewSkillGroup) =>
                         {
                             foreach (Skill x in objExistingSkillGroup.SkillList.Where(x =>

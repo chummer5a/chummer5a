@@ -632,7 +632,7 @@ namespace Chummer
                             continue;
                         }
                     }
-                    lstSkillSpecializations.Add(new ListItem(strSpecific, await objExoticSkill.GetCurrentDisplaySpecific(token).ConfigureAwait(false)));
+                    lstSkillSpecializations.Add(new ListItem(strSpecific, await objExoticSkill.GetCurrentDisplaySpecificAsync(token).ConfigureAwait(false)));
                 }
 
                 lstSkillSpecializations.Sort(
