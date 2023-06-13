@@ -18238,7 +18238,7 @@ namespace Chummer
                                     // If the Mod is Armor, use the lower of the Mod's maximum Rating and MaxArmor value for the Vehicle instead.
                                     await nudVehicleRating.DoThreadSafeAsync(x =>
                                     {
-                                        x.Maximum = objMod.Name.StartsWith("Armor,", StringComparison.Ordinal)
+                                        x.Maximum = objMod.Name.StartsWith("Armor", StringComparison.Ordinal)
                                             ? Math.Min(intMaxRating, objMod.Parent.MaxArmor)
                                             : intMaxRating;
                                         x.Minimum = 1;
