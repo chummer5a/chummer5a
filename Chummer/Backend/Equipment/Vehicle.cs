@@ -2745,19 +2745,13 @@ namespace Chummer.Backend.Equipment
                     string strLoop = objMod.Bonus?["armor"]?.InnerText;
                     intModArmor += ParseBonus(strLoop, objMod.Rating, Armor, "Armor");
                     intArmor = Math.Max(intArmor, ParseBonus(strLoop, objMod.Rating, Armor, "Armor", false));
-                    if (objMod.WirelessOn && objMod.WirelessBonus != null)
-                    {
-                        strLoop = objMod.WirelessBonus?["armor"]?.InnerText;
-                        intModArmor += ParseBonus(strLoop, objMod.Rating, Armor, "Armor");
-                        intArmor = Math.Max(intArmor, ParseBonus(strLoop, objMod.Rating, Armor, "Armor", false));
-                    }
+                    if (!objMod.WirelessOn || objMod.WirelessBonus == null) continue;
+                    strLoop = objMod.WirelessBonus?["armor"]?.InnerText;
+                    intModArmor += ParseBonus(strLoop, objMod.Rating, Armor, "Armor");
+                    intArmor = Math.Max(intArmor, ParseBonus(strLoop, objMod.Rating, Armor, "Armor", false));
                 }
 
-
-                // Drones have no theoretical armor cap in the optional rules, otherwise, it's capped
-                if (IsDrone && _objCharacter.Settings.DroneMods)
-                    return intModArmor + Armor;
-                return Math.Min(MaxArmor, intModArmor + Armor);
+                return Math.Min(MaxArmor, intModArmor + intArmor);
             }
         }
 
@@ -2772,6 +2766,9 @@ namespace Chummer.Backend.Equipment
                 if (_objCharacter.IgnoreRules)
                     return int.MaxValue;
 
+                // Drones have no theoretical armor cap in the optional rules, otherwise, it's capped
+                if (IsDrone && _objCharacter.Settings.DroneMods)
+                    return int.MaxValue;
                 // Rigger 5 says max extra armor is Body + starting Armor, p159
                 // When you need to use a 0 for the math, use 0.5 instead
                 int intReturn = IsDrone && _objCharacter.Settings.DroneArmorMultiplierEnabled
