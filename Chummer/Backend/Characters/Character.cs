@@ -3504,7 +3504,7 @@ namespace Chummer
                 if (blnSync)
                     DoSave();
                 else
-                    await Task.Run(() => DoSaveAsync(), token).ConfigureAwait(false);
+                    await Task.Run(DoSaveAsync, token).ConfigureAwait(false);
 
                 void DoSave()
                 {
@@ -3907,7 +3907,7 @@ namespace Chummer
 
                             // <spirits>
                             objWriter.WriteStartElement("spirits");
-                            _lstSpirits.ForEach(x => x.Save(objWriter), token);
+                            _lstSpirits.ForEach(x => x.Save(objWriter, token), token);
                             objWriter.WriteEndElement();
 
                             // <complexforms>
@@ -4688,7 +4688,7 @@ namespace Chummer
 
                             // <spirits>
                             await objWriter.WriteStartElementAsync("spirits", token: token).ConfigureAwait(false);
-                            await _lstSpirits.ForEachAsync(x => x.Save(objWriter), token).ConfigureAwait(false);
+                            await _lstSpirits.ForEachAsync(x => x.SaveAsync(objWriter, token), token).ConfigureAwait(false);
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
                             // <complexforms>
@@ -6255,20 +6255,21 @@ namespace Chummer
                                                 !setSavedBooks.IsSubsetOf(objProspectiveSettings.Books);
                                             if (!blnPromptConfirmSetting)
                                             {
+                                                IReadOnlyList<CustomDataDirectoryInfo> lstProspectiveInfos
+                                                    = blnSync
+                                                        ? objProspectiveSettings.EnabledCustomDataDirectoryInfos
+                                                        : await objProspectiveSettings
+                                                            .GetEnabledCustomDataDirectoryInfosAsync(token).ConfigureAwait(false);
                                                 // More custom data directories is not fine because additional ones might apply rules that weren't present before, so prompt
                                                 blnPromptConfirmSetting = lstSavedCustomDataDirectoryNames.Count !=
-                                                                          objProspectiveSettings
-                                                                              .EnabledCustomDataDirectoryInfos
-                                                                              .Count;
+                                                                          lstProspectiveInfos.Count;
                                                 if (!blnPromptConfirmSetting)
                                                 {
                                                     // Check to make sure all the names are the same
                                                     for (int i = 0; i < lstSavedCustomDataDirectoryNames.Count; ++i)
                                                     {
                                                         if (lstSavedCustomDataDirectoryNames[i]
-                                                            != objProspectiveSettings
-                                                               .EnabledCustomDataDirectoryInfos[i]
-                                                               .Name)
+                                                            != lstProspectiveInfos[i].Name)
                                                         {
                                                             blnPromptConfirmSetting = true;
                                                             break;
@@ -11937,17 +11938,17 @@ namespace Chummer
                             string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                             if (objReturnGear.Parent is Gear objParent)
                             {
-                                strGearReturn += strSpace + '(' + objArmor.DisplayNameShort(strLanguage) + ','
+                                strGearReturn += strSpace + '(' + objArmor.DisplayNameShort(strLanguage, token) + ','
                                                  + strSpace
                                                  + objArmorMod.DisplayNameShort(strLanguage) + ',' + strSpace
                                                  + objParent.DisplayNameShort(strLanguage) + ')';
                             }
                             else if (objArmorMod != null)
-                                strGearReturn += strSpace + '(' + objArmor.DisplayNameShort(strLanguage) + ','
+                                strGearReturn += strSpace + '(' + objArmor.DisplayNameShort(strLanguage, token) + ','
                                                  + strSpace
                                                  + objArmorMod.DisplayNameShort(strLanguage) + ')';
                             else
-                                strGearReturn += strSpace + '(' + objArmor.DisplayNameShort(strLanguage) + ')';
+                                strGearReturn += strSpace + '(' + objArmor.DisplayNameShort(strLanguage, token) + ')';
 
                             if (blnWireless)
                                 strGearReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
@@ -12253,7 +12254,7 @@ namespace Chummer
                         {
                             if (objArmor.InternalId == strImprovedSourceName)
                             {
-                                string strReturnArmor = objArmor.DisplayNameShort(strLanguage);
+                                string strReturnArmor = objArmor.DisplayNameShort(strLanguage, token);
                                 if (blnWireless)
                                     strReturnArmor
                                         += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
@@ -12272,7 +12273,7 @@ namespace Chummer
                                 if (objMod.InternalId == strImprovedSourceName)
                                 {
                                     string strReturnArmorMod = objMod.DisplayNameShort(strLanguage) + strSpace + '('
-                                                               + objArmor.DisplayNameShort(strLanguage) + ')';
+                                                               + objArmor.DisplayNameShort(strLanguage, token) + ')';
                                     if (blnWireless)
                                         strReturnArmorMod
                                             += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
@@ -13433,30 +13434,30 @@ namespace Chummer
 
                     await objLoopVehicle.WeaponMounts.ForEachAsync(async objLoopWeaponMount =>
                     {
-                        await objLoopVehicle.Mods.ForEachAsync(async objLoopVehicleMod =>
+                        await objLoopWeaponMount.Mods.ForEachAsync(async objLoopVehicleMod =>
                         {
                             await objLoopVehicleMod.Cyberware.GetAllDescendants(x => x.Children).ForEachAsync(
                                 async objLoopCyberware =>
-                            {
-                                // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
-                                if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount
-                                    && objLoopCyberware.Location == objModularCyberware.Location
-                                    && objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name
-                                    && objLoopCyberware != objModularCyberware
-                                    // Make sure it's not the place where the mount is already occupied (either by us or something else)
-                                    && await objLoopCyberware.Children.AllAsync(
-                                        x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount, token).ConfigureAwait(false))
                                 {
-                                    string strName
-                                        = await objLoopVehicle.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)
-                                          + strSpace + (objLoopCyberware.Parent != null
-                                              ? await objLoopCyberware.Parent.GetCurrentDisplayNameAsync(token)
-                                                                      .ConfigureAwait(false)
-                                              : await objLoopVehicleMod.GetCurrentDisplayNameAsync(token)
-                                                                       .ConfigureAwait(false));
-                                    lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
-                                }
-                            }, token).ConfigureAwait(false);
+                                    // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
+                                    if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount
+                                        && objLoopCyberware.Location == objModularCyberware.Location
+                                        && objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name
+                                        && objLoopCyberware != objModularCyberware
+                                        // Make sure it's not the place where the mount is already occupied (either by us or something else)
+                                        && await objLoopCyberware.Children.AllAsync(
+                                            x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount, token).ConfigureAwait(false))
+                                    {
+                                        string strName
+                                            = await objLoopVehicle.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)
+                                              + strSpace + (objLoopCyberware.Parent != null
+                                                  ? await objLoopCyberware.Parent.GetCurrentDisplayNameAsync(token)
+                                                                          .ConfigureAwait(false)
+                                                  : await objLoopVehicleMod.GetCurrentDisplayNameAsync(token)
+                                                                           .ConfigureAwait(false));
+                                        lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
+                                    }
+                                }, token).ConfigureAwait(false);
                         }, token).ConfigureAwait(false);
                     }, token).ConfigureAwait(false);
                 }, token).ConfigureAwait(false);
@@ -17601,6 +17602,7 @@ namespace Chummer
         /// <param name="strAttribute">CharacterAttribute name to retrieve.</param>
         /// <param name="blnExplicit">Whether to force looking for a specific attribute name.
         /// Mostly expected to be used for gutting Mystic Adept power points.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public CharacterAttrib GetAttribute(string strAttribute, bool blnExplicit = false, CancellationToken token = default)
         {
             using (EnterReadLock.Enter(LockObject, token))

@@ -1001,8 +1001,8 @@ namespace Chummer
             this.toolStrip.Size = new System.Drawing.Size(1264, 25);
             this.toolStrip.TabIndex = 1;
             this.toolStrip.Text = "ToolStrip";
-            this.toolStrip.ItemAdded += new System.Windows.Forms.ToolStripItemEventHandler(this.toolStrip_ItemAdded);
-            this.toolStrip.ItemRemoved += new System.Windows.Forms.ToolStripItemEventHandler(this.toolStrip_ItemRemoved);
+            this.toolStrip.ItemAdded += new System.Windows.Forms.ToolStripItemEventHandler(this.RefreshToolStripDisplays);
+            this.toolStrip.ItemRemoved += new System.Windows.Forms.ToolStripItemEventHandler(this.RefreshToolStripDisplays);
             // 
             // tsbNewCharacter
             // 

@@ -182,10 +182,20 @@ namespace Chummer
                         eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
                 }
 
-                UpdateControls(objObject, strIntoLanguage, eIntoRightToLeft, token);
+                if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverload
+                    UpdateControls(objObject, strIntoLanguage, eIntoRightToLeft, token);
+                else
+                    await UpdateControlsAsync(objObject, strIntoLanguage, eIntoRightToLeft, token);
             }
             else if (!strIntoLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
-                UpdateControls(objObject, GlobalSettings.DefaultLanguage, RightToLeft.No, token);
+            {
+                if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverload
+                    UpdateControls(objObject, GlobalSettings.DefaultLanguage, RightToLeft.No, token);
+                else
+                    await UpdateControlsAsync(objObject, GlobalSettings.DefaultLanguage, RightToLeft.No, token);
+            }
 
             if (blnDoResumeLayout)
             {
@@ -356,9 +366,7 @@ namespace Chummer
                         tssStrip.DoThreadSafe((x, y) =>
                         {
                             foreach (ToolStripItem tssItem in x.Items)
-                            {
                                 TranslateToolStripItemsRecursively(tssItem, strIntoLanguage, eIntoRightToLeft, y);
-                            }
                         }, token);
 
                         break;
@@ -476,6 +484,261 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Recursive method to translate all of the controls in a Form or UserControl.
+        /// </summary>
+        /// <param name="strIntoLanguage">Language into which the control should be translated</param>
+        /// <param name="objParent">Control container to translate.</param>
+        /// <param name="eIntoRightToLeft">Whether <paramref name="strIntoLanguage" /> is a right-to-left language</param>
+        /// <param name="token">CancellationToken to listen to.</param>
+        private static async ValueTask UpdateControlsAsync(Control objParent, string strIntoLanguage, RightToLeft eIntoRightToLeft,
+                                           CancellationToken token = default)
+        {
+            if (objParent == null)
+                return;
+
+            await objParent.DoThreadSafeAsync((x, y) =>
+            {
+                try
+                {
+                    x.RightToLeft = eIntoRightToLeft;
+                }
+                catch (NotSupportedException)
+                {
+                    if (x.GetType() != typeof(WebBrowser))
+                        Utils.BreakIfDebug();
+                }
+            }, token).ConfigureAwait(false);
+
+            if (objParent is Form frmForm)
+            {
+                string strTagToUse = await frmForm.DoThreadSafeFuncAsync(x =>
+                {
+                    // Translatable items are identified by having a value in their Tag attribute. The contents of Tag is the string to lookup in the language list.
+                    // Update the Form itself.
+                    string strControlTag = x.Tag?.ToString();
+                    if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _)
+                                                             && !strControlTag.IsGuid() && !File.Exists(strControlTag))
+                        return strControlTag;
+                    if (x.Text.StartsWith('['))
+                        x.Text = string.Empty;
+                    return string.Empty;
+                }, token).ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(strTagToUse))
+                {
+                    string strText = await GetStringAsync(strTagToUse, strIntoLanguage, false, token).ConfigureAwait(false);
+                    await frmForm.DoThreadSafeAsync((x, y) => x.Text = strText, token).ConfigureAwait(false);
+                }
+                // update any menu strip items that have tags
+                MenuStrip objMenuStrip = await frmForm.DoThreadSafeFuncAsync((x, y) => x.MainMenuStrip, token).ConfigureAwait(false);
+                if (objMenuStrip != null)
+                {
+                    List<Tuple<ToolStripItem, string>> lstTagsToUse = new List<Tuple<ToolStripItem, string>>();
+                    foreach (ToolStripItem tssItem in await objMenuStrip.DoThreadSafeFuncAsync((x, y) => x.Items, token))
+                        lstTagsToUse.AddRange(await TranslateToolStripItemsRecursivelyPrepAsync(objMenuStrip, tssItem, strIntoLanguage, eIntoRightToLeft, token));
+                    foreach ((ToolStripItem objControl, string strTag) in lstTagsToUse)
+                    {
+                        string strText = await GetStringAsync(strTag, strIntoLanguage, false, token).ConfigureAwait(false);
+                        await objMenuStrip.DoThreadSafeAsync(() => objControl.Text = strText, token).ConfigureAwait(false);
+                    }
+                }
+            }
+
+            // Translatable items are identified by having a value in their Tag attribute. The contents of Tag is the string to lookup in the language list.
+            foreach (Control objChild in await objParent.DoThreadSafeFuncAsync((x, y) => x.Controls, token).ConfigureAwait(false))
+            {
+                await objChild.DoThreadSafeAsync((x, y) =>
+                {
+                    try
+                    {
+                        x.RightToLeft = eIntoRightToLeft;
+                    }
+                    catch (NotSupportedException)
+                    {
+                        if (x.GetType() != typeof(WebBrowser))
+                            Utils.BreakIfDebug();
+                    }
+                }, token).ConfigureAwait(false);
+
+                switch (objChild)
+                {
+                    case Label _:
+                    case Button _:
+                    case CheckBox _:
+                        {
+                            string strTagToUse = await objChild.DoThreadSafeFuncAsync(x =>
+                            {
+                                string strControlTag = x.Tag?.ToString();
+                                if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _)
+                                                                         && !strControlTag.IsGuid()
+                                                                         && !File.Exists(strControlTag))
+                                    return strControlTag;
+                                if (x.Text.StartsWith('['))
+                                    x.Text = string.Empty;
+                                return string.Empty;
+                            }, token).ConfigureAwait(false);
+                            if (!string.IsNullOrEmpty(strTagToUse))
+                            {
+                                string strText = await GetStringAsync(strTagToUse, strIntoLanguage, false, token).ConfigureAwait(false);
+                                await objChild.DoThreadSafeAsync((x, y) => x.Text = strText, token).ConfigureAwait(false);
+                            }
+                            break;
+                        }
+                    case ToolStrip tssStrip:
+                        {
+                            List<Tuple<ToolStripItem, string>> lstTagsToUse = new List<Tuple<ToolStripItem, string>>();
+                            foreach (ToolStripItem tssItem in await tssStrip.DoThreadSafeFuncAsync((x, y) => x.Items, token))
+                                lstTagsToUse.AddRange(await TranslateToolStripItemsRecursivelyPrepAsync(tssStrip, tssItem, strIntoLanguage, eIntoRightToLeft, token));
+                            foreach ((ToolStripItem objControl, string strTag) in lstTagsToUse)
+                            {
+                                string strText = await GetStringAsync(strTag, strIntoLanguage, false, token).ConfigureAwait(false);
+                                await tssStrip.DoThreadSafeAsync(() => objControl.Text = strText, token).ConfigureAwait(false);
+                            }
+                            break;
+                        }
+                    case ListView lstList:
+                        {
+                            List<Tuple<ColumnHeader, string>> lstTagsToUse = new List<Tuple<ColumnHeader, string>>();
+                            await lstList.DoThreadSafeAsync((x, y) =>
+                            {
+                                foreach (ColumnHeader objHeader in x.Columns)
+                                {
+                                    string strControlTag = objHeader.Tag?.ToString();
+                                    if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _)
+                                                                             && !strControlTag.IsGuid()
+                                                                             && !File.Exists(strControlTag))
+                                        lstTagsToUse.Add(new Tuple<ColumnHeader, string>(objHeader, strControlTag));
+                                    else if (objHeader.Text.StartsWith('['))
+                                        objHeader.Text = string.Empty;
+                                }
+                            }, token).ConfigureAwait(false);
+                            foreach ((ColumnHeader objControl, string strTag) in lstTagsToUse)
+                            {
+                                string strText = await GetStringAsync(strTag, strIntoLanguage, false, token).ConfigureAwait(false);
+                                await lstList.DoThreadSafeAsync(() => objControl.Text = strText, token).ConfigureAwait(false);
+                            }
+
+                            break;
+                        }
+                    case TabControl objTabControl:
+                        {
+                            List<Tuple<TabPage, string>> lstTagsToUse = new List<Tuple<TabPage, string>>();
+                            foreach (TabPage tabPage in await objTabControl.DoThreadSafeFuncAsync((x, y) => x.TabPages, token).ConfigureAwait(false))
+                            {
+                                await tabPage.DoThreadSafeAsync((x, y) =>
+                                {
+                                    string strControlTag = x.Tag?.ToString();
+                                    if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _)
+                                                                             && !strControlTag.IsGuid()
+                                                                             && !File.Exists(strControlTag))
+                                    {
+                                        lstTagsToUse.Add(new Tuple<TabPage, string>(x, strControlTag));
+                                    }
+                                    else if (x.Text.StartsWith('['))
+                                        x.Text = string.Empty;
+                                }, token).ConfigureAwait(false);
+                                await UpdateControlsAsync(tabPage, strIntoLanguage, eIntoRightToLeft, token).ConfigureAwait(false);
+                            }
+                            foreach ((TabPage objControl, string strTag) in lstTagsToUse)
+                            {
+                                string strText = await GetStringAsync(strTag, strIntoLanguage, false, token).ConfigureAwait(false);
+                                await objControl.DoThreadSafeAsync((x, y) => x.Text = strText, token).ConfigureAwait(false);
+                            }
+
+                            break;
+                        }
+                    case SplitContainer objSplitControl:
+                        await UpdateControlsAsync(await objSplitControl.DoThreadSafeFuncAsync((x, y) => x.Panel1, token).ConfigureAwait(false), strIntoLanguage,
+                                                  eIntoRightToLeft, token).ConfigureAwait(false);
+                        await UpdateControlsAsync(await objSplitControl.DoThreadSafeFuncAsync((x, y) => x.Panel2, token).ConfigureAwait(false), strIntoLanguage,
+                                                  eIntoRightToLeft, token).ConfigureAwait(false);
+                        break;
+
+                    case GroupBox _:
+                        {
+                            string strTagToUse = await objChild.DoThreadSafeFuncAsync(x =>
+                            {
+                                string strControlTag = x.Tag?.ToString();
+                                if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _)
+                                                                         && !strControlTag.IsGuid()
+                                                                         && !File.Exists(strControlTag))
+                                    return strControlTag;
+                                if (x.Text.StartsWith('['))
+                                    x.Text = string.Empty;
+                                return string.Empty;
+                            }, token).ConfigureAwait(false);
+                            if (!string.IsNullOrEmpty(strTagToUse))
+                            {
+                                string strText = await GetStringAsync(strTagToUse, strIntoLanguage, false, token).ConfigureAwait(false);
+                                await objChild.DoThreadSafeAsync((x, y) => x.Text = strText, token).ConfigureAwait(false);
+                            }
+                            await UpdateControlsAsync(objChild, strIntoLanguage, eIntoRightToLeft, token).ConfigureAwait(false);
+                            break;
+                        }
+                    case Panel _:
+                        await UpdateControlsAsync(objChild, strIntoLanguage, eIntoRightToLeft, token).ConfigureAwait(false);
+                        break;
+
+                    case TreeView treTree:
+                        {
+                            List<Tuple<TreeNode, string>> lstTagsToUse = new List<Tuple<TreeNode, string>>();
+                            await treTree.DoThreadSafeAsync((x, y) =>
+                            {
+                                foreach (TreeNode objNode in x.Nodes)
+                                {
+                                    if (objNode.Level == 0)
+                                    {
+                                        string strControlTag = objNode.Tag?.ToString();
+                                        if (!string.IsNullOrEmpty(strControlTag)
+                                            && strControlTag.StartsWith("Node_", StringComparison.Ordinal))
+                                        {
+                                            lstTagsToUse.Add(new Tuple<TreeNode, string>(objNode, strControlTag));
+                                        }
+                                        else if (objNode.Text.StartsWith('['))
+                                            objNode.Text = string.Empty;
+                                    }
+                                    else if (objNode.Text.StartsWith('['))
+                                        objNode.Text = string.Empty;
+                                }
+                            }, token).ConfigureAwait(false);
+                            foreach ((TreeNode objControl, string strTag) in lstTagsToUse)
+                            {
+                                string strText = await GetStringAsync(strTag, strIntoLanguage, false, token).ConfigureAwait(false);
+                                await treTree.DoThreadSafeAsync(() => objControl.Text = strText, token).ConfigureAwait(false);
+                            }
+
+                            break;
+                        }
+                    case DataGridView objDataGridView:
+                        {
+                            List<Tuple<DataGridViewTextBoxColumn, string>> lstTagsToUse = new List<Tuple<DataGridViewTextBoxColumn, string>>();
+                            await objDataGridView.DoThreadSafeAsync((x, y) =>
+                            {
+                                foreach (DataGridViewTextBoxColumn objColumn in x.Columns)
+                                {
+                                    if (objColumn is DataGridViewTextBoxColumnTranslated objTranslatedColumn
+                                        && !string.IsNullOrWhiteSpace(objTranslatedColumn.TranslationTag))
+                                    {
+                                        lstTagsToUse.Add(new Tuple<DataGridViewTextBoxColumn, string>(objColumn, objTranslatedColumn.TranslationTag));
+                                    }
+                                }
+                            }, token).ConfigureAwait(false);
+                            foreach ((DataGridViewTextBoxColumn objControl, string strTag) in lstTagsToUse)
+                            {
+                                string strText = await GetStringAsync(strTag, strIntoLanguage, false, token).ConfigureAwait(false);
+                                await objDataGridView.DoThreadSafeAsync(() => objControl.HeaderText = strText, token).ConfigureAwait(false);
+                            }
+
+                            break;
+                        }
+                    case ITranslatable translatable:
+                        // let custom nodes determine how they want to be translated
+                        translatable.Translate(token);
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
         /// Loads the proper language from the language file for every menu item recursively
         /// </summary>
         /// <param name="tssItem">Given ToolStripItem to translate.</param>
@@ -512,6 +775,51 @@ namespace Chummer
             if (tssItem is ToolStripDropDownItem tssDropDownItem)
                 foreach (ToolStripItem tssDropDownChild in tssDropDownItem.DropDownItems)
                     TranslateToolStripItemsRecursively(tssDropDownChild, strIntoLanguage, eIntoRightToLeft, token);
+        }
+
+        /// <summary>
+        /// Loads the proper language from the language file for every menu item recursively
+        /// </summary>
+        /// <param name="tssBase">Base toolstrip to whose items are to be translated / actively being translated.</param>
+        /// <param name="tssItem">Given ToolStripItem to translate.</param>
+        /// <param name="strIntoLanguage">Language into which the ToolStripItem and all dropdown items should be translated.</param>
+        /// <param name="eIntoRightToLeft">Whether <paramref name="strIntoLanguage"/> uses right-to-left script or left-to-right. If left at Inherit, then a loading function will be used to set the value.</param>
+        /// <param name="token">CancellationToken to listen to.</param>
+        public static async Task<List<Tuple<ToolStripItem, string>>> TranslateToolStripItemsRecursivelyPrepAsync(this ToolStrip tssBase, ToolStripItem tssItem, string strIntoLanguage = "",
+                                                                                                                 RightToLeft eIntoRightToLeft = RightToLeft.Inherit,
+                                                                                                                 CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Tuple<ToolStripItem, string>> lstReturn = new List<Tuple<ToolStripItem, string>>();
+            if (tssItem == null)
+                return lstReturn;
+            if (string.IsNullOrEmpty(strIntoLanguage))
+                strIntoLanguage = GlobalSettings.Language;
+            if (eIntoRightToLeft == RightToLeft.Inherit && await LoadLanguageAsync(strIntoLanguage, token))
+            {
+                string strKey = strIntoLanguage.ToUpperInvariant();
+                if (LoadedLanguageData.TryGetValue(strKey, out LanguageData objLanguageData))
+                {
+                    eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
+                }
+            }
+
+            await tssBase.DoThreadSafeAsync(() =>
+            {
+                tssItem.RightToLeft = eIntoRightToLeft;
+
+                string strControlTag = tssItem.Tag?.ToString();
+                if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _)
+                                                         && !strControlTag.IsGuid() && !File.Exists(strControlTag))
+                    lstReturn.Add(new Tuple<ToolStripItem, string>(tssItem, strControlTag));
+                else if (tssItem.Text.StartsWith('['))
+                    tssItem.Text = string.Empty;
+            }, token).ConfigureAwait(false);
+
+            if (tssItem is ToolStripDropDownItem tssDropDownItem)
+                foreach (ToolStripItem tssDropDownChild in tssDropDownItem.DropDownItems)
+                    lstReturn.AddRange(await TranslateToolStripItemsRecursivelyPrepAsync(tssBase, tssDropDownChild, strIntoLanguage, eIntoRightToLeft, token));
+            return lstReturn;
         }
 
         /// <summary>

@@ -1463,10 +1463,52 @@ namespace Chummer
 
                 // Treat this as a decimal value so any fractions can be rounded down. This is currently only used by the Boosted Reflexes Cyberware from SR2050.
                 (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strReturn);
-                int intValue = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
 
                 //Log.Exit("ValueToInt");
-                return intValue;
+                return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
+            }
+
+            //Log.Exit("ValueToInt");
+            int.TryParse(strValue, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intReturn);
+            return intReturn;
+        }
+
+        /// <summary>
+        /// Convert a string to an integer, converting "Rating" to a number where appropriate.
+        /// </summary>
+        /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
+        /// <param name="strValue">String value to parse.</param>
+        /// <param name="intRating">Integer value to replace "Rating" with.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async ValueTask<int> ValueToIntAsync(Character objCharacter, string strValue, int intRating, CancellationToken token = default)
+        {
+            if (string.IsNullOrEmpty(strValue))
+                return 0;
+            //         Log.Enter("ValueToInt");
+            //         Log.Info("strValue = " + strValue);
+            //Log.Info("intRating = " + intRating.ToString());
+            if (strValue.StartsWith("FixedValues(", StringComparison.Ordinal))
+            {
+                string[] strValues = strValue.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
+                                             .Split(',', StringSplitOptions.RemoveEmptyEntries);
+                strValue = strValues[Math.Max(Math.Min(strValues.Length, intRating) - 1, 0)];
+            }
+
+            if (strValue.ContainsAny("Rating".Yield().Concat(AttributeSection.AttributeStrings)))
+            {
+                string strReturn = strValue.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
+                // If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
+                strReturn = await (await objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathAsync(strReturn, token: token).ConfigureAwait(false);
+                strReturn = strReturn.Replace("/", " div ");
+
+                //Log.Info("strValue = " + strValue);
+                //Log.Info("strReturn = " + strReturn);
+
+                // Treat this as a decimal value so any fractions can be rounded down. This is currently only used by the Boosted Reflexes Cyberware from SR2050.
+                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strReturn, token).ConfigureAwait(false);
+
+                //Log.Exit("ValueToInt");
+                return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
             }
 
             //Log.Exit("ValueToInt");
@@ -1506,10 +1548,52 @@ namespace Chummer
 
                 // Treat this as a decimal value so any fractions can be rounded down. This is currently only used by the Boosted Reflexes Cyberware from SR2050.
                 (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strReturn);
-                decimal decValue = blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
 
                 //Log.Exit("ValueToInt");
-                return decValue;
+                return blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
+            }
+
+            //Log.Exit("ValueToInt");
+            decimal.TryParse(strValue, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decReturn);
+            return decReturn;
+        }
+
+        /// <summary>
+        /// Convert a string to a decimal, converting "Rating" to a number where appropriate.
+        /// </summary>
+        /// <param name="objCharacter">Character to which the improvements belong that should be processed.</param>
+        /// <param name="strValue">String value to parse.</param>
+        /// <param name="intRating">Integer value to replace "Rating" with.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async ValueTask<decimal> ValueToDecAsync(Character objCharacter, string strValue, int intRating, CancellationToken token = default)
+        {
+            if (string.IsNullOrEmpty(strValue))
+                return 0;
+            //         Log.Enter("ValueToInt");
+            //         Log.Info("strValue = " + strValue);
+            //Log.Info("intRating = " + intRating.ToString());
+            if (strValue.StartsWith("FixedValues(", StringComparison.Ordinal))
+            {
+                string[] strValues = strValue.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
+                                             .Split(',', StringSplitOptions.RemoveEmptyEntries);
+                strValue = strValues[Math.Max(Math.Min(strValues.Length, intRating) - 1, 0)];
+            }
+
+            if (strValue.ContainsAny("Rating".Yield().Concat(AttributeSection.AttributeStrings)))
+            {
+                string strReturn = strValue.Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
+                // If the value contain an CharacterAttribute name, replace it with the character's CharacterAttribute.
+                strReturn = await (await objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathAsync(strReturn, token: token).ConfigureAwait(false);
+                strReturn = strReturn.Replace("/", " div ");
+
+                //Log.Info("strValue = " + strValue);
+                //Log.Info("strReturn = " + strReturn);
+
+                // Treat this as a decimal value so any fractions can be rounded down. This is currently only used by the Boosted Reflexes Cyberware from SR2050.
+                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strReturn, token).ConfigureAwait(false);
+
+                //Log.Exit("ValueToInt");
+                return blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
             }
 
             //Log.Exit("ValueToInt");

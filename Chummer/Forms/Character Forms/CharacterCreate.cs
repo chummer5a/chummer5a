@@ -274,10 +274,13 @@ namespace Chummer
                                     // Initialize elements if we're using Priority to build.
                                     if (CharacterObject.EffectiveBuildMethodUsesPriorityTables)
                                     {
+                                        string strText
+                                            = await LanguageManager.GetStringAsync("Menu_SpecialChangePriorities",
+                                                                        token: GenericToken).ConfigureAwait(false);
                                         await mnuCreateMenu.DoThreadSafeAsync(() =>
                                         {
                                             mnuSpecialChangeMetatype.Tag = "Menu_SpecialChangePriorities";
-                                            mnuSpecialChangeMetatype.TranslateToolStripItemsRecursively();
+                                            mnuSpecialChangeMetatype.Text = strText;
                                         }, GenericToken).ConfigureAwait(false);
                                     }
                                 }

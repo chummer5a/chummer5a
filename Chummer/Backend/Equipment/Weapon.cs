@@ -1559,7 +1559,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    await objWriter.WriteElementStringAsync("avail", TotalAvail(objCulture, strLanguageToPrint), token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("avail", await TotalAvailAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("cost", (await GetTotalCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("owncost", (await GetOwnCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("weight", TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture), token).ConfigureAwait(false);
@@ -6226,9 +6226,9 @@ namespace Chummer.Backend.Equipment
                                 string strLoopBonus = string.Empty;
                                 if (objLoopGear.Bonus.TryGetStringFieldQuickly("smartlink", ref strLoopBonus))
                                 {
-                                    decSmartlinkBonus = Math.Max(decSmartlinkBonus, ImprovementManager.ValueToDec(
+                                    decSmartlinkBonus = Math.Max(decSmartlinkBonus, await ImprovementManager.ValueToDecAsync(
                                                                      _objCharacter, strLoopBonus,
-                                                                     objLoopGear.Rating));
+                                                                     objLoopGear.Rating, token).ConfigureAwait(false));
                                 }
                             }
 
