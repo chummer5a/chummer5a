@@ -1531,9 +1531,10 @@ namespace Chummer.Backend.Equipment
                         // Apply the character's Cyberware Essence cost multiplier if applicable.
                         case Improvement.ImprovementSource.Cyberware:
                         {
-                            if (ImprovementManager.ValueOf(_objCharacter,
-                                                           Improvement.ImprovementType.CyberwareEssCostNonRetroactive,
-                                                           out List<Improvement> lstUsedImprovements) != 0)
+                            List<Improvement> lstUsedImprovements
+                                = ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter,
+                                    Improvement.ImprovementType.CyberwareEssCostNonRetroactive);
+                            if (lstUsedImprovements.Count != 0)
                             {
                                 decimal decMultiplier = 1;
                                 decMultiplier = lstUsedImprovements.Aggregate(decMultiplier,
@@ -1543,10 +1544,10 @@ namespace Chummer.Backend.Equipment
                                 decTemp1 -= 1.0m - decMultiplier;
                             }
 
-                            if (ImprovementManager.ValueOf(_objCharacter,
-                                                           Improvement.ImprovementType
-                                                                      .CyberwareTotalEssMultiplierNonRetroactive,
-                                                           out lstUsedImprovements) != 0)
+                            lstUsedImprovements
+                                = ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter,
+                                    Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive);
+                            if (lstUsedImprovements.Count != 0)
                             {
                                 foreach (Improvement objImprovement in lstUsedImprovements)
                                 {
@@ -1560,9 +1561,10 @@ namespace Chummer.Backend.Equipment
                         // Apply the character's Bioware Essence cost multiplier if applicable.
                         case Improvement.ImprovementSource.Bioware:
                         {
-                            if (ImprovementManager.ValueOf(_objCharacter,
-                                                           Improvement.ImprovementType.BiowareEssCostNonRetroactive,
-                                                           out List<Improvement> lstUsedImprovements) != 0)
+                            List<Improvement> lstUsedImprovements
+                                = ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter,
+                                    Improvement.ImprovementType.BiowareEssCostNonRetroactive);
+                            if (lstUsedImprovements.Count != 0)
                             {
                                 decimal decMultiplier = 1;
                                 decMultiplier = lstUsedImprovements.Aggregate(decMultiplier,
@@ -1572,10 +1574,10 @@ namespace Chummer.Backend.Equipment
                                 decTemp1 -= 1.0m - decMultiplier;
                             }
 
-                            if (ImprovementManager.ValueOf(_objCharacter,
-                                                           Improvement.ImprovementType
-                                                                      .BiowareTotalEssMultiplierNonRetroactive,
-                                                           out lstUsedImprovements) != 0)
+                            lstUsedImprovements
+                                = ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter,
+                                    Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive);
+                            if (lstUsedImprovements.Count != 0)
                             {
                                 foreach (Improvement objImprovement in lstUsedImprovements)
                                 {
@@ -5321,7 +5323,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async ValueTask<string> TotalAvailAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            return await (await TotalAvailTupleAsync(token: token).ConfigureAwait(false)).ToStringAsync(objCulture, strLanguage, token);
+            return await (await TotalAvailTupleAsync(token: token).ConfigureAwait(false)).ToStringAsync(objCulture, strLanguage, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -6341,14 +6343,18 @@ namespace Chummer.Backend.Equipment
                     decReturn *= 0.9m;
 
                 // Genetech Cost multiplier.
-                if (IsGeneware && ImprovementManager.ValueOf(_objCharacter,
-                                                             Improvement.ImprovementType.GenetechCostMultiplier,
-                                                             out List<Improvement> lstUsedImprovements) != 0)
+                if (IsGeneware)
                 {
-                    decimal decMultiplier = lstUsedImprovements.Aggregate(
-                        1.0m, (current, objImprovement) => current - (1.0m - (objImprovement.Value / 100.0m)));
+                    List<Improvement> lstUsedImprovements
+                        = ImprovementManager.GetCachedImprovementListForValueOf(
+                            _objCharacter, Improvement.ImprovementType.GenetechCostMultiplier);
+                    if (lstUsedImprovements.Count != 0)
+                    {
+                        decimal decMultiplier = lstUsedImprovements.Aggregate(
+                            1.0m, (current, objImprovement) => current - (1.0m - (objImprovement.Value / 100.0m)));
 
-                    decReturn *= decMultiplier;
+                        decReturn *= decMultiplier;
+                    }
                 }
 
                 // Add in the cost of all child components.
@@ -6518,14 +6524,21 @@ namespace Chummer.Backend.Equipment
                     decReturn *= 0.9m;
 
                 // Genetech Cost multiplier.
-                if (IsGeneware && ImprovementManager.ValueOf(_objCharacter,
-                                                             Improvement.ImprovementType.GenetechCostMultiplier,
-                                                             out List<Improvement> lstUsedImprovements) != 0)
+                if (IsGeneware)
                 {
-                    decimal decMultiplier = lstUsedImprovements.Aggregate(
-                        1.0m, (current, objImprovement) => current - (1.0m - (objImprovement.Value / 100.0m)));
+                    List<Improvement> lstUsedImprovements = await ImprovementManager
+                                                                  .GetCachedImprovementListForValueOfAsync(
+                                                                      _objCharacter,
+                                                                      Improvement.ImprovementType
+                                                                          .GenetechCostMultiplier,
+                                                                      token: token).ConfigureAwait(false);
+                    if (lstUsedImprovements.Count != 0)
+                    {
+                        decimal decMultiplier = lstUsedImprovements.Aggregate(
+                            1.0m, (current, objImprovement) => current - (1.0m - (objImprovement.Value / 100.0m)));
 
-                    decReturn *= decMultiplier;
+                        decReturn *= decMultiplier;
+                    }
                 }
 
                 // Add in the cost of all child components.

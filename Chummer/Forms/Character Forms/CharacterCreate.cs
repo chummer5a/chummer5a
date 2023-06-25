@@ -18755,7 +18755,7 @@ namespace Chummer
                             string strAvail = await objAccessory.GetDisplayTotalAvailAsync(token).ConfigureAwait(false);
                             await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = strAvail, token)
                                                  .ConfigureAwait(false);
-                            string strCost = (await objAccessory.GetTotalCostAsync(token)).ToString(
+                            string strCost = (await objAccessory.GetTotalCostAsync(token).ConfigureAwait(false)).ToString(
                                                  CharacterObjectSettings.NuyenFormat,
                                                  GlobalSettings.CultureInfo)
                                              + await LanguageManager.GetStringAsync(

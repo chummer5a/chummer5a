@@ -317,7 +317,7 @@ namespace Chummer
                         lstTasks.Add(Task.Run(() => LoadSetting(xmlBuiltInSetting), token));
                     }
 
-                    await Task.WhenAll(lstTasks);
+                    await Task.WhenAll(lstTasks).ConfigureAwait(false);
 
                     async Task LoadSetting(XPathNavigator xmlBuiltInSetting)
                     {

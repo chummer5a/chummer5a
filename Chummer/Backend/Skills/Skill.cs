@@ -599,7 +599,7 @@ namespace Chummer.Backend.Skills
 
             using (XmlNodeList xmlSpecList = xmlSkillNode.SelectNodes("skillspecializations/skillspecialization"))
             {
-                if (xmlSpecList != null && xmlSpecList.Count > 0)
+                if (xmlSpecList?.Count > 0)
                 {
                     foreach (XmlNode xmlSpec in xmlSpecList)
                     {

@@ -2492,7 +2492,7 @@ namespace Chummer
             try
             {
                 // ToolStrip Items.
-                foreach (ToolStrip objToolStrip in await this.DoThreadSafeFuncAsync((x, y) => x.Controls.OfType<ToolStrip>(), _objGenericToken))
+                foreach (ToolStrip objToolStrip in await this.DoThreadSafeFuncAsync((x, y) => x.Controls.OfType<ToolStrip>(), _objGenericToken).ConfigureAwait(false))
                 {
                     await objToolStrip.DoThreadSafeAsync(x =>
                     {

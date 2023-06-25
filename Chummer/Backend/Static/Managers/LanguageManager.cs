@@ -186,7 +186,7 @@ namespace Chummer
                     // ReSharper disable once MethodHasAsyncOverload
                     UpdateControls(objObject, strIntoLanguage, eIntoRightToLeft, token);
                 else
-                    await UpdateControlsAsync(objObject, strIntoLanguage, eIntoRightToLeft, token);
+                    await UpdateControlsAsync(objObject, strIntoLanguage, eIntoRightToLeft, token).ConfigureAwait(false);
             }
             else if (!strIntoLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
@@ -194,7 +194,7 @@ namespace Chummer
                     // ReSharper disable once MethodHasAsyncOverload
                     UpdateControls(objObject, GlobalSettings.DefaultLanguage, RightToLeft.No, token);
                 else
-                    await UpdateControlsAsync(objObject, GlobalSettings.DefaultLanguage, RightToLeft.No, token);
+                    await UpdateControlsAsync(objObject, GlobalSettings.DefaultLanguage, RightToLeft.No, token).ConfigureAwait(false);
             }
 
             if (blnDoResumeLayout)
@@ -533,8 +533,8 @@ namespace Chummer
                 if (objMenuStrip != null)
                 {
                     List<Tuple<ToolStripItem, string>> lstTagsToUse = new List<Tuple<ToolStripItem, string>>();
-                    foreach (ToolStripItem tssItem in await objMenuStrip.DoThreadSafeFuncAsync((x, y) => x.Items, token))
-                        lstTagsToUse.AddRange(await TranslateToolStripItemsRecursivelyPrepAsync(objMenuStrip, tssItem, strIntoLanguage, eIntoRightToLeft, token));
+                    foreach (ToolStripItem tssItem in await objMenuStrip.DoThreadSafeFuncAsync((x, y) => x.Items, token).ConfigureAwait(false))
+                        lstTagsToUse.AddRange(await TranslateToolStripItemsRecursivelyPrepAsync(objMenuStrip, tssItem, strIntoLanguage, eIntoRightToLeft, token).ConfigureAwait(false));
                     foreach ((ToolStripItem objControl, string strTag) in lstTagsToUse)
                     {
                         string strText = await GetStringAsync(strTag, strIntoLanguage, false, token).ConfigureAwait(false);
@@ -586,8 +586,8 @@ namespace Chummer
                     case ToolStrip tssStrip:
                         {
                             List<Tuple<ToolStripItem, string>> lstTagsToUse = new List<Tuple<ToolStripItem, string>>();
-                            foreach (ToolStripItem tssItem in await tssStrip.DoThreadSafeFuncAsync((x, y) => x.Items, token))
-                                lstTagsToUse.AddRange(await TranslateToolStripItemsRecursivelyPrepAsync(tssStrip, tssItem, strIntoLanguage, eIntoRightToLeft, token));
+                            foreach (ToolStripItem tssItem in await tssStrip.DoThreadSafeFuncAsync((x, y) => x.Items, token).ConfigureAwait(false))
+                                lstTagsToUse.AddRange(await TranslateToolStripItemsRecursivelyPrepAsync(tssStrip, tssItem, strIntoLanguage, eIntoRightToLeft, token).ConfigureAwait(false));
                             foreach ((ToolStripItem objControl, string strTag) in lstTagsToUse)
                             {
                                 string strText = await GetStringAsync(strTag, strIntoLanguage, false, token).ConfigureAwait(false);
@@ -795,7 +795,7 @@ namespace Chummer
                 return lstReturn;
             if (string.IsNullOrEmpty(strIntoLanguage))
                 strIntoLanguage = GlobalSettings.Language;
-            if (eIntoRightToLeft == RightToLeft.Inherit && await LoadLanguageAsync(strIntoLanguage, token))
+            if (eIntoRightToLeft == RightToLeft.Inherit && await LoadLanguageAsync(strIntoLanguage, token).ConfigureAwait(false))
             {
                 string strKey = strIntoLanguage.ToUpperInvariant();
                 if (LoadedLanguageData.TryGetValue(strKey, out LanguageData objLanguageData))
@@ -818,7 +818,7 @@ namespace Chummer
 
             if (tssItem is ToolStripDropDownItem tssDropDownItem)
                 foreach (ToolStripItem tssDropDownChild in tssDropDownItem.DropDownItems)
-                    lstReturn.AddRange(await TranslateToolStripItemsRecursivelyPrepAsync(tssBase, tssDropDownChild, strIntoLanguage, eIntoRightToLeft, token));
+                    lstReturn.AddRange(await TranslateToolStripItemsRecursivelyPrepAsync(tssBase, tssDropDownChild, strIntoLanguage, eIntoRightToLeft, token).ConfigureAwait(false));
             return lstReturn;
         }
 

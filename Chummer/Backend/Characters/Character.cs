@@ -33751,9 +33751,11 @@ namespace Chummer
                 //The sustaining of Critterpowers doesn't cause any penalties that's why they aren't counted there is no way to change them to self sustained anyway, but just to be sure
                 List<SustainedObject> lstSustainedSpells =
                     SustainedCollection.Where(x => x.HasSustainingPenalty).ToList();
+                List<Improvement> lstUsedImprovements
+                    = ImprovementManager.GetCachedImprovementListForValueOf(
+                        this, Improvement.ImprovementType.PenaltyFreeSustain, token: token);
                 // Handling of bonuses that let characters sustain some objects for free requires special handling in order to best match the bonus ensemble to the sustained spells ensemble
-                if (ImprovementManager.ValueOf(this, Improvement.ImprovementType.PenaltyFreeSustain,
-                                               out List<Improvement> lstUsedImprovements, token: token) != 0)
+                if (lstUsedImprovements.Count != 0)
                 {
                     // Set up a dictionary where the key is the maximum force/level of the bonus and the value is the number of objects that can be sustained
                     SortedDictionary<decimal, int> dicPenaltyFreeSustains = new SortedDictionary<decimal, int>();
@@ -33841,10 +33843,10 @@ namespace Chummer
                 //The sustaining of Critterpowers doesn't cause any penalties that's why they aren't counted there is no way to change them to self sustained anyway, but just to be sure
                 List<SustainedObject> lstSustainedSpells =
                     await SustainedCollection.ToListAsync(x => x.HasSustainingPenalty, token: token).ConfigureAwait(false);
-                (decimal decValue, List<Improvement> lstUsedImprovements)
-                    = await ImprovementManager.ValueOfTupleAsync(this, Improvement.ImprovementType.PenaltyFreeSustain, token: token).ConfigureAwait(false);
+                List<Improvement> lstUsedImprovements
+                    = await ImprovementManager.GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.PenaltyFreeSustain, token: token).ConfigureAwait(false);
                 // Handling of bonuses that let characters sustain some objects for free requires special handling in order to best match the bonus ensemble to the sustained spells ensemble
-                if (decValue != 0)
+                if (lstUsedImprovements.Count != 0)
                 {
                     // Set up a dictionary where the key is the maximum force/level of the bonus and the value is the number of objects that can be sustained
                     SortedDictionary<decimal, int> dicPenaltyFreeSustains = new SortedDictionary<decimal, int>();

@@ -991,10 +991,10 @@ namespace Chummer
         {
             unchecked
             {
-                int hashCode = (Name != null ? Name.GetHashCode() : 0);
+                int hashCode = Name?.GetHashCode() ?? 0;
                 hashCode = (hashCode * 397) ^ UniqueIdentifier.GetHashCode();
-                hashCode = (hashCode * 397) ^ (MinimumVersion != null ? MinimumVersion.GetHashCode() : 0);
-                hashCode = (hashCode * 397) ^ (MaximumVersion != null ? MaximumVersion.GetHashCode() : 0);
+                hashCode = (hashCode * 397) ^ (MinimumVersion?.GetHashCode() ?? 0);
+                hashCode = (hashCode * 397) ^ (MaximumVersion?.GetHashCode() ?? 0);
                 return hashCode;
             }
         }
