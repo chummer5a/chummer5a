@@ -111,7 +111,17 @@
                 <td width="16.67%" class="title">
                   <xsl:value-of select="$lang.Name" />:
                 </td>
-                <td colspan="5">
+                <td>
+                <xsl:attribute name="colspan">
+		            <xsl:choose>
+			            <xsl:when test="buildmethod = 'Priority'">
+				            <xsl:value-of select="'3'" />
+			            </xsl:when>
+			            <xsl:otherwise>
+				            <xsl:value-of select="'5'" />
+			            </xsl:otherwise>
+		            </xsl:choose>
+	            </xsl:attribute>
                   <xsl:choose>
                     <xsl:when test="alias = '' or name = '' or name = $lang.UnnamedCharacter">
                       <xsl:value-of select="$TitleName" />
@@ -125,6 +135,14 @@
                     </xsl:otherwise>
                   </xsl:choose>
                 </td>
+                <xsl:if test="buildmethod = 'Priority'">
+                  <td class="upper">
+                      <xsl:value-of select="$lang.Priorities" />:
+                  </td>
+                  <td>
+                      <xsl:value-of select="prioritymetatype" /><xsl:value-of select="priorityattributes" /><xsl:value-of select="priorityspecial" /><xsl:value-of select="priorityskills" /><xsl:value-of select="priorityresources" />
+                  </td>
+              </xsl:if>
               </tr>
               <xsl:if test="playername != ''">
               <tr>
