@@ -34,6 +34,7 @@ Application Changes:
 - The house rule to compensate karma costs when increasing the lowest-ranked skill in a skill group no longer applies the karma discount multiple times during character creation.
 - Fixed an issue where the Armor (Drone) vehicle mod would not correctly override the armor value of the drone.
 - If a character has unused contact points, spell points, or complex form points at character creation, the character validator now warns of this the same way it does of unused knowledge skill points, skill points, attribute points, and special attribute points.
+- Barehanded Adept properly always doubles spell drain instead of doubling the constant component of spell drain codes and not affecting spells cast at forces where drain is dictated by the minimum spell drain of 2 DV. Fixes #5022.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.
