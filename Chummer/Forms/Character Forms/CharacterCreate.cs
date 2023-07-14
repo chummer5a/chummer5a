@@ -20692,6 +20692,182 @@ namespace Chummer
                         }
                     }
 
+                    // Check if the character has extra spell points
+                    if (blnValid)
+                    {
+                        if (await CharacterObject.GetFreeSpellsAsync(token).ConfigureAwait(false) > 0
+                            || (await ImprovementManager
+                                      .GetCachedImprovementListForValueOfAsync(CharacterObject,
+                                                                               Improvement.ImprovementType.FreeSpells,
+                                                                               token: token)
+                                      .ConfigureAwait(false)).Count > 0
+                            || (await ImprovementManager
+                                      .GetCachedImprovementListForValueOfAsync(CharacterObject,
+                                                                               Improvement.ImprovementType
+                                                                                   .FreeSpellsATT,
+                                                                               token: token).ConfigureAwait(false))
+                            .Count > 0
+                            || (await ImprovementManager
+                                      .GetCachedImprovementListForValueOfAsync(CharacterObject,
+                                                                               Improvement.ImprovementType
+                                                                                   .FreeSpellsSkill,
+                                                                               token: token).ConfigureAwait(false))
+                            .Count > 0)
+                        {
+                            ThreadSafeObservableCollection<Spell> lstSpells
+                                = await CharacterObject.GetSpellsAsync(token).ConfigureAwait(false);
+                            // Count the number of Spells the character currently has
+                            int intUsedPoints = await lstSpells
+                                                      .CountAsync(
+                                                          spell => spell.Grade == 0 && !spell.FreeBonus,
+                                                          token: token).ConfigureAwait(false);
+                            int intTouchOnlySpells = await lstSpells
+                                                           .CountAsync(
+                                                               spell => spell.Grade == 0 && !spell.Alchemical
+                                                                   && spell.Category != "Rituals"
+                                                                   && (spell.Range == "T (A)"
+                                                                       || spell.Range == "T")
+                                                                   && !spell.FreeBonus, token: token)
+                                                           .ConfigureAwait(false);
+
+                            int intFreeSpells = await CharacterObject.GetFreeSpellsAsync(token).ConfigureAwait(false);
+
+                            token.ThrowIfCancellationRequested();
+
+                            if (intFreeSpells > 0)
+                            {
+                                // Each spell costs KarmaSpell.
+                                int spellCost = await CharacterObject.SpellKarmaCostAsync("Spells", token)
+                                                                     .ConfigureAwait(false);
+                                // Factor in any qualities that can be bought with spell points.
+                                // It is only karma-efficient to use spell points for Mastery qualities if real spell karma cost is not greater than unmodified spell karma cost
+                                int intKarmaSpell = await CharacterObjectSettings.GetKarmaSpellAsync(token)
+                                    .ConfigureAwait(false);
+                                if (spellCost <= intKarmaSpell && intKarmaSpell != 0)
+                                {
+                                    // Assume that every [spell cost] karma spent on a Mastery quality is paid for with a priority-given spell point instead, as that is the most karma-efficient.
+                                    int intMasteryQualityKarmaUsed
+                                        = await (await CharacterObject.GetQualitiesAsync(token).ConfigureAwait(false))
+                                                .SumAsync(
+                                                    objQuality =>
+                                                        objQuality.CanBuyWithSpellPoints,
+                                                    objQuality => objQuality.BP, token)
+                                                .ConfigureAwait(false);
+                                    if (intMasteryQualityKarmaUsed != 0)
+                                    {
+                                        int intQualityKarmaToSpellPoints
+                                            = Math.Min(
+                                                intFreeSpells,
+                                                intMasteryQualityKarmaUsed * await CharacterObjectSettings
+                                                    .GetKarmaQualityAsync(token)
+                                                    .ConfigureAwait(false)
+                                                / intKarmaSpell);
+                                        intUsedPoints += intQualityKarmaToSpellPoints;
+                                    }
+                                }
+                            }
+
+                            token.ThrowIfCancellationRequested();
+
+                            int intLimitMod = (await ImprovementManager
+                                                     .ValueOfAsync(CharacterObject,
+                                                                   Improvement.ImprovementType.SpellLimit,
+                                                                   token: token).ConfigureAwait(false)
+                                               + await ImprovementManager
+                                                       .ValueOfAsync(CharacterObject,
+                                                                     Improvement.ImprovementType.FreeSpells,
+                                                                     token: token).ConfigureAwait(false))
+                                .StandardRound();
+                            int intLimitModTouchOnly = 0;
+                            foreach (Improvement imp in await ImprovementManager
+                                                              .GetCachedImprovementListForValueOfAsync(
+                                                                  CharacterObject,
+                                                                  Improvement.ImprovementType.FreeSpellsATT,
+                                                                  token: token).ConfigureAwait(false))
+                            {
+                                token.ThrowIfCancellationRequested();
+                                int intAttValue
+                                    = await (await CharacterObject.GetAttributeAsync(imp.ImprovedName, token: token)
+                                                                  .ConfigureAwait(false)).GetTotalValueAsync(token)
+                                        .ConfigureAwait(false);
+                                if (imp.UniqueName.Contains("half"))
+                                    intAttValue = (intAttValue + 1) / 2;
+                                if (imp.UniqueName.Contains("touchonly"))
+                                    intLimitModTouchOnly += intAttValue;
+                                else
+                                    intLimitMod += intAttValue;
+                            }
+
+                            foreach (Improvement imp in await ImprovementManager
+                                                              .GetCachedImprovementListForValueOfAsync(
+                                                                  CharacterObject,
+                                                                  Improvement.ImprovementType.FreeSpellsSkill,
+                                                                  token: token).ConfigureAwait(false))
+                            {
+                                token.ThrowIfCancellationRequested();
+                                Skill skill = await objSkillsSection.GetActiveSkillAsync(imp.ImprovedName, token)
+                                                                    .ConfigureAwait(false);
+                                if (skill == null)
+                                    continue;
+                                int intSkillValue = await skill.GetTotalBaseRatingAsync(token).ConfigureAwait(false);
+
+                                if (imp.UniqueName.Contains("half"))
+                                    intSkillValue = (intSkillValue + 1) / 2;
+                                if (imp.UniqueName.Contains("touchonly"))
+                                    intLimitModTouchOnly += intSkillValue;
+                                else
+                                    intLimitMod += intSkillValue;
+                                //TODO: I don't like this being hardcoded, even though I know full well CGL are never going to reuse this.
+                                intUsedPoints -= await (await skill.GetSpecializationsAsync(token).ConfigureAwait(false))
+                                                       .CountAsync(
+                                                           async spec =>
+                                                               await (await CharacterObject.GetSpellsAsync(token)
+                                                                       .ConfigureAwait(false)).AnyAsync(
+                                                                       spell => spell.Category == spec.Name
+                                                                           && !spell.FreeBonus,
+                                                                       token)
+                                                                   .ConfigureAwait(false),
+                                                           token)
+                                                       .ConfigureAwait(false);
+                            }
+
+                            if (await CharacterObject.GetUseMysticAdeptPPsAsync(token).ConfigureAwait(false)
+                                && await CharacterObjectSettings.GetPrioritySpellsAsAdeptPowersAsync(token)
+                                                                .ConfigureAwait(false))
+                            {
+                                intUsedPoints += await nudMysticAdeptMAGMagician
+                                                       .DoThreadSafeFuncAsync(x => x.ValueAsInt, token)
+                                                       .ConfigureAwait(false);
+                            }
+
+                            intUsedPoints -= intTouchOnlySpells - Math.Max(0, intTouchOnlySpells - intLimitModTouchOnly);
+
+                            int intPointsRemaining = intFreeSpells + intLimitMod - intUsedPoints;
+
+                            if (intPointsRemaining > 0
+                                && Program.ShowScrollableMessageBox(this,
+                                                                    string.Format(
+                                                                        GlobalSettings.CultureInfo,
+                                                                        await LanguageManager.GetStringAsync(
+                                                                                "Message_ExtraPoints", token: token)
+                                                                            .ConfigureAwait(false),
+                                                                        intPointsRemaining.ToString(
+                                                                            GlobalSettings.CultureInfo),
+                                                                        await LanguageManager
+                                                                              .GetStringAsync(
+                                                                                  "String_FreeSpells", token: token)
+                                                                              .ConfigureAwait(false)),
+                                                                    await LanguageManager.GetStringAsync(
+                                                                            "MessageTitle_ExtraPoints", token: token)
+                                                                        .ConfigureAwait(false),
+                                                                    MessageBoxButtons.YesNo,
+                                                                    MessageBoxIcon.Warning) == DialogResult.No)
+                            {
+                                blnValid = false;
+                            }
+                        }
+                    }
+
                     // Check if the character has extra complex form points
                     if (blnValid)
                     {

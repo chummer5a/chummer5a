@@ -435,27 +435,39 @@ namespace Chummer
 
                         intBP *= await nudRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token).ConfigureAwait(false);
 
-                        await lblBP.DoThreadSafeAsync(x => x.Text = (intBP * _objCharacter.Settings.KarmaQuality).ToString(GlobalSettings.CultureInfo), token: token).ConfigureAwait(false);
-                        if (!_objCharacter.Created && _objCharacter.FreeSpells > 0 && Convert.ToBoolean(
-                            (await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("canbuywithspellpoints", token).ConfigureAwait(false))?.Value,
-                            GlobalSettings.InvariantCultureInfo))
+                        int intKarmaCost = intBP * _objCharacter.Settings.KarmaQuality;
+                        await lblBP.DoThreadSafeAsync(x => x.Text = intKarmaCost.ToString(GlobalSettings.CultureInfo), token: token).ConfigureAwait(false);
+                        if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                         {
-                            int i = (intBP * _objCharacter.Settings.KarmaQuality);
-                            int spellPoints = 0;
-                            while (i > 0)
+                            int intFreeSpells = await _objCharacter.GetFreeSpellsAsync(token).ConfigureAwait(false);
+                            if (intFreeSpells > 0 
+                                && Convert.ToBoolean(
+                                    (await xmlQuality.SelectSingleNodeAndCacheExpressionAsync("canbuywithspellpoints", token).ConfigureAwait(false))?.Value,
+                                    GlobalSettings.InvariantCultureInfo))
                             {
-                                i -= 5;
-                                spellPoints++;
-                            }
+                                int intSpellCost = await _objCharacter.SpellKarmaCostAsync("Spell", token)
+                                                                      .ConfigureAwait(false);
+                                int intSpellPoints = intKarmaCost.DivRem(intSpellCost, out int intRemainder);
+                                if (intSpellPoints > intFreeSpells)
+                                {
+                                    intRemainder = intSpellCost * (intSpellPoints - intFreeSpells);
+                                    intSpellPoints = intFreeSpells;
+                                }
 
-                            string strBP = string.Format(GlobalSettings.CultureInfo, "{0}/{0}{1}{0}{2}",
-                                                         await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false),
-                                                         spellPoints,
-                                                         await LanguageManager.GetStringAsync("String_SpellPoints", token: token).ConfigureAwait(false));
-                            string strBPTooltip
-                                = await LanguageManager.GetStringAsync("Tip_SelectSpell_MasteryQuality", token: token).ConfigureAwait(false);
-                            await lblBP.DoThreadSafeAsync(x => x.Text += strBP, token: token).ConfigureAwait(false);
-                            await lblBP.SetToolTipTextAsync(strBPTooltip, token).ConfigureAwait(false);
+                                string strBP = string.Format(GlobalSettings.CultureInfo, "{1}{0}+{0}{2}{0}{3}",
+                                                             await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false),
+                                                             intRemainder,
+                                                             intSpellPoints,
+                                                             await LanguageManager.GetStringAsync("String_SpellPoints", token: token).ConfigureAwait(false));
+                                string strBPTooltip
+                                    = await LanguageManager.GetStringAsync("Tip_SelectSpell_MasteryQuality", token: token).ConfigureAwait(false);
+                                await lblBP.DoThreadSafeAsync(x => x.Text = strBP, token: token).ConfigureAwait(false);
+                                await lblBP.SetToolTipTextAsync(strBPTooltip, token).ConfigureAwait(false);
+                            }
+                            else
+                            {
+                                await lblBP.SetToolTipTextAsync(string.Empty, token).ConfigureAwait(false);
+                            }
                         }
                         else
                         {
