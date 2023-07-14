@@ -22,6 +22,7 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Chummer;
 using SevenZip.Compression.LZ;
 using SevenZip.Compression.RangeCoder;
 
@@ -505,10 +506,8 @@ namespace SevenZip.Compression.LZMA
         {
             if (properties.Length < 5)
                 throw new InvalidParamException();
-            int lc = properties[0] % 9;
-            int remainder = properties[0] / 9;
-            int lp = remainder % 5;
-            int pb = remainder / 5;
+            int remainder = MathExtensions.DivRem(properties[0], 9, out int lc);
+            int pb = remainder.DivRem(5, out int lp);
             if (pb > Base.kNumPosStatesBitsMax)
                 throw new InvalidParamException();
             uint dictionarySize = 0;
