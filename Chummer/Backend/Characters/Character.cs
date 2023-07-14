@@ -9915,11 +9915,15 @@ namespace Chummer
                           .ConfigureAwait(false);
                     // <contactpoints />
                     await objWriter
-                          .WriteElementStringAsync("contactpoints", ContactPoints.ToString(objCulture), token: token)
+                          .WriteElementStringAsync("contactpoints",
+                                                   (await GetContactPointsAsync(token).ConfigureAwait(false)).ToString(
+                                                       objCulture), token: token)
                           .ConfigureAwait(false);
                     // <contactpointsused />
                     await objWriter.WriteElementStringAsync("contactpointsused",
-                                                            ContactPointsUsed.ToString(objCulture), token: token)
+                                                            (await GetContactPointsUsedAsync(token)
+                                                                .ConfigureAwait(false)).ToString(objCulture),
+                                                            token: token)
                                    .ConfigureAwait(false);
                     // <cfplimit />
                     await objWriter.WriteElementStringAsync("cfplimit", CFPLimit.ToString(objCulture), token: token)
@@ -16607,6 +16611,15 @@ namespace Chummer
                     OnPropertyChanged();
                 }
             }
+        }
+
+        /// <summary>
+        /// Number of free Contact Points the character has used.
+        /// </summary>
+        public async ValueTask<int> GetContactPointsUsedAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _intContactPointsUsed;
         }
 
         public async ValueTask SetContactPointsUsedAsync(int value, CancellationToken token = default)

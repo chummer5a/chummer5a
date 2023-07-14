@@ -8294,6 +8294,30 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        public async Task CheckBannedGradesAsync(StringBuilder sbdBannedItems, CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                if (string.IsNullOrEmpty(ParentID)
+                    && (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BannedWareGrades.Any(
+                        s => Grade.Name.Contains(s)))
+                {
+                    sbdBannedItems.AppendLine().Append("\t\t")
+                                  .Append(await GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
+                }
+
+                if (!await (await _objGrade.GetNodeXPathAsync(token).ConfigureAwait(false))
+                           .RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false))
+                {
+                    sbdBannedItems.AppendLine().Append("\t\t")
+                                  .Append(await GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
+                }
+
+                await Children.ForEachAsync(objChild => objChild.CheckBannedGradesAsync(sbdBannedItems, token), token)
+                              .ConfigureAwait(false);
+            }
+        }
+
         #region UI Methods
 
         /// <summary>

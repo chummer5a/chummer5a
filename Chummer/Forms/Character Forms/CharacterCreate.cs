@@ -19726,13 +19726,15 @@ namespace Chummer
 
                     if (await CharacterObject.GetFriendsInHighPlacesAsync(token).ConfigureAwait(false))
                     {
+                        ThreadSafeObservableCollection<Contact> lstContacts
+                            = await CharacterObject.GetContactsAsync(token).ConfigureAwait(false);
                         // If we have Friends in High Places, then we need to account for any mixture of Friends in High Places plus contact karma discounts (e.g. from Massive Network)
-                        if (await CharacterObject.Contacts.AnyAsync(x => x.Connection < 8 && x.ContactPoints > 7, token)
-                                                 .ConfigureAwait(false)
+                        if (await lstContacts.AnyAsync(x => x.Connection < 8 && x.ContactPoints > 7, token)
+                                             .ConfigureAwait(false)
                             // With Friends in High Places, we can only have "too high contacts" if we overspend our Friends in High Places karma on eligible contacts
-                            || await CharacterObject.Contacts
-                                                    .SumAsync(x => x.Connection >= 8 && x.ContactPoints > 7,
-                                                              x => x.ContactPoints, token).ConfigureAwait(false)
+                            || await lstContacts
+                                     .SumAsync(x => x.Connection >= 8 && x.ContactPoints > 7,
+                                               x => x.ContactPoints, token).ConfigureAwait(false)
                             > 4 * await (await CharacterObject.GetAttributeAsync("CHA", token: token)
                                                               .ConfigureAwait(false)).GetValueAsync(token)
                                 .ConfigureAwait(false))
@@ -19743,7 +19745,8 @@ namespace Chummer
                                                                    .ConfigureAwait(false));
                         }
                     }
-                    else if (await CharacterObject.Contacts.AnyAsync(x => x.ContactPoints > 7, token).ConfigureAwait(false))
+                    else if (await (await CharacterObject.GetContactsAsync(token).ConfigureAwait(false))
+                                   .AnyAsync(x => x.ContactPoints > 7, token).ConfigureAwait(false))
                     {
                         blnValid = false;
                         sbdMessage.AppendLine().Append('\t')
@@ -19819,18 +19822,22 @@ namespace Chummer
                         }
                     }
 
+                    AttributeSection objAttributeSection
+                        = await CharacterObject.GetAttributeSectionAsync(token).ConfigureAwait(false);
+                    ThreadSafeObservableCollection<CharacterAttrib> lstAttributes
+                        = await objAttributeSection.GetAttributeListAsync(token).ConfigureAwait(false);
                     // Check if the character has more attributes at their metatype max than allowed
                     if (CharacterObjectSettings.MaxNumberMaxAttributesCreate
-                        < await CharacterObject.AttributeSection.AttributeList.GetCountAsync(token)
-                                               .ConfigureAwait(false))
+                        < await lstAttributes.GetCountAsync(token)
+                                             .ConfigureAwait(false))
                     {
                         int intCountAttributesAtMax
-                            = await CharacterObject.AttributeSection.AttributeList.CountAsync(
-                                                       async x => x.MetatypeCategory
-                                                                  == CharacterAttrib.AttributeCategory.Standard
-                                                                  && await x.GetAtMetatypeMaximumAsync(token)
-                                                                            .ConfigureAwait(false), token)
-                                                   .ConfigureAwait(false);
+                            = await lstAttributes.CountAsync(
+                                                     async x => x.MetatypeCategory
+                                                                == CharacterAttrib.AttributeCategory.Standard
+                                                                && await x.GetAtMetatypeMaximumAsync(token)
+                                                                          .ConfigureAwait(false), token)
+                                                 .ConfigureAwait(false);
                         if (intCountAttributesAtMax > CharacterObjectSettings.MaxNumberMaxAttributesCreate)
                         {
                             blnValid = false;
@@ -19845,8 +19852,7 @@ namespace Chummer
                     }
 
                     int i = CharacterObject.TotalAttributes
-                            - await CalculateAttributePriorityPoints(CharacterObject.AttributeSection.AttributeList,
-                                                                     token: token).ConfigureAwait(false);
+                            - await CalculateAttributePriorityPoints(lstAttributes, token: token).ConfigureAwait(false);
                     // Check if the character has gone over on Primary Attributes
                     if (i < 0)
                     {
@@ -19858,9 +19864,11 @@ namespace Chummer
                                                                               token: token).ConfigureAwait(false), -i);
                     }
 
+                    ThreadSafeObservableCollection<CharacterAttrib> lstSpecialAttributes
+                        = await objAttributeSection.GetSpecialAttributeListAsync(token).ConfigureAwait(false);
                     i = CharacterObject.TotalSpecial
-                        - await CalculateAttributePriorityPoints(CharacterObject.AttributeSection.SpecialAttributeList,
-                                                                 token: token).ConfigureAwait(false);
+                        - await CalculateAttributePriorityPoints(lstSpecialAttributes, token: token)
+                            .ConfigureAwait(false);
                     // Check if the character has gone over on Special Attributes
                     if (i < 0)
                     {
@@ -19873,8 +19881,10 @@ namespace Chummer
                     }
 
                     // Check if the character has gone over on Skill Groups
-                    int intSkillGroupPoints = await CharacterObject.SkillsSection.GetSkillGroupPointsAsync(token)
-                                                                   .ConfigureAwait(false);
+                    SkillsSection objSkillsSection
+                        = await CharacterObject.GetSkillsSectionAsync(token).ConfigureAwait(false);
+                    int intSkillGroupPoints = await objSkillsSection.GetSkillGroupPointsAsync(token)
+                                                                    .ConfigureAwait(false);
                     if (intSkillGroupPoints < 0)
                     {
                         blnValid = false;
@@ -19886,8 +19896,8 @@ namespace Chummer
                     }
 
                     // Check if the character has gone over on Active Skills
-                    int intSkillPoints = await CharacterObject.SkillsSection.GetSkillPointsAsync(token)
-                                                              .ConfigureAwait(false);
+                    int intSkillPoints = await objSkillsSection.GetSkillPointsAsync(token)
+                                                               .ConfigureAwait(false);
                     if (intSkillPoints < 0)
                     {
                         blnValid = false;
@@ -19899,9 +19909,9 @@ namespace Chummer
                     }
 
                     // Check if the character has gone over on Knowledge Skills
-                    int intKnoSkillPoints = await CharacterObject.SkillsSection
-                                                                 .GetKnowledgeSkillPointsRemainAsync(token)
-                                                                 .ConfigureAwait(false);
+                    int intKnoSkillPoints = await objSkillsSection
+                                                  .GetKnowledgeSkillPointsRemainAsync(token)
+                                                  .ConfigureAwait(false);
                     if (intKnoSkillPoints < 0)
                     {
                         blnValid = false;
@@ -19912,19 +19922,23 @@ namespace Chummer
                                                                           -intKnoSkillPoints);
                     }
 
-                    if (await CharacterObject.SkillsSection.Skills
-                                             .AnyAsync(
-                                                 async s => await s.Specializations.GetCountAsync(token)
-                                                                   .ConfigureAwait(false) > 1, token)
-                                             .ConfigureAwait(false))
+                    ThreadSafeBindingList<Skill> lstSkills
+                        = await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false);
+                    if (await lstSkills
+                              .AnyAsync(
+                                  async s => await s.Specializations.GetCountAsync(token)
+                                                    .ConfigureAwait(false) > 1, token)
+                              .ConfigureAwait(false))
                     {
                         blnValid = false;
                         sbdMessage.AppendLine().Append('\t').Append(await LanguageManager.GetStringAsync(
                                                                         "Message_InvalidActiveSkillExcessSpecializations",
                                                                         token: token).ConfigureAwait(false));
-                        await CharacterObject.SkillsSection.Skills.ForEachAsync(async objSkill =>
+                        await lstSkills.ForEachAsync(async objSkill =>
                         {
-                            if (await objSkill.Specializations.GetCountAsync(token).ConfigureAwait(false) < 1)
+                            ThreadSafeObservableCollection<SkillSpecialization> lstSpecs
+                                = await objSkill.GetSpecializationsAsync(token).ConfigureAwait(false);
+                            if (await lstSpecs.GetCountAsync(token).ConfigureAwait(false) < 1)
                                 return;
                             (await sbdMessage.AppendLine()
                                              .Append(await objSkill.GetCurrentDisplayNameAsync(token)
@@ -19935,7 +19949,7 @@ namespace Chummer
                                              .AppendJoinAsync(
                                                  ',' + await LanguageManager.GetStringAsync(
                                                      "String_Space", token: token).ConfigureAwait(false),
-                                                 objSkill.Specializations.Select(
+                                                 lstSpecs.Select(
                                                      x => x.GetCurrentDisplayNameAsync(token).AsTask()), token)
                                              .ConfigureAwait(false))
                                 .Append(')');
@@ -19958,14 +19972,15 @@ namespace Chummer
                                                                .ConfigureAwait(false));
                     }
 
-                    if (CharacterObject.StolenNuyen < 0)
+                    decimal decStolenNuyen = await CharacterObject.GetStolenNuyenAsync(token).ConfigureAwait(false);
+                    if (decStolenNuyen < 0)
                     {
                         blnValid = false;
                         sbdMessage.AppendLine().Append('\t').AppendFormat(GlobalSettings.CultureInfo,
                                                                           await LanguageManager.GetStringAsync(
                                                                               "Message_InvalidStolenNuyenExcess",
                                                                               token: token).ConfigureAwait(false),
-                                                                          (-CharacterObject.StolenNuyen).ToString(
+                                                                          (-decStolenNuyen).ToString(
                                                                               CharacterObjectSettings.NuyenFormat,
                                                                               GlobalSettings.CultureInfo))
                                   .Append(await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token)
@@ -19973,7 +19988,8 @@ namespace Chummer
                     }
 
                     // Check if the character's Essence is above 0.
-                    if (await CharacterObject.ESS.GetMetatypeMaximumAsync(token).ConfigureAwait(false) > 0)
+                    if (await (await CharacterObject.GetAttributeAsync("ESS", token: token).ConfigureAwait(false))
+                              .GetMetatypeMaximumAsync(token).ConfigureAwait(false) > 0)
                     {
                         decimal decEss = await CharacterObject.EssenceAsync(token: token).ConfigureAwait(false);
                         decimal decExcessEss = 0.0m;
@@ -20009,7 +20025,8 @@ namespace Chummer
                     // If the character has the Spells & Spirits Tab enabled, make sure a Tradition has been selected.
                     if ((await CharacterObject.GetMagicianEnabledAsync(token).ConfigureAwait(false)
                          || await CharacterObject.GetAdeptEnabledAsync(token).ConfigureAwait(false))
-                        && CharacterObject.MagicTradition.Type != TraditionType.MAG)
+                        && (await CharacterObject.GetMagicTraditionAsync(token).ConfigureAwait(false)).Type
+                        != TraditionType.MAG)
                     {
                         blnValid = false;
                         sbdMessage.AppendLine().Append('\t')
@@ -20036,7 +20053,9 @@ namespace Chummer
                     }
 
                     // If the character has the Technomancer Tab enabled, make sure a Stream has been selected.
-                    if (CharacterObject.TechnomancerEnabled && CharacterObject.MagicTradition.Type != TraditionType.RES)
+                    if (await CharacterObject.GetTechnomancerEnabledAsync(token).ConfigureAwait(false)
+                        && (await CharacterObject.GetMagicTraditionAsync(token).ConfigureAwait(false)).Type
+                        != TraditionType.RES)
                     {
                         blnValid = false;
                         sbdMessage.AppendLine().Append('\t')
@@ -20046,10 +20065,10 @@ namespace Chummer
 
                     // Check if the character has more than the permitted amount of native languages.
                     int intLanguages
-                        = await CharacterObject.SkillsSection.KnowledgeSkills
-                                               .CountAsync(
-                                                   objSkill => objSkill.GetIsNativeLanguageAsync(token).AsTask(), token)
-                                               .ConfigureAwait(false);
+                        = await (await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false))
+                                .CountAsync(
+                                    objSkill => objSkill.GetIsNativeLanguageAsync(token).AsTask(), token)
+                                .ConfigureAwait(false);
 
                     int intLanguageLimit = 1 + (await ImprovementManager
                                                       .ValueOfAsync(CharacterObject,
@@ -20069,19 +20088,20 @@ namespace Chummer
                                                                               intLanguages, intLanguageLimit);
                         }
                         else if (Program.ShowScrollableMessageBox(this,
-                                                        string.Format(
-                                                            GlobalSettings.CultureInfo,
-                                                            await LanguageManager.GetStringAsync(
-                                                                    "Message_ExtraNativeLanguages", token: token)
-                                                                .ConfigureAwait(false),
-                                                            (intLanguageLimit - intLanguages).ToString(
-                                                                GlobalSettings.CultureInfo)),
-                                                        await LanguageManager.GetStringAsync(
-                                                                                 "MessageTitle_ExtraNativeLanguages",
-                                                                                 token: token)
-                                                                             .ConfigureAwait(false),
-                                                        MessageBoxButtons.YesNo,
-                                                        MessageBoxIcon.Warning) == DialogResult.No)
+                                                                  string.Format(
+                                                                      GlobalSettings.CultureInfo,
+                                                                      await LanguageManager.GetStringAsync(
+                                                                              "Message_ExtraNativeLanguages",
+                                                                              token: token)
+                                                                          .ConfigureAwait(false),
+                                                                      (intLanguageLimit - intLanguages).ToString(
+                                                                          GlobalSettings.CultureInfo)),
+                                                                  await LanguageManager.GetStringAsync(
+                                                                          "MessageTitle_ExtraNativeLanguages",
+                                                                          token: token)
+                                                                      .ConfigureAwait(false),
+                                                                  MessageBoxButtons.YesNo,
+                                                                  MessageBoxIcon.Warning) == DialogResult.No)
                         {
                             blnValid = false;
                         }
@@ -20115,6 +20135,7 @@ namespace Chummer
                         if (kvpLoop.Value <= 0)
                             lstToRemove.Add(kvpLoop.Key);
                     }
+
                     foreach (int intLoop in lstToRemove)
                         dicRestrictedGearLimits.Remove(intLoop);
 
@@ -20184,24 +20205,28 @@ namespace Chummer
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdIllegalCyberwareFromGrade))
                     {
-                        foreach (Cyberware objCyberware in CharacterObject.Cyberware)
-                        {
-                            objCyberware.CheckBannedGrades(sbdIllegalCyberwareFromGrade);
-                        }
+                        await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).ForEachAsync(
+                                objCyberware =>
+                                    objCyberware.CheckBannedGradesAsync(sbdIllegalCyberwareFromGrade, token))
+                            .ConfigureAwait(false);
 
-                        foreach (Vehicle objVehicle in CharacterObject.Vehicles)
-                        {
-                            foreach (Cyberware objCyberware in objVehicle.Mods.SelectMany(objMod => objMod.Cyberware))
+                        await (await CharacterObject.GetVehiclesAsync(token).ConfigureAwait(false)).ForEachAsync(
+                            async objVehicle =>
                             {
-                                objCyberware.CheckBannedGrades(sbdIllegalCyberwareFromGrade);
-                            }
+                                foreach (Cyberware objCyberware in objVehicle.Mods.SelectMany(
+                                             objMod => objMod.Cyberware))
+                                {
+                                    await objCyberware.CheckBannedGradesAsync(sbdIllegalCyberwareFromGrade, token)
+                                                      .ConfigureAwait(false);
+                                }
 
-                            foreach (Cyberware objCyberware in objVehicle.WeaponMounts.SelectMany(
-                                         objMount => objMount.Mods.SelectMany(objMod => objMod.Cyberware)))
-                            {
-                                objCyberware.CheckBannedGrades(sbdIllegalCyberwareFromGrade);
-                            }
-                        }
+                                foreach (Cyberware objCyberware in objVehicle.WeaponMounts.SelectMany(
+                                             objMount => objMount.Mods.SelectMany(objMod => objMod.Cyberware)))
+                                {
+                                    await objCyberware.CheckBannedGradesAsync(sbdIllegalCyberwareFromGrade, token)
+                                                      .ConfigureAwait(false);
+                                }
+                            }, token).ConfigureAwait(false);
 
                         if (sbdIllegalCyberwareFromGrade.Length > 0)
                         {
@@ -20215,7 +20240,8 @@ namespace Chummer
                     }
 
                     // Cyberware: Prototype Transhuman
-                    decimal decPrototypeTranshumanEssenceMax = CharacterObject.PrototypeTranshuman;
+                    decimal decPrototypeTranshumanEssenceMax
+                        = await CharacterObject.GetPrototypeTranshumanAsync(token).ConfigureAwait(false);
                     if (decPrototypeTranshumanEssenceMax > 0)
                     {
                         decimal decPrototypeTranshumanEssenceUsed = CharacterObject.PrototypeTranshumanEssenceUsed;
@@ -20239,39 +20265,41 @@ namespace Chummer
                         List<string> lstOverCapacity = new List<string>(1);
                         int intCapacityOver = 0;
                         // Armor Capacity.
-                        foreach (Armor objArmor in CharacterObject.Armor)
-                        {
-                            if (objArmor.CapacityRemaining < 0)
+                        await (await CharacterObject.GetArmorAsync(token).ConfigureAwait(false)).ForEachAsync(
+                            async objArmor =>
                             {
-                                lstOverCapacity.Add(await objArmor.GetCurrentDisplayNameShortAsync(token)
-                                                                  .ConfigureAwait(false));
-                                intCapacityOver++;
-                            }
+                                if (objArmor.CapacityRemaining < 0)
+                                {
+                                    lstOverCapacity.Add(await objArmor.GetCurrentDisplayNameShortAsync(token)
+                                                                      .ConfigureAwait(false));
+                                    intCapacityOver++;
+                                }
 
-                            foreach (Gear objGear in objArmor.GearChildren.DeepWhere(
-                                         x => x.Children, x => x.CapacityRemaining < 0))
-                            {
-                                lstOverCapacity.Add(await objGear.GetCurrentDisplayNameShortAsync(token)
-                                                                 .ConfigureAwait(false));
-                                intCapacityOver++;
-                            }
-
-                            foreach (ArmorMod objArmorMod in objArmor.ArmorMods)
-                            {
-                                foreach (Gear objGear in objArmorMod.GearChildren.DeepWhere(
+                                foreach (Gear objGear in objArmor.GearChildren.DeepWhere(
                                              x => x.Children, x => x.CapacityRemaining < 0))
                                 {
                                     lstOverCapacity.Add(await objGear.GetCurrentDisplayNameShortAsync(token)
                                                                      .ConfigureAwait(false));
                                     intCapacityOver++;
                                 }
-                            }
-                        }
 
-                        foreach (Weapon objWeapon in CharacterObject.Weapons.DeepWhere(
+                                await objArmor.ArmorMods.ForEachAsync(async objArmorMod =>
+                                {
+                                    foreach (Gear objGear in objArmorMod.GearChildren.DeepWhere(
+                                                 x => x.Children, x => x.CapacityRemaining < 0))
+                                    {
+                                        lstOverCapacity.Add(await objGear.GetCurrentDisplayNameShortAsync(token)
+                                                                         .ConfigureAwait(false));
+                                        intCapacityOver++;
+                                    }
+                                }, token).ConfigureAwait(false);
+                            }, token).ConfigureAwait(false);
+
+                        foreach (Weapon objWeapon in
+                                 (await CharacterObject.GetWeaponsAsync(token).ConfigureAwait(false)).DeepWhere(
                                      x => x.Children, x => x.WeaponAccessories.Count > 0))
                         {
-                            foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
+                            await objWeapon.WeaponAccessories.ForEachAsync(async objAccessory =>
                             {
                                 foreach (Gear objGear in objAccessory.GearChildren.DeepWhere(
                                              x => x.Children, x => x.CapacityRemaining < 0))
@@ -20280,11 +20308,12 @@ namespace Chummer
                                                                      .ConfigureAwait(false));
                                     intCapacityOver++;
                                 }
-                            }
+                            }, token).ConfigureAwait(false);
                         }
 
                         // Gear Capacity.
-                        foreach (Gear objGear in CharacterObject.Gear.DeepWhere(
+                        foreach (Gear objGear in (await CharacterObject.GetGearAsync(token).ConfigureAwait(false))
+                                 .DeepWhere(
                                      x => x.Children, x => x.CapacityRemaining < 0))
                         {
                             lstOverCapacity.Add(await objGear.GetCurrentDisplayNameShortAsync(token)
@@ -20293,7 +20322,8 @@ namespace Chummer
                         }
 
                         // Cyberware Capacity.
-                        foreach (Cyberware objCyberware in CharacterObject.Cyberware.GetAllDescendants(x => x.Children))
+                        foreach (Cyberware objCyberware in (await CharacterObject.GetCyberwareAsync(token)
+                                     .ConfigureAwait(false)).GetAllDescendants(x => x.Children))
                         {
                             if (objCyberware.CapacityRemaining < 0)
                             {
@@ -20302,7 +20332,7 @@ namespace Chummer
                                 intCapacityOver++;
                             }
 
-                            foreach (Gear objGear in objCyberware.GearChildren)
+                            await objCyberware.GearChildren.ForEachAsync(async objGear =>
                             {
                                 if (objGear.CapacityRemaining < 0)
                                 {
@@ -20319,122 +20349,124 @@ namespace Chummer
                                                                       .ConfigureAwait(false));
                                     intCapacityOver++;
                                 }
-                            }
+                            }, token).ConfigureAwait(false);
                         }
 
                         // Vehicle Capacity.
-                        foreach (Vehicle objVehicle in CharacterObject.Vehicles)
-                        {
-                            if (await CharacterObjectSettings.BookEnabledAsync("R5", token).ConfigureAwait(false))
+                        await (await CharacterObject.GetVehiclesAsync(token).ConfigureAwait(false)).ForEachAsync(
+                            async objVehicle =>
                             {
-                                if (objVehicle.IsDrone && await CharacterObjectSettings.GetDroneModsAsync(token)
-                                        .ConfigureAwait(false))
+                                if (await CharacterObjectSettings.BookEnabledAsync("R5", token).ConfigureAwait(false))
                                 {
-                                    if (objVehicle.DroneModSlotsUsed > objVehicle.DroneModSlots)
+                                    if (objVehicle.IsDrone && await CharacterObjectSettings.GetDroneModsAsync(token)
+                                            .ConfigureAwait(false))
                                     {
-                                        lstOverCapacity.Add(await objVehicle.GetCurrentDisplayNameShortAsync(token)
-                                                                            .ConfigureAwait(false));
-                                        intCapacityOver++;
-                                    }
-                                }
-                                else
-                                {
-                                    if (objVehicle.OverR5Capacity())
-                                    {
-                                        lstOverCapacity.Add(await objVehicle.GetCurrentDisplayNameShortAsync(token)
-                                                                            .ConfigureAwait(false));
-                                        intCapacityOver++;
-                                    }
-                                }
-                            }
-                            else if (objVehicle.Slots < objVehicle.SlotsUsed)
-                            {
-                                lstOverCapacity.Add(await objVehicle.GetCurrentDisplayNameShortAsync(token)
-                                                                    .ConfigureAwait(false));
-                                intCapacityOver++;
-                            }
-
-                            foreach (VehicleMod objVehicleMod in objVehicle.Mods)
-                            {
-                                foreach (Cyberware objCyberware in objVehicleMod.Cyberware.GetAllDescendants(
-                                             x => x.Children))
-                                {
-                                    if (objCyberware.CapacityRemaining < 0)
-                                    {
-                                        lstOverCapacity.Add(await objCyberware.GetCurrentDisplayNameShortAsync(token)
-                                                                              .ConfigureAwait(false));
-                                        intCapacityOver++;
-                                    }
-
-                                    foreach (Gear objGear in objCyberware.GearChildren.DeepWhere(
-                                                 x => x.Children, x => x.CapacityRemaining < 0))
-                                    {
-                                        lstOverCapacity.Add(await objGear.GetCurrentDisplayNameShortAsync(token)
-                                                                         .ConfigureAwait(false));
-                                        intCapacityOver++;
-                                    }
-                                }
-                            }
-
-                            foreach (WeaponMount objMount in objVehicle.WeaponMounts)
-                            {
-                                if (objMount.Weapons.Count > objMount.WeaponCapacity)
-                                {
-                                    lstOverCapacity.Add(await objMount.GetCurrentDisplayNameShortAsync(token)
-                                                                      .ConfigureAwait(false));
-                                    intCapacityOver++;
-                                }
-
-                                foreach (Weapon objWeapon in objMount.Weapons.DeepWhere(
-                                             x => x.Children, x => x.WeaponAccessories.Count > 0))
-                                {
-                                    foreach (WeaponAccessory objAccessory in objWeapon.WeaponAccessories)
-                                    {
-                                        foreach (Gear objGear in objAccessory.GearChildren.DeepWhere(
-                                                     x => x.Children, x => x.CapacityRemaining < 0))
+                                        if (objVehicle.DroneModSlotsUsed > objVehicle.DroneModSlots)
                                         {
-                                            lstOverCapacity.Add(
-                                                await objGear.GetCurrentDisplayNameShortAsync(token)
-                                                             .ConfigureAwait(false));
+                                            lstOverCapacity.Add(await objVehicle.GetCurrentDisplayNameShortAsync(token)
+                                                                    .ConfigureAwait(false));
+                                            intCapacityOver++;
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (objVehicle.OverR5Capacity())
+                                        {
+                                            lstOverCapacity.Add(await objVehicle.GetCurrentDisplayNameShortAsync(token)
+                                                                    .ConfigureAwait(false));
                                             intCapacityOver++;
                                         }
                                     }
                                 }
+                                else if (objVehicle.Slots < objVehicle.SlotsUsed)
+                                {
+                                    lstOverCapacity.Add(await objVehicle.GetCurrentDisplayNameShortAsync(token)
+                                                                        .ConfigureAwait(false));
+                                    intCapacityOver++;
+                                }
 
-                                foreach (VehicleMod objVehicleMod in objMount.Mods)
+                                await objVehicle.Mods.ForEachAsync(async objVehicleMod =>
                                 {
                                     foreach (Cyberware objCyberware in objVehicleMod.Cyberware.GetAllDescendants(
                                                  x => x.Children))
                                     {
                                         if (objCyberware.CapacityRemaining < 0)
                                         {
-                                            lstOverCapacity.Add(
-                                                await objCyberware.GetCurrentDisplayNameShortAsync(token)
-                                                                  .ConfigureAwait(false));
+                                            lstOverCapacity.Add(await objCyberware
+                                                                      .GetCurrentDisplayNameShortAsync(token)
+                                                                      .ConfigureAwait(false));
                                             intCapacityOver++;
                                         }
 
                                         foreach (Gear objGear in objCyberware.GearChildren.DeepWhere(
                                                      x => x.Children, x => x.CapacityRemaining < 0))
                                         {
-                                            lstOverCapacity.Add(
-                                                await objGear.GetCurrentDisplayNameShortAsync(token)
-                                                             .ConfigureAwait(false));
+                                            lstOverCapacity.Add(await objGear.GetCurrentDisplayNameShortAsync(token)
+                                                                             .ConfigureAwait(false));
                                             intCapacityOver++;
                                         }
                                     }
-                                }
-                            }
+                                }, token).ConfigureAwait(false);
 
-                            // Check Vehicle Gear.
-                            foreach (Gear objGear in objVehicle.GearChildren.DeepWhere(
-                                         x => x.Children, x => x.CapacityRemaining < 0))
-                            {
-                                lstOverCapacity.Add(await objGear.GetCurrentDisplayNameShortAsync(token)
+                                await objVehicle.WeaponMounts.ForEachAsync(async objMount =>
+                                {
+                                    if (objMount.Weapons.Count > objMount.WeaponCapacity)
+                                    {
+                                        lstOverCapacity.Add(await objMount.GetCurrentDisplayNameShortAsync(token)
+                                                                          .ConfigureAwait(false));
+                                        intCapacityOver++;
+                                    }
+
+                                    foreach (Weapon objWeapon in objMount.Weapons.DeepWhere(
+                                                 x => x.Children, x => x.WeaponAccessories.Count > 0))
+                                    {
+                                        await objWeapon.WeaponAccessories.ForEachAsync(async objAccessory =>
+                                        {
+                                            foreach (Gear objGear in objAccessory.GearChildren.DeepWhere(
+                                                         x => x.Children, x => x.CapacityRemaining < 0))
+                                            {
+                                                lstOverCapacity.Add(
+                                                    await objGear.GetCurrentDisplayNameShortAsync(token)
                                                                  .ConfigureAwait(false));
-                                intCapacityOver++;
-                            }
-                        }
+                                                intCapacityOver++;
+                                            }
+                                        }, token).ConfigureAwait(false);
+                                    }
+
+                                    await objMount.Mods.ForEachAsync(async objVehicleMod =>
+                                    {
+                                        foreach (Cyberware objCyberware in objVehicleMod.Cyberware.GetAllDescendants(
+                                                     x => x.Children))
+                                        {
+                                            if (objCyberware.CapacityRemaining < 0)
+                                            {
+                                                lstOverCapacity.Add(
+                                                    await objCyberware.GetCurrentDisplayNameShortAsync(token)
+                                                                      .ConfigureAwait(false));
+                                                intCapacityOver++;
+                                            }
+
+                                            foreach (Gear objGear in objCyberware.GearChildren.DeepWhere(
+                                                         x => x.Children, x => x.CapacityRemaining < 0))
+                                            {
+                                                lstOverCapacity.Add(
+                                                    await objGear.GetCurrentDisplayNameShortAsync(token)
+                                                                 .ConfigureAwait(false));
+                                                intCapacityOver++;
+                                            }
+                                        }
+                                    }, token).ConfigureAwait(false);
+                                }, token).ConfigureAwait(false);
+
+                                // Check Vehicle Gear.
+                                foreach (Gear objGear in objVehicle.GearChildren.DeepWhere(
+                                             x => x.Children, x => x.CapacityRemaining < 0))
+                                {
+                                    lstOverCapacity.Add(await objGear.GetCurrentDisplayNameShortAsync(token)
+                                                                     .ConfigureAwait(false));
+                                    intCapacityOver++;
+                                }
+                            }, token).ConfigureAwait(false);
 
                         if (intCapacityOver > 0)
                         {
@@ -20506,70 +20538,87 @@ namespace Chummer
                     }
 
                     i = CharacterObject.Attributes
-                        - await CalculateAttributePriorityPoints(CharacterObject.AttributeSection.AttributeList,
+                        - await CalculateAttributePriorityPoints(lstAttributes,
                                                                  token: token).ConfigureAwait(false);
-                    // Check if the character has gone over on Primary Attributes
+                    // Check if the character has extra Attribute points
                     if (blnValid && i > 0 && Program.ShowScrollableMessageBox(this,
-                                                                    string.Format(
-                                                                        GlobalSettings.CultureInfo,
-                                                                        await LanguageManager.GetStringAsync(
-                                                                                "Message_ExtraPoints", token: token)
-                                                                            .ConfigureAwait(false),
-                                                                        i.ToString(
-                                                                            GlobalSettings.CultureInfo),
-                                                                        await LanguageManager.GetStringAsync("Label_SummaryPrimaryAttributes", token: token).ConfigureAwait(false)),
-                                                                    await LanguageManager.GetStringAsync(
-                                                                            "MessageTitle_ExtraPoints", token: token)
-                                                                        .ConfigureAwait(false),
-                                                                    MessageBoxButtons.YesNo,
-                                                                    MessageBoxIcon.Warning) == DialogResult.No)
+                                                                              string.Format(
+                                                                                  GlobalSettings.CultureInfo,
+                                                                                  await LanguageManager.GetStringAsync(
+                                                                                          "Message_ExtraPoints",
+                                                                                          token: token)
+                                                                                      .ConfigureAwait(false),
+                                                                                  i.ToString(
+                                                                                      GlobalSettings.CultureInfo),
+                                                                                  await LanguageManager
+                                                                                      .GetStringAsync(
+                                                                                          "Label_SummaryPrimaryAttributes",
+                                                                                          token: token)
+                                                                                      .ConfigureAwait(false)),
+                                                                              await LanguageManager.GetStringAsync(
+                                                                                      "MessageTitle_ExtraPoints",
+                                                                                      token: token)
+                                                                                  .ConfigureAwait(false),
+                                                                              MessageBoxButtons.YesNo,
+                                                                              MessageBoxIcon.Warning)
+                        == DialogResult.No)
                     {
                         blnValid = false;
                     }
 
                     i = CharacterObject.Special
-                        - await CalculateAttributePriorityPoints(CharacterObject.AttributeSection.SpecialAttributeList,
-                                                                 token: token).ConfigureAwait(false);
-                    // Check if the character has gone over on Special Attributes
+                        - await CalculateAttributePriorityPoints(lstSpecialAttributes, token: token)
+                            .ConfigureAwait(false);
+                    // Check if the character has extra Special Attribute points
                     if (blnValid && i > 0 && Program.ShowScrollableMessageBox(this,
-                                                                    string.Format(
-                                                                        GlobalSettings.CultureInfo,
-                                                                        await LanguageManager.GetStringAsync(
-                                                                                "Message_ExtraPoints", token: token)
-                                                                            .ConfigureAwait(false),
-                                                                        i.ToString(
-                                                                            GlobalSettings.CultureInfo),
-                                                                        await LanguageManager.GetStringAsync("Label_SummarySpecialAttributes", token: token).ConfigureAwait(false)),
-                                                                    await LanguageManager.GetStringAsync(
-                                                                            "MessageTitle_ExtraPoints", token: token)
-                                                                        .ConfigureAwait(false),
-                                                                    MessageBoxButtons.YesNo,
-                                                                    MessageBoxIcon.Warning) == DialogResult.No)
+                                                                              string.Format(
+                                                                                  GlobalSettings.CultureInfo,
+                                                                                  await LanguageManager.GetStringAsync(
+                                                                                          "Message_ExtraPoints",
+                                                                                          token: token)
+                                                                                      .ConfigureAwait(false),
+                                                                                  i.ToString(
+                                                                                      GlobalSettings.CultureInfo),
+                                                                                  await LanguageManager
+                                                                                      .GetStringAsync(
+                                                                                          "Label_SummarySpecialAttributes",
+                                                                                          token: token)
+                                                                                      .ConfigureAwait(false)),
+                                                                              await LanguageManager.GetStringAsync(
+                                                                                      "MessageTitle_ExtraPoints",
+                                                                                      token: token)
+                                                                                  .ConfigureAwait(false),
+                                                                              MessageBoxButtons.YesNo,
+                                                                              MessageBoxIcon.Warning)
+                        == DialogResult.No)
                     {
                         blnValid = false;
                     }
 
-                    // Check if the character has gone over on Skill Groups
+                    // Check if the character has extra Skill Group points
                     if (blnValid && intSkillGroupPoints > 0
                                  && Program.ShowScrollableMessageBox(this,
-                                                           string.Format(
-                                                               GlobalSettings.CultureInfo,
-                                                               await LanguageManager.GetStringAsync(
-                                                                       "Message_ExtraPoints", token: token)
-                                                                   .ConfigureAwait(false),
-                                                               intSkillGroupPoints.ToString(
-                                                                   GlobalSettings.CultureInfo),
-                                                               await LanguageManager.GetStringAsync("Label_SummarySkillGroups", token: token).ConfigureAwait(false)),
-                                                           await LanguageManager.GetStringAsync(
-                                                                   "MessageTitle_ExtraPoints", token: token)
-                                                               .ConfigureAwait(false),
-                                                           MessageBoxButtons.YesNo,
-                                                           MessageBoxIcon.Warning) == DialogResult.No)
+                                                                     string.Format(
+                                                                         GlobalSettings.CultureInfo,
+                                                                         await LanguageManager.GetStringAsync(
+                                                                                 "Message_ExtraPoints", token: token)
+                                                                             .ConfigureAwait(false),
+                                                                         intSkillGroupPoints.ToString(
+                                                                             GlobalSettings.CultureInfo),
+                                                                         await LanguageManager
+                                                                               .GetStringAsync(
+                                                                                   "Label_SummarySkillGroups",
+                                                                                   token: token).ConfigureAwait(false)),
+                                                                     await LanguageManager.GetStringAsync(
+                                                                             "MessageTitle_ExtraPoints", token: token)
+                                                                         .ConfigureAwait(false),
+                                                                     MessageBoxButtons.YesNo,
+                                                                     MessageBoxIcon.Warning) == DialogResult.No)
                     {
                         blnValid = false;
                     }
 
-                    // Check if the character has gone over on Active Skills
+                    // Check if the character has extra Active Skill points
                     if (blnValid && intSkillPoints > 0 && Program.ShowScrollableMessageBox(
                             this,
                             string.Format(GlobalSettings.CultureInfo,
@@ -20577,7 +20626,9 @@ namespace Chummer
                                                                .ConfigureAwait(false),
                                           intSkillPoints.ToString(
                                               GlobalSettings.CultureInfo),
-                                          await LanguageManager.GetStringAsync("Label_SummaryActiveSkills", token: token).ConfigureAwait(false)),
+                                          await LanguageManager
+                                                .GetStringAsync("Label_SummaryActiveSkills", token: token)
+                                                .ConfigureAwait(false)),
                             await LanguageManager.GetStringAsync("MessageTitle_ExtraPoints", token: token)
                                                  .ConfigureAwait(false), MessageBoxButtons.YesNo,
                             MessageBoxIcon.Warning) == DialogResult.No)
@@ -20585,23 +20636,94 @@ namespace Chummer
                         blnValid = false;
                     }
 
-                    // Check if the character has gone over on Knowledge Skills
+                    // Check if the character has extra Knowledge Skill points
                     if (blnValid && intKnoSkillPoints > 0
                                  && Program.ShowScrollableMessageBox(this,
-                                                           string.Format(
-                                                               GlobalSettings.CultureInfo,
-                                                               await LanguageManager.GetStringAsync(
-                                                                       "Message_ExtraPoints", token: token)
-                                                                   .ConfigureAwait(false),
-                                                               intKnoSkillPoints.ToString(GlobalSettings.CultureInfo),
-                                                               await LanguageManager.GetStringAsync("Label_SummaryKnowledgeSkills", token: token).ConfigureAwait(false)),
-                                                           await LanguageManager.GetStringAsync(
-                                                                   "MessageTitle_ExtraPoints", token: token)
-                                                               .ConfigureAwait(false),
-                                                           MessageBoxButtons.YesNo,
-                                                           MessageBoxIcon.Warning) == DialogResult.No)
+                                                                     string.Format(
+                                                                         GlobalSettings.CultureInfo,
+                                                                         await LanguageManager.GetStringAsync(
+                                                                                 "Message_ExtraPoints", token: token)
+                                                                             .ConfigureAwait(false),
+                                                                         intKnoSkillPoints.ToString(
+                                                                             GlobalSettings.CultureInfo),
+                                                                         await LanguageManager
+                                                                               .GetStringAsync(
+                                                                                   "Label_SummaryKnowledgeSkills",
+                                                                                   token: token).ConfigureAwait(false)),
+                                                                     await LanguageManager.GetStringAsync(
+                                                                             "MessageTitle_ExtraPoints", token: token)
+                                                                         .ConfigureAwait(false),
+                                                                     MessageBoxButtons.YesNo,
+                                                                     MessageBoxIcon.Warning) == DialogResult.No)
                     {
                         blnValid = false;
+                    }
+
+                    // Check if the character has extra Contact points
+                    if (blnValid)
+                    {
+                        int intContactPointsRemain
+                            = await CharacterObject.GetContactPointsAsync(token).ConfigureAwait(false);
+                        if (intContactPointsRemain > 0)
+                        {
+                            intContactPointsRemain
+                                -= await CharacterObject.GetContactPointsUsedAsync(token).ConfigureAwait(false);
+                            if (intContactPointsRemain > 0
+                                && Program.ShowScrollableMessageBox(this,
+                                                                    string.Format(
+                                                                        GlobalSettings.CultureInfo,
+                                                                        await LanguageManager.GetStringAsync(
+                                                                                "Message_ExtraPoints", token: token)
+                                                                            .ConfigureAwait(false),
+                                                                        intContactPointsRemain.ToString(
+                                                                            GlobalSettings.CultureInfo),
+                                                                        await LanguageManager
+                                                                              .GetStringAsync(
+                                                                                  "String_ContactPoints", token: token)
+                                                                              .ConfigureAwait(false)),
+                                                                    await LanguageManager.GetStringAsync(
+                                                                            "MessageTitle_ExtraPoints", token: token)
+                                                                        .ConfigureAwait(false),
+                                                                    MessageBoxButtons.YesNo,
+                                                                    MessageBoxIcon.Warning) == DialogResult.No)
+                            {
+                                blnValid = false;
+                            }
+                        }
+                    }
+
+                    // Check if the character has extra complex form points
+                    if (blnValid)
+                    {
+                        int intCFPointsRemain
+                            = await CharacterObject.GetCFPLimitAsync(token).ConfigureAwait(false);
+                        if (intCFPointsRemain > 0)
+                        {
+                            intCFPointsRemain
+                                -= await (await CharacterObject.GetComplexFormsAsync(token).ConfigureAwait(false))
+                                         .CountAsync(x => x.Grade == 0, token).ConfigureAwait(false);
+                            if (intCFPointsRemain > 0
+                                && Program.ShowScrollableMessageBox(this,
+                                                                    string.Format(
+                                                                        GlobalSettings.CultureInfo,
+                                                                        await LanguageManager.GetStringAsync(
+                                                                                "Message_ExtraPoints", token: token)
+                                                                            .ConfigureAwait(false),
+                                                                        intCFPointsRemain.ToString(
+                                                                            GlobalSettings.CultureInfo),
+                                                                        await LanguageManager
+                                                                              .GetStringAsync(
+                                                                                  "String_FreeCFs", token: token)
+                                                                              .ConfigureAwait(false)),
+                                                                    await LanguageManager.GetStringAsync(
+                                                                            "MessageTitle_ExtraPoints", token: token)
+                                                                        .ConfigureAwait(false),
+                                                                    MessageBoxButtons.YesNo,
+                                                                    MessageBoxIcon.Warning) == DialogResult.No)
+                            {
+                                blnValid = false;
+                            }
+                        }
                     }
                 }
                 finally
@@ -20613,9 +20735,10 @@ namespace Chummer
                                                             .GetStringAsync("Message_InvalidBeginning", token: token)
                                                             .ConfigureAwait(false)).Length)
                     Program.ShowScrollableMessageBox(this, sbdMessage.ToString(),
-                                           await LanguageManager.GetStringAsync("MessageTitle_Invalid", token: token)
-                                                                .ConfigureAwait(false),
-                                           MessageBoxButtons.OK, MessageBoxIcon.Error);
+                                                     await LanguageManager
+                                                           .GetStringAsync("MessageTitle_Invalid", token: token)
+                                                           .ConfigureAwait(false),
+                                                     MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
 
             return blnValid;

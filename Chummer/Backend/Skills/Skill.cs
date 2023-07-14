@@ -368,11 +368,11 @@ namespace Chummer.Backend.Skills
                         .StartElementAsync("skillspecializations", token: token).ConfigureAwait(false);
                     try
                     {
-                        foreach (SkillSpecialization objSpec in Specializations)
+                        await (await GetSpecializationsAsync(token).ConfigureAwait(false)).ForEachAsync(async objSpec =>
                         {
                             await objSpec.Print(objWriter, objCulture, strLanguageToPrint, token: token)
-                                .ConfigureAwait(false);
-                        }
+                                         .ConfigureAwait(false);
+                        }, token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -1217,10 +1217,12 @@ namespace Chummer.Backend.Skills
                         && !await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))
                     {
                         await SetKarmaPointsAsync(0, token).ConfigureAwait(false);
-                        foreach (SkillSpecialization objSpecialization in await Specializations.ToListAsync(
+                        ThreadSafeObservableCollection<SkillSpecialization> lstSpecs
+                            = await GetSpecializationsAsync(token).ConfigureAwait(false);
+                        foreach (SkillSpecialization objSpecialization in await lstSpecs.ToListAsync(
                                      x => !x.Free, token).ConfigureAwait(false))
                         {
-                            await Specializations.RemoveAsync(objSpecialization, token).ConfigureAwait(false);
+                            await lstSpecs.RemoveAsync(objSpecialization, token).ConfigureAwait(false);
                         }
 
                         return intGroupKarma;
@@ -1374,7 +1376,7 @@ namespace Chummer.Backend.Skills
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
                 return (_blnBuyWithKarma || await GetForcedBuyWithKarmaAsync(token).ConfigureAwait(false))
                        && !await GetForcedNotBuyWithKarmaAsync(token).ConfigureAwait(false)
-                       && await Specializations.AnyAsync(x => !x.Free, token: token).ConfigureAwait(false);
+                       && await (await GetSpecializationsAsync(token).ConfigureAwait(false)).AnyAsync(x => !x.Free, token: token).ConfigureAwait(false);
         }
 
         public virtual async ValueTask SetBuyWithKarmaAsync(bool value, CancellationToken token = default)
@@ -1383,7 +1385,7 @@ namespace Chummer.Backend.Skills
             {
                 value = (value || await GetForcedBuyWithKarmaAsync(token).ConfigureAwait(false))
                         && !await GetForcedNotBuyWithKarmaAsync(token).ConfigureAwait(false)
-                        && await Specializations.AnyAsync(x => !x.Free, token: token).ConfigureAwait(false);
+                        && await (await GetSpecializationsAsync(token).ConfigureAwait(false)).AnyAsync(x => !x.Free, token: token).ConfigureAwait(false);
                 if (_blnBuyWithKarma == value)
                     return;
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
@@ -2065,7 +2067,7 @@ namespace Chummer.Backend.Skills
                 int intBasePoints = await GetBasePointsAsync(token).ConfigureAwait(false);
                 int cost = intBasePoints;
                 if (!IsExoticSkill && !await GetBuyWithKarmaAsync(token).ConfigureAwait(false))
-                    cost += await Specializations.CountAsync(x => !x.Free, token: token).ConfigureAwait(false);
+                    cost += await (await GetSpecializationsAsync(token).ConfigureAwait(false)).CountAsync(x => !x.Free, token: token).ConfigureAwait(false);
 
                 decimal decExtra = 0;
                 decimal decMultiplier = 1.0m;
@@ -2294,7 +2296,7 @@ namespace Chummer.Backend.Skills
 
                 int intSpecCount = await GetBuyWithKarmaAsync(token).ConfigureAwait(false)
                                    || !await CharacterObject.GetEffectiveBuildMethodUsesPriorityTablesAsync(token).ConfigureAwait(false)
-                    ? await Specializations.CountAsync(objSpec => !objSpec.Free, token: token).ConfigureAwait(false)
+                    ? await (await GetSpecializationsAsync(token).ConfigureAwait(false)).CountAsync(objSpec => !objSpec.Free, token: token).ConfigureAwait(false)
                     : 0;
                 int intSpecCost = intSpecCount *
                                   await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false))
@@ -2459,9 +2461,14 @@ namespace Chummer.Backend.Skills
                                                         .BlockSkillCategorySpecializations,
                                              SkillCategory, token: token).ConfigureAwait(false)).Count
                                > 0)).ToInt32();
-                if (intReturn <= 0 && Specializations.Count > 0)
+                if (intReturn <= 0)
                 {
-                    await Specializations.ClearAsync(token).ConfigureAwait(false);
+                    ThreadSafeObservableCollection<SkillSpecialization> lstSpecs
+                        = await GetSpecializationsAsync(token).ConfigureAwait(false);
+                    if (await lstSpecs.GetCountAsync(token).ConfigureAwait(false) > 0)
+                    {
+                        await lstSpecs.ClearAsync(token).ConfigureAwait(false);
+                    }
                 }
 
                 _intCachedCanHaveSpecs = intReturn;
@@ -3375,7 +3382,7 @@ namespace Chummer.Backend.Skills
                 if (_dicCachedStringSpec.TryGetValue(strLanguage, out string strReturn))
                     return strReturn;
                 strReturn = await StringExtensions
-                    .JoinAsync(", ", Specializations.Select(x => x.DisplayNameAsync(strLanguage, token).AsTask()), token)
+                    .JoinAsync(", ", (await GetSpecializationsAsync(token).ConfigureAwait(false)).Select(x => x.DisplayNameAsync(strLanguage, token).AsTask()), token)
                     .ConfigureAwait(false);
 
                 _dicCachedStringSpec.Add(strLanguage, strReturn);
@@ -3399,6 +3406,12 @@ namespace Chummer.Backend.Skills
                 using (EnterReadLock.Enter(LockObject))
                     return _lstSpecializations;
             }
+        }
+
+        public async ValueTask<ThreadSafeObservableCollection<SkillSpecialization>> GetSpecializationsAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _lstSpecializations;
         }
 
         public string TopMostDisplaySpecialization
@@ -3462,7 +3475,7 @@ namespace Chummer.Backend.Skills
                     return await ((ExoticSkill) this).GetCurrentDisplaySpecificAsync(token).ConfigureAwait(false);
                 }
 
-                SkillSpecialization objSpec = await Specializations.FirstOrDefaultAsync(x => !x.Free, token: token).ConfigureAwait(false);
+                SkillSpecialization objSpec = await (await GetSpecializationsAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(x => !x.Free, token: token).ConfigureAwait(false);
                 return objSpec != null ? await objSpec.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) : string.Empty;
             }
         }
@@ -3471,19 +3484,21 @@ namespace Chummer.Backend.Skills
         {
             if (string.IsNullOrWhiteSpace(value))
             {
-                await Specializations.RemoveAllAsync(x => !x.Free, token: token).ConfigureAwait(false);
+                await (await GetSpecializationsAsync(token).ConfigureAwait(false)).RemoveAllAsync(x => !x.Free, token: token).ConfigureAwait(false);
                 return;
             }
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
-                IAsyncDisposable objLocker2 = await Specializations.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                ThreadSafeObservableCollection<SkillSpecialization> lstSpecs
+                    = await GetSpecializationsAsync(token).ConfigureAwait(false);
+                IAsyncDisposable objLocker2 = await lstSpecs.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
-                    int intIndexToReplace = await Specializations.FindIndexAsync(x => !x.Free, token).ConfigureAwait(false);
+                    int intIndexToReplace = await lstSpecs.FindIndexAsync(x => !x.Free, token).ConfigureAwait(false);
                     if (intIndexToReplace < 0)
                     {
-                        await Specializations.AddWithSortAsync(new SkillSpecialization(CharacterObject, value),
+                        await lstSpecs.AddWithSortAsync(new SkillSpecialization(CharacterObject, value),
                                                                (x, y) =>
                                                                {
                                                                    if (x.Free != y.Free)
@@ -3495,18 +3510,18 @@ namespace Chummer.Backend.Skills
                         return;
                     }
 
-                    await Specializations.SetValueAtAsync(intIndexToReplace,
+                    await lstSpecs.SetValueAtAsync(intIndexToReplace,
                                                           new SkillSpecialization(CharacterObject, value), token).ConfigureAwait(false);
                     // For safety's, remove all non-free specializations after the one we are replacing.
                     intIndexToReplace
-                        = await Specializations.FindIndexAsync(intIndexToReplace + 1, x => !x.Free, token: token).ConfigureAwait(false);
+                        = await lstSpecs.FindIndexAsync(intIndexToReplace + 1, x => !x.Free, token: token).ConfigureAwait(false);
                     if (intIndexToReplace > 0)
                         Utils.BreakIfDebug(); // This shouldn't happen under normal operations because chargen can only ever have one player-picked specialization at a time
                     while (intIndexToReplace > 0)
                     {
-                        await Specializations.RemoveAtAsync(intIndexToReplace, token).ConfigureAwait(false);
+                        await lstSpecs.RemoveAtAsync(intIndexToReplace, token).ConfigureAwait(false);
                         intIndexToReplace
-                            = await Specializations.FindIndexAsync(intIndexToReplace + 1, x => !x.Free, token).ConfigureAwait(false);
+                            = await lstSpecs.FindIndexAsync(intIndexToReplace + 1, x => !x.Free, token).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -3545,7 +3560,7 @@ namespace Chummer.Backend.Skills
                     return ((ExoticSkill)this).Specific == strSpecialization;
                 }
 
-                return await Specializations.AnyAsync(
+                return await (await GetSpecializationsAsync(token).ConfigureAwait(false)).AnyAsync(
                                async x => x.Name == strSpecialization || await x.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) == strSpecialization,
                                token: token)
                            .ConfigureAwait(false)
@@ -3578,14 +3593,14 @@ namespace Chummer.Backend.Skills
             {
                 if (IsExoticSkill && ((ExoticSkill)this).Specific == strSpecialization)
                 {
-                    return await Specializations.GetValueAtAsync(0, token).ConfigureAwait(false);
+                    return await (await GetSpecializationsAsync(token).ConfigureAwait(false)).GetValueAtAsync(0, token).ConfigureAwait(false);
                 }
 
                 return await HasSpecializationAsync(strSpecialization, token).ConfigureAwait(false)
-                    ? await Specializations
-                        .FirstOrDefaultAsync(
-                            async x => x.Name == strSpecialization || await x.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) == strSpecialization, token: token)
-                        .ConfigureAwait(false)
+                    ? await (await GetSpecializationsAsync(token).ConfigureAwait(false))
+                            .FirstOrDefaultAsync(
+                                async x => x.Name == strSpecialization || await x.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) == strSpecialization, token: token)
+                            .ConfigureAwait(false)
                     : null;
             }
         }
@@ -4141,16 +4156,18 @@ namespace Chummer.Backend.Skills
                                 .GetAttributeAsync(objSwapSkillAttribute.ImprovedName, token: token)
                                 .ConfigureAwait(false)).Value, token).ConfigureAwait(false);
                         SkillSpecialization objSpecialization = null;
-                        if (await Specializations.GetCountAsync(token).ConfigureAwait(false) > 0 &&
+                        ThreadSafeObservableCollection<SkillSpecialization> lstSpecs
+                            = await GetSpecializationsAsync(token).ConfigureAwait(false);
+                        if (await lstSpecs.GetCountAsync(token).ConfigureAwait(false) > 0 &&
                             (await ImprovementManager
-                                .GetCachedImprovementListForValueOfAsync(
-                                    CharacterObject,
-                                    Improvement.ImprovementType.DisableSpecializationEffects,
-                                    await GetDictionaryKeyAsync(token).ConfigureAwait(false), token: token)
-                                .ConfigureAwait(false)).Count == 0)
+                                   .GetCachedImprovementListForValueOfAsync(
+                                       CharacterObject,
+                                       Improvement.ImprovementType.DisableSpecializationEffects,
+                                       await GetDictionaryKeyAsync(token).ConfigureAwait(false), token: token)
+                                   .ConfigureAwait(false)).Count == 0)
                         {
                             int intMaxBonus = 0;
-                            foreach (SkillSpecialization objLoopSpecialization in Specializations)
+                            await lstSpecs.ForEachAsync(async objLoopSpecialization =>
                             {
                                 if (objLoopSpecialization.Name == strExclude)
                                 {
@@ -4162,7 +4179,7 @@ namespace Chummer.Backend.Skills
                                         intMaxBonus = intLoopBonus;
                                     }
                                 }
-                            }
+                            }, token).ConfigureAwait(false);
                         }
 
                         if (objSpecialization != null)
@@ -6345,7 +6362,7 @@ namespace Chummer.Backend.Skills
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
-                    await Specializations.AddAsync(nspec, token).ConfigureAwait(false);
+                    await (await GetSpecializationsAsync(token).ConfigureAwait(false)).AddAsync(nspec, token).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -6495,7 +6512,8 @@ namespace Chummer.Backend.Skills
                         await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
                     intReturn =
                         (!await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false)
-                         && await Specializations.AnyAsync(x => !x.Free, token: token).ConfigureAwait(false)
+                         && await (await GetSpecializationsAsync(token).ConfigureAwait(false))
+                                  .AnyAsync(x => !x.Free, token: token).ConfigureAwait(false)
                          && ((await GetKarmaPointsAsync(token).ConfigureAwait(false) > 0
                               && await GetBasePointsAsync(token).ConfigureAwait(false)
                               + await GetFreeBaseAsync(token).ConfigureAwait(false) == 0
