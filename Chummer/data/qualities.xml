@@ -11179,23 +11179,23 @@
       <category>Positive</category>
       <bonus>
         <selectquality>
-          <quality contributetobp="True">Infected Optional Power: Armor</quality>
-          <quality contributetobp="True">Infected Optional Power: Compulsion</quality>
-          <quality contributetobp="True">Infected Optional Power: Enhanced Sense (Hearing)</quality>
-          <quality contributetobp="True">Infected Optional Power: Enhanced Sense (Low-Light Vision)</quality>
-          <quality contributetobp="True">Infected Optional Power: Enhanced Sense (Smell)</quality>
-          <quality contributetobp="True">Infected Optional Power: Enhanced Sense (Taste)</quality>
-          <quality contributetobp="True">Infected Optional Power: Enhanced Sense (Thermographic Vision)</quality>
-          <quality contributetobp="True">Infected Optional Power: Enhanced Sense (Visual Acuity)</quality>
-          <quality contributetobp="True">Infected Optional Power: Fear</quality>
-          <quality contributetobp="True">Infected Optional Power: Immunity (Fire)</quality>
-          <quality contributetobp="True">Infected Optional Power: Immunity (Pathogens)</quality>
-          <quality contributetobp="True">Infected Optional Power: Immunity (Toxins)</quality>
-          <quality contributetobp="True">Infected Optional Power: Influence</quality>
-          <quality contributetobp="True">Infected Optional Power: Magical Guard</quality>
-          <quality contributetobp="True">Infected Optional Power: Mist Form</quality>
-          <quality contributetobp="True">Infected Optional Power: Paralyzing Howl</quality>
-          <quality contributetobp="True">Infected Optional Power: Regeneration</quality>
+          <quality contributetobp="True" forced="True">Infected Optional Power: Armor</quality>
+          <quality contributetobp="True" forced="True">Infected Optional Power: Compulsion</quality>
+          <quality contributetobp="True" forced="True">Infected Optional Power: Enhanced Sense (Hearing)</quality>
+          <quality contributetobp="True" forced="True">Infected Optional Power: Enhanced Sense (Low-Light Vision)</quality>
+          <quality contributetobp="True" forced="True">Infected Optional Power: Enhanced Sense (Smell)</quality>
+          <quality contributetobp="True" forced="True">Infected Optional Power: Enhanced Sense (Taste)</quality>
+          <quality contributetobp="True" forced="True">Infected Optional Power: Enhanced Sense (Thermographic Vision)</quality>
+          <quality contributetobp="True" forced="True">Infected Optional Power: Enhanced Sense (Visual Acuity)</quality>
+          <quality contributetobp="True" forced="True">Infected Optional Power: Fear</quality>
+          <quality contributetobp="True" forced="True">Infected Optional Power: Immunity (Fire)</quality>
+          <quality contributetobp="True" forced="True">Infected Optional Power: Immunity (Pathogens)</quality>
+          <quality contributetobp="True" forced="True">Infected Optional Power: Immunity (Toxins)</quality>
+          <quality contributetobp="True" forced="True">Infected Optional Power: Influence</quality>
+          <quality contributetobp="True" forced="True">Infected Optional Power: Magical Guard</quality>
+          <quality contributetobp="True" forced="True">Infected Optional Power: Mist Form</quality>
+          <quality contributetobp="True" forced="True">Infected Optional Power: Paralyzing Howl</quality>
+          <quality contributetobp="True" forced="True">Infected Optional Power: Regeneration</quality>
           <discountqualities>
             <quality discount="-1">Third Eye</quality>
             <quality discount="-2">Scent Glands</quality>

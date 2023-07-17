@@ -6228,9 +6228,9 @@ namespace Chummer
                                 = objXmlDocument.SelectSingleNode(
                                     "/chummer/qualities/quality[name = " + strName.CleanXPath() + ']');
                             // Makes sure we aren't over our limits for this particular quality from this overall source
-                            if (objXmlQuality?.CreateNavigator()
-                                             .RequirementsMet(_objCharacter, string.Empty, string.Empty,
-                                                              _strFriendlyName) == true)
+                            if (objXmlAddQuality.Attributes?["forced"]?.InnerText == bool.TrueString ||
+                                objXmlQuality?.CreateNavigator().RequirementsMet(_objCharacter, string.Empty,
+                                    string.Empty, _strFriendlyName) == true)
                             {
                                 lstQualities.Add(
                                     new ListItem(strName, objXmlQuality["translate"]?.InnerText ?? strName));
