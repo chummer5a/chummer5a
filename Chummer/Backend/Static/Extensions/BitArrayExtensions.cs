@@ -60,8 +60,7 @@ namespace Chummer
         {
             if (ablnToCount == null)
                 throw new ArgumentNullException(nameof(ablnToCount));
-            int intMaskSize = ablnToCount.Count >> 5;
-            int intArraySizeModulo32 = ablnToCount.Count % 32;
+            int intMaskSize = ablnToCount.Count.DivRem(32, out int intArraySizeModulo32);
             if (intArraySizeModulo32 != 0)
                 ++intMaskSize;
             int intReturn = 0;

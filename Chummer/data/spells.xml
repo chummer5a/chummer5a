@@ -1989,7 +1989,7 @@
       <source>SG</source>
       <category>Health</category>
       <damage>0</damage>
-      <descriptor>Negative</descriptor>
+      <descriptor>Essence</descriptor>
       <duration>P</duration>
       <dv>F-2</dv>
       <range>T</range>
@@ -2002,7 +2002,7 @@
       <source>SG</source>
       <category>Health</category>
       <damage>0</damage>
-      <descriptor>Negative</descriptor>
+      <descriptor>Essence</descriptor>
       <duration>S</duration>
       <dv>F-3</dv>
       <range>T</range>
@@ -2054,7 +2054,7 @@
       <source>SG</source>
       <category>Health</category>
       <damage>0</damage>
-      <descriptor>Negative</descriptor>
+      <descriptor>Essence</descriptor>
       <duration>S</duration>
       <dv>F-1</dv>
       <range>T</range>

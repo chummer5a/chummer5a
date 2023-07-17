@@ -891,9 +891,10 @@ namespace Chummer
                             {
                                 int intDV = ((double) xprResult).StandardRound();
 
-                                // Drain cannot be lower than 2.
-                                if (intDV < 2)
-                                    intDV = 2;
+                                // Drain cannot be lower than 2 (4 for Barehanded Adept).
+                                int intMinDv = BarehandedAdept ? 4 : 2;
+                                if (intDV < intMinDv)
+                                    intDV = intMinDv;
                                 sbdTip.AppendLine().Append(LanguageManager.GetString("String_Force"))
                                       .Append(strSpace).Append(i.ToString(GlobalSettings.CultureInfo))
                                       .Append(LanguageManager.GetString("String_Colon")).Append(strSpace)
@@ -1301,7 +1302,7 @@ namespace Chummer
                             sbdReturn.Append("+2");
                         }
 
-                        if (BarehandedAdept)
+                        if (BarehandedAdept && !blnForce)
                         {
                             sbdReturn.Insert(0, "2 * (").Append(')');
                         }
@@ -1315,7 +1316,7 @@ namespace Chummer
                     if (blnForce)
                     {
                         strReturn = string.Format(GlobalSettings.InvariantCultureInfo,
-                                                  BarehandedAdept ? "2 * F{0:+0;-0;}" : "F{0:+0;-0;}", xprResult);
+                                                  BarehandedAdept ? "2 * (F{0:+0;-0;})" : "F{0:+0;-0;}", xprResult);
                     }
                     else if (xprResult.ToString() != "0")
                     {
@@ -1735,7 +1736,7 @@ namespace Chummer
                     {
                         intReturn = BarehandedAdept ? objSkill.PoolOtherAttribute("MAG") : objSkill.Pool;
                         // Add any Specialization bonus if applicable.
-                        intReturn += Skill.GetSpecializationBonus(Category);
+                        intReturn += objSkill.GetSpecializationBonus(Category);
                     }
 
                     // Include any Improvements to the Spell's dicepool.

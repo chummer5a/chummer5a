@@ -830,10 +830,9 @@ namespace Chummer
                             if (!blnResult)
                                 return;
                         }
-                        catch (OperationCanceledException)
+                        catch (OperationCanceledException) when (!token.IsCancellationRequested)
                         {
-                            if (token.IsCancellationRequested)
-                                throw; // Do not throw if cancellation is from the form's internal generic token (because the form is already closing)
+                            // Do not throw if cancellation is from the form's internal generic token (because the form is already closing)
                         }
                     }
                 }
@@ -1554,8 +1553,7 @@ namespace Chummer
         /// </summary>
         private static int _intIsOkToRunDoEvents = DefaultIsOkToRunDoEvents.ToInt32();
 
-#pragma warning disable VSTHRD002
-#pragma warning disable VSTHRD104 // Offer async methods
+#pragma warning disable VSTHRD002, VSTHRD104 // Offer async methods
         /// <summary>
         /// Syntactic sugar for synchronously running an async task in a way that uses the Main Thread's JoinableTaskFactory where possible.
         /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
@@ -2142,8 +2140,7 @@ namespace Chummer
             if (objTask.Exception != null)
                 throw objTask.Exception;
         }
-#pragma warning restore VSTHRD104 // Offer async methods
-#pragma warning restore VSTHRD002
+#pragma warning restore VSTHRD104, VSTHRD002 // Offer async methods
 
         private static readonly Lazy<string> _strHumanReadableOSVersion = new Lazy<string>(GetHumanReadableOSVersion);
 

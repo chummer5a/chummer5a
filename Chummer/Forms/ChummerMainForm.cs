@@ -936,7 +936,6 @@ namespace Chummer
                                     foreach (ToolStripMenuItem tssItem in x.Items.OfType<ToolStripMenuItem>())
                                     {
                                         tssItem.UpdateLightDarkMode(token: _objGenericToken);
-                                        tssItem.TranslateToolStripItemsRecursively(token: _objGenericToken);
                                     }
                                 }, token: _objGenericToken).ConfigureAwait(false);
                                 await mnuProcessFile.DoThreadSafeAsync(x =>
@@ -944,9 +943,35 @@ namespace Chummer
                                     foreach (ToolStripMenuItem tssItem in x.Items.OfType<ToolStripMenuItem>())
                                     {
                                         tssItem.UpdateLightDarkMode(token: _objGenericToken);
-                                        tssItem.TranslateToolStripItemsRecursively(token: _objGenericToken);
                                     }
                                 }, token: _objGenericToken).ConfigureAwait(false);
+                                List<Tuple<ToolStripItem, string>> lstToTranslate
+                                    = new List<Tuple<ToolStripItem, string>>();
+                                foreach (ToolStripItem tssItem in await menuStrip
+                                                                        .DoThreadSafeFuncAsync(
+                                                                            (x, y) => x.Items, _objGenericToken)
+                                                                        .ConfigureAwait(false))
+                                    lstToTranslate.AddRange(
+                                        await menuStrip.TranslateToolStripItemsRecursivelyPrepAsync(
+                                            tssItem, token: _objGenericToken).ConfigureAwait(false));
+                                foreach ((ToolStripItem objControl, string strTag) in lstToTranslate)
+                                {
+                                    string strText = await LanguageManager.GetStringAsync(strTag, token: _objGenericToken).ConfigureAwait(false);
+                                    await menuStrip.DoThreadSafeAsync(() => objControl.Text = strText, token: _objGenericToken).ConfigureAwait(false);
+                                }
+                                lstToTranslate.Clear();
+                                foreach (ToolStripItem tssItem in await mnuProcessFile
+                                                                        .DoThreadSafeFuncAsync(
+                                                                            (x, y) => x.Items, _objGenericToken)
+                                                                        .ConfigureAwait(false))
+                                    lstToTranslate.AddRange(
+                                        await mnuProcessFile.TranslateToolStripItemsRecursivelyPrepAsync(
+                                            tssItem, token: _objGenericToken).ConfigureAwait(false));
+                                foreach ((ToolStripItem objControl, string strTag) in lstToTranslate)
+                                {
+                                    string strText = await LanguageManager.GetStringAsync(strTag, token: _objGenericToken).ConfigureAwait(false);
+                                    await mnuProcessFile.DoThreadSafeAsync(() => objControl.Text = strText, token: _objGenericToken).ConfigureAwait(false);
+                                }
                             }
                         }
                         catch (Exception ex)
@@ -2429,35 +2454,31 @@ namespace Chummer
             }
         }
 
-        private void menuStrip_ItemAdded(object sender, ToolStripItemEventArgs e)
+        private async void menuStrip_ItemAdded(object sender, ToolStripItemEventArgs e)
         {
             try
             {
                 // Translate the items in the menu by finding their Tags in the translation file.
-                foreach (ToolStripItem tssItem in menuStrip.Items.OfType<ToolStripItem>())
+                await menuStrip.DoThreadSafeAsync(x =>
                 {
-                    tssItem.UpdateLightDarkMode(token: _objGenericToken);
-                    tssItem.TranslateToolStripItemsRecursively(token: _objGenericToken);
-                }
-            }
-            catch (OperationCanceledException)
-            {
-                //swallow this
-            }
-        }
-
-        private void toolStrip_ItemAdded(object sender, ToolStripItemEventArgs e)
-        {
-            try
-            {
-                // ToolStrip Items.
-                foreach (ToolStrip objToolStrip in Controls.OfType<ToolStrip>())
-                {
-                    foreach (ToolStripItem tssItem in objToolStrip.Items.OfType<ToolStripItem>())
+                    foreach (ToolStripMenuItem tssItem in x.Items.OfType<ToolStripMenuItem>())
                     {
                         tssItem.UpdateLightDarkMode(token: _objGenericToken);
-                        tssItem.TranslateToolStripItemsRecursively(token: _objGenericToken);
                     }
+                }, token: _objGenericToken).ConfigureAwait(false);
+                List<Tuple<ToolStripItem, string>> lstToTranslate
+                    = new List<Tuple<ToolStripItem, string>>();
+                foreach (ToolStripItem tssItem in await menuStrip
+                                                        .DoThreadSafeFuncAsync(
+                                                            (x, y) => x.Items, _objGenericToken)
+                                                        .ConfigureAwait(false))
+                    lstToTranslate.AddRange(
+                        await menuStrip.TranslateToolStripItemsRecursivelyPrepAsync(
+                            tssItem, token: _objGenericToken).ConfigureAwait(false));
+                foreach ((ToolStripItem objControl, string strTag) in lstToTranslate)
+                {
+                    string strText = await LanguageManager.GetStringAsync(strTag, token: _objGenericToken).ConfigureAwait(false);
+                    await menuStrip.DoThreadSafeAsync(() => objControl.Text = strText, token: _objGenericToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -2466,17 +2487,33 @@ namespace Chummer
             }
         }
 
-        private void toolStrip_ItemRemoved(object sender, ToolStripItemEventArgs e)
+        private async void RefreshToolStripDisplays(object sender, ToolStripItemEventArgs e)
         {
             try
             {
                 // ToolStrip Items.
-                foreach (ToolStrip objToolStrip in Controls.OfType<ToolStrip>())
+                foreach (ToolStrip objToolStrip in await this.DoThreadSafeFuncAsync((x, y) => x.Controls.OfType<ToolStrip>(), _objGenericToken).ConfigureAwait(false))
                 {
-                    foreach (ToolStripItem tssItem in objToolStrip.Items.OfType<ToolStripItem>())
+                    await objToolStrip.DoThreadSafeAsync(x =>
                     {
-                        tssItem.UpdateLightDarkMode(token: _objGenericToken);
-                        tssItem.TranslateToolStripItemsRecursively(token: _objGenericToken);
+                        foreach (ToolStripMenuItem tssItem in x.Items.OfType<ToolStripMenuItem>())
+                        {
+                            tssItem.UpdateLightDarkMode(token: _objGenericToken);
+                        }
+                    }, token: _objGenericToken).ConfigureAwait(false);
+                    List<Tuple<ToolStripItem, string>> lstToTranslate
+                        = new List<Tuple<ToolStripItem, string>>();
+                    foreach (ToolStripItem tssItem in await objToolStrip
+                                                            .DoThreadSafeFuncAsync(
+                                                                (x, y) => x.Items, _objGenericToken)
+                                                            .ConfigureAwait(false))
+                        lstToTranslate.AddRange(
+                            await objToolStrip.TranslateToolStripItemsRecursivelyPrepAsync(
+                                tssItem, token: _objGenericToken).ConfigureAwait(false));
+                    foreach ((ToolStripItem objControl, string strTag) in lstToTranslate)
+                    {
+                        string strText = await LanguageManager.GetStringAsync(strTag, token: _objGenericToken).ConfigureAwait(false);
+                        await objToolStrip.DoThreadSafeAsync(() => objControl.Text = strText, token: _objGenericToken).ConfigureAwait(false);
                     }
                 }
             }

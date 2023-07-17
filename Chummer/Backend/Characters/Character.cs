@@ -1338,7 +1338,7 @@ namespace Chummer
                 case nameof(CharacterSettings.KarmaSpell):
                     using (await EnterReadLock.EnterAsync(LockObject).ConfigureAwait(false))
                     {
-                        if (FreeSpells > 0)
+                        if (await GetFreeSpellsAsync().ConfigureAwait(false) > 0)
                             OnPropertyChanged(nameof(PositiveQualityKarma));
                     }
                     break;
@@ -3504,7 +3504,7 @@ namespace Chummer
                 if (blnSync)
                     DoSave();
                 else
-                    await Task.Run(() => DoSaveAsync(), token).ConfigureAwait(false);
+                    await Task.Run(DoSaveAsync, token).ConfigureAwait(false);
 
                 void DoSave()
                 {
@@ -3907,7 +3907,7 @@ namespace Chummer
 
                             // <spirits>
                             objWriter.WriteStartElement("spirits");
-                            _lstSpirits.ForEach(x => x.Save(objWriter), token);
+                            _lstSpirits.ForEach(x => x.Save(objWriter, token), token);
                             objWriter.WriteEndElement();
 
                             // <complexforms>
@@ -4688,7 +4688,7 @@ namespace Chummer
 
                             // <spirits>
                             await objWriter.WriteStartElementAsync("spirits", token: token).ConfigureAwait(false);
-                            await _lstSpirits.ForEachAsync(x => x.Save(objWriter), token).ConfigureAwait(false);
+                            await _lstSpirits.ForEachAsync(x => x.SaveAsync(objWriter, token), token).ConfigureAwait(false);
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
                             // <complexforms>
@@ -6255,20 +6255,21 @@ namespace Chummer
                                                 !setSavedBooks.IsSubsetOf(objProspectiveSettings.Books);
                                             if (!blnPromptConfirmSetting)
                                             {
+                                                IReadOnlyList<CustomDataDirectoryInfo> lstProspectiveInfos
+                                                    = blnSync
+                                                        ? objProspectiveSettings.EnabledCustomDataDirectoryInfos
+                                                        : await objProspectiveSettings
+                                                            .GetEnabledCustomDataDirectoryInfosAsync(token).ConfigureAwait(false);
                                                 // More custom data directories is not fine because additional ones might apply rules that weren't present before, so prompt
                                                 blnPromptConfirmSetting = lstSavedCustomDataDirectoryNames.Count !=
-                                                                          objProspectiveSettings
-                                                                              .EnabledCustomDataDirectoryInfos
-                                                                              .Count;
+                                                                          lstProspectiveInfos.Count;
                                                 if (!blnPromptConfirmSetting)
                                                 {
                                                     // Check to make sure all the names are the same
                                                     for (int i = 0; i < lstSavedCustomDataDirectoryNames.Count; ++i)
                                                     {
                                                         if (lstSavedCustomDataDirectoryNames[i]
-                                                            != objProspectiveSettings
-                                                               .EnabledCustomDataDirectoryInfos[i]
-                                                               .Name)
+                                                            != lstProspectiveInfos[i].Name)
                                                         {
                                                             blnPromptConfirmSetting = true;
                                                             break;
@@ -9914,11 +9915,15 @@ namespace Chummer
                           .ConfigureAwait(false);
                     // <contactpoints />
                     await objWriter
-                          .WriteElementStringAsync("contactpoints", ContactPoints.ToString(objCulture), token: token)
+                          .WriteElementStringAsync("contactpoints",
+                                                   (await GetContactPointsAsync(token).ConfigureAwait(false)).ToString(
+                                                       objCulture), token: token)
                           .ConfigureAwait(false);
                     // <contactpointsused />
                     await objWriter.WriteElementStringAsync("contactpointsused",
-                                                            ContactPointsUsed.ToString(objCulture), token: token)
+                                                            (await GetContactPointsUsedAsync(token)
+                                                                .ConfigureAwait(false)).ToString(objCulture),
+                                                            token: token)
                                    .ConfigureAwait(false);
                     // <cfplimit />
                     await objWriter.WriteElementStringAsync("cfplimit", CFPLimit.ToString(objCulture), token: token)
@@ -9932,7 +9937,7 @@ namespace Chummer
                                                             AIAdvancedProgramLimit.ToString(objCulture), token: token)
                                    .ConfigureAwait(false);
                     // <spelllimit />
-                    await objWriter.WriteElementStringAsync("spelllimit", FreeSpells.ToString(objCulture), token: token)
+                    await objWriter.WriteElementStringAsync("spelllimit", (await GetFreeSpellsAsync(token).ConfigureAwait(false)).ToString(objCulture), token: token)
                                    .ConfigureAwait(false);
                     // <karma />
                     await objWriter
@@ -11937,17 +11942,17 @@ namespace Chummer
                             string strGearReturn = objReturnGear.DisplayNameShort(strLanguage);
                             if (objReturnGear.Parent is Gear objParent)
                             {
-                                strGearReturn += strSpace + '(' + objArmor.DisplayNameShort(strLanguage) + ','
+                                strGearReturn += strSpace + '(' + objArmor.DisplayNameShort(strLanguage, token) + ','
                                                  + strSpace
                                                  + objArmorMod.DisplayNameShort(strLanguage) + ',' + strSpace
                                                  + objParent.DisplayNameShort(strLanguage) + ')';
                             }
                             else if (objArmorMod != null)
-                                strGearReturn += strSpace + '(' + objArmor.DisplayNameShort(strLanguage) + ','
+                                strGearReturn += strSpace + '(' + objArmor.DisplayNameShort(strLanguage, token) + ','
                                                  + strSpace
                                                  + objArmorMod.DisplayNameShort(strLanguage) + ')';
                             else
-                                strGearReturn += strSpace + '(' + objArmor.DisplayNameShort(strLanguage) + ')';
+                                strGearReturn += strSpace + '(' + objArmor.DisplayNameShort(strLanguage, token) + ')';
 
                             if (blnWireless)
                                 strGearReturn += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
@@ -12253,7 +12258,7 @@ namespace Chummer
                         {
                             if (objArmor.InternalId == strImprovedSourceName)
                             {
-                                string strReturnArmor = objArmor.DisplayNameShort(strLanguage);
+                                string strReturnArmor = objArmor.DisplayNameShort(strLanguage, token);
                                 if (blnWireless)
                                     strReturnArmor
                                         += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
@@ -12272,7 +12277,7 @@ namespace Chummer
                                 if (objMod.InternalId == strImprovedSourceName)
                                 {
                                     string strReturnArmorMod = objMod.DisplayNameShort(strLanguage) + strSpace + '('
-                                                               + objArmor.DisplayNameShort(strLanguage) + ')';
+                                                               + objArmor.DisplayNameShort(strLanguage, token) + ')';
                                     if (blnWireless)
                                         strReturnArmorMod
                                             += strSpace + LanguageManager.GetString("String_Wireless", strLanguage, token: token);
@@ -13433,30 +13438,30 @@ namespace Chummer
 
                     await objLoopVehicle.WeaponMounts.ForEachAsync(async objLoopWeaponMount =>
                     {
-                        await objLoopVehicle.Mods.ForEachAsync(async objLoopVehicleMod =>
+                        await objLoopWeaponMount.Mods.ForEachAsync(async objLoopVehicleMod =>
                         {
                             await objLoopVehicleMod.Cyberware.GetAllDescendants(x => x.Children).ForEachAsync(
                                 async objLoopCyberware =>
-                            {
-                                // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
-                                if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount
-                                    && objLoopCyberware.Location == objModularCyberware.Location
-                                    && objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name
-                                    && objLoopCyberware != objModularCyberware
-                                    // Make sure it's not the place where the mount is already occupied (either by us or something else)
-                                    && await objLoopCyberware.Children.AllAsync(
-                                        x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount, token).ConfigureAwait(false))
                                 {
-                                    string strName
-                                        = await objLoopVehicle.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)
-                                          + strSpace + (objLoopCyberware.Parent != null
-                                              ? await objLoopCyberware.Parent.GetCurrentDisplayNameAsync(token)
-                                                                      .ConfigureAwait(false)
-                                              : await objLoopVehicleMod.GetCurrentDisplayNameAsync(token)
-                                                                       .ConfigureAwait(false));
-                                    lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
-                                }
-                            }, token).ConfigureAwait(false);
+                                    // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
+                                    if (objLoopCyberware.HasModularMount == objModularCyberware.PlugsIntoModularMount
+                                        && objLoopCyberware.Location == objModularCyberware.Location
+                                        && objLoopCyberware.Grade.Name == objModularCyberware.Grade.Name
+                                        && objLoopCyberware != objModularCyberware
+                                        // Make sure it's not the place where the mount is already occupied (either by us or something else)
+                                        && await objLoopCyberware.Children.AllAsync(
+                                            x => x.PlugsIntoModularMount != objLoopCyberware.HasModularMount, token).ConfigureAwait(false))
+                                    {
+                                        string strName
+                                            = await objLoopVehicle.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)
+                                              + strSpace + (objLoopCyberware.Parent != null
+                                                  ? await objLoopCyberware.Parent.GetCurrentDisplayNameAsync(token)
+                                                                          .ConfigureAwait(false)
+                                                  : await objLoopVehicleMod.GetCurrentDisplayNameAsync(token)
+                                                                           .ConfigureAwait(false));
+                                        lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
+                                    }
+                                }, token).ConfigureAwait(false);
                         }, token).ConfigureAwait(false);
                     }, token).ConfigureAwait(false);
                 }, token).ConfigureAwait(false);
@@ -16608,6 +16613,15 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Number of free Contact Points the character has used.
+        /// </summary>
+        public async ValueTask<int> GetContactPointsUsedAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                return _intContactPointsUsed;
+        }
+
         public async ValueTask SetContactPointsUsedAsync(int value, CancellationToken token = default)
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
@@ -17601,6 +17615,7 @@ namespace Chummer
         /// <param name="strAttribute">CharacterAttribute name to retrieve.</param>
         /// <param name="blnExplicit">Whether to force looking for a specific attribute name.
         /// Mostly expected to be used for gutting Mystic Adept power points.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public CharacterAttrib GetAttribute(string strAttribute, bool blnExplicit = false, CancellationToken token = default)
         {
             using (EnterReadLock.Enter(LockObject, token))
@@ -33749,9 +33764,11 @@ namespace Chummer
                 //The sustaining of Critterpowers doesn't cause any penalties that's why they aren't counted there is no way to change them to self sustained anyway, but just to be sure
                 List<SustainedObject> lstSustainedSpells =
                     SustainedCollection.Where(x => x.HasSustainingPenalty).ToList();
+                List<Improvement> lstUsedImprovements
+                    = ImprovementManager.GetCachedImprovementListForValueOf(
+                        this, Improvement.ImprovementType.PenaltyFreeSustain, token: token);
                 // Handling of bonuses that let characters sustain some objects for free requires special handling in order to best match the bonus ensemble to the sustained spells ensemble
-                if (ImprovementManager.ValueOf(this, Improvement.ImprovementType.PenaltyFreeSustain,
-                                               out List<Improvement> lstUsedImprovements, token: token) != 0)
+                if (lstUsedImprovements.Count != 0)
                 {
                     // Set up a dictionary where the key is the maximum force/level of the bonus and the value is the number of objects that can be sustained
                     SortedDictionary<decimal, int> dicPenaltyFreeSustains = new SortedDictionary<decimal, int>();
@@ -33839,10 +33856,10 @@ namespace Chummer
                 //The sustaining of Critterpowers doesn't cause any penalties that's why they aren't counted there is no way to change them to self sustained anyway, but just to be sure
                 List<SustainedObject> lstSustainedSpells =
                     await SustainedCollection.ToListAsync(x => x.HasSustainingPenalty, token: token).ConfigureAwait(false);
-                (decimal decValue, List<Improvement> lstUsedImprovements)
-                    = await ImprovementManager.ValueOfTupleAsync(this, Improvement.ImprovementType.PenaltyFreeSustain, token: token).ConfigureAwait(false);
+                List<Improvement> lstUsedImprovements
+                    = await ImprovementManager.GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.PenaltyFreeSustain, token: token).ConfigureAwait(false);
                 // Handling of bonuses that let characters sustain some objects for free requires special handling in order to best match the bonus ensemble to the sustained spells ensemble
-                if (decValue != 0)
+                if (lstUsedImprovements.Count != 0)
                 {
                     // Set up a dictionary where the key is the maximum force/level of the bonus and the value is the number of objects that can be sustained
                     SortedDictionary<decimal, int> dicPenaltyFreeSustains = new SortedDictionary<decimal, int>();
@@ -38372,26 +38389,29 @@ namespace Chummer
                             (ImprovementManager.ValueOf(this, Improvement.ImprovementType.FreePositiveQualities) *
                              Settings.KarmaQuality).StandardRound();
 
-                        // Factor in any qualities that can be bought with spell points at the end, but before doubled karma costs are calculated.
-                        int intMasteryQualityKarmaUsed
-                            = Qualities.Sum(objQuality => objQuality.CanBuyWithSpellPoints,
-                                            objQuality => objQuality.BP);
-                        if (intMasteryQualityKarmaUsed != 0)
+                        if (FreeSpells > 0)
                         {
-                            // Each spell costs KarmaSpell.
-                            int spellCost = SpellKarmaCost("Spells");
-                            // It is only karma-efficient to use spell points for Mastery qualities if real spell karma cost is not greater than unmodified spell karma cost
-                            if (spellCost <= Settings.KarmaSpell && FreeSpells > 0)
+                            // Factor in any qualities that can be bought with spell points at the end, but before doubled karma costs are calculated.
+                            int intMasteryQualityKarmaUsed
+                                = Qualities.Sum(objQuality => objQuality.CanBuyWithSpellPoints,
+                                                objQuality => objQuality.BP);
+                            if (intMasteryQualityKarmaUsed != 0)
                             {
-                                // Assume that every [spell cost] karma spent on a Mastery quality is paid for with a priority-given spell point instead, as that is the most karma-efficient.
-                                int intQualityKarmaToSpellPoints = Settings.KarmaSpell;
-                                if (Settings.KarmaSpell != 0)
-                                    intQualityKarmaToSpellPoints
-                                        = Math.Min(FreeSpells,
-                                            (intMasteryQualityKarmaUsed * Settings.KarmaQuality)
-                                            / Settings.KarmaSpell);
-                                // Add the karma paid for by spell points back into the available karma pool.
-                                intNewValue -= intQualityKarmaToSpellPoints * Settings.KarmaSpell;
+                                // Each spell costs KarmaSpell.
+                                int spellCost = SpellKarmaCost("Spells");
+                                // It is only karma-efficient to use spell points for Mastery qualities if real spell karma cost is not greater than unmodified spell karma cost
+                                if (spellCost <= Settings.KarmaSpell)
+                                {
+                                    // Assume that every [spell cost] karma spent on a Mastery quality is paid for with a priority-given spell point instead, as that is the most karma-efficient.
+                                    int intQualityKarmaToSpellPoints = Settings.KarmaSpell;
+                                    if (Settings.KarmaSpell != 0)
+                                        intQualityKarmaToSpellPoints
+                                            = Math.Min(FreeSpells,
+                                                       (intMasteryQualityKarmaUsed * Settings.KarmaQuality)
+                                                       / Settings.KarmaSpell);
+                                    // Add the karma paid for by spell points back into the available karma pool.
+                                    intNewValue -= intQualityKarmaToSpellPoints * Settings.KarmaSpell;
+                                }
                             }
                         }
 

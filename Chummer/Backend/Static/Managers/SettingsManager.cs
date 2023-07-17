@@ -201,9 +201,18 @@ namespace Chummer
                     if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                     {
                         CharacterSettings objNewCharacterSettings = new CharacterSettings();
-                        if (!s_DicLoadedCharacterSettings.TryAdd(GlobalSettings.DefaultCharacterSetting,
-                                                                 objNewCharacterSettings))
+                        try
+                        {
+                            if (!s_DicLoadedCharacterSettings.TryAdd(GlobalSettings.DefaultCharacterSetting,
+                                                                     objNewCharacterSettings))
+                                objNewCharacterSettings.Dispose();
+                        }
+                        catch
+                        {
                             objNewCharacterSettings.Dispose();
+                            throw;
+                        }
+
                         return;
                     }
 
@@ -215,12 +224,20 @@ namespace Chummer
                         Parallel.ForEach(xmlSettingsIterator, xmlBuiltInSetting =>
                         {
                             CharacterSettings objNewCharacterSettings = new CharacterSettings();
-                            if (!objNewCharacterSettings.Load(xmlBuiltInSetting)
-                                || (objNewCharacterSettings.BuildMethodIsLifeModule
-                                    && !GlobalSettings.LifeModuleEnabled)
-                                || !s_DicLoadedCharacterSettings.TryAdd(objNewCharacterSettings.DictionaryKey,
-                                                                        objNewCharacterSettings))
+                            try
+                            {
+                                if (!objNewCharacterSettings.Load(xmlBuiltInSetting)
+                                    || (objNewCharacterSettings.BuildMethodIsLifeModule
+                                        && !GlobalSettings.LifeModuleEnabled)
+                                    || !s_DicLoadedCharacterSettings.TryAdd(objNewCharacterSettings.DictionaryKey,
+                                                                            objNewCharacterSettings))
+                                    objNewCharacterSettings.Dispose();
+                            }
+                            catch
+                            {
                                 objNewCharacterSettings.Dispose();
+                                throw;
+                            }
                         });
                     });
                 }
@@ -229,24 +246,32 @@ namespace Chummer
                     Interlocked.Increment(ref _intDicLoadedCharacterSettingsLoadedStatus);
                 }
 
-                Utils.RunWithoutThreadLock(() =>
+                string strSettingsPath = Utils.GetSettingsFolderPath;
+                if (Directory.Exists(strSettingsPath))
                 {
-                    string strSettingsPath = Utils.GetSettingsFolderPath;
-                    if (Directory.Exists(strSettingsPath))
+                    Utils.RunWithoutThreadLock(() =>
                     {
                         Parallel.ForEach(Directory.EnumerateFiles(strSettingsPath, "*.xml"), strSettingsFilePath =>
                         {
                             string strSettingName = Path.GetFileName(strSettingsFilePath);
                             CharacterSettings objNewCharacterSettings = new CharacterSettings();
-                            if (!objNewCharacterSettings.Load(strSettingName, false)
-                                || (objNewCharacterSettings.BuildMethodIsLifeModule
-                                    && !GlobalSettings.LifeModuleEnabled)
-                                || !s_DicLoadedCharacterSettings.TryAdd(objNewCharacterSettings.DictionaryKey,
-                                                                        objNewCharacterSettings))
+                            try
+                            {
+                                if (!objNewCharacterSettings.Load(strSettingName, false)
+                                    || (objNewCharacterSettings.BuildMethodIsLifeModule
+                                        && !GlobalSettings.LifeModuleEnabled)
+                                    || !s_DicLoadedCharacterSettings.TryAdd(objNewCharacterSettings.DictionaryKey,
+                                                                            objNewCharacterSettings))
+                                    objNewCharacterSettings.Dispose();
+                            }
+                            catch
+                            {
                                 objNewCharacterSettings.Dispose();
+                                throw;
+                            }
                         });
-                    }
-                });
+                    });
+                }
             }
             finally
             {
@@ -265,51 +290,98 @@ namespace Chummer
                     if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                     {
                         CharacterSettings objNewCharacterSettings = new CharacterSettings();
-                        if (!await s_DicLoadedCharacterSettings.TryAddAsync(GlobalSettings.DefaultCharacterSetting,
-                                                                            objNewCharacterSettings, token).ConfigureAwait(false))
+                        try
+                        {
+                            if (!await s_DicLoadedCharacterSettings.TryAddAsync(GlobalSettings.DefaultCharacterSetting,
+                                    objNewCharacterSettings, token).ConfigureAwait(false))
+                                await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
+                        }
+                        catch
+                        {
                             await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
+                            throw;
+                        }
+
                         return;
                     }
 
-                    IEnumerable<XPathNavigator> xmlSettingsIterator
-                        = (await (await XmlManager.LoadXPathAsync("settings.xml", token: token).ConfigureAwait(false))
-                                 .SelectAndCacheExpressionAsync("/chummer/settings/setting", token: token).ConfigureAwait(false)).Cast<XPathNavigator>();
-                    await Task.Run(() =>
-                                       Parallel.ForEach(xmlSettingsIterator, xmlBuiltInSetting =>
-                                       {
-                                           CharacterSettings objNewCharacterSettings = new CharacterSettings();
-                                           if (!objNewCharacterSettings.Load(xmlBuiltInSetting)
-                                               || (objNewCharacterSettings.BuildMethodIsLifeModule
-                                                   && !GlobalSettings.LifeModuleEnabled)
-                                               || !s_DicLoadedCharacterSettings.TryAdd(
-                                                   objNewCharacterSettings.DictionaryKey,
-                                                   objNewCharacterSettings))
-                                               objNewCharacterSettings.Dispose();
-                                       }), token).ConfigureAwait(false);
+                    List<Task> lstTasks = new List<Task>();
+                    foreach (XPathNavigator xmlBuiltInSetting in await (await XmlManager
+                                                                              .LoadXPathAsync(
+                                                                                  "settings.xml", token: token)
+                                                                              .ConfigureAwait(false))
+                                                                       .SelectAndCacheExpressionAsync(
+                                                                           "/chummer/settings/setting", token: token)
+                                                                       .ConfigureAwait(false))
+                    {
+                        lstTasks.Add(Task.Run(() => LoadSetting(xmlBuiltInSetting), token));
+                    }
+
+                    await Task.WhenAll(lstTasks).ConfigureAwait(false);
+
+                    async Task LoadSetting(XPathNavigator xmlBuiltInSetting)
+                    {
+                        CharacterSettings objNewCharacterSettings = new CharacterSettings();
+                        try
+                        {
+                            if (!await objNewCharacterSettings.LoadAsync(xmlBuiltInSetting, token)
+                                                              .ConfigureAwait(false)
+                                || (!GlobalSettings.LifeModuleEnabled
+                                    && await objNewCharacterSettings.GetBuildMethodIsLifeModuleAsync(token)
+                                                                    .ConfigureAwait(false))
+                                || !await s_DicLoadedCharacterSettings.TryAddAsync(
+                                    await objNewCharacterSettings.GetDictionaryKeyAsync(token).ConfigureAwait(false),
+                                    objNewCharacterSettings, token).ConfigureAwait(false))
+                            {
+                                await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
+                            }
+                        }
+                        catch
+                        {
+                            await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
+                            throw;
+                        }
+                    }
                 }
                 finally
                 {
                     Interlocked.Increment(ref _intDicLoadedCharacterSettingsLoadedStatus);
                 }
 
-                await Task.Run(() =>
+                string strSettingsPath = Utils.GetSettingsFolderPath;
+                if (Directory.Exists(strSettingsPath))
                 {
-                    string strSettingsPath = Utils.GetSettingsFolderPath;
-                    if (Directory.Exists(strSettingsPath))
+                    List<Task> lstTasks = new List<Task>();
+                    foreach (string strSettingsFilePath in Directory.EnumerateFiles(strSettingsPath, "*.xml"))
+                        lstTasks.Add(Task.Run(() => LoadSetting(strSettingsFilePath), token));
+
+                    await Task.WhenAll(lstTasks).ConfigureAwait(false);
+
+                    async Task LoadSetting(string strSettingsFilePath)
                     {
-                        Parallel.ForEach(Directory.EnumerateFiles(strSettingsPath, "*.xml"), strSettingsFilePath =>
+                        token.ThrowIfCancellationRequested();
+                        string strSettingName = Path.GetFileName(strSettingsFilePath);
+                        CharacterSettings objNewCharacterSettings = new CharacterSettings();
+                        try
                         {
-                            string strSettingName = Path.GetFileName(strSettingsFilePath);
-                            CharacterSettings objNewCharacterSettings = new CharacterSettings();
-                            if (!objNewCharacterSettings.Load(strSettingName, false)
-                                || (objNewCharacterSettings.BuildMethodIsLifeModule
-                                    && !GlobalSettings.LifeModuleEnabled)
-                                || !s_DicLoadedCharacterSettings.TryAdd(objNewCharacterSettings.DictionaryKey,
-                                                                        objNewCharacterSettings))
-                                objNewCharacterSettings.Dispose();
-                        });
+                            if (!await objNewCharacterSettings.LoadAsync(strSettingName, false, token)
+                                                              .ConfigureAwait(false)
+                                || (!GlobalSettings.LifeModuleEnabled
+                                    && await objNewCharacterSettings.GetBuildMethodIsLifeModuleAsync(token).ConfigureAwait(false))
+                                || !await s_DicLoadedCharacterSettings.TryAddAsync(
+                                    await objNewCharacterSettings.GetDictionaryKeyAsync(token).ConfigureAwait(false),
+                                    objNewCharacterSettings, token).ConfigureAwait(false))
+                            {
+                                await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
+                            }
+                        }
+                        catch
+                        {
+                            await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
+                            throw;
+                        }
                     }
-                }, token).ConfigureAwait(false);
+                }
             }
             finally
             {
@@ -323,30 +395,48 @@ namespace Chummer
                 return;
 
             CharacterSettings objNewCharacterSettings = new CharacterSettings();
-            if (!await objNewCharacterSettings.LoadAsync(strSettingName, false, token).ConfigureAwait(false)
-                || (objNewCharacterSettings.BuildMethodIsLifeModule
-                    && !GlobalSettings.LifeModuleEnabled))
+            try
             {
-                await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
-                return;
-            }
-
-            string strKey = await objNewCharacterSettings.GetDictionaryKeyAsync(token).ConfigureAwait(false);
-            while (true)
-            {
-                if (await s_DicLoadedCharacterSettings.TryAddAsync(strKey, objNewCharacterSettings, token).ConfigureAwait(false))
+                if (!await objNewCharacterSettings.LoadAsync(strSettingName, false, token).ConfigureAwait(false)
+                    || (objNewCharacterSettings.BuildMethodIsLifeModule
+                        && !GlobalSettings.LifeModuleEnabled))
                 {
-                    return;
-                }
-                // We somehow already have a setting loaded with this name, so just copy over the values and dispose of the new setting instead
-                (bool blnSuccess, CharacterSettings objOldCharacterSettings)
-                    = await s_DicLoadedCharacterSettings.TryGetValueAsync(strKey, token).ConfigureAwait(false);
-                if (blnSuccess)
-                {
-                    await objOldCharacterSettings.CopyValuesAsync(objNewCharacterSettings, token: token).ConfigureAwait(false);
                     await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
                     return;
                 }
+
+                string strKey = await objNewCharacterSettings.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                while (true)
+                {
+                    if (await s_DicLoadedCharacterSettings.TryAddAsync(strKey, objNewCharacterSettings, token)
+                                                          .ConfigureAwait(false))
+                    {
+                        return;
+                    }
+
+                    // We somehow already have a setting loaded with this name, so just copy over the values and dispose of the new setting instead
+                    (bool blnSuccess, CharacterSettings objOldCharacterSettings)
+                        = await s_DicLoadedCharacterSettings.TryGetValueAsync(strKey, token).ConfigureAwait(false);
+                    if (blnSuccess)
+                    {
+                        try
+                        {
+                            await objOldCharacterSettings.CopyValuesAsync(objNewCharacterSettings, token: token)
+                                                         .ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
+                        }
+
+                        return;
+                    }
+                }
+            }
+            catch
+            {
+                await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
+                throw;
             }
         }
 
@@ -408,50 +498,61 @@ namespace Chummer
                 return;
 
             CharacterSettings objNewCharacterSettings = new CharacterSettings();
-            if (!await objNewCharacterSettings.LoadAsync(strSettingName, false, token).ConfigureAwait(false)
-                || (objNewCharacterSettings.BuildMethodIsLifeModule
-                    && !GlobalSettings.LifeModuleEnabled))
+            try
             {
-                await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
-                return;
-            }
-
-            string strKey = await objNewCharacterSettings.GetDictionaryKeyAsync(token).ConfigureAwait(false);
-            while (true)
-            {
-                (bool blnSuccess, CharacterSettings objOldCharacterSettings)
-                    = await s_DicLoadedCharacterSettings.TryGetValueAsync(strKey, token).ConfigureAwait(false);
-                if (blnSuccess)
+                if (!await objNewCharacterSettings.LoadAsync(strSettingName, false, token).ConfigureAwait(false)
+                    || (objNewCharacterSettings.BuildMethodIsLifeModule
+                        && !GlobalSettings.LifeModuleEnabled))
                 {
-                    await objOldCharacterSettings.CopyValuesAsync(objNewCharacterSettings, token: token).ConfigureAwait(false);
                     await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
                     return;
                 }
 
-                // We ended up changing our dictionary key, so find the first custom setting without a corresponding file and delete it
-                // (we assume that it's the one that got renamed)
-                if (!await s_DicLoadedCharacterSettings.TryAddAsync(strKey, objNewCharacterSettings, token)
-                                                       .ConfigureAwait(false))
-                    continue;
-                CharacterSettings objToDelete = (await s_DicLoadedCharacterSettings.FirstOrDefaultAsync(async x => !await x.Value.GetBuiltInOptionAsync(token)
-                            .ConfigureAwait(false)
-                        && !File.Exists(
-                            Path.Combine(Utils.GetSettingsFolderPath,
-                                         await x.Value.GetFileNameAsync(token)
-                                                .ConfigureAwait(false))), token)
-                    .ConfigureAwait(false)).Value;
-                if (objToDelete != null)
+                string strKey = await objNewCharacterSettings.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                while (true)
                 {
-                    string strKeyToDelete = await objToDelete.GetDictionaryKeyAsync(token).ConfigureAwait(false);
-                    await Program.OpenCharacters.ForEachAsync(async objCharacter =>
+                    (bool blnSuccess, CharacterSettings objOldCharacterSettings)
+                        = await s_DicLoadedCharacterSettings.TryGetValueAsync(strKey, token).ConfigureAwait(false);
+                    if (blnSuccess)
                     {
-                        if (await objCharacter.GetSettingsKeyAsync(token).ConfigureAwait(false) == strKeyToDelete)
-                            await objCharacter.SetSettingsKeyAsync(strKey, token).ConfigureAwait(false);
-                    }, token: token).ConfigureAwait(false);
-                    await s_DicLoadedCharacterSettings.RemoveAsync(strKeyToDelete, token).ConfigureAwait(false);
-                    await objToDelete.DisposeAsync().ConfigureAwait(false);
+                        await objOldCharacterSettings.CopyValuesAsync(objNewCharacterSettings, token: token)
+                                                     .ConfigureAwait(false);
+                        await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
+                        return;
+                    }
+
+                    // We ended up changing our dictionary key, so find the first custom setting without a corresponding file and delete it
+                    // (we assume that it's the one that got renamed)
+                    if (!await s_DicLoadedCharacterSettings.TryAddAsync(strKey, objNewCharacterSettings, token)
+                                                           .ConfigureAwait(false))
+                        continue;
+                    CharacterSettings objToDelete = (await s_DicLoadedCharacterSettings.FirstOrDefaultAsync(
+                            async x => !await x.Value.GetBuiltInOptionAsync(token)
+                                               .ConfigureAwait(false)
+                                       && !File.Exists(
+                                           Path.Combine(Utils.GetSettingsFolderPath,
+                                                        await x.Value.GetFileNameAsync(token)
+                                                               .ConfigureAwait(false))), token)
+                        .ConfigureAwait(false)).Value;
+                    if (objToDelete != null)
+                    {
+                        string strKeyToDelete = await objToDelete.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                        await Program.OpenCharacters.ForEachAsync(async objCharacter =>
+                        {
+                            if (await objCharacter.GetSettingsKeyAsync(token).ConfigureAwait(false) == strKeyToDelete)
+                                await objCharacter.SetSettingsKeyAsync(strKey, token).ConfigureAwait(false);
+                        }, token: token).ConfigureAwait(false);
+                        await s_DicLoadedCharacterSettings.RemoveAsync(strKeyToDelete, token).ConfigureAwait(false);
+                        await objToDelete.DisposeAsync().ConfigureAwait(false);
+                    }
+
+                    break;
                 }
-                break;
+            }
+            catch
+            {
+                await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
+                throw;
             }
         }
 

@@ -135,8 +135,9 @@ namespace Chummer
 
             int ToBase64_CalculateAndValidateOutputLength(long inputLength, bool insertLineBreaks)
             {
-                long num = inputLength / 3L * 4;
-                num += inputLength % 3 != 0 ? 4 : 0;
+                long num = inputLength.DivRem(3, out long lngRemainder) * 4;
+                if (lngRemainder != 0)
+                    ++num;
                 if (num == 0L)
                 {
                     return 0;
@@ -144,8 +145,8 @@ namespace Chummer
 
                 if (insertLineBreaks)
                 {
-                    long num2 = num / 76;
-                    if (num % 76 == 0L)
+                    long num2 = num.DivRem(76, out lngRemainder);
+                    if (lngRemainder == 0L)
                     {
                         num2--;
                     }
@@ -271,8 +272,9 @@ namespace Chummer
 
             int ToBase64_CalculateAndValidateOutputLength(long inputLength, bool insertLineBreaks)
             {
-                long num = inputLength / 3L * 4;
-                num += inputLength % 3 != 0 ? 4 : 0;
+                long num = inputLength.DivRem(3, out long lngRemainder) * 4;
+                if (lngRemainder != 0)
+                    ++num;
                 if (num == 0L)
                 {
                     return 0;
@@ -280,8 +282,8 @@ namespace Chummer
 
                 if (insertLineBreaks)
                 {
-                    long num2 = num / 76;
-                    if (num % 76 == 0L)
+                    long num2 = num.DivRem(76, out lngRemainder);
+                    if (lngRemainder == 0L)
                     {
                         num2--;
                     }

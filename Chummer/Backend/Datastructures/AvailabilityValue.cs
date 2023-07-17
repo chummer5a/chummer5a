@@ -109,10 +109,10 @@ namespace Chummer
             switch (Suffix)
             {
                 case 'F':
-                    return strBaseAvail + await LanguageManager.GetStringAsync("String_AvailForbidden", strLanguage, token: token);
+                    return strBaseAvail + await LanguageManager.GetStringAsync("String_AvailForbidden", strLanguage, token: token).ConfigureAwait(false);
 
                 case 'R':
-                    return strBaseAvail + await LanguageManager.GetStringAsync("String_AvailRestricted", strLanguage, token: token);
+                    return strBaseAvail + await LanguageManager.GetStringAsync("String_AvailRestricted", strLanguage, token: token).ConfigureAwait(false);
             }
             return strBaseAvail;
         }
