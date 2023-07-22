@@ -74,7 +74,8 @@ jobs:
 
     - run: |
         echo "Run, Build Application using script"
-        & "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\bin\MSBuild.exe" /t:Build /p:configuration=Release ./Chummer/Chummer.sln
+        dotnet msbuild /t:Restore /p:configuration=Release ./Chummer.sln
+        & "C:\Program Files\Microsoft Visual Studio\2022\Enterprise\MSBuild\Current\bin\MSBuild.exe" /t:Build /p:configuration=Release ./Chummer.sln
 
     - name: Perform CodeQL Analysis
       uses: github/codeql-action/analyze@v2
