@@ -42,7 +42,7 @@ namespace Chummer.Backend
         {
             public DumpData(Exception ex)
             {
-                _dicPretendFiles = new Dictionary<string, string> { { "exception.txt", ex?.ToString() ?? "No Exception Specified" } };
+                _dicPretendFiles = new Dictionary<string, string> { { "exception.txt", ex?.ToString().Replace(Utils.GetStartupPath, "[Chummer Path]") ?? "No Exception Specified" } };
 
                 _dicAttributes = new Dictionary<string, string>
                 {
@@ -54,12 +54,11 @@ namespace Chummer.Backend
 #endif
                     {"commandline", Environment.CommandLine},
                     {"visible-version", Application.ProductVersion},
-                    {"machine-name", Environment.MachineName},
-                    {"current-dir", Utils.GetStartupPath},
-                    {"application-dir", Application.ExecutablePath},
+                    {"chummer-version", Utils.CurrentChummerVersion.ToString()},
                     {"os-type", Environment.OSVersion.VersionString},
-                    {"visible-error-friendly", ex?.Message ?? "No description available"},
-                    {"visible-stacktrace", ex?.StackTrace ?? "No stack trace available"},
+                    {"human-readable-os-version", Utils.HumanReadableOSVersion},
+                    {"visible-error-friendly", ex?.Message.Replace(Utils.GetStartupPath, "[Chummer Path]") ?? "No description available"},
+                    {"visible-stacktrace", ex?.StackTrace.Replace(Utils.GetStartupPath, "[Chummer Path]") ?? "No stack trace available"},
                     {"installation-id", Properties.Settings.Default.UploadClientId.ToString() },
                     {"option-upload-logs-set", GlobalSettings.UseLoggingApplicationInsights.ToString() }
                 };
@@ -108,23 +107,28 @@ namespace Chummer.Backend
                     {
                         try
                         {
-                            _dicAttributes.Add("machine-id", objCurrentVersionKey.GetValue("ProductId").ToString());
-                        }
-                        catch (Exception e)
-                        {
-                            _dicAttributes.Add("machine-id", e.ToString());
-                        }
+                            try
+                            {
+                                _dicAttributes.Add("machine-id", objCurrentVersionKey.GetValue("ProductId").ToString());
+                            }
+                            catch (Exception e)
+                            {
+                                _dicAttributes.Add("machine-id", e.ToString());
+                            }
 
-                        try
-                        {
-                            _dicAttributes.Add("os-name", objCurrentVersionKey.GetValue("ProductName").ToString());
+                            try
+                            {
+                                _dicAttributes.Add("os-name", objCurrentVersionKey.GetValue("ProductName").ToString());
+                            }
+                            catch (Exception e)
+                            {
+                                _dicAttributes.Add("os-name", e.ToString());
+                            }
                         }
-                        catch (Exception e)
+                        finally
                         {
-                            _dicAttributes.Add("os-name", e.ToString());
+                            objCurrentVersionKey.Close();
                         }
-
-                        objCurrentVersionKey.Close();
                     }
                     obj64BitRegistryKey?.Close();
                 }
@@ -162,11 +166,12 @@ namespace Chummer.Backend
 
             internal void AddFile(string strFileName)
             {
-                if (_dicCapturedFiles.ContainsKey(strFileName))
+                string strKey = strFileName.Replace(Utils.GetStartupPath, "[Chummer Path]");
+                if (_dicCapturedFiles.ContainsKey(strKey))
                     return;
                 try
                 {
-                    _dicCapturedFiles.Add(strFileName, string.Empty);
+                    _dicCapturedFiles.Add(strKey, string.Empty);
                 }
                 catch (ArgumentException)
                 {
@@ -181,7 +186,7 @@ namespace Chummer.Backend
                 {
                     strContents = e.ToString();
                 }
-                _dicCapturedFiles[strFileName] = strContents;
+                _dicCapturedFiles[strKey] = strContents.Replace(Utils.GetStartupPath, "[Chummer Path]");
             }
 
             public void GetObjectData(SerializationInfo info, StreamingContext context)

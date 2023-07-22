@@ -268,7 +268,7 @@ namespace Chummer
                                                 et.Properties.Add(objKey.ToString(), objValue.ToString());
                                         }
 
-                                        et.Properties.Add("IsCrash", bool.TrueString);
+                                        et.Properties.Add("IsCrash", exa.IsTerminating.ToString());
                                         s_objTelemetryInitializer.Value.Initialize(et);
 
                                         objLocalTelemetryClient.TrackException(et);
