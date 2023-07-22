@@ -1070,6 +1070,10 @@ namespace Chummer
                             string strLoopPath = Path.Combine(_strAppPath, strFullName);
                             if (strLoopPath.IndexOfAny(Path.GetInvalidPathChars()) >= 0)
                                 continue;
+                            // Test to make sure we have no sneaky writes to outside our intended directory
+                            strLoopPath = Path.GetFullPath(strLoopPath);
+                            if (!strLoopPath.StartsWith(Path.GetFullPath(_strAppPath + Path.DirectorySeparatorChar)))
+                                continue;
                             try
                             {
                                 string strLoopDirectory = Path.GetDirectoryName(strLoopPath);

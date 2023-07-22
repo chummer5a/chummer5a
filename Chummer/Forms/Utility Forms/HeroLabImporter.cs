@@ -118,10 +118,21 @@ namespace Chummer
                                 await Task.Run(() =>
                                 {
                                     XPathDocument xmlSourceDoc;
-                                    using (StreamReader sr = new StreamReader(objEntry.Open(), true))
-                                    using (XmlReader objXmlReader
-                                           = XmlReader.Create(sr, GlobalSettings.SafeXmlReaderSettings))
-                                        xmlSourceDoc = new XPathDocument(objXmlReader);
+                                    using (Stream objStream = objEntry.Open())
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        using (StreamReader sr = new StreamReader(objStream, true))
+                                        {
+                                            token.ThrowIfCancellationRequested();
+                                            using (XmlReader objXmlReader
+                                                   = XmlReader.Create(sr, GlobalSettings.SafeXmlReaderSettings))
+                                            {
+                                                token.ThrowIfCancellationRequested();
+                                                xmlSourceDoc = new XPathDocument(objXmlReader);
+                                            }
+                                        }
+                                    }
+
                                     XPathNavigator objToAdd = xmlSourceDoc.CreateNavigator();
                                     lstCharacterXmlStatblocks.Add(objToAdd);
                                 }, token).ConfigureAwait(false);
@@ -139,17 +150,23 @@ namespace Chummer
                         else if (strEntryFullName.StartsWith("images", StringComparison.Ordinal)
                                  && strEntryFullName.Contains('.'))
                         {
-                            string strKey = Path.GetFileName(strEntryFullName);
-                            using (Bitmap bmpMugshot = new Bitmap(objEntry.Open(), true))
+                            using (Stream objStream = objEntry.Open())
                             {
-                                Bitmap bmpNewMugshot = bmpMugshot.PixelFormat == PixelFormat.Format32bppPArgb
-                                    ? bmpMugshot.Clone() as Bitmap // Clone makes sure file handle is closed
-                                    : bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb);
-                                await _dicImages.AddOrUpdateAsync(strKey, x => bmpNewMugshot, (x, y) =>
+                                token.ThrowIfCancellationRequested();
+                                using (Bitmap bmpMugshot = new Bitmap(objStream, true))
                                 {
-                                    y.Dispose();
-                                    return bmpNewMugshot;
-                                }, token).ConfigureAwait(false);
+                                    token.ThrowIfCancellationRequested();
+                                    Bitmap bmpNewMugshot = bmpMugshot.PixelFormat == PixelFormat.Format32bppPArgb
+                                        ? bmpMugshot.Clone() as Bitmap // Clone makes sure file handle is closed
+                                        : bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb);
+                                    token.ThrowIfCancellationRequested();
+                                    string strKey = Path.GetFileName(strEntryFullName);
+                                    await _dicImages.AddOrUpdateAsync(strKey, x => bmpNewMugshot, (x, y) =>
+                                    {
+                                        y.Dispose();
+                                        return bmpNewMugshot;
+                                    }, token).ConfigureAwait(false);
+                                }
                             }
                         }
                     }

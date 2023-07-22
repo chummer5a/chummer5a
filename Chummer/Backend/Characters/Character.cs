@@ -35225,29 +35225,37 @@ namespace Chummer
                                                     await Task.Run(DoLoadStatblocks, token).ConfigureAwait(false);
                                                 void DoLoadStatblocks()
                                                 {
-                                                    using (StreamReader objStreamReader =
-                                                           new StreamReader(objEntry.Open(), true))
+                                                    using (Stream objStream = objEntry.Open())
                                                     {
                                                         token.ThrowIfCancellationRequested();
-                                                        using (XmlReader objReader = XmlReader.Create(objStreamReader,
-                                                                   GlobalSettings.SafeXmlReaderSettings))
+                                                        using (StreamReader objStreamReader =
+                                                               new StreamReader(objStream, true))
                                                         {
                                                             token.ThrowIfCancellationRequested();
-                                                            XPathDocument xmlSourceDoc = new XPathDocument(objReader);
-                                                            XPathNavigator objDummy = xmlSourceDoc.CreateNavigator();
-                                                            if (strEntryFullName.StartsWith("statblocks_xml",
-                                                                    StringComparison.Ordinal))
+                                                            using (XmlReader objReader = XmlReader.Create(
+                                                                       objStreamReader,
+                                                                       GlobalSettings.SafeXmlReaderSettings))
                                                             {
-                                                                if (objDummy.SelectSingleNode(
-                                                                        "/document/public/character[@name = " +
-                                                                        strCharacterId.CleanXPath() + ']') != null)
-                                                                    xmlStatBlockDocument = objDummy;
-                                                            }
-                                                            else
-                                                            {
-                                                                strLeadsName = objDummy.SelectSingleNode(
-                                                                    "/document/portfolio/hero[@heroname = " +
-                                                                    strCharacterId.CleanXPath() + "]/@leadfile")?.Value;
+                                                                token.ThrowIfCancellationRequested();
+                                                                XPathDocument xmlSourceDoc
+                                                                    = new XPathDocument(objReader);
+                                                                XPathNavigator objDummy
+                                                                    = xmlSourceDoc.CreateNavigator();
+                                                                if (strEntryFullName.StartsWith("statblocks_xml",
+                                                                        StringComparison.Ordinal))
+                                                                {
+                                                                    if (objDummy.SelectSingleNode(
+                                                                            "/document/public/character[@name = " +
+                                                                            strCharacterId.CleanXPath() + ']') != null)
+                                                                        xmlStatBlockDocument = objDummy;
+                                                                }
+                                                                else
+                                                                {
+                                                                    strLeadsName = objDummy.SelectSingleNode(
+                                                                            "/document/portfolio/hero[@heroname = " +
+                                                                            strCharacterId.CleanXPath() + "]/@leadfile")
+                                                                        ?.Value;
+                                                                }
                                                             }
                                                         }
                                                     }
@@ -35270,12 +35278,10 @@ namespace Chummer
                                                  && !strKey.Contains('.'))
                                         {
                                             lstTextStatBlockLines = new List<string>(30);
-                                            using (FileStream objFileStream
-                                                   = new FileStream(strEntryFullName, FileMode.Open, FileAccess.Read,
-                                                                    FileShare.Read, 4096, !blnSync))
+                                            using (Stream objStream = objEntry.Open())
                                             {
                                                 token.ThrowIfCancellationRequested();
-                                                using (StreamReader objReader = new StreamReader(objFileStream))
+                                                using (StreamReader objReader = new StreamReader(objStream))
                                                 {
                                                     token.ThrowIfCancellationRequested();
                                                     for (string strLine = blnSync
@@ -35301,20 +35307,25 @@ namespace Chummer
                                     else if (strEntryFullName.StartsWith("images", StringComparison.Ordinal) &&
                                              strEntryFullName.Contains('.'))
                                     {
-                                        using (Bitmap bmpMugshot = new Bitmap(objEntry.Open(), true))
+                                        using (Stream objStream = objEntry.Open())
                                         {
-                                            Bitmap bmpNewMugshot =
-                                                bmpMugshot.PixelFormat == PixelFormat.Format32bppPArgb
-                                                    ? bmpMugshot
-                                                        .Clone() as Bitmap // Clone makes sure file handle is closed
-                                                    : bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb);
-                                            if (dicImages.TryGetValue(strKey, out Bitmap bmpExistingMugshot))
+                                            token.ThrowIfCancellationRequested();
+                                            using (Bitmap bmpMugshot = new Bitmap(objStream, true))
                                             {
-                                                bmpExistingMugshot.Dispose();
-                                                dicImages[strKey] = bmpNewMugshot;
+                                                token.ThrowIfCancellationRequested();
+                                                Bitmap bmpNewMugshot =
+                                                    bmpMugshot.PixelFormat == PixelFormat.Format32bppPArgb
+                                                        ? bmpMugshot
+                                                            .Clone() as Bitmap // Clone makes sure file handle is closed
+                                                        : bmpMugshot.ConvertPixelFormat(PixelFormat.Format32bppPArgb);
+                                                if (dicImages.TryGetValue(strKey, out Bitmap bmpExistingMugshot))
+                                                {
+                                                    bmpExistingMugshot.Dispose();
+                                                    dicImages[strKey] = bmpNewMugshot;
+                                                }
+                                                else
+                                                    dicImages.Add(strKey, bmpNewMugshot);
                                             }
-                                            else
-                                                dicImages.Add(strKey, bmpNewMugshot);
                                         }
                                     }
                                 }
@@ -35337,16 +35348,22 @@ namespace Chummer
                                                     await Task.Run(DoLoadLeads, token).ConfigureAwait(false);
                                                 void DoLoadLeads()
                                                 {
-                                                    using (StreamReader objStreamReader =
-                                                           new StreamReader(objEntry.Open(), true))
+                                                    using (Stream objStream = objEntry.Open())
                                                     {
                                                         token.ThrowIfCancellationRequested();
-                                                        using (XmlReader objReader = XmlReader.Create(objStreamReader,
-                                                                   GlobalSettings.SafeXmlReaderSettings))
+                                                        using (StreamReader objStreamReader =
+                                                               new StreamReader(objStream, true))
                                                         {
                                                             token.ThrowIfCancellationRequested();
-                                                            XPathDocument xmlSourceDoc = new XPathDocument(objReader);
-                                                            xmlLeadsDocument = xmlSourceDoc.CreateNavigator();
+                                                            using (XmlReader objReader = XmlReader.Create(
+                                                                       objStreamReader,
+                                                                       GlobalSettings.SafeXmlReaderSettings))
+                                                            {
+                                                                token.ThrowIfCancellationRequested();
+                                                                XPathDocument xmlSourceDoc
+                                                                    = new XPathDocument(objReader);
+                                                                xmlLeadsDocument = xmlSourceDoc.CreateNavigator();
+                                                            }
                                                         }
                                                     }
                                                 }
