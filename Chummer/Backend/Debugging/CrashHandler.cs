@@ -224,8 +224,9 @@ namespace Chummer.Backend
                 string strJsonPath = Path.Combine(Utils.GetStartupPath, "chummer_crash_" + datCrashDateTime.ToFileTimeUtc() + ".json");
                 using (FileStream objFileStream = new FileStream(strJsonPath, FileMode.Create, FileAccess.Write, FileShare.None))
                 using (StreamWriter objStreamWriter = new StreamWriter(objFileStream))
-                using (JsonWriter objJsonWriter = new JsonTextWriter(objStreamWriter))
+                using (JsonTextWriter objJsonWriter = new JsonTextWriter(objStreamWriter))
                 {
+                    objJsonWriter.Formatting = Formatting.Indented;
                     dump.SerializeJson(objJsonWriter);
                 }
 
