@@ -331,8 +331,17 @@ namespace Chummer
                 await Utils.SafeSleepAsync(ReadLockHeartbeatDelay / 2, token).ConfigureAwait(false);
                 if (_objTopLevelWriterSemaphore.CurrentCount == 0)
                 {
-                    // We need to switch back to the original execution context to make sure we fetch from the proper AsyncLocal
-                    ExecutionContext.Run(objOriginalContext, state => objCurrentSemaphore = _objCurrentWriterSemaphore.Value?.Item2 ?? _objTopLevelWriterSemaphore, null);
+                    if (objOriginalContext == null || ExecutionContext.Capture() == objOriginalContext)
+                        objCurrentSemaphore = _objCurrentWriterSemaphore.Value?.Item2 ?? _objTopLevelWriterSemaphore;
+                    else
+                    {
+                        // We need to switch back to the original execution context to make sure we fetch from the proper AsyncLocal
+                        ExecutionContext objContextCopy = objOriginalContext.CreateCopy();
+                        ExecutionContext.Run(objOriginalContext,
+                                             state => objCurrentSemaphore = _objCurrentWriterSemaphore.Value?.Item2
+                                                                            ?? _objTopLevelWriterSemaphore, null);
+                        objOriginalContext = objContextCopy;
+                    }
                 }
                 else
                 {
