@@ -251,8 +251,8 @@ namespace Chummer.Backend
                             + Environment.NewLine + "Chummer crashed with version: " + Utils.CurrentChummerVersion
                             + Environment.NewLine + "Crash Handler crashed with exit code: "
                             + prcCrashHandler.ExitCode + Environment.NewLine + "Crash information:"
-                            + Environment.NewLine + ex, "Failed to Create Crash Report", MessageBoxButtons.OK,
-                            MessageBoxIcon.Error);
+                            + Environment.NewLine + ex.ToString().Replace(Utils.GetStartupPath, "[Chummer Path]"),
+                            "Failed to Create Crash Report", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
             }
@@ -262,7 +262,8 @@ namespace Chummer.Backend
                     "Failed to create crash report." + Environment.NewLine + "Chummer crashed with version: "
                     + Utils.CurrentChummerVersion + Environment.NewLine
                     + "Here is some information to help the developers figure out why:" + Environment.NewLine + nex
-                    + Environment.NewLine + "Crash information:" + Environment.NewLine + ex,
+                    + Environment.NewLine + "Crash information:" + Environment.NewLine
+                    + ex.ToString().Replace(Utils.GetStartupPath, "[Chummer Path]"),
                     "Failed to Create Crash Report", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
