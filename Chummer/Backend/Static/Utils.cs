@@ -797,6 +797,11 @@ namespace Chummer
                     {
                         objOpenCharacterForm = await lstToProcess.GetValueAtAsync(i, token).ConfigureAwait(false);
                     }
+                    catch (ArgumentOutOfRangeException)
+                    {
+                        // Swallow this, we've closed the form in between the loop and us trying to get the form at the index
+                        continue;
+                    }
                     catch (IndexOutOfRangeException)
                     {
                         // Swallow this, we've closed the form in between the loop and us trying to get the form at the index
