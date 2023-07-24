@@ -605,6 +605,10 @@ namespace Chummer
                                     }
 
                                     await XmlManager.LoadXPathAsync(strFile).ConfigureAwait(false);
+                                    if (strFile == "settings.xml")
+                                    {
+                                        _ = await SettingsManager.GetLoadedCharacterSettingsAsync().ConfigureAwait(false);
+                                    }
                                     await frmLoadingBarInner.PerformStepAsync(
                                         Application.ProductName,
                                         LoadingBar.ProgressBarTextPatterns.Initializing).ConfigureAwait(false);
