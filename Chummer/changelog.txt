@@ -53,6 +53,7 @@ Data Changes:
 - No Future's stealth errata additions to Cybereyes Basic System, Cyberears, Vision Enhancement, and Audio Enhancement cyberware have been moved to a dedicated custom dataset.
 - Seeker Shafts from Hard Targets are now properly meant as plugins for arrows instead of a dedicated arrow type and now properly affect the dice pool of smartgun/smartlink bows when their parent arrow gear is "loaded".
 - Universal Data Cord, Folding Ladder, Solar Panel, Detonating Cord (Low Yield and High Yield), and Safety Fuse items can now be bought with specific dimensions in addition to quantities instead of quantities and dimensions being rolled into one number.
+- 1 kilogram of Pet Food now properly weighs 1 kilogram.
 
 Changed/New Strings:
 - LimitCondition_SkillsActiveLeadership

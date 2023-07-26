@@ -17566,6 +17566,7 @@
       <page>254</page>
       <avail>0</avail>
       <cost>2</cost>
+      <weight>1</weight>
     </gear>
     <gear>
       <id>1e8589a2-5737-4870-9a56-8614309a72a9</id>
