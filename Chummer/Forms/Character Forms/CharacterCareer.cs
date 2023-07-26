@@ -23751,10 +23751,6 @@ namespace Chummer
                                                    .ConfigureAwait(false);
                             await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = strText, token)
                                                     .ConfigureAwait(false);
-                            string strText2 = await LanguageManager.GetStringAsync(objMod.RatingLabel, token: token)
-                                                                   .ConfigureAwait(false);
-                            await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Text = strText2, token)
-                                                       .ConfigureAwait(false);
                             if (!objMod.MaxRating.Equals("qty", StringComparison.OrdinalIgnoreCase))
                             {
                                 if (objMod.MaxRating.Equals("seats", StringComparison.OrdinalIgnoreCase))

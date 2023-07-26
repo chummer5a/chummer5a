@@ -56,8 +56,12 @@ namespace Chummer
                     if (objGear.Rating > 0)
                     {
                         strName += strSpace + '('
-                                            + await LanguageManager.GetStringAsync(objGear.RatingLabel)
-                                                                   .ConfigureAwait(false) + strSpace
+                                            + string.Format(
+                                                GlobalSettings.CultureInfo,
+                                                await LanguageManager.GetStringAsync("Label_RatingFormat")
+                                                                     .ConfigureAwait(false),
+                                                await LanguageManager.GetStringAsync(objGear.RatingLabel)
+                                                                     .ConfigureAwait(false)) + strSpace
                                             + objGear.Rating.ToString(GlobalSettings.CultureInfo) + ')';
                     }
 

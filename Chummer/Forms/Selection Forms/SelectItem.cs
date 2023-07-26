@@ -80,8 +80,11 @@ namespace Chummer
                                 if (objGear.Rating > 0)
                                 {
                                     sbdAmmoName.Append(strSpace).Append('(')
-                                               .Append(await LanguageManager.GetStringAsync(objGear.RatingLabel)
-                                                                            .ConfigureAwait(false)).Append(strSpace)
+                                               .AppendFormat(GlobalSettings.CultureInfo,
+                                                             await LanguageManager.GetStringAsync("Label_RatingFormat")
+                                                                 .ConfigureAwait(false),
+                                                             await LanguageManager.GetStringAsync(objGear.RatingLabel)
+                                                                 .ConfigureAwait(false)).Append(strSpace)
                                                .Append(objGear.Rating.ToString(GlobalSettings.CultureInfo)).Append(')');
                                 }
 

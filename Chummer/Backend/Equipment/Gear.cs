@@ -3383,8 +3383,11 @@ namespace Chummer.Backend.Equipment
                 strReturn = strQuantity + strSpace + strReturn;
 
             if (Rating > 0)
-                strReturn += strSpace + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpace +
-                             Rating.ToString(objCulture) + ')';
+                strReturn += strSpace + '('
+                                      + string.Format(
+                                          objCulture, LanguageManager.GetString("Label_RatingFormat", strLanguage),
+                                          LanguageManager.GetString(RatingLabel, strLanguage)) + strSpace
+                                      + Rating.ToString(objCulture) + ')';
             if (!string.IsNullOrEmpty(Extra))
                 strReturn += strSpace + '(' + _objCharacter.TranslateExtra(Extra, strLanguage) + ')';
             if (!string.IsNullOrEmpty(GearName))
@@ -3406,8 +3409,15 @@ namespace Chummer.Backend.Equipment
                 strReturn = strQuantity + strSpace + strReturn;
 
             if (Rating > 0)
-                strReturn += strSpace + '(' + await LanguageManager.GetStringAsync(RatingLabel, strLanguage, token: token).ConfigureAwait(false) + strSpace +
-                             Rating.ToString(objCulture) + ')';
+                strReturn += strSpace + '('
+                                      + string.Format(
+                                          objCulture,
+                                          await LanguageManager
+                                                .GetStringAsync("Label_RatingFormat", strLanguage, token: token)
+                                                .ConfigureAwait(false),
+                                          await LanguageManager.GetStringAsync(RatingLabel, strLanguage, token: token)
+                                                               .ConfigureAwait(false)) + strSpace
+                                      + Rating.ToString(objCulture) + ')';
             if (!string.IsNullOrEmpty(Extra))
                 strReturn += strSpace + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false) + ')';
             if (!string.IsNullOrEmpty(GearName))

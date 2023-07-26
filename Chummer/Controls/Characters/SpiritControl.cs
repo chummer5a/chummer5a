@@ -626,9 +626,13 @@ namespace Chummer
                         await LanguageManager.GetStringAsync("DialogFilter_Chum5lz", token: token).ConfigureAwait(false) + '|' +
                         await LanguageManager.GetStringAsync("DialogFilter_All", token: token).ConfigureAwait(false);
                     string strInputFileName = strCritterName + strSpace + '('
-                                              + await LanguageManager
+                                              + string.Format(
+                                                  GlobalSettings.CultureInfo,
+                                                  await LanguageManager
+                                                        .GetStringAsync("Label_RatingFormat", token: token)
+                                                        .ConfigureAwait(false), await LanguageManager
                                                       .GetStringAsync(_objSpirit.RatingLabel, token: token)
-                                                      .ConfigureAwait(false) + strSpace
+                                                      .ConfigureAwait(false)) + strSpace
                                               + _objSpirit.Force.ToString(GlobalSettings.InvariantCultureInfo);
                     DialogResult eResult = await this.DoThreadSafeFuncAsync(x =>
                     {
