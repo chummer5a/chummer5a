@@ -7564,8 +7564,8 @@
       </gear>
       <gear>
         <id>a2f8d85c-99eb-44ed-b747-ac995f8fec89</id>
-        <name>Universal Connector Cord (Meter)</name>
-        <translate>通用连接线（1米）</translate>
+        <name>Universal Connector Cord</name>
+        <translate>通用连接线</translate>
       </gear>
       <gear>
         <id>ee19955d-cf91-44da-ba5b-9b496dbd14cb</id>
@@ -7671,8 +7671,8 @@
       </gear>
       <gear>
         <id>647871e8-8dad-42db-8d38-856756b72384</id>
-        <name>Folding Ladder (Meter)</name>
-        <translate>云梯（米）</translate>
+        <name>Folding Ladder</name>
+        <translate>云梯</translate>
       </gear>
       <gear>
         <id>4280d463-bc30-4add-b410-69b4b1db56e9</id>
@@ -7751,8 +7751,8 @@
       </gear>
       <gear>
         <id>8acd6bcd-7f05-4e48-b645-ea9bfd3b93fb</id>
-        <name>Solar Panel (Square Meter)</name>
-        <translate>太阳能电池板（1平方米）</translate>
+        <name>Solar Panel</name>
+        <translate>太阳能电池板</translate>
       </gear>
       <gear>
         <id>29e7f292-89da-4d09-a996-882d5c611762</id>

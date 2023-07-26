@@ -13435,14 +13435,14 @@
       </gear>
       <gear translated="True">
         <id>89549b33-b3fa-48ac-bd6f-8b0aec288ae7</id>
-        <name>Detonating Cord, Low Yield (meter)</name>
-        <translate>Sprengschnur, Leicht (pro m)</translate>
+        <name>Detonating Cord, Low Yield</name>
+        <translate>Sprengschnur, Leicht</translate>
         <altpage>194</altpage>
       </gear>
       <gear translated="True">
         <id>6a38466e-f5ea-451b-bdf9-51aacc5e1537</id>
-        <name>Detonating Cord, High Yield (meter)</name>
-        <translate>Sprengschnur, Schwer (pro m)</translate>
+        <name>Detonating Cord, High Yield</name>
+        <translate>Sprengschnur, Schwer</translate>
         <altpage>194</altpage>
       </gear>
       <gear>
@@ -13513,8 +13513,8 @@
       </gear>
       <gear>
         <id>7b14565a-ac42-4dcc-930d-34740c79358c</id>
-        <name>Safety Fuse (meter)</name>
-        <translate>Sicherheitszündschnur (pro m)</translate>
+        <name>Safety Fuse</name>
+        <translate>Sicherheitszündschnur</translate>
         <altpage>196</altpage>
       </gear>
       <gear>
@@ -17261,8 +17261,8 @@
       </gear>
       <gear>
         <id>a2f8d85c-99eb-44ed-b747-ac995f8fec89</id>
-        <name>Universal Connector Cord (Meter)</name>
-        <translate>Universalkabel (Meter)</translate>
+        <name>Universal Connector Cord</name>
+        <translate>Universalkabel</translate>
         <altpage>261</altpage>
       </gear>
       <gear>
@@ -17387,8 +17387,8 @@
       </gear>
       <gear>
         <id>647871e8-8dad-42db-8d38-856756b72384</id>
-        <name>Folding Ladder (Meter)</name>
-        <translate>Klappleiter (Meter)</translate>
+        <name>Folding Ladder</name>
+        <translate>Klappleiter</translate>
         <altpage>261</altpage>
       </gear>
       <gear>
@@ -17483,8 +17483,8 @@
       </gear>
       <gear>
         <id>8acd6bcd-7f05-4e48-b645-ea9bfd3b93fb</id>
-        <name>Solar Panel (Square Meter)</name>
-        <translate>Solarpanel (Quadratmeter)</translate>
+        <name>Solar Panel</name>
+        <translate>Solarpanel</translate>
         <altpage>261</altpage>
       </gear>
       <gear>

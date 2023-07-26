@@ -401,8 +401,9 @@
       <cost>1000</cost>
       <gears>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
       </gears>
       <!--<wirelessbonus>
@@ -8648,8 +8649,9 @@
       <programs>Rating</programs>
       <gears>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
       </gears>
       <allowgear>

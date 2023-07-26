@@ -2217,27 +2217,27 @@
     </gear>
     <gear>
       <id>89549b33-b3fa-48ac-bd6f-8b0aec288ae7</id>
-      <name>Detonating Cord, Low Yield (meter)</name>
+      <name>Detonating Cord, Low Yield</name>
       <category>Explosives</category>
-      <rating>3</rating>
+      <rating>20000</rating>
+      <ratinglabel>Rating_Meters</ratinglabel>
       <source>RG</source>
       <page>193</page>
       <avail>10R</avail>
       <cost>100</cost>
-      <minrating>3</minrating>
-      <weight>1</weight>
+      <weight>Rating</weight>
     </gear>
     <gear>
       <id>6a38466e-f5ea-451b-bdf9-51aacc5e1537</id>
-      <name>Detonating Cord, High Yield (meter)</name>
+      <name>Detonating Cord, High Yield</name>
       <category>Explosives</category>
-      <rating>6</rating>
+      <rating>20000</rating>
+      <ratinglabel>Rating_Meters</ratinglabel>
       <source>RG</source>
       <page>193</page>
       <avail>14R</avail>
       <cost>150</cost>
-      <minrating>6</minrating>
-      <weight>1</weight>
+      <weight>Rating</weight>
     </gear>
     <gear>
       <id>ded12d46-347a-424f-9e18-0d8c8cdfa48e</id>
@@ -2397,9 +2397,10 @@
     </gear>
     <gear>
       <id>7b14565a-ac42-4dcc-930d-34740c79358c</id>
-      <name>Safety Fuse (meter)</name>
+      <name>Safety Fuse</name>
       <category>Explosives</category>
-      <rating>0</rating>
+      <rating>20000</rating>
+      <ratinglabel>Rating_Meters</ratinglabel>
       <source>RG</source>
       <page>197</page>
       <avail>8R</avail>
@@ -3000,8 +3001,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3029,8 +3031,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3058,8 +3061,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3087,8 +3091,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3116,8 +3121,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3145,8 +3151,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3174,8 +3181,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3215,8 +3223,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3244,8 +3253,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3277,8 +3287,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3310,8 +3321,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3445,8 +3457,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3485,8 +3498,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3529,8 +3543,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3577,8 +3592,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3623,8 +3639,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3671,8 +3688,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3723,8 +3741,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3783,8 +3802,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3813,8 +3833,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3842,8 +3863,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3878,8 +3900,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3907,8 +3930,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3936,8 +3960,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -4551,8 +4576,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -4580,8 +4606,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -4616,8 +4643,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -4645,8 +4673,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -4677,8 +4706,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -4706,8 +4736,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -4738,8 +4769,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -4770,8 +4802,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -4799,8 +4832,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -4828,8 +4862,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -4860,8 +4895,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -4889,8 +4925,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -4918,8 +4955,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -4946,8 +4984,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
       </gears>
     </gear>
@@ -4970,8 +5009,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
       </gears>
     </gear>
@@ -4994,8 +5034,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
       </gears>
     </gear>
@@ -5018,8 +5059,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
       </gears>
     </gear>
@@ -5042,8 +5084,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
       </gears>
     </gear>
@@ -5066,8 +5109,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
       </gears>
     </gear>
@@ -5090,8 +5134,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
       </gears>
     </gear>
@@ -5114,8 +5159,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
       </gears>
     </gear>
@@ -5331,8 +5377,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Waterproof Casing</name>
@@ -5376,8 +5423,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Hardened Casing</name>
@@ -14437,8 +14485,9 @@
       <programs>Rating</programs>
       <gears>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
       </gears>
       <required>
@@ -16686,9 +16735,10 @@
     </gear>
     <gear>
       <id>a2f8d85c-99eb-44ed-b747-ac995f8fec89</id>
-      <name>Universal Connector Cord (Meter)</name>
+      <name>Universal Connector Cord</name>
       <category>Tools</category>
-      <rating>0</rating>
+      <rating>20000</rating>
+      <ratinglabel>Rating_Meters</ratinglabel>
       <source>RF</source>
       <page>254</page>
       <avail>0</avail>
@@ -16906,9 +16956,10 @@
     </gear>
     <gear>
       <id>647871e8-8dad-42db-8d38-856756b72384</id>
-      <name>Folding Ladder (Meter)</name>
+      <name>Folding Ladder</name>
       <category>Tools</category>
-      <rating>0</rating>
+      <rating>20</rating>
+      <ratinglabel>Rating_Meters</ratinglabel>
       <source>RF</source>
       <page>254</page>
       <avail>0</avail>
@@ -17086,9 +17137,10 @@
     </gear>
     <gear>
       <id>8acd6bcd-7f05-4e48-b645-ea9bfd3b93fb</id>
-      <name>Solar Panel (Square Meter)</name>
+      <name>Solar Panel</name>
       <category>Tools</category>
-      <rating>0</rating>
+      <rating>10</rating>
+      <ratinglabel>Rating_SqMeters</ratinglabel>
       <source>RF</source>
       <page>254</page>
       <avail>0</avail>
