@@ -35,6 +35,7 @@ Application Changes:
 - Fixed an issue where the Armor (Drone) vehicle mod would not correctly override the armor value of the drone.
 - If a character has unused contact points, spell points, or complex form points at character creation, the character validator now warns of this the same way it does of unused knowledge skill points, skill points, attribute points, and special attribute points.
 - Barehanded Adept properly always doubles spell drain instead of doubling the constant component of spell drain codes and not affecting spells cast at forces where drain is dictated by the minimum spell drain of 2 DV. Fixes #5022.
+- Various inconsistencies with custom labels for item ratings have been fixed.
 - Refactored the selectquality and addqualities improvements to work in the same manner. Allows for the use of Rating on selectquality elements. Implements #5030
 - Changed the calculation for Swim speed to always use cyberlimb attributes as appropriate. Closes #5031
 
@@ -54,6 +55,8 @@ Data Changes:
 - Added stealth errata from Dark Terrors to Run Faster's infected powers as a custom dataset.
 - No Future's stealth errata additions to Cybereyes Basic System, Cyberears, Vision Enhancement, and Audio Enhancement cyberware have been moved to a dedicated custom dataset.
 - Seeker Shafts from Hard Targets are now properly meant as plugins for arrows instead of a dedicated arrow type and now properly affect the dice pool of smartgun/smartlink bows when their parent arrow gear is "loaded".
+- Universal Data Cord, Folding Ladder, Solar Panel, Detonating Cord (Low Yield and High Yield), and Safety Fuse items can now be bought with specific dimensions in addition to quantities instead of quantities and dimensions being rolled into one number.
+- 1 kilogram of Pet Food now properly weighs 1 kilogram.
 
 Changed/New Strings:
 - LimitCondition_SkillsActiveLeadership
@@ -67,6 +70,7 @@ Changed/New Strings:
 - MessageTitle_DuplicateFile
 - Message_SelectGeneric_HaveAttributeEnabled
 - String_ComplexFormTargetIcon
+- Rating_SqMeters
 
 Build 225
 Application Changes:

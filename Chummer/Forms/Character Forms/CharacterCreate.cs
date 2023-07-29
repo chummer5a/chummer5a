@@ -18216,10 +18216,6 @@ namespace Chummer
                                                    .ConfigureAwait(false);
                             await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = strText, token)
                                                     .ConfigureAwait(false);
-                            string strText2 = await LanguageManager.GetStringAsync(objMod.RatingLabel, token: token)
-                                                                   .ConfigureAwait(false);
-                            await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Text = strText2, token)
-                                                       .ConfigureAwait(false);
                             if (!objMod.MaxRating.Equals("qty", StringComparison.OrdinalIgnoreCase))
                             {
                                 if (objMod.MaxRating.Equals("seats", StringComparison.OrdinalIgnoreCase))
@@ -18996,11 +18992,6 @@ namespace Chummer
                                                                .ConfigureAwait(false);
                             await lblVehicleCategory.DoThreadSafeAsync(x => x.Text = strText, token)
                                                     .ConfigureAwait(false);
-                            string strText2 = await LanguageManager
-                                                    .GetStringAsync(objCyberware.RatingLabel, token: token)
-                                                    .ConfigureAwait(false);
-                            await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Text = strText2, token)
-                                                       .ConfigureAwait(false);
                             if (objCyberware.MaxRating == 0)
                             {
                                 await nudVehicleRating.DoThreadSafeAsync(x =>
@@ -19134,10 +19125,6 @@ namespace Chummer
                             await lblVehicleCategory
                                   .DoThreadSafeAsync(x => x.Text = objGear.DisplayCategory(GlobalSettings.Language),
                                                      token).ConfigureAwait(false);
-                            string strText = await LanguageManager.GetStringAsync(objGear.RatingLabel, token: token)
-                                                                  .ConfigureAwait(false);
-                            await lblVehicleRatingLabel.DoThreadSafeAsync(x => x.Text = strText, token)
-                                                       .ConfigureAwait(false);
                             int intGearMaxRatingValue = objGear.MaxRatingValue;
                             if (intGearMaxRatingValue > 0 && intGearMaxRatingValue != int.MaxValue)
                             {

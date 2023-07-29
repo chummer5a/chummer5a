@@ -10434,6 +10434,10 @@
       <key>Rating_Meters</key>
       <text>Meters</text>
     </string>
+    <string>
+      <key>Rating_SqMeters</key>
+      <text>Square Meters</text>
+    </string>
     <!-- End Region -->
     <string>
       <key>String_SINners_HowToGroupParentDescription</key>

@@ -5101,7 +5101,7 @@ namespace Chummer
                             intMaxFocusTotal = Math.Min(intMaxFocusTotal, (await (await CharacterObject.GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false))
                                                             .GetTotalValueAsync(token).ConfigureAwait(false)) * 5);
 
-                        foreach (Gear objGear in CharacterObject.Gear)
+                        await (await CharacterObject.GetGearAsync(token).ConfigureAwait(false)).ForEachAsync(async objGear =>
                         {
                             switch (objGear.Category)
                             {
@@ -5110,10 +5110,12 @@ namespace Chummer
                                 {
                                     TreeNode objNode = objGear.CreateTreeNode(cmsFocus, null);
                                     if (objNode == null)
-                                        continue;
+                                        return;
                                     objNode.Text = await objNode.Text.CheapReplaceAsync(
-                                        await LanguageManager.GetStringAsync("String_Rating", token: token).ConfigureAwait(false),
-                                        () => LanguageManager.GetStringAsync(objGear.RatingLabel, token: token), token: token).ConfigureAwait(false);
+                                        await LanguageManager.GetStringAsync("String_Rating", token: token)
+                                                             .ConfigureAwait(false),
+                                        () => LanguageManager.GetStringAsync(objGear.RatingLabel, token: token),
+                                        token: token).ConfigureAwait(false);
                                     for (int i = CharacterObject.Foci.Count - 1; i >= 0; --i)
                                     {
                                         if (i < CharacterObject.Foci.Count)
@@ -5126,7 +5128,8 @@ namespace Chummer
                                                 if (intFociTotal > intMaxFocusTotal && !CharacterObject.IgnoreRules)
                                                 {
                                                     objGear.Bonded = false;
-                                                    await CharacterObject.Foci.RemoveAtAsync(i, token: token).ConfigureAwait(false);
+                                                    await CharacterObject.Foci.RemoveAtAsync(i, token: token)
+                                                                         .ConfigureAwait(false);
                                                     objNode.Checked = false;
                                                 }
                                                 else
@@ -5146,7 +5149,9 @@ namespace Chummer
                                         if (objStack.GearId == objGear.InternalId)
                                         {
                                             await ImprovementManager.RemoveImprovementsAsync(CharacterObject,
-                                                Improvement.ImprovementSource.StackedFocus, objStack.InternalId, token).ConfigureAwait(false);
+                                                                        Improvement.ImprovementSource.StackedFocus,
+                                                                        objStack.InternalId, token)
+                                                                    .ConfigureAwait(false);
 
                                             if (objStack.Bonded)
                                             {
@@ -5158,7 +5163,8 @@ namespace Chummer
                                                         Improvement.ImprovementSource.StackedFocus, objStack.InternalId,
                                                         objFociGear.Bonus, objFociGear.Rating,
                                                         await objFociGear.DisplayNameShortAsync(
-                                                            GlobalSettings.Language, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                                                            GlobalSettings.Language, token).ConfigureAwait(false),
+                                                        token: token).ConfigureAwait(false);
                                                     if (objFociGear.WirelessOn)
                                                         await ImprovementManager.CreateImprovementsAsync(
                                                             CharacterObject,
@@ -5166,17 +5172,19 @@ namespace Chummer
                                                             objStack.InternalId,
                                                             objFociGear.WirelessBonus, objFociGear.Rating,
                                                             await objFociGear.DisplayNameShortAsync(
-                                                                GlobalSettings.Language, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                                                                GlobalSettings.Language, token).ConfigureAwait(false),
+                                                            token: token).ConfigureAwait(false);
                                                 }
                                             }
 
-                                            await AddToTree(objStack.CreateTreeNode(objGear, cmsFocus), false).ConfigureAwait(false);
+                                            await AddToTree(objStack.CreateTreeNode(objGear, cmsFocus), false)
+                                                .ConfigureAwait(false);
                                         }
                                     }
                                 }
                                     break;
                             }
-                        }
+                        }, token).ConfigureAwait(false);
 
                         await treFoci.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId), token).ConfigureAwait(false);
                     }

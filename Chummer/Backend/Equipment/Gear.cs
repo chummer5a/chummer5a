@@ -3383,8 +3383,11 @@ namespace Chummer.Backend.Equipment
                 strReturn = strQuantity + strSpace + strReturn;
 
             if (Rating > 0)
-                strReturn += strSpace + '(' + LanguageManager.GetString(RatingLabel, strLanguage) + strSpace +
-                             Rating.ToString(objCulture) + ')';
+                strReturn += strSpace + '('
+                                      + string.Format(
+                                          objCulture, LanguageManager.GetString("Label_RatingFormat", strLanguage),
+                                          LanguageManager.GetString(RatingLabel, strLanguage)) + strSpace
+                                      + Rating.ToString(objCulture) + ')';
             if (!string.IsNullOrEmpty(Extra))
                 strReturn += strSpace + '(' + _objCharacter.TranslateExtra(Extra, strLanguage) + ')';
             if (!string.IsNullOrEmpty(GearName))
@@ -3406,8 +3409,15 @@ namespace Chummer.Backend.Equipment
                 strReturn = strQuantity + strSpace + strReturn;
 
             if (Rating > 0)
-                strReturn += strSpace + '(' + await LanguageManager.GetStringAsync(RatingLabel, strLanguage, token: token).ConfigureAwait(false) + strSpace +
-                             Rating.ToString(objCulture) + ')';
+                strReturn += strSpace + '('
+                                      + string.Format(
+                                          objCulture,
+                                          await LanguageManager
+                                                .GetStringAsync("Label_RatingFormat", strLanguage, token: token)
+                                                .ConfigureAwait(false),
+                                          await LanguageManager.GetStringAsync(RatingLabel, strLanguage, token: token)
+                                                               .ConfigureAwait(false)) + strSpace
+                                      + Rating.ToString(objCulture) + ')';
             if (!string.IsNullOrEmpty(Extra))
                 strReturn += strSpace + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false) + ')';
             if (!string.IsNullOrEmpty(GearName))
@@ -4664,30 +4674,39 @@ namespace Chummer.Backend.Equipment
                         TreeNode nodFocus = await treFoci.DoThreadSafeFuncAsync(x => x.FindNodeByTag(this), token: token).ConfigureAwait(false);
                         if (nodFocus != null)
                         {
-                            string strText = CurrentDisplayName.Replace(
+                            string strText = (await GetCurrentDisplayNameAsync(token).ConfigureAwait(false)).Replace(
                                 await LanguageManager.GetStringAsync(RatingLabel, token: token).ConfigureAwait(false),
                                 await LanguageManager.GetStringAsync("String_Force", token: token).ConfigureAwait(false));
-                            await treFoci.DoThreadSafeFuncAsync(() => nodFocus.Text = strText, token: token).ConfigureAwait(false);
+                            await treFoci.DoThreadSafeFuncAsync(() => nodFocus.Text = strText, token: token)
+                                         .ConfigureAwait(false);
                         }
                     }
                     break;
 
                 case "Stacked Focus":
                     {
-                        for (int i = _objCharacter.StackedFoci.Count - 1; i >= 0; --i)
+                        ThreadSafeList<StackedFocus> lstStackedFoci
+                            = await _objCharacter.GetStackedFociAsync(token).ConfigureAwait(false);
+                        for (int i = await lstStackedFoci.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
                         {
-                            if (i >= _objCharacter.StackedFoci.Count)
+                            if (i >= await lstStackedFoci.GetCountAsync(token).ConfigureAwait(false))
                                 continue;
-                            StackedFocus objStack = _objCharacter.StackedFoci[i];
+                            StackedFocus objStack = await lstStackedFoci.GetValueAtAsync(i, token)
+                                                                        .ConfigureAwait(false);
                             if (objStack.GearId != InternalId)
                                 continue;
-                            TreeNode nodFocus = await treFoci.DoThreadSafeFuncAsync(x => x.FindNode(objStack.InternalId), token: token).ConfigureAwait(false);
+                            TreeNode nodFocus = await treFoci
+                                                      .DoThreadSafeFuncAsync(
+                                                          x => x.FindNode(objStack.InternalId), token: token)
+                                                      .ConfigureAwait(false);
                             if (nodFocus != null)
                             {
-                                string strText = CurrentDisplayName.Replace(
+                                string strText = (await GetCurrentDisplayNameAsync(token).ConfigureAwait(false)).Replace(
                                     await LanguageManager.GetStringAsync(RatingLabel, token: token).ConfigureAwait(false),
-                                    await LanguageManager.GetStringAsync("String_Force", token: token).ConfigureAwait(false));
-                                await treFoci.DoThreadSafeFuncAsync(() => nodFocus.Text = strText, token: token).ConfigureAwait(false);
+                                    await LanguageManager.GetStringAsync("String_Force", token: token)
+                                                         .ConfigureAwait(false));
+                                await treFoci.DoThreadSafeFuncAsync(() => nodFocus.Text = strText, token: token)
+                                             .ConfigureAwait(false);
                             }
 
                             break;
