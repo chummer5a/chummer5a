@@ -27902,6 +27902,9 @@ namespace Chummer
 
                 if (strMovementType == "Swim")
                 {
+                    //Swimming uses all limbs
+                    intAGI = AGI.CalculatedTotalValue(true);
+                    intSTR = STR.CalculatedTotalValue(true);
                     decWalk *= (intAGI + intSTR) * 0.5m;
                     decRun *= (intAGI + intSTR) * 0.5m;
                 }

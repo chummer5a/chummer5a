@@ -854,6 +854,7 @@
                   <xs:extension base="xs:string">
                     <xs:attribute name="contributetobp" type="xs:string" use="optional" />
                     <xs:attribute name="forced" type="boolean" use="optional" />
+                    <xs:attribute name="rating" type="integer" use="optional" />
                   </xs:extension>
                 </xs:simpleContent>
               </xs:complexType>

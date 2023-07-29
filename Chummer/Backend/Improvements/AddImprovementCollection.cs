@@ -6168,43 +6168,8 @@ namespace Chummer
                         string strRating = objXmlAddQuality.Attributes?["rating"]?.InnerText;
                         int intCount = string.IsNullOrEmpty(strRating) ? 1 : ImprovementManager.ValueToInt(_objCharacter, strRating, _intRating);
                         bool blnDoesNotContributeToBP = !string.Equals(objXmlAddQuality.Attributes?["contributetobp"]?.InnerText, bool.TrueString, StringComparison.OrdinalIgnoreCase);
-
-                        for (int i = 0; i < intCount; ++i)
-                        {
-                            // Makes sure we aren't over our limits for this particular quality from this overall source
-                            if (objXmlAddQuality.Attributes?["forced"]?.InnerText == bool.TrueString ||
-                                objXmlSelectedQuality?.CreateNavigator().RequirementsMet(_objCharacter, LanguageManager.GetString("String_Quality"), string.Empty, _strFriendlyName) == true)
-                            {
-                                List<Weapon> lstWeapons = new List<Weapon>(1);
-                                Quality objAddQuality = new Quality(_objCharacter);
-                                try
-                                {
-                                    objAddQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons,
-                                                         strForceValue, _strFriendlyName);
-
-                                    if (blnDoesNotContributeToBP)
-                                    {
-                                        objAddQuality.BP = 0;
-                                        objAddQuality.ContributeToLimit = false;
-                                    }
-
-                                    _objCharacter.Qualities.Add(objAddQuality);
-                                    foreach (Weapon objWeapon in lstWeapons)
-                                        _objCharacter.Weapons.Add(objWeapon);
-                                    CreateImprovement(objAddQuality.InternalId, _objImprovementSource, SourceName,
-                                                      Improvement.ImprovementType.SpecificQuality, _strUnique);
-                                }
-                                catch
-                                {
-                                    objAddQuality.Dispose();
-                                    throw;
-                                }
-                            }
-                            else
-                            {
-                                throw new AbortedException();
-                            }
-                        }
+                        bool blnForced = objXmlAddQuality.Attributes?["forced"]?.InnerText == bool.TrueString;
+                        AddQuality(intCount, blnForced, objXmlSelectedQuality, strForceValue, blnDoesNotContributeToBP);
                     }
                 }
             }
@@ -6260,24 +6225,17 @@ namespace Chummer
                     objXmlSelectedQuality = objXmlDocument.SelectSingleNode(
                         "/chummer/qualities/quality[name = " + frmPickItem.MyForm.SelectedItem.CleanXPath() + ']');
                     objXmlBonusQuality
-                        = bonusNode.SelectSingleNode("quality[" + frmPickItem.MyForm.SelectedItem.CleanXPath() + ']');
+                        = bonusNode.SelectSingleNode("quality[.=" + frmPickItem.MyForm.SelectedItem.CleanXPath() + ']');
                 }
 
                 List<Weapon> lstWeapons = new List<Weapon>(1);
-                Quality objAddQuality = new Quality(_objCharacter);
                 try
                 {
-                    string strForceValue = objXmlBonusQuality?.SelectSingleNode("@select")?.Value;
-                    objAddQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, strForceValue,
-                                         _strFriendlyName);
-                    if (objXmlBonusQuality?.SelectSingleNode("@contributetobp")?.Value != bool.TrueString)
-                    {
-                        objAddQuality.BP = 0;
-                        objAddQuality.ContributeToLimit = false;
-                    }
+                    int intQualityDiscount = 0;
 
                     if (bonusNode["discountqualities"] != null)
                     {
+                        string strForceDiscountValue = string.Empty;
                         lstQualities.Clear();
                         lstQualities.Add(new ListItem("None", LanguageManager.GetString("String_None")));
                         using (XmlNodeList xmlQualityNodeList = bonusNode.SelectNodes("discountqualities/quality"))
@@ -6286,7 +6244,7 @@ namespace Chummer
                             {
                                 foreach (XmlNode objXmlAddQuality in xmlQualityNodeList)
                                 {
-                                    strForceValue = objXmlAddQuality.Attributes?["select"]?.InnerText ?? string.Empty;
+                                    strForceDiscountValue = objXmlAddQuality.Attributes?["select"]?.InnerText ?? string.Empty;
                                     string strName = objXmlAddQuality.InnerText;
 
                                     XmlNode objXmlQuality
@@ -6295,8 +6253,8 @@ namespace Chummer
                                     if (objXmlQuality != null)
                                     {
                                         string strDisplayName = objXmlQuality["translate"]?.InnerText ?? strName;
-                                        if (!string.IsNullOrWhiteSpace(strForceValue))
-                                            strDisplayName += " (" + strForceValue + ')';
+                                        if (!string.IsNullOrWhiteSpace(strForceDiscountValue))
+                                            strDisplayName += " (" + strForceDiscountValue + ')';
                                         lstQualities.Add(new ListItem(strName, strDisplayName));
                                     }
                                 }
@@ -6329,7 +6287,7 @@ namespace Chummer
                                     = bonusNode.SelectSingleNode(
                                         "discountqualities/quality[" + frmPickItem.MyForm.SelectedItem.CleanXPath()
                                                                      + ']');
-                                int qualityDiscount
+                                intQualityDiscount
                                     = Convert.ToInt32(objXmlBonusQuality?.SelectSingleNode("@discount")?.Value,
                                                       GlobalSettings.InvariantCultureInfo);
                                 Quality discountQuality = new Quality(_objCharacter)
@@ -6338,10 +6296,9 @@ namespace Chummer
                                 };
                                 try
                                 {
-                                    strForceValue = objXmlBonusQuality?.SelectSingleNode("@select")?.Value;
+                                    strForceDiscountValue = objXmlBonusQuality?.SelectSingleNode("@select")?.Value;
                                     discountQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons,
-                                                           strForceValue, _strFriendlyName);
-                                    objAddQuality.BP = Math.Max(objAddQuality.BP + qualityDiscount, 1);
+                                        strForceDiscountValue, _strFriendlyName);
                                     CreateImprovement(discountQuality.InternalId, _objImprovementSource, SourceName,
                                                       Improvement.ImprovementType.SpecificQuality, _strUnique);
                                 }
@@ -6355,19 +6312,17 @@ namespace Chummer
                             }
                         }
                     }
-
-                    CreateImprovement(objAddQuality.InternalId, _objImprovementSource, SourceName,
-                                      Improvement.ImprovementType.SpecificQuality, _strUnique);
+                    string strForceValue = objXmlBonusQuality?.SelectSingleNode("@select")?.Value;
+                    bool blnDoesNotContributeToBP = !string.Equals(objXmlSelectedQuality.Attributes?["contributetobp"]?.InnerText, bool.TrueString, StringComparison.OrdinalIgnoreCase);
+                    bool blnForced = objXmlBonusQuality.Attributes?["forced"]?.InnerText == bool.TrueString;
+                    string strRating = objXmlBonusQuality.Attributes?["rating"]?.InnerText;
+                    int intCount = string.IsNullOrEmpty(strRating) ? 1 : ImprovementManager.ValueToInt(_objCharacter, strRating, _intRating);
+                    AddQuality(intCount, blnForced,objXmlSelectedQuality,strForceValue,blnDoesNotContributeToBP,intQualityDiscount);
                 }
                 catch
                 {
-                    objAddQuality.Dispose();
                     throw;
                 }
-
-                _objCharacter.Qualities.Add(objAddQuality);
-                foreach (Weapon objWeapon in lstWeapons)
-                    _objCharacter.Weapons.Add(objWeapon);
             }
         }
 
@@ -7749,6 +7704,61 @@ namespace Chummer
 #pragma warning restore IDE1006 // Naming Styles
 
         #endregion Improvement Methods
+        #region Helper Methods
+        /// <summary>
+        /// Create and add a named Quality to the character.
+        /// </summary>
+        /// <param name="intCount">Total number of the instances of the quality to attempt to add. Used to proxy giving a quality of a given Rating.</param>
+        /// <param name="blnForced">Whether to ignore the required/forbidden nodes of the quality</param>
+        /// <param name="objXmlSelectedQuality">XmlNode of the selected quality</param>
+        /// <param name="strForceValue">Forced Extra value for the quality</param>
+        /// <param name="blnDoesNotContributeToBP">Whether the quality contributes to BP or not. If false, BP will be set to 0.</param>
+        /// <param name="intQualityDiscount">Total reduced karma cost of the quality as provided by costdiscount nodes or similar. Incompatible with blnDoesNotContributeToBP. Minimum of 1.</param>
+        /// <exception cref="AbortedException"></exception>
+        private void AddQuality(int intCount, bool blnForced, XmlNode objXmlSelectedQuality, string strForceValue, bool blnDoesNotContributeToBP, int intQualityDiscount = 0)
+        {
+            for (int i = 0; i < intCount; ++i)
+            {
+                // Makes sure we aren't over our limits for this particular quality from this overall source
+                if (blnForced || objXmlSelectedQuality?.CreateNavigator().RequirementsMet(_objCharacter,
+                        LanguageManager.GetString("String_Quality"), string.Empty, _strFriendlyName) == true)
+                {
+                    List<Weapon> lstWeapons = new List<Weapon>(1);
+                    Quality objAddQuality = new Quality(_objCharacter);
+                    try
+                    {
+                        objAddQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons,
+                            strForceValue, _strFriendlyName);
+
+                        if (blnDoesNotContributeToBP)
+                        {
+                            objAddQuality.BP = 0;
+                            objAddQuality.ContributeToLimit = false;
+                        }
+                        else if (intQualityDiscount != 0)
+                        {
+                            objAddQuality.BP = Math.Max(objAddQuality.BP + intQualityDiscount, 1);
+                        }
+
+                        _objCharacter.Qualities.Add(objAddQuality);
+                        foreach (Weapon objWeapon in lstWeapons)
+                            _objCharacter.Weapons.Add(objWeapon);
+                        CreateImprovement(objAddQuality.InternalId, _objImprovementSource, SourceName,
+                            Improvement.ImprovementType.SpecificQuality, _strUnique);
+                    }
+                    catch
+                    {
+                        objAddQuality.Dispose();
+                        throw;
+                    }
+                }
+                else
+                {
+                    throw new AbortedException();
+                }
+            }
+        }
+        #endregion
     }
 
     [Serializable]
