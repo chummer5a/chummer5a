@@ -14,9 +14,26 @@ name: "CodeQL"
 on:
   push:
     branches: [ "master" ]
+    # Only run on the following paths / file type changes
+    paths:
+        - "**.sln"
+        - "**.csproj"
+        - "**.cs"
+        - "**.cshtml"
+        - "**.xaml"
+        - "**.yml" # Include this to have the action rerun on yml changes
+
   pull_request:
     # The branches below must be a subset of the branches above
     branches: [ "master" ]
+    # Only run on the following paths / file type changes
+    paths:
+        - "**.sln"
+        - "**.csproj"
+        - "**.cs"
+        - "**.cshtml"
+        - "**.xaml"
+        - "**.yml" # Include this to have the action rerun on yml changes
   schedule:
     - cron: '20 15 * * 1'
 
