@@ -2176,81 +2176,13 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                int intModSlotsUsed = 0;
+                //Downgrade mods apply a bonus to the maximum number of mods and pre-installed mods are already accounted for in the statblock.
+                int intModSlotsUsed =
+                    Mods.Where(objMod => !objMod.IncludedInVehicle && !objMod.Downgrade && objMod.Equipped)
+                        .Sum(objMod => objMod.CalculatedSlots);
 
-                bool blnHandling = false;
-                bool blnSpeed = false;
-                bool blnAccel = false;
-                bool blnArmor = false;
-                bool blnSensor = false;
-
-                foreach (VehicleMod objMod in Mods)
-                {
-                    if (objMod.IncludedInVehicle || !objMod.Equipped)
-                        continue;
-                    int intActualSlots = objMod.CalculatedSlots;
-                    if (intActualSlots > 0)
-                    {
-                        switch (objMod.Category)
-                        {
-                            case "Handling":
-                                intActualSlots -= _intHandling;
-                                if (!blnHandling)
-                                {
-                                    blnHandling = true;
-                                    --intActualSlots;
-                                }
-                                break;
-
-                            case "Speed":
-                                intActualSlots -= _intSpeed;
-                                if (!blnSpeed)
-                                {
-                                    blnSpeed = true;
-                                    --intActualSlots;
-                                }
-                                break;
-
-                            case "Acceleration":
-                                intActualSlots -= _intAccel;
-                                if (!blnAccel)
-                                {
-                                    blnAccel = true;
-                                    --intActualSlots;
-                                }
-                                break;
-
-                            case "Armor":
-                                int intThird = (objMod.Rating - _intArmor + 2) / 3;
-
-                                if (!blnArmor)
-                                {
-                                    blnArmor = true;
-                                    intActualSlots = intThird - 1;
-                                }
-                                else
-                                {
-                                    intActualSlots = intThird;
-                                }
-                                break;
-
-                            case "Sensor":
-                                intActualSlots -= _intSensor;
-                                if (!blnSensor)
-                                {
-                                    blnSensor = true;
-                                    --intActualSlots;
-                                }
-                                break;
-                        }
-
-                        if (intActualSlots < 0)
-                            intActualSlots = 0;
-
-                        intModSlotsUsed += intActualSlots;
-                    }
-                }
-                intModSlotsUsed += WeaponMounts.Sum(wm => !wm.IncludedInVehicle && wm.Equipped, wm => wm.CalculatedSlots);
+                intModSlotsUsed +=
+                    WeaponMounts.Sum(wm => !wm.IncludedInVehicle && wm.Equipped, wm => wm.CalculatedSlots);
                 return intModSlotsUsed;
             }
         }

@@ -38,6 +38,7 @@ Application Changes:
 - Various inconsistencies with custom labels for item ratings have been fixed.
 - Refactored the selectquality and addqualities improvements to work in the same manner. Allows for the use of Rating on selectquality elements. Implements #5030
 - Changed the calculation for Swim speed to always use cyberlimb attributes as appropriate. Closes #5031
+- Fixed incorrect behaviour for Drone Attribute mods causing excessive slot discounts.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.
