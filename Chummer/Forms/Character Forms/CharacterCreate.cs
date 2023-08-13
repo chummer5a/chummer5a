@@ -13029,7 +13029,7 @@ namespace Chummer
                 return 0;
             }, token).ConfigureAwait(false);
 
-            await CharacterObject.SetContactPointsUsedAsync(intContactPointsLeft, token).ConfigureAwait(false);
+            await CharacterObject.SetContactPointsUsedAsync(intContactPoints - intContactPointsLeft, token).ConfigureAwait(false);
             int intChaValue = await (await CharacterObject.GetAttributeAsync("CHA", token: token).ConfigureAwait(false))
                                     .GetValueAsync(token).ConfigureAwait(false);
 
