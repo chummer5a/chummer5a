@@ -17876,9 +17876,10 @@ namespace Chummer
                             }
                             else
                             {
-                                string strText = objVehicle.Slots.ToString(GlobalSettings.CultureInfo) + strSpace
+                                int intSlots = await objVehicle.GetSlotsAsync(token).ConfigureAwait(false);
+                                string strText = intSlots.ToString(GlobalSettings.CultureInfo) + strSpace
                                     + '('
-                                    + (objVehicle.Slots - objVehicle.SlotsUsed).ToString(
+                                    + (intSlots - await objVehicle.GetSlotsUsedAsync(token).ConfigureAwait(false)).ToString(
                                         GlobalSettings.CultureInfo)
                                     + strSpace + await LanguageManager.GetStringAsync("String_Remaining", token: token)
                                                                       .ConfigureAwait(false)
@@ -17981,12 +17982,16 @@ namespace Chummer
                                                               .ConfigureAwait(false);
                                     await lblVehicleDroneModSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                                       .ConfigureAwait(false);
+                                    string strText
+                                        = (await objVehicle.GetDroneModSlotsUsedAsync(token)).ToString(
+                                            GlobalSettings.CultureInfo) + '/'
+                                                                        + (await objVehicle
+                                                                            .GetDroneModSlotsAsync(token))
+                                                                        .ToString(GlobalSettings.CultureInfo);
                                     await lblVehicleDroneModSlots.DoThreadSafeAsync(x =>
                                     {
                                         x.Visible = true;
-                                        x.Text
-                                            = objVehicle.DroneModSlotsUsed.ToString(GlobalSettings.CultureInfo) + '/'
-                                            + objVehicle.DroneModSlots.ToString(GlobalSettings.CultureInfo);
+                                        x.Text = strText;
                                     }, token).ConfigureAwait(false);
                                 }
                                 else
@@ -20348,7 +20353,8 @@ namespace Chummer
                                     if (objVehicle.IsDrone && await CharacterObjectSettings.GetDroneModsAsync(token)
                                             .ConfigureAwait(false))
                                     {
-                                        if (objVehicle.DroneModSlotsUsed > objVehicle.DroneModSlots)
+                                        if (await objVehicle.GetDroneModSlotsUsedAsync(token).ConfigureAwait(false)
+                                            > await objVehicle.GetDroneModSlotsAsync(token).ConfigureAwait(false))
                                         {
                                             lstOverCapacity.Add(await objVehicle.GetCurrentDisplayNameShortAsync(token)
                                                                     .ConfigureAwait(false));
@@ -20357,7 +20363,7 @@ namespace Chummer
                                     }
                                     else
                                     {
-                                        if (objVehicle.OverR5Capacity())
+                                        if (await objVehicle.OverR5CapacityAsync(token: token).ConfigureAwait(false))
                                         {
                                             lstOverCapacity.Add(await objVehicle.GetCurrentDisplayNameShortAsync(token)
                                                                     .ConfigureAwait(false));
@@ -20365,7 +20371,7 @@ namespace Chummer
                                         }
                                     }
                                 }
-                                else if (objVehicle.Slots < objVehicle.SlotsUsed)
+                                else if (await objVehicle.GetSlotsAsync(token).ConfigureAwait(false) < await objVehicle.GetSlotsUsedAsync(token).ConfigureAwait(false))
                                 {
                                     lstOverCapacity.Add(await objVehicle.GetCurrentDisplayNameShortAsync(token)
                                                                         .ConfigureAwait(false));
