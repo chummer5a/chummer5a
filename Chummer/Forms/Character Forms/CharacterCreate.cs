@@ -20199,7 +20199,7 @@ namespace Chummer
                     {
                         await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).ForEachAsync(
                                 objCyberware =>
-                                    objCyberware.CheckBannedGradesAsync(sbdIllegalCyberwareFromGrade, token))
+                                    objCyberware.CheckBannedGradesAsync(sbdIllegalCyberwareFromGrade, token), token)
                             .ConfigureAwait(false);
 
                         await (await CharacterObject.GetVehiclesAsync(token).ConfigureAwait(false)).ForEachAsync(
@@ -20255,16 +20255,16 @@ namespace Chummer
                     if (CharacterObjectSettings.EnforceCapacity)
                     {
                         List<string> lstOverCapacity = new List<string>(1);
-                        int intCapacityOver = 0;
                         // Armor Capacity.
-                        await (await CharacterObject.GetArmorAsync(token).ConfigureAwait(false)).ForEachAsync(
+                        int intCapacityOver = await (await CharacterObject.GetArmorAsync(token).ConfigureAwait(false)).SumAsync(
                             async objArmor =>
                             {
+                                int intReturn = 0;
                                 if (objArmor.CapacityRemaining < 0)
                                 {
                                     lstOverCapacity.Add(await objArmor.GetCurrentDisplayNameShortAsync(token)
                                                                       .ConfigureAwait(false));
-                                    intCapacityOver++;
+                                    intReturn++;
                                 }
 
                                 foreach (Gear objGear in objArmor.GearChildren.DeepWhere(
@@ -20272,34 +20272,41 @@ namespace Chummer
                                 {
                                     lstOverCapacity.Add(await objGear.GetCurrentDisplayNameShortAsync(token)
                                                                      .ConfigureAwait(false));
-                                    intCapacityOver++;
+                                    intReturn++;
                                 }
 
-                                await objArmor.ArmorMods.ForEachAsync(async objArmorMod =>
+                                intReturn += await objArmor.ArmorMods.SumAsync(async objArmorMod =>
                                 {
+                                    int intReturn2 = 0;
                                     foreach (Gear objGear in objArmorMod.GearChildren.DeepWhere(
                                                  x => x.Children, x => x.CapacityRemaining < 0))
                                     {
                                         lstOverCapacity.Add(await objGear.GetCurrentDisplayNameShortAsync(token)
                                                                          .ConfigureAwait(false));
-                                        intCapacityOver++;
+                                        intReturn2++;
                                     }
+
+                                    return intReturn2;
                                 }, token).ConfigureAwait(false);
+                                return intReturn;
                             }, token).ConfigureAwait(false);
 
                         foreach (Weapon objWeapon in
                                  (await CharacterObject.GetWeaponsAsync(token).ConfigureAwait(false)).DeepWhere(
                                      x => x.Children, x => x.WeaponAccessories.Count > 0))
                         {
-                            await objWeapon.WeaponAccessories.ForEachAsync(async objAccessory =>
+                            intCapacityOver += await objWeapon.WeaponAccessories.SumAsync(async objAccessory =>
                             {
+                                int intReturn = 0;
                                 foreach (Gear objGear in objAccessory.GearChildren.DeepWhere(
                                              x => x.Children, x => x.CapacityRemaining < 0))
                                 {
                                     lstOverCapacity.Add(await objGear.GetCurrentDisplayNameShortAsync(token)
                                                                      .ConfigureAwait(false));
-                                    intCapacityOver++;
+                                    intReturn++;
                                 }
+
+                                return intReturn;
                             }, token).ConfigureAwait(false);
                         }
 
@@ -20324,13 +20331,14 @@ namespace Chummer
                                 intCapacityOver++;
                             }
 
-                            await objCyberware.GearChildren.ForEachAsync(async objGear =>
+                            intCapacityOver += await objCyberware.GearChildren.SumAsync(async objGear =>
                             {
+                                int intReturn = 0;
                                 if (objGear.CapacityRemaining < 0)
                                 {
                                     lstOverCapacity.Add(await objGear.GetCurrentDisplayNameShortAsync(token)
                                                                      .ConfigureAwait(false));
-                                    intCapacityOver++;
+                                    intReturn++;
                                 }
 
                                 // Child Gear.
@@ -20339,15 +20347,18 @@ namespace Chummer
                                 {
                                     lstOverCapacity.Add(await objChild.GetCurrentDisplayNameShortAsync(token)
                                                                       .ConfigureAwait(false));
-                                    intCapacityOver++;
+                                    intReturn++;
                                 }
+
+                                return intReturn;
                             }, token).ConfigureAwait(false);
                         }
 
                         // Vehicle Capacity.
-                        await (await CharacterObject.GetVehiclesAsync(token).ConfigureAwait(false)).ForEachAsync(
+                        intCapacityOver += await(await CharacterObject.GetVehiclesAsync(token).ConfigureAwait(false)).SumAsync(
                             async objVehicle =>
                             {
+                                int intReturn = 0;
                                 if (await CharacterObjectSettings.BookEnabledAsync("R5", token).ConfigureAwait(false))
                                 {
                                     if (objVehicle.IsDrone && await CharacterObjectSettings.GetDroneModsAsync(token)
@@ -20358,7 +20369,7 @@ namespace Chummer
                                         {
                                             lstOverCapacity.Add(await objVehicle.GetCurrentDisplayNameShortAsync(token)
                                                                     .ConfigureAwait(false));
-                                            intCapacityOver++;
+                                            intReturn++;
                                         }
                                     }
                                     else
@@ -20367,7 +20378,7 @@ namespace Chummer
                                         {
                                             lstOverCapacity.Add(await objVehicle.GetCurrentDisplayNameShortAsync(token)
                                                                     .ConfigureAwait(false));
-                                            intCapacityOver++;
+                                            intReturn++;
                                         }
                                     }
                                 }
@@ -20375,11 +20386,12 @@ namespace Chummer
                                 {
                                     lstOverCapacity.Add(await objVehicle.GetCurrentDisplayNameShortAsync(token)
                                                                         .ConfigureAwait(false));
-                                    intCapacityOver++;
+                                    intReturn++;
                                 }
 
-                                await objVehicle.Mods.ForEachAsync(async objVehicleMod =>
+                                intReturn += await objVehicle.Mods.SumAsync(async objVehicleMod =>
                                 {
+                                    int intReturn2 = 0;
                                     foreach (Cyberware objCyberware in objVehicleMod.Cyberware.GetAllDescendants(
                                                  x => x.Children))
                                     {
@@ -20388,7 +20400,7 @@ namespace Chummer
                                             lstOverCapacity.Add(await objCyberware
                                                                       .GetCurrentDisplayNameShortAsync(token)
                                                                       .ConfigureAwait(false));
-                                            intCapacityOver++;
+                                            intReturn2++;
                                         }
 
                                         foreach (Gear objGear in objCyberware.GearChildren.DeepWhere(
@@ -20396,38 +20408,45 @@ namespace Chummer
                                         {
                                             lstOverCapacity.Add(await objGear.GetCurrentDisplayNameShortAsync(token)
                                                                              .ConfigureAwait(false));
-                                            intCapacityOver++;
+                                            intReturn2++;
                                         }
                                     }
+
+                                    return intReturn2;
                                 }, token).ConfigureAwait(false);
 
-                                await objVehicle.WeaponMounts.ForEachAsync(async objMount =>
+                                intReturn += await objVehicle.WeaponMounts.SumAsync(async objMount =>
                                 {
+                                    int intReturn2 = 0;
                                     if (objMount.Weapons.Count > objMount.WeaponCapacity)
                                     {
                                         lstOverCapacity.Add(await objMount.GetCurrentDisplayNameShortAsync(token)
                                                                           .ConfigureAwait(false));
-                                        intCapacityOver++;
+                                        intReturn2++;
                                     }
 
                                     foreach (Weapon objWeapon in objMount.Weapons.DeepWhere(
                                                  x => x.Children, x => x.WeaponAccessories.Count > 0))
                                     {
-                                        await objWeapon.WeaponAccessories.ForEachAsync(async objAccessory =>
+                                        intReturn2 += await objWeapon.WeaponAccessories.SumAsync(async objAccessory =>
                                         {
+                                            int intReturn3 = 0;
                                             foreach (Gear objGear in objAccessory.GearChildren.DeepWhere(
                                                          x => x.Children, x => x.CapacityRemaining < 0))
                                             {
                                                 lstOverCapacity.Add(
                                                     await objGear.GetCurrentDisplayNameShortAsync(token)
                                                                  .ConfigureAwait(false));
-                                                intCapacityOver++;
+                                                intReturn3++;
                                             }
+
+                                            return intReturn3;
                                         }, token).ConfigureAwait(false);
                                     }
 
-                                    await objMount.Mods.ForEachAsync(async objVehicleMod =>
+                                    intReturn2 += await objMount.Mods.SumAsync(async objVehicleMod =>
                                     {
+                                        int intReturn3 = 0;
                                         foreach (Cyberware objCyberware in objVehicleMod.Cyberware.GetAllDescendants(
                                                      x => x.Children))
                                         {
@@ -20436,7 +20455,7 @@ namespace Chummer
                                                 lstOverCapacity.Add(
                                                     await objCyberware.GetCurrentDisplayNameShortAsync(token)
                                                                       .ConfigureAwait(false));
-                                                intCapacityOver++;
+                                                intReturn3++;
                                             }
 
                                             foreach (Gear objGear in objCyberware.GearChildren.DeepWhere(
@@ -20445,10 +20464,13 @@ namespace Chummer
                                                 lstOverCapacity.Add(
                                                     await objGear.GetCurrentDisplayNameShortAsync(token)
                                                                  .ConfigureAwait(false));
-                                                intCapacityOver++;
+                                                intReturn3++;
                                             }
                                         }
+
+                                        return intReturn3;
                                     }, token).ConfigureAwait(false);
+                                    return intReturn2;
                                 }, token).ConfigureAwait(false);
 
                                 // Check Vehicle Gear.
@@ -20457,8 +20479,10 @@ namespace Chummer
                                 {
                                     lstOverCapacity.Add(await objGear.GetCurrentDisplayNameShortAsync(token)
                                                                      .ConfigureAwait(false));
-                                    intCapacityOver++;
+                                    intReturn++;
                                 }
+
+                                return intReturn;
                             }, token).ConfigureAwait(false);
 
                         if (intCapacityOver > 0)

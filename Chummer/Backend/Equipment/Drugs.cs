@@ -2538,21 +2538,13 @@ namespace Chummer.Backend.Equipment
     /// </summary>
     public class DrugEffect
     {
-        public DrugEffect()
-        {
-            Attributes = new Dictionary<string, decimal>();
-            Limits = new Dictionary<string, int>();
-            Qualities = new List<XmlNode>();
-            Infos = new List<string>();
-        }
+        public Dictionary<string, decimal> Attributes { get; } = new Dictionary<string, decimal>();
 
-        public Dictionary<string, decimal> Attributes { get; }
+        public Dictionary<string, int> Limits { get; } = new Dictionary<string, int>();
 
-        public Dictionary<string, int> Limits { get; }
+        public List<XmlNode> Qualities { get; } = new List<XmlNode>();
 
-        public List<XmlNode> Qualities { get; }
-
-        public List<string> Infos { get; }
+        public List<string> Infos { get; } = new List<string>();
 
         public int Initiative { get; set; }
 

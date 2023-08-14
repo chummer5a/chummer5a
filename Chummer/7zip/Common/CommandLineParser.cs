@@ -59,11 +59,6 @@ namespace SevenZip.CommandLineParser
         public bool WithMinus;
         public readonly ArrayList PostStrings = new ArrayList();
         public int PostCharIndex;
-
-        public SwitchResult()
-        {
-            ThereIs = false;
-        }
     }
 
     public class Parser
