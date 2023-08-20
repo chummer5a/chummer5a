@@ -3512,6 +3512,7 @@ namespace Chummer
                     {
                         using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                         {
+                            // ReSharper disable AccessToDisposedClosure
                             objWriter.WriteStartDocument();
 
                             // <character>
@@ -4097,6 +4098,7 @@ namespace Chummer
 
                             objWriter.WriteEndDocument();
                             objWriter.Flush();
+                            // ReSharper restore AccessToDisposedClosure
                         }
 
                         objStream.Seek(0, SeekOrigin.Begin);
@@ -6248,7 +6250,7 @@ namespace Chummer
                                     else if (!Utils.IsUnitTest && showWarnings)
                                     {
                                         // Legacy load stuff
-                                        if ((setSavedBooks.Count > 0 || lstSavedCustomDataDirectoryNames.Count > 0))
+                                        if (setSavedBooks.Count > 0 || lstSavedCustomDataDirectoryNames.Count > 0)
                                         {
                                             // More books is fine, so just test if the stored book list is a subset of the current option's book list
                                             bool blnPromptConfirmSetting =
@@ -28202,7 +28204,7 @@ namespace Chummer
 
                         case CharacterBuildMethod.Priority:
                         case CharacterBuildMethod.SumtoTen:
-                            s = (MetatypeBP).ToString(GlobalSettings.CultureInfo);
+                            s = MetatypeBP.ToString(GlobalSettings.CultureInfo);
                             break;
                     }
                 }
