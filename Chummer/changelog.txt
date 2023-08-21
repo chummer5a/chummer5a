@@ -41,6 +41,7 @@ Application Changes:
 - Fixed incorrect behaviour for Drone Attribute mods causing excessive slot discounts.
 - If an issue is an encountered while attempting to access the watch folder when loading the character roster, Chummer now aborts that process cleanly and marks the watch folder with the error instead of crashing. Fixes #5039.
 - Changing an existing character's talent priority selection without changing their special priority selection now properly causes the character's priority-given bonuses to update.
+- The behavior where Aspected Magician talent priority entries would automatically select the type of Aspected Magician a character is from the free skill group chosen in the priority selection screen has now been unhardcoded. Now, if any talent priority grants a quality that only unlocks a specific selection of skills or skill groups and also allows the character choose levels in those same skills or skill groups, the program will automatically connect the two instead of prompting the user to choose an extra time. Fixes #5027.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.
