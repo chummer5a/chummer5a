@@ -1608,7 +1608,7 @@ namespace Chummer
                         int intSpecialAttribPoints = 0;
                         bool boolHalveAttributePriorityPoints = charNode.NodeExists("halveattributepoints");
                         if (strOldSpecialPriority != _objCharacter.SpecialPriority
-                            || strOldTalentPriority != _objCharacter.SpecialPriority)
+                            || strOldTalentPriority != _objCharacter.TalentPriority)
                         {
                             List<Quality> lstOldPriorityQualities
                                 = await (await _objCharacter.GetQualitiesAsync(token).ConfigureAwait(false)).ToListAsync(

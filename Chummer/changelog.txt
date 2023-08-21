@@ -40,6 +40,7 @@ Application Changes:
 - Changed the calculation for Swim speed to always use cyberlimb attributes as appropriate. Closes #5031
 - Fixed incorrect behaviour for Drone Attribute mods causing excessive slot discounts.
 - If an issue is an encountered while attempting to access the watch folder when loading the character roster, Chummer now aborts that process cleanly and marks the watch folder with the error instead of crashing. Fixes #5039.
+- Changing an existing character's talent priority selection without changing their special priority selection now properly causes the character's priority-given bonuses to update.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.
