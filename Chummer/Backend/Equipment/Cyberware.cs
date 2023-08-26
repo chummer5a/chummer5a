@@ -68,6 +68,8 @@ namespace Chummer.Backend.Equipment
         private string _strPage = string.Empty;
         private int _intMatrixCMFilled;
         private int _intRating;
+        private int _intMinStrength = 3;
+        private int _intMinAgility = 3;
         private string _strMinRating = string.Empty;
         private string _strMaxRating = string.Empty;
         private string _strRatingLabel = "String_Rating";
@@ -790,6 +792,10 @@ namespace Chummer.Backend.Equipment
                     objXmlCyberware.TryGetStringFieldQuickly("minrating", ref _strMinRating);
                     objXmlCyberware.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
 
+                    objXmlCyberware.TryGetInt32FieldQuickly("minagility", ref _intMinAgility);
+                    objXmlCyberware.TryGetInt32FieldQuickly("minstrength", ref _intMinStrength);
+
+
                     _intRating = Math.Min(Math.Max(intRating, MinRating), MaxRating);
 
                     objXmlCyberware.TryGetStringFieldQuickly("devicerating", ref _strDeviceRating);
@@ -1501,6 +1507,8 @@ namespace Chummer.Backend.Equipment
                 objWriter.WriteElementString("blocksmounts", _strBlocksMounts);
                 objWriter.WriteElementString("forced", _strForced);
                 objWriter.WriteElementString("rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
+                objWriter.WriteElementString("minagility", _intMinAgility.ToString(GlobalSettings.InvariantCultureInfo));
+                objWriter.WriteElementString("minstrength", _intMinStrength.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("minrating", _strMinRating);
                 objWriter.WriteElementString("maxrating", _strMaxRating);
                 objWriter.WriteElementString("ratinglabel", _strRatingLabel);
@@ -1780,6 +1788,8 @@ namespace Chummer.Backend.Equipment
                         _strBlocksMounts = objMyNode.Value?["blocksmounts"]?.InnerText ?? string.Empty;
                     objNode.TryGetStringFieldQuickly("forced", ref _strForced);
                     objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
+                    objNode.TryGetInt32FieldQuickly("minstrength", ref _intMinStrength);
+                    objNode.TryGetInt32FieldQuickly("minagility", ref _intMinAgility);
                     objNode.TryGetStringFieldQuickly("minrating", ref _strMinRating);
                     objNode.TryGetStringFieldQuickly("maxrating", ref _strMaxRating);
                     objNode.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
@@ -4281,10 +4291,10 @@ namespace Chummer.Backend.Equipment
                                                                    : _objCharacter.AGI.TotalMaximum)
                                                                .ToString(GlobalSettings.InvariantCultureInfo))
                                              .CheapReplace("MinimumSTR",
-                                                           () => (ParentVehicle?.TotalBody ?? 3).ToString(
+                                                           () => (ParentVehicle?.TotalBody ?? _intMinStrength).ToString(
                                                                GlobalSettings.InvariantCultureInfo))
                                              .CheapReplace("MinimumAGI",
-                                                           () => (ParentVehicle?.Pilot ?? 3).ToString(
+                                                           () => (ParentVehicle?.Pilot ?? _intMinAgility).ToString(
                                                                GlobalSettings.InvariantCultureInfo));
 
                         (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strRating);
@@ -4344,14 +4354,14 @@ namespace Chummer.Backend.Equipment
                                                                   async () => (ParentVehicle != null
                                                                       ? await ParentVehicle.GetTotalBodyAsync(token)
                                                                           .ConfigureAwait(false)
-                                                                      : 3).ToString(
+                                                                      : _intMinStrength).ToString(
                                                                       GlobalSettings.InvariantCultureInfo),
                                                                   token: token)
                                                .CheapReplaceAsync("MinimumAGI",
                                                                   async () => (ParentVehicle != null
                                                                       ? await ParentVehicle.GetPilotAsync(token)
                                                                           .ConfigureAwait(false)
-                                                                      : 3).ToString(
+                                                                      : _intMinAgility).ToString(
                                                                       GlobalSettings.InvariantCultureInfo),
                                                                   token: token).ConfigureAwait(false);
 
@@ -4411,10 +4421,10 @@ namespace Chummer.Backend.Equipment
                                                                    : _objCharacter.AGI.TotalMaximum)
                                                                .ToString(GlobalSettings.InvariantCultureInfo))
                                              .CheapReplace("MinimumSTR",
-                                                           () => (ParentVehicle?.TotalBody ?? 3).ToString(
+                                                           () => (ParentVehicle?.TotalBody ?? _intMinStrength).ToString(
                                                                GlobalSettings.InvariantCultureInfo))
                                              .CheapReplace("MinimumAGI",
-                                                           () => (ParentVehicle?.Pilot ?? 3).ToString(
+                                                           () => (ParentVehicle?.Pilot ?? _intMinAgility).ToString(
                                                                GlobalSettings.InvariantCultureInfo));
 
                         (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strRating);
@@ -4474,14 +4484,14 @@ namespace Chummer.Backend.Equipment
                                                                   async () => (ParentVehicle != null
                                                                       ? await ParentVehicle.GetTotalBodyAsync(token)
                                                                           .ConfigureAwait(false)
-                                                                      : 3).ToString(
+                                                                      : _intMinStrength).ToString(
                                                                       GlobalSettings.InvariantCultureInfo),
                                                                   token: token)
                                                .CheapReplaceAsync("MinimumAGI",
                                                                   async () => (ParentVehicle != null
                                                                       ? await ParentVehicle.GetPilotAsync(token)
                                                                           .ConfigureAwait(false)
-                                                                      : 3).ToString(
+                                                                      : _intMinAgility).ToString(
                                                                       GlobalSettings.InvariantCultureInfo),
                                                                   token: token).ConfigureAwait(false);
 
@@ -7036,11 +7046,11 @@ namespace Chummer.Backend.Equipment
                 {
                     case "STR":
                         // Base Strength for any limb is 3.
-                        return ParentVehicle != null ? Math.Max(ParentVehicle.TotalBody, 0) : 3;
+                        return ParentVehicle != null ? Math.Max(ParentVehicle.TotalBody, 0) : _intMinStrength;
 
                     case "AGI":
                         // Base Agility for any limb is 3.
-                        return ParentVehicle != null ? Math.Max(ParentVehicle.Pilot, 0) : 3;
+                        return ParentVehicle != null ? Math.Max(ParentVehicle.Pilot, 0) : _intMinAgility;
 
                     default:
                         return 0;
@@ -7065,13 +7075,13 @@ namespace Chummer.Backend.Equipment
                         // Base Strength for any limb is 3.
                         return ParentVehicle != null
                             ? Math.Max(await ParentVehicle.GetTotalBodyAsync(token).ConfigureAwait(false), 0)
-                            : 3;
+                            : _intMinStrength;
 
                     case "AGI":
                         // Base Agility for any limb is 3.
                         return ParentVehicle != null
                             ? Math.Max(await ParentVehicle.GetPilotAsync(token).ConfigureAwait(false), 0)
-                            : 3;
+                            : _intMinAgility;
 
                     default:
                         return 0;

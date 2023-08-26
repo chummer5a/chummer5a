@@ -22368,7 +22368,7 @@ namespace Chummer
                     frmPickCyberware.MyForm.LockGrade();
                     frmPickCyberware.MyForm.Subsystems = objSelectedCyberware.AllowedSubsystems;
                     // If the Cyberware has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that consume Capacity).
-                    if (!objSelectedCyberware.Capacity.Contains('['))
+                    if (!objSelectedCyberware.Capacity.Contains('[') || objSelectedCyberware.Capacity.Contains("/["))
                     {
                         frmPickCyberware.MyForm.MaximumCapacity = objSelectedCyberware.CapacityRemaining;
 

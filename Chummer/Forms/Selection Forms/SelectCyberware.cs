@@ -1911,7 +1911,7 @@ namespace Chummer
                         if (blnIsSuccess)
                             decCapacity = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
                     }
-
+                    
                     decimal decMaximumCapacityUsed = blnAddToParentCapacity ? (_objParentObject as Cyberware)?.Parent?.CapacityRemaining ?? decimal.MaxValue : MaximumCapacity;
 
                     if (decMaximumCapacityUsed - decCapacity < 0)

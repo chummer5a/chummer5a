@@ -39,6 +39,8 @@ Application Changes:
 - Refactored the selectquality and addqualities improvements to work in the same manner. Allows for the use of Rating on selectquality elements. Implements #5030
 - Changed the calculation for Swim speed to always use cyberlimb attributes as appropriate. Closes #5031
 - Fixed incorrect behaviour for Drone Attribute mods causing excessive slot discounts.
+- Cyberlimb starting strength and agility can now be customised using the minagility and minstrength elements in a piece of cyberware. For example, to set the minimum strength to 5 you would use <minstrength>5</minstrength>.
+- Fixed cyberware that both consumes and grants capacity not properly allowing the child capacity to be used.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.
