@@ -869,7 +869,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The number of Slots the Mount consumes, including all child items.
         /// </summary>
-        public async ValueTask<int> GetCalculcatedSlots(CancellationToken token = default)
+        public async ValueTask<int> GetCalculatedSlotsAsync(CancellationToken token = default)
         {
             return Slots + WeaponMountOptions.Sum(w => w.Slots) + await Mods.SumAsync(x => !x.IncludedInVehicle, m => m.GetCalculatedSlotsAsync(token).AsTask(), token).ConfigureAwait(false);
         }

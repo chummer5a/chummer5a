@@ -80,14 +80,16 @@ namespace Chummer
 
             Paint += panel1_Paint;
 
-            using (Timer tmrDraw = new Timer { Interval = 100 })
+            using (Timer tmrDraw = new Timer())
             {
+                tmrDraw.Interval = 100;
                 tmrDraw.Tick += tmr_DrawTick;
                 tmrDraw.Start();
             }
 
-            using (Timer tmrTip = new Timer { Interval = 300000 })
+            using (Timer tmrTip = new Timer())
             {
+                tmrTip.Interval = 300000;
                 tmrTip.Tick += tmr_TipTick;
                 tmrTip.Start();
             }

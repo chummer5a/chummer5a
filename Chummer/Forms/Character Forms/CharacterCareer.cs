@@ -10224,12 +10224,17 @@ namespace Chummer
                                                              .ConfigureAwait(false))
                             {
                                 if (objVehicle.IsDrone && CharacterObjectSettings.DroneMods)
-                                    blnOverCapacity = objVehicle.DroneModSlotsUsed > objVehicle.DroneModSlots;
+                                    blnOverCapacity
+                                        = await objVehicle.GetDroneModSlotsUsedAsync(GenericToken)
+                                                           .ConfigureAwait(false) > await objVehicle
+                                            .GetDroneModSlotsAsync(GenericToken).ConfigureAwait(false);
                                 else
-                                    blnOverCapacity = objVehicle.OverR5Capacity("Weapons");
+                                    blnOverCapacity = await objVehicle.OverR5CapacityAsync("Weapons", GenericToken);
                             }
                             else
-                                blnOverCapacity = objVehicle.Slots < objVehicle.SlotsUsed;
+                                blnOverCapacity = await objVehicle.GetSlotsAsync(GenericToken).ConfigureAwait(false)
+                                                  < await objVehicle.GetSlotsUsedAsync(GenericToken)
+                                                                    .ConfigureAwait(false);
 
                             if (blnOverCapacity)
                             {
@@ -23455,9 +23460,10 @@ namespace Chummer
                             }
                             else
                             {
-                                string strText = objVehicle.Slots.ToString(GlobalSettings.CultureInfo) + strSpace
+                                int intSlots = await objVehicle.GetSlotsAsync(token).ConfigureAwait(false);
+                                string strText = intSlots.ToString(GlobalSettings.CultureInfo) + strSpace
                                     + '('
-                                    + (objVehicle.Slots - objVehicle.SlotsUsed).ToString(
+                                    + (intSlots - await objVehicle.GetSlotsUsedAsync(token).ConfigureAwait(false)).ToString(
                                         GlobalSettings.CultureInfo)
                                     + strSpace + await LanguageManager.GetStringAsync("String_Remaining", token: token)
                                                                       .ConfigureAwait(false)
@@ -23537,12 +23543,16 @@ namespace Chummer
                                                               .ConfigureAwait(false);
                                     await lblVehicleDroneModSlotsLabel.DoThreadSafeAsync(x => x.Visible = true, token)
                                                                       .ConfigureAwait(false);
+                                    string strText
+                                        = (await objVehicle.GetDroneModSlotsUsedAsync(token)).ToString(
+                                            GlobalSettings.CultureInfo) + '/'
+                                                                        + (await objVehicle
+                                                                            .GetDroneModSlotsAsync(token))
+                                                                        .ToString(GlobalSettings.CultureInfo);
                                     await lblVehicleDroneModSlots.DoThreadSafeAsync(x =>
                                     {
                                         x.Visible = true;
-                                        x.Text
-                                            = objVehicle.DroneModSlotsUsed.ToString(GlobalSettings.CultureInfo) + '/'
-                                            + objVehicle.DroneModSlots.ToString(GlobalSettings.CultureInfo);
+                                        x.Text = strText;
                                     }, token).ConfigureAwait(false);
                                 }
                                 else

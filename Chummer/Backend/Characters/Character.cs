@@ -3512,6 +3512,7 @@ namespace Chummer
                     {
                         using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                         {
+                            // ReSharper disable AccessToDisposedClosure
                             objWriter.WriteStartDocument();
 
                             // <character>
@@ -4097,6 +4098,7 @@ namespace Chummer
 
                             objWriter.WriteEndDocument();
                             objWriter.Flush();
+                            // ReSharper restore AccessToDisposedClosure
                         }
 
                         objStream.Seek(0, SeekOrigin.Begin);
@@ -6248,7 +6250,7 @@ namespace Chummer
                                     else if (!Utils.IsUnitTest && showWarnings)
                                     {
                                         // Legacy load stuff
-                                        if ((setSavedBooks.Count > 0 || lstSavedCustomDataDirectoryNames.Count > 0))
+                                        if (setSavedBooks.Count > 0 || lstSavedCustomDataDirectoryNames.Count > 0)
                                         {
                                             // More books is fine, so just test if the stored book list is a subset of the current option's book list
                                             bool blnPromptConfirmSetting =
@@ -27879,37 +27881,32 @@ namespace Chummer
                                                              false,
                                                              strMovementType) / 100.0m;
 
-                int intAGI = AGI.CalculatedTotalValue(false);
-                int intSTR = STR.CalculatedTotalValue(false);
-                if (Settings.CyberlegMovement && blnUseCyberlegs)
+                //Swimming uses all limbs
+                bool blnIsSwimming = strMovementType == "Swim";
+                int intAGI = AGI.CalculatedTotalValue(!blnIsSwimming);
+                if (blnIsSwimming)
                 {
-                    int intTempAGI = int.MaxValue;
-                    int intTempSTR = int.MaxValue;
-                    int intLegs = 0;
-                    foreach (Cyberware objCyber in Cyberware.Where(objCyber => objCyber.LimbSlot == "leg"))
-                    {
-                        intLegs += objCyber.LimbSlotCount;
-                        intTempAGI = Math.Min(intTempAGI, objCyber.GetAttributeTotalValue("AGI"));
-                        intTempSTR = Math.Min(intTempSTR, objCyber.GetAttributeTotalValue("STR"));
-                    }
-
-                    if (intTempAGI != int.MaxValue && intTempSTR != int.MaxValue && intLegs >= 2)
-                    {
-                        intAGI = intTempAGI;
-                        intSTR = intTempSTR;
-                    }
-                }
-
-                if (strMovementType == "Swim")
-                {
-                    //Swimming uses all limbs
-                    intAGI = AGI.CalculatedTotalValue(true);
-                    intSTR = STR.CalculatedTotalValue(true);
+                    int intSTR = STR.CalculatedTotalValue();
                     decWalk *= (intAGI + intSTR) * 0.5m;
                     decRun *= (intAGI + intSTR) * 0.5m;
                 }
                 else
                 {
+                    if (Settings.CyberlegMovement && blnUseCyberlegs)
+                    {
+                        int intTempAGI = int.MaxValue;
+                        int intLegs = 0;
+                        foreach (Cyberware objCyber in Cyberware.Where(objCyber => objCyber.LimbSlot == "leg"))
+                        {
+                            intLegs += objCyber.LimbSlotCount;
+                            intTempAGI = Math.Min(intTempAGI, objCyber.GetAttributeTotalValue("AGI"));
+                        }
+
+                        if (intTempAGI != int.MaxValue && intLegs >= 2)
+                        {
+                            intAGI = intTempAGI;
+                        }
+                    }
                     decWalk *= intAGI;
                     decRun *= intAGI;
                 }
@@ -27973,36 +27970,34 @@ namespace Chummer
                                                                         false,
                                                                         strMovementType, token: token).ConfigureAwait(false) / 100.0m;
 
-                int intAGI = await AGI.CalculatedTotalValueAsync(false, token).ConfigureAwait(false);
-                int intSTR = await STR.CalculatedTotalValueAsync(false, token).ConfigureAwait(false);
-                if (blnUseCyberlegs && await (await GetSettingsAsync(token).ConfigureAwait(false)).GetCyberlegMovementAsync(token).ConfigureAwait(false))
+                //Swimming uses all limbs
+                bool blnIsSwimming = strMovementType == "Swim";
+                int intAGI = await (await GetAttributeAsync("AGI", token: token).ConfigureAwait(false)).CalculatedTotalValueAsync(!blnIsSwimming, token).ConfigureAwait(false);
+                if (blnIsSwimming)
                 {
-                    int intTempAGI = int.MaxValue;
-                    int intTempSTR = int.MaxValue;
-                    int intLegs = 0;
-                    await (await GetCyberwareAsync(token).ConfigureAwait(false)).ForEachAsync(async objCyber =>
-                    {
-                        if (objCyber.LimbSlot != "leg")
-                            return;
-                        intLegs += objCyber.LimbSlotCount;
-                        intTempAGI = Math.Min(intTempAGI, await objCyber.GetAttributeTotalValueAsync("AGI", token).ConfigureAwait(false));
-                        intTempSTR = Math.Min(intTempSTR, await objCyber.GetAttributeTotalValueAsync("STR", token).ConfigureAwait(false));
-                    }, token).ConfigureAwait(false);
-
-                    if (intTempAGI != int.MaxValue && intTempSTR != int.MaxValue && intLegs >= 2)
-                    {
-                        intAGI = intTempAGI;
-                        intSTR = intTempSTR;
-                    }
-                }
-
-                if (strMovementType == "Swim")
-                {
+                    int intSTR = await (await GetAttributeAsync("STR", token: token).ConfigureAwait(false)).CalculatedTotalValueAsync(true, token).ConfigureAwait(false);
                     decWalk *= (intAGI + intSTR) * 0.5m;
                     decRun *= (intAGI + intSTR) * 0.5m;
                 }
                 else
                 {
+                    if (blnUseCyberlegs && await (await GetSettingsAsync(token).ConfigureAwait(false)).GetCyberlegMovementAsync(token).ConfigureAwait(false))
+                    {
+                        int intTempAGI = int.MaxValue;
+                        int intLegs = 0;
+                        await (await GetCyberwareAsync(token).ConfigureAwait(false)).ForEachAsync(async objCyber =>
+                        {
+                            if (objCyber.LimbSlot != "leg")
+                                return;
+                            intLegs += objCyber.LimbSlotCount;
+                            intTempAGI = Math.Min(intTempAGI, await objCyber.GetAttributeTotalValueAsync("AGI", token).ConfigureAwait(false));
+                        }, token).ConfigureAwait(false);
+
+                        if (intTempAGI != int.MaxValue && intLegs >= 2)
+                        {
+                            intAGI = intTempAGI;
+                        }
+                    }
                     decWalk *= intAGI;
                     decRun *= intAGI;
                 }
@@ -28209,7 +28204,7 @@ namespace Chummer
 
                         case CharacterBuildMethod.Priority:
                         case CharacterBuildMethod.SumtoTen:
-                            s = (MetatypeBP).ToString(GlobalSettings.CultureInfo);
+                            s = MetatypeBP.ToString(GlobalSettings.CultureInfo);
                             break;
                     }
                 }
@@ -38053,7 +38048,7 @@ namespace Chummer
                                                                   // ReSharper disable once MethodHasAsyncOverload
                                                                   .SelectSingleNodeAndCacheExpression("description", token)
                                                                   ?.Value;
-                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                // ReSharper disable once MethodHasAsyncOverload
                                                 objPlugin.ProcessHeroLabGearPlugins(xmlPluginToAdd, lstWeapons, token);
                                             }
                                         }

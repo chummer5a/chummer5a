@@ -256,8 +256,9 @@ namespace Codaxy.WkHtmlToPdf
 
             try
             {
-                using (Process process = new Process {EnableRaisingEvents = true})
+                using (Process process = new Process())
                 {
+                    process.EnableRaisingEvents = true;
                     process.StartInfo.FileName = environment.WkHtmlToPdfPath;
                     process.StartInfo.Arguments = strParams;
                     process.StartInfo.UseShellExecute = false;

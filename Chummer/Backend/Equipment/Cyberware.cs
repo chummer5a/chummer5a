@@ -372,8 +372,9 @@ namespace Chummer.Backend.Equipment
                                                                                  x => x.Children,
                                                                                  x => !string
                                                                                      .IsNullOrEmpty(x.Weight)))))
-
+                                {
                                     blnDoEncumbranceRefresh = true;
+                                }
 
                                 if (objOldItem.Parent == this)
                                     objOldItem.Parent = null;
@@ -432,8 +433,10 @@ namespace Chummer.Backend.Equipment
                                                                                  x => x.Children,
                                                                                  x => !string
                                                                                      .IsNullOrEmpty(x.Weight)))))
-
+                                {
                                     blnDoEncumbranceRefresh = true;
+                                }
+
                                 if (objOldItem.Parent == this)
                                     objOldItem.Parent = null;
 

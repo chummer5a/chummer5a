@@ -14170,6 +14170,7 @@
         <mount>Top</mount>
         <mount>Under</mount>
       </accessorymounts>
+      <range>Medium/Heavy Machinegun</range>
       <spec>Machine Guns</spec>
     </weapon>
     <weapon>

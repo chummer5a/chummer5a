@@ -3236,8 +3236,10 @@
       <mods>
         <name>Custom Fit</name>
         <name>Gear Access</name>
-        <name>Holster</name>
       </mods>
+      <gears>
+        <usegear>Holster</usegear>
+      </gears>
       <source>SL</source>
       <page>130</page>
     </armor>

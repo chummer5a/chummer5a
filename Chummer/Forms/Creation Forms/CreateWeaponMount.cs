@@ -497,12 +497,18 @@ namespace Chummer
                         if (await _objCharacter.Settings.BookEnabledAsync("R5", _objGenericToken).ConfigureAwait(false))
                         {
                             if (_objVehicle.IsDrone && _objCharacter.Settings.DroneMods)
-                                blnOverCapacity = _objVehicle.DroneModSlotsUsed > _objVehicle.DroneModSlots;
+                                blnOverCapacity
+                                    = await _objVehicle.GetDroneModSlotsUsedAsync(_objGenericToken)
+                                                       .ConfigureAwait(false) > await _objVehicle
+                                        .GetDroneModSlotsAsync(_objGenericToken).ConfigureAwait(false);
                             else
-                                blnOverCapacity = _objVehicle.OverR5Capacity("Weapons");
+                                blnOverCapacity = await _objVehicle.OverR5CapacityAsync("Weapons", _objGenericToken)
+                                                                   .ConfigureAwait(false);
                         }
                         else
-                            blnOverCapacity = _objVehicle.Slots < _objVehicle.SlotsUsed;
+                            blnOverCapacity = await _objVehicle.GetSlotsAsync(_objGenericToken).ConfigureAwait(false)
+                                              < await _objVehicle.GetSlotsUsedAsync(_objGenericToken)
+                                                                 .ConfigureAwait(false);
 
                         if (blnOverCapacity)
                         {

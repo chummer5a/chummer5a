@@ -126,7 +126,7 @@
   
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.7" />
   
-    <PackageReference Include="NuGet.CommandLine" Version="6.2.2">
+    <PackageReference Include="NuGet.CommandLine" Version="6.2.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -143,7 +143,7 @@
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.4.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUi" Version="6.4.0" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
-    <PackageReference Include="System.Data.SqlClient" Version="4.8.3" />
+    <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
     <PackageReference Include="System.Diagnostics.Tracing" Version="4.3.0" />
     <PackageReference Include="System.Net.Http.WinHttpHandler" Version="6.0.1" />
     <PackageReference Include="Veldrid.ImageSharp" Version="4.8.0" />

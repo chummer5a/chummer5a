@@ -1308,46 +1308,100 @@ namespace Chummer
                 return;
 
             Dictionary<string, string> dicWatch = null;
+            string strErrorText = string.Empty;
             if (!string.IsNullOrEmpty(GlobalSettings.CharacterRosterPath) && Directory.Exists(GlobalSettings.CharacterRosterPath))
             {
                 dicWatch = new Dictionary<string, string>(byte.MaxValue);
-                foreach (string strFile in Directory
-                                           .EnumerateFiles(GlobalSettings.CharacterRosterPath, "*.chum5",
-                                                           SearchOption.AllDirectories)
-                                           .Concat(Directory.EnumerateFiles(
-                                                       GlobalSettings.CharacterRosterPath, "*.chum5lz",
-                                                       SearchOption.AllDirectories)))
+                try
                 {
-                    token.ThrowIfCancellationRequested();
-
-                    FileInfo objInfo = new FileInfo(strFile);
-                    if (objInfo.Directory == null || objInfo.Directory.FullName == GlobalSettings.CharacterRosterPath)
+                    foreach (string strFile in Directory
+                                               .EnumerateFiles(GlobalSettings.CharacterRosterPath, "*.chum5",
+                                                               SearchOption.AllDirectories)
+                                               .Concat(Directory.EnumerateFiles(
+                                                           GlobalSettings.CharacterRosterPath, "*.chum5lz",
+                                                           SearchOption.AllDirectories)))
                     {
-                        dicWatch.Add(strFile, "Watch");
-                        continue;
-                    }
+                        token.ThrowIfCancellationRequested();
 
-                    string strNewParent
-                        = objInfo.Directory.FullName.Replace(
-                            GlobalSettings.CharacterRosterPath + Path.DirectorySeparatorChar, string.Empty);
-                    dicWatch.Add(strFile, strNewParent);
+                        FileInfo objInfo = new FileInfo(strFile);
+                        string strDirectoryFullName = objInfo.Directory?.FullName;
+                        if (string.IsNullOrEmpty(strDirectoryFullName)
+                            || strDirectoryFullName == GlobalSettings.CharacterRosterPath)
+                        {
+                            dicWatch.Add(strFile, "Watch");
+                            continue;
+                        }
+
+                        string strNewParent
+                            = strDirectoryFullName.Replace(
+                                GlobalSettings.CharacterRosterPath + Path.DirectorySeparatorChar, string.Empty);
+                        dicWatch.Add(strFile, strNewParent);
+                    }
+                }
+                catch (OperationCanceledException)
+                {
+                    // Throw cancellations because we expect to handle them in whatever awaits this task
+                    throw;
+                }
+                catch (UnauthorizedAccessException e)
+                {
+                    // We do not have sufficient privileges for this directory
+                    strErrorText = e.Message;
+                    dicWatch.Clear();
+                }
+                catch (Exception e)
+                {
+                    // We had some other issue while trying to load the character roster, so log it
+                    Log.Warn(e);
+                    strErrorText = e.Message;
+                    dicWatch.Clear();
                 }
             }
-            bool blnAddWatchNode = dicWatch?.Count > 0;
+            bool blnAddWatchNode = !string.IsNullOrEmpty(strErrorText) || dicWatch?.Count > 0;
             TreeNode objWatchNode = await treCharacterList.DoThreadSafeFuncAsync(x => x.FindNode("Watch", false), token).ConfigureAwait(false);
             if (blnAddWatchNode)
             {
+                string strWatchText = await LanguageManager.GetStringAsync("Treenode_Roster_WatchFolder", token: token)
+                                                           .ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(strErrorText))
+                    strWatchText
+                        += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                           + '(' + await LanguageManager.GetStringAsync("String_Error", token: token)
+                                                        .ConfigureAwait(false) + ')';
                 if (objWatchNode != null)
-                    await treCharacterList.DoThreadSafeAsync(() => objWatchNode.Nodes.Clear(), token).ConfigureAwait(false);
+                {
+                    await treCharacterList.DoThreadSafeAsync(() =>
+                                          {
+                                              objWatchNode.Nodes.Clear();
+                                              if (string.IsNullOrEmpty(strErrorText))
+                                              {
+                                                  objWatchNode.ForeColor = ColorManager.WindowText;
+                                                  objWatchNode.ToolTipText = string.Empty;
+                                              }
+                                              else
+                                              {
+                                                  objWatchNode.ForeColor = ColorManager.ErrorColor;
+                                                  objWatchNode.ToolTipText = strErrorText;
+                                              }
+                                          }, token)
+                                          .ConfigureAwait(false);
+                }
                 else
-                    objWatchNode = new TreeNode(await LanguageManager.GetStringAsync("Treenode_Roster_WatchFolder", token: token).ConfigureAwait(false)) { Tag = "Watch" };
+                {
+                    objWatchNode = new TreeNode(strWatchText) {Tag = "Watch"};
+                    if (!string.IsNullOrEmpty(strErrorText))
+                    {
+                        objWatchNode.ForeColor = ColorManager.ErrorColor;
+                        objWatchNode.ToolTipText = strErrorText;
+                    }
+                }
             }
             else if (objWatchNode != null)
                 await treCharacterList.DoThreadSafeAsync(() => objWatchNode.Remove(), token).ConfigureAwait(false);
 
             token.ThrowIfCancellationRequested();
 
-            if (objWatchNode == null || !blnAddWatchNode || dicWatch.Count == 0)
+            if (!string.IsNullOrEmpty(strErrorText) || objWatchNode == null || !blnAddWatchNode || dicWatch == null || dicWatch.Count == 0)
                 return;
 
             Dictionary<TreeNode, string> dicWatchNodes = new Dictionary<TreeNode, string>(dicWatch.Count);

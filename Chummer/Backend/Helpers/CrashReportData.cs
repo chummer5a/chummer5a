@@ -204,16 +204,14 @@ namespace Chummer
                 string password = Encoding.ASCII.GetString(Convert.FromBase64String("Y3Jhc2hkdW1wd29yZHBhc3M="));
 
                 MailAddress address = new MailAddress("chummercrashdumps@gmail.com");
-                using (SmtpClient client = new SmtpClient
+                using (SmtpClient client = new SmtpClient())
                 {
-                    Host = "smtp.gmail.com",
-                    Port = 587,
-                    EnableSsl = true,
-                    DeliveryMethod = SmtpDeliveryMethod.Network,
-                    UseDefaultCredentials = false,
-                    Credentials = new NetworkCredential(address.Address, password)
-                })
-                {
+                    client.Host = "smtp.gmail.com";
+                    client.Port = 587;
+                    client.EnableSsl = true;
+                    client.DeliveryMethod = SmtpDeliveryMethod.Network;
+                    client.UseDefaultCredentials = false;
+                    client.Credentials = new NetworkCredential(address.Address, password);
                     using (MailMessage message = new MailMessage(address, address))
                     {
                         //Forwarding rule used instead?

@@ -1772,15 +1772,17 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Number of Slots the Vehicle has for Modifications.
         /// </summary>
-        public int Slots
+        public int Slots =>
+            // A Vehicle has 4 or BODY slots, whichever is higher.
+            Math.Max(TotalBody, 4) + _intAddSlots;
+
+        /// <summary>
+        /// Number of Slots the Vehicle has for Modifications.
+        /// </summary>
+        public async ValueTask<int> GetSlotsAsync(CancellationToken token = default)
         {
-            get
-            {
-                // A Vehicle has 4 or BODY slots, whichever is higher.
-                if (TotalBody > 4)
-                    return TotalBody + _intAddSlots;
-                return 4 + _intAddSlots;
-            }
+            // A Vehicle has 4 or BODY slots, whichever is higher.
+            return Math.Max(await GetTotalBodyAsync(token).ConfigureAwait(false), 4) + _intAddSlots;
         }
 
         /// <summary>
@@ -2136,37 +2138,77 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// The number of Slots on the Vehicle that are used by Mods.
+        /// </summary>
+        public async ValueTask<int> GetSlotsUsedAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return await Mods.SumAsync(objMod => !objMod.IncludedInVehicle && objMod.Equipped, objMod => objMod.GetCalculatedSlotsAsync(token).AsTask(), token).ConfigureAwait(false)
+                   + await WeaponMounts.SumAsync(wm => !wm.IncludedInVehicle && wm.Equipped, wm => wm.GetCalculatedSlotsAsync(token).AsTask(), token).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// Total Number of Slots the Drone has for Modifications. (Rigger 5)
         /// </summary>
         public int DroneModSlots
         {
             get
             {
-                int intDroneModSlots = _intDroneModSlots;
-                bool blnDowngraded = false;
-                foreach (VehicleMod objMod in Mods)
+                int intDowngraded = 0;
+                // Mods that are included with a Vehicle by default do not count toward the Slots used.
+                return _intDroneModSlots + Mods.Sum(objMod => !objMod.IncludedInVehicle && objMod.Equipped, objMod =>
                 {
-                    // Mods that are included with a Vehicle by default do not count toward the Slots used.
-                    if (!objMod.IncludedInVehicle && objMod.Equipped && objMod.CalculatedSlots < 0)
+                    int intLoopSlots = objMod.CalculatedSlots;
+                    if (intLoopSlots < 0)
                     {
                         //You receive only one additional Mod Point from Downgrades
                         if (objMod.Downgrade)
                         {
-                            if (!blnDowngraded)
+                            if (Interlocked.Increment(ref intDowngraded) == 1)
                             {
-                                intDroneModSlots -= objMod.CalculatedSlots;
-                                blnDowngraded = true;
+                                return -intLoopSlots;
                             }
                         }
                         else
                         {
-                            intDroneModSlots -= objMod.CalculatedSlots;
+                            return -intLoopSlots;
                         }
+                    }
+
+                    return 0;
+                });
+            }
+        }
+
+        /// <summary>
+        /// Total Number of Slots the Drone has for Modifications. (Rigger 5)
+        /// </summary>
+        public async ValueTask<int> GetDroneModSlotsAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            int intDowngraded = 0;
+            // Mods that are included with a Vehicle by default do not count toward the Slots used.
+            return _intDroneModSlots + await Mods.SumAsync(objMod => !objMod.IncludedInVehicle && objMod.Equipped, async objMod =>
+            {
+                int intLoopSlots = await objMod.GetCalculatedSlotsAsync(token).ConfigureAwait(false);
+                if (intLoopSlots < 0)
+                {
+                    //You receive only one additional Mod Point from Downgrades
+                    if (objMod.Downgrade)
+                    {
+                        if (Interlocked.Increment(ref intDowngraded) == 1)
+                        {
+                            return -intLoopSlots;
+                        }
+                    }
+                    else
+                    {
+                        return -intLoopSlots;
                     }
                 }
 
-                return intDroneModSlots;
-            }
+                return 0;
+            }, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -2178,13 +2220,28 @@ namespace Chummer.Backend.Equipment
             {
                 //Downgrade mods apply a bonus to the maximum number of mods and pre-installed mods are already accounted for in the statblock.
                 int intModSlotsUsed =
-                    Mods.Where(objMod => !objMod.IncludedInVehicle && !objMod.Downgrade && objMod.Equipped)
-                        .Sum(objMod => objMod.CalculatedSlots);
+                    Mods.Sum(objMod => !objMod.IncludedInVehicle && !objMod.Downgrade && objMod.Equipped, objMod => objMod.CalculatedSlots);
 
                 intModSlotsUsed +=
                     WeaponMounts.Sum(wm => !wm.IncludedInVehicle && wm.Equipped, wm => wm.CalculatedSlots);
                 return intModSlotsUsed;
             }
+        }
+
+        /// <summary>
+        /// The number of Slots on the Drone that are used by Mods.
+        /// </summary>
+        public async ValueTask<int> GetDroneModSlotsUsedAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            //Downgrade mods apply a bonus to the maximum number of mods and pre-installed mods are already accounted for in the statblock.
+            int intModSlotsUsed =
+                await Mods.SumAsync(objMod => !objMod.IncludedInVehicle && !objMod.Downgrade && objMod.Equipped,
+                         objMod => objMod.GetCalculatedSlotsAsync(token).AsTask(), token).ConfigureAwait(false);
+
+            intModSlotsUsed +=
+                await WeaponMounts.SumAsync(wm => !wm.IncludedInVehicle && wm.Equipped, wm => wm.GetCalculatedSlotsAsync(token).AsTask(), token).ConfigureAwait(false);
+            return intModSlotsUsed;
         }
 
         /// <summary>
@@ -2810,6 +2867,16 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Check if the vehicle is over capacity in any category
+        /// </summary>
+        public async ValueTask<bool> OverR5CapacityAsync(string strCheckCapacity = "", CancellationToken token = default)
+        {
+            return !string.IsNullOrEmpty(strCheckCapacity) && ModCategoryStrings.Contains(strCheckCapacity)
+                ? await CalcCategoryAvailAsync(strCheckCapacity, token).ConfigureAwait(false) < 0
+                : await ModCategoryStrings.AnyAsync(async strCategory => await CalcCategoryAvailAsync(strCategory, token).ConfigureAwait(false) < 0, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// Display the Weapon Mod Slots as Used/Total
         /// </summary>
         public string PowertrainModSlotsUsed(int intModSlots = 0)
@@ -3152,6 +3219,30 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Total number of slots used by vehicle mods (and weapon mounts) in a given Rigger 5 vehicle mod category.
+        /// </summary>
+        public async ValueTask<int> CalcCategoryUsedAsync(string strCategory, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            int intBase = await Mods.SumAsync(
+                objMod => objMod.IncludedInVehicle || !objMod.Equipped || objMod.Category != strCategory,
+                // Subtract the Modification's Slots from the Vehicle's base Body.
+                async objMod => Math.Max(await objMod.GetCalculatedSlotsAsync(token).ConfigureAwait(false), 0),
+                token: token).ConfigureAwait(false);
+
+            if (strCategory == "Weapons")
+            {
+                intBase += await WeaponMounts.SumAsync(
+                    objMount => objMount.IncludedInVehicle || !objMount.Equipped,
+                    // Subtract the Weapon Mount's Slots from the Vehicle's base Body.
+                    async objMod => Math.Max(await objMod.GetCalculatedSlotsAsync(token).ConfigureAwait(false), 0),
+                    token: token).ConfigureAwait(false);
+            }
+
+            return intBase;
+        }
+
+        /// <summary>
         /// Total number of slots still available for vehicle mods (and weapon mounts) in a given Rigger 5 vehicle mod category.
         /// </summary>
         public int CalcCategoryAvail(string strCategory)
@@ -3186,6 +3277,45 @@ namespace Chummer.Backend.Equipment
             }
 
             intBase -= CalcCategoryUsed(strCategory);
+            return intBase;
+        }
+
+        /// <summary>
+        /// Total number of slots still available for vehicle mods (and weapon mounts) in a given Rigger 5 vehicle mod category.
+        /// </summary>
+        public async ValueTask<int> CalcCategoryAvailAsync(string strCategory, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            int intBase = Body;
+
+            switch (strCategory)
+            {
+                case "Powertrain":
+                    intBase += _intAddPowertrainModSlots;
+                    break;
+
+                case "Weapons":
+                    intBase += _intAddWeaponModSlots;
+                    break;
+
+                case "Body":
+                    intBase += _intAddBodyModSlots;
+                    break;
+
+                case "Electromagnetic":
+                    intBase += _intAddElectromagneticModSlots;
+                    break;
+
+                case "Protection":
+                    intBase += _intAddProtectionModSlots;
+                    break;
+
+                case "Cosmetic":
+                    intBase += _intAddCosmeticModSlots;
+                    break;
+            }
+
+            intBase -= await CalcCategoryUsedAsync(strCategory, token).ConfigureAwait(false);
             return intBase;
         }
 

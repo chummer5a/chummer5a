@@ -461,7 +461,7 @@
           <name>AGI</name>
           <val>1</val>
         </specificattribute>
-        <specificattribute precedence="0">
+        <specificattribute>
           <name>REA</name>
           <val>1</val>
         </specificattribute>
@@ -3523,7 +3523,7 @@
           <name>AGI</name>
           <val>1</val>
         </specificattribute>
-        <specificattribute precedence="0">
+        <specificattribute>
           <name>REA</name>
           <val>1</val>
         </specificattribute>
