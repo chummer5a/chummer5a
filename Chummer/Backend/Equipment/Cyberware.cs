@@ -4568,6 +4568,10 @@ namespace Chummer.Backend.Equipment
                     // Run through all of the child pieces and make sure their Grade matches.
                     foreach (Cyberware objChild in Children)
                     {
+                        //Ignore child pieces that have a forcegrade specified.
+                        //Generally expected to be items with <forcegrade>None</forcegrade>
+                        //TODO: This might need a handler for deeper-nested children
+                        if (!string.IsNullOrWhiteSpace(objChild.ForceGrade)) continue;
                         int intMyProcessPropertyChanges = _intProcessPropertyChanges;
                         int intOldChildProcessPropertyChanges
                             = Interlocked.Exchange(ref objChild._intProcessPropertyChanges, _intProcessPropertyChanges);
