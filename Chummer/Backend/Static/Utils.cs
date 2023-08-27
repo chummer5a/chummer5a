@@ -26,6 +26,7 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Runtime.Versioning;
 using System.Security;
 #if DEBUG
 using System.Runtime.InteropServices;
@@ -448,6 +449,7 @@ namespace Chummer
         /// </summary>
         /// <param name="strPath">File path to evaluate.</param>
         /// <returns></returns>
+        [SupportedOSPlatform("windows")]
         public static bool CanWriteToPath(string strPath)
         {
             if (string.IsNullOrEmpty(strPath))
@@ -455,7 +457,10 @@ namespace Chummer
             try
             {
                 WindowsPrincipal principal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
-                DirectorySecurity security = Directory.GetAccessControl(Path.GetDirectoryName(strPath) ?? throw new ArgumentOutOfRangeException(nameof(strPath)));
+
+                var directoryInfo = new DirectoryInfo(Path.GetDirectoryName(strPath) ??
+                                                      throw new ArgumentOutOfRangeException(nameof(strPath)));
+                var security = directoryInfo.GetAccessControl();
                 AuthorizationRuleCollection authRules = security.GetAccessRules(true, true, typeof(SecurityIdentifier));
 
                 foreach (FileSystemAccessRule accessRule in authRules)
