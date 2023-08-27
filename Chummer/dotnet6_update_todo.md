@@ -18,4 +18,4 @@
   at Microsoft.UpgradeAssistant.Operations.Operation.RunNodeTransformersAsync(OperationContext context, SliceNode node, SliceNodeStats nodeStats, CancellationToken cancellationToken) in D:\a\_work\1\s\src\Experiments\UpgradeAssistant\engine\Operations\Operation.cs:line 272
   info: Done
   Failed
-
+- [] Test ChummerUpdater (especially the User-Agent Header)
