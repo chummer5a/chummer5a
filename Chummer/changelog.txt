@@ -44,6 +44,7 @@ Application Changes:
 - The behavior where Aspected Magician talent priority entries would automatically select the type of Aspected Magician a character is from the free skill group chosen in the priority selection screen has now been unhardcoded. Now, if any talent priority grants a quality that only unlocks a specific selection of skills or skill groups and also allows the character choose levels in those same skills or skill groups, the program will automatically connect the two instead of prompting the user to choose an extra time. Fixes #5027.
 - Cyberlimb starting strength and agility can now be customised using the minagility and minstrength elements in a piece of cyberware. For example, to set the minimum strength to 5 you would use <minstrength>5</minstrength>.
 - Fixed cyberware that both consumes and grants capacity not properly allowing the child capacity to be used.
+- Fixed cyberware grades incorrectly being able to be changed if an item has a forcegrade, but is the child of an item that has its grade changed. For example, prevents Cyberlimb customisation from having a grade specified if the limb is upgraded to Alphaware. 
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.
