@@ -24,3 +24,4 @@
 - [ ] Test ChummerUpdater (especially the User-Agent Header)
 - [ ] Test TextblockConverter
 - [ ] System.Drawing.Icon may or may not need to replaced by System.Byte[] in CrashReporter.cs https://stackoverflow.com/questions/48068163/why-is-my-resx-file-generating-system-drawing-icon-for-upgraded-netstandard-proj
+- [ ] Test Chummer.Benchmarks
