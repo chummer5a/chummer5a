@@ -27,3 +27,8 @@
 - [ ] Test Chummer.Benchmarks
 - [ ] Test SamplePlugin
 - [ ] Test ChummerHub.Client (Ohh god no)
+- [ ] Debugger won't attach
+- [ ] F:\Programming\chummer5a\Chummer\bin\Debug\net6.0-windows\Chummer5.dll missing on startup, but it is presen???
+- [ ] Catastrophic failure on startup The error code is E_UNEXPECTED, or 0x8000FFFF.
+- [ ] Fix crash on split button click
+- [ ] Investigate all the .Designer ambigous reference errors   <Chummer>\Forms\Character Creation Forms\SelectMetatypePriority.Designer.cs:56082 Ambiguous reference:$this.Icon $this.Icon match
