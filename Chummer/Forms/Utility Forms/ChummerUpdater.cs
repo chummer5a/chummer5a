@@ -388,7 +388,7 @@ namespace Chummer
             if (blnChummerVersionGotten)
             {
                 ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-                request.UserAgent = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)";
+                request.Headers["User-Agent"].ToString() = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)";
                 request.Accept = "application/json";
                 request.Timeout = 5000;
 
