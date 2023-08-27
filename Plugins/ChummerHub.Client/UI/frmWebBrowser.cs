@@ -71,14 +71,14 @@ namespace ChummerHub.Client.UI
 
         private async void webBrowser2_Navigated(object sender, WebBrowserNavigatedEventArgs e)
         {
-            if(e.Url.AbsoluteUri == LoginUrl.AbsoluteUri)
+            if(e.Path.Value == LoginUrl.AbsoluteUri)
                 return;
-            if((e.Url.AbsoluteUri.Contains("/Identity/Account/Logout")))
+            if((e.Path.Value.Contains("/Identity/Account/Logout")))
             {
                 //maybe we are logged in now
                 GetCookieContainer();
             }
-            else if (e.Url.AbsoluteUri.Contains("/Identity/Account/Manage"))
+            else if (e.Path.Value.Contains("/Identity/Account/Manage"))
             {
                 try
                 {
