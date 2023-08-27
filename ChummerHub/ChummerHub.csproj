@@ -1,11 +1,9 @@
 <Project Sdk="Microsoft.NET.Sdk.Web">
-
   <PropertyGroup>
     <!--TargetFramework>netcoreapp3.1</TargetFramework-->
-    <TargetFramework>net6.0</TargetFramework>
+    <TargetFramework>net7.0</TargetFramework>
     <!--AspNetCoreHostingModel>OutOfProcess</AspNetCoreHostingModel-->
     <UserSecretsId>572ea518-a8ec-422d-b9f3-8817088ece8c</UserSecretsId>
-   
     <AssemblyVersion>1.1.0.1</AssemblyVersion>
     <FileVersion>1.0.0.1</FileVersion>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
@@ -22,11 +20,9 @@
   <PropertyGroup Condition=" '$(Configuration)' == '' Or '$(Configuration)' == 'Debug'">
     <EnvironmentName>Development</EnvironmentName>
   </PropertyGroup>
-
   <PropertyGroup Condition=" '$(Configuration)' != '' AND '$(Configuration)' != 'Debug' ">
     <EnvironmentName>Production</EnvironmentName>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
     <ErrorOnDuplicatePublishOutputFiles>false</ErrorOnDuplicatePublishOutputFiles>
     <DocumentationFile>ChummerHub.xml</DocumentationFile>
@@ -34,20 +30,17 @@
     <LangVersion>8.0</LangVersion>
     <NoWarn>1701;1702;VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DocumentationFile>ChummerHub.xml</DocumentationFile>
     <LangVersion>8.0</LangVersion>
     <NoWarn>1701;1702;VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
-
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release (for Testing)|AnyCPU'">
     <DocumentationFile>ChummerHub.xml</DocumentationFile>
     <LangVersion>8.0</LangVersion>
     <NoWarn>1701;1702;VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
   <ItemGroup>
-
     <Compile Remove="Migrations\20181029112504_03.cs" />
     <Compile Remove="Migrations\20181029112504_03.Designer.cs" />
     <Compile Remove="Migrations\20190314112930_2347823423.cs" />
@@ -55,16 +48,13 @@
     <Compile Remove="Migrations\20190314121202_cumulativeMigration.cs" />
     <Compile Remove="Migrations\20190314121202_cumulativeMigration.Designer.cs" />
   </ItemGroup>
-
   <ItemGroup>
     <Content Remove="Services\GoogleDrive\SINners.json" />
   </ItemGroup>
-
   <ItemGroup>
     <None Remove="googleb94c18697e68333b.html" />
     <None Remove="Migrations\ApplicationDbContextModelSnapshot.cs.txt" />
   </ItemGroup>
-
   <ItemGroup>
     <EmbeddedResource Include="Services\GoogleDrive\SINners.json" />
   </ItemGroup>
@@ -72,7 +62,6 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NoWarn>$(NoWarn);1591</NoWarn>
   </PropertyGroup>-->
-  
   <ItemGroup>
     <PackageReference Include="Azure.Extensions.AspNetCore.Configuration.Secrets" Version="1.2.2" />
     <PackageReference Include="Azure.Identity" Version="1.6.1" />
@@ -84,48 +73,14 @@
     <PackageReference Include="Microsoft.ApplicationInsights.AspNetCore" Version="2.21.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.DependencyCollector" Version="2.21.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.PerfCounterCollector" Version="2.21.0" />
-    <PackageReference Include="Microsoft.ApplicationInsights.Web" Version="2.21.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.WindowsServer" Version="2.21.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.WindowsServer.TelemetryChannel" Version="2.21.0" />
     <PackageReference Include="Microsoft.AspNetCore.ApplicationInsights.HostingStartup" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="6.0.7" />
-    <PackageReference Include="Microsoft.AspNetCore.AzureAppServices.HostingStartup" Version="6.0.7" />
-    <PackageReference Include="Microsoft.AspNetCore.AzureAppServicesIntegration" Version="6.0.7" />
-    <PackageReference Include="Microsoft.AspNetCore.Cors" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="6.0.7" />
-    <PackageReference Include="Microsoft.AspNetCore.Http" Version="2.2.2" />
-    <PackageReference Include="Microsoft.AspNetCore.HttpsPolicy" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="6.0.7" />
-    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="6.0.7" />
-    <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.2.5" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning" Version="5.0.0" />
     <PackageReference Include="Microsoft.AspNetCore.Mvc.Versioning.ApiExplorer" Version="5.0.0" />
-    <PackageReference Include="Microsoft.AspNetCore.Session" Version="2.2.0" />
-    <PackageReference Include="Microsoft.AspNetCore.StaticFiles" Version="2.2.0" />
     <PackageReference Include="Microsoft.Azure.AppConfiguration.AspNetCore" Version="5.1.0" />
-
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="6.0.7">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="6.0.7" />
-  
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="6.0.7" PrivateAssets="All" />
-  
-    <PackageReference Include="Microsoft.Extensions.ApiDescription.Server" Version="6.0.7">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
-  
     <PackageReference Include="Microsoft.OpenApi" Version="1.3.2" />
-  
-    <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.16.1" />
-  
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
-  
-    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.7" />
-  
     <PackageReference Include="NuGet.CommandLine" Version="6.2.4">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
@@ -142,45 +97,49 @@
     <PackageReference Include="Swashbuckle.AspNetCore.Swagger" Version="6.4.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerGen" Version="6.4.0" />
     <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUi" Version="6.4.0" />
-    <PackageReference Include="System.Configuration.ConfigurationManager" Version="6.0.0" />
     <PackageReference Include="System.Data.SqlClient" Version="4.8.5" />
-    <PackageReference Include="System.Diagnostics.Tracing" Version="4.3.0" />
-    <PackageReference Include="System.Net.Http.WinHttpHandler" Version="6.0.1" />
     <PackageReference Include="Veldrid.ImageSharp" Version="4.8.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="7.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.AzureAppServices.HostingStartup" Version="7.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.AzureAppServicesIntegration" Version="7.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="7.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="7.0.10" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="7.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="7.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" Version="7.0.10" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Tools" Version="7.0.10" />
+    <PackageReference Include="Microsoft.Extensions.ApiDescription.Server" Version="7.0.10" />
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="7.0.9" />
+    <PackageReference Include="System.Configuration.ConfigurationManager" Version="7.0.0" />
+    <PackageReference Include="System.Net.Http.WinHttpHandler" Version="7.0.0" />
   </ItemGroup>
-
-    <ItemGroup>
-        <!--DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" /-->
-        <!--DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.0" /-->
-        <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
-    </ItemGroup>
-  
+  <ItemGroup>
+    <!--DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" /-->
+    <!--DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.0" /-->
+    <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
+  </ItemGroup>
   <ItemGroup>
     <Folder Include="Controllers\V2\" />
   </ItemGroup>
-
   <ItemGroup>
-      <!--DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" /-->
-      <!--DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.0" /-->
+    <!--DotNetCliToolReference Include="Microsoft.EntityFrameworkCore.Tools.DotNet" Version="2.0.0" /-->
+    <!--DotNetCliToolReference Include="Microsoft.Extensions.SecretManager.Tools" Version="2.0.0" /-->
     <DotNetCliToolReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Tools" Version="2.0.0" />
   </ItemGroup>
-
   <ItemGroup>
     <None Include="Properties\PublishProfiles\SINners - Web Deploy.pubxml.user" />
     <None Include="Properties\PublishProfiles\sinners-Beta - Web Deploy.pubxml.user" />
   </ItemGroup>
-
-  <ItemGroup><!--Reference Include="System.Web">
+  <ItemGroup>
+    <!--Reference Include="System.Web">
       <HintPath>C:\Program Files (x86)\Reference Assemblies\Microsoft\Framework\.NETFramework\v4.5.2\System.Web.dll</HintPath>
     </Reference-->
-  
     <Compile Remove="Properties\PublishProfiles\**" />
     <Content Remove="Properties\PublishProfiles\**" />
     <EmbeddedResource Remove="Properties\PublishProfiles\**" />
     <None Remove="Properties\PublishProfiles\**" />
     <_WebToolingArtifacts Remove="Properties\PublishProfiles\**" />
   </ItemGroup>
-
   <ItemGroup>
     <Compile Update="Properties\Resources.Designer.cs">
       <DesignTime>True</DesignTime>
@@ -188,7 +147,6 @@
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
   </ItemGroup>
-
   <ItemGroup>
     <Content Update="appsettings.json">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
@@ -197,22 +155,18 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
-
   <ItemGroup>
     <EmbeddedResource Update="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
   </ItemGroup>
-
   <ItemGroup>
     <None Update="ChummerHub.xml">
       <CopyToOutputDirectory>Never</CopyToOutputDirectory>
     </None>
   </ItemGroup>
-
   <ItemGroup>
     <WCFMetadata Include="Connected Services" />
   </ItemGroup>
-
 </Project>
