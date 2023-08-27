@@ -20,6 +20,7 @@
 using System;
 using System.ComponentModel;
 using System.Drawing;
+using System.Runtime.Versioning;
 using System.Threading;
 using System.Windows.Forms;
 using System.Windows.Forms.VisualStyles;
@@ -28,6 +29,7 @@ using System.Windows.Forms.VisualStyles;
 
 namespace Chummer
 {
+    [SupportedOSPlatform("windows")]
     public class SplitButton : Button
     {
         private PushButtonState _state;
@@ -42,7 +44,7 @@ namespace Chummer
         private bool _isSplitMenuVisible;
 
         private ContextMenuStrip m_SplitMenuStrip;
-        private ContextMenu m_SplitMenu;
+        private ContextMenuStrip m_SplitMenu;
 
         private TextFormatFlags _textFormatFlags = TextFormatFlags.Default;
 
@@ -64,25 +66,25 @@ namespace Chummer
         }
 
         [DefaultValue(null)]
-        public ContextMenu SplitMenu
+        public ContextMenuStrip SplitMenu
         {
             get => m_SplitMenu;
             set
             {
-                ContextMenu objOldValue = Interlocked.Exchange(ref m_SplitMenu, value);
+                ContextMenuStrip objOldValue = Interlocked.Exchange(ref m_SplitMenu, value);
                 if (objOldValue == value)
                     return;
                 //remove the event handlers for the old SplitMenu
                 if (objOldValue != null)
                 {
-                    objOldValue.Popup -= SplitMenu_Popup;
+                    objOldValue.Opening -= SplitMenu_Popup;
                 }
 
                 //add the event handlers for the new SplitMenu
                 if (value != null)
                 {
                     ShowSplit = true;
-                    value.Popup += SplitMenu_Popup;
+                    value.Opening += SplitMenu_Popup;
                 }
                 else
                     ShowSplit = false;
