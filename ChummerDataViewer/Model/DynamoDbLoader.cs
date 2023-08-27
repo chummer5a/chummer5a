@@ -22,9 +22,11 @@ using System.ComponentModel;
 using System.Data.SQLite;
 using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using Amazon;
 using Amazon.DynamoDBv2;
 using Amazon.DynamoDBv2.Model;
+using Microsoft.VisualStudio.Threading;
 
 namespace ChummerDataViewer.Model
 {
@@ -187,7 +189,11 @@ namespace ChummerDataViewer.Model
                 };
             }
 
-            return _client.Scan(request);
+            // AmazonDynamoDBClient requires the use of async methods in .NET instead of rewriting all to async we use this as a temporary workaround
+            // Mainly because I'm not even sure this is even used at all.
+            // TODO: This may cause deadlock, rewrite all to async if really needed
+            var task = Task.Run(async () => await _client.ScanAsync(request));
+            return task.Result;
         }
 
         public event StatusChangedEvent StatusChanged;
