@@ -1,11 +1,13 @@
 # TODO for .NET6 Update
-- [] Test the SplitButton Rework
-- [] Text new LiveCharts
-- [] Text Chummer.Tests
-- [] Test CrashHandler
-- [] Test Translator
-- [] Test ChummerDataViewer
-- [] Investigate this error File name: 'F:\Programming\chummer5a\Chummer.Tests\$(_TestFrameworkExtensionsRoot)Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll'
+- [ ] Test the SplitButton Rework
+- [ ] Text new LiveCharts
+- [ ] Text Chummer.Tests
+- [ ] Test CrashHandler
+- [ ] Test Translator
+- [ ] Test ChummerDataViewer
+- [ ] Investigate this error
+```
+  File name: 'F:\Programming\chummer5a\Chummer.Tests\$(_TestFrameworkExtensionsRoot)Microsoft.VisualStudio.TestPlatform.TestFramework.Extensions.dll'
   at Microsoft.Win32.SafeHandles.SafeFileHandle.CreateFile(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options)
   at Microsoft.Win32.SafeHandles.SafeFileHandle.Open(String fullPath, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
   at System.IO.Strategies.OSFileStreamStrategy..ctor(String path, FileMode mode, FileAccess access, FileShare share, FileOptions options, Int64 preallocationSize, Nullable`1 unixCreateMode)
@@ -18,4 +20,6 @@
   at Microsoft.UpgradeAssistant.Operations.Operation.RunNodeTransformersAsync(OperationContext context, SliceNode node, SliceNodeStats nodeStats, CancellationToken cancellationToken) in D:\a\_work\1\s\src\Experiments\UpgradeAssistant\engine\Operations\Operation.cs:line 272
   info: Done
   Failed
-- [] Test ChummerUpdater (especially the User-Agent Header)
+```
+- [ ] Test ChummerUpdater (especially the User-Agent Header)
+- [ ] Test TextblockConverter
