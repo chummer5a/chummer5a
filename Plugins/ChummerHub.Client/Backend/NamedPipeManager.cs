@@ -174,10 +174,15 @@ namespace ChummerHub.Client.Backend
                     using (new Chummer.FetchSafelyFromPool<StringBuilder>(Chummer.Utils.StringBuilderPool, out StringBuilder sbdText))
                     {
                         token.ThrowIfCancellationRequested();
-                        using (NamedPipeServerStream objServerStream = new NamedPipeServerStream(NamedPipeName,
-                                   PipeDirection.InOut, 1,
-                                   PipeTransmissionMode.Message, PipeOptions.None,
-                                   4028, 4028, ps))
+                        await using (var objServerStream = NamedPipeServerStreamAcl.Create(
+                                         NamedPipeName,
+                                         PipeDirection.InOut,
+                                         1,
+                                         PipeTransmissionMode.Message,
+                                         PipeOptions.None,
+                                         4028,
+                                         4028,
+                                         ps))
                         {
                             await objServerStream.WaitForConnectionAsync(token).ConfigureAwait(false);
 
