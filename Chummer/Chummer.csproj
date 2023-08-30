@@ -1899,4 +1899,14 @@
         )
 </PreBuildEvent>
   </PropertyGroup>
+  <!--WIP stuff that should not be compiled?-->
+  <ItemGroup>
+    <Compile Remove="Forms\Dashboard Forms\GameMasterDashboard.cs" />
+    <Compile Remove="Forms\Dashboard Forms\GameMasterDashboard.Designer.cs" />
+    <Compile Remove="Forms\Dashboard Forms\PlayerDashboard.cs" />
+    <Compile Remove="Forms\Dashboard Forms\PlayerDashboard.Designer.cs" />
+    <Compile Remove="Forms\Selection Forms\SelectProgramOption.cs" />
+    <Compile Remove="Forms\Selection Forms\SelectProgramOption.Designer.cs" />
+    <Compile Remove="InheritedListView.cs" />
+  </ItemGroup>
 </Project>
