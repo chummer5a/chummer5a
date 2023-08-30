@@ -113,7 +113,9 @@ namespace Chummer.Backend.Equipment
                                       ? "/chummer/grades/grade[name = "
                                         + Name.CleanXPath() + ']'
                                       : "/chummer/grades/grade[id = "
-                                        + SourceIDString.CleanXPath() + ']');
+                                        + SourceIDString.CleanXPath() + " or id = "
+                                        + SourceIDString.ToUpperInvariant()
+                                            .CleanXPath() + ']');
 
             _objCachedMyXmlNode = objReturn;
             _strCachedXmlNodeLanguage = strLanguage;
@@ -138,7 +140,9 @@ namespace Chummer.Backend.Equipment
                                       ? "/chummer/grades/grade[name = "
                                         + Name.CleanXPath() + ']'
                                       : "/chummer/grades/grade[id = "
-                                        + SourceIDString.CleanXPath() + ']');
+                                        + SourceIDString.CleanXPath() + " or id = "
+                                        + SourceIDString.ToUpperInvariant()
+                                            .CleanXPath() + ']');
             _objCachedMyXPathNode = objReturn;
             _strCachedXPathNodeLanguage = strLanguage;
             return objReturn;
