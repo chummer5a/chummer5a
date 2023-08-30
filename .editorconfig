@@ -26,6 +26,12 @@ indent_size=2:warning
 [*.xslt]
 indent_size=2:warning
 
+[*/Forms/**/*.resx]
+generated_code = true
+
+[*.Designer.cs]
+generated_code = true
+
 [*.{appxmanifest,build,config,csproj,dbml,discomap,dtd,jsproj,lsproj,njsproj,nuspec,proj,props,StyleCop,targets,tasks,vbproj,xaml,xamlx,xml,xoml,xsd}]
 indent_style=space
 indent_size=2
