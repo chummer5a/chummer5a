@@ -34,6 +34,7 @@ namespace Chummer
             // Initialize the BlazorWebView
             var services = new ServiceCollection();
             services.AddWindowsFormsBlazorWebView();
+            services.AddBlazorWebViewDeveloperTools();
             blazorWebView1.HostPage = "wwwroot\\index.html";
             blazorWebView1.Services = services.BuildServiceProvider();
             blazorWebView1.RootComponents.Add<Blazor.Components.About>("#app");
