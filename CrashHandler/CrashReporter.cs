@@ -168,7 +168,7 @@ namespace CrashHandler
                     .Replace("\n", "%0D%0A");
             }
 
-            Process.Start(strSend);
+            Process.Start(new ProcessStartInfo(strSend) { UseShellExecute = true });
         }
     }
 }

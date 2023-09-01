@@ -1754,17 +1754,17 @@ namespace Chummer
 
         private void mnuChummerWiki_Click(object sender, EventArgs e)
         {
-            Process.Start("https://github.com/chummer5a/chummer5a/wiki/");
+            Process.Start(new ProcessStartInfo("https://github.com/chummer5a/chummer5a/wiki/") { UseShellExecute = true });
         }
 
         private void mnuChummerDiscord_Click(object sender, EventArgs e)
         {
-            Process.Start("https://discord.gg/mJB7st9");
+            Process.Start(new ProcessStartInfo("https://discord.gg/mJB7st9") { UseShellExecute = true });
         }
 
         private void mnuHelpDumpshock_Click(object sender, EventArgs e)
         {
-            Process.Start("https://github.com/chummer5a/chummer5a/issues/");
+            Process.Start(new ProcessStartInfo("https://github.com/chummer5a/chummer5a/issues/") { UseShellExecute = true });
         }
 
         public PrintMultipleCharacters PrintMultipleCharactersForm { get; private set; }
