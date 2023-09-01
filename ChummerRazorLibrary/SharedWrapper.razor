@@ -1,0 +1,39 @@
+<!--
+This component acts as a shared wrapper around each top level component that is added to the WinForms app.
+Think of it as the MainLayout of a normal Blazor application.
+THere is one important distinction! This component will be initialized multiple times instead of just once.
+-->
+@inherits LayoutComponentBase
+
+<MudThemeProvider @bind-IsDarkMode="@(IsDarkMode)"/>
+
+<MudLayout>
+    <!-- This id is needed for WinForms to place the child component. It basically acts as a body tag -->
+    <div id="app">
+        @RenderFragment
+    </div>
+</MudLayout>
+
+
+
+@code {
+    [Parameter, EditorRequired]
+    public required RenderFragment RenderFragment { get; set; }
+
+    [Parameter, EditorRequired]
+    public required bool IsLightMode { get; set; }
+
+    protected override Task OnParametersSetAsync()
+    {
+        IsDarkMode = !IsLightMode;
+        return base.OnParametersSetAsync();
+    }
+
+    private bool IsDarkMode
+    {
+        get => !IsLightMode;
+        set => IsLightMode = !value;
+    }
+
+}
+

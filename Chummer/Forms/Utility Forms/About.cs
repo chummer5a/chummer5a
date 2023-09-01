@@ -17,11 +17,10 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-using Microsoft.AspNetCore.Components.WebView.WindowsForms;
-using Microsoft.Extensions.DependencyInjection;
 using System;
 using System.Reflection;
 using System.Windows.Forms;
+using Chummer.Blazor;
 
 namespace Chummer
 {
@@ -31,14 +30,7 @@ namespace Chummer
         {
             InitializeComponent();
 
-            // Initialize the BlazorWebView
-            var services = new ServiceCollection();
-            services.AddWindowsFormsBlazorWebView();
-            services.AddBlazorWebViewDeveloperTools();
-            blazorWebView1.HostPage = "wwwroot\\index.html";
-            blazorWebView1.Services = services.BuildServiceProvider();
-            blazorWebView1.RootComponents.Add<Blazor.Components.About>("#app");
-
+            blazorWebView1.ConfigureBlazorWebView<ChummerRazorLibrary.Pages.About>();
 
             this.UpdateLightDarkMode();
             this.TranslateWinForm();

@@ -97,6 +97,9 @@
     <Compile Update="Controls\Shared\Components\SplitButton.cs">
       <SubType>Component</SubType>
     </Compile>
+    <Compile Update="Forms\Utility Forms\AboutViewModel.cs">
+      <DependentUpon>About.cs</DependentUpon>
+    </Compile>
   </ItemGroup>
   <!--UserControl-->
   <ItemGroup>
@@ -1845,6 +1848,7 @@
     <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.7.30" />
     <PackageReference Include="Microsoft.VisualStudio.Validation" Version="17.6.11" />
     <PackageReference Include="NLog" Version="5.2.3" />
+    <PackageReference Include="NLog.Extensions.Logging" Version="5.3.3" />
     <PackageReference Include="NLog.Schema" Version="5.2.3" />
     <PackageReference Include="Portable.BouncyCastle" Version="1.9.0" />
     <PackageReference Include="RtfPipe" Version="2.0.7677.4303" />
@@ -1899,5 +1903,11 @@
     <Compile Remove="Forms\Selection Forms\SelectProgramOption.cs" />
     <Compile Remove="Forms\Selection Forms\SelectProgramOption.Designer.cs" />
     <Compile Remove="InheritedListView.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\ChummerRazorLibrary\ChummerRazorLibrary.csproj" />
+  </ItemGroup>
+  <ItemGroup>
+    <_ContentIncludedByDefault Remove="Blazor\Components\About.razor" />
   </ItemGroup>
 </Project>

@@ -1,0 +1,41 @@
+
+@inherits MvvmComponentBase<IAboutViewModel>
+
+@if (ViewModel.Initialized)
+{
+    <MudGrid Style="max-width: 100vw">
+        <MudItem Style="height: 40vh" xs="5">
+            <MudImage Style="height: 100%" Src="@ViewModel.ImagePath" ObjectFit="ObjectFit.ScaleDown"></MudImage>
+        </MudItem>
+        <MudItem Style="height: 40vh" xs="7">
+            <MudText>@ViewModel.ProductName</MudText>
+            <MudText>@ViewModel.Version</MudText>
+            <MudText>
+                @ViewModel.Copyright
+            </MudText>
+            <MudText>
+                @ViewModel.Description
+            </MudText>
+        </MudItem>
+        <MudItem xs="6" Style="overflow: scroll; height: 60vh">
+            <ul>
+                @foreach (var contributor in ViewModel.Contributors)
+                {
+                    <li>@contributor</li>
+                }
+            </ul>
+        </MudItem>
+        <MudItem xs="6" Style="height: 60vh">
+            <MudText Style="overflow: scroll; height: inherit">
+                @ViewModel.Disclaimer
+            </MudText>
+        </MudItem>
+    </MudGrid>
+}
+
+<style>
+</style>
+
+@code {
+    private MudTextField<string>? description;
+}
