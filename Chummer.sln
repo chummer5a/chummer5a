@@ -10,6 +10,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		appveyor.yml = appveyor.yml
 		global.json = global.json
 		LICENSE.txt = LICENSE.txt
+		dotnet7_update_todo.md = dotnet7_update_todo.md
 	EndProjectSection
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CrashHandler", "CrashHandler\CrashHandler.csproj", "{8C904468-F3A3-4034-B2DE-ED532803AD38}"
