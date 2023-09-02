@@ -51,7 +51,7 @@ namespace Chummer
                         return titleAttribute.Title;
                     }
                 }
-                return System.IO.Path.GetFileNameWithoutExtension(typeof(Program).Assembly.CodeBase);
+                return System.IO.Path.GetFileNameWithoutExtension(typeof(Program).Assembly.Location);
             }
         }
 

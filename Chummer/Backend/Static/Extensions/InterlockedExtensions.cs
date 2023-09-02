@@ -37,7 +37,6 @@ namespace Chummer
         /// <returns>The original value in <paramref name="eLocation"/>.</returns>
         /// <exception cref="System.NullReferenceException">The address of <paramref name="eLocation"/> is a null pointer</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
         [SecuritySafeCritical]
         public static TEnum CompareExchange<TEnum>(ref TEnum eLocation, TEnum eValue, TEnum eComparand)
             where TEnum : struct, Enum
