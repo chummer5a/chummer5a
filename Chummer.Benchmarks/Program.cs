@@ -19,7 +19,6 @@
 using System;
 using System.Text;
 using BenchmarkDotNet.Attributes;
-using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Running;
 
 namespace Chummer.Benchmarks
@@ -41,7 +40,7 @@ namespace Chummer.Benchmarks
     /// Replace with a more suitable name in practice. You can also benchmark as many methods as you like.
     /// </summary>
     [MemoryDiagnoser]
-    [SimpleJob(RuntimeMoniker.Net48, baseline: true)]
+    [SimpleJob(baseline: true)]
     public class ForeachSplitComparison
     {
         private readonly string _strLongWord;

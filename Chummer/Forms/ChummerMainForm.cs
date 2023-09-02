@@ -4216,6 +4216,9 @@ namespace Chummer
                 {
                     if (strArg.EndsWith(Path.GetFileName(Application.ExecutablePath), StringComparison.OrdinalIgnoreCase))
                         continue;
+                    // In .Net 7 the application seems to start with the Chummer.dll instead of the Chummer.exe as an arg so we wanna ignore that
+                    if (strArg.EndsWith(".dll"))
+                        continue;
                     switch (strArg)
                     {
                         case "/test":
