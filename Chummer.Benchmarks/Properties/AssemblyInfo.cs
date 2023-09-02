@@ -18,6 +18,8 @@
  */
 using System.Reflection;
 using System.Runtime.InteropServices;
+using System.Runtime.Versioning;
+
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
@@ -31,3 +33,6 @@ using System.Runtime.InteropServices;
 
 // Currently this is only for windows
 [assembly: System.Runtime.Versioning.SupportedOSPlatformAttribute("windows")]
+
+// This is needed for BenchmarkDotNet to generate the correct Framework versions
+[assembly: TargetPlatform("windows")]
