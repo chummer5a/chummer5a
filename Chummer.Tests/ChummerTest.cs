@@ -414,8 +414,7 @@ namespace Chummer.Tests
                                 try
                                 {
                                     frmCharacterForm.DoThreadSafe(x => x.Close());
-                                    while
-                                        (!blnFormClosed) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
+                                    while (!blnFormClosed) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
                                     {
                                         Utils.SafeSleep();
                                     }

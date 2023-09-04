@@ -1174,10 +1174,8 @@ namespace Chummer
                         using (CancellationTokenTaskSource<string> objCancelTaskSource
                                = new CancellationTokenTaskSource<string>(token))
                         {
-                            await Task.WhenAny(Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke,
-                                                                      x => strFactoryResult
-                                                                          = funcNewValueFactory.EndInvoke(x), null),
-                                               objCancelTaskSource.Task).ConfigureAwait(false);
+                            await Task.WhenAny(Task.Run(() => strFactoryResult = funcNewValueFactory(), token),
+                                objCancelTaskSource.Task).ConfigureAwait(false);
                         }
 
                         token.ThrowIfCancellationRequested();
@@ -1191,10 +1189,8 @@ namespace Chummer
                     using (CancellationTokenTaskSource<string> objCancelTaskSource
                            = new CancellationTokenTaskSource<string>(token))
                     {
-                        await Task.WhenAny(Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke,
-                                                                  x => strFactoryResult
-                                                                      = funcNewValueFactory.EndInvoke(x), null),
-                                           objCancelTaskSource.Task).ConfigureAwait(false);
+                        await Task.WhenAny(Task.Run(() => strFactoryResult = funcNewValueFactory(), token),
+                            objCancelTaskSource.Task).ConfigureAwait(false);
                     }
 
                     token.ThrowIfCancellationRequested();

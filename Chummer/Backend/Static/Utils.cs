@@ -333,7 +333,7 @@ namespace Chummer
         public static string GetSettingsFolderPath => s_strGetSettingsFolderPath.Value;
 
         private static readonly Lazy<JoinableTaskFactory> s_objJoinableTaskFactory
-            = new Lazy<JoinableTaskFactory>(() => IsRunningInVisualStudio
+            = new Lazy<JoinableTaskFactory>(() => IsRunningInVisualStudio || IsUnitTest
                                                 ? new JoinableTaskFactory(new JoinableTaskContext())
                                                 : new JoinableTaskFactory(
                                                     MyJoinableTaskContext ?? CreateSynchronizationContext()));

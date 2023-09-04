@@ -130,10 +130,8 @@ namespace Chummer
                         using (CancellationTokenTaskSource<string> objCancellationTokenTaskSource
                                = new CancellationTokenTaskSource<string>(token))
                         {
-                            await Task.WhenAny(Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke,
-                                                                      x => strFactoryResult
-                                                                          = funcNewValueFactory.EndInvoke(x),
-                                                                      null), objCancellationTokenTaskSource.Task).ConfigureAwait(false);
+                            await Task.WhenAny(Task.Run(() => strFactoryResult = funcNewValueFactory(), token),
+                                objCancellationTokenTaskSource.Task).ConfigureAwait(false);
                         }
                         token.ThrowIfCancellationRequested();
                         sbdInput.Replace(strOldValue, strFactoryResult);
