@@ -10,7 +10,7 @@ public class ChummerUITests: IClassFixture<ChummerUIFixture>
 {
     private readonly ChummerUIFixture _testFixture;
     private readonly ITestOutputHelper _testOutput;
-    
+
     public ChummerUITests(ChummerUIFixture testFixture, ITestOutputHelper testOutput)
     {
         _testFixture = testFixture;

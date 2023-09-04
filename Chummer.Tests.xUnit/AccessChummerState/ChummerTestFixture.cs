@@ -2,7 +2,7 @@ using System.Diagnostics.CodeAnalysis;
 
 namespace Chummer.Tests.xUnit.AccessChummerState;
 
-public class ChummerTestFixture: SetupStaThreadFixture, IAsyncLifetime
+public class ChummerTestFixture: SetupStaThreadFixture
 {
     public ChummerTestFixture()
     {
@@ -63,16 +63,5 @@ public class ChummerTestFixture: SetupStaThreadFixture, IAsyncLifetime
     {
         character.Save(path, false);
         return true;
-    }
-
-    public async Task InitializeAsync()
-    {
-        // We need to call this here once or the default settings won't load in the tests
-        await XmlManager.LoadXPathAsync("settings.xml");
-    }
-
-    public Task DisposeAsync()
-    {
-        return Task.CompletedTask;
     }
 }

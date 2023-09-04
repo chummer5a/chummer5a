@@ -165,7 +165,7 @@ public class ChummerTests: IClassFixture<ChummerTestFixture>
             }
             foreach (var characterFile in characterFiles)
             {
-                yield return new object[] {characterFile.First(), new FileInfo(languageFile)};
+                yield return new [] {characterFile.First(), new FileInfo(languageFile)};
             }
         }
     }

@@ -46,7 +46,7 @@ public class SetupStaThreadFixture: IAsyncLifetime
         {
             if (Program.MainForm.InvokeRequired)
             {
-                Program.MainForm.Invoke(new Action(CloseForm));
+                Program.MainForm.Invoke(CloseForm);
                 return;
             }
             Program.MainForm.Close();
