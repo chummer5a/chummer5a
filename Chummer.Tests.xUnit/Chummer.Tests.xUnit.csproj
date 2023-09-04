@@ -10,19 +10,33 @@
     </PropertyGroup>
 
     <ItemGroup>
-        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.6.0"/>
-        <PackageReference Include="XMLUnit.Core" Version="2.9.2" />
-        <PackageReference Include="XmlUnit.Xunit" Version="0.4.0" />
-        <PackageReference Include="xunit" Version="2.4.2"/>
-        <PackageReference Include="xunit.runner.visualstudio" Version="2.4.5">
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-            <PrivateAssets>all</PrivateAssets>
-        </PackageReference>
-        <PackageReference Include="coverlet.collector" Version="3.2.0">
-            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-            <PrivateAssets>all</PrivateAssets>
-        </PackageReference>
-        <PackageReference Include="Xunit.StaFact" Version="1.1.11" />
+      <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.7.2" />
+      <PackageReference Include="XMLUnit.Core" Version="2.9.2" />
+      <PackageReference Include="XmlUnit.Xunit" Version="0.4.0" />
+      <PackageReference Include="xunit" Version="2.5.0" />
+      <PackageReference Include="xunit.analyzers" Version="1.2.0" />
+      <PackageReference Include="xunit.runner.visualstudio" Version="2.5.0">
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+          <PrivateAssets>all</PrivateAssets>
+      </PackageReference>
+      <PackageReference Include="coverlet.collector" Version="6.0.0">
+          <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+          <PrivateAssets>all</PrivateAssets>
+      </PackageReference>
+      <PackageReference Include="Xunit.StaFact" Version="1.1.11" />
+
+      <PackageReference Include="Microsoft.VisualStudio.Threading" Version="17.7.30" />
+      <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.7.30" />
+      <PackageReference Include="Microsoft.VisualStudio.Validation" Version="17.6.11" />
+
+      <PackageReference Include="Microsoft.ApplicationInsights" Version="2.21.0" />
+      <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" />
+      <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.7.0" />
+      <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.7.0" />
+      <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.4">
+        <PrivateAssets>all</PrivateAssets>
+        <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+      </PackageReference>
     </ItemGroup>
 
     <ItemGroup>
@@ -138,5 +152,14 @@
     </ItemGroup>
 
 
+
+    <ItemGroup>
+      <Compile Update="AccessChummerState\ChummerUITestFixture.cs">
+        <DependentUpon>ChummerUITests.cs</DependentUpon>
+      </Compile>
+      <Compile Update="AccessChummerState\ChummerTestFixture.cs">
+        <DependentUpon>ChummerTests.cs</DependentUpon>
+      </Compile>
+    </ItemGroup>
 
 </Project>
