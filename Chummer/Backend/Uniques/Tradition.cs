@@ -1544,17 +1544,7 @@ namespace Chummer.Backend.Uniques
                         break;
                 }
 
-                if (objDoc == null)
-                    objReturn = null;
-                else
-                    objReturn = objDoc
-                        .SelectSingleNode(SourceID == Guid.Empty
-                                              ? "/chummer/traditions/tradition[name = " + Name.CleanXPath() + ']'
-                                              : "/chummer/traditions/tradition[id = " + SourceIDString.CleanXPath()
-                                              + " or id = "
-                                              + SourceIDString.ToUpperInvariant()
-                                                              .CleanXPath()
-                                              + ']');
+                objReturn = objDoc?.TryGetNodeByNameOrId("/chummer/traditions/tradition", SourceIDString.CleanXPath());
                 _xmlCachedMyXmlNode = objReturn;
                 _strCachedXmlNodeLanguage = strLanguage;
                 return objReturn;
@@ -1593,17 +1583,7 @@ namespace Chummer.Backend.Uniques
                         break;
                 }
 
-                if (objDoc == null)
-                    objReturn = null;
-                else
-                    objReturn = objDoc
-                        .SelectSingleNode(SourceID == Guid.Empty
-                                              ? "/chummer/traditions/tradition[name = " + Name.CleanXPath() + ']'
-                                              : "/chummer/traditions/tradition[id = " + SourceIDString.CleanXPath()
-                                              + " or id = "
-                                              + SourceIDString.ToUpperInvariant()
-                                                              .CleanXPath()
-                                              + ']');
+                objReturn = objDoc?.TryGetNodeByNameOrId("/chummer/traditions/tradition", SourceIDString.CleanXPath());
                 _objCachedMyXPathNode = objReturn;
                 _strCachedXPathNodeLanguage = strLanguage;
                 return objReturn;

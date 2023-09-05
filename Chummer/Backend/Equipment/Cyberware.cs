@@ -968,12 +968,8 @@ namespace Chummer.Backend.Equipment
                         // More than one Weapon can be added, so loop through all occurrences.
                         foreach (XmlNode objXmlAddWeapon in objXmlCyberware.SelectNodes("addweapon"))
                         {
-                            string strLoopID = objXmlAddWeapon.InnerText;
-                            XmlNode objXmlWeapon = strLoopID.IsGuid()
-                                ? objXmlWeaponDocument.SelectSingleNode(
-                                    "/chummer/weapons/weapon[id = " + strLoopID.CleanXPath() + ']')
-                                : objXmlWeaponDocument.SelectSingleNode(
-                                    "/chummer/weapons/weapon[name = " + strLoopID.CleanXPath() + ']');
+                            XmlNode objXmlWeapon = objXmlWeaponDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon",
+                                objXmlAddWeapon.InnerText.CleanXPath());
 
                             if (objXmlWeapon != null)
                             {
@@ -1014,12 +1010,8 @@ namespace Chummer.Backend.Equipment
                             {
                                 foreach (XmlNode objXml in objXmlCyberware.SelectNodes("addparentweaponaccessory"))
                                 {
-                                    string strLoopID = objXml.InnerText;
-                                    XmlNode objXmlAccessory = strLoopID.IsGuid()
-                                        ? objXmlWeaponDocument.SelectSingleNode(
-                                            "/chummer/accessories/accessory[id = " + strLoopID.CleanXPath() + ']')
-                                        : objXmlWeaponDocument.SelectSingleNode(
-                                            "/chummer/accessories/accessory[name = " + strLoopID.CleanXPath() + ']');
+                                    XmlNode objXmlWeapon = objXmlWeaponDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon",
+                                        objXml.InnerText.CleanXPath());
 
                                     if (objXmlAccessory == null) continue;
                                     WeaponAccessory objGearWeapon = new WeaponAccessory(_objCharacter);
@@ -1056,10 +1048,7 @@ namespace Chummer.Backend.Equipment
                         {
                             string strLoopID = xmlAddVehicle.InnerText;
                             XmlNode xmlVehicle = strLoopID.IsGuid()
-                                ? objXmlVehicleDocument.SelectSingleNode(
-                                    "/chummer/vehicles/vehicle[id = " + strLoopID.CleanXPath() + ']')
-                                : objXmlVehicleDocument.SelectSingleNode(
-                                    "/chummer/vehicles/vehicle[name = " + strLoopID.CleanXPath() + ']');
+                                ? objXmlVehicleDocument.TryGetNodeByNameOrId("/chummer/vehicles/vehicle", strLoopID.CleanXPath());
 
                             if (xmlVehicle != null)
                             {
@@ -5256,12 +5245,8 @@ namespace Chummer.Backend.Equipment
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadData(strDoc, strLanguage, token: token)
                     : await _objCharacter.LoadDataAsync(strDoc, strLanguage, token: token).ConfigureAwait(false);
-                objReturn = objDoc.SelectSingleNode(strPath + (SourceID == Guid.Empty
-                                                                  ? "[name = " + Name.CleanXPath() + ']'
-                                                                  : "[id = " + SourceIDString.CleanXPath()
-                                                                             + " or id = " + SourceIDString
-                                                                                 .ToUpperInvariant().CleanXPath()
-                                                                             + ']'));
+                objReturn = objDoc.TryGetNodeByNameOrId(strPath, SourceIDString.CleanXPath());
+
                 if (objReturn == null && SourceID != Guid.Empty)
                 {
                     objReturn = objDoc.SelectSingleNode(strPath + "[name = " + Name.CleanXPath() + ']');
@@ -5298,12 +5283,8 @@ namespace Chummer.Backend.Equipment
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadDataXPath(strDoc, strLanguage, token: token)
                     : await _objCharacter.LoadDataXPathAsync(strDoc, strLanguage, token: token).ConfigureAwait(false);
-                objReturn = objDoc.SelectSingleNode(strPath + (SourceID == Guid.Empty
-                                                                       ? "[name = " + Name.CleanXPath() + ']'
-                                                                       : "[id = " + SourceIDString.CleanXPath()
-                                                                       + " or id = " + SourceIDString
-                                                                           .ToUpperInvariant().CleanXPath()
-                                                                       + ']'));
+                objReturn = objDoc.TryGetNodeByNameOrId(strPath, SourceIDString.CleanXPath());
+
                 if (objReturn == null && SourceID != Guid.Empty)
                 {
                     objReturn = objDoc.SelectSingleNode(strPath + "[name = " + Name.CleanXPath() + ']');

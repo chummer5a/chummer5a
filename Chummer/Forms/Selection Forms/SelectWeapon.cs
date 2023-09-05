@@ -231,7 +231,7 @@ namespace Chummer
                     XmlNode xmlWeapon = null;
                     string strSelectedId = await lstWeapon.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
                     if (!string.IsNullOrEmpty(strSelectedId))
-                        xmlWeapon = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + strSelectedId.CleanXPath() + ']');
+                        xmlWeapon = _objXmlDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon", strSelectedId.CleanXPath());
                     if (xmlWeapon != null)
                     {
                         Weapon objWeapon = new Weapon(_objCharacter);
@@ -483,8 +483,7 @@ namespace Chummer
                     bool blnAnyRanged = false;
                     bool blnAnyMelee = false;
                     XmlNode xmlParentWeaponDataNode = ParentWeapon != null
-                        ? _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = "
-                                                           + ParentWeapon.SourceIDString.CleanXPath() + ']')
+                        ? _objXmlDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon", ParentWeapon.SourceIDString.CleanXPath())
                         : null;
                     foreach (XmlNode objXmlWeapon in objNodeList)
                     {
@@ -618,8 +617,7 @@ namespace Chummer
                     {
                         int intOverLimit = 0;
                         XmlNode xmlParentWeaponDataNode = ParentWeapon != null
-                            ? _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = "
-                                                               + ParentWeapon.SourceIDString.CleanXPath() + ']')
+                            ? _objXmlDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon", ParentWeapon.SourceIDString.CleanXPath())
                             : null;
                         foreach (XmlNode objXmlWeapon in objNodeList)
                         {
@@ -993,7 +991,7 @@ namespace Chummer
                     string strSelectedId = lstWeapon.SelectedValue?.ToString();
                     if (!string.IsNullOrEmpty(strSelectedId))
                     {
-                        objNode = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + strSelectedId.CleanXPath() + ']');
+                        objNode = _objXmlDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon", strSelectedId.CleanXPath());
                         if (objNode != null)
                         {
                             _strSelectCategory = (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0)
@@ -1017,11 +1015,12 @@ namespace Chummer
                             string strWeapon = dgvWeapons.SelectedRows[0].Cells[0].Value.ToString();
                             if (!string.IsNullOrEmpty(strWeapon))
                                 strWeapon = strWeapon.Substring(0, strWeapon.LastIndexOf('(') - 1);
-                            objNode = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + strWeapon.CleanXPath() + ']');
+                            objNode = _objXmlDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon",
+                                strWeapon.CleanXPath());
                         }
                         else
                         {
-                            objNode = _objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + dgvWeapons.SelectedRows[0].Cells[0].Value.ToString().CleanXPath() + ']');
+                            objNode = _objXmlDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon", dgvWeapons.SelectedRows[0].Cells[0].Value.ToString().CleanXPath());
                         }
                         if (objNode != null)
                         {

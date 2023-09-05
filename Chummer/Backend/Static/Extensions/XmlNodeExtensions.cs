@@ -29,6 +29,7 @@ using System.Globalization;
 using System.Xml;
 using System.Runtime.CompilerServices;
 using NLog;
+using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -545,6 +546,19 @@ namespace Chummer
                 return false;
             read = guidTmp;
             return true;
+        }
+
+        /// <summary>
+        /// Query the XPathNavigator for a given node with an id or name element. Includes ToUpperInvariant processing to handle uppercase ids.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static XmlNode TryGetNodeByNameOrId(this XmlNode node, string strPath, string strId)
+        {
+            if (node == null)
+                return null;
+            return strId.IsGuid()
+                ? node.SelectSingleNode($"{strPath}[id = {strId} or id = {strId.ToUpperInvariant()}]")
+                : node.SelectSingleNode($"{strPath}[name = {strId}]");
         }
 
         /// <summary>

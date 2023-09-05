@@ -294,12 +294,8 @@ namespace Chummer.Backend.Equipment
 
                     foreach (XmlNode objXmlAddWeapon in xmlAddWeaponList)
                     {
-                        string strLoopID = objXmlAddWeapon.InnerText;
-                        XmlNode objXmlWeapon = strLoopID.IsGuid()
-                            ? objXmlWeaponDocument.SelectSingleNode(
-                                "/chummer/weapons/weapon[id = " + strLoopID.CleanXPath() + ']')
-                            : objXmlWeaponDocument.SelectSingleNode(
-                                "/chummer/weapons/weapon[name = " + strLoopID.CleanXPath() + ']');
+                        XmlNode objXmlWeapon = objXmlWeaponDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon",
+                            objXmlAddWeapon.InnerText.CleanXPath());
 
                         if (objXmlWeapon != null)
                         {

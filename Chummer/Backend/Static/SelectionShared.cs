@@ -2126,8 +2126,7 @@ namespace Chummer
                                      x => x.SourceIDString.CleanXPath()))
                         {
                             XPathNavigator xmlMetamagicNode =
-                                xmlMetamagicDoc.SelectSingleNode(
-                                    "metamagics/metamagic[id = " + strMetamagicNameForXPath + ']');
+                                xmlMetamagicDoc.TryGetNodeByNameOrId("metamagics/metamagic",strMetamagicNameForXPath);
                             if (xmlMetamagicNode != null)
                             {
                                 if (xmlMetamagicNode.SelectSingleNode(
@@ -2147,7 +2146,7 @@ namespace Chummer
                                 // We couldn't find a metamagic with this name, so it's probably an art. Try and find the node.
                                 // If we can't, it's probably a data entry error.
                                 xmlMetamagicNode =
-                                    xmlMetamagicDoc.SelectSingleNode("arts/art[id = " + strMetamagicNameForXPath + ']');
+                                    xmlMetamagicDoc.TryGetNodeByNameOrId("arts/art", strMetamagicNameForXPath);
                                 if (xmlMetamagicNode == null)
                                     Utils.BreakIfDebug();
                                 else

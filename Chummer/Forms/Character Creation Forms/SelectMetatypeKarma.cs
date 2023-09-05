@@ -398,8 +398,8 @@ namespace Chummer
                 string strSelectedMetavariant = await cboMetavariant.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false) ?? Guid.Empty.ToString();
 
                 XmlNode objXmlMetatype
-                    = _xmlMetatypeDocumentMetatypesNode.SelectSingleNode(
-                        "metatype[id = " + strSelectedMetatype.CleanXPath() + ']');
+                    = _xmlMetatypeDocumentMetatypesNode.TryGetNodeByNameOrId("metatype",strSelectedMetatype.CleanXPath());
+
                 if (objXmlMetatype == null)
                 {
                     Program.ShowScrollableMessageBox(
@@ -547,11 +547,11 @@ namespace Chummer
                 string strSelectedMetatype = await lstMetatypes.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(strSelectedMetatype))
                 {
-                    objXmlMetatype = _xmlBaseMetatypeDataNode.SelectSingleNode("metatypes/metatype[id = " + strSelectedMetatype.CleanXPath() + ']');
+                    objXmlMetatype = _xmlBaseMetatypeDataNode.TryGetNodeByNameOrId("metatypes/metatype", strSelectedMetatype.CleanXPath());
                     string strSelectedMetavariant = await cboMetavariant.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
                     if (objXmlMetatype != null && !string.IsNullOrEmpty(strSelectedMetavariant) && strSelectedMetavariant != "None")
                     {
-                        objXmlMetavariant = objXmlMetatype.SelectSingleNode("metavariants/metavariant[id = " + strSelectedMetavariant.CleanXPath() + ']');
+                        objXmlMetavariant = objXmlMetatype.TryGetNodeByNameOrId("metavariants/metavariant", strSelectedMetavariant.CleanXPath());
                     }
                 }
 
@@ -994,7 +994,7 @@ namespace Chummer
                 string strSelectedMetatype = await lstMetatypes.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
                 XPathNavigator objXmlMetatype = null;
                 if (!string.IsNullOrEmpty(strSelectedMetatype))
-                    objXmlMetatype = _xmlBaseMetatypeDataNode.SelectSingleNode("metatypes/metatype[id = " + strSelectedMetatype.CleanXPath() + ']');
+                    objXmlMetatype = _xmlBaseMetatypeDataNode.TryGetNodeByNameOrId("metatypes/metatype", strSelectedMetatype.CleanXPath());
                 // Don't attempt to do anything if nothing is selected.
                 if (objXmlMetatype != null)
                 {
