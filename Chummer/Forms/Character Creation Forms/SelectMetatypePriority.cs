@@ -3133,8 +3133,7 @@ namespace Chummer
                                                        .ConfigureAwait(false);
 
                     XPathNavigator objXmlMetatype
-                        = _xmlBaseMetatypeDataNode.SelectSingleNode(
-                            "metatypes/metatype[name = " + strSelectedMetatype.CleanXPath() + ']');
+                        = _xmlBaseMetatypeDataNode.TryGetNodeByNameOrId("metatypes/metatype", strSelectedMetatype);
                     XPathNavigator objXmlMetatypeBP = null;
                     XPathNodeIterator xmlBaseMetatypePriorityList = _xmlBasePriorityDataNode.Select(
                         "priorities/priority[category = \"Heritage\" and value = " + strSelectedHeritage.CleanXPath()

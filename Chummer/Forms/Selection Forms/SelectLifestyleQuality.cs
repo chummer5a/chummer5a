@@ -120,7 +120,7 @@ namespace Chummer
                 return;
             }
 
-            XPathNavigator objXmlQuality = _objXPathDocument.TryGetNodeByNameOrId("/chummer/qualities/quality", strSelectedLifestyleId.CleanXPath());
+            XPathNavigator objXmlQuality = _objXPathDocument.TryGetNodeByNameOrId("/chummer/qualities/quality", strSelectedLifestyleId);
 
             if (objXmlQuality == null)
             {
@@ -456,7 +456,7 @@ namespace Chummer
             string strSelectedSourceIDString = await lstLifestyleQualities.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strSelectedSourceIDString))
                 return;
-            XPathNavigator objNode = _objXPathDocument.TryGetNodeByNameOrId("/chummer/qualities/quality", strSelectedSourceIDString.CleanXPath());
+            XPathNavigator objNode = _objXPathDocument.TryGetNodeByNameOrId("/chummer/qualities/quality", strSelectedSourceIDString);
             if (objNode == null || !await objNode.RequirementsMetAsync(_objCharacter, _objParentLifestyle,
                                                                        (await objNode.SelectSingleNodeAndCacheExpressionAsync(
                                                                            "translate", token).ConfigureAwait(false))?.Value

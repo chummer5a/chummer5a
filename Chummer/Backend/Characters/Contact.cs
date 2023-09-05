@@ -927,7 +927,7 @@ namespace Chummer
                     if (LinkedCharacter.MetavariantGuid == Guid.Empty)
                         return strReturn;
                     objMetatypeNode = objMetatypeNode
-                            .TryGetNodeByNameOrId("metavariants/metavariant", LinkedCharacter.MetavariantGuid.ToString("D",GlobalSettings.InvariantCultureInfo).CleanXPath());
+                            .TryGetNodeByNameOrId("metavariants/metavariant", LinkedCharacter.MetavariantGuid.ToString("D",GlobalSettings.InvariantCultureInfo));
 
                     string strMetatypeTranslate
                         = objMetatypeNode?.SelectSingleNodeAndCacheExpression("translate")?.Value;
@@ -968,8 +968,7 @@ namespace Chummer
                     if (guiMetavariant == Guid.Empty)
                         return strReturn;
                     objMetatypeNode = objMetatypeNode.TryGetNodeByNameOrId("metavariants/metavariant",
-                        LinkedCharacter.MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo)
-                            .CleanXPath());
+                        LinkedCharacter.MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo));
 
                     string strMetatypeTranslate = objMetatypeNode != null
                         ? (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token)

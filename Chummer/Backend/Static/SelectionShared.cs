@@ -2123,10 +2123,10 @@ namespace Chummer
                         }
 
                         foreach (string strMetamagicNameForXPath in objCharacter.Metamagics.Select(
-                                     x => x.SourceIDString.CleanXPath()))
+                                     x => x.SourceIDString))
                         {
                             XPathNavigator xmlMetamagicNode =
-                                xmlMetamagicDoc.TryGetNodeByNameOrId("metamagics/metamagic",strMetamagicNameForXPath);
+                                xmlMetamagicDoc.TryGetNodeByNameOrId("metamagics/metamagic", strMetamagicNameForXPath);
                             if (xmlMetamagicNode != null)
                             {
                                 if (xmlMetamagicNode.SelectSingleNode(

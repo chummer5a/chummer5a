@@ -102,7 +102,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Populate the Martial Arts list.
-                XPathNavigator objXmlArt = _xmlBaseMartialArtsNode.TryGetNodeByNameOrId("martialart", strSelectedId.CleanXPath());
+                XPathNavigator objXmlArt = _xmlBaseMartialArtsNode.TryGetNodeByNameOrId("martialart", strSelectedId);
 
                 if (objXmlArt != null)
                 {

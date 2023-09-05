@@ -423,7 +423,7 @@ namespace Chummer.Backend.Equipment
 
                             objLifestyleQualityNode =
                                 objXmlDocument.TryGetNodeByNameOrId("/chummer/qualities/quality",
-                                    frmSelect.MyForm.SelectedItem.CleanXPath());
+                                    frmSelect.MyForm.SelectedItem);
                         }
                     }
                 }

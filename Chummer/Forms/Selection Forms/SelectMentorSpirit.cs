@@ -60,7 +60,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strSelectedId))
                     {
                         objXmlMentor =
-                            _xmlBaseMentorSpiritDataNode.TryGetNodeByNameOrId("mentors/mentor", strSelectedId.CleanXPath());
+                            _xmlBaseMentorSpiritDataNode.TryGetNodeByNameOrId("mentors/mentor", strSelectedId);
                     }
                 }
 
@@ -190,7 +190,7 @@ namespace Chummer
             string strSelectedId = lstMentor.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
             {
-                XPathNavigator objXmlMentor = _xmlBaseMentorSpiritDataNode.TryGetNodeByNameOrId("mentors/mentor", strSelectedId.CleanXPath());
+                XPathNavigator objXmlMentor = _xmlBaseMentorSpiritDataNode.TryGetNodeByNameOrId("mentors/mentor", strSelectedId);
                 if (objXmlMentor == null)
                     return;
 

@@ -55,7 +55,7 @@ namespace Chummer
             _xmlMetatypeDataNode = _objCharacter.GetNodeXPath();
 
             if (_xmlMetatypeDataNode == null || _objCharacter.MetavariantGuid == Guid.Empty) return;
-            XPathNavigator xmlMetavariantNode = _xmlMetatypeDataNode.TryGetNodeByNameOrId("metavariants/metavariant", _objCharacter.MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath());
+            XPathNavigator xmlMetavariantNode = _xmlMetatypeDataNode.TryGetNodeByNameOrId("metavariants/metavariant", _objCharacter.MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo));
             if (xmlMetavariantNode != null)
                 _xmlMetatypeDataNode = xmlMetavariantNode;
         }
@@ -138,7 +138,7 @@ namespace Chummer
             string strSelectedPower = await trePowers.DoThreadSafeFuncAsync(x => x.SelectedNode.Tag?.ToString()).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strSelectedPower))
             {
-                XPathNavigator objXmlPower = _xmlBaseCritterPowerDataNode.TryGetNodeByNameOrId("powers/power", strSelectedPower.CleanXPath());
+                XPathNavigator objXmlPower = _xmlBaseCritterPowerDataNode.TryGetNodeByNameOrId("powers/power", strSelectedPower);
                 if (objXmlPower != null)
                 {
                     string strCategory = (await objXmlPower.SelectSingleNodeAndCacheExpressionAsync("category").ConfigureAwait(false))?.Value
@@ -446,7 +446,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSelectedPower))
                 return;
 
-            XPathNavigator objXmlPower = _xmlBaseCritterPowerDataNode.TryGetNodeByNameOrId("powers/power", strSelectedPower.CleanXPath());
+            XPathNavigator objXmlPower = _xmlBaseCritterPowerDataNode.TryGetNodeByNameOrId("powers/power", strSelectedPower);
             if (objXmlPower == null)
                 return;
 

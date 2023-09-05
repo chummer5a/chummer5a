@@ -360,7 +360,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 xmlAccessory
-                    = _xmlBaseChummerNode.TryGetNodeByNameOrId("accessories/accessory", strSelectedId.CleanXPath());
+                    = _xmlBaseChummerNode.TryGetNodeByNameOrId("accessories/accessory", strSelectedId);
             }
 
             if (xmlAccessory == null)

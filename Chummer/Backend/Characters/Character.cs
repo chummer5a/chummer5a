@@ -574,14 +574,16 @@ namespace Chummer
                     : await LoadDataXPathAsync(strFile, strLanguage, token: token).ConfigureAwait(false);
                 XPathNavigator xmlMetatypeNode = MetatypeGuid == Guid.Empty
                     ? xmlDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + Metatype.CleanXPath() + ']')
-                    : xmlDoc.TryGetNodeByNameOrId("/chummer/metatypes/metatype",MetatypeGuid.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath());
+                    : xmlDoc.TryGetNodeByNameOrId("/chummer/metatypes/metatype",MetatypeGuid.ToString("D", GlobalSettings.InvariantCultureInfo));
                 if (blnReturnMetatypeOnly)
                     return xmlMetatypeNode;
                 if (MetavariantGuid == Guid.Empty || string.IsNullOrEmpty(Metavariant) || xmlMetatypeNode == null)
                     return xmlMetatypeNode;
-                XPathNavigator xmlMetavariantNode = MetavariantGuid == Guid.Empty
-                    ? xmlMetatypeNode.SelectSingleNode("metavariants/metavariant[name = " + Metavariant.CleanXPath() + ']')
-                    : xmlMetatypeNode.TryGetNodeByNameOrId("metavariants/metavariant",MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo));
+                XPathNavigator xmlMetavariantNode = xmlMetatypeNode.TryGetNodeByNameOrId(
+                    "metavariants/metavariant",
+                    MetavariantGuid == Guid.Empty
+                        ? Metavariant
+                        : MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo));
                 if (xmlMetavariantNode == null && MetavariantGuid != Guid.Empty)
                 {
                     xmlMetavariantNode =

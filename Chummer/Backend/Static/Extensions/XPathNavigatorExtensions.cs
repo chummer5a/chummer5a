@@ -510,16 +510,20 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Query the XPathNavigator for a given node with an id or name element. Includes ToUpperInvariant processing to handle uppercase ids.
+        /// Query the XPathNavigator for a given node with an id or name element. Includes ToUpperInvariant processing to handle uppercase ids and sanitizing quote marks for XPath.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static XPathNavigator TryGetNodeByNameOrId(this XPathNavigator node, string strPath, string strId)
         {
             if (node == null)
                 return null;
-            return strId.IsGuid()
-                ? node.SelectSingleNode($"{strPath}[id = {strId} or id = {strId.ToUpperInvariant()}]")
-                : node.SelectSingleNode($"{strPath}[name = {strId}]");
+            if (strId.IsGuid())
+            {
+                XPathNavigator objReturn = node.SelectSingleNode(strPath + "[id = " + strId.CleanXPath() + ']');
+                // Split into two separate queries because the case-insensitive search here can be expensive if we're doing it a lot
+                return objReturn ?? node.SelectSingleNode(strPath + "[translate(id, 'abcdef', 'ABCDEF') = " + strId.ToUpperInvariant().CleanXPath() + ']');
+            }
+            return node.SelectSingleNode(strPath + "[name = " + strId.CleanXPath() + ']');
         }
 
         /// <summary>

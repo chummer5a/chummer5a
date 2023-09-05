@@ -305,7 +305,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strSelectedId))
                     {
                         // Retrieve the information for the selected piece of Gear.
-                        XPathNavigator objXmlGear = _xmlBaseGearDataNode.TryGetNodeByNameOrId("gears/gear",strSelectedId.CleanXPath());
+                        XPathNavigator objXmlGear = _xmlBaseGearDataNode.TryGetNodeByNameOrId("gears/gear",strSelectedId);
 
                         if (objXmlGear != null)
                         {
@@ -755,7 +755,7 @@ namespace Chummer
                 }
 
                 // Retrieve the information for the selected piece of Gear.
-                XPathNavigator objXmlGear = _xmlBaseGearDataNode.TryGetNodeByNameOrId("gears/gear", strSelectedId.CleanXPath());
+                XPathNavigator objXmlGear = _xmlBaseGearDataNode.TryGetNodeByNameOrId("gears/gear", strSelectedId);
 
                 if (objXmlGear == null)
                 {
@@ -1435,7 +1435,7 @@ namespace Chummer
                                         ListItem objLoopItem = lstGears[i];
                                         if (!setDuplicateNames.Contains(objLoopItem.Name))
                                             continue;
-                                        XPathNavigator objXmlGear = _xmlBaseGearDataNode.TryGetNodeByNameOrId("gears/gear", objLoopItem.Value.ToString().CleanXPath());
+                                        XPathNavigator objXmlGear = _xmlBaseGearDataNode.TryGetNodeByNameOrId("gears/gear", objLoopItem.Value.ToString());
                                         if (objXmlGear == null)
                                             continue;
                                         string strLoopCategory

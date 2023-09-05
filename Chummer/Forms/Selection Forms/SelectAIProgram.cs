@@ -213,7 +213,7 @@ namespace Chummer
                 {
                     // Retrieve the information for the selected piece of Cyberware.
                     XPathNavigator objXmlProgram
-                        = _xmlBaseChummerNode.TryGetNodeByNameOrId("programs/program", strSelectedId.CleanXPath());
+                        = _xmlBaseChummerNode.TryGetNodeByNameOrId("programs/program", strSelectedId);
                     if (objXmlProgram != null)
                     {
                         string strRequiresProgram = (await objXmlProgram.SelectSingleNodeAndCacheExpressionAsync("require", token).ConfigureAwait(false))?.Value;
@@ -223,11 +223,13 @@ namespace Chummer
                         }
                         else
                         {
+                            XPathNavigator objRequiresNode
+                                = _xmlBaseChummerNode.TryGetNodeByNameOrId("programs/program", strRequiresProgram);
                             strRequiresProgram
-                                = _xmlBaseChummerNode
-                                  .SelectSingleNode("/chummer/programs/program[name = "
-                                                    + strRequiresProgram.CleanXPath() + "]/translate")?.Value
-                                  ?? strRequiresProgram;
+                                = objRequiresNode != null
+                                    ? (await objRequiresNode.SelectSingleNodeAndCacheExpressionAsync("translate", token)
+                                                            .ConfigureAwait(false))?.Value ?? strRequiresProgram
+                                    : strRequiresProgram;
                         }
 
                         await lblRequiresProgram.DoThreadSafeAsync(x => x.Text = strRequiresProgram, token: token).ConfigureAwait(false);
@@ -391,7 +393,7 @@ namespace Chummer
             string strSelectedId = await lstAIPrograms.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strSelectedId))
             {
-                XPathNavigator xmlProgram = _xmlBaseChummerNode.TryGetNodeByNameOrId("programs/program", strSelectedId.CleanXPath());
+                XPathNavigator xmlProgram = _xmlBaseChummerNode.TryGetNodeByNameOrId("programs/program", strSelectedId);
                 if (xmlProgram == null)
                     return;
 

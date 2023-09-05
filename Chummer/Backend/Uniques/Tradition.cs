@@ -1583,7 +1583,7 @@ namespace Chummer.Backend.Uniques
                         break;
                 }
 
-                objReturn = objDoc?.TryGetNodeByNameOrId("/chummer/traditions/tradition", SourceIDString.CleanXPath());
+                objReturn = objDoc?.TryGetNodeByNameOrId("/chummer/traditions/tradition", SourceIDString);
                 _objCachedMyXPathNode = objReturn;
                 _strCachedXPathNodeLanguage = strLanguage;
                 return objReturn;

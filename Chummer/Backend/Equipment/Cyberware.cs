@@ -5334,11 +5334,11 @@ namespace Chummer.Backend.Equipment
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadDataXPath(strDoc, strLanguage, token: token)
                     : await _objCharacter.LoadDataXPathAsync(strDoc, strLanguage, token: token).ConfigureAwait(false);
-                objReturn = objDoc.TryGetNodeByNameOrId(strPath, SourceIDString.CleanXPath());
+                objReturn = objDoc.TryGetNodeByNameOrId(strPath, SourceIDString);
 
                 if (objReturn == null && SourceID != Guid.Empty)
                 {
-                    objReturn = objDoc.SelectSingleNode(strPath + "[name = " + Name.CleanXPath() + ']');
+                    objReturn = objDoc.TryGetNodeByNameOrId(strPath, Name);
                     objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
 

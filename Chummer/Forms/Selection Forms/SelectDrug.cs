@@ -152,7 +152,7 @@ namespace Chummer
                     _strOldSelectedGrade = strSelectedGrade;
                 if (!string.IsNullOrEmpty(strSelectedGrade))
                 {
-                    xmlGrade = _xmlBaseDrugDataNode.TryGetNodeByNameOrId("grades/grade", strSelectedGrade.CleanXPath());
+                    xmlGrade = _xmlBaseDrugDataNode.TryGetNodeByNameOrId("grades/grade", strSelectedGrade);
                 }
 
                 // Update the Cost multipliers based on the Grade that has been selected.
@@ -208,7 +208,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strSelectedId))
                 {
                     // Retrieve the information for the selected piece of Drug.
-                    xmlDrug = _xmlBaseDrugDataNode.TryGetNodeByNameOrId(_strNodeXPath, strSelectedId.CleanXPath());
+                    xmlDrug = _xmlBaseDrugDataNode.TryGetNodeByNameOrId(_strNodeXPath, strSelectedId);
                 }
 
                 string strForceGrade;
@@ -631,7 +631,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Retrieve the information for the selected piece of Drug.
-                objXmlDrug = _xmlBaseDrugDataNode.TryGetNodeByNameOrId(_strNodeXPath, strSelectedId.CleanXPath());
+                objXmlDrug = _xmlBaseDrugDataNode.TryGetNodeByNameOrId(_strNodeXPath, strSelectedId);
             }
             if (objXmlDrug == null)
             {
@@ -988,7 +988,7 @@ namespace Chummer
                                                  MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            XPathNavigator objDrugNode = _xmlBaseDrugDataNode.TryGetNodeByNameOrId(_strNodeXPath, strSelectedId.CleanXPath());
+            XPathNavigator objDrugNode = _xmlBaseDrugDataNode.TryGetNodeByNameOrId(_strNodeXPath, strSelectedId);
             if (objDrugNode == null)
                 return;
 
