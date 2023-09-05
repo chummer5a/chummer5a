@@ -483,7 +483,7 @@ namespace Chummer
                     bool blnAnyRanged = false;
                     bool blnAnyMelee = false;
                     XmlNode xmlParentWeaponDataNode = ParentWeapon != null
-                        ? _objXmlDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon", ParentWeapon.SourceIDString)
+                        ? _objXmlDocument.TryGetNodeById("/chummer/weapons/weapon", ParentWeapon.SourceID)
                         : null;
                     foreach (XmlNode objXmlWeapon in objNodeList)
                     {
@@ -617,7 +617,7 @@ namespace Chummer
                     {
                         int intOverLimit = 0;
                         XmlNode xmlParentWeaponDataNode = ParentWeapon != null
-                            ? _objXmlDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon", ParentWeapon.SourceIDString)
+                            ? _objXmlDocument.TryGetNodeById("/chummer/weapons/weapon", ParentWeapon.SourceID)
                             : null;
                         foreach (XmlNode objXmlWeapon in objNodeList)
                         {

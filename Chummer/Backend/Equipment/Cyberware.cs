@@ -5296,7 +5296,7 @@ namespace Chummer.Backend.Equipment
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadData(strDoc, strLanguage, token: token)
                     : await _objCharacter.LoadDataAsync(strDoc, strLanguage, token: token).ConfigureAwait(false);
-                objReturn = objDoc.TryGetNodeByNameOrId(strPath, SourceIDString);
+                objReturn = objDoc.TryGetNodeById(strPath, SourceID);
 
                 if (objReturn == null && SourceID != Guid.Empty)
                 {
@@ -5334,7 +5334,7 @@ namespace Chummer.Backend.Equipment
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadDataXPath(strDoc, strLanguage, token: token)
                     : await _objCharacter.LoadDataXPathAsync(strDoc, strLanguage, token: token).ConfigureAwait(false);
-                objReturn = objDoc.TryGetNodeByNameOrId(strPath, SourceIDString);
+                objReturn = objDoc.TryGetNodeById(strPath, SourceID);
 
                 if (objReturn == null && SourceID != Guid.Empty)
                 {

@@ -55,7 +55,7 @@ namespace Chummer
             _xmlMetatypeDataNode = _objCharacter.GetNodeXPath();
 
             if (_xmlMetatypeDataNode == null || _objCharacter.MetavariantGuid == Guid.Empty) return;
-            XPathNavigator xmlMetavariantNode = _xmlMetatypeDataNode.TryGetNodeByNameOrId("metavariants/metavariant", _objCharacter.MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo));
+            XPathNavigator xmlMetavariantNode = _xmlMetatypeDataNode.TryGetNodeById("metavariants/metavariant", _objCharacter.MetavariantGuid);
             if (xmlMetavariantNode != null)
                 _xmlMetatypeDataNode = xmlMetavariantNode;
         }

@@ -1544,7 +1544,7 @@ namespace Chummer.Backend.Uniques
                         break;
                 }
 
-                objReturn = objDoc?.TryGetNodeByNameOrId("/chummer/traditions/tradition", SourceIDString);
+                objReturn = objDoc?.TryGetNodeById("/chummer/traditions/tradition", SourceID);
                 _xmlCachedMyXmlNode = objReturn;
                 _strCachedXmlNodeLanguage = strLanguage;
                 return objReturn;
@@ -1583,7 +1583,7 @@ namespace Chummer.Backend.Uniques
                         break;
                 }
 
-                objReturn = objDoc?.TryGetNodeByNameOrId("/chummer/traditions/tradition", SourceIDString);
+                objReturn = objDoc?.TryGetNodeById("/chummer/traditions/tradition", SourceID);
                 _objCachedMyXPathNode = objReturn;
                 _strCachedXPathNodeLanguage = strLanguage;
                 return objReturn;

@@ -526,26 +526,18 @@ namespace Chummer
                     // ReSharper disable once MethodHasAsyncOverload
                     ? LoadData(strFile, strLanguage, token: token)
                     : await LoadDataAsync(strFile, strLanguage, token: token).ConfigureAwait(false);
-                XmlNode xmlMetatypeNode = xmlDoc.TryGetNodeByNameOrId("/chummer/metatypes/metatype",
-                                                                      MetatypeGuid == Guid.Empty
-                                                                          ? Metatype
-                                                                          : MetatypeGuid
-                                                                              .ToString(
-                                                                                  "D",
-                                                                                  GlobalSettings.InvariantCultureInfo));
+                XmlNode xmlMetatypeNode = MetatypeGuid == Guid.Empty
+                    ? xmlDoc.TryGetNodeByNameOrId("/chummer/metatypes/metatype", Metatype)
+                    : xmlDoc.TryGetNodeById("/chummer/metatypes/metatype", MetatypeGuid);
                 if (blnReturnMetatypeOnly)
                     return xmlMetatypeNode;
                 if (MetavariantGuid == Guid.Empty || string.IsNullOrEmpty(Metavariant) || xmlMetatypeNode == null)
                     return xmlMetatypeNode;
-                XmlNode xmlMetavariantNode = xmlMetatypeNode.TryGetNodeByNameOrId(
-                    "metavariants/metavariant", MetatypeGuid == Guid.Empty
-                        ? Metavariant
-                        : MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo));
-                if (xmlMetavariantNode == null && MetavariantGuid != Guid.Empty)
-                {
-                    xmlMetavariantNode =
-                        xmlMetatypeNode.TryGetNodeByNameOrId("metavariants/metavariant", Metavariant);
-                }
+                XmlNode xmlMetavariantNode = null;
+                if (MetatypeGuid != Guid.Empty)
+                    xmlMetavariantNode = xmlMetatypeNode.TryGetNodeById("metavariants/metavariant", MetavariantGuid);
+                if (xmlMetavariantNode == null)
+                    xmlMetavariantNode = xmlMetatypeNode.TryGetNodeByNameOrId("metavariants/metavariant", Metavariant);
 
                 return xmlMetavariantNode ?? xmlMetatypeNode;
             }
@@ -577,23 +569,17 @@ namespace Chummer
                     ? LoadDataXPath(strFile, strLanguage, token: token)
                     : await LoadDataXPathAsync(strFile, strLanguage, token: token).ConfigureAwait(false);
                 XPathNavigator xmlMetatypeNode = MetatypeGuid == Guid.Empty
-                    ? xmlDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + Metatype.CleanXPath() + ']')
-                    : xmlDoc.TryGetNodeByNameOrId("/chummer/metatypes/metatype",MetatypeGuid.ToString("D", GlobalSettings.InvariantCultureInfo));
+                    ? xmlDoc.TryGetNodeByNameOrId("/chummer/metatypes/metatype", Metatype)
+                    : xmlDoc.TryGetNodeById("/chummer/metatypes/metatype", MetatypeGuid);
                 if (blnReturnMetatypeOnly)
                     return xmlMetatypeNode;
                 if (MetavariantGuid == Guid.Empty || string.IsNullOrEmpty(Metavariant) || xmlMetatypeNode == null)
                     return xmlMetatypeNode;
-                XPathNavigator xmlMetavariantNode = xmlMetatypeNode.TryGetNodeByNameOrId(
-                    "metavariants/metavariant",
-                    MetavariantGuid == Guid.Empty
-                        ? Metavariant
-                        : MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo));
-                if (xmlMetavariantNode == null && MetavariantGuid != Guid.Empty)
-                {
-                    xmlMetavariantNode =
-                        xmlMetatypeNode.SelectSingleNode("metavariants/metavariant[name = " + Metavariant.CleanXPath() +
-                                                         ']');
-                }
+                XPathNavigator xmlMetavariantNode = null;
+                if (MetavariantGuid != Guid.Empty)
+                    xmlMetavariantNode = xmlMetatypeNode.TryGetNodeById("/metavariants/metavariant", MetavariantGuid);
+                if (xmlMetavariantNode == null)
+                    xmlMetavariantNode = xmlMetatypeNode.TryGetNodeByNameOrId("metavariants/metavariant", Metavariant);
 
                 return xmlMetavariantNode ?? xmlMetatypeNode;
             }

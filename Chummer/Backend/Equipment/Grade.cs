@@ -68,7 +68,7 @@ namespace Chummer.Backend.Equipment
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XPathNavigator xmlDataNode = _objCharacter.LoadDataXPath(GetDataFileNameFromImprovementSource(_eSource))
-                    .TryGetNodeByNameOrId("/chummer/grades/grade", Name.CleanXPath());
+                    .TryGetNodeByNameOrId("/chummer/grades/grade", Name);
                 if (xmlDataNode?.TryGetField("id", Guid.TryParse, out _guiSourceID) != true)
                     _guiSourceID = Guid.NewGuid();
             }
