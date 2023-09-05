@@ -48,6 +48,7 @@ Application Changes:
 - Fixed an issue with Drug/Cyber/Bioware grade xpath lookups failing if the source id is in uppercase. Closes #5046
 - Refactored XML node selection logic to always check for an ID in lowercase or uppercase format. Resolves issues with uppercase guids not reliably working throughout the codebase.
 - The weight of equipped items whose weight depends on their rating and/or quantity now updates properly when their rating and/or quantity changes.
+- Custom armor data whose armor value scales off of a character's attributes and/or off of a fixed set of rating-dependent values now work properly.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.

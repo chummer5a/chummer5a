@@ -1135,20 +1135,6 @@ namespace Chummer.Backend.Equipment
             {
                 if (value < 0)
                     value = 0;
-
-                int.TryParse(ArmorValue, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                    out int intTotalArmor);
-
-                // Go through all of the Mods for this piece of Armor and add the Armor value.
-                foreach (ArmorMod objMod in ArmorMods)
-                {
-                    if (objMod.Equipped)
-                        intTotalArmor += objMod.Armor;
-                }
-
-                if (value > intTotalArmor)
-                    value = intTotalArmor;
-
                 if (Interlocked.Exchange(ref _intDamage, value) != value && Equipped && _objCharacter != null)
                 {
                     _objCharacter.OnPropertyChanged(nameof(Character.GetArmorRating));
@@ -1520,15 +1506,60 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// The Armor's armor value excluding modifications
+        /// </summary>
+        private int GetOwnArmor(bool blnUseOverrideValue = false)
+        {
+            string strArmorExpression = blnUseOverrideValue ? ArmorOverrideValue : ArmorValue;
+            if (string.IsNullOrEmpty(strArmorExpression))
+                return 0;
+            int intReturn = 0;
+            if (strArmorExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
+            {
+                string[] strValues = strArmorExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
+                                                       .Split(',', StringSplitOptions.RemoveEmptyEntries);
+                strArmorExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
+            }
+
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdWeight))
+            {
+                sbdWeight.Append(strArmorExpression.TrimStart('+'));
+                sbdWeight.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+
+                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(
+                             _objCharacter.AttributeSection.SpecialAttributeList))
+                {
+                    sbdWeight.CheapReplace(strArmorExpression, objLoopAttribute.Abbrev,
+                                           () => objLoopAttribute.TotalValue.ToString(
+                                               GlobalSettings.InvariantCultureInfo));
+                    sbdWeight.CheapReplace(strArmorExpression, objLoopAttribute.Abbrev + "Base",
+                                           () => objLoopAttribute.TotalBase.ToString(
+                                               GlobalSettings.InvariantCultureInfo));
+                }
+
+                (bool blnIsSuccess, object objProcess)
+                    = CommonFunctions.EvaluateInvariantXPath(sbdWeight.ToString());
+                if (blnIsSuccess)
+                    intReturn = ((double) objProcess).StandardRound();
+            }
+
+            return intReturn;
+        }
+
+        /// <summary>
+        /// The Armor's armor value excluding modifications
+        /// </summary>
+        public int OwnArmor => GetOwnArmor();
+
+        /// <summary>
         /// The Armor's total Armor value including Modifications.
         /// </summary>
         public int TotalArmor
         {
             get
             {
-                int.TryParse(ArmorValue.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intTotalArmor);
                 // Go through all of the Mods for this piece of Armor and add the Armor value.
-                intTotalArmor += ArmorMods.Sum(o => o.Equipped, o => o.Armor);
+                int intTotalArmor = OwnArmor + ArmorMods.Sum(o => o.Equipped, o => o.Armor);
                 if (_objCharacter?.Settings.ArmorDegradation == true)
                     intTotalArmor -= ArmorDamage;
 
@@ -1537,15 +1568,19 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// The Armor's bonus armor value excluding modifications
+        /// </summary>
+        public int OwnOverrideArmor => GetOwnArmor(true);
+
+        /// <summary>
         /// The Armor's total bonus Armor value including Modifications.
         /// </summary>
         public int TotalOverrideArmor
         {
             get
             {
-                int.TryParse(ArmorOverrideValue.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intTotalArmor);
                 // Go through all of the Mods for this piece of Armor and add the Armor value.
-                intTotalArmor += ArmorMods.Sum(o => o.Equipped, o => o.Armor);
+                int intTotalArmor = OwnOverrideArmor + ArmorMods.Sum(o => o.Equipped, o => o.Armor);
                 if (_objCharacter?.Settings.ArmorDegradation == true)
                     intTotalArmor -= ArmorDamage;
 
