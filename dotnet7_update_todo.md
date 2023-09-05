@@ -8,22 +8,24 @@
   - [ ] HtmlRenderer.Core and HtmlRenderer.WinForms are technically not supported in .Net 7, but for use they seem to work for us.
   - [ ] Reintroduce the NugetMissing messages Delnar pushed some time back, those got cut in the regular upkeep of this branch.
 - [ ] Testing
-  - [ ] Test new LiveCharts
-  - [ ] Test Chummer.Tests
-    - [ ] Unit Tests are not working at all, xUnit runs maybe use that?
-  - [ ] Test CrashHandler
-  - [ ] Test Translator
-  - [ ] Test ChummerDataViewer
+  - [x] Test new LiveCharts
+  - [x] Test Chummer.Tests -> Rewritten as xUnit tests.
+    - [x] Unit Tests are not working at all, xUnit runs maybe use that?
+  - [x] Test CrashHandler -> In all the crashes I encountered, while rewriting the unit tests I encountered no problems with this bad boy.
+  - [x] Test Translator
+  - [x] Test ChummerDataViewer I don't got the AWS keys to test this in depth, but it at least runs. Is it even in use?
   - [ ] Test ChummerUpdater
     - The Updater heavily uses `WebClient` which is marked obsolete. Sadly, some APIs used don't have direct equivalents in `HttpCLient`.
   - [x] Test TextblockConverter (This was never functional to begin with tbh)
   - [x] Test Chummer.Benchmarks
   - [ ] Test SamplePlugin
+    - [ ] Need to update the build files to copy the plugin to the correct spots
   - [ ] Test ChummerHub.Client
-  - [ ] Test ChummerHub
+    - [ ] Need to update the build files to copy the plugin to the correct spots
+  - [x] Test ChummerHub -> this runs, but ARCHON needs to really test it since I got no clue.
     - There aren't actually any real changes done here besides a push from net6 to net7, we could just roll that back
 
-- [x] <Chummer>\bin\Debug\net7.0-windows\Chummer5.dll missing on startup.
+- [x] <Chummer>\bin\Debug\net7.0-windows\Chummer5.dll missing on startup. -> .Net7 changed a bit and passes its dll instead of its executable as a commandline param.
 
 - [x] Investigate all the .Designer ambiguous reference errors <Chummer>\Forms\Character Creation Forms\SelectMetatypePriority.Designer.cs:56082 Ambiguous reference:$this.Icon $this.Icon match
     - These where caused by Microsoft.CodeAnalysis.Analyzers package and seem to be Rider specific. I commented them out for now [YouTrack Issue](https://youtrack.jetbrains.com/issue/RIDER-98374)
