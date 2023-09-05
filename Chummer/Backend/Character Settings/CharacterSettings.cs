@@ -6085,7 +6085,8 @@ namespace Chummer
                     {
                         strReturn = XmlManager.LoadXPath("settings.xml")
                                               .SelectSingleNode(
-                                                  "/chummer/settings/setting[id = '" + SourceId + "']/translate")?.Value
+                                                  "/chummer/settings/setting[id = '" + SourceId + " or id = " + SourceId.ToUpperInvariant() + "']/translate")?.Value
+
                                     ?? strReturn;
                     }
                     else

@@ -510,6 +510,19 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Query the XPathNavigator for a given node with an id or name element. Includes ToUpperInvariant processing to handle uppercase ids.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static XPathNavigator TryGetNodeByNameOrId(this XPathNavigator node, string strPath, string strId)
+        {
+            if (node == null)
+                return null;
+            return strId.IsGuid()
+                ? node.SelectSingleNode($"{strPath}[id = {strId} or id = {strId.ToUpperInvariant()}]")
+                : node.SelectSingleNode($"{strPath}[name = {strId}]");
+        }
+
+        /// <summary>
         /// Create a new XmlNode in an XmlDocument based on the contents of an XPathNavigator
         /// </summary>
         /// <param name="xmlNode">XPathNavigator to examine.</param>

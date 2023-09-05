@@ -115,7 +115,7 @@ namespace Chummer
             string strSelectedId = await lstTechniques.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strSelectedId))
             {
-                XPathNavigator xmlTechnique = _xmlBaseChummerNode.SelectSingleNode("/chummer/techniques/technique[id = " + strSelectedId.CleanXPath() + ']');
+                XPathNavigator xmlTechnique = _xmlBaseChummerNode.TryGetNodeByNameOrId("/chummer/techniques/technique", strSelectedId.CleanXPath());
 
                 if (xmlTechnique != null)
                 {

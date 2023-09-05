@@ -1190,11 +1190,7 @@ namespace Chummer.Backend.Attributes
                     }
                     else
                     {
-                        xmlNode = xmlNode?.SelectSingleNode("metavariants/metavariant[id = "
-                                                            + _objCharacter.MetavariantGuid
-                                                                           .ToString(
-                                                                               "D", GlobalSettings.InvariantCultureInfo)
-                                                                           .CleanXPath() + ']');
+                        xmlNode = xmlNode?.TryGetNodeByNameOrId("metavariants/metavariant", _objCharacter.MetavariantGuid.ToString("D",CultureInfo.InvariantCulture).CleanXPath());
                         await objWriter.WriteElementStringAsync("attributecategory",
                                                                 xmlNode?.Value ?? _objCharacter.Metavariant, token: token).ConfigureAwait(false);
                     }

@@ -475,7 +475,7 @@ namespace Chummer
             string strSelectedId = lstMod.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
             {
-                XPathNavigator xmlVehicleMod = _xmlBaseVehicleDataNode.SelectSingleNode((VehicleMountMods ? "weaponmountmods" : "mods") + "/mod[id = " + strSelectedId.CleanXPath() + ']');
+                XPathNavigator xmlVehicleMod = _xmlBaseVehicleDataNode.TryGetNodeByNameOrId((VehicleMountMods ? "weaponmountmods" : "mods") + "/mod", strSelectedId.CleanXPath());
                 if (xmlVehicleMod != null)
                 {
                     SelectedMod = strSelectedId;
@@ -510,10 +510,7 @@ namespace Chummer
                 {
                     // Retireve the information for the selected Mod.
                     // Filtering is also done on the Category in case there are non-unique names across categories.
-                    xmlVehicleMod = VehicleMountMods
-                        ? _xmlBaseVehicleDataNode.SelectSingleNode(
-                            "weaponmountmods/mod[id = " + strSelectedId.CleanXPath() + ']')
-                        : _xmlBaseVehicleDataNode.SelectSingleNode("mods/mod[id = " + strSelectedId.CleanXPath() + ']');
+                    xmlVehicleMod = _xmlBaseVehicleDataNode.TryGetNodeByNameOrId((VehicleMountMods ? "weaponmountmods" : "mods") + "/mod", strSelectedId.CleanXPath());
                 }
 
                 if (xmlVehicleMod != null)

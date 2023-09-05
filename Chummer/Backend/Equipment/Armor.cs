@@ -452,8 +452,7 @@ namespace Chummer.Backend.Equipment
                             }
 
                             // Locate the selected piece.
-                            XmlNode objXmlMod = objXmlDocument.SelectSingleNode(
-                                "/chummer/mods/mod[id = " + frmPickArmorMod.MyForm.SelectedArmorMod.CleanXPath() + ']');
+                            XmlNode objXmlMod = objXmlDocument.TryGetNodeByNameOrId("/chummer/mods/mod", frmPickArmorMod.MyForm.SelectedArmorMod.CleanXPath());
 
                             if (objXmlMod != null)
                             {
@@ -628,10 +627,8 @@ namespace Chummer.Backend.Equipment
             // More than one Weapon can be added, so loop through all occurrences.
             foreach (XmlNode objXmlAddWeapon in objXmlArmorNode.SelectNodes("addweapon"))
             {
-                string strLoopID = objXmlAddWeapon.InnerText;
-                XmlNode objXmlWeapon = strLoopID.IsGuid()
-                    ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + strLoopID.CleanXPath() + ']')
-                    : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = " + strLoopID.CleanXPath() + ']');
+                XmlNode objXmlWeapon = objXmlWeaponDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon",
+                    objXmlAddWeapon.InnerText.CleanXPath());
 
                 if (objXmlWeapon != null)
                 {

@@ -54,9 +54,7 @@ namespace Chummer
             if (_xmlOptionalComplexFormNode == null) return;
             if (_objCharacter.MetavariantGuid != Guid.Empty)
             {
-                XPathNavigator xmlMetavariantNode = _xmlOptionalComplexFormNode.SelectSingleNode("metavariants/metavariant[id = "
-                                                                                                 + _objCharacter.MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath()
-                                                                                                 + ']');
+                XPathNavigator xmlMetavariantNode = _xmlOptionalComplexFormNode.TryGetNodeByNameOrId("metavariants/metavariant", _objCharacter.MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath());
                 if (xmlMetavariantNode != null)
                     _xmlOptionalComplexFormNode = xmlMetavariantNode;
             }
@@ -80,7 +78,7 @@ namespace Chummer
             }
 
             // Display the Complex Form information.
-            XPathNavigator xmlComplexForm = _xmlBaseComplexFormsNode.SelectSingleNode("complexform[id = " + strSelectedComplexFormId.CleanXPath() + ']');
+            XPathNavigator xmlComplexForm = _xmlBaseComplexFormsNode.TryGetNodeByNameOrId("complexform", strSelectedComplexFormId.CleanXPath());
             if (xmlComplexForm == null)
             {
                 await tlpRight.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);

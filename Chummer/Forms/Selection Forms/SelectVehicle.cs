@@ -411,7 +411,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strSelectedId))
                 {
                     // Retrieve the information for the selected Vehicle.
-                    objXmlVehicle = _xmlBaseVehicleDataNode.SelectSingleNode("vehicles/vehicle[id = " + strSelectedId.CleanXPath() + ']');
+                    objXmlVehicle = _xmlBaseVehicleDataNode.TryGetNodeByNameOrId("vehicles/vehicle", strSelectedId.CleanXPath());
                 }
                 if (objXmlVehicle == null)
                 {
@@ -512,7 +512,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strSelectedId))
                 {
                     // Retrieve the information for the selected Vehicle.
-                    objXmlVehicle = _xmlBaseVehicleDataNode.SelectSingleNode("vehicles/vehicle[id = " + strSelectedId.CleanXPath() + ']');
+                    objXmlVehicle = _xmlBaseVehicleDataNode.TryGetNodeByNameOrId("vehicles/vehicle", strSelectedId.CleanXPath());
                 }
                 if (objXmlVehicle == null)
                 {
@@ -884,8 +884,8 @@ namespace Chummer
                                                  .ConfigureAwait(false);
                     if (!string.IsNullOrEmpty(strSelectedId))
                     {
-                        xmlVehicle = _xmlBaseVehicleDataNode.SelectSingleNode(
-                            "vehicles/vehicle[id = " + strSelectedId.CleanXPath() + ']');
+                        xmlVehicle = _xmlBaseVehicleDataNode.TryGetNodeByNameOrId(
+                            "vehicles/vehicle", strSelectedId.CleanXPath());
                         if (xmlVehicle != null)
                         {
                             _strSelectCategory = (GlobalSettings.SearchInCategoryOnly
@@ -923,8 +923,7 @@ namespace Chummer
                                                  .DoThreadSafeFuncAsync(
                                                      x => x.SelectedRows[0].Cells[0].Value.ToString(), token: token)
                                                  .ConfigureAwait(false);
-                        xmlVehicle = _xmlBaseVehicleDataNode.SelectSingleNode(
-                            "/chummer/vehicles/vehicle[id = " + strWeapon.CleanXPath() + ']');
+                        xmlVehicle = _xmlBaseVehicleDataNode.TryGetNodeByNameOrId("/chummer/vehicles/vehicle", strWeapon.CleanXPath());
                         if (xmlVehicle != null)
                         {
                             _strSelectCategory

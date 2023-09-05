@@ -213,8 +213,7 @@ namespace Chummer
                 {
                     // Retrieve the information for the selected piece of Cyberware.
                     XPathNavigator objXmlProgram
-                        = _xmlBaseChummerNode.SelectSingleNode(
-                            "programs/program[id = " + strSelectedId.CleanXPath() + ']');
+                        = _xmlBaseChummerNode.TryGetNodeByNameOrId("programs/program", strSelectedId.CleanXPath());
                     if (objXmlProgram != null)
                     {
                         string strRequiresProgram = (await objXmlProgram.SelectSingleNodeAndCacheExpressionAsync("require", token).ConfigureAwait(false))?.Value;
@@ -392,7 +391,7 @@ namespace Chummer
             string strSelectedId = await lstAIPrograms.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strSelectedId))
             {
-                XPathNavigator xmlProgram = _xmlBaseChummerNode.SelectSingleNode("programs/program[id = " + strSelectedId.CleanXPath() + ']');
+                XPathNavigator xmlProgram = _xmlBaseChummerNode.TryGetNodeByNameOrId("programs/program", strSelectedId.CleanXPath());
                 if (xmlProgram == null)
                     return;
 
