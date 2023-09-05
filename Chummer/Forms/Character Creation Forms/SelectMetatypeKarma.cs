@@ -398,7 +398,7 @@ namespace Chummer
                 string strSelectedMetavariant = await cboMetavariant.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false) ?? Guid.Empty.ToString();
 
                 XmlNode objXmlMetatype
-                    = _xmlMetatypeDocumentMetatypesNode.TryGetNodeByNameOrId("metatype",strSelectedMetatype.CleanXPath());
+                    = _xmlMetatypeDocumentMetatypesNode.TryGetNodeByNameOrId("metatype", strSelectedMetatype);
 
                 if (objXmlMetatype == null)
                 {

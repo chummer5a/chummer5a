@@ -969,7 +969,7 @@ namespace Chummer.Backend.Equipment
                         foreach (XmlNode objXmlAddWeapon in objXmlCyberware.SelectNodes("addweapon"))
                         {
                             XmlNode objXmlWeapon = objXmlWeaponDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon",
-                                objXmlAddWeapon.InnerText.CleanXPath());
+                                objXmlAddWeapon.InnerText);
 
                             if (objXmlWeapon != null)
                             {
@@ -1011,7 +1011,7 @@ namespace Chummer.Backend.Equipment
                                 foreach (XmlNode objXml in objXmlCyberware.SelectNodes("addparentweaponaccessory"))
                                 {
                                     XmlNode objXmlAccessory = objXmlWeaponDocument.TryGetNodeByNameOrId("/chummer/accessories/accessory",
-                                        objXml.InnerText.CleanXPath());
+                                        objXml.InnerText);
 
                                     if (objXmlAccessory == null) continue;
                                     WeaponAccessory objGearWeapon = new WeaponAccessory(_objCharacter);
@@ -1047,7 +1047,7 @@ namespace Chummer.Backend.Equipment
                         foreach (XmlNode xmlAddVehicle in objXmlCyberware.SelectNodes("addvehicle"))
                         {
                             string strLoopID = xmlAddVehicle.InnerText;
-                            XmlNode xmlVehicle = objXmlVehicleDocument.TryGetNodeByNameOrId("/chummer/vehicles/vehicle", strLoopID.CleanXPath());
+                            XmlNode xmlVehicle = objXmlVehicleDocument.TryGetNodeByNameOrId("/chummer/vehicles/vehicle", strLoopID);
 
                             if (xmlVehicle != null)
                             {
@@ -1378,7 +1378,7 @@ namespace Chummer.Backend.Equipment
                             string strName = objXmlSubsystemNode["name"]?.InnerText;
                             if (string.IsNullOrEmpty(strName))
                                 continue;
-                            XmlNode objXmlSubsystem = objXmlDocument.SelectSingleNode("/chummer/cyberwares/cyberware[name = " + strName.CleanXPath() + ']');
+                            XmlNode objXmlSubsystem = objXmlDocument.TryGetNodeByNameOrId("/chummer/cyberwares/cyberware", strName);
 
                             if (objXmlSubsystem != null)
                             {
@@ -1411,7 +1411,7 @@ namespace Chummer.Backend.Equipment
                             string strName = objXmlSubsystemNode["name"]?.InnerText;
                             if (string.IsNullOrEmpty(strName))
                                 continue;
-                            XmlNode objXmlSubsystem = objXmlDocument.SelectSingleNode("/chummer/biowares/bioware[name = " + strName.CleanXPath() + ']');
+                            XmlNode objXmlSubsystem = objXmlDocument.TryGetNodeByNameOrId("/chummer/biowares/bioware", strName);
 
                             if (objXmlSubsystem != null)
                             {
@@ -5296,11 +5296,11 @@ namespace Chummer.Backend.Equipment
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadData(strDoc, strLanguage, token: token)
                     : await _objCharacter.LoadDataAsync(strDoc, strLanguage, token: token).ConfigureAwait(false);
-                objReturn = objDoc.TryGetNodeByNameOrId(strPath, SourceIDString.CleanXPath());
+                objReturn = objDoc.TryGetNodeByNameOrId(strPath, SourceIDString);
 
                 if (objReturn == null && SourceID != Guid.Empty)
                 {
-                    objReturn = objDoc.SelectSingleNode(strPath + "[name = " + Name.CleanXPath() + ']');
+                    objReturn = objDoc.TryGetNodeByNameOrId(strPath, Name);
                     objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
 

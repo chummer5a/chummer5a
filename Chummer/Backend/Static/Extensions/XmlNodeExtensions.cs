@@ -549,16 +549,35 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Query the XPathNavigator for a given node with an id or name element. Includes ToUpperInvariant processing to handle uppercase ids.
+        /// Query the XmlNode for a given node with an id or name element. Includes ToUpperInvariant processing to handle uppercase ids.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static XmlNode TryGetNodeByNameOrId(this XmlNode node, string strPath, string strId)
         {
-            if (node == null)
+            if (node == null || string.IsNullOrEmpty(strPath) || string.IsNullOrEmpty(strId))
                 return null;
-            return strId.IsGuid()
-                ? node.SelectSingleNode($"{strPath}[id = {strId} or id = {strId.ToUpperInvariant()}]")
-                : node.SelectSingleNode($"{strPath}[name = {strId}]");
+            if (Guid.TryParse(strId, out Guid guidId))
+            {
+                XmlNode objReturn = node.TryGetNodeById(strPath, guidId);
+                if (objReturn != null)
+                    return objReturn;
+            }
+            return node.SelectSingleNode(strPath + "[name = " + strId.CleanXPath() + ']');
+        }
+
+        /// <summary>
+        /// Query the XmlNode for a given node with an id. Includes ToUpperInvariant processing to handle uppercase ids.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static XmlNode TryGetNodeById(this XmlNode node, string strPath, Guid guidId)
+        {
+            if (node == null || string.IsNullOrEmpty(strPath))
+                return null;
+            string strId = guidId.ToString("D", GlobalSettings.InvariantCultureInfo);
+            return node.SelectSingleNode(strPath + "[id = " + strId.CleanXPath() + ']')
+                   // Split into two separate queries because the case-insensitive search here can be expensive if we're doing it a lot
+                   ?? node.SelectSingleNode(strPath + "[translate(id, 'abcdef', 'ABCDEF') = "
+                                                    + strId.ToUpperInvariant().CleanXPath() + ']');
         }
 
         /// <summary>

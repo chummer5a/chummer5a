@@ -295,7 +295,7 @@ namespace Chummer.Backend.Equipment
                     foreach (XmlNode objXmlAddWeapon in xmlAddWeaponList)
                     {
                         XmlNode objXmlWeapon = objXmlWeaponDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon",
-                            objXmlAddWeapon.InnerText.CleanXPath());
+                            objXmlAddWeapon.InnerText);
 
                         if (objXmlWeapon != null)
                         {
@@ -1562,13 +1562,7 @@ namespace Chummer.Backend.Equipment
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadData("armor.xml", strLanguage, token: token)
                     : await _objCharacter.LoadDataAsync("armor.xml", strLanguage, token: token).ConfigureAwait(false))
-                .SelectSingleNode(SourceID == Guid.Empty
-                                      ? "/chummer/mods/mod[name = " + Name.CleanXPath()
-                                                                    + ']'
-                                      : "/chummer/mods/mod[id = "
-                                        + SourceIDString.CleanXPath() + " or id = "
-                                        + SourceIDString.ToUpperInvariant().CleanXPath()
-                                        + ']');
+                .TryGetNodeByNameOrId("/chummer/mods/mod", SourceID == Guid.Empty ? Name : SourceIDString);
             _objCachedMyXmlNode = objReturn;
             _strCachedXmlNodeLanguage = strLanguage;
             return objReturn;
@@ -1587,13 +1581,7 @@ namespace Chummer.Backend.Equipment
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadDataXPath("armor.xml", strLanguage, token: token)
                     : await _objCharacter.LoadDataXPathAsync("armor.xml", strLanguage, token: token).ConfigureAwait(false))
-                .SelectSingleNode(SourceID == Guid.Empty
-                                      ? "/chummer/mods/mod[name = "
-                                        + Name.CleanXPath() + ']'
-                                      : "/chummer/mods/mod[id = "
-                                        + SourceIDString.CleanXPath() + " or id = "
-                                        + SourceIDString.ToUpperInvariant().CleanXPath()
-                                        + ']');
+                .TryGetNodeByNameOrId("/chummer/armors/armor", SourceID == Guid.Empty ? Name : SourceIDString);
             _objCachedMyXPathNode = objReturn;
             _strCachedXPathNodeLanguage = strLanguage;
             return objReturn;

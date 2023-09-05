@@ -754,7 +754,7 @@ namespace Chummer.Backend.Equipment
                 string strLoopID = objXmlAddWeapon.InnerText;
                 XmlNode objXmlSubWeapon =
                     objXmlDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon",
-                        strLoopID.CleanXPath());
+                        strLoopID);
 
                 if (objXmlSubWeapon != null)
                 {

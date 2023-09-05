@@ -452,7 +452,7 @@ namespace Chummer.Backend.Equipment
                             }
 
                             // Locate the selected piece.
-                            XmlNode objXmlMod = objXmlDocument.TryGetNodeByNameOrId("/chummer/mods/mod", frmPickArmorMod.MyForm.SelectedArmorMod.CleanXPath());
+                            XmlNode objXmlMod = objXmlDocument.TryGetNodeByNameOrId("/chummer/mods/mod", frmPickArmorMod.MyForm.SelectedArmorMod);
 
                             if (objXmlMod != null)
                             {
@@ -506,7 +506,7 @@ namespace Chummer.Backend.Equipment
                             strForceValue = objXmlAttributes["select"]?.InnerText ?? string.Empty;
                         }
 
-                        XmlNode objXmlMod = objXmlArmorDocument.SelectSingleNode("/chummer/mods/mod[name = " + objXmlArmorMod.InnerText.CleanXPath() + ']');
+                        XmlNode objXmlMod = objXmlArmorDocument.TryGetNodeByNameOrId("/chummer/mods/mod", objXmlArmorMod.InnerText);
                         if (objXmlMod != null)
                         {
                             ArmorMod objMod = new ArmorMod(_objCharacter);
@@ -628,7 +628,7 @@ namespace Chummer.Backend.Equipment
             foreach (XmlNode objXmlAddWeapon in objXmlArmorNode.SelectNodes("addweapon"))
             {
                 XmlNode objXmlWeapon = objXmlWeaponDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon",
-                    objXmlAddWeapon.InnerText.CleanXPath());
+                    objXmlAddWeapon.InnerText);
 
                 if (objXmlWeapon != null)
                 {
@@ -2513,13 +2513,7 @@ namespace Chummer.Backend.Equipment
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadData("armor.xml", strLanguage, token: token)
                     : await _objCharacter.LoadDataAsync("armor.xml", strLanguage, token: token).ConfigureAwait(false))
-                .SelectSingleNode(SourceID == Guid.Empty
-                                      ? "/chummer/armors/armor[name = "
-                                        + Name.CleanXPath() + ']'
-                                      : "/chummer/armors/armor[id = "
-                                        + SourceIDString.CleanXPath() + " or id = "
-                                        + SourceIDString.ToUpperInvariant().CleanXPath()
-                                        + ']');
+                .TryGetNodeByNameOrId("/chummer/armors/armor", SourceID == Guid.Empty ? Name : SourceIDString);
 
             _objCachedMyXmlNode = objReturn;
             _strCachedXmlNodeLanguage = strLanguage;
@@ -2539,13 +2533,7 @@ namespace Chummer.Backend.Equipment
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadDataXPath("armor.xml", strLanguage, token: token)
                     : await _objCharacter.LoadDataXPathAsync("armor.xml", strLanguage, token: token).ConfigureAwait(false))
-                .SelectSingleNode(SourceID == Guid.Empty
-                                      ? "/chummer/armors/armor[name = "
-                                        + Name.CleanXPath() + ']'
-                                      : "/chummer/armors/armor[id = "
-                                        + SourceIDString.CleanXPath() + " or id = "
-                                        + SourceIDString.ToUpperInvariant().CleanXPath()
-                                        + ']');
+                .TryGetNodeByNameOrId("/chummer/armors/armor", SourceID == Guid.Empty ? Name : SourceIDString);
             _objCachedMyXPathNode = objReturn;
             _strCachedXPathNodeLanguage = strLanguage;
             return objReturn;

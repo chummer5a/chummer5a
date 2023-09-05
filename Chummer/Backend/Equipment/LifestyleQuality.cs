@@ -1323,14 +1323,7 @@ namespace Chummer.Backend.Equipment
                         ? _objCharacter.LoadData("lifestyles.xml", strLanguage, token: token)
                         : await _objCharacter.LoadDataAsync("lifestyles.xml", strLanguage, token: token)
                                              .ConfigureAwait(false))
-                    .SelectSingleNode(SourceID == Guid.Empty
-                                          ? "/chummer/qualities/quality[name = "
-                                            + Name.CleanXPath() + ']'
-                                          : "/chummer/qualities/quality[id = "
-                                            + SourceIDString.CleanXPath() + " or id = "
-                                            + SourceIDString.ToUpperInvariant()
-                                                            .CleanXPath()
-                                            + ']');
+                    .TryGetNodeByNameOrId("/chummer/qualities/quality", SourceID == Guid.Empty ? Name : SourceIDString);
                 _objCachedMyXmlNode = objReturn;
                 _strCachedXmlNodeLanguage = strLanguage;
                 return objReturn;
@@ -1358,14 +1351,7 @@ namespace Chummer.Backend.Equipment
                         ? _objCharacter.LoadDataXPath("lifestyles.xml", strLanguage, token: token)
                         : await _objCharacter.LoadDataXPathAsync("lifestyles.xml", strLanguage, token: token)
                                              .ConfigureAwait(false))
-                    .SelectSingleNode(SourceID == Guid.Empty
-                                          ? "/chummer/qualities/quality[name = "
-                                            + Name.CleanXPath() + ']'
-                                          : "/chummer/qualities/quality[id = "
-                                            + SourceIDString.CleanXPath() + " or id = "
-                                            + SourceIDString.ToUpperInvariant()
-                                                            .CleanXPath()
-                                            + ']');
+                    .TryGetNodeByNameOrId("/chummer/qualities/quality", SourceID == Guid.Empty ? Name : SourceIDString);
                 _objCachedMyXPathNode = objReturn;
                 _strCachedXPathNodeLanguage = strLanguage;
                 return objReturn;

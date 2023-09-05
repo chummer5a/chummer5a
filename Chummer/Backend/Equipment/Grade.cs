@@ -68,7 +68,7 @@ namespace Chummer.Backend.Equipment
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
                 XPathNavigator xmlDataNode = _objCharacter.LoadDataXPath(GetDataFileNameFromImprovementSource(_eSource))
-                    .SelectSingleNode("/chummer/grades/grade[name = " + Name.CleanXPath() + ']');
+                    .TryGetNodeByNameOrId("/chummer/grades/grade", Name.CleanXPath());
                 if (xmlDataNode?.TryGetField("id", Guid.TryParse, out _guiSourceID) != true)
                     _guiSourceID = Guid.NewGuid();
             }
@@ -109,13 +109,7 @@ namespace Chummer.Backend.Equipment
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadData(GetDataFileNameFromImprovementSource(_eSource), strLanguage, token: token)
                     : await _objCharacter.LoadDataAsync(GetDataFileNameFromImprovementSource(_eSource), strLanguage, token: token).ConfigureAwait(false))
-                .SelectSingleNode(SourceID == Guid.Empty
-                                      ? "/chummer/grades/grade[name = "
-                                        + Name.CleanXPath() + ']'
-                                      : "/chummer/grades/grade[id = "
-                                        + SourceIDString.CleanXPath() + " or id = "
-                                        + SourceIDString.ToUpperInvariant()
-                                            .CleanXPath() + ']');
+                .TryGetNodeByNameOrId("/chummer/grades/grade", SourceID == Guid.Empty ? Name : SourceIDString);
 
             _objCachedMyXmlNode = objReturn;
             _strCachedXmlNodeLanguage = strLanguage;
@@ -136,13 +130,7 @@ namespace Chummer.Backend.Equipment
                     ? _objCharacter.LoadDataXPath(GetDataFileNameFromImprovementSource(_eSource), strLanguage, token: token)
                     : await _objCharacter.LoadDataXPathAsync(GetDataFileNameFromImprovementSource(_eSource),
                                                              strLanguage, token: token).ConfigureAwait(false))
-                .SelectSingleNode(SourceID == Guid.Empty
-                                      ? "/chummer/grades/grade[name = "
-                                        + Name.CleanXPath() + ']'
-                                      : "/chummer/grades/grade[id = "
-                                        + SourceIDString.CleanXPath() + " or id = "
-                                        + SourceIDString.ToUpperInvariant()
-                                            .CleanXPath() + ']');
+                .TryGetNodeByNameOrId("/chummer/grades/grade", SourceID == Guid.Empty ? Name : SourceIDString);
             _objCachedMyXPathNode = objReturn;
             _strCachedXPathNodeLanguage = strLanguage;
             return objReturn;

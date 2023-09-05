@@ -1625,7 +1625,7 @@ namespace Chummer
                 XmlDocument objXmlDocument = _objCharacter.LoadData("spells.xml");
 
                 node = objXmlDocument.TryGetNodeByNameOrId("/chummer/spells/spell",
-                    frmPickSpell.MyForm.SelectedSpell.CleanXPath());
+                    frmPickSpell.MyForm.SelectedSpell);
             }
 
             if (node == null)
@@ -1754,7 +1754,7 @@ namespace Chummer
             // Open the ComplexForms XML file and locate the selected piece.
             XmlDocument objXmlDocument = _objCharacter.LoadData("complexforms.xml");
 
-            XmlNode node = objXmlDocument.TryGetNodeByNameOrId("/chummer/complexforms/complexforms", strSelectedComplexForm.CleanXPath())
+            XmlNode node = objXmlDocument.TryGetNodeByNameOrId("/chummer/complexforms/complexforms", strSelectedComplexForm)
                            ?? throw new AbortedException();
 
             SelectedValue = node["name"]?.InnerText;
@@ -1991,7 +1991,7 @@ namespace Chummer
             XmlDocument xmlDocument = _objCharacter.LoadData("programs.xml");
             if (!string.IsNullOrEmpty(ForcedValue))
             {
-                xmlProgram = xmlDocument.TryGetNodeByNameOrId("/chummer/programs/program", ForcedValue.CleanXPath())
+                xmlProgram = xmlDocument.TryGetNodeByNameOrId("/chummer/programs/program", ForcedValue)
                              ?? throw new AbortedException();
             }
 
@@ -2006,7 +2006,7 @@ namespace Chummer
                         throw new AbortedException();
                     }
                     
-                    xmlProgram = xmlDocument.TryGetNodeByNameOrId("/chummer/programs/program", frmPickProgram.MyForm.SelectedProgram.CleanXPath())
+                    xmlProgram = xmlDocument.TryGetNodeByNameOrId("/chummer/programs/program", frmPickProgram.MyForm.SelectedProgram)
                                  ?? throw new AbortedException();
                 }
             }
@@ -2063,7 +2063,7 @@ namespace Chummer
             XmlDocument xmlDocument = _objCharacter.LoadData("programs.xml");
             if (!string.IsNullOrEmpty(ForcedValue))
             {
-                xmlProgram = xmlDocument.TryGetNodeByNameOrId("/chummer/programs/program", ForcedValue.CleanXPath())
+                xmlProgram = xmlDocument.TryGetNodeByNameOrId("/chummer/programs/program", ForcedValue)
                     ?? throw new AbortedException();
             }
 
@@ -2078,7 +2078,7 @@ namespace Chummer
                         throw new AbortedException();
                     }
 
-                    xmlProgram = xmlDocument.TryGetNodeByNameOrId("/chummer/programs/program", frmPickProgram.MyForm.SelectedProgram.CleanXPath())
+                    xmlProgram = xmlDocument.TryGetNodeByNameOrId("/chummer/programs/program", frmPickProgram.MyForm.SelectedProgram)
                                  ?? throw new AbortedException();
                 }
             }
@@ -3932,7 +3932,7 @@ namespace Chummer
                 {
                     throw new AbortedException();
                 }
-                XmlNode xmlMentor = _objCharacter.LoadData("mentors.xml").TryGetNodeByNameOrId("/chummer/mentors/mentor", frmPickMentorSpirit.MyForm.SelectedMentor.CleanXPath())
+                XmlNode xmlMentor = _objCharacter.LoadData("mentors.xml").TryGetNodeByNameOrId("/chummer/mentors/mentor", frmPickMentorSpirit.MyForm.SelectedMentor)
                                     ?? throw new AbortedException();
                 SelectedValue = xmlMentor?["name"]?.InnerText ?? string.Empty;
 
@@ -3984,7 +3984,7 @@ namespace Chummer
                     throw new AbortedException();
                 }
 
-                XmlNode xmlMentor = _objCharacter.LoadData("paragons.xml").TryGetNodeByNameOrId("/chummer/paragons/paragon", frmPickMentorSpirit.MyForm.SelectedMentor.CleanXPath())
+                XmlNode xmlMentor = _objCharacter.LoadData("paragons.xml").TryGetNodeByNameOrId("/chummer/paragons/paragon", frmPickMentorSpirit.MyForm.SelectedMentor)
                                     ?? throw new AbortedException();
                 SelectedValue = xmlMentor?["name"]?.InnerText ?? string.Empty;
 
@@ -4332,7 +4332,7 @@ namespace Chummer
                                     throw new AbortedException();
                                 }
                                 
-                                objXmlPower = _objCharacter.LoadData("paragons.xml").TryGetNodeByNameOrId("/chummer/powers/power", frmPickPower.MyForm.SelectedPower.CleanXPath())
+                                objXmlPower = _objCharacter.LoadData("paragons.xml").TryGetNodeByNameOrId("/chummer/powers/power", frmPickPower.MyForm.SelectedPower)
                                               ?? throw new AbortedException();
                             }
 
@@ -4454,7 +4454,7 @@ namespace Chummer
                             if (frmPickItem.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                                 throw new AbortedException();
                             
-                            objXmlSelectedArt = objXmlDocument.TryGetNodeByNameOrId("/chummer/powers/power", frmPickItem.MyForm.SelectedItem.CleanXPath())
+                            objXmlSelectedArt = objXmlDocument.TryGetNodeByNameOrId("/chummer/powers/power", frmPickItem.MyForm.SelectedItem)
                                                 ?? throw new AbortedException();
                         }
                     }
@@ -4471,7 +4471,7 @@ namespace Chummer
                         if (frmPickArt.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                             throw new AbortedException();
 
-                        objXmlSelectedArt = objXmlDocument.TryGetNodeByNameOrId("/chummer/powers/power", frmPickArt.MyForm.SelectedItem.CleanXPath())
+                        objXmlSelectedArt = objXmlDocument.TryGetNodeByNameOrId("/chummer/powers/power", frmPickArt.MyForm.SelectedItem)
                                             ?? throw new AbortedException();
                     }
                 }
@@ -4561,7 +4561,7 @@ namespace Chummer
                             if (frmPickItem.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                                 throw new AbortedException();
 
-                            objXmlSelectedMetamagic = objXmlDocument.TryGetNodeByNameOrId("/chummer/metamagics/metamagic", frmPickItem.MyForm.SelectedItem.CleanXPath())
+                            objXmlSelectedMetamagic = objXmlDocument.TryGetNodeByNameOrId("/chummer/metamagics/metamagic", frmPickItem.MyForm.SelectedItem)
                                                       ?? throw new AbortedException();
                         }
                     }
@@ -4587,7 +4587,7 @@ namespace Chummer
                         if (frmPickMetamagic.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                             throw new AbortedException();
 
-                        objXmlSelectedMetamagic = objXmlDocument.TryGetNodeByNameOrId("/chummer/metamagics/metamagic", frmPickMetamagic.MyForm.SelectedMetamagic.CleanXPath())
+                        objXmlSelectedMetamagic = objXmlDocument.TryGetNodeByNameOrId("/chummer/metamagics/metamagic", frmPickMetamagic.MyForm.SelectedMetamagic)
                                                   ?? throw new AbortedException();
                     }
                 }
@@ -4678,7 +4678,7 @@ namespace Chummer
                             if (frmPickItem.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                                 throw new AbortedException();
                             
-                            xmlSelectedEcho = objXmlDocument.TryGetNodeByNameOrId("/chummer/echoes/echo", frmPickItem.MyForm.SelectedItem.CleanXPath())
+                            xmlSelectedEcho = objXmlDocument.TryGetNodeByNameOrId("/chummer/echoes/echo", frmPickItem.MyForm.SelectedItem)
                                               ?? throw new AbortedException();
                         }
                     }
@@ -4704,7 +4704,7 @@ namespace Chummer
                         if (frmPickMetamagic.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                             throw new AbortedException();
 
-                        xmlSelectedEcho = objXmlDocument.TryGetNodeByNameOrId("/chummer/echoes/echo", frmPickMetamagic.MyForm.SelectedMetamagic.CleanXPath())
+                        xmlSelectedEcho = objXmlDocument.TryGetNodeByNameOrId("/chummer/echoes/echo", frmPickMetamagic.MyForm.SelectedMetamagic)
                                           ?? throw new AbortedException();
                     }
                 }

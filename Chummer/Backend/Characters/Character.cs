@@ -526,21 +526,25 @@ namespace Chummer
                     // ReSharper disable once MethodHasAsyncOverload
                     ? LoadData(strFile, strLanguage, token: token)
                     : await LoadDataAsync(strFile, strLanguage, token: token).ConfigureAwait(false);
-                XmlNode xmlMetatypeNode = MetatypeGuid == Guid.Empty
-                    ? xmlDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + Metatype.CleanXPath() + ']')
-                    : xmlDoc.TryGetNodeByNameOrId("/chummer/metatypes/metatype", MetatypeGuid.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath());
+                XmlNode xmlMetatypeNode = xmlDoc.TryGetNodeByNameOrId("/chummer/metatypes/metatype",
+                                                                      MetatypeGuid == Guid.Empty
+                                                                          ? Metatype
+                                                                          : MetatypeGuid
+                                                                              .ToString(
+                                                                                  "D",
+                                                                                  GlobalSettings.InvariantCultureInfo));
                 if (blnReturnMetatypeOnly)
                     return xmlMetatypeNode;
                 if (MetavariantGuid == Guid.Empty || string.IsNullOrEmpty(Metavariant) || xmlMetatypeNode == null)
                     return xmlMetatypeNode;
-                XmlNode xmlMetavariantNode = MetavariantGuid == Guid.Empty
-                    ? xmlMetatypeNode.SelectSingleNode("metavariants/metavariant[name = " + Metavariant.CleanXPath() + ']')
-                    : xmlMetatypeNode.TryGetNodeByNameOrId("metavariants/metavariant", MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo));
+                XmlNode xmlMetavariantNode = xmlMetatypeNode.TryGetNodeByNameOrId(
+                    "metavariants/metavariant", MetatypeGuid == Guid.Empty
+                        ? Metavariant
+                        : MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo));
                 if (xmlMetavariantNode == null && MetavariantGuid != Guid.Empty)
                 {
                     xmlMetavariantNode =
-                        xmlMetatypeNode.SelectSingleNode("metavariants/metavariant[name = " + Metavariant.CleanXPath() +
-                                                         ']');
+                        xmlMetatypeNode.TryGetNodeByNameOrId("metavariants/metavariant", Metavariant);
                 }
 
                 return xmlMetavariantNode ?? xmlMetatypeNode;
@@ -2763,7 +2767,7 @@ namespace Chummer
                         objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = \"Human\"]/id")?.InnerText ??
                         string.Empty;
                 XmlNode objXmlMetavariant =
-                    objXmlMetatype.TryGetNodeByNameOrId("metavariants/metavariant", strMetavariantId.CleanXPath());
+                    objXmlMetatype.TryGetNodeByNameOrId("metavariants/metavariant", strMetavariantId);
 
                 // Set Metatype information.
                 XmlNode charNode =
@@ -2810,7 +2814,7 @@ namespace Chummer
                             foreach (XmlNode objXmlQualityItem in xmlQualityList)
                             {
                                 string strQuality = objXmlQualityItem.InnerText;
-                                XmlNode objXmlQuality = xmlQualityDocumentQualitiesNode.TryGetNodeByNameOrId("quality", strQuality.CleanXPath());
+                                XmlNode objXmlQuality = xmlQualityDocumentQualitiesNode.TryGetNodeByNameOrId("quality", strQuality);
                                 if (objXmlQuality != null)
                                 {
                                     Quality objQuality = new Quality(this);
@@ -2846,7 +2850,7 @@ namespace Chummer
                     foreach (XmlNode objXmlPower in charNode.SelectNodes("powers/power"))
                     {
                         string strCritterPower = objXmlPower.InnerText;
-                        XmlNode objXmlCritterPower = xmlCritterPowerDocumentPowersNode.TryGetNodeByNameOrId("power", strCritterPower.CleanXPath());
+                        XmlNode objXmlCritterPower = xmlCritterPowerDocumentPowersNode.TryGetNodeByNameOrId("power", strCritterPower);
                         if (objXmlCritterPower != null)
                         {
                             CritterPower objPower = new CritterPower(this);
@@ -3044,8 +3048,7 @@ namespace Chummer
                         if (SkillsSection.KnowledgeSkills.All(x => x.DictionaryKey != strName))
                         {
                             XmlNode objXmlSkillNode =
-                                xmlSkillsDocumentKnowledgeSkillsNode.SelectSingleNode("skill[name = " +
-                                    strName.CleanXPath() + ']');
+                                xmlSkillsDocumentKnowledgeSkillsNode.TryGetNodeByNameOrId("skill", strName);
                             if (objXmlSkillNode != null)
                             {
                                 Skill objUncastSkill = Skill.FromData(objXmlSkillNode, this, true);
@@ -3089,7 +3092,7 @@ namespace Chummer
                 XmlDocument xmlComplexFormDocument = LoadData("complexforms.xml", token: token);
                 foreach (XmlNode xmlComplexForm in charNode.SelectNodes("complexforms/complexform"))
                 {
-                    XmlNode xmlComplexFormData = xmlComplexFormDocument.TryGetNodeByNameOrId("/chummer/complexforms/complexform", xmlComplexForm.InnerText.CleanXPath());
+                    XmlNode xmlComplexFormData = xmlComplexFormDocument.TryGetNodeByNameOrId("/chummer/complexforms/complexform", xmlComplexForm.InnerText);
                     if (xmlComplexFormData == null)
                         continue;
 
@@ -3121,7 +3124,7 @@ namespace Chummer
                 XmlDocument xmlCyberwareDocument = LoadData("cyberware.xml", token: token);
                 foreach (XmlNode node in charNode.SelectNodes("cyberwares/cyberware"))
                 {
-                    XmlNode objXmlCyberwareNode = xmlCyberwareDocument.TryGetNodeByNameOrId("chummer/cyberwares/cyberware", node.InnerText.CleanXPath());
+                    XmlNode objXmlCyberwareNode = xmlCyberwareDocument.TryGetNodeByNameOrId("chummer/cyberwares/cyberware", node.InnerText);
                     if (objXmlCyberwareNode == null)
                         continue;
                     Cyberware objWare = new Cyberware(this);
@@ -3154,7 +3157,7 @@ namespace Chummer
                 XmlDocument xmlBiowareDocument = LoadData("bioware.xml", token: token);
                 foreach (XmlNode node in charNode.SelectNodes("biowares/bioware"))
                 {
-                    XmlNode objXmlCyberwareNode = xmlBiowareDocument.TryGetNodeByNameOrId("chummer/biowares/bioware", node.InnerText.CleanXPath());
+                    XmlNode objXmlCyberwareNode = xmlBiowareDocument.TryGetNodeByNameOrId("chummer/biowares/bioware", node.InnerText);
                     if (objXmlCyberwareNode == null)
                         continue;
                     Cyberware objWare = new Cyberware(this);
@@ -3187,7 +3190,7 @@ namespace Chummer
                 XmlDocument xmlAIProgramDocument = LoadData("programs.xml", token: token);
                 foreach (XmlNode xmlAIProgram in charNode.SelectNodes("programs/program"))
                 {
-                    XmlNode xmlAIProgramData = xmlAIProgramDocument.TryGetNodeByNameOrId("chummer/programs/program", xmlAIProgram.InnerText.CleanXPath());
+                    XmlNode xmlAIProgramData = xmlAIProgramDocument.TryGetNodeByNameOrId("chummer/programs/program", xmlAIProgram.InnerText);
                     if (xmlAIProgramData == null)
                         continue;
 
@@ -3343,8 +3346,7 @@ namespace Chummer
                             {
                                 // Add the selected Power.
                                 XmlNode objXmlCritterPower =
-                                    xmlCritterPowerDocumentPowersNode.SelectSingleNode("power[name = " +
-                                        strSelectedPossessionMethod.CleanXPath() + ']');
+                                    xmlCritterPowerDocumentPowersNode.TryGetNodeByNameOrId("power", strSelectedPossessionMethod);
                                 if (objXmlCritterPower != null)
                                 {
                                     CritterPower objPower = new CritterPower(this);
@@ -7458,8 +7460,7 @@ namespace Chummer
                                     if (xmlTraditionListDataNode != null)
                                     {
                                         XmlNode xmlTraditionDataNode =
-                                            xmlTraditionListDataNode.SelectSingleNode("tradition[name = " +
-                                                strTemp.CleanXPath() + ']');
+                                            xmlTraditionListDataNode.TryGetNodeByNameOrId("tradition", strTemp);
                                         if (xmlTraditionDataNode != null)
                                         {
                                             if (!_objTradition.Create(xmlTraditionDataNode, true))
@@ -7552,8 +7553,7 @@ namespace Chummer
                                                 xmlCharacterNavigator.TryGetStringFieldQuickly("tradition",
                                                     ref strTemp);
                                                 XmlNode xmlTraditionDataNode =
-                                                    xmlTraditionListDataNode.SelectSingleNode(
-                                                        "tradition[name = " + strTemp.CleanXPath() + ']');
+                                                    xmlTraditionListDataNode.TryGetNodeByNameOrId("tradition", strTemp);
                                                 if (xmlTraditionDataNode != null)
                                                 {
                                                     if (!_objTradition.Create(xmlTraditionDataNode))
@@ -7568,7 +7568,7 @@ namespace Chummer
                                                 else
                                                 {
                                                     xmlTraditionDataNode =
-                                                        xmlTraditionListDataNode.TryGetNodeByNameOrId("tradition",Tradition.CustomMagicalTraditionGuid.CleanXPath());
+                                                        xmlTraditionListDataNode.TryGetNodeByNameOrId("tradition", Tradition.CustomMagicalTraditionGuid);
                                                     if (xmlTraditionDataNode != null &&
                                                         !_objTradition.Create(xmlTraditionDataNode))
                                                     {
@@ -7602,8 +7602,7 @@ namespace Chummer
                                             xmlCharacterNavigator.TryGetStringFieldQuickly("tradition",
                                                 ref strTemp);
                                             XmlNode xmlTraditionDataNode =
-                                                xmlTraditionListDataNode.SelectSingleNode(
-                                                    "tradition[name = " + strTemp.CleanXPath() + ']');
+                                                xmlTraditionListDataNode.TryGetNodeByNameOrId("tradition", strTemp);
                                             if (xmlTraditionDataNode != null)
                                             {
                                                 if (!_objTradition.Create(xmlTraditionDataNode))
@@ -7618,7 +7617,7 @@ namespace Chummer
                                             else
                                             {
                                                 xmlTraditionDataNode =
-                                                    xmlTraditionListDataNode.TryGetNodeByNameOrId("tradition", Tradition.CustomMagicalTraditionGuid.CleanXPath());
+                                                    xmlTraditionListDataNode.TryGetNodeByNameOrId("tradition", Tradition.CustomMagicalTraditionGuid);
                                                 if (xmlTraditionDataNode != null &&
                                                     !_objTradition.Create(xmlTraditionDataNode))
                                                 {
@@ -19260,7 +19259,7 @@ namespace Chummer
                                 if (xmlTraditionListDataNode != null)
                                 {
                                     XmlNode xmlTraditionDataNode
-                                        = xmlTraditionListDataNode.TryGetNodeByNameOrId("tradition", Tradition.CustomMagicalTraditionGuid.CleanXPath());
+                                        = xmlTraditionListDataNode.TryGetNodeByNameOrId("tradition", Tradition.CustomMagicalTraditionGuid);
                                     if (xmlTraditionDataNode != null)
                                     {
                                         if (!MagicTradition.Create(xmlTraditionDataNode))
@@ -29839,8 +29838,8 @@ namespace Chummer
                         if (objXmlQuality["name"] == null)
                         {
                             XmlNode objXmlQualityNode =
-                                xmlRootQualitiesNode.SelectSingleNode(
-                                    "quality[name = " + GetQualityName(objXmlQuality.InnerText).CleanXPath() + ']');
+                                xmlRootQualitiesNode.TryGetNodeByNameOrId(
+                                    "quality", GetQualityName(objXmlQuality.InnerText));
 
                             if (objXmlQualityNode != null)
                             {
@@ -29884,9 +29883,8 @@ namespace Chummer
                     }
 
                     // Take care of the Metatype information.
-                    string strXPath = "/chummer/metatypes/metatype[name = " + Metatype.CleanXPath() + ']';
-                    XmlNode objXmlMetatype = LoadData("metatypes.xml").SelectSingleNode(strXPath) ??
-                                             LoadData("critters.xml").SelectSingleNode(strXPath);
+                    XmlNode objXmlMetatype = LoadData("metatypes.xml").TryGetNodeByNameOrId("/chummer/metatypes/metatype", Metatype) ??
+                                             LoadData("critters.xml").TryGetNodeByNameOrId("/chummer/metatypes/metatype", Metatype);
 
                     if (objXmlMetatype != null)
                     {
@@ -29915,8 +29913,7 @@ namespace Chummer
                                         string strForceValue =
                                             objXmlMetatypeQuality.Attributes?["select"]?.InnerText ?? string.Empty;
                                         XmlNode objXmlQuality =
-                                            xmlRootQualitiesNode.SelectSingleNode(
-                                                "quality[name = " + objXmlMetatypeQuality.InnerText.CleanXPath() + ']');
+                                            xmlRootQualitiesNode.TryGetNodeByNameOrId("quality", objXmlMetatypeQuality.InnerText);
                                         using (LockObject.EnterWriteLock())
                                         {
                                             Quality objQuality = new Quality(this);
@@ -29962,8 +29959,7 @@ namespace Chummer
                                         string strForceValue =
                                             objXmlMetatypeQuality.Attributes?["select"]?.InnerText ?? string.Empty;
                                         XmlNode objXmlQuality =
-                                            xmlRootQualitiesNode.SelectSingleNode(
-                                                "quality[name = " + objXmlMetatypeQuality.InnerText.CleanXPath() + ']');
+                                            xmlRootQualitiesNode.TryGetNodeByNameOrId("quality", objXmlMetatypeQuality.InnerText);
                                         using (LockObject.EnterWriteLock())
                                         {
                                             Quality objQuality = new Quality(this);
@@ -29988,8 +29984,7 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(_strMetavariant))
                         {
                             objXmlMetatype =
-                                objXmlMetatype.SelectSingleNode(
-                                    "metavariants/metavariant[name = " + Metavariant.CleanXPath() + ']');
+                                objXmlMetatype.TryGetNodeByNameOrId("metavariants/metavariant", Metavariant);
 
                             if (objXmlMetatype != null)
                             {
@@ -30019,9 +30014,7 @@ namespace Chummer
                                                     objXmlMetatypeQuality.Attributes?["select"]?.InnerText
                                                     ?? string.Empty;
                                                 XmlNode objXmlQuality =
-                                                    xmlRootQualitiesNode.SelectSingleNode(
-                                                        "quality[name = " + objXmlMetatypeQuality.InnerText.CleanXPath()
-                                                                          + ']');
+                                                    xmlRootQualitiesNode.TryGetNodeByNameOrId("quality", objXmlMetatypeQuality.InnerText);
                                                 using (LockObject.EnterWriteLock())
                                                 {
                                                     Quality objQuality = new Quality(this);
@@ -30069,9 +30062,7 @@ namespace Chummer
                                                     objXmlMetatypeQuality.Attributes?["select"]?.InnerText
                                                     ?? string.Empty;
                                                 XmlNode objXmlQuality =
-                                                    xmlRootQualitiesNode.SelectSingleNode(
-                                                        "quality[name = " + objXmlMetatypeQuality.InnerText.CleanXPath()
-                                                                          + ']');
+                                                    xmlRootQualitiesNode.TryGetNodeByNameOrId("quality", objXmlMetatypeQuality.InnerText);
                                                 using (LockObject.EnterWriteLock())
                                                 {
                                                     Quality objQuality = new Quality(this);
