@@ -166,7 +166,7 @@ namespace Chummer.Backend.Equipment
             _lstAccessories.AddTaggedCollectionChanged(this, AccessoriesOnCollectionChanged);
         }
 
-        private async void AccessoriesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void AccessoriesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Move)
                 return;
@@ -212,7 +212,7 @@ namespace Chummer.Backend.Equipment
                         }
                         if (objOldItem.AmmoSlots > 0)
                         {
-                            await RemoveAmmoSlotsAsync(objOldItem).ConfigureAwait(false);
+                            RemoveAmmoSlots(objOldItem);
                         }
                     }
                     break;
@@ -233,7 +233,7 @@ namespace Chummer.Backend.Equipment
                         }
                         if (objOldItem.AmmoSlots > 0)
                         {
-                            await RemoveAmmoSlotsAsync(objOldItem).ConfigureAwait(false);
+                            RemoveAmmoSlots(objOldItem);
                         }
                     }
                     foreach (WeaponAccessory objNewItem in e.NewItems)
@@ -263,7 +263,7 @@ namespace Chummer.Backend.Equipment
             }
 
             if (blnRecreateInternalClip)
-                await RecreateInternalClipAsync().ConfigureAwait(false);
+                RecreateInternalClip();
             if (blnDoEncumbranceRefresh)
                 _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
         }
@@ -6130,9 +6130,13 @@ namespace Chummer.Backend.Equipment
                 FireMode == FiringMode.ManualOperation)
             {
                 Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill("Gunnery");
-                if (objSkill?.Specializations.Count > 0 && RelevantSpecialization != "None")
+                if (objSkill != null)
                 {
-                    intDicePool += objSkill.GetSpecializationBonus(RelevantSpecialization);
+                    string strSpec = RelevantSpecialization;
+                    if (!string.IsNullOrEmpty(strSpec) && strSpec != "None" && objSkill.Specializations.Count > 0)
+                    {
+                        intDicePool += objSkill.GetSpecializationBonus(strSpec);
+                    }
                 }
             }
 
@@ -6213,15 +6217,15 @@ namespace Chummer.Backend.Equipment
                 case FiringMode.DogBrain:
                     {
                         intDicePool = ParentVehicle.Pilot;
-                        Gear objAutosoft = ParentVehicle.GearChildren.DeepFirstOrDefault(
+                        Gear objAutosoft = await ParentVehicle.GearChildren.DeepFirstOrDefaultAsync(
                             x => x.Children,
-                            x => x.Name == RelevantAutosoft && (x.Extra == Name || x.Extra == CurrentDisplayName));
+                            x => x.Name == RelevantAutosoft && (x.Extra == Name || x.Extra == CurrentDisplayName), token).ConfigureAwait(false);
 
                         intDicePool += objAutosoft?.Rating ?? -1;
 
                         if (WirelessOn && HasWirelessSmartgun
-                                       && ParentVehicle.GearChildren.DeepAny(
-                                           x => x.Children, x => x.Name == "Smartsoft" && x.Equipped))
+                                       && await ParentVehicle.GearChildren.DeepAnyAsync(
+                                           x => x.Children, x => x.Name == "Smartsoft" && x.Equipped, token).ConfigureAwait(false))
                         {
                             ++decDicePoolModifier;
                         }
@@ -6330,7 +6334,7 @@ namespace Chummer.Backend.Equipment
                                 _objCharacter, Improvement.ImprovementType.WeaponSpecificDice, false, InternalId, token: token).ConfigureAwait(false);
 
                             // If the character has a Specialization, include it in the Dice Pool string.
-                            if (objSkill.Specializations.Count > 0 && !objSkill.IsExoticSkill)
+                            if (!objSkill.IsExoticSkill && await objSkill.Specializations.GetCountAsync(token) > 0)
                             {
                                 SkillSpecialization objSpec =
                                     await objSkill.GetSpecializationAsync(await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token).ConfigureAwait(false) ??
@@ -6358,9 +6362,13 @@ namespace Chummer.Backend.Equipment
                 FireMode == FiringMode.ManualOperation)
             {
                 Skill objSkill = await _objCharacter.SkillsSection.GetActiveSkillAsync("Gunnery", token).ConfigureAwait(false);
-                if (objSkill?.Specializations.Count > 0 && RelevantSpecialization != "None")
+                if (objSkill != null)
                 {
-                    intDicePool += await objSkill.GetSpecializationBonusAsync(RelevantSpecialization, token).ConfigureAwait(false);
+                    string strSpec = await GetRelevantSpecializationAsync(token).ConfigureAwait(false);
+                    if (!string.IsNullOrEmpty(strSpec) && strSpec != "None" && await objSkill.Specializations.GetCountAsync(token).ConfigureAwait(false) > 0)
+                    {
+                        intDicePool += await objSkill.GetSpecializationBonusAsync(strSpec, token).ConfigureAwait(false);
+                    }
                 }
             }
 
@@ -6452,6 +6460,31 @@ namespace Chummer.Backend.Equipment
                 _strRelevantSpec = strGunnerySpec;
                 return _strRelevantSpec;
             }
+        }
+
+        internal async ValueTask<string> GetRelevantSpecializationAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!string.IsNullOrEmpty(_strRelevantSpec))
+            {
+                return _strRelevantSpec;
+            }
+
+            XPathNavigator xmlNode = await this.GetNodeXPathAsync(token).ConfigureAwait(false);
+            if (xmlNode != null)
+            {
+                string strGunnerySpec = (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("category/@gunneryspec", token).ConfigureAwait(false))?.Value;
+                if (string.IsNullOrEmpty(strGunnerySpec))
+                {
+                    strGunnerySpec = (await _objCharacter.LoadDataXPathAsync("weapons.xml", token: token).ConfigureAwait(false))
+                                                  .SelectSingleNode(
+                                                      "/chummer/categories/category[. = " + Category.CleanXPath()
+                                                      + "]/@gunneryspec")?.Value ?? "None";
+                }
+
+                return _strRelevantSpec = strGunnerySpec;
+            }
+            return string.Empty;
         }
 
         private Skill Skill
