@@ -429,7 +429,7 @@ namespace Chummer
                         strSelectedMetavariant
                             = objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = \"Human\"]/id")
                                             ?.InnerText
-                              ?? "None";
+                              ?? Guid.Empty.ToString();
                     if (_objCharacter.MetatypeGuid.ToString("D", GlobalSettings.InvariantCultureInfo) !=
                         strSelectedMetatype
                         || _objCharacter.MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo) !=
@@ -549,7 +549,7 @@ namespace Chummer
                 {
                     objXmlMetatype = _xmlBaseMetatypeDataNode.TryGetNodeByNameOrId("metatypes/metatype", strSelectedMetatype);
                     string strSelectedMetavariant = await cboMetavariant.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
-                    if (objXmlMetatype != null && !string.IsNullOrEmpty(strSelectedMetavariant) && strSelectedMetavariant != "None")
+                    if (objXmlMetatype != null && !string.IsNullOrEmpty(strSelectedMetavariant) && strSelectedMetavariant != Guid.Empty.ToString())
                     {
                         objXmlMetavariant = objXmlMetatype.TryGetNodeByNameOrId("metavariants/metavariant", strSelectedMetavariant);
                     }
