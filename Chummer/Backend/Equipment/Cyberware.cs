@@ -1010,10 +1010,10 @@ namespace Chummer.Backend.Equipment
                             {
                                 foreach (XmlNode objXml in objXmlCyberware.SelectNodes("addparentweaponaccessory"))
                                 {
-                                    XmlNode objXmlWeapon = objXmlWeaponDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon",
+                                    XmlNode objXmlAccessory = objXmlWeaponDocument.TryGetNodeByNameOrId("/chummer/accessories/accessory",
                                         objXml.InnerText.CleanXPath());
 
-                                    if (objXmlWeapon == null) continue;
+                                    if (objXmlAccessory == null) continue;
                                     WeaponAccessory objGearWeapon = new WeaponAccessory(_objCharacter);
                                     int intAddWeaponRating = 0;
                                     string strLoopRating = objXml.Attributes["rating"]?.InnerText;
@@ -1027,7 +1027,7 @@ namespace Chummer.Backend.Equipment
                                                      out intAddWeaponRating);
                                     }
 
-                                    objGearWeapon.Create(objXmlWeapon, new Tuple<string, string>(string.Empty, string.Empty),
+                                    objGearWeapon.Create(objXmlAccessory, new Tuple<string, string>(string.Empty, string.Empty),
                                                          intAddWeaponRating,
                                                          blnSkipSelectForms, true, blnCreateImprovements);
                                     objGearWeapon.Cost = "0";
