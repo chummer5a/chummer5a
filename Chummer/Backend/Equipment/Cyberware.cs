@@ -1013,7 +1013,7 @@ namespace Chummer.Backend.Equipment
                                     XmlNode objXmlWeapon = objXmlWeaponDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon",
                                         objXml.InnerText.CleanXPath());
 
-                                    if (objXmlAccessory == null) continue;
+                                    if (objXmlWeapon == null) continue;
                                     WeaponAccessory objGearWeapon = new WeaponAccessory(_objCharacter);
                                     int intAddWeaponRating = 0;
                                     string strLoopRating = objXml.Attributes["rating"]?.InnerText;
@@ -1027,7 +1027,7 @@ namespace Chummer.Backend.Equipment
                                                      out intAddWeaponRating);
                                     }
 
-                                    objGearWeapon.Create(objXmlAccessory, new Tuple<string, string>(string.Empty, string.Empty),
+                                    objGearWeapon.Create(objXmlWeapon, new Tuple<string, string>(string.Empty, string.Empty),
                                                          intAddWeaponRating,
                                                          blnSkipSelectForms, true, blnCreateImprovements);
                                     objGearWeapon.Cost = "0";
@@ -1047,8 +1047,7 @@ namespace Chummer.Backend.Equipment
                         foreach (XmlNode xmlAddVehicle in objXmlCyberware.SelectNodes("addvehicle"))
                         {
                             string strLoopID = xmlAddVehicle.InnerText;
-                            XmlNode xmlVehicle = strLoopID.IsGuid()
-                                ? objXmlVehicleDocument.TryGetNodeByNameOrId("/chummer/vehicles/vehicle", strLoopID.CleanXPath());
+                            XmlNode xmlVehicle = objXmlVehicleDocument.TryGetNodeByNameOrId("/chummer/vehicles/vehicle", strLoopID.CleanXPath());
 
                             if (xmlVehicle != null)
                             {
