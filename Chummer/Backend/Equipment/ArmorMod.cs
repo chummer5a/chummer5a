@@ -745,15 +745,23 @@ namespace Chummer.Backend.Equipment
             set
             {
                 value = Math.Min(value, MaximumRating);
-                if (Interlocked.Exchange(ref _intRating, value) != value && GearChildren.Count > 0)
+                if (Interlocked.Exchange(ref _intRating, value) != value)
                 {
-                    foreach (Gear objChild in GearChildren)
+                    if (Equipped && Parent.Equipped && _objCharacter != null)
                     {
-                        if (!objChild.MaxRating.Contains("Parent") && !objChild.MinRating.Contains("Parent"))
-                            continue;
-                        // This will update a child's rating if it would become out of bounds due to its parent's rating changing
-                        int intCurrentRating = objChild.Rating;
-                        objChild.Rating = intCurrentRating;
+                        if (Weight.ContainsAny("FixedValues", "Rating") || GearChildren.Any(x => x.Equipped && x.Weight.Contains("Parent Rating")))
+                            _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
+                    }
+                    if (GearChildren.Count > 0)
+                    {
+                        foreach (Gear objChild in GearChildren)
+                        {
+                            if (!objChild.MaxRating.Contains("Parent") && !objChild.MinRating.Contains("Parent"))
+                                continue;
+                            // This will update a child's rating if it would become out of bounds due to its parent's rating changing
+                            int intCurrentRating = objChild.Rating;
+                            objChild.Rating = intCurrentRating;
+                        }
                     }
                 }
             }

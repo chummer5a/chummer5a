@@ -3261,6 +3261,33 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        /// <summary>
+        /// Returns whether the 'ware is currently equipped (with improvements applied) or not.
+        /// </summary>
+        public async Task<bool> GetIsModularCurrentlyEquippedAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                // Cyberware always equipped if it's not a modular one
+                bool blnReturn = string.IsNullOrEmpty(PlugsIntoModularMount);
+                Cyberware objCurrentParent = Parent;
+                // If top-level parent is one that has a modular mount but also does not plug into another modular mount itself, then return true, otherwise return false
+                while (objCurrentParent != null)
+                {
+                    using (await EnterReadLock.EnterAsync(objCurrentParent.LockObject, token).ConfigureAwait(false))
+                    {
+                        if (!string.IsNullOrEmpty(objCurrentParent.HasModularMount))
+                            blnReturn = true;
+                        if (!string.IsNullOrEmpty(objCurrentParent.PlugsIntoModularMount))
+                            blnReturn = false;
+                        objCurrentParent = objCurrentParent.Parent;
+                    }
+                }
+
+                return blnReturn;
+            }
+        }
+
         public bool Stolen
         {
             get
@@ -3855,11 +3882,13 @@ namespace Chummer.Backend.Equipment
 
                 if (!blnSkipEncumbranceOnPropertyChanged && ParentVehicle == null && _objCharacter?.IsLoading == false
                     && (!string.IsNullOrEmpty(Weight)
-                        || GearChildren.DeepAny(x => x.Children, x => !string.IsNullOrEmpty(x.Weight))
+                        || GearChildren.DeepAny(x => x.Children.Where(y => y.Equipped),
+                                                x => x.Equipped && !string.IsNullOrEmpty(x.Weight))
                         || Children.DeepAny(x => x.Children,
                                             y => !string.IsNullOrEmpty(y.Weight)
                                                  || y.GearChildren.DeepAny(
-                                                     x => x.Children, x => !string.IsNullOrEmpty(x.Weight)))))
+                                                     x => x.Children.Where(z => z.Equipped),
+                                                     x => x.Equipped && !string.IsNullOrEmpty(x.Weight)))))
                     _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
             }
         }
@@ -4018,11 +4047,15 @@ namespace Chummer.Backend.Equipment
 
                 if (!blnSkipEncumbranceOnPropertyChanged && ParentVehicle == null && _objCharacter?.IsLoading == false
                     && (!string.IsNullOrEmpty(Weight)
-                        || GearChildren.DeepAny(x => x.Children, x => !string.IsNullOrEmpty(x.Weight))
-                        || Children.DeepAny(x => x.Children,
-                                            y => !string.IsNullOrEmpty(y.Weight)
-                                                 || y.GearChildren.DeepAny(
-                                                     x => x.Children, x => !string.IsNullOrEmpty(x.Weight)))))
+                        || GearChildren.DeepAny(x => x.Children.Where(y => y.Equipped),
+                                                x => x.Equipped && !string.IsNullOrEmpty(x.Weight))
+                        || await Children.DeepAnyAsync(x => x.Children,
+                                                       y => !string.IsNullOrEmpty(y.Weight)
+                                                            || y.GearChildren.DeepAny(
+                                                                x => x.Children.Where(z => z.Equipped),
+                                                                x => x.Equipped && !string.IsNullOrEmpty(x.Weight)),
+                                                       token)
+                                         .ConfigureAwait(false)))
                     _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
             }
             finally
@@ -4148,32 +4181,51 @@ namespace Chummer.Backend.Equipment
 
                         if (blnDoRating)
                         {
-                            if (IsModularCurrentlyEquipped &&
-                                ParentVehicle == null &&
-                                _objParent?.Category == "Cyberlimb" &&
-                                _objParent.Parent?.InheritAttributes != false &&
-                                _objParent.ParentVehicle == null && !_objCharacter.Settings.DontUseCyberlimbCalculation
-                                &&
-                                !string.IsNullOrWhiteSpace(_objParent.LimbSlot) &&
-                                !_objCharacter.Settings.ExcludeLimbSlot.Contains(_objParent.LimbSlot))
+                            if (IsModularCurrentlyEquipped && ParentVehicle == null)
                             {
-                                foreach (KeyValuePair<string, IReadOnlyCollection<string>> kvpToCheck in
-                                         s_AttributeAffectingCyberwares)
+                                if (_objParent?.Category == "Cyberlimb"
+                                    && _objParent.Parent?.InheritAttributes != false
+                                    && _objParent.ParentVehicle == null
+                                    && !_objCharacter.Settings.DontUseCyberlimbCalculation
+                                    && !string.IsNullOrWhiteSpace(_objParent.LimbSlot)
+                                    && !_objCharacter.Settings.ExcludeLimbSlot.Contains(_objParent.LimbSlot))
                                 {
-                                    if (!kvpToCheck.Value.Contains(Name))
-                                        continue;
-                                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes(
-                                                 kvpToCheck.Key))
+                                    foreach (KeyValuePair<string, IReadOnlyCollection<string>> kvpToCheck in
+                                             s_AttributeAffectingCyberwares)
                                     {
-                                        if (!dicChangedProperties.TryGetValue(
-                                                objCharacterAttrib, out HashSet<string> setChangedProperties))
+                                        if (!kvpToCheck.Value.Contains(Name))
+                                            continue;
+                                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes(
+                                                     kvpToCheck.Key))
                                         {
-                                            setChangedProperties = Utils.StringHashSetPool.Get();
-                                            dicChangedProperties.Add(objCharacterAttrib, setChangedProperties);
-                                        }
+                                            if (!dicChangedProperties.TryGetValue(
+                                                    objCharacterAttrib, out HashSet<string> setChangedProperties))
+                                            {
+                                                setChangedProperties = Utils.StringHashSetPool.Get();
+                                                dicChangedProperties.Add(objCharacterAttrib, setChangedProperties);
+                                            }
 
-                                        setChangedProperties.Add(nameof(CharacterAttrib.TotalValue));
+                                            setChangedProperties.Add(nameof(CharacterAttrib.TotalValue));
+                                        }
                                     }
+                                }
+
+                                if (Weight.ContainsAny("Rating", "FixedValues")
+                                    || GearChildren.Any(x => x.Equipped
+                                                             && x.Weight.Contains(
+                                                                 "Parent Rating", StringComparison.OrdinalIgnoreCase))
+                                    || Children.Any(x => x.IsModularCurrentlyEquipped
+                                                         && x.Weight.Contains(
+                                                             "Parent Rating", StringComparison.OrdinalIgnoreCase)))
+                                {
+                                    if (!dicChangedProperties.TryGetValue(_objCharacter,
+                                                                          out HashSet<string> setChangedProperties))
+                                    {
+                                        setChangedProperties = Utils.StringHashSetPool.Get();
+                                        dicChangedProperties.Add(_objCharacter, setChangedProperties);
+                                    }
+
+                                    setChangedProperties.Add(nameof(Character.TotalCarriedWeight));
                                 }
                             }
 

@@ -8087,35 +8087,100 @@ namespace Chummer
                                 // Legacy Shim #2 (needed to be separate because we're dealing with PairBonuses here, and we don't know if something needs its PairBonus reapplied until all Cyberwares have been loaded)
                                 if (LastSavedVersion <= new Version(5, 200, 0))
                                 {
-                                    foreach (Cyberware objCyberware in Cyberware)
+                                    if (blnSync)
                                     {
-                                        if (objCyberware.PairBonus?.HasChildNodes == true &&
-                                            !Cyberware.DeepAny(x => x.Children, x =>
-                                            {
-                                                if (!objCyberware.IncludePair.Contains(x.Name) ||
-                                                    x.Extra != objCyberware.Extra ||
-                                                    !x.IsModularCurrentlyEquipped)
-                                                    return false;
-                                                string strToMatch = x.InternalId + "Pair";
-                                                return Improvements.Any(y => y.SourceName == strToMatch);
-                                            }))
+                                        // ReSharper disable MethodHasAsyncOverload
+                                        Cyberware.ForEach(objCyberware =>
                                         {
-                                            XmlNode objNode = blnSync
-                                                // ReSharper disable once MethodHasAsyncOverload
-                                                ? objCyberware.GetNode(token: token)
-                                                : await objCyberware.GetNodeAsync(token: token).ConfigureAwait(false);
-                                            if (objNode != null)
-                                            {
-                                                if (blnSync)
+                                            if (objCyberware.PairBonus?.HasChildNodes == true &&
+                                                !Cyberware.DeepAny(x => x.Children, x =>
                                                 {
-                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    if (!objCyberware.IncludePair.Contains(x.Name) ||
+                                                        x.Extra != objCyberware.Extra ||
+                                                        !x.IsModularCurrentlyEquipped)
+                                                        return false;
+                                                    string strToMatch = x.InternalId + "Pair";
+                                                    return Improvements.Any(y => y.SourceName == strToMatch);
+                                                }))
+                                            {
+                                                XmlNode objNode = objCyberware.GetNode(token: token);
+                                                if (objNode != null)
+                                                {
                                                     ImprovementManager.RemoveImprovements(this, objCyberware.SourceType,
                                                         objCyberware.InternalId, token: token);
-                                                    // ReSharper disable once MethodHasAsyncOverload
                                                     ImprovementManager.RemoveImprovements(this, objCyberware.SourceType,
                                                         objCyberware.InternalId + "Pair", token: token);
+
+                                                    objCyberware.Bonus = objNode["bonus"];
+                                                    objCyberware.WirelessBonus = objNode["wirelessbonus"];
+                                                    objCyberware.PairBonus = objNode["pairbonus"];
+                                                    if (!string.IsNullOrEmpty(objCyberware.Forced) &&
+                                                        objCyberware.Forced != "Right" &&
+                                                        objCyberware.Forced != "Left")
+                                                        ImprovementManager.ForcedValue = objCyberware.Forced;
+                                                    if (objCyberware.Bonus != null)
+                                                    {
+                                                        ImprovementManager.CreateImprovements(this,
+                                                            objCyberware.SourceType,
+                                                            objCyberware.InternalId, objCyberware.Bonus,
+                                                            objCyberware.Rating,
+                                                            objCyberware.CurrentDisplayNameShort, token: token);
+                                                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                                            objCyberware.Extra = ImprovementManager.SelectedValue;
+                                                    }
+
+                                                    if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
+                                                    {
+                                                        ImprovementManager.CreateImprovements(this,
+                                                            objCyberware.SourceType,
+                                                            objCyberware.InternalId, objCyberware.WirelessBonus,
+                                                            objCyberware.Rating,
+                                                            objCyberware.CurrentDisplayNameShort, token: token);
+                                                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) &&
+                                                            string.IsNullOrEmpty(objCyberware.Extra))
+                                                            objCyberware.Extra = ImprovementManager.SelectedValue;
+                                                    }
+
+                                                    if (!objCyberware.IsModularCurrentlyEquipped)
+                                                    {
+                                                        objCyberware.ChangeModularEquip(false);
+                                                    }
+                                                    else if (objCyberware.PairBonus != null)
+                                                    {
+                                                        Cyberware objMatchingCyberware =
+                                                            dicPairableCyberwares.Keys.FirstOrDefault(
+                                                                x =>
+                                                                    x.Name == objCyberware.Name &&
+                                                                    x.Extra == objCyberware.Extra);
+                                                        if (objMatchingCyberware != null)
+                                                            ++dicPairableCyberwares[objMatchingCyberware];
+                                                        else
+                                                            dicPairableCyberwares.Add(objCyberware, 1);
+                                                    }
                                                 }
                                                 else
+                                                    lstInternalIdsNeedingReapplyImprovements.Add(objCyberware.InternalId);
+                                            }
+                                        });
+                                        // ReSharper restore MethodHasAsyncOverload
+                                    }
+                                    else
+                                    {
+                                        await Cyberware.ForEachAsync(async objCyberware =>
+                                        {
+                                            if (objCyberware.PairBonus?.HasChildNodes == true &&
+                                                !await Cyberware.DeepAnyAsync(x => x.Children, async x =>
+                                                {
+                                                    if (!objCyberware.IncludePair.Contains(x.Name) ||
+                                                        x.Extra != objCyberware.Extra ||
+                                                        !await x.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
+                                                        return false;
+                                                    string strToMatch = x.InternalId + "Pair";
+                                                    return await Improvements.AnyAsync(y => y.SourceName == strToMatch, token).ConfigureAwait(false);
+                                                }, token).ConfigureAwait(false))
+                                            {
+                                                XmlNode objNode = await objCyberware.GetNodeAsync(token: token).ConfigureAwait(false);
+                                                if (objNode != null)
                                                 {
                                                     await ImprovementManager.RemoveImprovementsAsync(
                                                         this, objCyberware.SourceType,
@@ -8125,25 +8190,15 @@ namespace Chummer
                                                                                 objCyberware.InternalId + "Pair",
                                                                                 token: token)
                                                                             .ConfigureAwait(false);
-                                                }
-
-                                                objCyberware.Bonus = objNode["bonus"];
-                                                objCyberware.WirelessBonus = objNode["wirelessbonus"];
-                                                objCyberware.PairBonus = objNode["pairbonus"];
-                                                if (!string.IsNullOrEmpty(objCyberware.Forced) &&
-                                                    objCyberware.Forced != "Right" &&
-                                                    objCyberware.Forced != "Left")
-                                                    ImprovementManager.ForcedValue = objCyberware.Forced;
-                                                if (objCyberware.Bonus != null)
-                                                {
-                                                    if (blnSync)
-                                                        // ReSharper disable once MethodHasAsyncOverload
-                                                        ImprovementManager.CreateImprovements(this,
-                                                            objCyberware.SourceType,
-                                                            objCyberware.InternalId, objCyberware.Bonus,
-                                                            objCyberware.Rating,
-                                                            objCyberware.CurrentDisplayNameShort, token: token);
-                                                    else
+                                                    objCyberware.Bonus = objNode["bonus"];
+                                                    objCyberware.WirelessBonus = objNode["wirelessbonus"];
+                                                    objCyberware.PairBonus = objNode["pairbonus"];
+                                                    if (!string.IsNullOrEmpty(objCyberware.Forced) &&
+                                                        objCyberware.Forced != "Right" &&
+                                                        objCyberware.Forced != "Left")
+                                                        ImprovementManager.ForcedValue = objCyberware.Forced;
+                                                    if (objCyberware.Bonus != null)
+                                                    {
                                                         await ImprovementManager.CreateImprovementsAsync(this,
                                                                 objCyberware.SourceType,
                                                                 objCyberware.InternalId, objCyberware.Bonus,
@@ -8153,20 +8208,12 @@ namespace Chummer
                                                                       .GetCurrentDisplayNameShortAsync(token)
                                                                       .ConfigureAwait(false), token: token)
                                                             .ConfigureAwait(false);
-                                                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                                                        objCyberware.Extra = ImprovementManager.SelectedValue;
-                                                }
+                                                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                                            objCyberware.Extra = ImprovementManager.SelectedValue;
+                                                    }
 
-                                                if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
-                                                {
-                                                    if (blnSync)
-                                                        // ReSharper disable once MethodHasAsyncOverload
-                                                        ImprovementManager.CreateImprovements(this,
-                                                            objCyberware.SourceType,
-                                                            objCyberware.InternalId, objCyberware.WirelessBonus,
-                                                            objCyberware.Rating,
-                                                            objCyberware.CurrentDisplayNameShort, token: token);
-                                                    else
+                                                    if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
+                                                    {
                                                         await ImprovementManager.CreateImprovementsAsync(this,
                                                                 objCyberware.SourceType,
                                                                 objCyberware.InternalId, objCyberware.WirelessBonus,
@@ -8176,36 +8223,33 @@ namespace Chummer
                                                                       .GetCurrentDisplayNameShortAsync(token)
                                                                       .ConfigureAwait(false), token: token)
                                                             .ConfigureAwait(false);
-                                                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) &&
-                                                        string.IsNullOrEmpty(objCyberware.Extra))
-                                                        objCyberware.Extra = ImprovementManager.SelectedValue;
-                                                }
+                                                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) &&
+                                                            string.IsNullOrEmpty(objCyberware.Extra))
+                                                            objCyberware.Extra = ImprovementManager.SelectedValue;
+                                                    }
 
-                                                if (!objCyberware.IsModularCurrentlyEquipped)
-                                                {
-                                                    if (blnSync)
-                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                        objCyberware.ChangeModularEquip(false);
-                                                    else
+                                                    if (!await objCyberware.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
+                                                    {
                                                         await objCyberware.ChangeModularEquipAsync(false, token: token)
                                                                           .ConfigureAwait(false);
+                                                    }
+                                                    else if (objCyberware.PairBonus != null)
+                                                    {
+                                                        Cyberware objMatchingCyberware =
+                                                            dicPairableCyberwares.Keys.FirstOrDefault(
+                                                                x =>
+                                                                    x.Name == objCyberware.Name &&
+                                                                    x.Extra == objCyberware.Extra);
+                                                        if (objMatchingCyberware != null)
+                                                            ++dicPairableCyberwares[objMatchingCyberware];
+                                                        else
+                                                            dicPairableCyberwares.Add(objCyberware, 1);
+                                                    }
                                                 }
-                                                else if (objCyberware.PairBonus != null)
-                                                {
-                                                    Cyberware objMatchingCyberware =
-                                                        dicPairableCyberwares.Keys.FirstOrDefault(
-                                                            x =>
-                                                                x.Name == objCyberware.Name &&
-                                                                x.Extra == objCyberware.Extra);
-                                                    if (objMatchingCyberware != null)
-                                                        ++dicPairableCyberwares[objMatchingCyberware];
-                                                    else
-                                                        dicPairableCyberwares.Add(objCyberware, 1);
-                                                }
+                                                else
+                                                    lstInternalIdsNeedingReapplyImprovements.Add(objCyberware.InternalId);
                                             }
-                                            else
-                                                lstInternalIdsNeedingReapplyImprovements.Add(objCyberware.InternalId);
-                                        }
+                                        }, token).ConfigureAwait(false);
                                     }
                                 }
 

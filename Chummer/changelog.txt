@@ -46,6 +46,7 @@ Application Changes:
 - Fixed cyberware that both consumes and grants capacity not properly allowing the child capacity to be used.
 - Fixed cyberware grades incorrectly being able to be changed if an item has a forcegrade, but is the child of an item that has its grade changed. For example, prevents Cyberlimb customisation from having a grade specified if the limb is upgraded to Alphaware. 
 - Fixed an issue with Drug/Cyber/Bioware grade xpath lookups failing if the source id is in uppercase. Closes #5046
+- The weight of equipped items whose weight depends on their rating and/or quantity now updates properly when their rating and/or quantity changes.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.

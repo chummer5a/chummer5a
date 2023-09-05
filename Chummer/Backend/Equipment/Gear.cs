@@ -1795,17 +1795,22 @@ namespace Chummer.Backend.Equipment
             set
             {
                 value = Math.Max(Math.Min(value, MaxRatingValue), MinRatingValue);
-                if (Interlocked.Exchange(ref _intRating, value) != value && Children.Count > 0)
+                if (Interlocked.Exchange(ref _intRating, value) != value)
                 {
-                    foreach (Gear objChild in Children)
+                    if (Children.Count > 0)
                     {
-                        if (objChild.MaxRating.Contains("Parent") || objChild.MinRating.Contains("Parent"))
+                        foreach (Gear objChild in Children)
                         {
-                            // This will update a child's rating if it would become out of bounds due to its parent's rating changing
-                            int intCurrentRating = objChild.Rating;
-                            objChild.Rating = intCurrentRating;
+                            if (objChild.MaxRating.Contains("Parent") || objChild.MinRating.Contains("Parent"))
+                            {
+                                // This will update a child's rating if it would become out of bounds due to its parent's rating changing
+                                int intCurrentRating = objChild.Rating;
+                                objChild.Rating = intCurrentRating;
+                            }
                         }
                     }
+
+                    OnPropertyChanged();
                 }
             }
         }
@@ -3881,10 +3886,9 @@ namespace Chummer.Backend.Equipment
             foreach (Gear objGear in Children)
                 objGear.ChangeEquippedStatus(blnEquipped, true);
 
-            if (!blnSkipEncumbranceOnPropertyChanged && _objCharacter?.IsLoading == false
-                                                     && (!string.IsNullOrEmpty(Weight)
+            if (!blnSkipEncumbranceOnPropertyChanged && (!string.IsNullOrEmpty(Weight)
                                                          || Children.DeepAny(
-                                                             x => x.Children, x => !string.IsNullOrEmpty(x.Weight))))
+                                                             x => x.Children.Where(y => y.Equipped), x => !string.IsNullOrEmpty(x.Weight))))
                 _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
         }
 
@@ -3973,10 +3977,11 @@ namespace Chummer.Backend.Equipment
             foreach (Gear objGear in Children)
                 await objGear.ChangeEquippedStatusAsync(blnEquipped, true, token).ConfigureAwait(false);
 
-            if (!blnSkipEncumbranceOnPropertyChanged && _objCharacter?.IsLoading == false
-                                                     && (!string.IsNullOrEmpty(Weight)
-                                                         || Children.DeepAny(
-                                                             x => x.Children, x => !string.IsNullOrEmpty(x.Weight))))
+            if (!blnSkipEncumbranceOnPropertyChanged && (!string.IsNullOrEmpty(Weight)
+                                                         || Children
+                                                             .DeepAny(
+                                                                 x => x.Children.Where(y => y.Equipped),
+                                                                 x => x.Equipped && !string.IsNullOrEmpty(x.Weight))))
                 _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
         }
 
@@ -5254,6 +5259,12 @@ namespace Chummer.Backend.Equipment
                 new DependencyGraphNode<string, Gear>(nameof(PreferredColor),
                     new DependencyGraphNode<string, Gear>(nameof(Notes)),
                     new DependencyGraphNode<string, Gear>(nameof(ParentID))
+                ),
+                new DependencyGraphNode<string, Gear>(nameof(TotalWeight),
+                    new DependencyGraphNode<string, Gear>(nameof(OwnWeight),
+                        new DependencyGraphNode<string, Gear>(nameof(Rating), x => x.Equipped && x.Weight.ContainsAny("FixedValues", "Rating"))
+                    ),
+                    new DependencyGraphNode<string, Gear>(nameof(Quantity))
                 )
             );
 
@@ -5371,6 +5382,16 @@ namespace Chummer.Backend.Equipment
                         }
                     });
                 }
+
+                if (Equipped && ((setNamesOfChangedProperties.Contains(nameof(TotalWeight))
+                                  && (!string.IsNullOrEmpty(Weight)
+                                      || Children.DeepAny(x => x.Children.Where(y => y.Equipped), x => x.Equipped && !string.IsNullOrEmpty(x.Weight))))
+                                 || (setNamesOfChangedProperties.Contains(nameof(Rating))
+                                     && Children.Any(x => x.Equipped && x.Weight.Contains("Parent Rating")))))
+                {
+                    _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
+                }
+
             }
             finally
             {

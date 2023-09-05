@@ -1171,10 +1171,25 @@ namespace Chummer.Backend.Equipment
                 value = Math.Min(value, MaxRating);
                 if (Interlocked.Exchange(ref _intRating, value) == value)
                     return;
-                if (Equipped && _objCharacter != null && (ArmorValue.Contains("Rating") || ArmorOverrideValue.Contains("Rating")))
+                if (Equipped && _objCharacter != null)
                 {
-                    _objCharacter.OnPropertyChanged(nameof(Character.GetArmorRating));
-                    _objCharacter.RefreshArmorEncumbrance();
+                    if (Weight.ContainsAny("FixedValues", "Rating") || GearChildren.Any(x => x.Equipped && x.Weight.Contains("Parent Rating")))
+                    {
+                        if (ArmorValue.ContainsAny("FixedValues", "Rating") || ArmorOverrideValue.ContainsAny("FixedValues", "Rating"))
+                        {
+                            _objCharacter.OnMultiplePropertyChanged(nameof(Character.TotalCarriedWeight), nameof(Character.GetArmorRating));
+                            _objCharacter.RefreshArmorEncumbrance();
+                        }
+                        else
+                        {
+                            _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
+                        }
+                    }
+                    else if (ArmorValue.ContainsAny("FixedValues", "Rating") || ArmorOverrideValue.ContainsAny("FixedValues", "Rating"))
+                    {
+                        _objCharacter.OnPropertyChanged(nameof(Character.GetArmorRating));
+                        _objCharacter.RefreshArmorEncumbrance();
+                    }
                 }
                 if (GearChildren.Count > 0)
                 {
@@ -1735,6 +1750,12 @@ namespace Chummer.Backend.Equipment
                 if (string.IsNullOrEmpty(strWeightExpression))
                     return 0;
                 decimal decReturn = 0;
+                if (strWeightExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
+                {
+                    string[] strValues = strWeightExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
+                    strWeightExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
+                }
+
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdWeight))
                 {
                     sbdWeight.Append(strWeightExpression.TrimStart('+'));

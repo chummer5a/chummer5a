@@ -990,6 +990,11 @@ namespace Chummer.Backend.Equipment
             {
                 if (Interlocked.Exchange(ref _intRating, value) == value)
                     return;
+                if (Parent.Equipped && Parent.ParentVehicle == null && (Weight.ContainsAny("FixedValues", "Rating") || GearChildren.Any(x => x.Equipped && x.Weight.Contains("Parent Rating")))
+                    && !Parent.Yield().DeepAny(x => x.Parent.Yield(), x => !x.Equipped || x.ParentVehicle != null))
+                {
+                    _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
+                }
                 if (GearChildren.Count > 0)
                 {
                     foreach (Gear objChild in GearChildren.Where(x => x.MaxRating.Contains("Parent") || x.MinRating.Contains("Parent")))
@@ -1134,8 +1139,8 @@ namespace Chummer.Backend.Equipment
 
                     if (_objCharacter?.IsLoading == false && (!string.IsNullOrEmpty(Weight)
                                                               || GearChildren.DeepAny(
-                                                                  x => x.Children,
-                                                                  x => !string.IsNullOrEmpty(x.Weight))))
+                                                                  x => x.Children.Where(y => y.Equipped),
+                                                                  x => x.Equipped && !string.IsNullOrEmpty(x.Weight))))
                         _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
                 }
                 else
