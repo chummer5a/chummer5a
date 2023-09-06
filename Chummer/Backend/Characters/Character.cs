@@ -8101,7 +8101,7 @@ namespace Chummer
                                                 else
                                                     lstInternalIdsNeedingReapplyImprovements.Add(objCyberware.InternalId);
                                             }
-                                        });
+                                        }, token);
                                         // ReSharper restore MethodHasAsyncOverload
                                     }
                                     else

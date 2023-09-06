@@ -29,7 +29,6 @@ using System.Globalization;
 using System.Xml;
 using System.Runtime.CompilerServices;
 using NLog;
-using System.Xml.XPath;
 
 namespace Chummer
 {
