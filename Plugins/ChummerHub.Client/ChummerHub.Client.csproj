@@ -6,11 +6,12 @@
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>$(MSBuildProjectDirectory)\bin\$(Configuration)\</OutputPath>
     <StartAction>Program</StartAction>
-    <StartProgram>$(OutputPath)..\..\..\..\Chummer\bin\Debug\Chummer5.exe</StartProgram>
+    <StartProgram>$(SolutionDir)Chummer\bin\Debug\$(TargetFramework)\Chummer5.exe</StartProgram>
     <EnableNETAnalyzers>true</EnableNETAnalyzers>
     <NoWarn>VSTHRD003;VSTHRD100;VSTHRD103;VSTHRD200</NoWarn>
   </PropertyGroup>
@@ -165,15 +166,17 @@
       copy "$(TargetDir)*.txt" "$(TargetDir)Plugins\SINners\" /Y
       echo Statement 3: copy "$(TargetDir)*.dll.config" "$(TargetDir)Plugins\SINners\" /Y
       copy "$(TargetDir)*.dll.config" "$(TargetDir)Plugins\SINners\" /Y
-      echo Statement 4: copy "$(TargetDir)Plugins\SINners\*" "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\" /Y
-      copy "$(TargetDir)Plugins\SINners\*" "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\" /Y
-</PostBuildEvent>
+      echo Statement 4: copy "$(TargetDir)Plugins\SINners\*" "$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\" /Y
+      copy "$(TargetDir)Plugins\SINners\*" "$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\" /Y
+    </PostBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PreBuildEvent>echo Statement 1: mkdir "$(TargetDir)Plugins\SINners\"
-        mkdir "$(TargetDir)Plugins\SINners\"
-        echo Statement 2: mkdir "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\"
-        mkdir "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SINners\"
-        Exit 0</PreBuildEvent>
+    <PreBuildEvent>
+      echo Statement 1: mkdir "$(TargetDir)Plugins\SINners\"
+      mkdir "$(TargetDir)Plugins\SINners\"
+      echo Statement 2: mkdir "$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\"
+      mkdir "$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SINners\"
+      Exit 0
+    </PreBuildEvent>
   </PropertyGroup>
 </Project>
