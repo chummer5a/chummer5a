@@ -1339,7 +1339,7 @@ namespace Chummer
                         objTemp.Dispose();
                     }
                 }
-                
+
                 try
                 {
                     Task tskOld = Interlocked.Exchange(ref _tskVersionUpdate, null);
@@ -2672,7 +2672,13 @@ namespace Chummer
             {
                 Log.Warn(ex, ex.Message);
             }
+
+            // Everything should be properly disposed of by now.
+            // If Chummer does not continue closing gracefully the Application monitor will kill the process.
+            ApplicationMonitor.StartMonitoring();
         }
+
+        public ApplicationMonitor ApplicationMonitor { private get; set; }
 
         private void DisposeOpenForms()
         {

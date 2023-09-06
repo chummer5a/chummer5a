@@ -377,6 +377,7 @@
     <Compile Include="Backend\Datastructures\LockingDictionary.cs" />
     <Compile Include="Backend\Equipment\Clip.cs" />
     <Compile Include="Backend\Equipment\WeaponMount.cs" />
+    <Compile Include="Backend\Helpers\ApplicationMonitor.cs" />
     <Compile Include="Backend\Helpers\AsyncFriendlyReaderWriterLock.cs" />
     <Compile Include="Backend\Helpers\AsyncLock.cs" />
     <Compile Include="Backend\Helpers\CancellationTokenTaskSource.cs" />

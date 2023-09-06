@@ -616,7 +616,11 @@ namespace Chummer
                             }
 
                             MainForm.MyStartupPvt = pvt;
+
+                            var appMonitor = new ApplicationMonitor(3000);
+                            MainForm.ApplicationMonitor = appMonitor;
                             Application.Run(MainForm);
+                            appMonitor.SignalShutdown();
                         }
 
                         OpenCharacters.Clear();
