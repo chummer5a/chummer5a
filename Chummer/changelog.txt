@@ -46,6 +46,10 @@ Application Changes:
 - Fixed cyberware that both consumes and grants capacity not properly allowing the child capacity to be used.
 - Fixed cyberware grades incorrectly being able to be changed if an item has a forcegrade, but is the child of an item that has its grade changed. For example, prevents Cyberlimb customisation from having a grade specified if the limb is upgraded to Alphaware. 
 - Fixed an issue with Drug/Cyber/Bioware grade xpath lookups failing if the source id is in uppercase. Closes #5046
+- Refactored XML node selection logic to always check for an ID in lowercase or uppercase format. Resolves issues with uppercase guids not reliably working throughout the codebase.
+- The weight of equipped items whose weight depends on their rating and/or quantity now updates properly when their rating and/or quantity changes.
+- Custom armor data whose armor value scales off of a character's attributes and/or off of a fixed set of rating-dependent values now work properly.
+- Changing character creation options (e.g. priority entries) without a metavariant selected no longer causes odd UI issues. Fixes #5042.
 
 Data Changes:
 - Corrected the categories (and therefore also mounts, concealabilities, and ranges) for the Krime AKM-SU97, the Krime Ditch, the Krime Stopper-II, the Krime Soldier, and the Krime Ripper as per forum errata found here: https://forums.shadowruntabletop.com/index.php?topic=31750.msg544923#msg544923.
@@ -65,6 +69,7 @@ Data Changes:
 - Seeker Shafts from Hard Targets are now properly meant as plugins for arrows instead of a dedicated arrow type and now properly affect the dice pool of smartgun/smartlink bows when their parent arrow gear is "loaded".
 - Universal Data Cord, Folding Ladder, Solar Panel, Detonating Cord (Low Yield and High Yield), and Safety Fuse items can now be bought with specific dimensions in addition to quantities instead of quantities and dimensions being rolled into one number.
 - 1 kilogram of Pet Food now properly weighs 1 kilogram.
+- Removed Psychmetry metamagic requirement from Sympathetic Linking metamagic.
 
 Changed/New Strings:
 - LimitCondition_SkillsActiveLeadership

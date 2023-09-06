@@ -233,7 +233,7 @@ namespace Chummer
                     XmlNode xmlArmor = null;
                     string strSelectedId = await lstArmor.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
                     if (!string.IsNullOrEmpty(strSelectedId))
-                        xmlArmor = _objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = " + strSelectedId.CleanXPath() + ']');
+                        xmlArmor = _objXmlDocument.TryGetNodeByNameOrId("/chummer/armors/armor", strSelectedId);
                     if (xmlArmor != null)
                     {
                         // Create the Armor so we can show its Total Avail (some Armor includes Chemical Seal which adds +6 which wouldn't be factored in properly otherwise).

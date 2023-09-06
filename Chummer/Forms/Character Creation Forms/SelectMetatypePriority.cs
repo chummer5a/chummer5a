@@ -934,7 +934,7 @@ namespace Chummer
                                             = xmlBaseMetatypePriority.SelectSingleNode(
                                                 "metatypes/metatype[name = " + strSelectedMetatype.CleanXPath() + ']');
                                         if (!string.IsNullOrEmpty(strSelectedMetavariant)
-                                            && strSelectedMetavariant != "None")
+                                            && strSelectedMetavariant != Guid.Empty.ToString())
                                             objXmlMetatypePriorityNode
                                                 = objXmlMetatypePriorityNode?.SelectSingleNode(
                                                     "metavariants/metavariant[name = " + strSelectedMetavariant.CleanXPath()
@@ -1494,7 +1494,7 @@ namespace Chummer
                                            .ConfigureAwait(false);
 
                     // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
-                    if (strSelectedMetatypeCategory == "Shapeshifter" && strSelectedMetavariant == "None")
+                    if (strSelectedMetatypeCategory == "Shapeshifter" && strSelectedMetavariant == Guid.Empty.ToString())
                         strSelectedMetavariant = "Human";
                     XmlNode objXmlMetavariant
                         = objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = "
@@ -2418,7 +2418,7 @@ namespace Chummer
                     = _xmlBaseMetatypeDataNode.SelectSingleNode(
                         "metatypes/metatype[name = " + strSelectedMetatype.CleanXPath() + ']');
                 XPathNavigator objXmlMetavariant
-                    = string.IsNullOrEmpty(strSelectedMetavariant) || strSelectedMetavariant == "None"
+                    = string.IsNullOrEmpty(strSelectedMetavariant) || strSelectedMetavariant == Guid.Empty.ToString()
                         ? null
                         : objXmlMetatype?.SelectSingleNode("metavariants/metavariant[name = "
                                                            + strSelectedMetavariant.CleanXPath() + ']');
@@ -3133,8 +3133,7 @@ namespace Chummer
                                                        .ConfigureAwait(false);
 
                     XPathNavigator objXmlMetatype
-                        = _xmlBaseMetatypeDataNode.SelectSingleNode(
-                            "metatypes/metatype[name = " + strSelectedMetatype.CleanXPath() + ']');
+                        = _xmlBaseMetatypeDataNode.TryGetNodeByNameOrId("metatypes/metatype", strSelectedMetatype);
                     XPathNavigator objXmlMetatypeBP = null;
                     XPathNodeIterator xmlBaseMetatypePriorityList = _xmlBasePriorityDataNode.Select(
                         "priorities/priority[category = \"Heritage\" and value = " + strSelectedHeritage.CleanXPath()
@@ -3269,7 +3268,7 @@ namespace Chummer
                         await cboMetavariant
                               .PopulateWithListItemsAsync(
                                   new ListItem(
-                                      "None",
+                                      Guid.Empty.ToString(),
                                       await LanguageManager.GetStringAsync("String_None", token: token)
                                                            .ConfigureAwait(false)).Yield(), token).ConfigureAwait(false);
                         await cboMetavariant.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
@@ -3284,7 +3283,7 @@ namespace Chummer
                     await cboMetavariant
                           .PopulateWithListItemsAsync(
                               new ListItem(
-                                      "None",
+                                      Guid.Empty.ToString(),
                                       await LanguageManager.GetStringAsync("String_None", token: token)
                                                            .ConfigureAwait(false))
                                   .Yield(), token).ConfigureAwait(false);

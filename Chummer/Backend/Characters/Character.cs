@@ -526,34 +526,18 @@ namespace Chummer
                     // ReSharper disable once MethodHasAsyncOverload
                     ? LoadData(strFile, strLanguage, token: token)
                     : await LoadDataAsync(strFile, strLanguage, token: token).ConfigureAwait(false);
-                XmlNode xmlMetatypeNode = xmlDoc.SelectSingleNode(MetatypeGuid == Guid.Empty
-                    ? "/chummer/metatypes/metatype[name = "
-                      + Metatype.CleanXPath() + ']'
-                    : "/chummer/metatypes/metatype[id = " +
-                      MetatypeGuid
-                          .ToString(
-                              "D", GlobalSettings.InvariantCultureInfo)
-                          .CleanXPath() + ']');
+                XmlNode xmlMetatypeNode = MetatypeGuid == Guid.Empty
+                    ? xmlDoc.TryGetNodeByNameOrId("/chummer/metatypes/metatype", Metatype)
+                    : xmlDoc.TryGetNodeById("/chummer/metatypes/metatype", MetatypeGuid);
                 if (blnReturnMetatypeOnly)
                     return xmlMetatypeNode;
                 if (MetavariantGuid == Guid.Empty || string.IsNullOrEmpty(Metavariant) || xmlMetatypeNode == null)
                     return xmlMetatypeNode;
-                XmlNode xmlMetavariantNode = xmlMetatypeNode.SelectSingleNode(MetavariantGuid == Guid.Empty
-                    ? "metavariants/metavariant[name = "
-                      + Metavariant.CleanXPath() + ']'
-                    : "metavariants/metavariant[id = " +
-                      MetavariantGuid
-                          .ToString(
-                              "D",
-                              GlobalSettings
-                                  .InvariantCultureInfo)
-                          .CleanXPath() + ']');
-                if (xmlMetavariantNode == null && MetavariantGuid != Guid.Empty)
-                {
-                    xmlMetavariantNode =
-                        xmlMetatypeNode.SelectSingleNode("metavariants/metavariant[name = " + Metavariant.CleanXPath() +
-                                                         ']');
-                }
+                XmlNode xmlMetavariantNode = null;
+                if (MetatypeGuid != Guid.Empty)
+                    xmlMetavariantNode = xmlMetatypeNode.TryGetNodeById("metavariants/metavariant", MetavariantGuid);
+                if (xmlMetavariantNode == null)
+                    xmlMetavariantNode = xmlMetatypeNode.TryGetNodeByNameOrId("metavariants/metavariant", Metavariant);
 
                 return xmlMetavariantNode ?? xmlMetatypeNode;
             }
@@ -584,24 +568,18 @@ namespace Chummer
                     // ReSharper disable once MethodHasAsyncOverload
                     ? LoadDataXPath(strFile, strLanguage, token: token)
                     : await LoadDataXPathAsync(strFile, strLanguage, token: token).ConfigureAwait(false);
-                XPathNavigator xmlMetatypeNode = xmlDoc.SelectSingleNode(MetatypeGuid == Guid.Empty
-                    ? "/chummer/metatypes/metatype[name = " + Metatype.CleanXPath() + ']'
-                    : "/chummer/metatypes/metatype[id = " +
-                      MetatypeGuid.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath() + ']');
+                XPathNavigator xmlMetatypeNode = MetatypeGuid == Guid.Empty
+                    ? xmlDoc.TryGetNodeByNameOrId("/chummer/metatypes/metatype", Metatype)
+                    : xmlDoc.TryGetNodeById("/chummer/metatypes/metatype", MetatypeGuid);
                 if (blnReturnMetatypeOnly)
                     return xmlMetatypeNode;
                 if (MetavariantGuid == Guid.Empty || string.IsNullOrEmpty(Metavariant) || xmlMetatypeNode == null)
                     return xmlMetatypeNode;
-                XPathNavigator xmlMetavariantNode = xmlMetatypeNode.SelectSingleNode(MetavariantGuid == Guid.Empty
-                    ? "metavariants/metavariant[name = " + Metavariant.CleanXPath() + ']'
-                    : "metavariants/metavariant[id = " +
-                      MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath() + ']');
-                if (xmlMetavariantNode == null && MetavariantGuid != Guid.Empty)
-                {
-                    xmlMetavariantNode =
-                        xmlMetatypeNode.SelectSingleNode("metavariants/metavariant[name = " + Metavariant.CleanXPath() +
-                                                         ']');
-                }
+                XPathNavigator xmlMetavariantNode = null;
+                if (MetavariantGuid != Guid.Empty)
+                    xmlMetavariantNode = xmlMetatypeNode.TryGetNodeById("/metavariants/metavariant", MetavariantGuid);
+                if (xmlMetavariantNode == null)
+                    xmlMetavariantNode = xmlMetatypeNode.TryGetNodeByNameOrId("metavariants/metavariant", Metavariant);
 
                 return xmlMetavariantNode ?? xmlMetatypeNode;
             }
@@ -2775,8 +2753,7 @@ namespace Chummer
                         objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = \"Human\"]/id")?.InnerText ??
                         string.Empty;
                 XmlNode objXmlMetavariant =
-                    objXmlMetatype.SelectSingleNode("metavariants/metavariant[id = " + strMetavariantId.CleanXPath() +
-                                                    ']');
+                    objXmlMetatype.TryGetNodeByNameOrId("metavariants/metavariant", strMetavariantId);
 
                 // Set Metatype information.
                 XmlNode charNode =
@@ -2823,11 +2800,7 @@ namespace Chummer
                             foreach (XmlNode objXmlQualityItem in xmlQualityList)
                             {
                                 string strQuality = objXmlQualityItem.InnerText;
-                                XmlNode objXmlQuality = strQuality.IsGuid()
-                                    ? xmlQualityDocumentQualitiesNode.SelectSingleNode(
-                                        "quality[id = " + strQuality.CleanXPath() + ']')
-                                    : xmlQualityDocumentQualitiesNode.SelectSingleNode(
-                                        "quality[name = " + strQuality.CleanXPath() + ']');
+                                XmlNode objXmlQuality = xmlQualityDocumentQualitiesNode.TryGetNodeByNameOrId("quality", strQuality);
                                 if (objXmlQuality != null)
                                 {
                                     Quality objQuality = new Quality(this);
@@ -2863,11 +2836,7 @@ namespace Chummer
                     foreach (XmlNode objXmlPower in charNode.SelectNodes("powers/power"))
                     {
                         string strCritterPower = objXmlPower.InnerText;
-                        XmlNode objXmlCritterPower = strCritterPower.IsGuid()
-                            ? xmlCritterPowerDocumentPowersNode.SelectSingleNode(
-                                "power[id = " + strCritterPower.CleanXPath() + ']')
-                            : xmlCritterPowerDocumentPowersNode.SelectSingleNode(
-                                "power[name = " + strCritterPower.CleanXPath() + ']');
+                        XmlNode objXmlCritterPower = xmlCritterPowerDocumentPowersNode.TryGetNodeByNameOrId("power", strCritterPower);
                         if (objXmlCritterPower != null)
                         {
                             CritterPower objPower = new CritterPower(this);
@@ -3065,8 +3034,7 @@ namespace Chummer
                         if (SkillsSection.KnowledgeSkills.All(x => x.DictionaryKey != strName))
                         {
                             XmlNode objXmlSkillNode =
-                                xmlSkillsDocumentKnowledgeSkillsNode.SelectSingleNode("skill[name = " +
-                                    strName.CleanXPath() + ']');
+                                xmlSkillsDocumentKnowledgeSkillsNode.TryGetNodeByNameOrId("skill", strName);
                             if (objXmlSkillNode != null)
                             {
                                 Skill objUncastSkill = Skill.FromData(objXmlSkillNode, this, true);
@@ -3110,12 +3078,7 @@ namespace Chummer
                 XmlDocument xmlComplexFormDocument = LoadData("complexforms.xml", token: token);
                 foreach (XmlNode xmlComplexForm in charNode.SelectNodes("complexforms/complexform"))
                 {
-                    string strComplexForm = xmlComplexForm.InnerText;
-                    XmlNode xmlComplexFormData = strComplexForm.IsGuid()
-                        ? xmlComplexFormDocument.SelectSingleNode(
-                            "/chummer/complexforms/complexform[id = " + strComplexForm.CleanXPath() + ']')
-                        : xmlComplexFormDocument.SelectSingleNode(
-                            "/chummer/complexforms/complexform[name = " + strComplexForm.CleanXPath() + ']');
+                    XmlNode xmlComplexFormData = xmlComplexFormDocument.TryGetNodeByNameOrId("/chummer/complexforms/complexform", xmlComplexForm.InnerText);
                     if (xmlComplexFormData == null)
                         continue;
 
@@ -3147,12 +3110,7 @@ namespace Chummer
                 XmlDocument xmlCyberwareDocument = LoadData("cyberware.xml", token: token);
                 foreach (XmlNode node in charNode.SelectNodes("cyberwares/cyberware"))
                 {
-                    string strCyberware = node.InnerText;
-                    XmlNode objXmlCyberwareNode = strCyberware.IsGuid()
-                        ? xmlCyberwareDocument.SelectSingleNode(
-                            "chummer/cyberwares/cyberware[id = " + strCyberware.CleanXPath() + ']')
-                        : xmlCyberwareDocument.SelectSingleNode(
-                            "chummer/cyberwares/cyberware[name = " + strCyberware.CleanXPath() + ']');
+                    XmlNode objXmlCyberwareNode = xmlCyberwareDocument.TryGetNodeByNameOrId("chummer/cyberwares/cyberware", node.InnerText);
                     if (objXmlCyberwareNode == null)
                         continue;
                     Cyberware objWare = new Cyberware(this);
@@ -3185,12 +3143,7 @@ namespace Chummer
                 XmlDocument xmlBiowareDocument = LoadData("bioware.xml", token: token);
                 foreach (XmlNode node in charNode.SelectNodes("biowares/bioware"))
                 {
-                    string strCyberware = node.InnerText;
-                    XmlNode objXmlCyberwareNode = strCyberware.IsGuid()
-                        ? xmlBiowareDocument.SelectSingleNode(
-                            "chummer/biowares/bioware[id = " + strCyberware.CleanXPath() + ']')
-                        : xmlBiowareDocument.SelectSingleNode(
-                            "chummer/biowares/bioware[name = " + strCyberware.CleanXPath() + ']');
+                    XmlNode objXmlCyberwareNode = xmlBiowareDocument.TryGetNodeByNameOrId("chummer/biowares/bioware", node.InnerText);
                     if (objXmlCyberwareNode == null)
                         continue;
                     Cyberware objWare = new Cyberware(this);
@@ -3223,12 +3176,7 @@ namespace Chummer
                 XmlDocument xmlAIProgramDocument = LoadData("programs.xml", token: token);
                 foreach (XmlNode xmlAIProgram in charNode.SelectNodes("programs/program"))
                 {
-                    string strAIProgram = xmlAIProgram.InnerText;
-                    XmlNode xmlAIProgramData = strAIProgram.IsGuid()
-                        ? xmlAIProgramDocument.SelectSingleNode(
-                            "/chummer/programs/program[id = " + strAIProgram.CleanXPath() + ']')
-                        : xmlAIProgramDocument.SelectSingleNode(
-                            "/chummer/programs/program[name = " + strAIProgram.CleanXPath() + ']');
+                    XmlNode xmlAIProgramData = xmlAIProgramDocument.TryGetNodeByNameOrId("chummer/programs/program", xmlAIProgram.InnerText);
                     if (xmlAIProgramData == null)
                         continue;
 
@@ -3384,8 +3332,7 @@ namespace Chummer
                             {
                                 // Add the selected Power.
                                 XmlNode objXmlCritterPower =
-                                    xmlCritterPowerDocumentPowersNode.SelectSingleNode("power[name = " +
-                                        strSelectedPossessionMethod.CleanXPath() + ']');
+                                    xmlCritterPowerDocumentPowersNode.TryGetNodeByNameOrId("power", strSelectedPossessionMethod);
                                 if (objXmlCritterPower != null)
                                 {
                                     CritterPower objPower = new CritterPower(this);
@@ -7499,8 +7446,7 @@ namespace Chummer
                                     if (xmlTraditionListDataNode != null)
                                     {
                                         XmlNode xmlTraditionDataNode =
-                                            xmlTraditionListDataNode.SelectSingleNode("tradition[name = " +
-                                                strTemp.CleanXPath() + ']');
+                                            xmlTraditionListDataNode.TryGetNodeByNameOrId("tradition", strTemp);
                                         if (xmlTraditionDataNode != null)
                                         {
                                             if (!_objTradition.Create(xmlTraditionDataNode, true))
@@ -7593,8 +7539,7 @@ namespace Chummer
                                                 xmlCharacterNavigator.TryGetStringFieldQuickly("tradition",
                                                     ref strTemp);
                                                 XmlNode xmlTraditionDataNode =
-                                                    xmlTraditionListDataNode.SelectSingleNode(
-                                                        "tradition[name = " + strTemp.CleanXPath() + ']');
+                                                    xmlTraditionListDataNode.TryGetNodeByNameOrId("tradition", strTemp);
                                                 if (xmlTraditionDataNode != null)
                                                 {
                                                     if (!_objTradition.Create(xmlTraditionDataNode))
@@ -7609,9 +7554,7 @@ namespace Chummer
                                                 else
                                                 {
                                                     xmlTraditionDataNode =
-                                                        xmlTraditionListDataNode.SelectSingleNode(
-                                                            "tradition[id = " +
-                                                            Tradition.CustomMagicalTraditionGuid.CleanXPath() + ']');
+                                                        xmlTraditionListDataNode.TryGetNodeByNameOrId("tradition", Tradition.CustomMagicalTraditionGuid);
                                                     if (xmlTraditionDataNode != null &&
                                                         !_objTradition.Create(xmlTraditionDataNode))
                                                     {
@@ -7645,8 +7588,7 @@ namespace Chummer
                                             xmlCharacterNavigator.TryGetStringFieldQuickly("tradition",
                                                 ref strTemp);
                                             XmlNode xmlTraditionDataNode =
-                                                xmlTraditionListDataNode.SelectSingleNode(
-                                                    "tradition[name = " + strTemp.CleanXPath() + ']');
+                                                xmlTraditionListDataNode.TryGetNodeByNameOrId("tradition", strTemp);
                                             if (xmlTraditionDataNode != null)
                                             {
                                                 if (!_objTradition.Create(xmlTraditionDataNode))
@@ -7661,9 +7603,7 @@ namespace Chummer
                                             else
                                             {
                                                 xmlTraditionDataNode =
-                                                    xmlTraditionListDataNode.SelectSingleNode(
-                                                        "tradition[id = " +
-                                                        Tradition.CustomMagicalTraditionGuid.CleanXPath() + ']');
+                                                    xmlTraditionListDataNode.TryGetNodeByNameOrId("tradition", Tradition.CustomMagicalTraditionGuid);
                                                 if (xmlTraditionDataNode != null &&
                                                     !_objTradition.Create(xmlTraditionDataNode))
                                                 {
@@ -8087,35 +8027,100 @@ namespace Chummer
                                 // Legacy Shim #2 (needed to be separate because we're dealing with PairBonuses here, and we don't know if something needs its PairBonus reapplied until all Cyberwares have been loaded)
                                 if (LastSavedVersion <= new Version(5, 200, 0))
                                 {
-                                    foreach (Cyberware objCyberware in Cyberware)
+                                    if (blnSync)
                                     {
-                                        if (objCyberware.PairBonus?.HasChildNodes == true &&
-                                            !Cyberware.DeepAny(x => x.Children, x =>
-                                            {
-                                                if (!objCyberware.IncludePair.Contains(x.Name) ||
-                                                    x.Extra != objCyberware.Extra ||
-                                                    !x.IsModularCurrentlyEquipped)
-                                                    return false;
-                                                string strToMatch = x.InternalId + "Pair";
-                                                return Improvements.Any(y => y.SourceName == strToMatch);
-                                            }))
+                                        // ReSharper disable MethodHasAsyncOverload
+                                        Cyberware.ForEach(objCyberware =>
                                         {
-                                            XmlNode objNode = blnSync
-                                                // ReSharper disable once MethodHasAsyncOverload
-                                                ? objCyberware.GetNode(token: token)
-                                                : await objCyberware.GetNodeAsync(token: token).ConfigureAwait(false);
-                                            if (objNode != null)
-                                            {
-                                                if (blnSync)
+                                            if (objCyberware.PairBonus?.HasChildNodes == true &&
+                                                !Cyberware.DeepAny(x => x.Children, x =>
                                                 {
-                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    if (!objCyberware.IncludePair.Contains(x.Name) ||
+                                                        x.Extra != objCyberware.Extra ||
+                                                        !x.IsModularCurrentlyEquipped)
+                                                        return false;
+                                                    string strToMatch = x.InternalId + "Pair";
+                                                    return Improvements.Any(y => y.SourceName == strToMatch);
+                                                }))
+                                            {
+                                                XmlNode objNode = objCyberware.GetNode(token: token);
+                                                if (objNode != null)
+                                                {
                                                     ImprovementManager.RemoveImprovements(this, objCyberware.SourceType,
                                                         objCyberware.InternalId, token: token);
-                                                    // ReSharper disable once MethodHasAsyncOverload
                                                     ImprovementManager.RemoveImprovements(this, objCyberware.SourceType,
                                                         objCyberware.InternalId + "Pair", token: token);
+
+                                                    objCyberware.Bonus = objNode["bonus"];
+                                                    objCyberware.WirelessBonus = objNode["wirelessbonus"];
+                                                    objCyberware.PairBonus = objNode["pairbonus"];
+                                                    if (!string.IsNullOrEmpty(objCyberware.Forced) &&
+                                                        objCyberware.Forced != "Right" &&
+                                                        objCyberware.Forced != "Left")
+                                                        ImprovementManager.ForcedValue = objCyberware.Forced;
+                                                    if (objCyberware.Bonus != null)
+                                                    {
+                                                        ImprovementManager.CreateImprovements(this,
+                                                            objCyberware.SourceType,
+                                                            objCyberware.InternalId, objCyberware.Bonus,
+                                                            objCyberware.Rating,
+                                                            objCyberware.CurrentDisplayNameShort, token: token);
+                                                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                                            objCyberware.Extra = ImprovementManager.SelectedValue;
+                                                    }
+
+                                                    if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
+                                                    {
+                                                        ImprovementManager.CreateImprovements(this,
+                                                            objCyberware.SourceType,
+                                                            objCyberware.InternalId, objCyberware.WirelessBonus,
+                                                            objCyberware.Rating,
+                                                            objCyberware.CurrentDisplayNameShort, token: token);
+                                                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) &&
+                                                            string.IsNullOrEmpty(objCyberware.Extra))
+                                                            objCyberware.Extra = ImprovementManager.SelectedValue;
+                                                    }
+
+                                                    if (!objCyberware.IsModularCurrentlyEquipped)
+                                                    {
+                                                        objCyberware.ChangeModularEquip(false);
+                                                    }
+                                                    else if (objCyberware.PairBonus != null)
+                                                    {
+                                                        Cyberware objMatchingCyberware =
+                                                            dicPairableCyberwares.Keys.FirstOrDefault(
+                                                                x =>
+                                                                    x.Name == objCyberware.Name &&
+                                                                    x.Extra == objCyberware.Extra);
+                                                        if (objMatchingCyberware != null)
+                                                            ++dicPairableCyberwares[objMatchingCyberware];
+                                                        else
+                                                            dicPairableCyberwares.Add(objCyberware, 1);
+                                                    }
                                                 }
                                                 else
+                                                    lstInternalIdsNeedingReapplyImprovements.Add(objCyberware.InternalId);
+                                            }
+                                        }, token);
+                                        // ReSharper restore MethodHasAsyncOverload
+                                    }
+                                    else
+                                    {
+                                        await Cyberware.ForEachAsync(async objCyberware =>
+                                        {
+                                            if (objCyberware.PairBonus?.HasChildNodes == true &&
+                                                !await Cyberware.DeepAnyAsync(x => x.Children, async x =>
+                                                {
+                                                    if (!objCyberware.IncludePair.Contains(x.Name) ||
+                                                        x.Extra != objCyberware.Extra ||
+                                                        !await x.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
+                                                        return false;
+                                                    string strToMatch = x.InternalId + "Pair";
+                                                    return await Improvements.AnyAsync(y => y.SourceName == strToMatch, token).ConfigureAwait(false);
+                                                }, token).ConfigureAwait(false))
+                                            {
+                                                XmlNode objNode = await objCyberware.GetNodeAsync(token: token).ConfigureAwait(false);
+                                                if (objNode != null)
                                                 {
                                                     await ImprovementManager.RemoveImprovementsAsync(
                                                         this, objCyberware.SourceType,
@@ -8125,25 +8130,15 @@ namespace Chummer
                                                                                 objCyberware.InternalId + "Pair",
                                                                                 token: token)
                                                                             .ConfigureAwait(false);
-                                                }
-
-                                                objCyberware.Bonus = objNode["bonus"];
-                                                objCyberware.WirelessBonus = objNode["wirelessbonus"];
-                                                objCyberware.PairBonus = objNode["pairbonus"];
-                                                if (!string.IsNullOrEmpty(objCyberware.Forced) &&
-                                                    objCyberware.Forced != "Right" &&
-                                                    objCyberware.Forced != "Left")
-                                                    ImprovementManager.ForcedValue = objCyberware.Forced;
-                                                if (objCyberware.Bonus != null)
-                                                {
-                                                    if (blnSync)
-                                                        // ReSharper disable once MethodHasAsyncOverload
-                                                        ImprovementManager.CreateImprovements(this,
-                                                            objCyberware.SourceType,
-                                                            objCyberware.InternalId, objCyberware.Bonus,
-                                                            objCyberware.Rating,
-                                                            objCyberware.CurrentDisplayNameShort, token: token);
-                                                    else
+                                                    objCyberware.Bonus = objNode["bonus"];
+                                                    objCyberware.WirelessBonus = objNode["wirelessbonus"];
+                                                    objCyberware.PairBonus = objNode["pairbonus"];
+                                                    if (!string.IsNullOrEmpty(objCyberware.Forced) &&
+                                                        objCyberware.Forced != "Right" &&
+                                                        objCyberware.Forced != "Left")
+                                                        ImprovementManager.ForcedValue = objCyberware.Forced;
+                                                    if (objCyberware.Bonus != null)
+                                                    {
                                                         await ImprovementManager.CreateImprovementsAsync(this,
                                                                 objCyberware.SourceType,
                                                                 objCyberware.InternalId, objCyberware.Bonus,
@@ -8153,20 +8148,12 @@ namespace Chummer
                                                                       .GetCurrentDisplayNameShortAsync(token)
                                                                       .ConfigureAwait(false), token: token)
                                                             .ConfigureAwait(false);
-                                                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                                                        objCyberware.Extra = ImprovementManager.SelectedValue;
-                                                }
+                                                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
+                                                            objCyberware.Extra = ImprovementManager.SelectedValue;
+                                                    }
 
-                                                if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
-                                                {
-                                                    if (blnSync)
-                                                        // ReSharper disable once MethodHasAsyncOverload
-                                                        ImprovementManager.CreateImprovements(this,
-                                                            objCyberware.SourceType,
-                                                            objCyberware.InternalId, objCyberware.WirelessBonus,
-                                                            objCyberware.Rating,
-                                                            objCyberware.CurrentDisplayNameShort, token: token);
-                                                    else
+                                                    if (objCyberware.WirelessOn && objCyberware.WirelessBonus != null)
+                                                    {
                                                         await ImprovementManager.CreateImprovementsAsync(this,
                                                                 objCyberware.SourceType,
                                                                 objCyberware.InternalId, objCyberware.WirelessBonus,
@@ -8176,36 +8163,33 @@ namespace Chummer
                                                                       .GetCurrentDisplayNameShortAsync(token)
                                                                       .ConfigureAwait(false), token: token)
                                                             .ConfigureAwait(false);
-                                                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) &&
-                                                        string.IsNullOrEmpty(objCyberware.Extra))
-                                                        objCyberware.Extra = ImprovementManager.SelectedValue;
-                                                }
+                                                        if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) &&
+                                                            string.IsNullOrEmpty(objCyberware.Extra))
+                                                            objCyberware.Extra = ImprovementManager.SelectedValue;
+                                                    }
 
-                                                if (!objCyberware.IsModularCurrentlyEquipped)
-                                                {
-                                                    if (blnSync)
-                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                        objCyberware.ChangeModularEquip(false);
-                                                    else
+                                                    if (!await objCyberware.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
+                                                    {
                                                         await objCyberware.ChangeModularEquipAsync(false, token: token)
                                                                           .ConfigureAwait(false);
+                                                    }
+                                                    else if (objCyberware.PairBonus != null)
+                                                    {
+                                                        Cyberware objMatchingCyberware =
+                                                            dicPairableCyberwares.Keys.FirstOrDefault(
+                                                                x =>
+                                                                    x.Name == objCyberware.Name &&
+                                                                    x.Extra == objCyberware.Extra);
+                                                        if (objMatchingCyberware != null)
+                                                            ++dicPairableCyberwares[objMatchingCyberware];
+                                                        else
+                                                            dicPairableCyberwares.Add(objCyberware, 1);
+                                                    }
                                                 }
-                                                else if (objCyberware.PairBonus != null)
-                                                {
-                                                    Cyberware objMatchingCyberware =
-                                                        dicPairableCyberwares.Keys.FirstOrDefault(
-                                                            x =>
-                                                                x.Name == objCyberware.Name &&
-                                                                x.Extra == objCyberware.Extra);
-                                                    if (objMatchingCyberware != null)
-                                                        ++dicPairableCyberwares[objMatchingCyberware];
-                                                    else
-                                                        dicPairableCyberwares.Add(objCyberware, 1);
-                                                }
+                                                else
+                                                    lstInternalIdsNeedingReapplyImprovements.Add(objCyberware.InternalId);
                                             }
-                                            else
-                                                lstInternalIdsNeedingReapplyImprovements.Add(objCyberware.InternalId);
-                                        }
+                                        }, token).ConfigureAwait(false);
                                     }
                                 }
 
@@ -19261,9 +19245,7 @@ namespace Chummer
                                 if (xmlTraditionListDataNode != null)
                                 {
                                     XmlNode xmlTraditionDataNode
-                                        = xmlTraditionListDataNode.SelectSingleNode(
-                                            "tradition[id = " + Tradition.CustomMagicalTraditionGuid.CleanXPath()
-                                                              + ']');
+                                        = xmlTraditionListDataNode.TryGetNodeByNameOrId("tradition", Tradition.CustomMagicalTraditionGuid);
                                     if (xmlTraditionDataNode != null)
                                     {
                                         if (!MagicTradition.Create(xmlTraditionDataNode))
@@ -29842,8 +29824,8 @@ namespace Chummer
                         if (objXmlQuality["name"] == null)
                         {
                             XmlNode objXmlQualityNode =
-                                xmlRootQualitiesNode.SelectSingleNode(
-                                    "quality[name = " + GetQualityName(objXmlQuality.InnerText).CleanXPath() + ']');
+                                xmlRootQualitiesNode.TryGetNodeByNameOrId(
+                                    "quality", GetQualityName(objXmlQuality.InnerText));
 
                             if (objXmlQualityNode != null)
                             {
@@ -29887,9 +29869,8 @@ namespace Chummer
                     }
 
                     // Take care of the Metatype information.
-                    string strXPath = "/chummer/metatypes/metatype[name = " + Metatype.CleanXPath() + ']';
-                    XmlNode objXmlMetatype = LoadData("metatypes.xml").SelectSingleNode(strXPath) ??
-                                             LoadData("critters.xml").SelectSingleNode(strXPath);
+                    XmlNode objXmlMetatype = LoadData("metatypes.xml").TryGetNodeByNameOrId("/chummer/metatypes/metatype", Metatype) ??
+                                             LoadData("critters.xml").TryGetNodeByNameOrId("/chummer/metatypes/metatype", Metatype);
 
                     if (objXmlMetatype != null)
                     {
@@ -29918,8 +29899,7 @@ namespace Chummer
                                         string strForceValue =
                                             objXmlMetatypeQuality.Attributes?["select"]?.InnerText ?? string.Empty;
                                         XmlNode objXmlQuality =
-                                            xmlRootQualitiesNode.SelectSingleNode(
-                                                "quality[name = " + objXmlMetatypeQuality.InnerText.CleanXPath() + ']');
+                                            xmlRootQualitiesNode.TryGetNodeByNameOrId("quality", objXmlMetatypeQuality.InnerText);
                                         using (LockObject.EnterWriteLock())
                                         {
                                             Quality objQuality = new Quality(this);
@@ -29965,8 +29945,7 @@ namespace Chummer
                                         string strForceValue =
                                             objXmlMetatypeQuality.Attributes?["select"]?.InnerText ?? string.Empty;
                                         XmlNode objXmlQuality =
-                                            xmlRootQualitiesNode.SelectSingleNode(
-                                                "quality[name = " + objXmlMetatypeQuality.InnerText.CleanXPath() + ']');
+                                            xmlRootQualitiesNode.TryGetNodeByNameOrId("quality", objXmlMetatypeQuality.InnerText);
                                         using (LockObject.EnterWriteLock())
                                         {
                                             Quality objQuality = new Quality(this);
@@ -29991,8 +29970,7 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(_strMetavariant))
                         {
                             objXmlMetatype =
-                                objXmlMetatype.SelectSingleNode(
-                                    "metavariants/metavariant[name = " + Metavariant.CleanXPath() + ']');
+                                objXmlMetatype.TryGetNodeByNameOrId("metavariants/metavariant", Metavariant);
 
                             if (objXmlMetatype != null)
                             {
@@ -30022,9 +30000,7 @@ namespace Chummer
                                                     objXmlMetatypeQuality.Attributes?["select"]?.InnerText
                                                     ?? string.Empty;
                                                 XmlNode objXmlQuality =
-                                                    xmlRootQualitiesNode.SelectSingleNode(
-                                                        "quality[name = " + objXmlMetatypeQuality.InnerText.CleanXPath()
-                                                                          + ']');
+                                                    xmlRootQualitiesNode.TryGetNodeByNameOrId("quality", objXmlMetatypeQuality.InnerText);
                                                 using (LockObject.EnterWriteLock())
                                                 {
                                                     Quality objQuality = new Quality(this);
@@ -30072,9 +30048,7 @@ namespace Chummer
                                                     objXmlMetatypeQuality.Attributes?["select"]?.InnerText
                                                     ?? string.Empty;
                                                 XmlNode objXmlQuality =
-                                                    xmlRootQualitiesNode.SelectSingleNode(
-                                                        "quality[name = " + objXmlMetatypeQuality.InnerText.CleanXPath()
-                                                                          + ']');
+                                                    xmlRootQualitiesNode.TryGetNodeByNameOrId("quality", objXmlMetatypeQuality.InnerText);
                                                 using (LockObject.EnterWriteLock())
                                                 {
                                                     Quality objQuality = new Quality(this);

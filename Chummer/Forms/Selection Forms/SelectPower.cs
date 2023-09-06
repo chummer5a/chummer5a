@@ -71,7 +71,7 @@ namespace Chummer
             string strSelectedId = await lstPowers.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false);
             XPathNavigator objXmlPower = null;
             if (!string.IsNullOrEmpty(strSelectedId))
-                objXmlPower = _xmlBasePowerDataNode.SelectSingleNode("powers/power[id = " + strSelectedId.CleanXPath() + ']');
+                objXmlPower = _xmlBasePowerDataNode.TryGetNodeByNameOrId("powers/power", strSelectedId);
 
             if (objXmlPower != null)
             {
@@ -294,7 +294,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Check to see if the user needs to select anything for the Power.
-                XPathNavigator objXmlPower = _xmlBasePowerDataNode.SelectSingleNode("powers/power[id = " + strSelectedId.CleanXPath() + ']');
+                XPathNavigator objXmlPower = _xmlBasePowerDataNode.TryGetNodeByNameOrId("powers/power", strSelectedId);
 
                 if (await objXmlPower.RequirementsMetAsync(_objCharacter, null, await LanguageManager.GetStringAsync("String_Power", token: token).ConfigureAwait(false), string.Empty, string.Empty, string.Empty, IgnoreLimits, token: token).ConfigureAwait(false))
                 {

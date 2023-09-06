@@ -180,10 +180,9 @@
       <adept>True</adept>
       <magician>True</magician>
       <required>
-        <allof>
+        <oneof>
           <art>Psychometry</art>
-          <metamagic>Psychometry</metamagic>
-        </allof>
+        </oneof>
       </required>
       <source>SG</source>
       <page>145</page>

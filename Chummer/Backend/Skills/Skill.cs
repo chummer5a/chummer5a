@@ -451,8 +451,7 @@ namespace Chummer.Backend.Skills
 
                 if (objLoadingSkill == null)
                 {
-                    XmlNode xmlSkillDataNode
-                        = objCharacter.LoadData("skills.xml").SelectSingleNode("/chummer/skills/skill[id = " + suid.ToString("D").CleanXPath() + ']');
+                    XmlNode xmlSkillDataNode = objCharacter.LoadData("skills.xml").TryGetNodeById("/chummer/skills/skill", suid);
 
                     if (xmlSkillDataNode == null)
                         return null;
@@ -569,10 +568,7 @@ namespace Chummer.Backend.Skills
             else
             {
                 XmlDocument xmlSkillsDocument = objCharacter.LoadData("skills.xml");
-                XmlNode xmlSkillDataNode = xmlSkillsDocument
-                                               .SelectSingleNode("/chummer/skills/skill[id = '"
-                                                                 + suid.ToString("D", GlobalSettings.InvariantCultureInfo)
-                                                                 + "']")
+                XmlNode xmlSkillDataNode = xmlSkillDataNode = objCharacter.LoadData("skills.xml").TryGetNodeById("/chummer/skills/skill", suid)
                     //Some stuff apparently have a guid of 0000-000... (only exotic?)
                     ?? xmlSkillsDocument.SelectSingleNode("/chummer/skills/skill[name = " + strName.CleanXPath() + ']');
 

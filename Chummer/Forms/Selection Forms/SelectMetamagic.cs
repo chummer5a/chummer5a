@@ -100,7 +100,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Retrieve the information for the selected metamagic/echo.
-                XPathNavigator objXmlMetamagic = _objXmlDocument.SelectSingleNode(_strRootXPath + "[id = " + strSelectedId.CleanXPath() + ']');
+                XPathNavigator objXmlMetamagic = _objXmlDocument.TryGetNodeByNameOrId(_strRootXPath, strSelectedId);
 
                 if (objXmlMetamagic != null)
                 {
@@ -237,7 +237,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Make sure the selected Metamagic or Echo meets its requirements.
-                XPathNavigator objXmlMetamagic = _objXmlDocument.SelectSingleNode(_strRootXPath + "[id = " + strSelectedId.CleanXPath() + ']');
+                XPathNavigator objXmlMetamagic = _objXmlDocument.TryGetNodeByNameOrId(_strRootXPath, strSelectedId);
 
                 if (objXmlMetamagic?.RequirementsMet(_objCharacter, null, _strType) != true)
                     return;

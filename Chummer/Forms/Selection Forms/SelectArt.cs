@@ -114,7 +114,7 @@ namespace Chummer
             }
 
             // Retrieve the information for the selected art
-            XPathNavigator objXmlMetamagic = _objXmlDocument.SelectSingleNode(_strBaseXPath + "[id = " + strSelected.CleanXPath() + ']');
+            XPathNavigator objXmlMetamagic = _objXmlDocument.TryGetNodeByNameOrId(_strBaseXPath, strSelected);
 
             if (objXmlMetamagic == null)
             {
@@ -221,7 +221,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedItem))
             {
                 // Make sure the selected Metamagic or Echo meets its requirements.
-                XPathNavigator objXmlMetamagic = _objXmlDocument.SelectSingleNode(_strBaseXPath + "[id = " + strSelectedItem.CleanXPath() + ']');
+                XPathNavigator objXmlMetamagic = _objXmlDocument.TryGetNodeByNameOrId(_strBaseXPath, strSelectedItem);
 
                 if (objXmlMetamagic != null)
                 {

@@ -279,7 +279,7 @@ namespace Chummer
                 _lstAllowedMounts.Clear();
                 if (value != null)
                 {
-                    foreach (XPathNavigator objXmlMount in _xmlBaseChummerNode.Select("weapons/weapon[id = " + value.SourceIDString.CleanXPath() + "]/accessorymounts/mount"))
+                    foreach (XPathNavigator objXmlMount in _xmlBaseChummerNode.Select("weapons/weapon[id = " + value.SourceIDString.CleanXPath() + " or id = " + value.SourceIDString.ToUpperInvariant().CleanXPath() + "]/accessorymounts/mount"))
                     {
                         string strLoopMount = objXmlMount.Value;
                         // Run through the Weapon's current Accessories and filter out any used up Mount points.
@@ -360,8 +360,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 xmlAccessory
-                    = _xmlBaseChummerNode.SelectSingleNode("accessories/accessory[id = " + strSelectedId.CleanXPath()
-                                                           + ']');
+                    = _xmlBaseChummerNode.TryGetNodeByNameOrId("accessories/accessory", strSelectedId);
             }
 
             if (xmlAccessory == null)

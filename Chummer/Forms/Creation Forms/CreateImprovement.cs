@@ -131,7 +131,7 @@ namespace Chummer
 
         private void cboImprovemetType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            XmlNode objFetchNode = _objDocument.SelectSingleNode("/chummer/improvements/improvement[id = " + cboImprovemetType.SelectedValue.ToString().CleanXPath() + ']');
+            XmlNode objFetchNode = _objDocument.TryGetNodeByNameOrId("/chummer/improvements/improvement", cboImprovemetType.SelectedValue.ToString());
 
             lblVal.Visible = false;
             lblMin.Visible = false;

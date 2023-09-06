@@ -372,8 +372,9 @@ namespace Chummer.UI.Powers
 
                         Power objPower = new Power(_objCharacter);
 
-                        XmlNode objXmlPower = objXmlDocument.SelectSingleNode(
-                            "/chummer/powers/power[id = " + frmPickPower.MyForm.SelectedPower.CleanXPath() + ']');
+                        XmlNode objXmlPower = objXmlDocument.TryGetNodeByNameOrId("/chummer/powers/power", frmPickPower.MyForm.SelectedPower)
+                                              ?? throw new AbortedException();
+
                         if (objPower.Create(objXmlPower))
                         {
                             await _objCharacter.Powers.AddAsync(objPower, MyToken).ConfigureAwait(false);

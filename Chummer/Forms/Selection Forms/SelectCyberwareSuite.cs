@@ -137,7 +137,7 @@ namespace Chummer
             Grade objGrade = null;
             if (strSelectedSuite != null)
             {
-                xmlSuite = _objXmlDocument.SelectSingleNode("/chummer/suites/suite[id = " + strSelectedSuite.CleanXPath() + ']');
+                xmlSuite = _objXmlDocument.TryGetNodeByNameOrId("/chummer/suites/suite", strSelectedSuite);
                 string strSuiteGradeEntry = xmlSuite?["grade"]?.InnerText;
                 if (!string.IsNullOrEmpty(strSuiteGradeEntry))
                 {

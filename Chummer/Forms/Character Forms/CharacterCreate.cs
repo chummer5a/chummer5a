@@ -4542,9 +4542,7 @@ namespace Chummer
                             blnAddAgain = frmPickSpell.MyForm.AddAgain;
 
                             XmlNode objXmlSpell
-                                = objXmlDocument.SelectSingleNode("/chummer/spells/spell[id = "
-                                                                  + frmPickSpell.MyForm.SelectedSpell.CleanXPath()
-                                                                  + ']');
+                                = objXmlDocument.TryGetNodeByNameOrId("/chummer/spells/spell",frmPickSpell.MyForm.SelectedSpell);
 
                             Spell objSpell = new Spell(CharacterObject);
                             try
@@ -4740,10 +4738,7 @@ namespace Chummer
 
                             blnAddAgain = frmPickComplexForm.MyForm.AddAgain;
 
-                            objXmlComplexForm = objXmlDocument.SelectSingleNode(
-                                "/chummer/complexforms/complexform[id = "
-                                + frmPickComplexForm.MyForm.SelectedComplexForm.CleanXPath()
-                                + ']');
+                            objXmlComplexForm = objXmlDocument.TryGetNodeByNameOrId("/chummer/complexforms/complexform", frmPickComplexForm.MyForm.SelectedComplexForm);
                         }
 
                         if (objXmlComplexForm == null)
@@ -4796,9 +4791,7 @@ namespace Chummer
 
                             blnAddAgain = frmPickProgram.MyForm.AddAgain;
 
-                            objXmlProgram = objXmlDocument.SelectSingleNode(
-                                "/chummer/programs/program[id = " + frmPickProgram.MyForm.SelectedProgram.CleanXPath()
-                                                                  + ']');
+                            objXmlProgram = objXmlDocument.TryGetNodeByNameOrId("/chummer/programs/program", frmPickProgram.MyForm.SelectedProgram);
                         }
 
                         if (objXmlProgram == null)
@@ -5441,9 +5434,7 @@ namespace Chummer
 
                             blnAddAgain = frmPickCritterPower.MyForm.AddAgain;
 
-                            XmlNode objXmlPower = objXmlDocument.SelectSingleNode(
-                                "/chummer/powers/power[id = " + frmPickCritterPower.MyForm.SelectedPower.CleanXPath()
-                                                              + ']');
+                            XmlNode objXmlPower = objXmlDocument.TryGetNodeByNameOrId("/chummer/powers/power", frmPickCritterPower.MyForm.SelectedPower);
                             CritterPower objPower = new CritterPower(CharacterObject);
                             objPower.Create(objXmlPower, frmPickCritterPower.MyForm.SelectedRating);
                             objPower.PowerPoints = frmPickCritterPower.MyForm.PowerPoints;
@@ -5610,8 +5601,7 @@ namespace Chummer
                             blnAddAgain = frmPickQuality.MyForm.AddAgain;
                             int intRatingToAdd = frmPickQuality.MyForm.SelectedRating;
                             string strSelectedQuality = frmPickQuality.MyForm.SelectedQuality;
-                            XmlNode objXmlQuality = objXmlDocument.SelectSingleNode(
-                                "/chummer/qualities/quality[id = " + strSelectedQuality.CleanXPath() + ']');
+                            XmlNode objXmlQuality = objXmlDocument.TryGetNodeByNameOrId("/chummer/qualities/quality", strSelectedQuality);
                             int intDummy = 0;
                             if (objXmlQuality != null && objXmlQuality["nolevels"] == null
                                                       && objXmlQuality.TryGetInt32FieldQuickly(
@@ -6608,10 +6598,7 @@ namespace Chummer
                             blnAddAgain = frmPickWeaponAccessory.MyForm.AddAgain;
 
                             // Locate the selected piece.
-                            objXmlWeapon = xmlDocument.SelectSingleNode(
-                                "/chummer/accessories/accessory[id = "
-                                + frmPickWeaponAccessory.MyForm.SelectedAccessory.CleanXPath()
-                                + ']');
+                            objXmlWeapon = xmlDocument.TryGetNodeByNameOrId("/chummer/accessories/accessory", frmPickWeaponAccessory.MyForm.SelectedAccessory);
 
                             WeaponAccessory objAccessory = new WeaponAccessory(CharacterObject);
                             objAccessory.Create(objXmlWeapon, frmPickWeaponAccessory.MyForm.SelectedMount,
@@ -6702,8 +6689,7 @@ namespace Chummer
                             blnAddAgain = frmPickArmorMod.MyForm.AddAgain;
 
                             // Locate the selected piece.
-                            objXmlArmor = objXmlDocument.SelectSingleNode(
-                                "/chummer/mods/mod[id = " + frmPickArmorMod.MyForm.SelectedArmorMod.CleanXPath() + ']');
+                            objXmlArmor = objXmlDocument.TryGetNodeByNameOrId("/chummer/mods/mod", frmPickArmorMod.MyForm.SelectedArmorMod);
 
                             ArmorMod objMod = new ArmorMod(CharacterObject);
                             List<Weapon> lstWeapons = new List<Weapon>(1);
@@ -6848,9 +6834,7 @@ namespace Chummer
                             blnAddAgain = frmPickVehicleMod.MyForm.AddAgain;
 
                             XmlNode objXmlMod
-                                = objXmlDocument.SelectSingleNode("/chummer/mods/mod[id = "
-                                                                  + frmPickVehicleMod.MyForm.SelectedMod.CleanXPath()
-                                                                  + ']');
+                                = objXmlDocument.TryGetNodeByNameOrId("/chummer/mods/mod", frmPickVehicleMod.MyForm.SelectedMod);
 
                             VehicleMod objMod = new VehicleMod(CharacterObject)
                             {
@@ -7025,9 +7009,7 @@ namespace Chummer
                                 return;
 
                             // Open the Weapons XML file and locate the selected piece.
-                            XmlNode objXmlWeapon = objXmlDocument.SelectSingleNode(
-                                "/chummer/weapons/weapon[id = " + frmPickWeapon.MyForm.SelectedWeapon.CleanXPath()
-                                                                + ']');
+                            XmlNode objXmlWeapon = objXmlDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon", frmPickWeapon.MyForm.SelectedWeapon);
 
                             List<Weapon> lstWeapons = new List<Weapon>(1);
                             Weapon objWeapon = new Weapon(CharacterObject)
@@ -7137,10 +7119,7 @@ namespace Chummer
                             blnAddAgain = frmPickWeaponAccessory.MyForm.AddAgain;
 
                             // Locate the selected piece.
-                            objXmlWeapon = objXmlDocument.SelectSingleNode(
-                                "/chummer/accessories/accessory[id = "
-                                + frmPickWeaponAccessory.MyForm.SelectedAccessory.CleanXPath()
-                                + ']');
+                            objXmlWeapon = objXmlDocument.TryGetNodeByNameOrId("/chummer/accessories/accessory", frmPickWeaponAccessory.MyForm.SelectedAccessory);
 
                             WeaponAccessory objAccessory = new WeaponAccessory(CharacterObject);
                             objAccessory.Create(objXmlWeapon, frmPickWeaponAccessory.MyForm.SelectedMount,
@@ -7304,9 +7283,7 @@ namespace Chummer
                             blnAddAgain = frmPickMartialArtTechnique.MyForm.AddAgain;
 
                             // Open the Martial Arts XML file and locate the selected piece.
-                            xmlTechnique = xmlDocument.SelectSingleNode(
-                                "/chummer/techniques/technique[id = "
-                                + frmPickMartialArtTechnique.MyForm.SelectedTechnique.CleanXPath() + ']');
+                            xmlTechnique = xmlDocument.TryGetNodeByNameOrId("/chummer/techniques/technique", frmPickMartialArtTechnique.MyForm.SelectedTechnique);
                         }
 
                         // Create the Improvements for the Technique if there are any.
@@ -7440,8 +7417,7 @@ namespace Chummer
 
                             // Open the Gear XML file and locate the selected piece.
                             XmlNode objXmlGear
-                                = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
-                                                                  + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
+                                = objXmlDocument.TryGetNodeByNameOrId("/chummer/gears/gear", frmPickGear.MyForm.SelectedGear);
 
                             // Create the new piece of Gear.
                             objGear = new Gear(CharacterObject);
@@ -8377,10 +8353,7 @@ namespace Chummer
                                 break;
                             blnAddAgain = frmPickCyberware.MyForm.AddAgain;
 
-                            XmlNode objXmlCyberware = objXmlDocument.SelectSingleNode(
-                                "/chummer/cyberwares/cyberware[id = "
-                                + frmPickCyberware.MyForm.SelectedCyberware.CleanXPath()
-                                + ']');
+                            XmlNode objXmlCyberware = objXmlDocument.TryGetNodeByNameOrId("/chummer/cyberwares/cyberware", frmPickCyberware.MyForm.SelectedCyberware);
                             Cyberware objCyberware = new Cyberware(CharacterObject);
                             if (!objCyberware.Purchase(objXmlCyberware, Improvement.ImprovementSource.Cyberware,
                                                        frmPickCyberware.MyForm.SelectedGrade,
@@ -8743,8 +8716,7 @@ namespace Chummer
                             blnAddAgain = frmPickGear.MyForm.AddAgain;
 
                             XmlNode objXmlGear
-                                = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
-                                                                  + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
+                                = objXmlDocument.TryGetNodeByNameOrId("/chummer/gears/gear", frmPickGear.MyForm.SelectedGear);
 
                             // Create the new piece of Gear.
                             List<Weapon> lstWeapons = new List<Weapon>(1);
@@ -8851,8 +8823,7 @@ namespace Chummer
                             blnAddAgain = frmPickGear.MyForm.AddAgain;
 
                             XmlNode objXmlGear
-                                = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
-                                                                  + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
+                                = objXmlDocument.TryGetNodeByNameOrId("/chummer/gears/gear", frmPickGear.MyForm.SelectedGear);
 
                             // Create the new piece of Gear.
                             List<Weapon> lstWeapons = new List<Weapon>(1);
@@ -8968,8 +8939,7 @@ namespace Chummer
                             blnAddAgain = frmPickGear.MyForm.AddAgain;
 
                             XmlNode objXmlGear
-                                = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
-                                                                  + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
+                                = objXmlDocument.TryGetNodeByNameOrId("/chummer/gears/gear", frmPickGear.MyForm.SelectedGear);
 
                             // Create the new piece of Gear.
                             List<Weapon> lstWeapons = new List<Weapon>(1);
@@ -9085,8 +9055,7 @@ namespace Chummer
                             blnAddAgain = frmPickGear.MyForm.AddAgain;
 
                             XmlNode objXmlGear
-                                = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
-                                                                  + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
+                                = objXmlDocument.TryGetNodeByNameOrId("/chummer/gears/gear", frmPickGear.MyForm.SelectedGear);
 
                             // Create the new piece of Gear.
                             List<Weapon> lstWeapons = new List<Weapon>(1);
@@ -9181,8 +9150,7 @@ namespace Chummer
                             blnAddAgain = frmPickGear.MyForm.AddAgain;
 
                             XmlNode objXmlGear
-                                = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
-                                                                  + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
+                                = objXmlDocument.TryGetNodeByNameOrId("/chummer/gears/gear", frmPickGear.MyForm.SelectedGear);
 
                             // Create the new piece of Gear.
                             List<Weapon> lstWeapons = new List<Weapon>(1);
@@ -9291,8 +9259,7 @@ namespace Chummer
                             blnAddAgain = frmPickGear.MyForm.AddAgain;
 
                             XmlNode objXmlGear
-                                = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
-                                                                  + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
+                                = objXmlDocument.TryGetNodeByNameOrId("/chummer/gears/gear", frmPickGear.MyForm.SelectedGear);
 
                             // Create the new piece of Gear.
                             List<Weapon> lstWeapons = new List<Weapon>(1);
@@ -9458,8 +9425,7 @@ namespace Chummer
 
                             // Open the Gear XML file and locate the selected piece.
                             XmlNode objXmlGear
-                                = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
-                                                                  + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
+                                = objXmlDocument.TryGetNodeByNameOrId("/chummer/gears/gear", frmPickGear.MyForm.SelectedGear);
 
                             // Create the new piece of Gear.
                             List<Weapon> lstWeapons = new List<Weapon>(1);
@@ -9560,8 +9526,7 @@ namespace Chummer
 
                             // Open the Gear XML file and locate the selected piece.
                             XmlNode objXmlGear
-                                = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
-                                                                  + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
+                                = objXmlDocument.TryGetNodeByNameOrId("/chummer/gears/gear", frmPickGear.MyForm.SelectedGear);
 
                             // Create the new piece of Gear.
                             List<Weapon> lstWeapons = new List<Weapon>(1);
@@ -17290,8 +17255,7 @@ namespace Chummer
                     XmlDocument objXmlDocument
                         = await CharacterObject.LoadDataAsync("gear.xml", token: token).ConfigureAwait(false);
                     XmlNode objXmlGear
-                        = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
-                                                          + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
+                        = objXmlDocument.TryGetNodeByNameOrId("/chummer/gears/gear", frmPickGear.MyForm.SelectedGear);
 
                     // Create the new piece of Gear.
                     List<Weapon> lstWeapons = new List<Weapon>(1);
@@ -17455,8 +17419,7 @@ namespace Chummer
                     XmlDocument objXmlDocument
                         = await CharacterObject.LoadDataAsync("gear.xml", token: token).ConfigureAwait(false);
                     XmlNode objXmlGear
-                        = objXmlDocument.SelectSingleNode("/chummer/gears/gear[id = "
-                                                          + frmPickGear.MyForm.SelectedGear.CleanXPath() + ']');
+                        = objXmlDocument.TryGetNodeByNameOrId("/chummer/gears/gear", frmPickGear.MyForm.SelectedGear);
 
                     // Create the new piece of Gear.
                     List<Weapon> lstWeapons = new List<Weapon>(1);
@@ -21280,9 +21243,7 @@ namespace Chummer
                                                                      .LoadDataAsync("martialarts.xml", token: token)
                                                                      .ConfigureAwait(false);
 
-                        XmlNode objXmlArt = objXmlMartialArtDocument.SelectSingleNode(
-                            "/chummer/martialarts/martialart[id = "
-                            + frmPickMartialArt.MyForm.SelectedMartialArt.CleanXPath() + ']');
+                        XmlNode objXmlArt = objXmlMartialArtDocument.TryGetNodeByNameOrId("/chummer/martialarts/martialart", frmPickMartialArt.MyForm.SelectedMartialArt);
 
                         MartialArt objMartialArt = new MartialArt(CharacterObject);
                         objMartialArt.Create(objXmlArt);
@@ -22565,11 +22526,7 @@ namespace Chummer
                 XmlDocument objXmlDocument = await CharacterObject
                                                    .LoadDataAsync(strType + ".xml", string.Empty, true, token)
                                                    .ConfigureAwait(false);
-                XmlNode xmlSuite = frmPickCyberwareSuite.MyForm.SelectedSuite.IsGuid()
-                    ? objXmlDocument.SelectSingleNode("/chummer/suites/suite[id = "
-                                                      + frmPickCyberwareSuite.MyForm.SelectedSuite.CleanXPath() + ']')
-                    : objXmlDocument.SelectSingleNode("/chummer/suites/suite[name = "
-                                                      + frmPickCyberwareSuite.MyForm.SelectedSuite.CleanXPath() + ']');
+                XmlNode xmlSuite = objXmlDocument.TryGetNodeByNameOrId("/chummer/suites/suite", frmPickCyberwareSuite.MyForm.SelectedSuite);
                 if (xmlSuite == null)
                     return;
                 Grade objGrade
@@ -22885,6 +22842,8 @@ namespace Chummer
                             = (await CharacterObject.LoadDataAsync("echoes.xml", token: GenericToken)
                                                     .ConfigureAwait(false)).SelectSingleNode(
                                 "/chummer/echoes/echo[id = " + frmPickMetamagic.MyForm.SelectedMetamagic.CleanXPath()
+                                                             + " or id = "
+                                                             + frmPickMetamagic.MyForm.SelectedMetamagic.ToUpperInvariant().CleanXPath()
                                                              + ']');
                         objSource = Improvement.ImprovementSource.Echo;
                     }
@@ -22894,7 +22853,10 @@ namespace Chummer
                             = (await CharacterObject.LoadDataAsync("metamagic.xml", token: GenericToken)
                                                     .ConfigureAwait(false))
                             .SelectSingleNode("/chummer/metamagics/metamagic[id = "
-                                              + frmPickMetamagic.MyForm.SelectedMetamagic.CleanXPath() + ']');
+                                              + frmPickMetamagic.MyForm.SelectedMetamagic.CleanXPath()
+                                              + " or id = "
+                                              + frmPickMetamagic.MyForm.SelectedMetamagic.ToUpperInvariant().CleanXPath()
+                                              + ']');
                         objSource = Improvement.ImprovementSource.Metamagic;
                     }
 
@@ -22935,6 +22897,8 @@ namespace Chummer
                         = (await CharacterObject.LoadDataAsync("metamagic.xml", token: GenericToken)
                                                 .ConfigureAwait(false))
                         .SelectSingleNode("/chummer/arts/art[id = " + frmPickArt.MyForm.SelectedItem.CleanXPath()
+                                                                    + " or id = "
+                                                                    + frmPickArt.MyForm.SelectedItem.ToUpperInvariant().CleanXPath()
                                                                     + ']');
 
                     Art objArt = new Art(CharacterObject);
@@ -22975,6 +22939,8 @@ namespace Chummer
                     XmlNode objXmlArt
                         = (await CharacterObject.LoadDataAsync("spells.xml", token: GenericToken).ConfigureAwait(false))
                         .SelectSingleNode("/chummer/spells/spell[id = " + frmPickArt.MyForm.SelectedItem.CleanXPath()
+                                                                        + " or id = "
+                                                                        + frmPickArt.MyForm.SelectedItem.ToUpperInvariant().CleanXPath()
                                                                         + ']');
 
                     Spell objNewSpell = new Spell(CharacterObject);
@@ -23027,6 +22993,8 @@ namespace Chummer
                     XmlNode objXmlArt
                         = (await CharacterObject.LoadDataAsync("spells.xml", token: GenericToken).ConfigureAwait(false))
                         .SelectSingleNode("/chummer/spells/spell[id = " + frmPickArt.MyForm.SelectedItem.CleanXPath()
+                                                                        + " or id = "
+                                                                        + frmPickArt.MyForm.SelectedItem.ToUpperInvariant().CleanXPath()
                                                                         + ']');
 
                     Spell objNewSpell = new Spell(CharacterObject);
@@ -23092,7 +23060,10 @@ namespace Chummer
                     XmlNode objXmlArt
                         = (await CharacterObject.LoadDataAsync("powers.xml", token: GenericToken).ConfigureAwait(false))
                         .SelectSingleNode("/chummer/enhancements/enhancement[id = "
-                                          + frmPickArt.MyForm.SelectedItem.CleanXPath() + ']');
+                                          + frmPickArt.MyForm.SelectedItem.CleanXPath() + ']'
+                                          + " or id = "
+                                          + frmPickArt.MyForm.SelectedItem.ToUpperInvariant().CleanXPath()
+                                          + ']');
                     if (objXmlArt == null)
                         return;
 

@@ -115,8 +115,7 @@ namespace Chummer
                 string strSelectedQuality = await lstQualities.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(strSelectedQuality))
                 {
-                    xmlQuality = _xmlBaseQualityDataNode.SelectSingleNode(
-                        "qualities/quality[id = " + strSelectedQuality.CleanXPath() + ']');
+                    xmlQuality = _xmlBaseQualityDataNode.TryGetNodeByNameOrId("qualities/quality", strSelectedQuality);
                 }
 
                 if (xmlQuality != null)
@@ -204,7 +203,7 @@ namespace Chummer
             string strSelectedQuality = await lstQualities.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strSelectedQuality))
             {
-                xmlQuality = _xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[id = " + strSelectedQuality.CleanXPath() + ']');
+                xmlQuality = _xmlBaseQualityDataNode.TryGetNodeByNameOrId("qualities/quality", strSelectedQuality);
             }
 
             if (xmlQuality != null)
@@ -690,7 +689,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSelectedQuality))
                 return;
 
-            XPathNavigator objNode = _xmlBaseQualityDataNode.SelectSingleNode("qualities/quality[id = " + strSelectedQuality.CleanXPath() + ']');
+            XPathNavigator objNode = _xmlBaseQualityDataNode.TryGetNodeByNameOrId("qualities/quality", strSelectedQuality);
 
             if (objNode == null || !await objNode.RequirementsMetAsync(_objCharacter, null, await LanguageManager.GetStringAsync("String_Quality", token: token).ConfigureAwait(false), IgnoreQuality, token: token).ConfigureAwait(false))
                 return;

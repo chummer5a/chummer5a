@@ -168,7 +168,7 @@ namespace Chummer.Backend.Equipment
             _lstAccessories.AddTaggedCollectionChanged(this, AccessoriesOnCollectionChanged);
         }
 
-        private async void AccessoriesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private void AccessoriesOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
         {
             if (e.Action == NotifyCollectionChangedAction.Move)
                 return;
@@ -183,8 +183,8 @@ namespace Chummer.Backend.Equipment
                         if (blnEverDoEncumbranceRefresh && !blnDoEncumbranceRefresh && objNewItem.Equipped
                             && (!string.IsNullOrEmpty(Weight)
                                 || !string.IsNullOrEmpty(objNewItem.Weight)
-                                || objNewItem.GearChildren.DeepAny(x => x.Children,
-                                                                   x => !string.IsNullOrEmpty(x.Weight))))
+                                || objNewItem.GearChildren.DeepAny(x => x.Children.Where(y => y.Equipped),
+                                                                   x => x.Equipped && !string.IsNullOrEmpty(x.Weight))))
                             blnDoEncumbranceRefresh = true;
                         if (!blnRecreateInternalClip && (!string.IsNullOrWhiteSpace(objNewItem.AmmoReplace) ||
                                                          !string.IsNullOrWhiteSpace(objNewItem.AmmoBonus)))
@@ -204,8 +204,8 @@ namespace Chummer.Backend.Equipment
                         if (blnEverDoEncumbranceRefresh && !blnDoEncumbranceRefresh && objOldItem.Equipped
                             && (!string.IsNullOrEmpty(Weight)
                                 || !string.IsNullOrEmpty(objOldItem.Weight)
-                                || objOldItem.GearChildren.DeepAny(x => x.Children,
-                                                                   x => !string.IsNullOrEmpty(x.Weight))))
+                                || objOldItem.GearChildren.DeepAny(x => x.Children.Where(y => y.Equipped),
+                                                                   x => x.Equipped && !string.IsNullOrEmpty(x.Weight))))
                             blnDoEncumbranceRefresh = true;
                         if (!blnRecreateInternalClip && (!string.IsNullOrWhiteSpace(objOldItem.AmmoReplace) ||
                                                          !string.IsNullOrWhiteSpace(objOldItem.AmmoBonus)))
@@ -214,7 +214,7 @@ namespace Chummer.Backend.Equipment
                         }
                         if (objOldItem.AmmoSlots > 0)
                         {
-                            await RemoveAmmoSlotsAsync(objOldItem).ConfigureAwait(false);
+                            RemoveAmmoSlots(objOldItem);
                         }
                     }
                     break;
@@ -225,8 +225,8 @@ namespace Chummer.Backend.Equipment
                         if (blnEverDoEncumbranceRefresh && !blnDoEncumbranceRefresh && objOldItem.Equipped
                             && (!string.IsNullOrEmpty(Weight)
                                 || !string.IsNullOrEmpty(objOldItem.Weight)
-                                || objOldItem.GearChildren.DeepAny(x => x.Children,
-                                                                   x => !string.IsNullOrEmpty(x.Weight))))
+                                || objOldItem.GearChildren.DeepAny(x => x.Children.Where(y => y.Equipped),
+                                                                   x => x.Equipped && !string.IsNullOrEmpty(x.Weight))))
                             blnDoEncumbranceRefresh = true;
                         if (!blnRecreateInternalClip && (!string.IsNullOrWhiteSpace(objOldItem.AmmoReplace) ||
                                                          !string.IsNullOrWhiteSpace(objOldItem.AmmoBonus)))
@@ -235,7 +235,7 @@ namespace Chummer.Backend.Equipment
                         }
                         if (objOldItem.AmmoSlots > 0)
                         {
-                            await RemoveAmmoSlotsAsync(objOldItem).ConfigureAwait(false);
+                            RemoveAmmoSlots(objOldItem);
                         }
                     }
                     foreach (WeaponAccessory objNewItem in e.NewItems)
@@ -243,8 +243,8 @@ namespace Chummer.Backend.Equipment
                         if (blnEverDoEncumbranceRefresh && !blnDoEncumbranceRefresh && objNewItem.Equipped
                             && (!string.IsNullOrEmpty(Weight)
                                 || !string.IsNullOrEmpty(objNewItem.Weight)
-                                || objNewItem.GearChildren.DeepAny(x => x.Children,
-                                                                   x => !string.IsNullOrEmpty(x.Weight))))
+                                || objNewItem.GearChildren.DeepAny(x => x.Children.Where(y => y.Equipped),
+                                                                   x => x.Equipped && !string.IsNullOrEmpty(x.Weight))))
                             blnDoEncumbranceRefresh = true;
                         if (!blnRecreateInternalClip && (!string.IsNullOrWhiteSpace(objNewItem.AmmoReplace) ||
                                                          !string.IsNullOrWhiteSpace(objNewItem.AmmoBonus)))
@@ -265,7 +265,7 @@ namespace Chummer.Backend.Equipment
             }
 
             if (blnRecreateInternalClip)
-                await RecreateInternalClipAsync().ConfigureAwait(false);
+                RecreateInternalClip();
             if (blnDoEncumbranceRefresh)
                 _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
         }
@@ -286,17 +286,21 @@ namespace Chummer.Backend.Equipment
                             && (!string.IsNullOrEmpty(Weight)
                                 || !string.IsNullOrEmpty(objNewItem.Weight)
                                 || objNewItem.WeaponAccessories.Any(
-                                    x => !string.IsNullOrEmpty(x.Weight)
-                                         || x.GearChildren.DeepAny(
-                                             y => y.Children, y => !string.IsNullOrEmpty(y.Weight)))
-                                || objNewItem.Children.DeepAny(x => x.Children,
-                                                               z => !string.IsNullOrEmpty(z.Weight)
-                                                                    || WeaponAccessories.Any(
-                                                                        x => !string.IsNullOrEmpty(x.Weight)
-                                                                             || x.GearChildren.DeepAny(
-                                                                                 y => y.Children,
-                                                                                 y => !string
-                                                                                     .IsNullOrEmpty(y.Weight))))))
+                                    x => x.Equipped && (!string.IsNullOrEmpty(x.Weight)
+                                                        || x.GearChildren.DeepAny(
+                                                            y => y.Children.Where(z => z.Equipped),
+                                                            y => y.Equipped && !string.IsNullOrEmpty(y.Weight))))
+                                || objNewItem.Children.DeepAny(x => x.Children.Where(y => y.Equipped),
+                                                               z => z.Equipped && (!string.IsNullOrEmpty(z.Weight)
+                                                                   || WeaponAccessories.Any(
+                                                                       x => x.Equipped
+                                                                            && (!string.IsNullOrEmpty(x.Weight)
+                                                                                || x.GearChildren.DeepAny(
+                                                                                    y => y.Children.Where(
+                                                                                        t => t.Equipped),
+                                                                                    y => y.Equipped
+                                                                                        && !string.IsNullOrEmpty(
+                                                                                            y.Weight))))))))
                             blnDoEncumbranceRefresh = true;
                     }
                     break;
@@ -309,17 +313,21 @@ namespace Chummer.Backend.Equipment
                             && (!string.IsNullOrEmpty(Weight)
                                 || !string.IsNullOrEmpty(objOldItem.Weight)
                                 || objOldItem.WeaponAccessories.Any(
-                                    x => !string.IsNullOrEmpty(x.Weight)
-                                         || x.GearChildren.DeepAny(
-                                             y => y.Children, y => !string.IsNullOrEmpty(y.Weight)))
-                                || objOldItem.Children.DeepAny(x => x.Children,
-                                                               z => !string.IsNullOrEmpty(z.Weight)
-                                                                    || WeaponAccessories.Any(
-                                                                        x => !string.IsNullOrEmpty(x.Weight)
-                                                                             || x.GearChildren.DeepAny(
-                                                                                 y => y.Children,
-                                                                                 y => !string
-                                                                                     .IsNullOrEmpty(y.Weight))))))
+                                    x => x.Equipped && (!string.IsNullOrEmpty(x.Weight)
+                                                        || x.GearChildren.DeepAny(
+                                                            y => y.Children.Where(z => z.Equipped),
+                                                            y => y.Equipped && !string.IsNullOrEmpty(y.Weight))))
+                                || objOldItem.Children.DeepAny(x => x.Children.Where(y => y.Equipped),
+                                                               z => z.Equipped && (!string.IsNullOrEmpty(z.Weight)
+                                                                   || WeaponAccessories.Any(
+                                                                       x => x.Equipped
+                                                                            && (!string.IsNullOrEmpty(x.Weight)
+                                                                                || x.GearChildren.DeepAny(
+                                                                                    y => y.Children.Where(
+                                                                                        t => t.Equipped),
+                                                                                    y => y.Equipped
+                                                                                        && !string.IsNullOrEmpty(
+                                                                                            y.Weight))))))))
                             blnDoEncumbranceRefresh = true;
                     }
                     break;
@@ -332,17 +340,21 @@ namespace Chummer.Backend.Equipment
                             && (!string.IsNullOrEmpty(Weight)
                                 || !string.IsNullOrEmpty(objOldItem.Weight)
                                 || objOldItem.WeaponAccessories.Any(
-                                    x => !string.IsNullOrEmpty(x.Weight)
-                                         || x.GearChildren.DeepAny(
-                                             y => y.Children, y => !string.IsNullOrEmpty(y.Weight)))
-                                || objOldItem.Children.DeepAny(x => x.Children,
-                                                               z => !string.IsNullOrEmpty(z.Weight)
-                                                                    || WeaponAccessories.Any(
-                                                                        x => !string.IsNullOrEmpty(x.Weight)
-                                                                             || x.GearChildren.DeepAny(
-                                                                                 y => y.Children,
-                                                                                 y => !string
-                                                                                     .IsNullOrEmpty(y.Weight))))))
+                                    x => x.Equipped && (!string.IsNullOrEmpty(x.Weight)
+                                                        || x.GearChildren.DeepAny(
+                                                            y => y.Children.Where(z => z.Equipped),
+                                                            y => y.Equipped && !string.IsNullOrEmpty(y.Weight))))
+                                || objOldItem.Children.DeepAny(x => x.Children.Where(y => y.Equipped),
+                                                               z => z.Equipped && (!string.IsNullOrEmpty(z.Weight)
+                                                                   || WeaponAccessories.Any(
+                                                                       x => x.Equipped
+                                                                            && (!string.IsNullOrEmpty(x.Weight)
+                                                                                || x.GearChildren.DeepAny(
+                                                                                    y => y.Children.Where(
+                                                                                        t => t.Equipped),
+                                                                                    y => y.Equipped
+                                                                                        && !string.IsNullOrEmpty(
+                                                                                            y.Weight))))))))
                             blnDoEncumbranceRefresh = true;
                     }
                     foreach (Weapon objNewItem in e.NewItems)
@@ -352,17 +364,21 @@ namespace Chummer.Backend.Equipment
                             && (!string.IsNullOrEmpty(Weight)
                                 || !string.IsNullOrEmpty(objNewItem.Weight)
                                 || objNewItem.WeaponAccessories.Any(
-                                    x => !string.IsNullOrEmpty(x.Weight)
-                                         || x.GearChildren.DeepAny(
-                                             y => y.Children, y => !string.IsNullOrEmpty(y.Weight)))
-                                || objNewItem.Children.DeepAny(x => x.Children,
-                                                               z => !string.IsNullOrEmpty(z.Weight)
-                                                                    || WeaponAccessories.Any(
-                                                                        x => !string.IsNullOrEmpty(x.Weight)
-                                                                             || x.GearChildren.DeepAny(
-                                                                                 y => y.Children,
-                                                                                 y => !string
-                                                                                     .IsNullOrEmpty(y.Weight))))))
+                                    x => x.Equipped && (!string.IsNullOrEmpty(x.Weight)
+                                                        || x.GearChildren.DeepAny(
+                                                            y => y.Children.Where(z => z.Equipped),
+                                                            y => y.Equipped && !string.IsNullOrEmpty(y.Weight))))
+                                || objNewItem.Children.DeepAny(x => x.Children.Where(y => y.Equipped),
+                                                               z => z.Equipped && (!string.IsNullOrEmpty(z.Weight)
+                                                                   || WeaponAccessories.Any(
+                                                                       x => x.Equipped
+                                                                            && (!string.IsNullOrEmpty(x.Weight)
+                                                                                || x.GearChildren.DeepAny(
+                                                                                    y => y.Children.Where(
+                                                                                        t => t.Equipped),
+                                                                                    y => y.Equipped
+                                                                                        && !string.IsNullOrEmpty(
+                                                                                            y.Weight))))))))
                             blnDoEncumbranceRefresh = true;
                     }
                     break;
@@ -738,11 +754,11 @@ namespace Chummer.Backend.Equipment
             foreach (XmlNode objXmlAddWeapon in objXmlWeapon.SelectNodes("addweapon"))
             {
                 string strLoopID = objXmlAddWeapon.InnerText;
-                XmlNode objXmlSubWeapon = strLoopID.IsGuid()
-                    ? objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + strLoopID.CleanXPath() + ']')
-                    : objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = " + strLoopID.CleanXPath() + ']');
+                XmlNode objXmlSubWeapon =
+                    objXmlDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon",
+                        strLoopID);
 
-                if (objXmlAddWeapon != null)
+                if (objXmlSubWeapon != null)
                 {
                     Weapon objSubWeapon = new Weapon(_objCharacter)
                     {
@@ -6116,9 +6132,13 @@ namespace Chummer.Backend.Equipment
                 FireMode == FiringMode.ManualOperation)
             {
                 Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill("Gunnery");
-                if (objSkill?.Specializations.Count > 0 && RelevantSpecialization != "None")
+                if (objSkill != null)
                 {
-                    intDicePool += objSkill.GetSpecializationBonus(RelevantSpecialization);
+                    string strSpec = RelevantSpecialization;
+                    if (!string.IsNullOrEmpty(strSpec) && strSpec != "None" && objSkill.Specializations.Count > 0)
+                    {
+                        intDicePool += objSkill.GetSpecializationBonus(strSpec);
+                    }
                 }
             }
 
@@ -6199,15 +6219,15 @@ namespace Chummer.Backend.Equipment
                 case FiringMode.DogBrain:
                     {
                         intDicePool = ParentVehicle.Pilot;
-                        Gear objAutosoft = ParentVehicle.GearChildren.DeepFirstOrDefault(
+                        Gear objAutosoft = await ParentVehicle.GearChildren.DeepFirstOrDefaultAsync(
                             x => x.Children,
-                            x => x.Name == RelevantAutosoft && (x.Extra == Name || x.Extra == CurrentDisplayName));
+                            x => x.Name == RelevantAutosoft && (x.Extra == Name || x.Extra == CurrentDisplayName), token).ConfigureAwait(false);
 
                         intDicePool += objAutosoft?.Rating ?? -1;
 
                         if (WirelessOn && HasWirelessSmartgun
-                                       && ParentVehicle.GearChildren.DeepAny(
-                                           x => x.Children, x => x.Name == "Smartsoft" && x.Equipped))
+                                       && await ParentVehicle.GearChildren.DeepAnyAsync(
+                                           x => x.Children, x => x.Name == "Smartsoft" && x.Equipped, token).ConfigureAwait(false))
                         {
                             ++decDicePoolModifier;
                         }
@@ -6316,7 +6336,7 @@ namespace Chummer.Backend.Equipment
                                 _objCharacter, Improvement.ImprovementType.WeaponSpecificDice, false, InternalId, token: token).ConfigureAwait(false);
 
                             // If the character has a Specialization, include it in the Dice Pool string.
-                            if (objSkill.Specializations.Count > 0 && !objSkill.IsExoticSkill)
+                            if (!objSkill.IsExoticSkill && await objSkill.Specializations.GetCountAsync(token) > 0)
                             {
                                 SkillSpecialization objSpec =
                                     await objSkill.GetSpecializationAsync(await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token).ConfigureAwait(false) ??
@@ -6344,9 +6364,13 @@ namespace Chummer.Backend.Equipment
                 FireMode == FiringMode.ManualOperation)
             {
                 Skill objSkill = await _objCharacter.SkillsSection.GetActiveSkillAsync("Gunnery", token).ConfigureAwait(false);
-                if (objSkill?.Specializations.Count > 0 && RelevantSpecialization != "None")
+                if (objSkill != null)
                 {
-                    intDicePool += await objSkill.GetSpecializationBonusAsync(RelevantSpecialization, token).ConfigureAwait(false);
+                    string strSpec = await GetRelevantSpecializationAsync(token).ConfigureAwait(false);
+                    if (!string.IsNullOrEmpty(strSpec) && strSpec != "None" && await objSkill.Specializations.GetCountAsync(token).ConfigureAwait(false) > 0)
+                    {
+                        intDicePool += await objSkill.GetSpecializationBonusAsync(strSpec, token).ConfigureAwait(false);
+                    }
                 }
             }
 
@@ -6438,6 +6462,31 @@ namespace Chummer.Backend.Equipment
                 _strRelevantSpec = strGunnerySpec;
                 return _strRelevantSpec;
             }
+        }
+
+        internal async ValueTask<string> GetRelevantSpecializationAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!string.IsNullOrEmpty(_strRelevantSpec))
+            {
+                return _strRelevantSpec;
+            }
+
+            XPathNavigator xmlNode = await this.GetNodeXPathAsync(token).ConfigureAwait(false);
+            if (xmlNode != null)
+            {
+                string strGunnerySpec = (await xmlNode.SelectSingleNodeAndCacheExpressionAsync("category/@gunneryspec", token).ConfigureAwait(false))?.Value;
+                if (string.IsNullOrEmpty(strGunnerySpec))
+                {
+                    strGunnerySpec = (await _objCharacter.LoadDataXPathAsync("weapons.xml", token: token).ConfigureAwait(false))
+                                                  .SelectSingleNode(
+                                                      "/chummer/categories/category[. = " + Category.CleanXPath()
+                                                      + "]/@gunneryspec")?.Value ?? "None";
+                }
+
+                return _strRelevantSpec = strGunnerySpec;
+            }
+            return string.Empty;
         }
 
         private Skill Skill

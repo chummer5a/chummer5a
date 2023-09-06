@@ -294,12 +294,8 @@ namespace Chummer.Backend.Equipment
 
                     foreach (XmlNode objXmlAddWeapon in xmlAddWeaponList)
                     {
-                        string strLoopID = objXmlAddWeapon.InnerText;
-                        XmlNode objXmlWeapon = strLoopID.IsGuid()
-                            ? objXmlWeaponDocument.SelectSingleNode(
-                                "/chummer/weapons/weapon[id = " + strLoopID.CleanXPath() + ']')
-                            : objXmlWeaponDocument.SelectSingleNode(
-                                "/chummer/weapons/weapon[name = " + strLoopID.CleanXPath() + ']');
+                        XmlNode objXmlWeapon = objXmlWeaponDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon",
+                            objXmlAddWeapon.InnerText);
 
                         if (objXmlWeapon != null)
                         {
@@ -745,15 +741,23 @@ namespace Chummer.Backend.Equipment
             set
             {
                 value = Math.Min(value, MaximumRating);
-                if (Interlocked.Exchange(ref _intRating, value) != value && GearChildren.Count > 0)
+                if (Interlocked.Exchange(ref _intRating, value) != value)
                 {
-                    foreach (Gear objChild in GearChildren)
+                    if (Equipped && Parent.Equipped && _objCharacter != null)
                     {
-                        if (!objChild.MaxRating.Contains("Parent") && !objChild.MinRating.Contains("Parent"))
-                            continue;
-                        // This will update a child's rating if it would become out of bounds due to its parent's rating changing
-                        int intCurrentRating = objChild.Rating;
-                        objChild.Rating = intCurrentRating;
+                        if (Weight.ContainsAny("FixedValues", "Rating") || GearChildren.Any(x => x.Equipped && x.Weight.Contains("Parent Rating")))
+                            _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
+                    }
+                    if (GearChildren.Count > 0)
+                    {
+                        foreach (Gear objChild in GearChildren)
+                        {
+                            if (!objChild.MaxRating.Contains("Parent") && !objChild.MinRating.Contains("Parent"))
+                                continue;
+                            // This will update a child's rating if it would become out of bounds due to its parent's rating changing
+                            int intCurrentRating = objChild.Rating;
+                            objChild.Rating = intCurrentRating;
+                        }
                     }
                 }
             }
@@ -1558,13 +1562,7 @@ namespace Chummer.Backend.Equipment
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadData("armor.xml", strLanguage, token: token)
                     : await _objCharacter.LoadDataAsync("armor.xml", strLanguage, token: token).ConfigureAwait(false))
-                .SelectSingleNode(SourceID == Guid.Empty
-                                      ? "/chummer/mods/mod[name = " + Name.CleanXPath()
-                                                                    + ']'
-                                      : "/chummer/mods/mod[id = "
-                                        + SourceIDString.CleanXPath() + " or id = "
-                                        + SourceIDString.ToUpperInvariant().CleanXPath()
-                                        + ']');
+                .TryGetNodeByNameOrId("/chummer/mods/mod", SourceID == Guid.Empty ? Name : SourceIDString);
             _objCachedMyXmlNode = objReturn;
             _strCachedXmlNodeLanguage = strLanguage;
             return objReturn;
@@ -1583,13 +1581,7 @@ namespace Chummer.Backend.Equipment
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadDataXPath("armor.xml", strLanguage, token: token)
                     : await _objCharacter.LoadDataXPathAsync("armor.xml", strLanguage, token: token).ConfigureAwait(false))
-                .SelectSingleNode(SourceID == Guid.Empty
-                                      ? "/chummer/mods/mod[name = "
-                                        + Name.CleanXPath() + ']'
-                                      : "/chummer/mods/mod[id = "
-                                        + SourceIDString.CleanXPath() + " or id = "
-                                        + SourceIDString.ToUpperInvariant().CleanXPath()
-                                        + ']');
+                .TryGetNodeByNameOrId("/chummer/armors/armor", SourceID == Guid.Empty ? Name : SourceIDString);
             _objCachedMyXPathNode = objReturn;
             _strCachedXPathNodeLanguage = strLanguage;
             return objReturn;

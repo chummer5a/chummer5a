@@ -452,8 +452,7 @@ namespace Chummer.Backend.Equipment
                             }
 
                             // Locate the selected piece.
-                            XmlNode objXmlMod = objXmlDocument.SelectSingleNode(
-                                "/chummer/mods/mod[id = " + frmPickArmorMod.MyForm.SelectedArmorMod.CleanXPath() + ']');
+                            XmlNode objXmlMod = objXmlDocument.TryGetNodeByNameOrId("/chummer/mods/mod", frmPickArmorMod.MyForm.SelectedArmorMod);
 
                             if (objXmlMod != null)
                             {
@@ -507,7 +506,7 @@ namespace Chummer.Backend.Equipment
                             strForceValue = objXmlAttributes["select"]?.InnerText ?? string.Empty;
                         }
 
-                        XmlNode objXmlMod = objXmlArmorDocument.SelectSingleNode("/chummer/mods/mod[name = " + objXmlArmorMod.InnerText.CleanXPath() + ']');
+                        XmlNode objXmlMod = objXmlArmorDocument.TryGetNodeByNameOrId("/chummer/mods/mod", objXmlArmorMod.InnerText);
                         if (objXmlMod != null)
                         {
                             ArmorMod objMod = new ArmorMod(_objCharacter);
@@ -628,10 +627,8 @@ namespace Chummer.Backend.Equipment
             // More than one Weapon can be added, so loop through all occurrences.
             foreach (XmlNode objXmlAddWeapon in objXmlArmorNode.SelectNodes("addweapon"))
             {
-                string strLoopID = objXmlAddWeapon.InnerText;
-                XmlNode objXmlWeapon = strLoopID.IsGuid()
-                    ? objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[id = " + strLoopID.CleanXPath() + ']')
-                    : objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = " + strLoopID.CleanXPath() + ']');
+                XmlNode objXmlWeapon = objXmlWeaponDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon",
+                    objXmlAddWeapon.InnerText);
 
                 if (objXmlWeapon != null)
                 {
@@ -1138,20 +1135,6 @@ namespace Chummer.Backend.Equipment
             {
                 if (value < 0)
                     value = 0;
-
-                int.TryParse(ArmorValue, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                    out int intTotalArmor);
-
-                // Go through all of the Mods for this piece of Armor and add the Armor value.
-                foreach (ArmorMod objMod in ArmorMods)
-                {
-                    if (objMod.Equipped)
-                        intTotalArmor += objMod.Armor;
-                }
-
-                if (value > intTotalArmor)
-                    value = intTotalArmor;
-
                 if (Interlocked.Exchange(ref _intDamage, value) != value && Equipped && _objCharacter != null)
                 {
                     _objCharacter.OnPropertyChanged(nameof(Character.GetArmorRating));
@@ -1171,10 +1154,25 @@ namespace Chummer.Backend.Equipment
                 value = Math.Min(value, MaxRating);
                 if (Interlocked.Exchange(ref _intRating, value) == value)
                     return;
-                if (Equipped && _objCharacter != null && (ArmorValue.Contains("Rating") || ArmorOverrideValue.Contains("Rating")))
+                if (Equipped && _objCharacter != null)
                 {
-                    _objCharacter.OnPropertyChanged(nameof(Character.GetArmorRating));
-                    _objCharacter.RefreshArmorEncumbrance();
+                    if (Weight.ContainsAny("FixedValues", "Rating") || GearChildren.Any(x => x.Equipped && x.Weight.Contains("Parent Rating")))
+                    {
+                        if (ArmorValue.ContainsAny("FixedValues", "Rating") || ArmorOverrideValue.ContainsAny("FixedValues", "Rating"))
+                        {
+                            _objCharacter.OnMultiplePropertyChanged(nameof(Character.TotalCarriedWeight), nameof(Character.GetArmorRating));
+                            _objCharacter.RefreshArmorEncumbrance();
+                        }
+                        else
+                        {
+                            _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
+                        }
+                    }
+                    else if (ArmorValue.ContainsAny("FixedValues", "Rating") || ArmorOverrideValue.ContainsAny("FixedValues", "Rating"))
+                    {
+                        _objCharacter.OnPropertyChanged(nameof(Character.GetArmorRating));
+                        _objCharacter.RefreshArmorEncumbrance();
+                    }
                 }
                 if (GearChildren.Count > 0)
                 {
@@ -1508,15 +1506,60 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// The Armor's armor value excluding modifications
+        /// </summary>
+        private int GetOwnArmor(bool blnUseOverrideValue = false)
+        {
+            string strArmorExpression = blnUseOverrideValue ? ArmorOverrideValue : ArmorValue;
+            if (string.IsNullOrEmpty(strArmorExpression))
+                return 0;
+            int intReturn = 0;
+            if (strArmorExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
+            {
+                string[] strValues = strArmorExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
+                                                       .Split(',', StringSplitOptions.RemoveEmptyEntries);
+                strArmorExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
+            }
+
+            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdWeight))
+            {
+                sbdWeight.Append(strArmorExpression.TrimStart('+'));
+                sbdWeight.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
+
+                foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(
+                             _objCharacter.AttributeSection.SpecialAttributeList))
+                {
+                    sbdWeight.CheapReplace(strArmorExpression, objLoopAttribute.Abbrev,
+                                           () => objLoopAttribute.TotalValue.ToString(
+                                               GlobalSettings.InvariantCultureInfo));
+                    sbdWeight.CheapReplace(strArmorExpression, objLoopAttribute.Abbrev + "Base",
+                                           () => objLoopAttribute.TotalBase.ToString(
+                                               GlobalSettings.InvariantCultureInfo));
+                }
+
+                (bool blnIsSuccess, object objProcess)
+                    = CommonFunctions.EvaluateInvariantXPath(sbdWeight.ToString());
+                if (blnIsSuccess)
+                    intReturn = ((double) objProcess).StandardRound();
+            }
+
+            return intReturn;
+        }
+
+        /// <summary>
+        /// The Armor's armor value excluding modifications
+        /// </summary>
+        public int OwnArmor => GetOwnArmor();
+
+        /// <summary>
         /// The Armor's total Armor value including Modifications.
         /// </summary>
         public int TotalArmor
         {
             get
             {
-                int.TryParse(ArmorValue.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intTotalArmor);
                 // Go through all of the Mods for this piece of Armor and add the Armor value.
-                intTotalArmor += ArmorMods.Sum(o => o.Equipped, o => o.Armor);
+                int intTotalArmor = OwnArmor + ArmorMods.Sum(o => o.Equipped, o => o.Armor);
                 if (_objCharacter?.Settings.ArmorDegradation == true)
                     intTotalArmor -= ArmorDamage;
 
@@ -1525,15 +1568,19 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// The Armor's bonus armor value excluding modifications
+        /// </summary>
+        public int OwnOverrideArmor => GetOwnArmor(true);
+
+        /// <summary>
         /// The Armor's total bonus Armor value including Modifications.
         /// </summary>
         public int TotalOverrideArmor
         {
             get
             {
-                int.TryParse(ArmorOverrideValue.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo)), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out int intTotalArmor);
                 // Go through all of the Mods for this piece of Armor and add the Armor value.
-                intTotalArmor += ArmorMods.Sum(o => o.Equipped, o => o.Armor);
+                int intTotalArmor = OwnOverrideArmor + ArmorMods.Sum(o => o.Equipped, o => o.Armor);
                 if (_objCharacter?.Settings.ArmorDegradation == true)
                     intTotalArmor -= ArmorDamage;
 
@@ -1735,6 +1782,12 @@ namespace Chummer.Backend.Equipment
                 if (string.IsNullOrEmpty(strWeightExpression))
                     return 0;
                 decimal decReturn = 0;
+                if (strWeightExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
+                {
+                    string[] strValues = strWeightExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
+                    strWeightExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
+                }
+
                 using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdWeight))
                 {
                     sbdWeight.Append(strWeightExpression.TrimStart('+'));
@@ -2460,13 +2513,7 @@ namespace Chummer.Backend.Equipment
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadData("armor.xml", strLanguage, token: token)
                     : await _objCharacter.LoadDataAsync("armor.xml", strLanguage, token: token).ConfigureAwait(false))
-                .SelectSingleNode(SourceID == Guid.Empty
-                                      ? "/chummer/armors/armor[name = "
-                                        + Name.CleanXPath() + ']'
-                                      : "/chummer/armors/armor[id = "
-                                        + SourceIDString.CleanXPath() + " or id = "
-                                        + SourceIDString.ToUpperInvariant().CleanXPath()
-                                        + ']');
+                .TryGetNodeByNameOrId("/chummer/armors/armor", SourceID == Guid.Empty ? Name : SourceIDString);
 
             _objCachedMyXmlNode = objReturn;
             _strCachedXmlNodeLanguage = strLanguage;
@@ -2486,13 +2533,7 @@ namespace Chummer.Backend.Equipment
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadDataXPath("armor.xml", strLanguage, token: token)
                     : await _objCharacter.LoadDataXPathAsync("armor.xml", strLanguage, token: token).ConfigureAwait(false))
-                .SelectSingleNode(SourceID == Guid.Empty
-                                      ? "/chummer/armors/armor[name = "
-                                        + Name.CleanXPath() + ']'
-                                      : "/chummer/armors/armor[id = "
-                                        + SourceIDString.CleanXPath() + " or id = "
-                                        + SourceIDString.ToUpperInvariant().CleanXPath()
-                                        + ']');
+                .TryGetNodeByNameOrId("/chummer/armors/armor", SourceID == Guid.Empty ? Name : SourceIDString);
             _objCachedMyXPathNode = objReturn;
             _strCachedXPathNodeLanguage = strLanguage;
             return objReturn;

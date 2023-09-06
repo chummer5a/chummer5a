@@ -315,7 +315,7 @@ namespace Chummer
             string strSourceIDString = await treQualities.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag.ToString()).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strSourceIDString))
             {
-                XmlNode objXmlQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + strSourceIDString.CleanXPath() + ']');
+                XmlNode objXmlQuality = _objXmlDocument.TryGetNodeByNameOrId("/chummer/qualities/quality", strSourceIDString);
                 if (objXmlQuality != null)
                 {
                     strSource = objXmlQuality["source"]?.InnerText ?? string.Empty;
@@ -453,7 +453,7 @@ namespace Chummer
             string strSelectedId = await cboLifestyle.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strSelectedId))
                 return;
-            XmlNode objXmlLifestyle = _objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = " + strSelectedId.CleanXPath() + ']');
+            XmlNode objXmlLifestyle = _objXmlDocument.TryGetNodeByNameOrId("/chummer/lifestyles/lifestyle", strSelectedId);
             if (objXmlLifestyle == null)
                 return;
 
@@ -492,7 +492,7 @@ namespace Chummer
                 setLifestyleQualityIds.Add(strLoopId);
                 if (_objLifestyle.LifestyleQualities.Any(x => x.SourceIDString == strLoopId))
                     continue;
-                XmlNode objXmlLifestyleQuality = _objXmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + strLoopId.CleanXPath() + ']');
+                XmlNode objXmlLifestyleQuality = _objXmlDocument.TryGetNodeByNameOrId("/chummer/qualities/quality", strLoopId);
                 LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
                 try
                 {
@@ -546,8 +546,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 XmlNode objXmlAspect
-                    = _objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[id = "
-                                                       + strSelectedId.CleanXPath() + ']');
+                    = _objXmlDocument.TryGetNodeByNameOrId("/chummer/lifestyles/lifestyle", strSelectedId);
 
                 if (objXmlAspect != null)
                 {

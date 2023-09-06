@@ -968,12 +968,8 @@ namespace Chummer.Backend.Equipment
                         // More than one Weapon can be added, so loop through all occurrences.
                         foreach (XmlNode objXmlAddWeapon in objXmlCyberware.SelectNodes("addweapon"))
                         {
-                            string strLoopID = objXmlAddWeapon.InnerText;
-                            XmlNode objXmlWeapon = strLoopID.IsGuid()
-                                ? objXmlWeaponDocument.SelectSingleNode(
-                                    "/chummer/weapons/weapon[id = " + strLoopID.CleanXPath() + ']')
-                                : objXmlWeaponDocument.SelectSingleNode(
-                                    "/chummer/weapons/weapon[name = " + strLoopID.CleanXPath() + ']');
+                            XmlNode objXmlWeapon = objXmlWeaponDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon",
+                                objXmlAddWeapon.InnerText);
 
                             if (objXmlWeapon != null)
                             {
@@ -1014,12 +1010,8 @@ namespace Chummer.Backend.Equipment
                             {
                                 foreach (XmlNode objXml in objXmlCyberware.SelectNodes("addparentweaponaccessory"))
                                 {
-                                    string strLoopID = objXml.InnerText;
-                                    XmlNode objXmlAccessory = strLoopID.IsGuid()
-                                        ? objXmlWeaponDocument.SelectSingleNode(
-                                            "/chummer/accessories/accessory[id = " + strLoopID.CleanXPath() + ']')
-                                        : objXmlWeaponDocument.SelectSingleNode(
-                                            "/chummer/accessories/accessory[name = " + strLoopID.CleanXPath() + ']');
+                                    XmlNode objXmlAccessory = objXmlWeaponDocument.TryGetNodeByNameOrId("/chummer/accessories/accessory",
+                                        objXml.InnerText);
 
                                     if (objXmlAccessory == null) continue;
                                     WeaponAccessory objGearWeapon = new WeaponAccessory(_objCharacter);
@@ -1055,11 +1047,7 @@ namespace Chummer.Backend.Equipment
                         foreach (XmlNode xmlAddVehicle in objXmlCyberware.SelectNodes("addvehicle"))
                         {
                             string strLoopID = xmlAddVehicle.InnerText;
-                            XmlNode xmlVehicle = strLoopID.IsGuid()
-                                ? objXmlVehicleDocument.SelectSingleNode(
-                                    "/chummer/vehicles/vehicle[id = " + strLoopID.CleanXPath() + ']')
-                                : objXmlVehicleDocument.SelectSingleNode(
-                                    "/chummer/vehicles/vehicle[name = " + strLoopID.CleanXPath() + ']');
+                            XmlNode xmlVehicle = objXmlVehicleDocument.TryGetNodeByNameOrId("/chummer/vehicles/vehicle", strLoopID);
 
                             if (xmlVehicle != null)
                             {
@@ -1390,7 +1378,7 @@ namespace Chummer.Backend.Equipment
                             string strName = objXmlSubsystemNode["name"]?.InnerText;
                             if (string.IsNullOrEmpty(strName))
                                 continue;
-                            XmlNode objXmlSubsystem = objXmlDocument.SelectSingleNode("/chummer/cyberwares/cyberware[name = " + strName.CleanXPath() + ']');
+                            XmlNode objXmlSubsystem = objXmlDocument.TryGetNodeByNameOrId("/chummer/cyberwares/cyberware", strName);
 
                             if (objXmlSubsystem != null)
                             {
@@ -1423,7 +1411,7 @@ namespace Chummer.Backend.Equipment
                             string strName = objXmlSubsystemNode["name"]?.InnerText;
                             if (string.IsNullOrEmpty(strName))
                                 continue;
-                            XmlNode objXmlSubsystem = objXmlDocument.SelectSingleNode("/chummer/biowares/bioware[name = " + strName.CleanXPath() + ']');
+                            XmlNode objXmlSubsystem = objXmlDocument.TryGetNodeByNameOrId("/chummer/biowares/bioware", strName);
 
                             if (objXmlSubsystem != null)
                             {
@@ -3261,6 +3249,33 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        /// <summary>
+        /// Returns whether the 'ware is currently equipped (with improvements applied) or not.
+        /// </summary>
+        public async Task<bool> GetIsModularCurrentlyEquippedAsync(CancellationToken token = default)
+        {
+            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            {
+                // Cyberware always equipped if it's not a modular one
+                bool blnReturn = string.IsNullOrEmpty(PlugsIntoModularMount);
+                Cyberware objCurrentParent = Parent;
+                // If top-level parent is one that has a modular mount but also does not plug into another modular mount itself, then return true, otherwise return false
+                while (objCurrentParent != null)
+                {
+                    using (await EnterReadLock.EnterAsync(objCurrentParent.LockObject, token).ConfigureAwait(false))
+                    {
+                        if (!string.IsNullOrEmpty(objCurrentParent.HasModularMount))
+                            blnReturn = true;
+                        if (!string.IsNullOrEmpty(objCurrentParent.PlugsIntoModularMount))
+                            blnReturn = false;
+                        objCurrentParent = objCurrentParent.Parent;
+                    }
+                }
+
+                return blnReturn;
+            }
+        }
+
         public bool Stolen
         {
             get
@@ -3855,11 +3870,13 @@ namespace Chummer.Backend.Equipment
 
                 if (!blnSkipEncumbranceOnPropertyChanged && ParentVehicle == null && _objCharacter?.IsLoading == false
                     && (!string.IsNullOrEmpty(Weight)
-                        || GearChildren.DeepAny(x => x.Children, x => !string.IsNullOrEmpty(x.Weight))
+                        || GearChildren.DeepAny(x => x.Children.Where(y => y.Equipped),
+                                                x => x.Equipped && !string.IsNullOrEmpty(x.Weight))
                         || Children.DeepAny(x => x.Children,
                                             y => !string.IsNullOrEmpty(y.Weight)
                                                  || y.GearChildren.DeepAny(
-                                                     x => x.Children, x => !string.IsNullOrEmpty(x.Weight)))))
+                                                     x => x.Children.Where(z => z.Equipped),
+                                                     x => x.Equipped && !string.IsNullOrEmpty(x.Weight)))))
                     _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
             }
         }
@@ -4018,11 +4035,15 @@ namespace Chummer.Backend.Equipment
 
                 if (!blnSkipEncumbranceOnPropertyChanged && ParentVehicle == null && _objCharacter?.IsLoading == false
                     && (!string.IsNullOrEmpty(Weight)
-                        || GearChildren.DeepAny(x => x.Children, x => !string.IsNullOrEmpty(x.Weight))
-                        || Children.DeepAny(x => x.Children,
-                                            y => !string.IsNullOrEmpty(y.Weight)
-                                                 || y.GearChildren.DeepAny(
-                                                     x => x.Children, x => !string.IsNullOrEmpty(x.Weight)))))
+                        || GearChildren.DeepAny(x => x.Children.Where(y => y.Equipped),
+                                                x => x.Equipped && !string.IsNullOrEmpty(x.Weight))
+                        || await Children.DeepAnyAsync(x => x.Children,
+                                                       y => !string.IsNullOrEmpty(y.Weight)
+                                                            || y.GearChildren.DeepAny(
+                                                                x => x.Children.Where(z => z.Equipped),
+                                                                x => x.Equipped && !string.IsNullOrEmpty(x.Weight)),
+                                                       token)
+                                         .ConfigureAwait(false)))
                     _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
             }
             finally
@@ -4148,32 +4169,51 @@ namespace Chummer.Backend.Equipment
 
                         if (blnDoRating)
                         {
-                            if (IsModularCurrentlyEquipped &&
-                                ParentVehicle == null &&
-                                _objParent?.Category == "Cyberlimb" &&
-                                _objParent.Parent?.InheritAttributes != false &&
-                                _objParent.ParentVehicle == null && !_objCharacter.Settings.DontUseCyberlimbCalculation
-                                &&
-                                !string.IsNullOrWhiteSpace(_objParent.LimbSlot) &&
-                                !_objCharacter.Settings.ExcludeLimbSlot.Contains(_objParent.LimbSlot))
+                            if (IsModularCurrentlyEquipped && ParentVehicle == null)
                             {
-                                foreach (KeyValuePair<string, IReadOnlyCollection<string>> kvpToCheck in
-                                         s_AttributeAffectingCyberwares)
+                                if (_objParent?.Category == "Cyberlimb"
+                                    && _objParent.Parent?.InheritAttributes != false
+                                    && _objParent.ParentVehicle == null
+                                    && !_objCharacter.Settings.DontUseCyberlimbCalculation
+                                    && !string.IsNullOrWhiteSpace(_objParent.LimbSlot)
+                                    && !_objCharacter.Settings.ExcludeLimbSlot.Contains(_objParent.LimbSlot))
                                 {
-                                    if (!kvpToCheck.Value.Contains(Name))
-                                        continue;
-                                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes(
-                                                 kvpToCheck.Key))
+                                    foreach (KeyValuePair<string, IReadOnlyCollection<string>> kvpToCheck in
+                                             s_AttributeAffectingCyberwares)
                                     {
-                                        if (!dicChangedProperties.TryGetValue(
-                                                objCharacterAttrib, out HashSet<string> setChangedProperties))
+                                        if (!kvpToCheck.Value.Contains(Name))
+                                            continue;
+                                        foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes(
+                                                     kvpToCheck.Key))
                                         {
-                                            setChangedProperties = Utils.StringHashSetPool.Get();
-                                            dicChangedProperties.Add(objCharacterAttrib, setChangedProperties);
-                                        }
+                                            if (!dicChangedProperties.TryGetValue(
+                                                    objCharacterAttrib, out HashSet<string> setChangedProperties))
+                                            {
+                                                setChangedProperties = Utils.StringHashSetPool.Get();
+                                                dicChangedProperties.Add(objCharacterAttrib, setChangedProperties);
+                                            }
 
-                                        setChangedProperties.Add(nameof(CharacterAttrib.TotalValue));
+                                            setChangedProperties.Add(nameof(CharacterAttrib.TotalValue));
+                                        }
                                     }
+                                }
+
+                                if (Weight.ContainsAny("Rating", "FixedValues")
+                                    || GearChildren.Any(x => x.Equipped
+                                                             && x.Weight.Contains(
+                                                                 "Parent Rating", StringComparison.OrdinalIgnoreCase))
+                                    || Children.Any(x => x.IsModularCurrentlyEquipped
+                                                         && x.Weight.Contains(
+                                                             "Parent Rating", StringComparison.OrdinalIgnoreCase)))
+                                {
+                                    if (!dicChangedProperties.TryGetValue(_objCharacter,
+                                                                          out HashSet<string> setChangedProperties))
+                                    {
+                                        setChangedProperties = Utils.StringHashSetPool.Get();
+                                        dicChangedProperties.Add(_objCharacter, setChangedProperties);
+                                    }
+
+                                    setChangedProperties.Add(nameof(Character.TotalCarriedWeight));
                                 }
                             }
 
@@ -5256,15 +5296,11 @@ namespace Chummer.Backend.Equipment
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadData(strDoc, strLanguage, token: token)
                     : await _objCharacter.LoadDataAsync(strDoc, strLanguage, token: token).ConfigureAwait(false);
-                objReturn = objDoc.SelectSingleNode(strPath + (SourceID == Guid.Empty
-                                                                  ? "[name = " + Name.CleanXPath() + ']'
-                                                                  : "[id = " + SourceIDString.CleanXPath()
-                                                                             + " or id = " + SourceIDString
-                                                                                 .ToUpperInvariant().CleanXPath()
-                                                                             + ']'));
+                objReturn = objDoc.TryGetNodeById(strPath, SourceID);
+
                 if (objReturn == null && SourceID != Guid.Empty)
                 {
-                    objReturn = objDoc.SelectSingleNode(strPath + "[name = " + Name.CleanXPath() + ']');
+                    objReturn = objDoc.TryGetNodeByNameOrId(strPath, Name);
                     objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
 
@@ -5298,15 +5334,11 @@ namespace Chummer.Backend.Equipment
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadDataXPath(strDoc, strLanguage, token: token)
                     : await _objCharacter.LoadDataXPathAsync(strDoc, strLanguage, token: token).ConfigureAwait(false);
-                objReturn = objDoc.SelectSingleNode(strPath + (SourceID == Guid.Empty
-                                                                       ? "[name = " + Name.CleanXPath() + ']'
-                                                                       : "[id = " + SourceIDString.CleanXPath()
-                                                                       + " or id = " + SourceIDString
-                                                                           .ToUpperInvariant().CleanXPath()
-                                                                       + ']'));
+                objReturn = objDoc.TryGetNodeById(strPath, SourceID);
+
                 if (objReturn == null && SourceID != Guid.Empty)
                 {
-                    objReturn = objDoc.SelectSingleNode(strPath + "[name = " + Name.CleanXPath() + ']');
+                    objReturn = objDoc.TryGetNodeByNameOrId(strPath, Name);
                     objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
 

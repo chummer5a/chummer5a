@@ -237,8 +237,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strSelectedGrade))
                 {
                     XPathNavigator xmlGrade
-                        = _xmlBaseCyberwareDataNode.SelectSingleNode(
-                            "grades/grade[id = " + strSelectedGrade.CleanXPath() + ']');
+                        = _xmlBaseCyberwareDataNode.TryGetNodeByNameOrId("grades/grade", strSelectedGrade);
 
                     // Update the Essence and Cost multipliers based on the Grade that has been selected.
                     if (xmlGrade != null)
@@ -343,8 +342,8 @@ namespace Chummer
                         _strOldSelectedGrade = strSelectedGrade;
                     if (!string.IsNullOrEmpty(strSelectedGrade))
                     {
-                        xmlGrade = _xmlBaseCyberwareDataNode.SelectSingleNode(
-                            "grades/grade[id = " + strSelectedGrade.CleanXPath() + ']');
+                        xmlGrade =
+                            _xmlBaseCyberwareDataNode.TryGetNodeByNameOrId("grades/grade", strSelectedGrade);
                     }
 
                     // Update the Essence and Cost multipliers based on the Grade that has been selected.
@@ -494,7 +493,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strSelectedId))
                     {
                         // Retrieve the information for the selected piece of Cyberware.
-                        xmlCyberware = _xmlBaseCyberwareDataNode.SelectSingleNode(_strNodeXPath + "[id = " + strSelectedId.CleanXPath() + ']');
+                        xmlCyberware = _xmlBaseCyberwareDataNode.TryGetNodeByNameOrId(_strNodeXPath, strSelectedId);
                     }
                     string strForceGrade;
                     if (xmlCyberware != null)
@@ -1030,7 +1029,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strSelectedId))
                 {
                     // Retrieve the information for the selected piece of Cyberware.
-                    objXmlCyberware = _xmlBaseCyberwareDataNode.SelectSingleNode(_strNodeXPath + "[id = " + strSelectedId.CleanXPath() + ']');
+                    objXmlCyberware = _xmlBaseCyberwareDataNode.TryGetNodeByNameOrId(_strNodeXPath, strSelectedId);
                 }
                 if (objXmlCyberware == null)
                 {
@@ -1884,7 +1883,7 @@ namespace Chummer
                                                  MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
-            XPathNavigator objCyberwareNode = _xmlBaseCyberwareDataNode.SelectSingleNode(_strNodeXPath + "[id = " + strSelectedId.CleanXPath() + ']');
+            XPathNavigator objCyberwareNode = _xmlBaseCyberwareDataNode.TryGetNodeByNameOrId(_strNodeXPath, strSelectedId);
             if (objCyberwareNode == null)
                 return;
 

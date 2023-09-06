@@ -612,7 +612,7 @@ namespace Chummer
                         return;
                     blnAddAgain = frmSelectLifestyleQuality.MyForm.AddAgain;
 
-                    XmlNode objXmlQuality = _xmlDocument.SelectSingleNode("/chummer/qualities/quality[id = " + frmSelectLifestyleQuality.MyForm.SelectedQuality.CleanXPath() + ']');
+                    XmlNode objXmlQuality = _xmlDocument.TryGetNodeByNameOrId("/chummer/qualities/quality", frmSelectLifestyleQuality.MyForm.SelectedQuality);
 
                     LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
                     try
