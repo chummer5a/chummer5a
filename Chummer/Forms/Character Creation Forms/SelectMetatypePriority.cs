@@ -931,14 +931,11 @@ namespace Chummer
                                             .ConfigureAwait(false) != null)
                                     {
                                         XPathNavigator objXmlMetatypePriorityNode
-                                            = xmlBaseMetatypePriority.SelectSingleNode(
-                                                "metatypes/metatype[name = " + strSelectedMetatype.CleanXPath() + ']');
+                                            = xmlBaseMetatypePriority.TryGetNodeByNameOrId("metatypes/metatype", strSelectedMetatype);
                                         if (!string.IsNullOrEmpty(strSelectedMetavariant)
                                             && strSelectedMetavariant != Guid.Empty.ToString())
                                             objXmlMetatypePriorityNode
-                                                = objXmlMetatypePriorityNode?.SelectSingleNode(
-                                                    "metavariants/metavariant[name = " + strSelectedMetavariant.CleanXPath()
-                                                    + ']');
+                                                = objXmlMetatypePriorityNode?.TryGetNodeByNameOrId("metavariants/metavariant", strSelectedMetavariant);
                                         if (objXmlMetatypePriorityNode != null && int.TryParse(
                                                 (await objXmlMetatypePriorityNode.SelectSingleNodeAndCacheExpressionAsync(
                                                     "value", token).ConfigureAwait(false))?.Value, out int intTemp))
@@ -1448,8 +1445,7 @@ namespace Chummer
                 }
 
                 XmlNode objXmlMetatype
-                    = _xmlMetatypeDocumentMetatypesNode.SelectSingleNode(
-                        "metatype[name = " + strSelectedMetatype.CleanXPath() + ']');
+                    = _xmlMetatypeDocumentMetatypesNode.TryGetNodeByNameOrId("metatype", strSelectedMetatype);
                 if (objXmlMetatype == null)
                 {
                     Program.ShowScrollableMessageBox(
@@ -1497,8 +1493,7 @@ namespace Chummer
                     if (strSelectedMetatypeCategory == "Shapeshifter" && strSelectedMetavariant == Guid.Empty.ToString())
                         strSelectedMetavariant = "Human";
                     XmlNode objXmlMetavariant
-                        = objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = "
-                                                          + strSelectedMetavariant.CleanXPath() + ']');
+                        = objXmlMetatype.TryGetNodeByNameOrId("metavariants/metavariant", strSelectedMetavariant);
                     strSelectedMetavariant = objXmlMetavariant?["id"]?.InnerText ?? Guid.Empty.ToString();
                     int intForce = await nudForce.DoThreadSafeFuncAsync(x => x.Visible ? x.ValueAsInt : 0, token)
                                                  .ConfigureAwait(false);
@@ -1704,8 +1699,8 @@ namespace Chummer
                                                  .ConfigureAwait(false))
                                     {
                                         XmlNode objXmlQuality
-                                            = _xmlQualityDocumentQualitiesNode.SelectSingleNode(
-                                                "quality[name = " + objXmlQualityItem.Value.CleanXPath() + ']');
+                                            = _xmlQualityDocumentQualitiesNode.TryGetNodeByNameOrId(
+                                                "quality", objXmlQualityItem.Value);
                                         Quality objQuality = new Quality(_objCharacter);
                                         bool blnDoRemove = false;
                                         Quality objExistingQuality;
@@ -1895,12 +1890,11 @@ namespace Chummer
                             != null)
                         {
                             XPathNavigator objXmlMetatypePriorityNode
-                                = xmlBaseMetatypePriority.SelectSingleNode(
-                                    "metatypes/metatype[name = " + _objCharacter.Metatype.CleanXPath() + ']');
+                                = xmlBaseMetatypePriority.TryGetNodeById(
+                                    "metatypes/metatype", _objCharacter.MetatypeGuid);
                             if (strSelectedMetavariant != Guid.Empty.ToString())
-                                objXmlMetatypePriorityNode = objXmlMetatypePriorityNode?.SelectSingleNode(
-                                    "metavariants/metavariant[name = " + _objCharacter.Metavariant.CleanXPath()
-                                                                       + ']');
+                                objXmlMetatypePriorityNode = objXmlMetatypePriorityNode?.TryGetNodeById(
+                                    "metavariants/metavariant", _objCharacter.MetavariantGuid);
                             if (objXmlMetatypePriorityNode != null && int.TryParse(
                                     (await objXmlMetatypePriorityNode.SelectSingleNodeAndCacheExpressionAsync(
                                         "value", token).ConfigureAwait(false))
@@ -2415,13 +2409,11 @@ namespace Chummer
                 string strSelectedHeritage = await cboHeritage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
 
                 XPathNavigator objXmlMetatype
-                    = _xmlBaseMetatypeDataNode.SelectSingleNode(
-                        "metatypes/metatype[name = " + strSelectedMetatype.CleanXPath() + ']');
+                    = _xmlBaseMetatypeDataNode.TryGetNodeByNameOrId("metatypes/metatype", strSelectedMetatype);
                 XPathNavigator objXmlMetavariant
                     = string.IsNullOrEmpty(strSelectedMetavariant) || strSelectedMetavariant == Guid.Empty.ToString()
                         ? null
-                        : objXmlMetatype?.SelectSingleNode("metavariants/metavariant[name = "
-                                                           + strSelectedMetavariant.CleanXPath() + ']');
+                        : objXmlMetatype?.TryGetNodeByNameOrId("metavariants/metavariant", strSelectedMetavariant);
                 XPathNavigator objXmlMetatypePriorityNode = null;
                 XPathNavigator objXmlMetavariantPriorityNode = null;
                 XPathNodeIterator xmlBaseMetatypePriorityList = _xmlBasePriorityDataNode.Select(
@@ -2436,11 +2428,9 @@ namespace Chummer
                         != null)
                     {
                         objXmlMetatypePriorityNode
-                            = xmlBaseMetatypePriority.SelectSingleNode(
-                                "metatypes/metatype[name = " + strSelectedMetatype.CleanXPath() + ']');
+                            = xmlBaseMetatypePriority.TryGetNodeByNameOrId("metatypes/metatype", strSelectedMetatype);
                         objXmlMetavariantPriorityNode = objXmlMetavariant != null
-                            ? objXmlMetatypePriorityNode.SelectSingleNode(
-                                "metavariants/metavariant[name = " + strSelectedMetavariant.CleanXPath() + ']')
+                            ? objXmlMetatypePriorityNode.TryGetNodeByNameOrId("metavariants/metavariant", strSelectedMetavariant)
                             : null;
                         break;
                     }
@@ -2596,8 +2586,7 @@ namespace Chummer
                                                             StringComparison.OrdinalIgnoreCase))
                         {
                             strQuality = _xmlBaseQualityDataNode
-                                         .SelectSingleNode("qualities/quality[name = "
-                                                           + objXmlQuality.Value.CleanXPath() + "]/translate")
+                                         .TryGetNodeByNameOrId("qualities/quality", objXmlQuality.Value)
                                          ?.Value
                                          ?? objXmlQuality.Value;
 
@@ -2726,8 +2715,7 @@ namespace Chummer
                                                             StringComparison.OrdinalIgnoreCase))
                         {
                             XPathNavigator objQuality
-                                = _xmlBaseQualityDataNode.SelectSingleNode(
-                                    "qualities/quality[name = " + xmlQuality.Value.CleanXPath() + ']');
+                                = _xmlBaseQualityDataNode.TryGetNodeByNameOrId("qualities/quality", xmlQuality.Value);
                             strQuality = (await objQuality.SelectSingleNodeAndCacheExpressionAsync("translate", token).ConfigureAwait(false))
                                          ?.Value
                                          ?? xmlQuality.Value;
@@ -2953,9 +2941,8 @@ namespace Chummer
                                     foreach (XPathNavigator xmlQuality in await xmlQualitiesNode.SelectAndCacheExpressionAsync(
                                                  "quality", token).ConfigureAwait(false))
                                     {
-                                        if (_xmlBaseQualityDataNode.SelectSingleNode(
-                                                "qualities/quality[" + await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false) + " and name = "
-                                                + xmlQuality.Value.CleanXPath() + ']') == null)
+                                        if (_xmlBaseQualityDataNode.TryGetNodeByNameOrId(
+                                                "qualities/quality", xmlQuality.Value, await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false)) == null)
                                         {
                                             blnFoundUnavailableQuality = true;
                                             break;
@@ -3148,8 +3135,7 @@ namespace Chummer
                                                                             .ConfigureAwait(false) != null)
                         {
                             objXmlMetatypeBP
-                                = xmlBaseMetatypePriority.SelectSingleNode(
-                                    "metatypes/metatype[name = " + strSelectedMetatype.CleanXPath() + ']');
+                                = xmlBaseMetatypePriority.TryGetNodeByNameOrId("metatypes/metatype", strSelectedMetatype);
                             break;
                         }
                     }
@@ -3173,8 +3159,8 @@ namespace Chummer
                                                               .ConfigureAwait(false))?.Value
                                       ?? await LanguageManager.GetStringAsync("String_Unknown", token: token)
                                                               .ConfigureAwait(false);
-                                if (objXmlMetatypeBP.SelectSingleNode(
-                                        "metavariants/metavariant[name = " + strName.CleanXPath() + ']') != null)
+                                if (objXmlMetatypeBP.TryGetNodeByNameOrId(
+                                        "metavariants/metavariant", strName) != null)
                                 {
                                     lstMetavariants.Add(new ListItem(
                                                             strName,
@@ -3343,8 +3329,8 @@ namespace Chummer
                                                             .SelectSingleNodeAndCacheExpressionAsync("name", token)
                                                             .ConfigureAwait(false))?.Value;
                                     if (!string.IsNullOrEmpty(strName)
-                                        && xmlBaseMetatypePriority.SelectSingleNode(
-                                            "metatypes/metatype[name = " + strName.CleanXPath() + ']') != null)
+                                        && xmlBaseMetatypePriority.TryGetNodeByNameOrId(
+                                            "metatypes/metatype", strName) != null)
                                     {
                                         lstMetatype.Add(new ListItem(
                                                             strName,
@@ -3459,11 +3445,10 @@ namespace Chummer
                                              + await _objCharacter.Settings.BookXPathAsync(token: token)
                                                                   .ConfigureAwait(false) + ")]"))
                                 {
-                                    if (xmlBaseMetatypePriority.SelectSingleNode(
-                                            "metatypes/metatype[name = "
-                                            + ((await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("name", token)
-                                                                    .ConfigureAwait(false))?.Value
-                                               ?? string.Empty).CleanXPath() + ']') != null)
+                                    if (xmlBaseMetatypePriority.TryGetNodeByNameOrId(
+                                            "metatypes/metatype",
+                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("name", token)
+                                                                 .ConfigureAwait(false))?.Value) != null)
                                     {
                                         blnRemoveCategory = false;
                                         break;

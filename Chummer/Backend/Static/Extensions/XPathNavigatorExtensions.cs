@@ -513,32 +513,42 @@ namespace Chummer
         /// Query the XPathNavigator for a given node with an id or name element. Includes ToUpperInvariant processing to handle uppercase ids.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static XPathNavigator TryGetNodeByNameOrId(this XPathNavigator node, string strPath, string strId)
+        public static XPathNavigator TryGetNodeByNameOrId(this XPathNavigator node, string strPath, string strId, string strExtraXPath = "")
         {
             if (node == null || string.IsNullOrEmpty(strPath) || string.IsNullOrEmpty(strId))
                 return null;
             if (Guid.TryParse(strId, out Guid guidId))
             {
-                XPathNavigator objReturn = node.TryGetNodeById(strPath, guidId);
+                XPathNavigator objReturn = node.TryGetNodeById(strPath, guidId, strExtraXPath);
                 if (objReturn != null)
                     return objReturn;
             }
-            return node.SelectSingleNode(strPath + "[name = " + strId.CleanXPath() + ']');
+
+            return node.SelectSingleNode(strPath + "[name = " + strId.CleanXPath()
+                                         + (string.IsNullOrEmpty(strExtraXPath)
+                                             ? "]"
+                                             : " and (" + strExtraXPath + ") ]"));
         }
 
         /// <summary>
         /// Query the XPathNavigator for a given node with an id. Includes ToUpperInvariant processing to handle uppercase ids.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static XPathNavigator TryGetNodeById(this XPathNavigator node, string strPath, Guid guidId)
+        public static XPathNavigator TryGetNodeById(this XPathNavigator node, string strPath, Guid guidId, string strExtraXPath = "")
         {
             if (node == null || string.IsNullOrEmpty(strPath))
                 return null;
             string strId = guidId.ToString("D", GlobalSettings.InvariantCultureInfo);
-            return node.SelectSingleNode(strPath + "[id = " + strId.CleanXPath() + ']')
+            return node.SelectSingleNode(strPath + "[id = " + strId.CleanXPath()
+                                         + (string.IsNullOrEmpty(strExtraXPath)
+                                             ? "]"
+                                             : " and (" + strExtraXPath + ")]"))
                    // Split into two separate queries because the case-insensitive search here can be expensive if we're doing it a lot
                    ?? node.SelectSingleNode(strPath + "[translate(id, 'abcdef', 'ABCDEF') = "
-                                                    + strId.ToUpperInvariant().CleanXPath() + ']');
+                                                    + strId.ToUpperInvariant().CleanXPath()
+                                                    + (string.IsNullOrEmpty(strExtraXPath)
+                                                        ? "]"
+                                                        : " and (" + strExtraXPath + ")]"));
         }
 
         /// <summary>
