@@ -23,11 +23,12 @@
     <UseWindowsForms>true</UseWindowsForms>
     <UseWPF>true</UseWPF>
     <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <AnalysisLevel>latest-Recommended</AnalysisLevel>
   </PropertyGroup>
   <PropertyGroup>
     <StartupObject>Chummer.Program</StartupObject>
     <ApplicationIcon>chummer.ico</ApplicationIcon>
-    
+
     <ManifestCertificateThumbprint>B9A872C2F9A1FF42B075A9C706E2471AD97D2F81</ManifestCertificateThumbprint>
     <ManifestKeyFile>Chummer_TemporaryKey.pfx</ManifestKeyFile>
     <GenerateManifests>false</GenerateManifests>
@@ -1833,16 +1834,6 @@
     <PackageReference Include="Microsoft.ApplicationInsights.NLogTarget" Version="2.21.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.PerfCounterCollector" Version="2.21.0" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebView.WindowsForms" Version="7.0.92" />
-    <!--
-      These produse a lot of false positives in rider
-      <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" />
-      <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.7.0" />
-      <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.7.0" />
-    -->
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.4">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="2.3.2" />
     <PackageReference Include="Microsoft.VisualStudio.Threading" Version="17.7.30" />
     <PackageReference Include="Microsoft.VisualStudio.Threading.Analyzers" Version="17.7.30" />
