@@ -1,4 +1,4 @@
-namespace Chummer.Tests.xUnit.AccessChummerState;
+namespace Chummer.Tests.AccessChummerState;
 
 // ReSharper disable once ClassNeverInstantiated.Global
 public class ChummerUIFixture: SetupStaThreadFixture

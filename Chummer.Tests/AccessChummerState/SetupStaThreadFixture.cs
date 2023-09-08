@@ -1,6 +1,6 @@
 using System.Windows.Forms;
 
-namespace Chummer.Tests.xUnit.AccessChummerState;
+namespace Chummer.Tests.AccessChummerState;
 
 /// <summary>
 /// Defines a fixture to setup a Single Threaded Apartment (STA) for xUnit tests that would misbehave otherwise

@@ -1,6 +1,6 @@
 using System.Diagnostics.CodeAnalysis;
 
-namespace Chummer.Tests.xUnit.AccessChummerState;
+namespace Chummer.Tests.AccessChummerState;
 
 public class ChummerTestFixture: SetupStaThreadFixture
 {

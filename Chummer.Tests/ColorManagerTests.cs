@@ -1,7 +1,7 @@
 using System.Drawing;
 using Xunit.Sdk;
 
-namespace Chummer.Tests.xUnit;
+namespace Chummer.Tests;
 
 public class ColorManagerTests
 {

@@ -3,7 +3,7 @@ using System.Windows.Forms;
 using Xunit.Abstractions;
 using Assert = Xunit.Assert;
 
-namespace Chummer.Tests.xUnit.AccessChummerState;
+namespace Chummer.Tests.AccessChummerState;
 
 [Collection("AccessChummerState")]
 public class ChummerUITests: IClassFixture<ChummerUIFixture>

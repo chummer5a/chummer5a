@@ -7,7 +7,6 @@
 
         <IsPackable>false</IsPackable>
         <IsTestProject>true</IsTestProject>
-        <RootNamespace>Chummer.Tests.xUnit</RootNamespace>
          <AnalysisLevel>latest-Recommended</AnalysisLevel>
     </PropertyGroup>
 

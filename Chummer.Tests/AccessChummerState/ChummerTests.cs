@@ -1,10 +1,11 @@
 using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Xml.Schema;
 using Org.XmlUnit.Builder;
 using Org.XmlUnit.Diff;
 using Xunit.Abstractions;
 
-namespace Chummer.Tests.xUnit.AccessChummerState;
+namespace Chummer.Tests.AccessChummerState;
 
 [Collection("AccessChummerState")]
 public class ChummerTests: IClassFixture<ChummerTestFixture>
