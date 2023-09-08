@@ -1268,7 +1268,7 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        public static void CopyAttribute(CharacterAttrib objSource, CharacterAttrib objTarget, string strMetavariantXPath, XmlDocument xmlDoc)
+        public static void CopyAttribute(CharacterAttrib objSource, CharacterAttrib objTarget, string strMetavariantXPath, XPathNavigator xmlDoc)
         {
             if (objSource == null || objTarget == null)
                 return;
@@ -1277,16 +1277,16 @@ namespace Chummer.Backend.Attributes
                 string strSourceAbbrev = objSource.Abbrev.ToLowerInvariant();
                 if (strSourceAbbrev == "magadept")
                     strSourceAbbrev = "mag";
-                XmlNode node = !string.IsNullOrEmpty(strMetavariantXPath)
+                XPathNavigator node = !string.IsNullOrEmpty(strMetavariantXPath)
                     ? xmlDoc?.SelectSingleNode(strMetavariantXPath)
                     : null;
                 if (node != null)
                 {
-                    int.TryParse(node[strSourceAbbrev + "min"]?.InnerText, NumberStyles.Any,
+                    int.TryParse(node.SelectSingleNodeAndCacheExpression(strSourceAbbrev + "min")?.Value, NumberStyles.Any,
                                  GlobalSettings.InvariantCultureInfo, out int intMinimum);
-                    int.TryParse(node[strSourceAbbrev + "max"]?.InnerText, NumberStyles.Any,
+                    int.TryParse(node.SelectSingleNodeAndCacheExpression(strSourceAbbrev + "max")?.Value, NumberStyles.Any,
                                  GlobalSettings.InvariantCultureInfo, out int intMaximum);
-                    int.TryParse(node[strSourceAbbrev + "aug"]?.InnerText, NumberStyles.Any,
+                    int.TryParse(node.SelectSingleNodeAndCacheExpression(strSourceAbbrev + "aug")?.Value, NumberStyles.Any,
                                  GlobalSettings.InvariantCultureInfo, out int intAugmentedMaximum);
                     intMaximum = Math.Max(intMaximum, intMinimum);
                     intAugmentedMaximum = Math.Max(intAugmentedMaximum, intMaximum);
@@ -1295,7 +1295,7 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        public static async ValueTask CopyAttributeAsync(CharacterAttrib objSource, CharacterAttrib objTarget, string strMetavariantXPath, XmlDocument xmlDoc, CancellationToken token = default)
+        public static async ValueTask CopyAttributeAsync(CharacterAttrib objSource, CharacterAttrib objTarget, string strMetavariantXPath, XPathNavigator xmlDoc, CancellationToken token = default)
         {
             if (objSource == null || objTarget == null)
                 return;
@@ -1304,16 +1304,16 @@ namespace Chummer.Backend.Attributes
                 string strSourceAbbrev = objSource.Abbrev.ToLowerInvariant();
                 if (strSourceAbbrev == "magadept")
                     strSourceAbbrev = "mag";
-                XmlNode node = !string.IsNullOrEmpty(strMetavariantXPath)
+                XPathNavigator node = !string.IsNullOrEmpty(strMetavariantXPath)
                     ? xmlDoc?.SelectSingleNode(strMetavariantXPath)
                     : null;
                 if (node != null)
                 {
-                    int.TryParse(node[strSourceAbbrev + "min"]?.InnerText, NumberStyles.Any,
+                    int.TryParse((await node.SelectSingleNodeAndCacheExpressionAsync(strSourceAbbrev + "min", token).ConfigureAwait(false))?.Value, NumberStyles.Any,
                                  GlobalSettings.InvariantCultureInfo, out int intMinimum);
-                    int.TryParse(node[strSourceAbbrev + "max"]?.InnerText, NumberStyles.Any,
+                    int.TryParse((await node.SelectSingleNodeAndCacheExpressionAsync(strSourceAbbrev + "max", token).ConfigureAwait(false))?.Value, NumberStyles.Any,
                                  GlobalSettings.InvariantCultureInfo, out int intMaximum);
-                    int.TryParse(node[strSourceAbbrev + "aug"]?.InnerText, NumberStyles.Any,
+                    int.TryParse((await node.SelectSingleNodeAndCacheExpressionAsync(strSourceAbbrev + "aug", token).ConfigureAwait(false))?.Value, NumberStyles.Any,
                                  GlobalSettings.InvariantCultureInfo, out int intAugmentedMaximum);
                     intMaximum = Math.Max(intMaximum, intMinimum);
                     intAugmentedMaximum = Math.Max(intAugmentedMaximum, intMaximum);

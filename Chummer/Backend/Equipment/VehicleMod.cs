@@ -2075,21 +2075,19 @@ namespace Chummer.Backend.Equipment
             if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                   && !GlobalSettings.LiveCustomData)
                 return objReturn;
-            XmlDocument objDoc = blnSync
+            XmlNode objDoc = blnSync
                 // ReSharper disable once MethodHasAsyncOverload
                 ? _objCharacter.LoadData("vehicles.xml", strLanguage, token: token)
                 : await _objCharacter.LoadDataAsync("vehicles.xml", strLanguage, token: token).ConfigureAwait(false);
-            objReturn = objDoc.SelectSingleNode("/chummer/mods/mod[id = "
-                                                + SourceIDString.CleanXPath() + " or id = "
-                                                + SourceIDString.ToUpperInvariant().CleanXPath()
-                                                + ']')
-                        ?? objDoc.SelectSingleNode("/chummer/weaponmountmods/mod[id = "
-                                                   + SourceIDString.CleanXPath() + " or id = "
-                                                   + SourceIDString.ToUpperInvariant().CleanXPath()
-                                                   + ']')
-                        ?? objDoc.SelectSingleNode("/chummer/mods/mod[name = " + Name.CleanXPath() + ']')
-                        ?? objDoc.SelectSingleNode(
-                            "/chummer/weaponmountmods/mod[name = " + Name.CleanXPath() + ']');
+            if (SourceID != Guid.Empty)
+                objReturn = objDoc.TryGetNodeById("/chummer/mods/mod", SourceID)
+                            ?? objDoc.TryGetNodeById("/chummer/weaponmountmods/mod", SourceID);
+            if (objReturn == null)
+            {
+                objReturn = objDoc.TryGetNodeByNameOrId("/chummer/mods/mod", Name)
+                            ?? objDoc.TryGetNodeByNameOrId("/chummer/weaponmountmods/mod", Name);
+                objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+            }
             _objCachedMyXmlNode = objReturn;
             _strCachedXmlNodeLanguage = strLanguage;
             return objReturn;
@@ -2108,17 +2106,15 @@ namespace Chummer.Backend.Equipment
                 // ReSharper disable once MethodHasAsyncOverload
                 ? _objCharacter.LoadDataXPath("vehicles.xml", strLanguage, token: token)
                 : await _objCharacter.LoadDataXPathAsync("vehicles.xml", strLanguage, token: token).ConfigureAwait(false);
-            objReturn = objDoc.SelectSingleNode("/chummer/mods/mod[id = "
-                                                            + SourceIDString.CleanXPath() + " or id = "
-                                                            + SourceIDString.ToUpperInvariant().CleanXPath()
-                                                            + ']')
-                                    ?? objDoc.SelectSingleNode("/chummer/weaponmountmods/mod[id = "
-                                                               + SourceIDString.CleanXPath() + " or id = "
-                                                               + SourceIDString.ToUpperInvariant().CleanXPath()
-                                                               + ']')
-                                    ?? objDoc.SelectSingleNode("/chummer/mods/mod[name = " + Name.CleanXPath() + ']')
-                                    ?? objDoc.SelectSingleNode(
-                                        "/chummer/weaponmountmods/mod[name = " + Name.CleanXPath() + ']');
+            if (SourceID != Guid.Empty)
+                objReturn = objDoc.TryGetNodeById("/chummer/mods/mod", SourceID)
+                            ?? objDoc.TryGetNodeById("/chummer/weaponmountmods/mod", SourceID);
+            if (objReturn == null)
+            {
+                objReturn = objDoc.TryGetNodeByNameOrId("/chummer/mods/mod", Name)
+                            ?? objDoc.TryGetNodeByNameOrId("/chummer/weaponmountmods/mod", Name);
+                objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+            }
             _objCachedMyXPathNode = objReturn;
             _strCachedXPathNodeLanguage = strLanguage;
             return objReturn;

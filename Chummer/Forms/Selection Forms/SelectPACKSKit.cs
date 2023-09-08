@@ -867,7 +867,7 @@ namespace Chummer
                 }
 
                 XmlNode xmlDocumentBasePacksNode = objXmlDocument.SelectSingleNode("/chummer/packs");
-                if (xmlDocumentBasePacksNode?.SelectSingleNode("pack[name = " + strSelectedKit.CleanXPath() + " and category = \"Custom\"]") != null)
+                if (xmlDocumentBasePacksNode?.TryGetNodeByNameOrId("pack", strSelectedKit, "category = \"Custom\"") != null)
                 {
                     using (FileStream objStream = new FileStream(strFile, FileMode.Create, FileAccess.Write, FileShare.None))
                     {

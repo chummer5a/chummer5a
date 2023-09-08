@@ -91,7 +91,7 @@ namespace Chummer
             }
 
             _intRating = intRating;
-            _nodBonus = objXmlPowerNode.SelectSingleNode("bonus");
+            _nodBonus = objXmlPowerNode["bonus"];
             if (!objXmlPowerNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
                 objXmlPowerNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
 
@@ -783,18 +783,17 @@ namespace Chummer
             if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                   && !GlobalSettings.LiveCustomData)
                 return objReturn;
-            objReturn = (blnSync
-                    // ReSharper disable once MethodHasAsyncOverload
-                    ? _objCharacter.LoadData("critterpowers.xml", strLanguage, token: token)
-                    : await _objCharacter.LoadDataAsync("critterpowers.xml", strLanguage, token: token).ConfigureAwait(false))
-                .SelectSingleNode(SourceID == Guid.Empty
-                                      ? "/chummer/powers/power[name = "
-                                        + Name.CleanXPath() + ']'
-                                      : "/chummer/powers/power[id = "
-                                        + SourceIDString.CleanXPath()
-                                        + " or id = " + SourceIDString
-                                                        .ToUpperInvariant().CleanXPath()
-                                        + ']');
+            XmlNode objDoc = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? _objCharacter.LoadData("critterpowers.xml", strLanguage, token: token)
+                : await _objCharacter.LoadDataAsync("critterpowers.xml", strLanguage, token: token).ConfigureAwait(false);
+            if (SourceID != Guid.Empty)
+                objReturn = objDoc.TryGetNodeById("/chummer/powers/power", SourceID);
+            if (objReturn == null)
+            {
+                objReturn = objDoc.TryGetNodeByNameOrId("/chummer/powers/power", Name);
+                objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+            }
             _objCachedMyXmlNode = objReturn;
             _strCachedXmlNodeLanguage = strLanguage;
             return objReturn;
@@ -809,18 +808,17 @@ namespace Chummer
             if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
                                   && !GlobalSettings.LiveCustomData)
                 return objReturn;
-            objReturn = (blnSync
-                    // ReSharper disable once MethodHasAsyncOverload
-                    ? _objCharacter.LoadDataXPath("critterpowers.xml", strLanguage, token: token)
-                    : await _objCharacter.LoadDataXPathAsync("critterpowers.xml", strLanguage, token: token).ConfigureAwait(false))
-                .SelectSingleNode(SourceID == Guid.Empty
-                                      ? "/chummer/powers/power[name = "
-                                        + Name.CleanXPath() + ']'
-                                      : "/chummer/powers/power[id = "
-                                        + SourceIDString.CleanXPath()
-                                        + " or id = " + SourceIDString
-                                                        .ToUpperInvariant().CleanXPath()
-                                        + ']');
+            XPathNavigator objDoc = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? _objCharacter.LoadDataXPath("critterpowers.xml", strLanguage, token: token)
+                : await _objCharacter.LoadDataXPathAsync("critterpowers.xml", strLanguage, token: token).ConfigureAwait(false);
+            if (SourceID != Guid.Empty)
+                objReturn = objDoc.TryGetNodeById("/chummer/powers/power", SourceID);
+            if (objReturn == null)
+            {
+                objReturn = objDoc.TryGetNodeByNameOrId("/chummer/powers/power", Name);
+                objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+            }
             _objCachedMyXPathNode = objReturn;
             _strCachedXPathNodeLanguage = strLanguage;
             return objReturn;

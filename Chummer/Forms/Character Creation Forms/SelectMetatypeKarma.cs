@@ -28,6 +28,8 @@ using System.Xml;
 using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Skills;
+using Microsoft.VisualStudio.Threading;
+using IAsyncDisposable = System.IAsyncDisposable;
 
 namespace Chummer
 {
@@ -43,7 +45,7 @@ namespace Chummer
         private readonly XmlNode _xmlSkillsDocumentKnowledgeSkillsNode;
         private readonly XmlNode _xmlMetatypeDocumentMetatypesNode;
         private readonly XmlNode _xmlQualityDocumentQualitiesNode;
-        private readonly XmlNode _xmlCritterPowerDocumentPowersNode;
+        private readonly AsyncLazy<XmlNode> _xmlCritterPowerDocumentPowersNode;
 
         private CancellationTokenSource _objPopulateMetatypesCancellationTokenSource;
         private CancellationTokenSource _objPopulateMetavariantsCancellationTokenSource;
@@ -88,7 +90,10 @@ namespace Chummer
             _xmlSkillsDocumentKnowledgeSkillsNode = _objCharacter.LoadData("skills.xml").SelectSingleNode("/chummer/knowledgeskills");
             _xmlQualityDocumentQualitiesNode = _objCharacter.LoadData("qualities.xml").SelectSingleNode("/chummer/qualities");
             _xmlBaseQualityDataNode = _objCharacter.LoadDataXPath("qualities.xml").SelectSingleNodeAndCacheExpression("/chummer");
-            _xmlCritterPowerDocumentPowersNode = _objCharacter.LoadData("critterpowers.xml").SelectSingleNode("/chummer/powers");
+            _xmlCritterPowerDocumentPowersNode
+                = new AsyncLazy<XmlNode>(
+                    async () => (await _objCharacter.LoadDataAsync("critterpowers.xml").ConfigureAwait(false))
+                        .SelectSingleNode("/chummer/powers"), Utils.JoinableTaskFactory);
         }
 
         private async void SelectMetatypeKarma_Load(object sender, EventArgs e)
@@ -159,16 +164,38 @@ namespace Chummer
                         using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                        out List<ListItem> lstMethods))
                         {
-                            lstMethods.Add(new ListItem("Possession",
-                                                        _xmlCritterPowerDocumentPowersNode
-                                                            ?.SelectSingleNode("power[name = \"Possession\"]/translate")
-                                                            ?.InnerText
-                                                        ?? "Possession"));
-                            lstMethods.Add(new ListItem("Inhabitation",
-                                                        _xmlCritterPowerDocumentPowersNode
-                                                            ?.SelectSingleNode("power[name = \"Inhabitation\"]/translate")
-                                                            ?.InnerText
-                                                        ?? "Inhabitation"));
+                            if (GlobalSettings.Language != GlobalSettings.DefaultLanguage)
+                            {
+                                XmlNode objCritterPowersDataNode = await _xmlCritterPowerDocumentPowersNode
+                                                                         .GetValueAsync(_objGenericToken)
+                                                                         .ConfigureAwait(false);
+                                if (objCritterPowersDataNode != null)
+                                {
+                                    lstMethods.Add(new ListItem("Possession",
+                                                                (await objCritterPowersDataNode
+                                                                    .SelectSingleNodeAndCacheExpressionAsNavigatorAsync(
+                                                                        "power[name = \"Possession\"]/translate", _objGenericToken).ConfigureAwait(false))
+                                                                ?.Value
+                                                                ?? "Possession"));
+                                    lstMethods.Add(new ListItem("Inhabitation",
+                                                                (await objCritterPowersDataNode
+                                                                    .SelectSingleNodeAndCacheExpressionAsNavigatorAsync(
+                                                                        "power[name = \"Inhabitation\"]/translate", _objGenericToken).ConfigureAwait(false))
+                                                                ?.Value
+                                                                ?? "Inhabitation"));
+                                }
+                                else
+                                {
+                                    lstMethods.Add(new ListItem("Possession", "Possession"));
+                                    lstMethods.Add(new ListItem("Inhabitation", "Inhabitation"));
+                                }
+                            }
+                            else
+                            {
+                                lstMethods.Add(new ListItem("Possession", "Possession"));
+                                lstMethods.Add(new ListItem("Inhabitation", "Inhabitation"));
+                            }
+
                             lstMethods.Sort(CompareListItems.CompareNames);
 
                             _strCurrentPossessionMethod = _objCharacter.CritterPowers.Select(x => x.Name)
@@ -427,8 +454,11 @@ namespace Chummer
                     if (strSelectedMetatypeCategory == "Shapeshifter"
                         && strSelectedMetavariant == Guid.Empty.ToString())
                         strSelectedMetavariant
-                            = objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = \"Human\"]/id")
-                                            ?.InnerText
+                            = (await objXmlMetatype
+                                     .SelectSingleNodeAndCacheExpressionAsNavigatorAsync(
+                                         "metavariants/metavariant[name = \"Human\"]/id", _objGenericToken)
+                                     .ConfigureAwait(false))
+                              ?.Value
                               ?? Guid.Empty.ToString();
                     if (_objCharacter.MetatypeGuid.ToString("D", GlobalSettings.InvariantCultureInfo) !=
                         strSelectedMetatype
@@ -469,7 +499,9 @@ namespace Chummer
                         int intForce = await nudForce.DoThreadSafeFuncAsync(x => x.Visible ? x.ValueAsInt : 0, token).ConfigureAwait(false);
                         _objCharacter.Create(strSelectedMetatypeCategory, strSelectedMetatype, strSelectedMetavariant,
                                              objXmlMetatype, intForce, _xmlQualityDocumentQualitiesNode,
-                                             _xmlCritterPowerDocumentPowersNode, _xmlSkillsDocumentKnowledgeSkillsNode,
+                                             await _xmlCritterPowerDocumentPowersNode
+                                                   .GetValueAsync(_objGenericToken)
+                                                   .ConfigureAwait(false), _xmlSkillsDocumentKnowledgeSkillsNode,
                                              chkPossessionBased.Checked
                                                  ? cboPossessionMethod.SelectedValue?.ToString()
                                                  : string.Empty, token);

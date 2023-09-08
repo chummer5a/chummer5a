@@ -1429,7 +1429,7 @@ namespace Chummer
                                              .ConfigureAwait(false);
             Grade objCurrentGrade = string.IsNullOrEmpty(strCurrentGradeId)
                 ? null
-                : _lstGrades.Find(x => x.SourceIDString == strCurrentGradeId);
+                : _lstGrades.Find(x => string.Equals(x.SourceIDString, strCurrentGradeId, StringComparison.OrdinalIgnoreCase));
 
             string strFilter = string.Empty;
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
@@ -1935,7 +1935,7 @@ namespace Chummer
             {
                 strForceGrade = await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(strForceGrade))
-                    SelectedGrade = _lstGrades.Find(x => x.SourceIDString == strForceGrade);
+                    SelectedGrade = _lstGrades.Find(x => string.Equals(x.SourceIDString, strForceGrade, StringComparison.OrdinalIgnoreCase));
                 else
                     return;
             }

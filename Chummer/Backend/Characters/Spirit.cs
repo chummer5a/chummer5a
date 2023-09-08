@@ -581,7 +581,7 @@ namespace Chummer
             using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdExtra))
             {
-                string strSelect = xmlPowerEntryNode.SelectSingleNode("@select")?.Value;
+                string strSelect = (await xmlPowerEntryNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("@select", token).ConfigureAwait(false))?.Value;
                 if (!string.IsNullOrEmpty(strSelect))
                     sbdExtra.Append(await CharacterObject
                                           .TranslateExtraAsync(strSelect, strLanguageToPrint, token: token)
@@ -1430,7 +1430,7 @@ namespace Chummer
                         : await CharacterObject.LoadDataAsync(
                             EntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml", strLanguage,
                             token: token).ConfigureAwait(false))
-                    .SelectSingleNode("/chummer/spirits/spirit[name = " + Name.CleanXPath() + ']');
+                    .TryGetNodeByNameOrId("/chummer/spirits/spirit", Name);
                 _objCachedMyXmlNode = objReturn;
                 _strCachedXmlNodeLanguage = strLanguage;
                 return objReturn;

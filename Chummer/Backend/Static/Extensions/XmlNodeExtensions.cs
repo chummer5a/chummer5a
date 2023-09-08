@@ -29,6 +29,9 @@ using System.Globalization;
 using System.Xml;
 using System.Runtime.CompilerServices;
 using NLog;
+using System.Threading.Tasks;
+using System.Threading;
+using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -241,172 +244,61 @@ namespace Chummer
         /// <param name="xmlOperationNode">The node containing the filter operation or a list of filter operations. Every element here is checked against corresponding elements in the parent node, using an operation specified in the element's attributes.</param>
         /// <param name="xmlParentNode">The parent node against which the filter operations are checked.</param>
         /// <returns>True if the parent node passes the conditions set in the operation node/nodelist, false otherwise.</returns>
+        public static bool ProcessFilterOperationNode(this XmlNode xmlParentNode, XPathNavigator xmlOperationNode,
+                                                      bool blnIsOrNode)
+        {
+            return xmlParentNode.CreateNavigator().ProcessFilterOperationNode(xmlOperationNode, blnIsOrNode);
+        }
+
+        /// <summary>
+        /// Processes a single operation node with children that are either nodes to check whether the parent has a node that fulfills a condition, or they are nodes that are parents to further operation nodes
+        /// </summary>
+        /// <param name="blnIsOrNode">Whether this is an OR node (true) or an AND node (false). Default is AND (false).</param>
+        /// <param name="xmlOperationNode">The node containing the filter operation or a list of filter operations. Every element here is checked against corresponding elements in the parent node, using an operation specified in the element's attributes.</param>
+        /// <param name="xmlParentNode">The parent node against which the filter operations are checked.</param>
+        /// <returns>True if the parent node passes the conditions set in the operation node/nodelist, false otherwise.</returns>
         public static bool ProcessFilterOperationNode(this XmlNode xmlParentNode, XmlNode xmlOperationNode, bool blnIsOrNode)
         {
-            if (xmlOperationNode == null)
-                return false;
+            return xmlParentNode.CreateNavigator().ProcessFilterOperationNode(xmlOperationNode.CreateNavigator(), blnIsOrNode);
+        }
 
-            using (XmlNodeList xmlOperationChildNodeList = xmlOperationNode.SelectNodes("*"))
-            {
-                if (xmlOperationChildNodeList != null)
-                {
-                    foreach (XmlNode xmlOperationChildNode in xmlOperationChildNodeList)
-                    {
-                        XmlAttributeCollection xmlOperationChildNodeAttributes = xmlOperationChildNode.Attributes;
-                        bool blnInvert = xmlOperationChildNodeAttributes?["NOT"] != null;
+        /// <summary>
+        /// Processes a single operation node with children that are either nodes to check whether the parent has a node that fulfills a condition, or they are nodes that are parents to further operation nodes
+        /// </summary>
+        /// <param name="blnIsOrNode">Whether this is an OR node (true) or an AND node (false). Default is AND (false).</param>
+        /// <param name="xmlOperationNode">The node containing the filter operation or a list of filter operations. Every element here is checked against corresponding elements in the parent node, using an operation specified in the element's attributes.</param>
+        /// <param name="xmlParentNode">The parent node against which the filter operations are checked.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>True if the parent node passes the conditions set in the operation node/nodelist, false otherwise.</returns>
+        public static Task<bool> ProcessFilterOperationNodeAsync(this XmlNode xmlParentNode, XPathNavigator xmlOperationNode, bool blnIsOrNode, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<bool>(token);
+            XPathNavigator xmlParentNavigator = xmlParentNode.CreateNavigator();
+            return token.IsCancellationRequested
+                ? Task.FromCanceled<bool>(token)
+                : xmlParentNavigator.ProcessFilterOperationNodeAsync(xmlOperationNode, blnIsOrNode, token);
+        }
 
-                        bool blnOperationChildNodeResult = blnInvert;
-                        string strNodeName = xmlOperationChildNode.Name;
-                        switch (strNodeName)
-                        {
-                            case "OR":
-                                blnOperationChildNodeResult =
-                                    ProcessFilterOperationNode(xmlParentNode, xmlOperationChildNode, true) != blnInvert;
-                                break;
-
-                            case "AND":
-                                blnOperationChildNodeResult =
-                                    ProcessFilterOperationNode(xmlParentNode, xmlOperationChildNode, false) != blnInvert;
-                                break;
-
-                            case "NONE":
-                                blnOperationChildNodeResult = (xmlParentNode == null) != blnInvert;
-                                break;
-
-                            default:
-                                {
-                                    if (xmlParentNode != null)
-                                    {
-                                        string strOperationType = xmlOperationChildNodeAttributes?["operation"]?.InnerText ?? "==";
-                                        XmlNodeList objXmlTargetNodeList = xmlParentNode.SelectNodes(strNodeName);
-                                        // If we're just checking for existence of a node, no need for more processing
-                                        if (strOperationType == "exists")
-                                        {
-                                            blnOperationChildNodeResult = (objXmlTargetNodeList.Count > 0) != blnInvert;
-                                        }
-                                        else
-                                        {
-                                            // default is "any", replace with switch() if more check modes are necessary
-                                            bool blnCheckAll = xmlOperationChildNodeAttributes?["checktype"]?.InnerText == "all";
-                                            blnOperationChildNodeResult = blnCheckAll;
-                                            string strOperationChildNodeText = xmlOperationChildNode.InnerText;
-                                            bool blnOperationChildNodeEmpty = string.IsNullOrWhiteSpace(strOperationChildNodeText);
-
-                                            foreach (XmlNode objXmlTargetNode in objXmlTargetNodeList)
-                                            {
-                                                bool boolSubNodeResult = blnInvert;
-                                                if (objXmlTargetNode.SelectSingleNode("*") != null)
-                                                {
-                                                    if (xmlOperationChildNode.SelectSingleNode("*") != null)
-                                                        boolSubNodeResult = ProcessFilterOperationNode(objXmlTargetNode,
-                                                                                xmlOperationChildNode,
-                                                                                xmlOperationChildNodeAttributes?["OR"] != null) !=
-                                                                            blnInvert;
-                                                }
-                                                else
-                                                {
-                                                    string strTargetNodeText = objXmlTargetNode.InnerText;
-                                                    bool blnTargetNodeEmpty = string.IsNullOrWhiteSpace(strTargetNodeText);
-                                                    if (blnTargetNodeEmpty || blnOperationChildNodeEmpty)
-                                                    {
-                                                        if (blnTargetNodeEmpty == blnOperationChildNodeEmpty &&
-                                                            (strOperationType == "==" || strOperationType == "equals"))
-                                                        {
-                                                            boolSubNodeResult = !blnInvert;
-                                                        }
-                                                        else
-                                                        {
-                                                            boolSubNodeResult = blnInvert;
-                                                        }
-                                                    }
-                                                    // Note when adding more operation cases: XML does not like the "<" symbol as part of an attribute value
-                                                    else
-                                                        switch (strOperationType)
-                                                        {
-                                                            case "doesnotequal":
-                                                            case "notequals":
-                                                            case "!=":
-                                                                blnInvert = !blnInvert;
-                                                                goto default;
-                                                            case "lessthan":
-                                                                blnInvert = !blnInvert;
-                                                                goto case ">=";
-                                                            case "lessthanequals":
-                                                                blnInvert = !blnInvert;
-                                                                goto case ">";
-
-                                                            case "like":
-                                                            case "contains":
-                                                                {
-                                                                    boolSubNodeResult =
-                                                                        strTargetNodeText.Contains(strOperationChildNodeText) !=
-                                                                        blnInvert;
-                                                                    break;
-                                                                }
-                                                            case "greaterthan":
-                                                            case ">":
-                                                                {
-                                                                    boolSubNodeResult =
-                                                                        (int.TryParse(strTargetNodeText, out int intTargetNodeValue) &&
-                                                                         int.TryParse(strOperationChildNodeText,
-                                                                             out int intChildNodeValue) &&
-                                                                         intTargetNodeValue > intChildNodeValue) != blnInvert;
-                                                                    break;
-                                                                }
-                                                            case "greaterthanequals":
-                                                            case ">=":
-                                                                {
-                                                                    boolSubNodeResult =
-                                                                        (int.TryParse(strTargetNodeText, out int intTargetNodeValue) &&
-                                                                         int.TryParse(strOperationChildNodeText,
-                                                                             out int intChildNodeValue) &&
-                                                                         intTargetNodeValue >= intChildNodeValue) != blnInvert;
-                                                                    break;
-                                                                }
-                                                            default:
-                                                                boolSubNodeResult =
-                                                                    (strTargetNodeText.Trim() ==
-                                                                     strOperationChildNodeText.Trim()) !=
-                                                                    blnInvert;
-                                                                break;
-                                                        }
-                                                }
-
-                                                if (blnCheckAll)
-                                                {
-                                                    if (!boolSubNodeResult)
-                                                    {
-                                                        blnOperationChildNodeResult = false;
-                                                        break;
-                                                    }
-                                                }
-                                                // default is "any", replace above with a switch() should more than two check types be required
-                                                else if (boolSubNodeResult)
-                                                {
-                                                    blnOperationChildNodeResult = true;
-                                                    break;
-                                                }
-                                            }
-                                        }
-                                    }
-
-                                    break;
-                                }
-                        }
-
-                        switch (blnIsOrNode)
-                        {
-                            case true when blnOperationChildNodeResult:
-                                return true;
-
-                            case false when !blnOperationChildNodeResult:
-                                return false;
-                        }
-                    }
-                }
-            }
-
-            return !blnIsOrNode;
+        /// <summary>
+        /// Processes a single operation node with children that are either nodes to check whether the parent has a node that fulfills a condition, or they are nodes that are parents to further operation nodes
+        /// </summary>
+        /// <param name="blnIsOrNode">Whether this is an OR node (true) or an AND node (false). Default is AND (false).</param>
+        /// <param name="xmlOperationNode">The node containing the filter operation or a list of filter operations. Every element here is checked against corresponding elements in the parent node, using an operation specified in the element's attributes.</param>
+        /// <param name="xmlParentNode">The parent node against which the filter operations are checked.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>True if the parent node passes the conditions set in the operation node/nodelist, false otherwise.</returns>
+        public static Task<bool> ProcessFilterOperationNodeAsync(this XmlNode xmlParentNode, XmlNode xmlOperationNode, bool blnIsOrNode, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<bool>(token);
+            XPathNavigator xmlParentNavigator = xmlParentNode.CreateNavigator();
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<bool>(token);
+            XPathNavigator xmlOperationNavigator = xmlOperationNode.CreateNavigator();
+            return token.IsCancellationRequested
+                ? Task.FromCanceled<bool>(token)
+                : xmlParentNavigator.ProcessFilterOperationNodeAsync(xmlOperationNavigator, blnIsOrNode, token);
         }
 
         /// <summary>
@@ -565,7 +457,7 @@ namespace Chummer
             return node.SelectSingleNode(strPath + "[name = " + strId.CleanXPath()
                                          + (string.IsNullOrEmpty(strExtraXPath)
                                              ? "]"
-                                             : " and (" + strExtraXPath + ") ]"));
+                                             : " and (" + strExtraXPath + ")]"));
         }
 
         /// <summary>
@@ -600,6 +492,88 @@ namespace Chummer
             if (string.IsNullOrEmpty(strName))
                 return false;
             return xmlNode?.SelectSingleNode(strName) != null;
+        }
+
+        /// <summary>
+        /// Selects a single node using the specified XPath expression, but also caches that expression in case the same expression is used over and over.
+        /// Effectively a version of SelectSingleNode(string xpath) that is slower on the first run (and consumes some memory), but faster on subsequent runs.
+        /// Only use this if there's a particular XPath expression that keeps being used over and over.
+        /// </summary>
+        public static XPathNavigator SelectSingleNodeAndCacheExpressionAsNavigator(this XmlNode xmlNode, string xpath, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            XPathNavigator xmlNavigator = xmlNode.CreateNavigator();
+            return xmlNavigator.SelectSingleNodeAndCacheExpression(xpath, token);
+        }
+
+        /// <summary>
+        /// Selects a single node using the specified XPath expression, but also caches that expression in case the same expression is used over and over.
+        /// Effectively a version of SelectSingleNode(string xpath) that is slower on the first run (and consumes some memory), but faster on subsequent runs.
+        /// Only use this if there's a particular XPath expression that keeps being used over and over.
+        /// </summary>
+        public static Task<XPathNavigator> SelectSingleNodeAndCacheExpressionAsNavigatorAsync(this XmlNode xmlNode, string xpath, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<XPathNavigator>(token);
+            XPathNavigator xmlNavigator = xmlNode.CreateNavigator();
+            return token.IsCancellationRequested
+                ? Task.FromCanceled<XPathNavigator>(token)
+                : xmlNavigator.SelectSingleNodeAndCacheExpressionAsync(xpath, token);
+        }
+
+        /// <summary>
+        /// Selects a single node using the specified XPath expression, but also caches that expression in case the same expression is used over and over.
+        /// Effectively a version of SelectSingleNode(string xpath) that is slower on the first run (and consumes some memory), but faster on subsequent runs.
+        /// Only use this if there's a particular XPath expression that keeps being used over and over.
+        /// </summary>
+        public static async Task<XPathNavigator> SelectSingleNodeAndCacheExpressionAsNavigatorAsync(this Task<XmlNode> tskNode, string xpath, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            XmlNode xmlNode = await tskNode.ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            XPathNavigator xmlNavigator = xmlNode.CreateNavigator();
+            return await xmlNavigator.SelectSingleNodeAndCacheExpressionAsync(xpath, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Selects a node set using the specified XPath expression, but also caches that expression in case the same expression is used over and over.
+        /// Effectively a version of Select(string xpath) that is slower on the first run (and consumes some memory), but faster on subsequent runs.
+        /// Only use this if there's a particular XPath expression that keeps being used over and over.
+        /// </summary>
+        public static XPathNodeIterator SelectAndCacheExpressionAsNavigator(this XmlNode xmlNode, string xpath, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            XPathNavigator xmlNavigator = xmlNode.CreateNavigator();
+            return xmlNavigator.SelectAndCacheExpression(xpath, token);
+        }
+
+        /// <summary>
+        /// Selects a node set using the specified XPath expression, but also caches that expression in case the same expression is used over and over.
+        /// Effectively a version of Select(string xpath) that is slower on the first run (and consumes some memory), but faster on subsequent runs.
+        /// Only use this if there's a particular XPath expression that keeps being used over and over.
+        /// </summary>
+        public static Task<XPathNodeIterator> SelectAndCacheExpressionAsNavigatorAsync(this XmlNode xmlNode, string xpath, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<XPathNodeIterator>(token);
+            XPathNavigator xmlNavigator = xmlNode.CreateNavigator();
+            return token.IsCancellationRequested
+                ? Task.FromCanceled<XPathNodeIterator>(token)
+                : xmlNavigator.SelectAndCacheExpressionAsync(xpath, token);
+        }
+
+        /// <summary>
+        /// Selects a node set using the specified XPath expression, but also caches that expression in case the same expression is used over and over.
+        /// Effectively a version of Select(string xpath) that is slower on the first run (and consumes some memory), but faster on subsequent runs.
+        /// Only use this if there's a particular XPath expression that keeps being used over and over.
+        /// </summary>
+        public static async Task<XPathNodeIterator> SelectAndCacheExpressionAsNavigatorAsync(this Task<XmlNode> tskNode, string xpath, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            XmlNode xmlNode = await tskNode.ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            XPathNavigator xmlNavigator = xmlNode.CreateNavigator();
+            return await xmlNavigator.SelectAndCacheExpressionAsync(xpath, token).ConfigureAwait(false);
         }
     }
 }

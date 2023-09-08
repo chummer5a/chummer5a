@@ -467,8 +467,7 @@ namespace Chummer.Backend.Uniques
                 _strName = xmlHeroLabNode.SelectSingleNodeAndCacheExpression("@name")?.Value;
                 XmlNode xmlTraditionDataNode = !string.IsNullOrEmpty(_strName)
                     ? _objCharacter.LoadData("traditions.xml")
-                                   .SelectSingleNode("/chummer/traditions/tradition[name = " + _strName.CleanXPath()
-                                                     + ']')
+                                   .TryGetNodeByNameOrId("/chummer/traditions/tradition", _strName)
                     : null;
                 if (xmlTraditionDataNode?.TryGetField("id", Guid.TryParse, out _guiSourceID) != true)
                 {
@@ -706,7 +705,7 @@ namespace Chummer.Backend.Uniques
             get
             {
                 using (EnterReadLock.Enter(LockObject))
-                    return SourceIDString == CustomMagicalTraditionGuid;
+                    return string.Equals(SourceIDString, CustomMagicalTraditionGuid, StringComparison.OrdinalIgnoreCase);
                 // TODO: If Custom Technomancer Tradition added to streams.xml, check for that GUID as well
             }
         }

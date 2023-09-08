@@ -962,18 +962,18 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 XmlNode xmlItem = null;
-                string strXPathPrefix = xmlTranslationListParentNode.Name + '/' + objChild.Name + '[';
+                string strXPathPrefix = xmlTranslationListParentNode.Name + '/' + objChild.Name;
                 string strChildName = objChild.SelectSingleNodeAndCacheExpression("id", token)?.Value;
                 if (!string.IsNullOrEmpty(strChildName))
                 {
-                    xmlItem = xmlDataParentNode.SelectSingleNode(strXPathPrefix + "id = " + strChildName.CleanXPath() + ']');
+                    xmlItem = xmlDataParentNode.TryGetNodeByNameOrId(strXPathPrefix, strChildName);
                 }
                 if (xmlItem == null)
                 {
                     strChildName = objChild.SelectSingleNodeAndCacheExpression("name", token)?.Value.Replace("&amp;", "&");
                     if (!string.IsNullOrEmpty(strChildName))
                     {
-                        xmlItem = xmlDataParentNode.SelectSingleNode(strXPathPrefix + "name = " + strChildName.CleanXPath() + ']');
+                        xmlItem = xmlDataParentNode.TryGetNodeByNameOrId(strXPathPrefix, strChildName);
                     }
                 }
                 // If this is a translatable item, find the proper node and add/update this information.
@@ -1066,18 +1066,18 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 XmlNode xmlItem = null;
-                string strXPathPrefix = xmlTranslationListParentNode.Name + '/' + objChild.Name + '[';
+                string strXPathPrefix = xmlTranslationListParentNode.Name + '/' + objChild.Name;
                 string strChildName = (await objChild.SelectSingleNodeAndCacheExpressionAsync("id", token).ConfigureAwait(false))?.Value;
                 if (!string.IsNullOrEmpty(strChildName))
                 {
-                    xmlItem = xmlDataParentNode.SelectSingleNode(strXPathPrefix + "id = " + strChildName.CleanXPath() + ']');
+                    xmlItem = xmlDataParentNode.TryGetNodeByNameOrId(strXPathPrefix, strChildName);
                 }
                 if (xmlItem == null)
                 {
                     strChildName = (await objChild.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value.Replace("&amp;", "&");
                     if (!string.IsNullOrEmpty(strChildName))
                     {
-                        xmlItem = xmlDataParentNode.SelectSingleNode(strXPathPrefix + "name = " + strChildName.CleanXPath() + ']');
+                        xmlItem = xmlDataParentNode.TryGetNodeByNameOrId(strXPathPrefix, strChildName);
                     }
                 }
                 // If this is a translatable item, find the proper node and add/update this information.
@@ -1546,7 +1546,7 @@ namespace Chummer
                         {
                             objAmendingNodeId = xmlAmendingNode["name"];
                             if (objAmendingNodeId != null && (strOperation == "remove"
-                                                              || xmlAmendingNode.SelectSingleNode(
+                                                              || xmlAmendingNode.SelectSingleNodeAndCacheExpressionAsNavigator(
                                                                   "child::*[not(self::name)]") != null))
                             {
                                 // A few places in the data files use just "name" as an actual entry in a list, so only default to using it as an id node

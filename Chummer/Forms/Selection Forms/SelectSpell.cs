@@ -509,7 +509,7 @@ namespace Chummer
             _strSelectedSpell = strSelectedItem;
             _strSelectCategory = (GlobalSettings.SearchInCategoryOnly || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength, token: token).ConfigureAwait(false) == 0)
                 ? await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false)
-                : _xmlBaseSpellDataNode.SelectSingleNode("/chummer/spells/spell[id = " + _strSelectedSpell.CleanXPath() + "]/category")?.Value ?? string.Empty;
+                : _xmlBaseSpellDataNode.TryGetNodeByNameOrId("/chummer/spells/spell", _strSelectedSpell)?.SelectSingleNode("category")?.Value ?? string.Empty;
             FreeBonus = await chkFreeBonus.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
             await this.DoThreadSafeAsync(x =>
             {

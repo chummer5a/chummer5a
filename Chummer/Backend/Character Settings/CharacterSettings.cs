@@ -377,7 +377,7 @@ namespace Chummer
                     new DependencyGraphNode<string, CharacterSettings>(nameof(WeightFormat))
                 ),
                 new DependencyGraphNode<string, CharacterSettings>(nameof(BuiltInOption),
-                    new DependencyGraphNode<string, CharacterSettings>(nameof(SourceId))
+                    new DependencyGraphNode<string, CharacterSettings>(nameof(SourceIdString))
                 ),
                 new DependencyGraphNode<string, CharacterSettings>(nameof(BuildMethodUsesPriorityTables),
                     new DependencyGraphNode<string, CharacterSettings>(nameof(BuildMethod))
@@ -393,7 +393,7 @@ namespace Chummer
                 ),
                 new DependencyGraphNode<string, CharacterSettings>(nameof(CurrentDisplayName),
                     new DependencyGraphNode<string, CharacterSettings>(nameof(Name)),
-                    new DependencyGraphNode<string, CharacterSettings>(nameof(SourceId))
+                    new DependencyGraphNode<string, CharacterSettings>(nameof(SourceIdString))
                 ),
                 new DependencyGraphNode<string, CharacterSettings>(nameof(RedlinerExcludesSkull),
                     new DependencyGraphNode<string, CharacterSettings>(nameof(RedlinerExcludes))
@@ -440,7 +440,7 @@ namespace Chummer
                     {
                         if (blnCopySourceId && !_guiSourceId.Equals(objOther._guiSourceId))
                         {
-                            lstPropertiesToUpdate.Add(nameof(SourceId));
+                            lstPropertiesToUpdate.Add(nameof(SourceIdString));
                             _guiSourceId = objOther._guiSourceId;
                         }
 
@@ -558,7 +558,7 @@ namespace Chummer
                     {
                         if (blnCopySourceId && !_guiSourceId.Equals(objOther._guiSourceId))
                         {
-                            lstPropertiesToUpdate.Add(nameof(SourceId));
+                            lstPropertiesToUpdate.Add(nameof(SourceIdString));
                             _guiSourceId = objOther._guiSourceId;
                         }
 
@@ -675,7 +675,7 @@ namespace Chummer
             PropertyInfo[] aobjProperties = typeof(CharacterSettings).GetProperties();
             if (objOther == null)
             {
-                yield return nameof(SourceId);
+                yield return nameof(SourceIdString);
                 yield return nameof(FileName);
                 foreach (PropertyInfo objProperty in aobjProperties.Where(x => x.CanRead && x.CanWrite))
                     yield return objProperty.Name;
@@ -693,7 +693,7 @@ namespace Chummer
             {
                 if (!_guiSourceId.Equals(objOther._guiSourceId))
                 {
-                    yield return nameof(SourceId);
+                    yield return nameof(SourceIdString);
                 }
 
                 token.ThrowIfCancellationRequested();
@@ -744,7 +744,7 @@ namespace Chummer
             PropertyInfo[] aobjProperties = typeof(CharacterSettings).GetProperties();
             if (objOther == null)
             {
-                lstReturn.Add(nameof(SourceId));
+                lstReturn.Add(nameof(SourceIdString));
                 lstReturn.Add(nameof(FileName));
                 foreach (PropertyInfo objProperty in aobjProperties.Where(x => x.CanRead && x.CanWrite))
                     lstReturn.Add(objProperty.Name);
@@ -762,7 +762,7 @@ namespace Chummer
             {
                 if (!_guiSourceId.Equals(objOther._guiSourceId))
                 {
-                    lstReturn.Add(nameof(SourceId));
+                    lstReturn.Add(nameof(SourceIdString));
                 }
 
                 token.ThrowIfCancellationRequested();
@@ -4745,7 +4745,7 @@ namespace Chummer
             }
         }
 
-        public string DictionaryKey => BuiltInOption ? SourceId : FileName;
+        public string DictionaryKey => BuiltInOption ? SourceIdString : FileName;
 
         public async ValueTask<string> GetDictionaryKeyAsync(CancellationToken token = default)
         {
@@ -5143,7 +5143,16 @@ namespace Chummer
             }
         }
 
-        public string SourceId
+        public Guid SourceId
+        {
+            get
+            {
+                using (EnterReadLock.Enter(LockObject))
+                    return _guiSourceId;
+            }
+        }
+
+        public string SourceIdString
         {
             get
             {
@@ -6083,10 +6092,11 @@ namespace Chummer
                     string strReturn = Name;
                     if (BuiltInOption)
                     {
+                        if (GlobalSettings.Language == GlobalSettings.DefaultLanguage)
+                            return strReturn;
                         strReturn = XmlManager.LoadXPath("settings.xml")
-                                              .SelectSingleNode(
-                                                  "/chummer/settings/setting[id = '" + SourceId + " or id = " + SourceId.ToUpperInvariant() + "']/translate")?.Value
-
+                                              .TryGetNodeById("/chummer/settings/setting", SourceId)
+                                              ?.SelectSingleNode("translate")?.Value
                                     ?? strReturn;
                     }
                     else

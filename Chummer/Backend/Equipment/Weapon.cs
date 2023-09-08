@@ -560,7 +560,9 @@ namespace Chummer.Backend.Equipment
             XmlDocument objXmlDocument = _objCharacter.LoadData("weapons.xml");
 
             if (!objXmlWeapon.TryGetStringFieldQuickly("weapontype", ref _strWeaponType))
-                _strWeaponType = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@type")?.InnerText
+                _strWeaponType = objXmlDocument
+                                 .SelectSingleNodeAndCacheExpressionAsNavigator(
+                                     "/chummer/categories/category[. = " + Category.CleanXPath() + "]/@type")?.Value
                                  ?? Category.ToLowerInvariant();
 
             // Populate the Range if it differs from the Weapon's Category.
@@ -601,7 +603,7 @@ namespace Chummer.Backend.Equipment
                     foreach (XmlNode objXmlUnderbarrel in xmlUnderbarrelsList)
                     {
                         Weapon objUnderbarrelWeapon = new Weapon(_objCharacter);
-                        XmlNode objXmlWeaponNode = objXmlDocument.SelectSingleNode("/chummer/weapons/weapon[name = " + objXmlUnderbarrel.InnerText.CleanXPath() + ']');
+                        XmlNode objXmlWeaponNode = objXmlDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon", objXmlUnderbarrel.InnerText);
                         objUnderbarrelWeapon.Create(objXmlWeaponNode, lstWeapons, true, blnCreateImprovements, blnSkipCost);
                         if (!AllowAccessory)
                             objUnderbarrelWeapon.AllowAccessory = false;
@@ -659,7 +661,7 @@ namespace Chummer.Backend.Equipment
                         string strName = objXmlWeaponAccessory["name"]?.InnerText;
                         if (string.IsNullOrEmpty(strName))
                             continue;
-                        XmlNode objXmlAccessory = objXmlDocument.SelectSingleNode("/chummer/accessories/accessory[name = " + strName.CleanXPath() + ']');
+                        XmlNode objXmlAccessory = objXmlDocument.TryGetNodeByNameOrId("/chummer/accessories/accessory", strName);
                         WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
                         int intAccessoryRating = 0;
                         if (objXmlWeaponAccessory["rating"] != null)
@@ -2585,18 +2587,17 @@ namespace Chummer.Backend.Equipment
             if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                   && !GlobalSettings.LiveCustomData)
                 return objReturn;
-            objReturn = (blnSync
-                    // ReSharper disable once MethodHasAsyncOverload
-                    ? _objCharacter.LoadData("weapons.xml", strLanguage, token: token)
-                    : await _objCharacter.LoadDataAsync("weapons.xml", strLanguage, token: token).ConfigureAwait(false))
-                .SelectSingleNode(SourceID == Guid.Empty
-                                      ? "/chummer/weapons/weapon[name = "
-                                        + Name.CleanXPath() + ']'
-                                      : "/chummer/weapons/weapon[id = "
-                                        + SourceIDString.CleanXPath() + " or id = "
-                                        + SourceIDString.ToUpperInvariant()
-                                                        .CleanXPath()
-                                        + ']');
+            XmlNode objDoc = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? _objCharacter.LoadData("weapons.xml", strLanguage, token: token)
+                : await _objCharacter.LoadDataAsync("weapons.xml", strLanguage, token: token).ConfigureAwait(false);
+            if (SourceID != Guid.Empty)
+                objReturn = objDoc.TryGetNodeById("/chummer/weapons/weapon", SourceID);
+            if (objReturn == null)
+            {
+                objReturn = objDoc.TryGetNodeByNameOrId("/chummer/weapons/weapon", Name);
+                objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+            }
             _objCachedMyXmlNode = objReturn;
             _strCachedXmlNodeLanguage = strLanguage;
             return objReturn;
@@ -2611,18 +2612,17 @@ namespace Chummer.Backend.Equipment
             if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
                                   && !GlobalSettings.LiveCustomData)
                 return objReturn;
-            objReturn = (blnSync
-                    // ReSharper disable once MethodHasAsyncOverload
-                    ? _objCharacter.LoadDataXPath("weapons.xml", strLanguage, token: token)
-                    : await _objCharacter.LoadDataXPathAsync("weapons.xml", strLanguage, token: token).ConfigureAwait(false))
-                .SelectSingleNode(SourceID == Guid.Empty
-                                      ? "/chummer/weapons/weapon[name = "
-                                        + Name.CleanXPath() + ']'
-                                      : "/chummer/weapons/weapon[id = "
-                                        + SourceIDString.CleanXPath() + " or id = "
-                                        + SourceIDString.ToUpperInvariant()
-                                                        .CleanXPath()
-                                        + ']');
+            XPathNavigator objDoc = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? _objCharacter.LoadDataXPath("weapons.xml", strLanguage, token: token)
+                : await _objCharacter.LoadDataXPathAsync("weapons.xml", strLanguage, token: token).ConfigureAwait(false);
+            if (SourceID != Guid.Empty)
+                objReturn = objDoc.TryGetNodeById("/chummer/weapons/weapon", SourceID);
+            if (objReturn == null)
+            {
+                objReturn = objDoc.TryGetNodeByNameOrId("/chummer/weapons/weapon", Name);
+                objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+            }
             _objCachedMyXPathNode = objReturn;
             _strCachedXPathNodeLanguage = strLanguage;
             return objReturn;
@@ -7772,7 +7772,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (WirelessOn && Equipped && Parent?.WirelessOn != false)
                 {
-                    if (WirelessBonus?.SelectSingleNode("@mode")?.Value == "replace")
+                    if (WirelessBonus?.SelectSingleNodeAndCacheExpressionAsNavigator("@mode")?.Value == "replace")
                     {
                         ImprovementManager.DisableImprovements(_objCharacter,
                             _objCharacter.Improvements.Where(x =>
@@ -7784,7 +7784,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    if (WirelessBonus?.SelectSingleNode("@mode")?.Value == "replace")
+                    if (WirelessBonus?.SelectSingleNodeAndCacheExpressionAsNavigator("@mode")?.Value == "replace")
                     {
                         ImprovementManager.EnableImprovements(_objCharacter,
                             _objCharacter.Improvements.Where(x =>
@@ -7815,7 +7815,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (WirelessOn && Equipped && Parent?.WirelessOn != false)
                 {
-                    if (WirelessBonus?.SelectSingleNode("@mode")?.Value == "replace")
+                    if (WirelessBonus != null && (await WirelessBonus.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("@mode", token).ConfigureAwait(false))?.Value == "replace")
                     {
                         await ImprovementManager.DisableImprovementsAsync(_objCharacter,
                                                                           await _objCharacter.Improvements.ToListAsync(
@@ -7832,7 +7832,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    if (WirelessBonus?.SelectSingleNode("@mode")?.Value == "replace")
+                    if (WirelessBonus != null && (await WirelessBonus.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("@mode", token).ConfigureAwait(false))?.Value == "replace")
                     {
                         await ImprovementManager.EnableImprovementsAsync(_objCharacter,
                                                                          await _objCharacter.Improvements.ToListAsync(
@@ -8657,18 +8657,18 @@ namespace Chummer.Backend.Equipment
             if (!string.IsNullOrEmpty(strOriginalName))
             {
                 XmlDocument xmlWeaponDocument = _objCharacter.LoadData("weapons.xml");
-                XmlNode xmlWeaponDataNode = xmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = " + strOriginalName.CleanXPath() + ']');
+                XmlNode xmlWeaponDataNode = xmlWeaponDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon", strOriginalName);
                 if (xmlWeaponDataNode == null)
                 {
                     if (strOriginalName.IndexOf(':') >= 0)
                     {
                         string strName = strOriginalName.SplitNoAlloc(':', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim() ?? string.Empty;
-                        xmlWeaponDataNode = xmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = " + strName.CleanXPath() + ']');
+                        xmlWeaponDataNode = xmlWeaponDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon", strName);
                     }
                     if (xmlWeaponDataNode == null && strOriginalName.IndexOf(',') >= 0)
                     {
                         string strName = strOriginalName.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).FirstOrDefault()?.Trim() ?? string.Empty;
-                        xmlWeaponDataNode = xmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = " + strName.CleanXPath() + ']');
+                        xmlWeaponDataNode = xmlWeaponDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon", strName);
                     }
                 }
                 if (xmlWeaponDataNode != null)
@@ -8712,20 +8712,20 @@ namespace Chummer.Backend.Equipment
                             XmlNode xmlWeaponAccessoryData = null;
                             foreach (XmlNode xmlLoopNode in xmlWeaponDocument.SelectNodes("chummer/accessories/accessory[contains(name, " + strWeaponAccessoryName.CleanXPath() + ")]"))
                             {
-                                XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/weapondetails");
+                                XPathNavigator xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/weapondetails");
                                 if (xmlTestNode != null && xmlWeaponDataNode.ProcessFilterOperationNode(xmlTestNode, false))
                                 {
                                     // Assumes topmost parent is an AND node
                                     continue;
                                 }
-                                xmlTestNode = xmlLoopNode.SelectSingleNode("required/weapondetails");
+                                xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/weapondetails");
                                 if (xmlTestNode != null && !xmlWeaponDataNode.ProcessFilterOperationNode(xmlTestNode, false))
                                 {
                                     // Assumes topmost parent is an AND node
                                     continue;
                                 }
 
-                                xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/oneof");
+                                xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/oneof");
                                 if (xmlTestNode != null)
                                 {
                                     //Add to set for O(N log M) runtime instead of O(N * M)
@@ -8733,12 +8733,9 @@ namespace Chummer.Backend.Equipment
                                     using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                out HashSet<string> setForbiddenAccessory))
                                     {
-                                        using (XmlNodeList objXmlForbiddenList = xmlTestNode.SelectNodes("accessory"))
+                                        foreach (XPathNavigator node in xmlTestNode.Select("accessory"))
                                         {
-                                            foreach (XmlNode node in objXmlForbiddenList)
-                                            {
-                                                setForbiddenAccessory.Add(node.InnerText);
-                                            }
+                                            setForbiddenAccessory.Add(node.Value);
                                         }
 
                                         if (WeaponAccessories.Any(objAccessory =>
@@ -8750,7 +8747,7 @@ namespace Chummer.Backend.Equipment
                                     }
                                 }
 
-                                xmlTestNode = xmlLoopNode.SelectSingleNode("required/oneof");
+                                xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/oneof");
                                 if (xmlTestNode != null)
                                 {
                                     //Add to set for O(N log M) runtime instead of O(N * M)
@@ -8758,12 +8755,9 @@ namespace Chummer.Backend.Equipment
                                     using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
                                                out HashSet<string> setRequiredAccessory))
                                     {
-                                        using (XmlNodeList objXmlRequiredList = xmlTestNode.SelectNodes("accessory"))
+                                        foreach (XPathNavigator node in xmlTestNode.Select("accessory"))
                                         {
-                                            foreach (XmlNode node in objXmlRequiredList)
-                                            {
-                                                setRequiredAccessory.Add(node.InnerText);
-                                            }
+                                            setRequiredAccessory.Add(node.Value);
                                         }
 
                                         if (!WeaponAccessories.Any(objAccessory =>
@@ -9254,8 +9248,9 @@ namespace Chummer.Backend.Equipment
                 switch (GlobalSettings.ClipboardContentType)
                 {
                     case ClipboardContentType.WeaponAccessory:
-                        XPathNavigator checkNode = GlobalSettings.Clipboard.SelectSingleNode("/character/weaponaccessories/accessory")?.CreateNavigator();
-                        if (CheckAccessoryRequirements(checkNode)) return true;
+                        XPathNavigator checkNode = GlobalSettings.Clipboard.SelectSingleNodeAndCacheExpressionAsNavigator("/character/weaponaccessories/accessory");
+                        if (CheckAccessoryRequirements(checkNode))
+                            return true;
                         break;
 
                     default:

@@ -26,6 +26,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 using Chummer.Backend.Equipment;
 
 // ReSharper disable LocalizableElement
@@ -43,6 +44,7 @@ namespace Chummer
         private Armor _objSelectedArmor;
 
         private readonly XmlDocument _objXmlDocument;
+        private readonly XPathNavigator _objXmlArmorDocumentChummerNode;
         private readonly Character _objCharacter;
 
         private List<ListItem> _lstCategory = Utils.ListItemListPool.Get();
@@ -92,6 +94,7 @@ namespace Chummer
             this.TranslateWinForm();
             // Load the Armor information.
             _objXmlDocument = objCharacter.LoadData("armor.xml");
+            _objXmlArmorDocumentChummerNode = objCharacter.LoadDataXPath("armor.xml").SelectSingleNode("/chummer");
             _setBlackMarketMaps.AddRange(objCharacter.GenerateBlackMarketMappings(
                                              objCharacter.LoadDataXPath("armor.xml")
                                                          .SelectSingleNodeAndCacheExpression("/chummer")));
@@ -135,17 +138,16 @@ namespace Chummer
                 Cost.DefaultCellStyle = dataGridViewNuyenCellStyle;
 
                 // Populate the Armor Category list.
-                XmlNodeList objXmlCategoryList = _objXmlDocument.SelectNodes("/chummer/categories/category");
-                if (objXmlCategoryList != null)
+                if (await _objXmlArmorDocumentChummerNode.SelectSingleNodeAndCacheExpressionAsync("/chummer/categories/category", _objGenericToken).ConfigureAwait(false) != null)
                 {
-                    string strFilterPrefix = "/chummer/armors/armor[(" + await _objCharacter.Settings.BookXPathAsync(token: _objGenericToken).ConfigureAwait(false) + ") and category = ";
-                    foreach (XmlNode objXmlCategory in objXmlCategoryList)
+                    string strFilterPrefix = "armors/armor[(" + await _objCharacter.Settings.BookXPathAsync(token: _objGenericToken).ConfigureAwait(false) + ") and category = ";
+                    foreach (XPathNavigator objXmlCategory in _objXmlArmorDocumentChummerNode.Select("/chummer/categories/category"))
                     {
-                        string strInnerText = objXmlCategory.InnerText;
-                        if (_objXmlDocument.SelectSingleNode(strFilterPrefix + strInnerText.CleanXPath() + ']') != null)
+                        string strInnerText = objXmlCategory.Value;
+                        if (_objXmlArmorDocumentChummerNode.SelectSingleNode(strFilterPrefix + strInnerText.CleanXPath() + ']') != null)
                         {
                             _lstCategory.Add(new ListItem(strInnerText,
-                                objXmlCategory.Attributes?["translate"]?.InnerText ?? strInnerText));
+                                (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate", _objGenericToken).ConfigureAwait(false))?.Value ?? strInnerText));
                         }
                     }
                 }
@@ -200,10 +202,10 @@ namespace Chummer
             _objGenericCancellationTokenSource.Cancel(false);
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object sender, EventArgs e)
         {
             _blnAddAgain = false;
-            AcceptForm();
+            await AcceptForm(_objGenericToken).ConfigureAwait(false);
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -265,7 +267,7 @@ namespace Chummer
                                     && !await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
                                 {
                                     decimal decCostMultiplier = 1 + (await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token).ConfigureAwait(false) / 100.0m);
-                                    if (_setBlackMarketMaps.Contains(xmlArmor.SelectSingleNode("category")?.Value))
+                                    if (_setBlackMarketMaps.Contains(xmlArmor["category"]?.InnerText))
                                         decCostMultiplier *= 0.9m;
                                     int intMaximum = await nudRating.DoThreadSafeFuncAsync(x => x.MaximumAsInt, token).ConfigureAwait(false);
                                     while (intMaximum > 1 && !await SelectionShared.CheckNuyenRestrictionAsync(xmlArmor, _objCharacter.Nuyen, decCostMultiplier, intMaximum, token).ConfigureAwait(false))
@@ -298,7 +300,7 @@ namespace Chummer
                                 }, token).ConfigureAwait(false);
                             }
 
-                            string strRatingLabel = xmlArmor.SelectSingleNode("ratinglabel")?.Value;
+                            string strRatingLabel = xmlArmor["ratinglabel"]?.InnerText;
                             strRatingLabel = !string.IsNullOrEmpty(strRatingLabel)
                                 ? string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Label_RatingFormat", token: token).ConfigureAwait(false),
                                                 await LanguageManager.GetStringAsync(strRatingLabel, token: token).ConfigureAwait(false))
@@ -349,10 +351,10 @@ namespace Chummer
             }
         }
 
-        private void cmdOKAdd_Click(object sender, EventArgs e)
+        private async void cmdOKAdd_Click(object sender, EventArgs e)
         {
             _blnAddAgain = true;
-            AcceptForm();
+            await AcceptForm(_objGenericToken).ConfigureAwait(false);
         }
 
         private async void txtSearch_TextChanged(object sender, EventArgs e)
@@ -463,9 +465,9 @@ namespace Chummer
                 txtSearch.Select(txtSearch.TextLength, 0);
         }
 
-        private void dgvArmor_DoubleClick(object sender, EventArgs e)
+        private async void dgvArmor_DoubleClick(object sender, EventArgs e)
         {
-            AcceptForm();
+            await AcceptForm(_objGenericToken).ConfigureAwait(false);
         }
 
         #endregion Control Events
@@ -727,32 +729,63 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private void AcceptForm()
+        private async ValueTask AcceptForm(CancellationToken token = default)
         {
             string strSelectedId = string.Empty;
-            switch (tabControl.SelectedIndex)
+            CursorWait objCursorWait
+                = await CursorWait.NewAsync(this, true, token: token).ConfigureAwait(false);
+            try
             {
-                case 0:
-                    strSelectedId = lstArmor.SelectedValue?.ToString();
-                    break;
+                switch (await tabControl.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false))
+                {
+                    case 0:
+                        strSelectedId = await lstArmor.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
+                        break;
 
-                case 1:
-                    strSelectedId = dgvArmor.SelectedRows[0].Cells[0].Value?.ToString();
-                    break;
+                    case 1:
+                        strSelectedId = await dgvArmor.DoThreadSafeFuncAsync(x => x.SelectedRows[0].Cells[0].Value?.ToString(), token).ConfigureAwait(false);
+                        break;
+                }
+                if (!string.IsNullOrEmpty(strSelectedId))
+                {
+                    if (!GlobalSettings.SearchInCategoryOnly && await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength, token).ConfigureAwait(false) != 0)
+                    {
+                        XPathNavigator objArmorDataNode
+                            = _objXmlArmorDocumentChummerNode.TryGetNodeByNameOrId("armors/armor", strSelectedId);
+                        if (objArmorDataNode != null)
+                            _strSelectCategory = (await objArmorDataNode
+                                                        .SelectSingleNodeAndCacheExpressionAsync(
+                                                            "category", token).ConfigureAwait(false))?.Value
+                                                 ?? await cboCategory
+                                                          .DoThreadSafeFuncAsync(
+                                                              x => x.SelectedValue?.ToString(), token)
+                                                          .ConfigureAwait(false);
+                        else
+                            _strSelectCategory = await cboCategory
+                                                       .DoThreadSafeFuncAsync(
+                                                           x => x.SelectedValue?.ToString(), token)
+                                                       .ConfigureAwait(false);
+                    }
+                    else
+                        _strSelectCategory = await cboCategory
+                                                   .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(),
+                                                                          token).ConfigureAwait(false);
+
+                    _strSelectedArmor = strSelectedId;
+                    _decMarkup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token).ConfigureAwait(false);
+                    _intRating = await nudRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false);
+                    _blnBlackMarketDiscount = await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false);
+                }
             }
-            if (!string.IsNullOrEmpty(strSelectedId))
+            finally
             {
-                _strSelectCategory = (GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0)
-                    ? cboCategory.SelectedValue?.ToString()
-                    : _objXmlDocument.SelectSingleNode("/chummer/armors/armor[id = " + strSelectedId.CleanXPath() + "]/category")?.InnerText;
-                _strSelectedArmor = strSelectedId;
-                _decMarkup = nudMarkup.Value;
-                _intRating = nudRating.ValueAsInt;
-                _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
-
-                DialogResult = DialogResult.OK;
-                Close();
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
+            await this.DoThreadSafeAsync(x =>
+            {
+                x.DialogResult = DialogResult.OK;
+                x.Close();
+            }, token).ConfigureAwait(false);
         }
 
         private async ValueTask UpdateArmorInfo(CancellationToken token = default)

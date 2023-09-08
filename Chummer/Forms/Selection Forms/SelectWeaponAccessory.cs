@@ -279,23 +279,29 @@ namespace Chummer
                 _lstAllowedMounts.Clear();
                 if (value != null)
                 {
-                    foreach (XPathNavigator objXmlMount in _xmlBaseChummerNode.Select("weapons/weapon[id = " + value.SourceIDString.CleanXPath() + " or id = " + value.SourceIDString.ToUpperInvariant().CleanXPath() + "]/accessorymounts/mount"))
+                    XPathNavigator xmlThisWeaponDataNode
+                        = _xmlBaseChummerNode.TryGetNodeById("weapons/weapon", value.SourceID);
+                    if (xmlThisWeaponDataNode != null)
                     {
-                        string strLoopMount = objXmlMount.Value;
-                        // Run through the Weapon's current Accessories and filter out any used up Mount points.
-                        if (!_objParentWeapon.WeaponAccessories.Any(objMod =>
-                            objMod.Mount == strLoopMount || objMod.ExtraMount == strLoopMount))
+                        foreach (XPathNavigator objXmlMount in xmlThisWeaponDataNode.Select("accessorymounts/mount"))
                         {
-                            _lstAllowedMounts.Add(strLoopMount);
+                            string strLoopMount = objXmlMount.Value;
+                            // Run through the Weapon's current Accessories and filter out any used up Mount points.
+                            if (!_objParentWeapon.WeaponAccessories.Any(objMod =>
+                                                                            objMod.Mount == strLoopMount
+                                                                            || objMod.ExtraMount == strLoopMount))
+                            {
+                                _lstAllowedMounts.Add(strLoopMount);
+                            }
                         }
                     }
-                }
 
-                //TODO: Accessories don't use a category mapping, so we use parent weapon's category instead.
-                if (_objCharacter.BlackMarketDiscount && value != null)
-                {
-                    string strCategory = value.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("category")?.Value ?? string.Empty;
-                    _blnIsParentWeaponBlackMarketAllowed = !string.IsNullOrEmpty(strCategory) && _setBlackMarketMaps.Contains(strCategory);
+                    //TODO: Accessories don't use a category mapping, so we use parent weapon's category instead.
+                    if (_objCharacter.BlackMarketDiscount)
+                    {
+                        string strCategory = value.GetNodeXPath()?.SelectSingleNodeAndCacheExpression("category")?.Value ?? string.Empty;
+                        _blnIsParentWeaponBlackMarketAllowed = !string.IsNullOrEmpty(strCategory) && _setBlackMarketMaps.Contains(strCategory);
+                    }
                 }
                 else
                 {

@@ -4040,7 +4040,7 @@ namespace Chummer
                                         {
                                             Quality objCheckQuality = CharacterObject.Qualities[k];
                                             if (j != k
-                                                && objCheckQuality.SourceIDString == objQuality.SourceIDString
+                                                && objCheckQuality.SourceID == objQuality.SourceID
                                                 && objCheckQuality.Extra == objQuality.Extra
                                                 && objCheckQuality.SourceName == objQuality.SourceName
                                                 && (k < j
@@ -5085,8 +5085,7 @@ namespace Chummer
                 XmlDocument xmlVessels = await CharacterObject.LoadDataAsync("vessels.xml", token: GenericToken)
                                                               .ConfigureAwait(false);
                 XmlNode objSelected
-                    = xmlVessels.SelectSingleNode("/chummer/metatypes/metatype[name = " + strSelectedVessel.CleanXPath()
-                                                  + ']');
+                    = xmlVessels.TryGetNodeByNameOrId("/chummer/metatypes/metatype", strSelectedVessel);
                 if (objSelected == null)
                     return;
 
@@ -5226,9 +5225,8 @@ namespace Chummer
                                         foreach (XmlNode objXmlPower in xmlPowerList)
                                         {
                                             XmlNode objXmlCritterPower
-                                                = xmlPowerDoc.SelectSingleNode(
-                                                    "/chummer/powers/power[name = " + objXmlPower.InnerText.CleanXPath()
-                                                    + ']');
+                                                = xmlPowerDoc.TryGetNodeByNameOrId(
+                                                    "/chummer/powers/power", objXmlPower.InnerText);
                                             CritterPower objPower = new CritterPower(objMerge);
                                             string strSelect = objXmlPower.Attributes?["select"]?.InnerText
                                                                ?? string.Empty;
@@ -8080,11 +8078,7 @@ namespace Chummer
                     objXmlQuality
                         = (await CharacterObject.LoadDataAsync("qualities.xml", token: GenericToken)
                                                 .ConfigureAwait(false))
-                        .SelectSingleNode("/chummer/qualities/quality[id = "
-                                          + frmPickQuality.MyForm.SelectedQuality.CleanXPath()
-                                          + " or id = "
-                                          + frmPickQuality.MyForm.SelectedQuality.ToUpperInvariant().CleanXPath()
-                                          + ']');
+                        .TryGetNodeByNameOrId("/chummer/qualities/quality", frmPickQuality.MyForm.SelectedQuality);
                     intRatingToAdd = frmPickQuality.MyForm.SelectedRating;
                     int intDummy = 0;
                     if (objXmlQuality != null && objXmlQuality["nolevels"] == null
@@ -8647,7 +8641,7 @@ namespace Chummer
                         for (; intSelectedLevels < intCurrentLevels; --intCurrentLevels)
                         {
                             Quality objInvisibleQuality = CharacterObject.Qualities.FirstOrDefault(
-                                x => x.SourceIDString == objSelectedQuality.SourceIDString
+                                x => x.SourceID == objSelectedQuality.SourceID
                                      && x.Extra == objSelectedQuality.Extra
                                      && x.SourceName == objSelectedQuality.SourceName
                                      && x.InternalId != objSelectedQuality.InternalId
@@ -10819,11 +10813,7 @@ namespace Chummer
                             XmlNode xmlTechnique
                                 = (await CharacterObject.LoadDataAsync("martialarts.xml", token: GenericToken)
                                                         .ConfigureAwait(false))
-                                .SelectSingleNode("/chummer/techniques/technique[id = "
-                                                  + frmPickMartialArtTechnique.MyForm.SelectedTechnique.CleanXPath()
-                                                  + " or id = "
-                                                  + frmPickMartialArtTechnique.MyForm.SelectedTechnique.ToUpperInvariant().CleanXPath()
-                                                  + ']');
+                                .TryGetNodeByNameOrId("/chummer/techniques/technique", frmPickMartialArtTechnique.MyForm.SelectedTechnique);
 
                             if (xmlTechnique == null)
                                 continue;
@@ -17480,9 +17470,7 @@ namespace Chummer
 
                 XmlNode xmlTradition = (await CharacterObject.LoadDataAsync("traditions.xml", token: GenericToken)
                                                              .ConfigureAwait(false))
-                    .SelectSingleNode("/chummer/traditions/tradition[id = " + strSelectedId.CleanXPath() + " or id = " +
-                                      strSelectedId.ToUpperInvariant().CleanXPath()
-                                      + ']');
+                    .TryGetNodeByNameOrId("/chummer/traditions/tradition", strSelectedId);
 
                 if (xmlTradition == null)
                 {
@@ -17689,9 +17677,7 @@ namespace Chummer
 
                 XmlNode xmlNewStreamNode
                     = (await CharacterObject.LoadDataAsync("streams.xml", token: GenericToken).ConfigureAwait(false))
-                    .SelectSingleNode(
-                        "/chummer/traditions/tradition[id = " + strSelectedId.CleanXPath() + " or id = " +
-                        strSelectedId.ToUpperInvariant().CleanXPath() + ']');
+                    .TryGetNodeByNameOrId("/chummer/traditions/tradition", strSelectedId);
                 if (xmlNewStreamNode != null && CharacterObject.MagicTradition.Create(xmlNewStreamNode, true))
                 {
                     await RequestCharacterUpdate().ConfigureAwait(false);
@@ -18384,11 +18370,7 @@ namespace Chummer
                     // Get the human-readable name of the Improvement from the Improvements file.
                     XmlNode objNode = (await CharacterObject.LoadDataAsync("improvements.xml", token: token)
                                                             .ConfigureAwait(false))
-                        .SelectSingleNode(
-                            "/chummer/improvements/improvement[id = "
-                            + objImprovement.CustomId.CleanXPath() + " or id = "
-                            + objImprovement.CustomId.ToUpperInvariant().CleanXPath()
-                            + ']');
+                        .TryGetNodeByNameOrId("/chummer/improvements/improvement", objImprovement.CustomId);
                     if (objNode != null)
                     {
                         await lblImprovementType
@@ -22499,13 +22481,9 @@ namespace Chummer
                 // Open the Cyberware XML file and locate the selected piece.
                 XmlNode objXmlCyberware = objSource == Improvement.ImprovementSource.Bioware
                     ? (await CharacterObject.LoadDataAsync("bioware.xml", token: token).ConfigureAwait(false))
-                    .SelectSingleNode("/chummer/biowares/bioware[id = "
-                                      + frmPickCyberware.MyForm.SelectedCyberware.CleanXPath() + " or id = "
-                                      + frmPickCyberware.MyForm.SelectedCyberware.ToUpperInvariant().CleanXPath() + ']')
+                    .TryGetNodeByNameOrId("/chummer/biowares/bioware", frmPickCyberware.MyForm.SelectedCyberware)
                     : (await CharacterObject.LoadDataAsync("cyberware.xml", token: token).ConfigureAwait(false))
-                    .SelectSingleNode("/chummer/cyberwares/cyberware[id = "
-                                      + frmPickCyberware.MyForm.SelectedCyberware.CleanXPath() + " or id = "
-                                      + frmPickCyberware.MyForm.SelectedCyberware.ToUpperInvariant().CleanXPath() + ']');
+                    .TryGetNodeByNameOrId("/chummer/cyberwares/cyberware", frmPickCyberware.MyForm.SelectedCyberware);
 
                 Cyberware objCyberware = new Cyberware(CharacterObject)
                     {ESSDiscount = frmPickCyberware.MyForm.SelectedESSDiscount, Parent = objSelectedCyberware};
@@ -25765,7 +25743,7 @@ namespace Chummer
             List<Weapon> lstWeapons = new List<Weapon>(1);
             List<Vehicle> lstVehicles = new List<Vehicle>(1);
             Cyberware objCyberware = new Cyberware(CharacterObject);
-            string strForced = xmlSuiteNode.SelectSingleNode("name/@select")?.InnerText ?? string.Empty;
+            string strForced = xmlSuiteNode.SelectSingleNodeAndCacheExpressionAsNavigator("name/@select")?.Value ?? string.Empty;
 
             objCyberware.Create(xmlCyberwareNode, objGrade, eSource, intRating, lstWeapons, lstVehicles, true, true,
                                 strForced);
@@ -25794,8 +25772,7 @@ namespace Chummer
                         if (string.IsNullOrEmpty(strChildName))
                             continue;
                         XmlNode objXmlChildCyberware
-                            = objXmlDocument.SelectSingleNode(
-                                "/chummer/" + strXPathPrefix + "[name = " + strChildName.CleanXPath() + ']');
+                            = objXmlDocument.TryGetNodeByNameOrId("/chummer/" + strXPathPrefix, strChildName);
                         int intChildRating
                             = Convert.ToInt32(objXmlChild["rating"]?.InnerText, GlobalSettings.InvariantCultureInfo);
 
@@ -25865,8 +25842,8 @@ namespace Chummer
                             string strItemName = xmlItem["name"]?.InnerText;
                             if (string.IsNullOrEmpty(strItemName))
                                 continue;
-                            XmlNode objXmlCyberware = objXmlDocument.SelectSingleNode(
-                                "/chummer/" + strType + "s/" + strType + "[name = " + strItemName.CleanXPath() + ']');
+                            XmlNode objXmlCyberware = objXmlDocument.TryGetNodeByNameOrId(
+                                "/chummer/" + strType + "s/" + strType, strItemName);
                             int intRating
                                 = Convert.ToInt32(xmlItem["rating"]?.InnerText, GlobalSettings.InvariantCultureInfo);
 
@@ -26053,9 +26030,8 @@ namespace Chummer
                     {
                         objXmlMetamagic
                             = (await CharacterObject.LoadDataAsync("echoes.xml", token: GenericToken)
-                                                    .ConfigureAwait(false)).SelectSingleNode(
-                                "/chummer/echoes/echo[id = " + frmPickMetamagic.MyForm.SelectedMetamagic.CleanXPath()
-                                                             + ']');
+                                                    .ConfigureAwait(false))
+                            .TryGetNodeByNameOrId("/chummer/echoes/echo", frmPickMetamagic.MyForm.SelectedMetamagic);
                         objSource = Improvement.ImprovementSource.Echo;
                     }
                     else
@@ -26063,8 +26039,8 @@ namespace Chummer
                         objXmlMetamagic
                             = (await CharacterObject.LoadDataAsync("metamagic.xml", token: GenericToken)
                                                     .ConfigureAwait(false))
-                            .SelectSingleNode("/chummer/metamagics/metamagic[id = "
-                                              + frmPickMetamagic.MyForm.SelectedMetamagic.CleanXPath() + ']');
+                            .TryGetNodeByNameOrId("/chummer/metamagics/metamagic",
+                                                  frmPickMetamagic.MyForm.SelectedMetamagic);
                         objSource = Improvement.ImprovementSource.Metamagic;
                     }
 
@@ -26142,8 +26118,8 @@ namespace Chummer
 
                     XmlNode objXmlArt
                         = (await CharacterObject.LoadDataAsync("metamagic.xml", token: GenericToken)
-                                                .ConfigureAwait(false)).SelectSingleNode(
-                            "/chummer/arts/art[id = " + frmPickArt.MyForm.SelectedItem.CleanXPath() + ']');
+                                                .ConfigureAwait(false)).TryGetNodeByNameOrId(
+                            "/chummer/arts/art", frmPickArt.MyForm.SelectedItem);
 
                     Art objArt = new Art(CharacterObject);
                     objArt.Create(objXmlArt, Improvement.ImprovementSource.Metamagic);
@@ -26247,8 +26223,7 @@ namespace Chummer
 
                     objXmlArt = (await CharacterObject.LoadDataAsync("spells.xml", token: GenericToken)
                                                       .ConfigureAwait(false))
-                        .SelectSingleNode("/chummer/spells/spell[id = " + frmPickArt.MyForm.SelectedItem.CleanXPath()
-                                                                        + ']');
+                        .TryGetNodeByNameOrId("/chummer/spells/spell", frmPickArt.MyForm.SelectedItem);
                 }
 
                 Spell objNewSpell = new Spell(CharacterObject);
@@ -26358,8 +26333,7 @@ namespace Chummer
 
                     objXmlArt = (await CharacterObject.LoadDataAsync("spells.xml", token: GenericToken)
                                                       .ConfigureAwait(false))
-                        .SelectSingleNode("/chummer/spells/spell[id = " + frmPickArt.MyForm.SelectedItem.CleanXPath()
-                                                                        + ']');
+                        .TryGetNodeByNameOrId("/chummer/spells/spell", frmPickArt.MyForm.SelectedItem);
                 }
 
                 Spell objNewSpell = new Spell(CharacterObject);
@@ -26469,9 +26443,8 @@ namespace Chummer
 
                     objXmlArt
                         = (await CharacterObject.LoadDataAsync("powers.xml", token: GenericToken).ConfigureAwait(false))
-                        .SelectSingleNode(
-                            "/chummer/enhancements/enhancement[id = " + frmPickArt.MyForm.SelectedItem.CleanXPath()
-                                                                      + ']');
+                        .TryGetNodeByNameOrId(
+                            "/chummer/enhancements/enhancement", frmPickArt.MyForm.SelectedItem);
                 }
 
                 if (objXmlArt == null)
@@ -26754,15 +26727,14 @@ namespace Chummer
 
                         blnAddAgain = frmPickProgram.MyForm.AddAgain;
 
-                        XmlNode objXmlProgram = objXmlDocument.SelectSingleNode(
-                            "/chummer/programs/program[id = " + frmPickProgram.MyForm.SelectedProgram.CleanXPath()
-                                                              + ']');
+                        XmlNode objXmlProgram = objXmlDocument.TryGetNodeByNameOrId(
+                            "/chummer/programs/program", frmPickProgram.MyForm.SelectedProgram.CleanXPath());
                         if (objXmlProgram == null)
                             continue;
 
                         // Check for SelectText.
                         string strExtra = string.Empty;
-                        XmlNode xmlSelectText = objXmlProgram.SelectSingleNode("bonus/selecttext");
+                        XPathNavigator xmlSelectText = objXmlProgram.SelectSingleNodeAndCacheExpressionAsNavigator("bonus/selecttext");
                         if (xmlSelectText != null)
                         {
                             string strDescription = string.Format(GlobalSettings.CultureInfo,

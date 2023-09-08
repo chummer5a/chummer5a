@@ -348,7 +348,7 @@ namespace Chummer.Backend.Equipment
                 string strAmmoWeaponType = string.Empty;
                 bool blnDoExtra = false;
                 if (objXmlGear.TryGetStringFieldQuickly("ammoforweapontype", ref strAmmoWeaponType))
-                    blnDoExtra = objXmlGear.SelectSingleNode("ammoforweapontype/@noextra")?.Value != bool.TrueString;
+                    blnDoExtra = objXmlGear.SelectSingleNodeAndCacheExpressionAsNavigator("ammoforweapontype/@noextra")?.Value != bool.TrueString;
                 if (!string.IsNullOrEmpty(strAmmoWeaponType) && blnDoExtra)
                 {
                     using (ThreadSafeForm<SelectWeaponCategory> frmPickWeaponCategory
@@ -556,7 +556,7 @@ namespace Chummer.Backend.Equipment
                                     XmlNode objXmlLoopGear = xmlDocument.SelectSingleNode(strFilter);
                                     if (objXmlLoopGear == null)
                                         continue;
-                                    XmlNode xmlTestNode = objXmlLoopGear.SelectSingleNode("forbidden/geardetails");
+                                    XPathNavigator xmlTestNode = objXmlLoopGear.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/geardetails");
                                     if (xmlTestNode != null &&
                                         xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                                     {
@@ -564,7 +564,7 @@ namespace Chummer.Backend.Equipment
                                         continue;
                                     }
 
-                                    xmlTestNode = objXmlLoopGear.SelectSingleNode("required/geardetails");
+                                    xmlTestNode = objXmlLoopGear.SelectSingleNodeAndCacheExpressionAsNavigator("required/geardetails");
                                     if (xmlTestNode != null &&
                                         !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                                     {
@@ -618,9 +618,7 @@ namespace Chummer.Backend.Equipment
                                     }
 
                                     XmlNode objXmlChosenGear =
-                                        objXmlChooseGearNode.SelectSingleNode("usegear[name = " +
-                                                                              frmPickItem.MyForm.SelectedItem.CleanXPath()
-                                                                              + ']');
+                                        objXmlChooseGearNode.TryGetNodeByNameOrId("usegear", frmPickItem.MyForm.SelectedItem);
 
                                     if (objXmlChosenGear == null)
                                     {
@@ -729,10 +727,10 @@ namespace Chummer.Backend.Equipment
             XmlAttributeCollection lstGearAttributes = xmlGearNode.Attributes;
             int.TryParse(lstGearAttributes?["rating"]?.InnerText, NumberStyles.Any,
                 GlobalSettings.InvariantCultureInfo, out int intRating);
-            if (xmlGearNode["name"] != null)
+            string strName = xmlGearNode["id"]?.InnerText ?? xmlGearNode["name"]?.InnerText;
+            if (!string.IsNullOrEmpty(strName))
             {
-                xmlGearDataNode = xmlGearsDocument.SelectSingleNode("/chummer/gears/gear[name = " +
-                                                                    xmlGearNode["name"].InnerText.CleanXPath() + ']');
+                xmlGearDataNode = xmlGearsDocument.TryGetNodeByNameOrId("/chummer/gears/gear", strName);
                 XmlNodeList xmlInnerGears = xmlGearNode.SelectNodes("gears/gear");
                 if (xmlInnerGears?.Count > 0)
                 {
@@ -754,8 +752,7 @@ namespace Chummer.Backend.Equipment
             else
             {
                 xmlGearDataNode =
-                    xmlGearsDocument.SelectSingleNode("/chummer/gears/gear[name = " +
-                                                      xmlGearNode.InnerText.CleanXPath() + ']');
+                    xmlGearsDocument.TryGetNodeByNameOrId("/chummer/gears/gear", xmlGearNode.InnerText);
             }
 
             if (xmlGearDataNode != null)
@@ -1003,7 +1000,6 @@ namespace Chummer.Backend.Equipment
                 !objNode.TryGetGuidFieldQuickly("id", ref _guiSourceID))
             {
                 _guiSourceID = Guid.Empty;
-                this.GetNodeXPath(GlobalSettings.DefaultLanguage, _strName, _strCategory)?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
 
             objNode.TryGetInt32FieldQuickly("matrixcmfilled", ref _intMatrixCMFilled);
@@ -1162,7 +1158,7 @@ namespace Chummer.Backend.Equipment
                 if (intResult == -1)
                 {
                     XmlNode gear = _objCharacter.LoadData("gear.xml")
-                        .SelectSingleNode("/chummer/gears/gear[name = " + _strName.CleanXPath() + ']');
+                        .TryGetNodeByNameOrId("/chummer/gears/gear", _strName);
                     if (gear != null)
                     {
                         Equipped = false;
@@ -2417,23 +2413,7 @@ namespace Chummer.Backend.Equipment
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
 
-        public XmlNode GetNode(string strLanguage, string strName, string strCategory, CancellationToken token = default)
-        {
-            return Utils.SafelyRunSynchronously(() => GetNodeCoreAsync(true, strLanguage, strName, strCategory, token), token);
-        }
-
-        public Task<XmlNode> GetNodeAsync(string strLanguage, string strName, string strCategory, CancellationToken token = default)
-        {
-            return GetNodeCoreAsync(false, strLanguage, strName, strCategory, token);
-        }
-
-        public Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
-        {
-            return GetNodeCoreAsync(blnSync, strLanguage, string.Empty, string.Empty, token);
-        }
-
-        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, string strName,
-                                                    string strCategory, CancellationToken token = default)
+        public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
             XmlNode objReturn = _objCachedMyXmlNode;
             if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
@@ -2443,19 +2423,22 @@ namespace Chummer.Backend.Equipment
                 // ReSharper disable once MethodHasAsyncOverload
                 ? _objCharacter.LoadData("gear.xml", strLanguage, token: token)
                 : await _objCharacter.LoadDataAsync("gear.xml", strLanguage, token: token).ConfigureAwait(false);
-            string strNameWithQuotes = Name.CleanXPath();
-            objReturn = objDoc.SelectSingleNode(!string.IsNullOrWhiteSpace(strName)
-                                                    ? "/chummer/gears/gear[name = " + strName.CleanXPath()
-                                                    + " and category = " + strCategory.CleanXPath() + ']'
-                                                    : "/chummer/gears/gear[(id = " + SourceIDString.CleanXPath()
-                                                    + " or id = " + SourceIDString.ToUpperInvariant().CleanXPath()
-                                                    + ") or (name = " + strNameWithQuotes
-                                                    + " and category = " + Category.CleanXPath() + ")]");
+            if (SourceID != Guid.Empty)
+                objReturn = objDoc.TryGetNodeById("/chummer/gears/gear", SourceID);
             if (objReturn == null)
             {
-                objReturn =
-                    objDoc.SelectSingleNode("/chummer/gears/gear[name = " + strNameWithQuotes + ']') ??
-                    objDoc.SelectSingleNode("/chummer/gears/gear[contains(name, " + strNameWithQuotes + ")]");
+                string strCategoryFilter = "category = " + Category.CleanXPath();
+                objReturn = objDoc.TryGetNodeByNameOrId("/chummer/gears/gear", Name, strCategoryFilter);
+                if (objReturn == null)
+                {
+                    string strNameCleaned = Name.CleanXPath();
+                    objReturn = objDoc.SelectSingleNode("/chummer/gears/gear[contains(name, " + strNameCleaned
+                                                        + ") and " + strCategoryFilter + "]")
+                                ?? objDoc.TryGetNodeByNameOrId("/chummer/gears/gear", Name)
+                                ?? objDoc.SelectSingleNode("/chummer/gears/gear[contains(name, " + strNameCleaned
+                                                           + ")]");
+                }
+
                 objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
 
@@ -2467,22 +2450,7 @@ namespace Chummer.Backend.Equipment
         private XPathNavigator _objCachedMyXPathNode;
         private string _strCachedXPathNodeLanguage = string.Empty;
 
-        public XPathNavigator GetNodeXPath(string strLanguage, string strName, string strCategory, CancellationToken token = default)
-        {
-            return Utils.SafelyRunSynchronously(() => GetNodeXPathCoreAsync(true, strLanguage, strName, strCategory, token), token);
-        }
-
-        public Task<XPathNavigator> GetNodeXPathAsync(string strLanguage, string strName, string strCategory, CancellationToken token = default)
-        {
-            return GetNodeXPathCoreAsync(false, strLanguage, strName, strCategory, token);
-        }
-
-        public Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
-        {
-            return GetNodeXPathCoreAsync(blnSync, strLanguage, string.Empty, string.Empty, token);
-        }
-
-        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, string strName, string strCategory, CancellationToken token = default)
+        public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
             XPathNavigator objReturn = _objCachedMyXPathNode;
             if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
@@ -2492,21 +2460,24 @@ namespace Chummer.Backend.Equipment
                 // ReSharper disable once MethodHasAsyncOverload
                 ? _objCharacter.LoadDataXPath("gear.xml", strLanguage, token: token)
                 : await _objCharacter.LoadDataXPathAsync("gear.xml", strLanguage, token: token).ConfigureAwait(false);
-            string strNameWithQuotes = Name.CleanXPath();
-            objReturn = objDoc.SelectSingleNode(!string.IsNullOrWhiteSpace(strName)
-                                                                   ? "/chummer/gears/gear[name = " + strName.CleanXPath()
-                                                                   + " and category = " + strCategory.CleanXPath() + ']'
-                                                                   : "/chummer/gears/gear[(id = " + SourceIDString.CleanXPath()
-                                                                   + " or id = " + SourceIDString.ToUpperInvariant().CleanXPath()
-                                                                   + ") or (name = " + strNameWithQuotes
-                                                                   + " and category = " + Category.CleanXPath() + ")]");
+            if (SourceID != Guid.Empty)
+                objReturn = objDoc.TryGetNodeById("/chummer/gears/gear", SourceID);
             if (objReturn == null)
             {
-                objReturn =
-                    objDoc.SelectSingleNode("/chummer/gears/gear[name = " + strNameWithQuotes + ']') ??
-                    objDoc.SelectSingleNode("/chummer/gears/gear[contains(name, " + strNameWithQuotes + ")]");
+                string strCategoryFilter = "category = " + Category.CleanXPath();
+                objReturn = objDoc.TryGetNodeByNameOrId("/chummer/gears/gear", Name, strCategoryFilter);
+                if (objReturn == null)
+                {
+                    string strNameCleaned = Name.CleanXPath();
+                    objReturn = objDoc.SelectSingleNode("/chummer/gears/gear[contains(name, " + strNameCleaned
+                                                        + ") and " + strCategoryFilter + "]")
+                                ?? objDoc.TryGetNodeByNameOrId("/chummer/gears/gear", Name)
+                                ?? objDoc.SelectSingleNode("/chummer/gears/gear[contains(name, " + strNameCleaned
+                                                           + ")]");
+                }
                 objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
+
             _objCachedMyXPathNode = objReturn;
             _strCachedXPathNodeLanguage = strLanguage;
             return objReturn;
@@ -3994,7 +3965,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (WirelessOn && Equipped && (Parent as IHasWirelessBonus)?.WirelessOn != false)
                 {
-                    if (WirelessBonus.SelectSingleNode("@mode")?.Value == "replace")
+                    if (WirelessBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode")?.Value == "replace")
                     {
                         ImprovementManager.DisableImprovements(_objCharacter,
                                                                _objCharacter.Improvements.Where(x =>
@@ -4012,7 +3983,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    if (WirelessBonus.SelectSingleNode("@mode")?.Value == "replace")
+                    if (WirelessBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode")?.Value == "replace")
                     {
                         ImprovementManager.EnableImprovements(_objCharacter,
                                                               _objCharacter.Improvements.Where(x =>
@@ -4044,7 +4015,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (WirelessOn && Equipped && (Parent as IHasWirelessBonus)?.WirelessOn != false)
                 {
-                    if (WirelessBonus.SelectSingleNode("@mode")?.Value == "replace")
+                    if ((await WirelessBonus.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("@mode", token).ConfigureAwait(false))?.Value == "replace")
                     {
                         await ImprovementManager.DisableImprovementsAsync(_objCharacter,
                                                                           await _objCharacter.Improvements.ToListAsync(x =>
@@ -4064,7 +4035,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    if (WirelessBonus.SelectSingleNode("@mode")?.Value == "replace")
+                    if ((await WirelessBonus.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("@mode", token).ConfigureAwait(false))?.Value == "replace")
                     {
                         await ImprovementManager.EnableImprovementsAsync(_objCharacter,
                                                                          await _objCharacter.Improvements.ToListAsync(x =>
@@ -4746,14 +4717,14 @@ namespace Chummer.Backend.Equipment
                         foreach (XmlNode xmlLoopNode in xmlGearDataList)
                         {
                             token.ThrowIfCancellationRequested();
-                            XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                            XPathNavigator xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/parentdetails");
                             if (xmlTestNode != null && xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                             {
                                 // Assumes topmost parent is an AND node
                                 continue;
                             }
 
-                            xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                            xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/parentdetails");
                             if (xmlTestNode != null &&
                                 !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                             {
@@ -4761,14 +4732,14 @@ namespace Chummer.Backend.Equipment
                                 continue;
                             }
 
-                            xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/geardetails");
+                            xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/geardetails");
                             if (xmlTestNode != null && xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                             {
                                 // Assumes topmost parent is an AND node
                                 continue;
                             }
 
-                            xmlTestNode = xmlLoopNode.SelectSingleNode("required/geardetails");
+                            xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/geardetails");
                             if (xmlTestNode != null &&
                                 !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                             {
@@ -4797,7 +4768,7 @@ namespace Chummer.Backend.Equipment
                                 foreach (XmlNode xmlLoopNode in xmlGearDataList)
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                                    XPathNavigator xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/parentdetails");
                                     if (xmlTestNode != null &&
                                         xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                                     {
@@ -4805,7 +4776,7 @@ namespace Chummer.Backend.Equipment
                                         continue;
                                     }
 
-                                    xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                                    xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/parentdetails");
                                     if (xmlTestNode != null &&
                                         !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                                     {
@@ -4813,7 +4784,7 @@ namespace Chummer.Backend.Equipment
                                         continue;
                                     }
 
-                                    xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/geardetails");
+                                    xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/geardetails");
                                     if (xmlTestNode != null &&
                                         xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                                     {
@@ -4821,7 +4792,7 @@ namespace Chummer.Backend.Equipment
                                         continue;
                                     }
 
-                                    xmlTestNode = xmlLoopNode.SelectSingleNode("required/geardetails");
+                                    xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/geardetails");
                                     if (xmlTestNode != null &&
                                         !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                                     {
@@ -4854,7 +4825,7 @@ namespace Chummer.Backend.Equipment
                                     foreach (XmlNode xmlLoopNode in xmlGearDataList)
                                     {
                                         token.ThrowIfCancellationRequested();
-                                        XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                                        XPathNavigator xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/parentdetails");
                                         if (xmlTestNode != null &&
                                             xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                                         {
@@ -4862,7 +4833,7 @@ namespace Chummer.Backend.Equipment
                                             continue;
                                         }
 
-                                        xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                                        xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/parentdetails");
                                         if (xmlTestNode != null &&
                                             !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                                         {
@@ -4870,7 +4841,7 @@ namespace Chummer.Backend.Equipment
                                             continue;
                                         }
 
-                                        xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/geardetails");
+                                        xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/geardetails");
                                         if (xmlTestNode != null &&
                                             xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                                         {
@@ -4878,7 +4849,7 @@ namespace Chummer.Backend.Equipment
                                             continue;
                                         }
 
-                                        xmlTestNode = xmlLoopNode.SelectSingleNode("required/geardetails");
+                                        xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/geardetails");
                                         if (xmlTestNode != null &&
                                             !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
                                         {
@@ -4956,31 +4927,31 @@ namespace Chummer.Backend.Equipment
                         foreach (XmlNode xmlLoopNode in xmlGearDataList)
                         {
                             token.ThrowIfCancellationRequested();
-                            XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
-                            if (xmlTestNode != null && xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                            XPathNavigator xmlTestNode = await xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("forbidden/parentdetails", token).ConfigureAwait(false);
+                            if (xmlTestNode != null && await xmlParentGearNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
                             {
                                 // Assumes topmost parent is an AND node
                                 continue;
                             }
 
-                            xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                            xmlTestNode = await xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("required/parentdetails", token).ConfigureAwait(false);
                             if (xmlTestNode != null &&
-                                !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                !await xmlParentGearNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
                             {
                                 // Assumes topmost parent is an AND node
                                 continue;
                             }
 
-                            xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/geardetails");
-                            if (xmlTestNode != null && xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                            xmlTestNode = await xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("forbidden/geardetails", token).ConfigureAwait(false);
+                            if (xmlTestNode != null && await xmlParentGearNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
                             {
                                 // Assumes topmost parent is an AND node
                                 continue;
                             }
 
-                            xmlTestNode = xmlLoopNode.SelectSingleNode("required/geardetails");
+                            xmlTestNode = await xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("required/geardetails", token).ConfigureAwait(false);
                             if (xmlTestNode != null &&
-                                !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                !await xmlParentGearNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
                             {
                                 // Assumes topmost parent is an AND node
                                 continue;
@@ -5008,33 +4979,33 @@ namespace Chummer.Backend.Equipment
                                 foreach (XmlNode xmlLoopNode in xmlGearDataList)
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                                    XPathNavigator xmlTestNode = await xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("forbidden/parentdetails", token).ConfigureAwait(false);
                                     if (xmlTestNode != null &&
-                                        xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                        await xmlParentGearNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
                                     {
                                         // Assumes topmost parent is an AND node
                                         continue;
                                     }
 
-                                    xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                                    xmlTestNode = await xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("required/parentdetails", token).ConfigureAwait(false);
                                     if (xmlTestNode != null &&
-                                        !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                        !await xmlParentGearNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
                                     {
                                         // Assumes topmost parent is an AND node
                                         continue;
                                     }
 
-                                    xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/geardetails");
+                                    xmlTestNode = await xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("forbidden/geardetails", token).ConfigureAwait(false);
                                     if (xmlTestNode != null &&
-                                        xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                        await xmlParentGearNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
                                     {
                                         // Assumes topmost parent is an AND node
                                         continue;
                                     }
 
-                                    xmlTestNode = xmlLoopNode.SelectSingleNode("required/geardetails");
+                                    xmlTestNode = await xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("required/geardetails", token).ConfigureAwait(false);
                                     if (xmlTestNode != null &&
-                                        !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                        !await xmlParentGearNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
                                     {
                                         // Assumes topmost parent is an AND node
                                         continue;
@@ -5065,33 +5036,33 @@ namespace Chummer.Backend.Equipment
                                     foreach (XmlNode xmlLoopNode in xmlGearDataList)
                                     {
                                         token.ThrowIfCancellationRequested();
-                                        XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                                        XPathNavigator xmlTestNode = await xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("forbidden/parentdetails", token).ConfigureAwait(false);
                                         if (xmlTestNode != null &&
-                                            xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                            await xmlParentGearNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
                                         {
                                             // Assumes topmost parent is an AND node
                                             continue;
                                         }
 
-                                        xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                                        xmlTestNode = await xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("required/parentdetails", token).ConfigureAwait(false);
                                         if (xmlTestNode != null &&
-                                            !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                            !await xmlParentGearNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
                                         {
                                             // Assumes topmost parent is an AND node
                                             continue;
                                         }
 
-                                        xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/geardetails");
+                                        xmlTestNode = await xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("forbidden/geardetails", token).ConfigureAwait(false);
                                         if (xmlTestNode != null &&
-                                            xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                            await xmlParentGearNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
                                         {
                                             // Assumes topmost parent is an AND node
                                             continue;
                                         }
 
-                                        xmlTestNode = xmlLoopNode.SelectSingleNode("required/geardetails");
+                                        xmlTestNode = await xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("required/geardetails", token).ConfigureAwait(false);
                                         if (xmlTestNode != null &&
-                                            !xmlParentGearNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                            !await xmlParentGearNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
                                         {
                                             // Assumes topmost parent is an AND node
                                             continue;
@@ -5409,7 +5380,7 @@ namespace Chummer.Backend.Equipment
                             XPathNodeIterator xmlAddonCategoryList = this.GetNodeXPath()?.SelectAndCacheExpression("addoncategory");
                             if (!(xmlAddonCategoryList?.Count > 0))
                                 return false;
-                            string strCategory = GlobalSettings.Clipboard.SelectSingleNode("category")?.Value;
+                            string strCategory = GlobalSettings.Clipboard["category"]?.InnerText;
                             return xmlAddonCategoryList.Cast<XPathNavigator>().Any(xmlCategory => xmlCategory.Value == strCategory);
                         }
                     default:

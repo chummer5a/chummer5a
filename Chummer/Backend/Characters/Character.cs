@@ -2750,7 +2750,7 @@ namespace Chummer
                 // If this is a Shapeshifter, a Metavariant must be selected. Default to Human if None is selected.
                 if (strSelectedMetatypeCategory == "Shapeshifter" && strMetavariantId == Guid.Empty.ToString())
                     strMetavariantId =
-                        objXmlMetatype.SelectSingleNode("metavariants/metavariant[name = \"Human\"]/id")?.InnerText ??
+                        objXmlMetatype.SelectSingleNodeAndCacheExpressionAsNavigator("metavariants/metavariant[name = \"Human\"]/id")?.Value ??
                         string.Empty;
                 XmlNode objXmlMetavariant =
                     objXmlMetatype.TryGetNodeByNameOrId("metavariants/metavariant", strMetavariantId);
@@ -2782,7 +2782,7 @@ namespace Chummer
                 Movement = objXmlMetatype["movement"]?.InnerText ?? string.Empty;
 
                 // Determine if the Metatype has any bonuses.
-                XmlNode xmlBonusNode = charNode.SelectSingleNode("bonus");
+                XmlNode xmlBonusNode = charNode["bonus"];
                 if (xmlBonusNode != null)
                     ImprovementManager.CreateImprovements(this, Improvement.ImprovementSource.Metatype, strMetatypeId,
                         xmlBonusNode, 1, strMetatypeId, token: token);
@@ -3182,8 +3182,7 @@ namespace Chummer
 
                     // Check for SelectText.
                     string strExtra = xmlAIProgram.Attributes?["select"]?.InnerText ?? string.Empty;
-                    XmlNode xmlSelectText = xmlAIProgramData.SelectSingleNode("bonus/selecttext");
-                    if (xmlSelectText != null && !string.IsNullOrWhiteSpace(strExtra))
+                    if (xmlAIProgramData.SelectSingleNodeAndCacheExpressionAsNavigator("bonus/selecttext") != null && !string.IsNullOrWhiteSpace(strExtra))
                     {
                         using (ThreadSafeForm<SelectText> frmPickText = ThreadSafeForm<SelectText>.Get(() => new SelectText
                         {
@@ -3226,11 +3225,9 @@ namespace Chummer
                 XmlDocument xmlGearDocument = LoadData("gear.xml", token: token);
                 foreach (XmlNode xmlGear in charNode.SelectNodes("gears/gear"))
                 {
-                    XmlNode xmlGearData = xmlGearDocument.SelectSingleNode("/chummer/gears/gear[name = " +
-                                                                           xmlGear["name"].InnerText.CleanXPath() +
-                                                                           " and category = " +
-                                                                           xmlGear["category"].InnerText.CleanXPath() +
-                                                                           "]");
+                    XmlNode xmlGearData = xmlGearDocument.TryGetNodeByNameOrId(
+                        "/chummer/gears/gear", xmlGear["name"].InnerText,
+                        "category = " + xmlGear["category"].InnerText.CleanXPath());
                     if (xmlGearData == null)
                         continue;
 
@@ -7017,8 +7014,7 @@ namespace Chummer
                                                                 foreach (Quality objCheckQuality in Qualities)
                                                                 {
                                                                     if (objCheckQuality != objQuality &&
-                                                                        objCheckQuality.SourceIDString ==
-                                                                        objQuality.SourceIDString &&
+                                                                        objCheckQuality.SourceID == objQuality.SourceID &&
                                                                         objCheckQuality.Extra == objQuality.Extra &&
                                                                         objCheckQuality.SourceName
                                                                         == objQuality.SourceName)
@@ -7477,7 +7473,7 @@ namespace Chummer
                                             else
                                             {
                                                 xmlTraditionDataNode =
-                                                    xmlTraditionListDataNode.SelectSingleNode("tradition");
+                                                    xmlTraditionListDataNode["tradition"];
                                                 if (xmlTraditionDataNode != null &&
                                                     !_objTradition.Create(xmlTraditionDataNode, true))
                                                 {
@@ -7521,7 +7517,7 @@ namespace Chummer
                                                             .SelectSingleNodeAndCacheExpressionAsync("id", token)
                                                             .ConfigureAwait(false) != null))
                                         {
-                                            _objTradition.Load(objXmlCharacter.SelectSingleNode("tradition"));
+                                            _objTradition.Load(objXmlCharacter["tradition"]);
                                         }
                                         else if (blnSync
                                                      ? MAGEnabled
@@ -7648,10 +7644,10 @@ namespace Chummer
 
                             using (Timekeeper.StartSyncron("load_char_skills", loadActivity)) //slightly messy
                             {
-                                _oldSkillsBackup = objXmlCharacter.SelectSingleNode("skills")?.Clone();
-                                _oldSkillGroupBackup = objXmlCharacter.SelectSingleNode("skillgroups")?.Clone();
+                                _oldSkillsBackup = objXmlCharacter["skills"]?.Clone();
+                                _oldSkillGroupBackup = objXmlCharacter["skillgroups"]?.Clone();
 
-                                XmlNode objSkillNode = objXmlCharacter.SelectSingleNode("newskills");
+                                XmlNode objSkillNode = objXmlCharacter["newskills"];
                                 if (blnSync)
                                 {
                                     if (objSkillNode != null)
@@ -8693,8 +8689,7 @@ namespace Chummer
                                             foreach (Quality objCheckQuality in Qualities)
                                             {
                                                 if (objCheckQuality != objLivingPersonaQuality &&
-                                                    objCheckQuality.SourceIDString ==
-                                                    objLivingPersonaQuality.SourceIDString &&
+                                                    objCheckQuality.SourceID == objLivingPersonaQuality.SourceID &&
                                                     objCheckQuality.Extra == objLivingPersonaQuality.Extra &&
                                                     objCheckQuality.SourceName ==
                                                     objLivingPersonaQuality.SourceName)
@@ -19222,7 +19217,7 @@ namespace Chummer
                                 }
                                 else
                                 {
-                                    xmlTraditionDataNode = xmlTraditionListDataNode.SelectSingleNode("tradition");
+                                    xmlTraditionDataNode = xmlTraditionListDataNode["tradition"];
                                     if (xmlTraditionDataNode != null
                                         && !MagicTradition.Create(xmlTraditionDataNode, true))
                                     {
@@ -20809,9 +20804,8 @@ namespace Chummer
                     if (objHole == null)
                     {
                         XmlNode xmlEssHole = LoadData("cyberware.xml")
-                            .SelectSingleNode("/chummer/cyberwares/cyberware[id = " + Backend.Equipment.Cyberware
-                                                  .EssenceHoleGUID.ToString("D", GlobalSettings.InvariantCultureInfo)
-                                                  .CleanXPath() + ']');
+                            .TryGetNodeById("/chummer/cyberwares/cyberware",
+                                            Backend.Equipment.Cyberware.EssenceHoleGUID);
                         objHole = new Cyberware(this);
                         List<Weapon> lstWeapons = new List<Weapon>(1);
                         List<Vehicle> lstVehicles = new List<Vehicle>(1);
@@ -20884,10 +20878,8 @@ namespace Chummer
                     if (objAntiHole == null)
                     {
                         XmlNode xmlEssAntiHole = LoadData("cyberware.xml")
-                            .SelectSingleNode("/chummer/cyberwares/cyberware[id = " + Backend.Equipment.Cyberware
-                                                  .EssenceAntiHoleGUID
-                                                  .ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath()
-                                              + ']');
+                            .TryGetNodeById("/chummer/cyberwares/cyberware",
+                                            Backend.Equipment.Cyberware.EssenceAntiHoleGUID);
                         objAntiHole = new Cyberware(this);
                         List<Weapon> lstWeapons = new List<Weapon>(1);
                         List<Vehicle> lstVehicles = new List<Vehicle>(1);
@@ -36146,9 +36138,8 @@ namespace Chummer
 
                                         string strForcedValue = string.Empty;
                                         XmlNode xmlQualityDataNode =
-                                            xmlQualitiesDocument.SelectSingleNode(
-                                                "/chummer/qualities/quality[name = " + strQualityName.CleanXPath() +
-                                                "]");
+                                            xmlQualitiesDocument.TryGetNodeByNameOrId(
+                                                "/chummer/qualities/quality", strQualityName);
                                         if (xmlQualityDataNode == null)
                                         {
                                             string[] astrOriginalNameSplit =
@@ -36157,10 +36148,8 @@ namespace Chummer
                                             {
                                                 string strName = astrOriginalNameSplit[0].Trim();
                                                 xmlQualityDataNode =
-                                                    xmlQualitiesDocument.SelectSingleNode(
-                                                        "/chummer/qualities/quality[name = " +
-                                                        strName.CleanXPath() +
-                                                        "]");
+                                                    xmlQualitiesDocument.TryGetNodeByNameOrId(
+                                                        "/chummer/qualities/quality", strName);
                                                 if (xmlQualityDataNode != null)
                                                     strForcedValue = astrOriginalNameSplit[1].Trim();
                                             }
@@ -36174,10 +36163,8 @@ namespace Chummer
                                             {
                                                 string strName = astrOriginalNameSplit[0].Trim();
                                                 xmlQualityDataNode =
-                                                    xmlQualitiesDocument.SelectSingleNode(
-                                                        "/chummer/qualities/quality[name = " +
-                                                        strName.CleanXPath() +
-                                                        "]");
+                                                    xmlQualitiesDocument.TryGetNodeByNameOrId(
+                                                        "/chummer/qualities/quality", strName);
                                                 if (xmlQualityDataNode != null)
                                                     strForcedValue = astrOriginalNameSplit[1].Trim();
                                             }
@@ -36280,9 +36267,8 @@ namespace Chummer
 
                                         string strForcedValue = string.Empty;
                                         XmlNode xmlQualityDataNode =
-                                            xmlQualitiesDocument.SelectSingleNode(
-                                                "/chummer/qualities/quality[name = " + strQualityName.CleanXPath() +
-                                                "]");
+                                            xmlQualitiesDocument.TryGetNodeByNameOrId(
+                                                "/chummer/qualities/quality", strQualityName);
                                         if (xmlQualityDataNode == null)
                                         {
                                             string[] astrOriginalNameSplit =
@@ -36291,10 +36277,8 @@ namespace Chummer
                                             {
                                                 string strName = astrOriginalNameSplit[0].Trim();
                                                 xmlQualityDataNode =
-                                                    xmlQualitiesDocument.SelectSingleNode(
-                                                        "/chummer/qualities/quality[name = " +
-                                                        strName.CleanXPath() +
-                                                        "]");
+                                                    xmlQualitiesDocument.TryGetNodeByNameOrId(
+                                                        "/chummer/qualities/quality", strName);
                                                 if (xmlQualityDataNode != null)
                                                     strForcedValue = astrOriginalNameSplit[1].Trim();
                                             }
@@ -36308,10 +36292,8 @@ namespace Chummer
                                             {
                                                 string strName = astrOriginalNameSplit[0].Trim();
                                                 xmlQualityDataNode =
-                                                    xmlQualitiesDocument.SelectSingleNode(
-                                                        "/chummer/qualities/quality[name = " +
-                                                        strName.CleanXPath() +
-                                                        "]");
+                                                    xmlQualitiesDocument.TryGetNodeByNameOrId(
+                                                        "/chummer/qualities/quality", strName);
                                                 if (xmlQualityDataNode != null)
                                                     strForcedValue = astrOriginalNameSplit[1].Trim();
                                             }
@@ -36642,8 +36624,8 @@ namespace Chummer
                                     if (!string.IsNullOrEmpty(strArmorName))
                                     {
                                         XmlNode xmlArmorData =
-                                            xmlArmorDocument.SelectSingleNode(
-                                                "chummer/armors/armor[name = " + strArmorName.CleanXPath() + ']');
+                                            xmlArmorDocument.TryGetNodeByNameOrId(
+                                                "/chummer/armors/armor", strArmorName);
                                         if (xmlArmorData == null)
                                         {
                                             string[] astrOriginalNameSplit =
@@ -36652,9 +36634,8 @@ namespace Chummer
                                             {
                                                 string strName = astrOriginalNameSplit[0].Trim();
                                                 xmlArmorData =
-                                                    xmlArmorDocument.SelectSingleNode(
-                                                        "/chummer/armors/armor[name = " + strName.CleanXPath() +
-                                                        ']');
+                                                    xmlArmorDocument.TryGetNodeByNameOrId(
+                                                        "/chummer/armors/armor", strName);
                                             }
 
                                             if (xmlArmorData == null)
@@ -36665,9 +36646,8 @@ namespace Chummer
                                                 {
                                                     string strName = astrOriginalNameSplit[0].Trim();
                                                     xmlArmorData =
-                                                        xmlArmorDocument.SelectSingleNode(
-                                                            "/chummer/armors/armor[name = " +
-                                                            strName.CleanXPath() + ']');
+                                                        xmlArmorDocument.TryGetNodeByNameOrId(
+                                                            "/chummer/armors/armor", strName);
                                                 }
                                             }
                                         }
@@ -36714,16 +36694,15 @@ namespace Chummer
                                                     if (!string.IsNullOrEmpty(strArmorModName))
                                                     {
                                                         XmlNode xmlArmorModData =
-                                                            xmlArmorDocument.SelectSingleNode(
-                                                                "chummer/mods/mod[name = " +
-                                                                strArmorModName.CleanXPath() +
-                                                                "]");
+                                                            xmlArmorDocument.TryGetNodeByNameOrId(
+                                                                "chummer/mods/mod", strArmorModName);
                                                         if (xmlArmorModData != null)
                                                         {
                                                             ArmorMod objArmorMod = new ArmorMod(this);
                                                             objArmorMod.Create(xmlArmorModData,
                                                                                (blnSync
                                                                                    ? xmlArmorModToImport
+                                                                                       // ReSharper disable once MethodHasAsyncOverload
                                                                                        .SelectSingleNodeAndCacheExpression(
                                                                                            "@rating", token)
                                                                                    : await xmlArmorModToImport
@@ -36733,6 +36712,7 @@ namespace Chummer
                                                                                ?.ValueAsInt ?? 0, lstWeapons);
                                                             objArmorMod.Notes = (blnSync
                                                                     ? xmlArmorModToImport
+                                                                        // ReSharper disable once MethodHasAsyncOverload
                                                                         .SelectSingleNodeAndCacheExpression(
                                                                             "description", token)
                                                                     : await xmlArmorModToImport
@@ -37513,9 +37493,9 @@ namespace Chummer
                                                 : await xmlHeroLabSpell
                                                         .SelectSingleNodeAndCacheExpressionAsync("@category", token)
                                                         .ConfigureAwait(false))?.Value;
-                                        XmlNode xmlSpellData = xmlSpellDocument.SelectSingleNode(
-                                            "chummer/spells/spell[category = " + strSpellCategory.CleanXPath() +
-                                            " and name = " + strSpellName.CleanXPath() + ']');
+                                        XmlNode xmlSpellData = xmlSpellDocument.TryGetNodeByNameOrId(
+                                            "chummer/spells/spell", strSpellName,
+                                            "category = " + strSpellCategory.CleanXPath());
                                         if (xmlSpellData == null)
                                         {
                                             string[] astrOriginalNameSplit =
@@ -37523,10 +37503,9 @@ namespace Chummer
                                             if (astrOriginalNameSplit.Length > 1)
                                             {
                                                 string strName = astrOriginalNameSplit[0].Trim();
-                                                xmlSpellData = xmlSpellDocument.SelectSingleNode(
-                                                    "/chummer/spells/spell[category = " +
-                                                    strSpellCategory.CleanXPath() +
-                                                    " and name = " + strName.CleanXPath() + ']');
+                                                xmlSpellData = xmlSpellDocument.TryGetNodeByNameOrId(
+                                                    "chummer/spells/spell", strName,
+                                                    "category = " + strSpellCategory.CleanXPath());
                                             }
 
                                             if (xmlSpellData == null)
@@ -37536,10 +37515,9 @@ namespace Chummer
                                                 if (astrOriginalNameSplit.Length > 1)
                                                 {
                                                     string strName = astrOriginalNameSplit[0].Trim();
-                                                    xmlSpellData = xmlSpellDocument.SelectSingleNode(
-                                                        "/chummer/spells/spell[category = " +
-                                                        strSpellCategory.CleanXPath() + " and name = " +
-                                                        strName.CleanXPath() + ']');
+                                                    xmlSpellData = xmlSpellDocument.TryGetNodeByNameOrId(
+                                                        "chummer/spells/spell", strName,
+                                                        "category = " + strSpellCategory.CleanXPath());
                                                 }
                                             }
                                         }
@@ -37753,9 +37731,8 @@ namespace Chummer
                                         }
 
                                         XmlNode xmlComplexFormData =
-                                            xmlComplexFormsDocument.SelectSingleNode(
-                                                "chummer/complexforms/complexform[name = " +
-                                                strComplexFormName.CleanXPath() + ']');
+                                            xmlComplexFormsDocument.TryGetNodeByNameOrId(
+                                                "/chummer/complexforms/complexform", strComplexFormName);
                                         if (xmlComplexFormData == null)
                                         {
                                             string[] astrOriginalNameSplit =
@@ -37765,10 +37742,8 @@ namespace Chummer
                                             {
                                                 string strName = astrOriginalNameSplit[0].Trim();
                                                 xmlComplexFormData =
-                                                    xmlComplexFormsDocument.SelectSingleNode(
-                                                        "/chummer/complexforms/complexform[name = " +
-                                                        strName.CleanXPath() +
-                                                        "]");
+                                                    xmlComplexFormsDocument.TryGetNodeByNameOrId(
+                                                        "/chummer/complexforms/complexform", strName);
                                             }
 
                                             if (xmlComplexFormData == null)
@@ -37779,9 +37754,8 @@ namespace Chummer
                                                 {
                                                     string strName = astrOriginalNameSplit[0].Trim();
                                                     xmlComplexFormData =
-                                                        xmlComplexFormsDocument.SelectSingleNode(
-                                                            "/chummer/complexforms/complexform[name = " +
-                                                            strName.CleanXPath() + ']');
+                                                        xmlComplexFormsDocument.TryGetNodeByNameOrId(
+                                                            "/chummer/complexforms/complexform", strName);
                                                 }
                                             }
                                         }
@@ -37945,8 +37919,7 @@ namespace Chummer
                                                 // ReSharper disable once MethodHasAsyncOverload
                                                 ? LoadData("lifestyles.xml", token: token)
                                                 : await LoadDataAsync("lifestyles.xml", token: token).ConfigureAwait(false))
-                                            .SelectSingleNode("/chummer/lifestyles/lifestyle[name = " +
-                                                              strLifestyleType.CleanXPath() + ']');
+                                            .TryGetNodeByNameOrId("/chummer/lifestyles/lifestyle", strLifestyleType);
 
                                         if (xmlLifestyleDataNode != null)
                                         {
