@@ -316,7 +316,7 @@ namespace ChummerHub.Client.Backend
                 Log.Info("Connected to " + Settings.Default.SINnerUrl + ".");
 
                 ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
-                ServicePointManager.SecurityProtocol = SecurityProtocolType.Ssl3 | SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
+                ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls | SecurityProtocolType.Tls11 | SecurityProtocolType.Tls12;
                 Uri baseUri = new Uri(Settings.Default.SINnerUrl);
                 //ServiceClientCredentials mycredentials = null;
                 //try

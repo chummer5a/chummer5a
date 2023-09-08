@@ -49,6 +49,8 @@
   - [x] Test SamplePlugin
   - [ ] Test ChummerHub.Client
     - It looks good to me, besides receiving and HTTP302 when trying to log in?
+    - [ ] I needed to remove the `SecurityProtocolType.Ssl3`, since it is not supported.
+      I'm not certain about the ramifications if this change
   - [x] Test ChummerHub -> this runs, but ARCHON needs to really test it since I got no clue.
     - There aren't actually any real changes done here besides a push from net6 to net7, we could just roll that back
 
