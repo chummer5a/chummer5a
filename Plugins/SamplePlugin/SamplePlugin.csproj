@@ -4,7 +4,7 @@
     <OutputType>Library</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
     <UseWindowsForms>true</UseWindowsForms>
-    <ImportWindowsDesktopTargets>true</ImportWindowsDesktopTargets>
+    <CopyLocalLockFileAssemblies>true</CopyLocalLockFileAssemblies>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <OutputPath>$(MSBuildProjectDirectory)\bin\$(Configuration)\</OutputPath>
@@ -36,16 +36,6 @@
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.ApplicationInsights" Version="2.21.0" />
-    <!--
-    These produce false positives in Rider
-      <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="3.3.4" />
-      <PackageReference Include="Microsoft.CodeAnalysis.Common" Version="4.7.0" />
-      <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.7.0" />
-    -->
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="7.0.4">
-      <PrivateAssets>all</PrivateAssets>
-      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
-    </PackageReference>
     <PackageReference Include="NLog" Version="5.2.3" />
     <PackageReference Include="System.ServiceModel.Primitives" Version="6.0.0" />
     <PackageReference Include="System.ServiceModel.Http" Version="6.0.0" />
@@ -59,39 +49,29 @@
     <PackageReference Include="System.Runtime.CompilerServices.Unsafe" Version="6.0.0" />
   </ItemGroup>
   <PropertyGroup>
-    <PreBuildEvent>echo Statement 1: mkdir "$(TargetDir)Plugins\SamplePlugin\"
-        mkdir "$(TargetDir)Plugins\SamplePlugin\"
-        echo Statement 2: mkdir "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SamplePlugin\"
-        mkdir "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SamplePlugin\"
-        Exit 0</PreBuildEvent>
+    <PreBuildEvent>
+      echo Statement 1: mkdir "$(TargetDir)Plugins\SamplePlugin\"
+      mkdir "$(TargetDir)Plugins\SamplePlugin\"
+      echo Statement 2: mkdir "$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\"
+      mkdir "$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\"
+      Exit 0
+    </PreBuildEvent>
   </PropertyGroup>
   <PropertyGroup>
-    <PostBuildEvent>echo Statement 1: copy "$(TargetDir)*" "$(TargetDir)Plugins\SamplePlugin\" /Y
-        copy "$(TargetDir)$(TargetName).*" "$(TargetDir)Plugins\SamplePlugin\" /Y
-echo ----------------------------------------------------------------------------------------------------
-echo ----------------------------------------------------------------------------------------------------
-echo Statement 2: You need to copy every DLL here in the post-build step! This HAS to be done here!
-echo ----------------------------------------------------------------------------------------------------
-echo ----------------------------------------------------------------------------------------------------
-        echo Statement 3: copy "$(TargetDir)Newtonsoft.Json.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
-        copy "$(TargetDir)Newtonsoft.Json.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
-        echo Statement 4: copy "$(TargetDir)NLog.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
-        copy "$(TargetDir)NLog.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
-        echo Statement 5: copy "$(TargetDir)System.Composition.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
-        copy "$(TargetDir)System.Composition.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
-        echo Statement 6: copy "$(TargetDir)System.Diagnostics.DiagnosticSource.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
-        copy "$(TargetDir)System.Diagnostics.DiagnosticSource.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
-        echo Statement 7: copy "$(TargetDir)Microsoft.ApplicationInsights.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
-        copy "$(TargetDir)Microsoft.ApplicationInsights.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
-        echo Statement 11: copy "$(TargetDir)System.Memory.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
-        copy "$(TargetDir)System.Memory.*" "$(TargetDir)Plugins\SamplePlugin\" /Y
-        echo Statement 12: copy "$(TargetDir)*.txt" "$(TargetDir)Plugins\SamplePlugin\" /Y
-        copy "$(TargetDir)*.txt" "$(TargetDir)Plugins\SamplePlugin\" /Y
-
-        echo Statement last: copy "$(TargetDir)Plugins\SamplePlugin\*" "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SamplePlugin\" /Y
-        copy "$(TargetDir)Plugins\SamplePlugin\*" "$(SolutionDir)Chummer\bin\$(ConfigurationName)\Plugins\SamplePlugin\" /Y
-
-
+    <PostBuildEvent>
+      echo ----------------------------------------------------------------------------------------------------
+      echo ----------------------------------------------------------------------------------------------------
+      echo Statement 2: You need to copy every DLL here in the post-build step! This HAS to be done here!
+      echo ----------------------------------------------------------------------------------------------------
+      echo ----------------------------------------------------------------------------------------------------
+      echo Statement 1: copy "$(TargetDir)*.dll" "$(TargetDir)Plugins\SamplePlugin\" /Y
+      copy "$(TargetDir)*.dll" "$(TargetDir)Plugins\SamplePlugin\" /Y
+      echo Statement 2: copy "$(TargetDir)*.txt" "$(TargetDir)Plugins\SamplePlugin\" /Y
+      copy "$(TargetDir)*.txt" "$(TargetDir)Plugins\SamplePlugin\" /Y
+      echo Statement 3: copy "$(TargetDir)*.dll.config" "$(TargetDir)Plugins\SamplePlugin\" /Y
+      copy "$(TargetDir)*.dll.config" "$(TargetDir)Plugins\SamplePlugin\" /Y
+      echo Statement 4: copy "$(TargetDir)Plugins\SamplePlugin\*" "$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
+      copy "$(TargetDir)Plugins\SamplePlugin\*" "$(SolutionDir)Chummer\bin\$(Configuration)\$(TargetFramework)\Plugins\SamplePlugin\" /Y
 </PostBuildEvent>
   </PropertyGroup>
 </Project>
