@@ -1580,11 +1580,6 @@ namespace Chummer
                     // Load the Priority information.
 
                     // Set the character priority selections
-                    _objCharacter.MetatypeBP
-                        = Convert.ToInt32(
-                            await lblMetavariantKarma.DoThreadSafeFuncAsync(x => x.Text, token)
-                                                     .ConfigureAwait(false),
-                            GlobalSettings.CultureInfo);
                     _objCharacter.MetatypePriority
                         = await cboHeritage.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token)
                                            .ConfigureAwait(false);
@@ -1875,8 +1870,9 @@ namespace Chummer
                             await _objCharacter.Weapons.AddAsync(objWeapon, token: token).ConfigureAwait(false);
                     }
 
-                    // Set Special Attributes
+                    // Set Special Attributes and Karma
 
+                    int intMetatypeBP = 0;
                     XPathNodeIterator xmlBaseMetatypePriorityList = _xmlBasePriorityDataNode.Select(
                         "priorities/priority[category = \"Heritage\" and value = "
                         + _objCharacter.MetatypePriority.CleanXPath()
@@ -1890,22 +1886,37 @@ namespace Chummer
                             != null)
                         {
                             XPathNavigator objXmlMetatypePriorityNode
-                                = xmlBaseMetatypePriority.TryGetNodeById(
-                                    "metatypes/metatype", _objCharacter.MetatypeGuid);
+                                = xmlBaseMetatypePriority.TryGetNodeByNameOrId(
+                                      "metatypes/metatype", strSelectedMetatype)
+                                  ?? xmlBaseMetatypePriority.TryGetNodeByNameOrId(
+                                      "metatypes/metatype", _objCharacter.Metatype);
                             if (strSelectedMetavariant != Guid.Empty.ToString())
-                                objXmlMetatypePriorityNode = objXmlMetatypePriorityNode?.TryGetNodeById(
-                                    "metavariants/metavariant", _objCharacter.MetavariantGuid);
-                            if (objXmlMetatypePriorityNode != null && int.TryParse(
-                                    (await objXmlMetatypePriorityNode.SelectSingleNodeAndCacheExpressionAsync(
-                                        "value", token).ConfigureAwait(false))
-                                    ?.Value, out int intTemp))
-                                intSpecialAttribPoints += intTemp;
+                                objXmlMetatypePriorityNode
+                                    = objXmlMetatypePriorityNode?.TryGetNodeByNameOrId(
+                                          "metavariants/metavariant", strSelectedMetavariant)
+                                      ?? objXmlMetatypePriorityNode?.TryGetNodeByNameOrId(
+                                          "metavariants/metavariant", _objCharacter.Metavariant);
+                            if (objXmlMetatypePriorityNode != null)
+                            {
+                                if (int.TryParse(
+                                        (await objXmlMetatypePriorityNode.SelectSingleNodeAndCacheExpressionAsync(
+                                            "value", token).ConfigureAwait(false))
+                                        ?.Value, out int intTemp))
+                                    intSpecialAttribPoints += intTemp;
+                                if (int.TryParse(
+                                        (await objXmlMetatypePriorityNode.SelectSingleNodeAndCacheExpressionAsync(
+                                            "karma", token).ConfigureAwait(false))
+                                        ?.Value, out int intTemp2))
+                                    intMetatypeBP += intTemp2;
+                            }
+
                             break;
                         }
                     }
 
                     _objCharacter.Special = intSpecialAttribPoints;
                     _objCharacter.TotalSpecial = _objCharacter.Special;
+                    _objCharacter.MetatypeBP = intMetatypeBP;
 
                     // Set Attributes
                     XPathNodeIterator objXmlAttributesPriorityList = _xmlBasePriorityDataNode.Select(
@@ -3154,20 +3165,37 @@ namespace Chummer
                                          "metavariants/metavariant[" + await _objCharacter.Settings
                                              .BookXPathAsync(token: token).ConfigureAwait(false) + ']'))
                             {
-                                string strName
-                                    = (await objXmlMetavariant.SelectSingleNodeAndCacheExpressionAsync("name", token)
-                                                              .ConfigureAwait(false))?.Value
-                                      ?? await LanguageManager.GetStringAsync("String_Unknown", token: token)
-                                                              .ConfigureAwait(false);
-                                if (objXmlMetatypeBP.TryGetNodeByNameOrId(
-                                        "metavariants/metavariant", strName) != null)
+                                string strId = (await objXmlMetavariant
+                                                      .SelectSingleNodeAndCacheExpressionAsync("id", token)
+                                                      .ConfigureAwait(false))?.Value;
+                                string strName = (await objXmlMetavariant
+                                                        .SelectSingleNodeAndCacheExpressionAsync("name", token)
+                                                        .ConfigureAwait(false))?.Value;
+                                if (!string.IsNullOrEmpty(strId)
+                                    && objXmlMetatypeBP.TryGetNodeByNameOrId(
+                                        "metavariants/metavariant", strId) != null)
+                                {
+                                    if (string.IsNullOrEmpty(strName))
+                                        strName = await LanguageManager
+                                                        .GetStringAsync("String_Unknown", token: token)
+                                                        .ConfigureAwait(false);
+                                    lstMetavariants.Add(new ListItem(
+                                                            strId,
+                                                            (await objXmlMetavariant
+                                                                   .SelectSingleNodeAndCacheExpressionAsync(
+                                                                       "translate", token).ConfigureAwait(false))
+                                                            ?.Value ?? strName));
+                                }
+                                else if (!string.IsNullOrEmpty(strName)
+                                         && objXmlMetatypeBP.TryGetNodeByNameOrId(
+                                             "metavariants/metavariant", strName) != null)
                                 {
                                     lstMetavariants.Add(new ListItem(
                                                             strName,
                                                             (await objXmlMetavariant
                                                                    .SelectSingleNodeAndCacheExpressionAsync(
-                                                                       "translate", token).ConfigureAwait(false))?.Value
-                                                            ?? strName));
+                                                                       "translate", token).ConfigureAwait(false))
+                                                            ?.Value ?? strName));
                                 }
                             }
 
@@ -3325,12 +3353,30 @@ namespace Chummer
                                              + ") and category = " + strSelectedCategory.CleanXPath()
                                              + ']'))
                                 {
+                                    string strId = (await objXmlMetatype
+                                                          .SelectSingleNodeAndCacheExpressionAsync("id", token)
+                                                          .ConfigureAwait(false))?.Value;
                                     string strName = (await objXmlMetatype
                                                             .SelectSingleNodeAndCacheExpressionAsync("name", token)
                                                             .ConfigureAwait(false))?.Value;
-                                    if (!string.IsNullOrEmpty(strName)
+                                    if (!string.IsNullOrEmpty(strId)
                                         && xmlBaseMetatypePriority.TryGetNodeByNameOrId(
-                                            "metatypes/metatype", strName) != null)
+                                            "metatypes/metatype", strId) != null)
+                                    {
+                                        if (string.IsNullOrEmpty(strName))
+                                            strName = await LanguageManager
+                                                            .GetStringAsync("String_Unknown", token: token)
+                                                            .ConfigureAwait(false);
+                                        lstMetatype.Add(new ListItem(
+                                                            strId,
+                                                            (await objXmlMetatype
+                                                                   .SelectSingleNodeAndCacheExpressionAsync(
+                                                                       "translate", token).ConfigureAwait(false))
+                                                            ?.Value ?? strName));
+                                    }
+                                    else if (!string.IsNullOrEmpty(strName)
+                                             && xmlBaseMetatypePriority.TryGetNodeByNameOrId(
+                                                 "metatypes/metatype", strName) != null)
                                     {
                                         lstMetatype.Add(new ListItem(
                                                             strName,
@@ -3446,9 +3492,15 @@ namespace Chummer
                                                                   .ConfigureAwait(false) + ")]"))
                                 {
                                     if (xmlBaseMetatypePriority.TryGetNodeByNameOrId(
-                                            "metatypes/metatype",
-                                            (await objXmlMetatype.SelectSingleNodeAndCacheExpressionAsync("name", token)
-                                                                 .ConfigureAwait(false))?.Value) != null)
+                                            "metatypes/metatype", (await objXmlMetatype
+                                                                         .SelectSingleNodeAndCacheExpressionAsync(
+                                                                             "id", token)
+                                                                         .ConfigureAwait(false))?.Value) != null
+                                        || xmlBaseMetatypePriority.TryGetNodeByNameOrId(
+                                            "metatypes/metatype", (await objXmlMetatype
+                                                                         .SelectSingleNodeAndCacheExpressionAsync(
+                                                                             "name", token)
+                                                                         .ConfigureAwait(false))?.Value) != null)
                                     {
                                         blnRemoveCategory = false;
                                         break;
