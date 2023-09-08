@@ -43,6 +43,7 @@ using Microsoft.Win32;
 using NLog;
 using Microsoft.IO;
 using Chummer.Forms;
+using System.Xml.XPath;
 
 namespace Chummer
 {
@@ -330,6 +331,11 @@ namespace Chummer
         public static string GetLanguageFolderPath => s_strGetLanguageFolderPath.Value;
 
         public static string GetSettingsFolderPath => s_strGetSettingsFolderPath.Value;
+
+        private static readonly Lazy<LockingDictionary<string, XPathExpression>> s_dicCachedExpressions
+            = new Lazy<LockingDictionary<string, XPathExpression>>(() => new LockingDictionary<string, XPathExpression>());
+
+        public static LockingDictionary<string, XPathExpression> CachedXPathExpressions => s_dicCachedExpressions.Value;
 
         private static readonly Lazy<JoinableTaskFactory> s_objJoinableTaskFactory
             = new Lazy<JoinableTaskFactory>(() => IsRunningInVisualStudio

@@ -318,13 +318,13 @@ namespace Chummer
         {
             if (node == null)
                 return false;
-            XPathNavigator objField = s_dicCachedExpressions.TryGetValue(field, out XPathExpression objCachedExpression)
+            XPathNavigator objField = Utils.CachedXPathExpressions.TryGetValue(field, out XPathExpression objCachedExpression)
                 ? node.SelectSingleNode(objCachedExpression)
                 : node.SelectSingleNode(field);
             if (objField == null && !field.StartsWith('@'))
             {
                 field = '@' + field;
-                objField = s_dicCachedExpressions.TryGetValue(field, out objCachedExpression)
+                objField = Utils.CachedXPathExpressions.TryGetValue(field, out objCachedExpression)
                     ? node.SelectSingleNode(objCachedExpression)
                     : node.SelectSingleNode(field);
             }
@@ -359,7 +359,7 @@ namespace Chummer
         {
             if (node == null)
                 return false;
-            XPathNavigator objField = s_dicCachedExpressions.TryGetValue(field, out XPathExpression objCachedExpression)
+            XPathNavigator objField = Utils.CachedXPathExpressions.TryGetValue(field, out XPathExpression objCachedExpression)
                 ? node.SelectSingleNode(objCachedExpression)
                 : node.SelectSingleNode(field);
             if (objField != null)
@@ -383,7 +383,7 @@ namespace Chummer
         {
             if (node == null)
                 return false;
-            XPathNavigator objField = s_dicCachedExpressions.TryGetValue(field, out XPathExpression objCachedExpression)
+            XPathNavigator objField = Utils.CachedXPathExpressions.TryGetValue(field, out XPathExpression objCachedExpression)
                 ? node.SelectSingleNode(objCachedExpression)
                 : node.SelectSingleNode(field);
             if (objField != null && bool.TryParse(objField.Value, out bool blnTmp))
@@ -402,7 +402,7 @@ namespace Chummer
         {
             if (node == null)
                 return false;
-            XPathNavigator objField = s_dicCachedExpressions.TryGetValue(field, out XPathExpression objCachedExpression)
+            XPathNavigator objField = Utils.CachedXPathExpressions.TryGetValue(field, out XPathExpression objCachedExpression)
                 ? node.SelectSingleNode(objCachedExpression)
                 : node.SelectSingleNode(field);
             if (objField != null)
@@ -426,7 +426,7 @@ namespace Chummer
         {
             if (node == null)
                 return false;
-            XPathNavigator objField = s_dicCachedExpressions.TryGetValue(field, out XPathExpression objCachedExpression)
+            XPathNavigator objField = Utils.CachedXPathExpressions.TryGetValue(field, out XPathExpression objCachedExpression)
                 ? node.SelectSingleNode(objCachedExpression)
                 : node.SelectSingleNode(field);
             if (objField != null)
@@ -450,7 +450,7 @@ namespace Chummer
         {
             if (node == null)
                 return false;
-            XPathNavigator objField = s_dicCachedExpressions.TryGetValue(field, out XPathExpression objCachedExpression)
+            XPathNavigator objField = Utils.CachedXPathExpressions.TryGetValue(field, out XPathExpression objCachedExpression)
                 ? node.SelectSingleNode(objCachedExpression)
                 : node.SelectSingleNode(field);
             if (objField != null)
@@ -478,7 +478,7 @@ namespace Chummer
         {
             if (node == null)
                 return false;
-            XPathNavigator objField = s_dicCachedExpressions.TryGetValue(field, out XPathExpression objCachedExpression)
+            XPathNavigator objField = Utils.CachedXPathExpressions.TryGetValue(field, out XPathExpression objCachedExpression)
                 ? node.SelectSingleNode(objCachedExpression)
                 : node.SelectSingleNode(field);
             if (objField == null)
@@ -503,7 +503,7 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strName) || xmlNode == null)
                 return false;
-            XPathNavigator objField = s_dicCachedExpressions.TryGetValue(strName, out XPathExpression objCachedExpression)
+            XPathNavigator objField = Utils.CachedXPathExpressions.TryGetValue(strName, out XPathExpression objCachedExpression)
                 ? xmlNode.SelectSingleNode(objCachedExpression)
                 : xmlNode.SelectSingleNode(strName);
             return objField != null;
@@ -620,7 +620,7 @@ namespace Chummer
         /// </summary>
         public static XPathNavigator SelectSingleNodeAndCacheExpression(this XPathNavigator xmlNode, string xpath, CancellationToken token = default)
         {
-            XPathExpression objExpression = s_dicCachedExpressions.AddOrGet(xpath, x => XPathExpression.Compile(xpath), token);
+            XPathExpression objExpression = Utils.CachedXPathExpressions.AddOrGet(xpath, x => XPathExpression.Compile(xpath), token);
             return xmlNode.SelectSingleNode(objExpression);
         }
 
@@ -632,7 +632,7 @@ namespace Chummer
         public static async ValueTask<XPathNavigator> SelectSingleNodeAndCacheExpressionAsync(this XPathNavigator xmlNode, string xpath, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            XPathExpression objExpression = await s_dicCachedExpressions.AddOrGetAsync(xpath, x => XPathExpression.Compile(xpath), token).ConfigureAwait(false);
+            XPathExpression objExpression = await Utils.CachedXPathExpressions.AddOrGetAsync(xpath, x => XPathExpression.Compile(xpath), token).ConfigureAwait(false);
             token.ThrowIfCancellationRequested();
             return xmlNode.SelectSingleNode(objExpression);
         }
@@ -645,7 +645,7 @@ namespace Chummer
         public static async ValueTask<XPathNavigator> SelectSingleNodeAndCacheExpressionAsync(this Task<XPathNavigator> tskNode, string xpath, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            XPathExpression objExpression = await s_dicCachedExpressions.AddOrGetAsync(xpath, x => XPathExpression.Compile(xpath), token).ConfigureAwait(false);
+            XPathExpression objExpression = await Utils.CachedXPathExpressions.AddOrGetAsync(xpath, x => XPathExpression.Compile(xpath), token).ConfigureAwait(false);
             XPathNavigator xmlNode = await tskNode.ConfigureAwait(false);
             token.ThrowIfCancellationRequested();
             return xmlNode.SelectSingleNode(objExpression);
@@ -658,7 +658,7 @@ namespace Chummer
         /// </summary>
         public static XPathNodeIterator SelectAndCacheExpression(this XPathNavigator xmlNode, string xpath, CancellationToken token = default)
         {
-            XPathExpression objExpression = s_dicCachedExpressions.AddOrGet(xpath, x => XPathExpression.Compile(xpath), token);
+            XPathExpression objExpression = Utils.CachedXPathExpressions.AddOrGet(xpath, x => XPathExpression.Compile(xpath), token);
             return xmlNode.Select(objExpression);
         }
 
@@ -670,7 +670,7 @@ namespace Chummer
         public static async ValueTask<XPathNodeIterator> SelectAndCacheExpressionAsync(this XPathNavigator xmlNode, string xpath, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            XPathExpression objExpression = await s_dicCachedExpressions.AddOrGetAsync(xpath, x => XPathExpression.Compile(xpath), token).ConfigureAwait(false);
+            XPathExpression objExpression = await Utils.CachedXPathExpressions.AddOrGetAsync(xpath, x => XPathExpression.Compile(xpath), token).ConfigureAwait(false);
             token.ThrowIfCancellationRequested();
             return xmlNode.Select(objExpression);
         }
@@ -683,13 +683,10 @@ namespace Chummer
         public static async ValueTask<XPathNodeIterator> SelectAndCacheExpressionAsync(this Task<XPathNavigator> tskNode, string xpath, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            XPathExpression objExpression = await s_dicCachedExpressions.AddOrGetAsync(xpath, x => XPathExpression.Compile(xpath), token).ConfigureAwait(false);
+            XPathExpression objExpression = await Utils.CachedXPathExpressions.AddOrGetAsync(xpath, x => XPathExpression.Compile(xpath), token).ConfigureAwait(false);
             XPathNavigator xmlNode = await tskNode.ConfigureAwait(false);
             token.ThrowIfCancellationRequested();
             return xmlNode.Select(objExpression);
         }
-
-        private static readonly LockingDictionary<string, XPathExpression> s_dicCachedExpressions
-            = new LockingDictionary<string, XPathExpression>();
     }
 }
