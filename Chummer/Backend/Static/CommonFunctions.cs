@@ -1033,7 +1033,7 @@ namespace Chummer
             XPathNavigator xmlOriginalCode = objCharacter != null
                 ? objCharacter.LoadDataXPath("books.xml", strLanguage, token: token)
                 : XmlManager.LoadXPath("books.xml", null, strLanguage, token: token);
-            xmlOriginalCode = xmlOriginalCode?.SelectSingleNode("/chummer/books/book[altcode = " + strAltCode.CleanXPath() + "]/code");
+            xmlOriginalCode = xmlOriginalCode?.SelectSingleNodeAndCacheExpression("/chummer/books/book[altcode = " + strAltCode.CleanXPath() + "]/code");
             return xmlOriginalCode?.Value ?? strAltCode;
         }
 
@@ -1051,7 +1051,10 @@ namespace Chummer
             XPathNavigator xmlOriginalCode = objCharacter != null
                 ? await objCharacter.LoadDataXPathAsync("books.xml", strLanguage, token: token).ConfigureAwait(false)
                 : await XmlManager.LoadXPathAsync("books.xml", null, strLanguage, token: token).ConfigureAwait(false);
-            xmlOriginalCode = xmlOriginalCode?.SelectSingleNode("/chummer/books/book[altcode = " + strAltCode.CleanXPath() + "]/code");
+            xmlOriginalCode = xmlOriginalCode != null
+                ? await xmlOriginalCode.SelectSingleNodeAndCacheExpressionAsync(
+                    "/chummer/books/book[altcode = " + strAltCode.CleanXPath() + "]/code", token: token).ConfigureAwait(false)
+                : null;
             return xmlOriginalCode?.Value ?? strAltCode;
         }
 
@@ -1069,7 +1072,7 @@ namespace Chummer
             XPathNavigator xmlAltCode = objCharacter != null
                 ? objCharacter.LoadDataXPath("books.xml", strLanguage, token: token)
                 : XmlManager.LoadXPath("books.xml", null, strLanguage, token: token);
-            xmlAltCode = xmlAltCode?.SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + "]/altcode");
+            xmlAltCode = xmlAltCode?.SelectSingleNodeAndCacheExpression("/chummer/books/book[code = " + strCode.CleanXPath() + "]/altcode");
             return xmlAltCode?.Value ?? strCode;
         }
 
@@ -1087,7 +1090,11 @@ namespace Chummer
             XPathNavigator xmlAltCode = objCharacter != null
                 ? await objCharacter.LoadDataXPathAsync("books.xml", strLanguage, token: token).ConfigureAwait(false)
                 : await XmlManager.LoadXPathAsync("books.xml", null, strLanguage, token: token).ConfigureAwait(false);
-            xmlAltCode = xmlAltCode?.SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + "]/altcode");
+            xmlAltCode = xmlAltCode != null
+                ? await xmlAltCode.SelectSingleNodeAndCacheExpressionAsync(
+                                      "/chummer/books/book[code = " + strCode.CleanXPath() + "]/altcode", token: token)
+                                  .ConfigureAwait(false)
+                : null;
             return xmlAltCode?.Value ?? strCode;
         }
 
@@ -1105,7 +1112,7 @@ namespace Chummer
             XPathNavigator xmlBook = objCharacter != null
                 ? objCharacter.LoadDataXPath("books.xml", strLanguage, token: token)
                 : XmlManager.LoadXPath("books.xml", null, strLanguage, token: token);
-            xmlBook = xmlBook?.SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + ']');
+            xmlBook = xmlBook?.SelectSingleNodeAndCacheExpression("/chummer/books/book[code = " + strCode.CleanXPath() + ']');
             if (xmlBook != null)
             {
                 string strReturn = xmlBook.SelectSingleNodeAndCacheExpression("translate", token)?.Value
@@ -1131,13 +1138,19 @@ namespace Chummer
             XPathNavigator xmlBook = objCharacter != null
                 ? await objCharacter.LoadDataXPathAsync("books.xml", strLanguage, token: token).ConfigureAwait(false)
                 : await XmlManager.LoadXPathAsync("books.xml", null, strLanguage, token: token).ConfigureAwait(false);
-            xmlBook = xmlBook?.SelectSingleNode("/chummer/books/book[code = " + strCode.CleanXPath() + ']');
             if (xmlBook != null)
             {
-                string strReturn = (await xmlBook.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
-                                   ?? (await xmlBook.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value;
-                if (!string.IsNullOrWhiteSpace(strReturn))
-                    return strReturn;
+                xmlBook = await xmlBook.SelectSingleNodeAndCacheExpressionAsync(
+                    "/chummer/books/book[code = " + strCode.CleanXPath() + ']', token: token).ConfigureAwait(false);
+                if (xmlBook != null)
+                {
+                    string strReturn = (await xmlBook.SelectSingleNodeAndCacheExpressionAsync("translate", token: token)
+                                                     .ConfigureAwait(false))?.Value
+                                       ?? (await xmlBook.SelectSingleNodeAndCacheExpressionAsync("name", token: token)
+                                                        .ConfigureAwait(false))?.Value;
+                    if (!string.IsNullOrWhiteSpace(strReturn))
+                        return strReturn;
+                }
             }
 
             return string.Empty;

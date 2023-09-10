@@ -5832,9 +5832,9 @@ namespace Chummer
             {
                 using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstWeapons))
                 {
-                    bool blnIncludeUnarmed = bonusNode.Attributes?["includeunarmed"]?.InnerText == bool.TrueString;
-                    string strExclude = bonusNode.Attributes?["excludecategory"]?.InnerText ?? string.Empty;
-                    string strWeaponDetails = bonusNode.Attributes?["weapondetails"]?.InnerText ?? string.Empty;
+                    bool blnIncludeUnarmed = bonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@includeunarmed")?.Value == bool.TrueString;
+                    string strExclude = bonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludecategory")?.Value ?? string.Empty;
+                    string strWeaponDetails = bonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@weapondetails")?.Value ?? string.Empty;
                     foreach (Weapon objWeapon in _objCharacter.Weapons.GetAllDescendants(x => x.Children))
                     {
                         if (!string.IsNullOrEmpty(strExclude) && objWeapon.RangeType == strExclude)

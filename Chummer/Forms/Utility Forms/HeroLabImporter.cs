@@ -520,11 +520,11 @@ namespace Chummer
 
                 // Populate character information fields.
                 XPathNavigator objMetatypeDoc = await XmlManager.LoadXPathAsync("metatypes.xml", token: token).ConfigureAwait(false);
-                XPathNavigator objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype.CleanXPath() + ']');
+                XPathNavigator objMetatypeNode = objMetatypeDoc.TryGetNodeByNameOrId("/chummer/metatypes/metatype", objCache.Metatype);
                 if (objMetatypeNode == null)
                 {
                     objMetatypeDoc = await XmlManager.LoadXPathAsync("critters.xml", token: token).ConfigureAwait(false);
-                    objMetatypeNode = objMetatypeDoc.SelectSingleNode("/chummer/metatypes/metatype[name = " + objCache.Metatype.CleanXPath() + ']');
+                    objMetatypeNode = objMetatypeDoc.TryGetNodeByNameOrId("/chummer/metatypes/metatype", objCache.Metatype);
                 }
 
                 string strMetatype = objMetatypeNode != null
@@ -534,7 +534,7 @@ namespace Chummer
 
                 if (!string.IsNullOrEmpty(objCache.Metavariant) && objCache.Metavariant != "None")
                 {
-                    objMetatypeNode = objMetatypeNode?.SelectSingleNode("metavariants/metavariant[name = " + objCache.Metavariant.CleanXPath() + ']');
+                    objMetatypeNode = objMetatypeNode?.TryGetNodeByNameOrId("metavariants/metavariant", objCache.Metavariant);
 
                     strMetatype += " (" + (objMetatypeNode != null
                         ? (await objMetatypeNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value

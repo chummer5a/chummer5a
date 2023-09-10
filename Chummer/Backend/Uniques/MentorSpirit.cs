@@ -316,7 +316,7 @@ namespace Chummer
                     && objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID) == false)
                 {
                     _objCharacter.LoadDataXPath("qualities.xml")
-                                 .SelectSingleNode("/chummer/mentors/mentor[name = " + Name.CleanXPath() + ']')
+                                 .TryGetNodeByNameOrId("/chummer/mentors/mentor", Name)
                                  ?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
 

@@ -502,11 +502,11 @@ namespace Chummer.Backend.Equipment
                     if (!strLanguageToPrint.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     {
                         XPathNavigator objNode
-                            = (await _objCharacter
-                                     .LoadDataXPathAsync("lifestyles.xml", strLanguageToPrint, token: token)
-                                     .ConfigureAwait(false))
-                            .SelectSingleNode("/chummer/categories/category[. = " + strLifestyleQualityType.CleanXPath()
-                                              + ']');
+                            = await (await _objCharacter
+                                           .LoadDataXPathAsync("lifestyles.xml", strLanguageToPrint, token: token)
+                                           .ConfigureAwait(false))
+                                    .SelectSingleNodeAndCacheExpressionAsync("/chummer/categories/category[. = " + strLifestyleQualityType.CleanXPath()
+                                                                             + ']', token: token).ConfigureAwait(false);
                         if (objNode != null)
                             strLifestyleQualityType
                                 = (await objNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token)

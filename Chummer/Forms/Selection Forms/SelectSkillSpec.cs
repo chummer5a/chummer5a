@@ -57,22 +57,21 @@ namespace Chummer
                 }).ConfigureAwait(false);
             }
 
-            string strSkillNameXPath = (await _objSkill.GetNameAsync().ConfigureAwait(false)).CleanXPath();
+            string strSkillName = await _objSkill.GetNameAsync().ConfigureAwait(false);
             XPathNavigator xmlParentSkill;
             if (Mode == "Knowledge")
             {
                 xmlParentSkill
-                    = _objXmlDocument.SelectSingleNode("/chummer/knowledgeskills/skill[name = "
-                                                       + strSkillNameXPath + ']')
+                    = _objXmlDocument.TryGetNodeByNameOrId("/chummer/knowledgeskills/skill", strSkillName)
                       ?? _objXmlDocument.SelectSingleNode(
-                          "/chummer/knowledgeskills/skill[translate = " + strSkillNameXPath + ']');
+                          "/chummer/knowledgeskills/skill[translate = " + strSkillName.CleanXPath() + ']');
             }
             else
             {
-                xmlParentSkill = _objXmlDocument.SelectSingleNode(
-                    "/chummer/skills/skill[name = " + strSkillNameXPath + " and ("
-                    + await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).BookXPathAsync()
-                        .ConfigureAwait(false) + ")]");
+                xmlParentSkill = _objXmlDocument.TryGetNodeByNameOrId("/chummer/skills/skill", strSkillName,
+                                                                      await (await _objCharacter.GetSettingsAsync()
+                                                                              .ConfigureAwait(false)).BookXPathAsync()
+                                                                          .ConfigureAwait(false));
             }
 
             using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstItems))
@@ -99,7 +98,7 @@ namespace Chummer
                     string strXPathFilter;
                     using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                     {
-                        sbdFilter.Append("category = ").Append(strSkillNameXPath);
+                        sbdFilter.Append("category = ").Append(strSkillName.CleanXPath());
                         foreach (ListItem objSpec in lstItems)
                         {
                             string strLoopValue = objSpec.Value.ToString().CleanXPath();

@@ -581,10 +581,13 @@ namespace Chummer
                     if (!strLanguageToPrint.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     {
                         strQualityType =
-                            (await _objCharacter.LoadDataXPathAsync("qualities.xml", strLanguageToPrint, token: token)
-                                                .ConfigureAwait(false))
-                            .SelectSingleNode("/chummer/categories/category[. = " + strQualityType.CleanXPath()
-                                              + "]/@translate")
+                            (await (await _objCharacter
+                                          .LoadDataXPathAsync("qualities.xml", strLanguageToPrint, token: token)
+                                          .ConfigureAwait(false))
+                                   .SelectSingleNodeAndCacheExpressionAsync(
+                                       "/chummer/categories/category[. = " + strQualityType.CleanXPath()
+                                                                           + "]/@translate", token: token)
+                                   .ConfigureAwait(false))
                             ?.Value ?? strQualityType;
                     }
 

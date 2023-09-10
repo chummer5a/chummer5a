@@ -697,10 +697,15 @@ namespace Chummer
                             if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
                                                                 StringComparison.OrdinalIgnoreCase))
                             {
-                                sbdQualities.Append(
-                                    _xmlBaseQualityDataNode
-                                        .SelectSingleNode("qualities/quality[name = " + objXmlQuality.Value.CleanXPath()
-                                                          + "]/translate")?.Value ?? objXmlQuality.Value);
+                                XPathNavigator xmlLoopQualityNode = _xmlBaseQualityDataNode.TryGetNodeByNameOrId("qualities/quality", objXmlQuality.Value);
+
+                                sbdQualities.Append(xmlLoopQualityNode != null
+                                                        ? (await xmlLoopQualityNode
+                                                                 .SelectSingleNodeAndCacheExpressionAsync(
+                                                                     "translate", token: token).ConfigureAwait(false))
+                                                          ?.Value
+                                                          ?? objXmlQuality.Value
+                                                        : objXmlQuality.Value);
 
                                 string strSelect = (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("@select", token: token).ConfigureAwait(false))?.Value;
                                 if (!string.IsNullOrEmpty(strSelect))
@@ -847,10 +852,15 @@ namespace Chummer
                             if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
                                                                 StringComparison.OrdinalIgnoreCase))
                             {
-                                sbdQualities.Append(
-                                    _xmlBaseQualityDataNode
-                                        .SelectSingleNode("qualities/quality[name = " + objXmlQuality.Value.CleanXPath()
-                                                          + "]/translate")?.Value ?? objXmlQuality.Value);
+                                XPathNavigator xmlLoopQualityNode = _xmlBaseQualityDataNode.TryGetNodeByNameOrId("qualities/quality", objXmlQuality.Value);
+
+                                sbdQualities.Append(xmlLoopQualityNode != null
+                                                        ? (await xmlLoopQualityNode
+                                                                 .SelectSingleNodeAndCacheExpressionAsync(
+                                                                     "translate", token: token).ConfigureAwait(false))
+                                                          ?.Value
+                                                          ?? objXmlQuality.Value
+                                                        : objXmlQuality.Value);
 
                                 string strSelect = (await objXmlQuality.SelectSingleNodeAndCacheExpressionAsync("@select", token: token).ConfigureAwait(false))?.Value;
                                 if (!string.IsNullOrEmpty(strSelect))

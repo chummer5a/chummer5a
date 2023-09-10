@@ -170,7 +170,7 @@ namespace Chummer
             await treContents.DoThreadSafeAsync(x => x.Nodes.Clear()).ConfigureAwait(false);
             string[] strIdentifiers = strSelectedKit.Split('<', StringSplitOptions.RemoveEmptyEntries);
             await cmdDelete.DoThreadSafeAsync(x => x.Visible = strIdentifiers[1] == "Custom").ConfigureAwait(false);
-            XPathNavigator objXmlPack = _xmlBaseChummerNode.SelectSingleNode("packs/pack[name = " + strIdentifiers[0].CleanXPath() + " and category = " + strIdentifiers[1].CleanXPath() + ']');
+            XPathNavigator objXmlPack = _xmlBaseChummerNode.TryGetNodeByNameOrId("packs/pack", strIdentifiers[0], "category = " + strIdentifiers[1].CleanXPath());
             if (objXmlPack == null)
             {
                 return;
@@ -258,7 +258,7 @@ namespace Chummer
                             if (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("hide").ConfigureAwait(false) != null)
                                 continue;
                             string strName = (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false)).Value;
-                            XPathNavigator objNode = _xmlSkillsBaseChummerNode.SelectSingleNode("skills/skill[name = " + strName.CleanXPath() + ']');
+                            XPathNavigator objNode = _xmlSkillsBaseChummerNode.TryGetNodeByNameOrId("skills/skill", strName);
                             if (await objNode.SelectSingleNodeAndCacheExpressionAsync("hide").ConfigureAwait(false) != null)
                                 continue;
                             string strText = ((await objNode.SelectSingleNodeAndCacheExpressionAsync("translate").ConfigureAwait(false))?.Value ?? strName)

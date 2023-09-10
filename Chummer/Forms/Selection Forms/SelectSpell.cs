@@ -507,10 +507,26 @@ namespace Chummer
             }
 
             _strSelectedSpell = strSelectedItem;
-            _strSelectCategory = (GlobalSettings.SearchInCategoryOnly || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength, token: token).ConfigureAwait(false) == 0)
-                ? await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false)
-                : _xmlBaseSpellDataNode.TryGetNodeByNameOrId("/chummer/spells/spell", _strSelectedSpell)?.SelectSingleNode("category")?.Value ?? string.Empty;
-            FreeBonus = await chkFreeBonus.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
+            if (GlobalSettings.SearchInCategoryOnly
+                || await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength, token: token).ConfigureAwait(false) == 0)
+            {
+                _strSelectCategory = await cboCategory
+                                           .DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token)
+                                           .ConfigureAwait(false);
+            }
+            else
+            {
+                XPathNavigator xmlSpellNode
+                    = _xmlBaseSpellDataNode.TryGetNodeByNameOrId("/chummer/spells/spell", _strSelectedSpell);
+                _strSelectCategory = xmlSpellNode != null
+                    ? (await xmlSpellNode.SelectSingleNodeAndCacheExpressionAsync("category", token)
+                                         .ConfigureAwait(false))?.Value ?? string.Empty
+                    : string.Empty;
+            }
+
+            FreeBonus = await chkFreeBonus.DoThreadSafeFuncAsync(x => x.Checked, token: token)
+                                          .ConfigureAwait(false);
+
             await this.DoThreadSafeAsync(x =>
             {
                 x.DialogResult = DialogResult.OK;

@@ -66,7 +66,7 @@ namespace Chummer
                     foreach (XPathNavigator xmlText in xmlStoryModuleDataNode.SelectChildren(XPathNodeType.Element))
                     {
                         _dicEnglishTexts.Add(xmlText.Name, xmlText.Value);
-                        if (xmlText.SelectSingleNode("@default")?.Value == bool.TrueString)
+                        if (xmlText.SelectSingleNodeAndCacheExpression("@default")?.Value == bool.TrueString)
                             _strDefaultTextKey = xmlText.Name;
                     }
 
@@ -97,7 +97,8 @@ namespace Chummer
                     foreach (XPathNavigator xmlText in xmlStoryModuleDataNode.SelectChildren(XPathNodeType.Element))
                     {
                         await _dicEnglishTexts.AddAsync(xmlText.Name, xmlText.Value, token).ConfigureAwait(false);
-                        if (xmlText.SelectSingleNode("@default")?.Value == bool.TrueString)
+                        if ((await xmlText.SelectSingleNodeAndCacheExpressionAsync("@default", token: token)
+                                          .ConfigureAwait(false))?.Value == bool.TrueString)
                             _strDefaultTextKey = xmlText.Name;
                     }
 

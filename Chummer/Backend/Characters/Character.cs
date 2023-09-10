@@ -12294,14 +12294,19 @@ namespace Chummer
                     case Improvement.ImprovementSource.Quality:
                         if (strImprovedSourceName.StartsWith("SEEKER", StringComparison.Ordinal))
                         {
-                            if (strImprovedSourceName == "SEEKER_WIL")
-                                return LoadDataXPath("qualities.xml", token: token)
-                                       .SelectSingleNode(
-                                           "/chummer/qualities/quality[name = \"Cyber-Singularity Seeker\"]/translate")
-                                       ?.Value ?? "Cyber-Singularity Seeker";
-                            return LoadDataXPath("qualities.xml", token: token)
-                                   .SelectSingleNode("/chummer/qualities/quality[name = \"Redliner\"]/translate")
-                                   ?.Value ?? "Redliner";
+                            string strReturn = string.Empty;
+                            if (GlobalSettings.Language != GlobalSettings.DefaultLanguage)
+                            {
+                                strReturn = LoadDataXPath("qualities.xml", token: token)
+                                            .SelectSingleNodeAndCacheExpression(
+                                                strImprovedSourceName == "SEEKER_WIL"
+                                                    ? "/chummer/qualities/quality[name = \"Cyber-Singularity Seeker\"]/translate"
+                                                    : "/chummer/qualities/quality[name = \"Redliner\"]/translate")
+                                            ?.Value;
+                            }
+                            if (string.IsNullOrEmpty(strReturn))
+                                strReturn = strImprovedSourceName == "SEEKER_WIL" ? "Cyber-Singularity Seeker" : "Redliner";
+                            return strReturn;
                         }
 
                         foreach (Quality objQuality in Qualities)
@@ -30641,7 +30646,7 @@ namespace Chummer
                                                .SplitNoAlloc(';', StringSplitOptions.RemoveEmptyEntries))
             {
                 XPathNavigator objXmlBook
-                    = objXmlDocument.SelectSingleNode("/chummer/books/book[code = " + strBook.CleanXPath() + ']');
+                    = objXmlDocument.SelectSingleNodeAndCacheExpression("/chummer/books/book[code = " + strBook.CleanXPath() + ']');
                 if (objXmlBook != null)
                 {
                     string strToAppend = objXmlBook.SelectSingleNodeAndCacheExpression("translate")?.Value;
@@ -30697,7 +30702,7 @@ namespace Chummer
                                                .SplitNoAlloc(';', StringSplitOptions.RemoveEmptyEntries))
             {
                 XPathNavigator objXmlBook
-                    = objXmlDocument.SelectSingleNode("/chummer/books/book[code = " + strBook.CleanXPath() + ']');
+                    = await objXmlDocument.SelectSingleNodeAndCacheExpressionAsync("/chummer/books/book[code = " + strBook.CleanXPath() + ']', token).ConfigureAwait(false);
                 if (objXmlBook != null)
                 {
                     string strToAppend = (await objXmlBook.SelectSingleNodeAndCacheExpressionAsync("translate", token)

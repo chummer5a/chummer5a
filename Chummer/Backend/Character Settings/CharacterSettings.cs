@@ -6096,7 +6096,7 @@ namespace Chummer
                             return strReturn;
                         strReturn = XmlManager.LoadXPath("settings.xml")
                                               .TryGetNodeById("/chummer/settings/setting", SourceId)
-                                              ?.SelectSingleNode("translate")?.Value
+                                              ?.SelectSingleNodeAndCacheExpression("translate")?.Value
                                     ?? strReturn;
                     }
                     else

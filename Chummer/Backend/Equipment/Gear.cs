@@ -1640,8 +1640,9 @@ namespace Chummer.Backend.Equipment
                 return Category;
 
             return _objCharacter.LoadDataXPath("gear.xml", strLanguage)
-                .SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")
-                ?.Value ?? Category;
+                                .SelectSingleNodeAndCacheExpression(
+                                    "/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")
+                                ?.Value ?? Category;
         }
 
         /// <summary>

@@ -68,12 +68,12 @@ namespace Chummer
                 //Sort the list (Crude way, but have to do)
                 for (int i = 0; i < modules.Count; i++)
                 {
-                    string stageName = xdoc
-                                       .SelectSingleNode("chummer/stages/stage[@order = "
-                                                         + (i <= 4
-                                                             ? (i + 1).ToString(GlobalSettings.InvariantCultureInfo)
-                                                                      .CleanXPath()
-                                                             : "\"5\"") + ']')?.Value;
+                    string stageName = (await xdoc
+                                              .SelectSingleNodeAndCacheExpressionAsync("chummer/stages/stage[@order = "
+                                                  + (i <= 4
+                                                      ? (i + 1).ToString(GlobalSettings.InvariantCultureInfo)
+                                                               .CleanXPath()
+                                                      : "\"5\"") + ']', token: token).ConfigureAwait(false))?.Value;
                     int j;
                     for (j = i; j < modules.Count; j++)
                     {

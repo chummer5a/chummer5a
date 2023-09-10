@@ -336,7 +336,9 @@ namespace Chummer
             if (strLanguage == GlobalSettings.Language)
                 return RequiresProgram;
 
-            return _objCharacter.LoadDataXPath("programs.xml", strLanguage).SelectSingleNode("/chummer/programs/program[name = " + RequiresProgram.CleanXPath() + "]/translate")?.Value ?? RequiresProgram;
+            return _objCharacter.LoadDataXPath("programs.xml", strLanguage)
+                                .TryGetNodeByNameOrId("/chummer/programs/program", RequiresProgram)
+                                ?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? RequiresProgram;
         }
 
         /// <summary>
@@ -349,7 +351,14 @@ namespace Chummer
             if (strLanguage == GlobalSettings.Language)
                 return RequiresProgram;
 
-            return (await _objCharacter.LoadDataXPathAsync("programs.xml", strLanguage, token: token).ConfigureAwait(false)).SelectSingleNode("/chummer/programs/program[name = " + RequiresProgram.CleanXPath() + "]/translate")?.Value ?? RequiresProgram;
+            XPathNavigator xmlRequiresProgramNode
+                = (await _objCharacter.LoadDataXPathAsync("programs.xml", strLanguage, token: token)
+                                      .ConfigureAwait(false))
+                .TryGetNodeByNameOrId("/chummer/programs/program", RequiresProgram);
+            return xmlRequiresProgramNode != null
+                ? (await xmlRequiresProgramNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token)
+                                               .ConfigureAwait(false))?.Value ?? RequiresProgram
+                : RequiresProgram;
         }
 
         /// <summary>

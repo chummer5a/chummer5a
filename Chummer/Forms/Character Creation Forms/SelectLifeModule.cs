@@ -154,21 +154,19 @@ namespace Chummer
 
         private async void treModules_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            bool blnSelectable;
-            if (e.Node.Nodes.Count == 0)
-            {
-                blnSelectable = true;
-            }
-            else
+            bool blnSelectable = true;
+            if (e.Node.Nodes.Count != 0)
             {
                 //Select any node that have an id node equal to tag
                 //if it contains >selectable>True</selectable>, yes or </selectable>
                 //set button to selectable, otherwise not
-                blnSelectable
-                    = _xmlLifeModulesDocumentChummerNode
-                      .TryGetNodeByNameOrId("//*", e.Node.Tag.ToString().CleanXPath())?.SelectSingleNode("selectable")
-                      ?.Value
-                      != bool.FalseString;
+                XPathNavigator xmlModulePath = _xmlLifeModulesDocumentChummerNode.TryGetNodeByNameOrId("//*", e.Node.Tag.ToString());
+                if (xmlModulePath != null)
+                {
+                    blnSelectable
+                        = (await xmlModulePath.SelectSingleNodeAndCacheExpressionAsync("selectable")
+                                              .ConfigureAwait(false))?.Value != bool.FalseString;
+                }
             }
 
             _strSelectedId = (string)e.Node.Tag;

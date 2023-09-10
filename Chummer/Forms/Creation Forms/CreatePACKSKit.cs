@@ -74,7 +74,7 @@ namespace Chummer
             // See if a Kit with this name already exists for the Custom category.
             // This was originally done without the XmlManager, but because amends and overrides and toggling custom data directories can change names, we need to use it.
             if ((await _objCharacter.LoadDataXPathAsync("packs.xml").ConfigureAwait(false))
-                .SelectSingleNode("/chummer/packs/pack[name = " + strName.CleanXPath() + " and category = \"Custom\"]")
+                .TryGetNodeByNameOrId("/chummer/packs/pack", strName, "category = \"Custom\"]")
                 != null)
             {
                 Program.ShowScrollableMessageBox(

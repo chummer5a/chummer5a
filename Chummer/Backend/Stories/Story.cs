@@ -126,7 +126,7 @@ namespace Chummer
 
         public async ValueTask<StoryModule> GeneratePersistentModule(string strFunction, CancellationToken token = default)
         {
-            XPathNavigator xmlStoryPool = _xmlStoryDocumentBaseNode.SelectSingleNode("storypools/storypool[name = " + strFunction.CleanXPath() + ']');
+            XPathNavigator xmlStoryPool = _xmlStoryDocumentBaseNode.TryGetNodeByNameOrId("storypools/storypool", strFunction);
             if (xmlStoryPool != null)
             {
                 XPathNodeIterator xmlPossibleStoryList = await xmlStoryPool.SelectAndCacheExpressionAsync("story", token: token).ConfigureAwait(false);

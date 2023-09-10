@@ -733,7 +733,9 @@ namespace Chummer
                 if (_blnAllowEditOptions)
                 {
                     bool blnCanBlackMarketDiscount
-                        = _setBlackMarketMaps.Contains(xmlSelectedMount.SelectSingleNode("category")?.Value);
+                        = _setBlackMarketMaps.Contains(
+                            (await xmlSelectedMount.SelectSingleNodeAndCacheExpressionAsync("category", token: token)
+                                                   .ConfigureAwait(false))?.Value ?? string.Empty);
                     await chkBlackMarketDiscount.DoThreadSafeAsync(x =>
                     {
                         x.Enabled = blnCanBlackMarketDiscount;
@@ -757,7 +759,7 @@ namespace Chummer
                 int intSlots = 0;
                 xmlSelectedMount.TryGetInt32FieldQuickly("slots", ref intSlots);
 
-                string strAvail = xmlSelectedMount.SelectSingleNode("avail")?.Value ?? string.Empty;
+                string strAvail = (await xmlSelectedMount.SelectSingleNodeAndCacheExpressionAsync("avail", token).ConfigureAwait(false))?.Value ?? string.Empty;
                 char chrAvailSuffix = strAvail.Length > 0 ? strAvail[strAvail.Length - 1] : ' ';
                 if (chrAvailSuffix == 'F' || chrAvailSuffix == 'R')
                     strAvail = strAvail.Substring(0, strAvail.Length - 1);
@@ -847,8 +849,16 @@ namespace Chummer
                 await lblCost.DoThreadSafeAsync(x => x.Text = strCost, token).ConfigureAwait(false);
                 await lblSlots.DoThreadSafeAsync(x => x.Text = intSlots.ToString(GlobalSettings.CultureInfo), token).ConfigureAwait(false);
                 await lblAvailability.DoThreadSafeAsync(x => x.Text = strAvailText, token).ConfigureAwait(false);
-                string strSource = xmlSelectedMount.SelectSingleNode("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
-                string strPage = xmlSelectedMount.SelectSingleNode("altpage")?.Value ?? xmlSelectedMount.SelectSingleNode("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
+                string strSource
+                    = (await xmlSelectedMount.SelectSingleNodeAndCacheExpressionAsync("source", token)
+                                             .ConfigureAwait(false))?.Value ?? await LanguageManager
+                        .GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
+                string strPage
+                    = (await xmlSelectedMount.SelectSingleNodeAndCacheExpressionAsync("altpage", token)
+                                             .ConfigureAwait(false))?.Value
+                      ?? (await xmlSelectedMount.SelectSingleNodeAndCacheExpressionAsync("page", token)
+                                                .ConfigureAwait(false))?.Value ?? await LanguageManager
+                          .GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                 SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language, GlobalSettings.CultureInfo, _objCharacter, token).ConfigureAwait(false);
                 await objSourceString.SetControlAsync(lblSource, token).ConfigureAwait(false);
                 string strLoop5 = await lblCost.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false);

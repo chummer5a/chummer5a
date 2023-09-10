@@ -94,7 +94,7 @@ namespace Chummer
             this.TranslateWinForm();
             // Load the Armor information.
             _objXmlDocument = objCharacter.LoadData("armor.xml");
-            _objXmlArmorDocumentChummerNode = objCharacter.LoadDataXPath("armor.xml").SelectSingleNode("/chummer");
+            _objXmlArmorDocumentChummerNode = objCharacter.LoadDataXPath("armor.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _setBlackMarketMaps.AddRange(objCharacter.GenerateBlackMarketMappings(
                                              objCharacter.LoadDataXPath("armor.xml")
                                                          .SelectSingleNodeAndCacheExpression("/chummer")));

@@ -1457,7 +1457,7 @@ namespace Chummer
                         : await CharacterObject.LoadDataXPathAsync(
                             EntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml", strLanguage,
                             token: token).ConfigureAwait(false))
-                    .SelectSingleNode("/chummer/spirits/spirit[name = " + Name.CleanXPath() + ']');
+                    .TryGetNodeByNameOrId("/chummer/spirits/spirit", Name);
                 _objCachedMyXPathNode = objReturn;
                 _strCachedXPathNodeLanguage = strLanguage;
                 return objReturn;

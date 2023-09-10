@@ -2757,7 +2757,7 @@ namespace Chummer.Backend.Equipment
                        .LoadDataXPath(
                            SourceType == Improvement.ImprovementSource.Cyberware ? "cyberware.xml" : "bioware.xml",
                            strLanguage)
-                       .SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")
+                       .SelectSingleNodeAndCacheExpression("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")
                        ?.Value ?? Category;
             }
         }
@@ -2772,12 +2772,12 @@ namespace Chummer.Backend.Equipment
 
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                return (await _objCharacter
-                              .LoadDataXPathAsync(
-                                  SourceType == Improvement.ImprovementSource.Cyberware
-                                      ? "cyberware.xml"
-                                      : "bioware.xml", strLanguage, token: token).ConfigureAwait(false))
-                       .SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")
+                return (await (await _objCharacter
+                                     .LoadDataXPathAsync(
+                                         SourceType == Improvement.ImprovementSource.Cyberware
+                                             ? "cyberware.xml"
+                                             : "bioware.xml", strLanguage, token: token).ConfigureAwait(false))
+                        .SelectSingleNodeAndCacheExpressionAsync("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate", token).ConfigureAwait(false))
                        ?.Value ?? Category;
             }
         }
@@ -8769,9 +8769,9 @@ namespace Chummer.Backend.Equipment
                                blnCyberware
                                    ? Improvement.ImprovementSource.Cyberware
                                    : Improvement.ImprovementSource.Bioware,
-                               xmlCyberwareImportNode.SelectSingleNode("@rating")?.ValueAsInt ?? 0, lstWeapons,
+                               xmlCyberwareImportNode.SelectSingleNodeAndCacheExpression("@rating")?.ValueAsInt ?? 0, lstWeapons,
                                lstVehicles, true, true, strForceValue);
-                        Notes = xmlCyberwareImportNode.SelectSingleNode("description")?.Value;
+                        Notes = xmlCyberwareImportNode.SelectSingleNodeAndCacheExpression("description")?.Value;
 
                         ProcessHeroLabCyberwarePlugins(xmlCyberwareImportNode, objSelectedGrade, lstWeapons,
                                                        lstVehicles);

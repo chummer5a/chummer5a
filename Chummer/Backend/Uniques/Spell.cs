@@ -697,8 +697,9 @@ namespace Chummer
             using (EnterReadLock.Enter(LockObject))
             {
                 return _objCharacter.LoadDataXPath("spells.xml", strLanguage)
-                                    .SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath()
-                                                      + "]/@translate")?.Value ?? Category;
+                                    .SelectSingleNodeAndCacheExpression("/chummer/categories/category[. = "
+                                                                        + Category.CleanXPath()
+                                                                        + "]/@translate")?.Value ?? Category;
             }
         }
 
@@ -711,9 +712,11 @@ namespace Chummer
                 return Category;
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                return (await _objCharacter.LoadDataXPathAsync("spells.xml", strLanguage, token: token)
-                                           .ConfigureAwait(false))
-                       .SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")
+                return (await (await _objCharacter.LoadDataXPathAsync("spells.xml", strLanguage, token: token)
+                                                  .ConfigureAwait(false))
+                              .SelectSingleNodeAndCacheExpressionAsync(
+                                  "/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate",
+                                  token: token).ConfigureAwait(false))
                        ?.Value
                        ?? Category;
             }

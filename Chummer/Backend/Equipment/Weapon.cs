@@ -1184,7 +1184,10 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetBoolFieldQuickly("requireammo", ref _blnRequireAmmo);
             if (!objNode.TryGetStringFieldQuickly("weapontype", ref _strWeaponType))
                 _strWeaponType = objMyNode.Value?["weapontype"]?.InnerText
-                                 ?? _objCharacter.LoadDataXPath("weapons.xml").SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@type")?.Value
+                                 ?? _objCharacter.LoadDataXPath("weapons.xml")
+                                                 .SelectSingleNodeAndCacheExpression(
+                                                     "/chummer/categories/category[. = " + Category.CleanXPath()
+                                                     + "]/@type")?.Value
                                  ?? Category.ToLowerInvariant();
 
             XmlNode xmlAccessoriesNode = objNode["accessories"];
@@ -1991,7 +1994,10 @@ namespace Chummer.Backend.Equipment
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Category;
 
-            return _objCharacter.LoadDataXPath("weapons.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value ?? Category;
+            return _objCharacter.LoadDataXPath("weapons.xml", strLanguage)
+                                .SelectSingleNodeAndCacheExpression(
+                                    "/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value
+                   ?? Category;
         }
 
         /// <summary>
@@ -2015,7 +2021,12 @@ namespace Chummer.Backend.Equipment
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Category;
 
-            return (await _objCharacter.LoadDataXPathAsync("weapons.xml", strLanguage, token: token).ConfigureAwait(false)).SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value ?? Category;
+            return (await (await _objCharacter.LoadDataXPathAsync("weapons.xml", strLanguage, token: token)
+                                              .ConfigureAwait(false))
+                          .SelectSingleNodeAndCacheExpressionAsync(
+                              "/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate",
+                              token: token)
+                          .ConfigureAwait(false))?.Value ?? Category;
         }
 
         /// <summary>
@@ -2027,19 +2038,27 @@ namespace Chummer.Backend.Equipment
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return AmmoCategory;
 
-            return _objCharacter.LoadDataXPath("weapons.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = " + AmmoCategory.CleanXPath() + "]/@translate")?.Value ?? AmmoCategory;
+            return _objCharacter.LoadDataXPath("weapons.xml", strLanguage)
+                                .SelectSingleNodeAndCacheExpression(
+                                    "/chummer/categories/category[. = " + AmmoCategory.CleanXPath() + "]/@translate")
+                                ?.Value ?? AmmoCategory;
         }
 
         /// <summary>
         /// Translated Ammo Category.
         /// </summary>
-        public async ValueTask<string> DisplayAmmoCategoryAsync(string strLanguage)
+        public async ValueTask<string> DisplayAmmoCategoryAsync(string strLanguage, CancellationToken token = default)
         {
             // Get the translated name if applicable.
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return AmmoCategory;
 
-            return (await _objCharacter.LoadDataXPathAsync("weapons.xml", strLanguage).ConfigureAwait(false)).SelectSingleNode("/chummer/categories/category[. = " + AmmoCategory.CleanXPath() + "]/@translate")?.Value ?? AmmoCategory;
+            return (await (await _objCharacter.LoadDataXPathAsync("weapons.xml", strLanguage, token: token)
+                                              .ConfigureAwait(false))
+                          .SelectSingleNodeAndCacheExpressionAsync(
+                              "/chummer/categories/category[. = " + AmmoCategory.CleanXPath() + "]/@translate",
+                              token: token)
+                          .ConfigureAwait(false))?.Value ?? AmmoCategory;
         }
 
         /// <summary>
@@ -5266,7 +5285,7 @@ namespace Chummer.Backend.Equipment
             if (!string.IsNullOrWhiteSpace(strRange) && !strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
                 XPathNavigator objXmlDocument = _objCharacter.LoadDataXPath("ranges.xml", strLanguage);
-                XPathNavigator objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[name = " + strRange.CleanXPath() + ']');
+                XPathNavigator objXmlCategoryNode = objXmlDocument.TryGetNodeByNameOrId("/chummer/ranges/range", strRange);
                 XPathNavigator xmlTranslateNode = objXmlCategoryNode?.SelectSingleNodeAndCacheExpression("translate");
                 if (xmlTranslateNode != null)
                 {
@@ -5275,7 +5294,7 @@ namespace Chummer.Backend.Equipment
                 else
                 {
                     objXmlDocument = _objCharacter.LoadDataXPath("weapons.xml", strLanguage);
-                    objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = " + strRange.CleanXPath() + ']');
+                    objXmlCategoryNode = objXmlDocument.SelectSingleNodeAndCacheExpression("/chummer/categories/category[. = " + strRange.CleanXPath() + ']');
                     xmlTranslateNode = objXmlCategoryNode?.SelectSingleNodeAndCacheExpression("@translate");
                     if (xmlTranslateNode != null)
                         strRange = xmlTranslateNode.Value;
@@ -5295,7 +5314,7 @@ namespace Chummer.Backend.Equipment
             if (!string.IsNullOrWhiteSpace(strRange) && !strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
                 XPathNavigator objXmlDocument = await _objCharacter.LoadDataXPathAsync("ranges.xml", strLanguage, token: token).ConfigureAwait(false);
-                XPathNavigator objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[name = " + strRange.CleanXPath() + ']');
+                XPathNavigator objXmlCategoryNode = objXmlDocument.TryGetNodeByNameOrId("/chummer/ranges/range", strRange);
                 XPathNavigator xmlTranslateNode = objXmlCategoryNode != null
                     ? await objXmlCategoryNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false)
                     : null;
@@ -5306,7 +5325,10 @@ namespace Chummer.Backend.Equipment
                 else
                 {
                     objXmlDocument = await _objCharacter.LoadDataXPathAsync("weapons.xml", strLanguage, token: token).ConfigureAwait(false);
-                    objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = " + strRange.CleanXPath() + ']');
+                    objXmlCategoryNode = await objXmlDocument
+                                               .SelectSingleNodeAndCacheExpressionAsync(
+                                                   "/chummer/categories/category[. = " + strRange.CleanXPath() + ']',
+                                                   token: token).ConfigureAwait(false);
                     if (objXmlCategoryNode != null)
                     {
                         xmlTranslateNode
@@ -5333,7 +5355,7 @@ namespace Chummer.Backend.Equipment
             if (!string.IsNullOrEmpty(strRange) && !strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
                 XPathNavigator objXmlDocument = _objCharacter.LoadDataXPath("ranges.xml", strLanguage);
-                XPathNavigator objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[name = " + strRange.CleanXPath() + ']');
+                XPathNavigator objXmlCategoryNode = objXmlDocument.TryGetNodeByNameOrId("/chummer/ranges/range", strRange);
                 XPathNavigator xmlTranslateNode = objXmlCategoryNode?.SelectSingleNodeAndCacheExpression("translate");
                 if (xmlTranslateNode != null)
                 {
@@ -5342,7 +5364,7 @@ namespace Chummer.Backend.Equipment
                 else
                 {
                     objXmlDocument = _objCharacter.LoadDataXPath("weapons.xml", strLanguage);
-                    objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = " + strRange.CleanXPath() + ']');
+                    objXmlCategoryNode = objXmlDocument.SelectSingleNodeAndCacheExpression("/chummer/categories/category[. = " + strRange.CleanXPath() + ']');
                     xmlTranslateNode = objXmlCategoryNode?.SelectSingleNodeAndCacheExpression("@translate");
                     if (xmlTranslateNode != null)
                         strRange = xmlTranslateNode.Value;
@@ -5360,7 +5382,7 @@ namespace Chummer.Backend.Equipment
             if (!string.IsNullOrEmpty(strRange) && !strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
                 XPathNavigator objXmlDocument = await _objCharacter.LoadDataXPathAsync("ranges.xml", strLanguage, token: token).ConfigureAwait(false);
-                XPathNavigator objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[name = " + strRange.CleanXPath() + ']');
+                XPathNavigator objXmlCategoryNode = objXmlDocument.TryGetNodeByNameOrId("/chummer/ranges/range", strRange);
                 XPathNavigator xmlTranslateNode = objXmlCategoryNode != null
                     ? await objXmlCategoryNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false)
                     : null;
@@ -5371,7 +5393,10 @@ namespace Chummer.Backend.Equipment
                 else
                 {
                     objXmlDocument = await _objCharacter.LoadDataXPathAsync("weapons.xml", strLanguage, token: token).ConfigureAwait(false);
-                    objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/categories/category[. = " + strRange.CleanXPath() + ']');
+                    objXmlCategoryNode = await objXmlDocument
+                                               .SelectSingleNodeAndCacheExpressionAsync(
+                                                   "/chummer/categories/category[. = " + strRange.CleanXPath() + ']',
+                                                   token: token).ConfigureAwait(false);
                     if (objXmlCategoryNode != null)
                     {
                         xmlTranslateNode
@@ -5443,7 +5468,7 @@ namespace Chummer.Backend.Equipment
             }
 
             XPathNavigator objXmlDocument = _objCharacter.LoadDataXPath("ranges.xml");
-            XPathNavigator objXmlCategoryNode = objXmlDocument.SelectSingleNode("/chummer/ranges/range[name = " + strRangeCategory.CleanXPath() + ']');
+            XPathNavigator objXmlCategoryNode = objXmlDocument.TryGetNodeByNameOrId("/chummer/ranges/range", strRangeCategory);
             if (objXmlCategoryNode?.SelectSingleNode(strFindRange) == null)
             {
                 return -1;
@@ -5534,8 +5559,7 @@ namespace Chummer.Backend.Equipment
             XPathNavigator objXmlDocument
                 = await _objCharacter.LoadDataXPathAsync("ranges.xml", token: token).ConfigureAwait(false);
             XPathNavigator objXmlCategoryNode
-                = objXmlDocument.SelectSingleNode("/chummer/ranges/range[name = " + strRangeCategory.CleanXPath()
-                                                  + ']');
+                = objXmlDocument.TryGetNodeByNameOrId("/chummer/ranges/range", strRangeCategory);
             if (objXmlCategoryNode?.SelectSingleNode(strFindRange) == null)
             {
                 return -1;
@@ -5622,7 +5646,7 @@ namespace Chummer.Backend.Equipment
         {
             if (string.IsNullOrEmpty(strRange))
                 return string.Empty;
-            int i = _objCharacter.LoadDataXPath("ranges.xml").SelectSingleNode("chummer/modifiers/" + strRange.ToLowerInvariant())?.ValueAsInt ?? 0;
+            int i = _objCharacter.LoadDataXPath("ranges.xml").SelectSingleNodeAndCacheExpression("chummer/modifiers/" + strRange.ToLowerInvariant())?.ValueAsInt ?? 0;
             i += WeaponAccessories.Sum(wa => wa.RangeModifier);
 
             string strNameUpper = Name.ToUpperInvariant();
