@@ -12292,6 +12292,7 @@ namespace Chummer
                         break;
 
                     case Improvement.ImprovementSource.Quality:
+                    {
                         if (strImprovedSourceName.StartsWith("SEEKER", StringComparison.Ordinal))
                         {
                             string strReturn = string.Empty;
@@ -12304,8 +12305,11 @@ namespace Chummer
                                                     : "/chummer/qualities/quality[name = \"Redliner\"]/translate")
                                             ?.Value;
                             }
+
                             if (string.IsNullOrEmpty(strReturn))
-                                strReturn = strImprovedSourceName == "SEEKER_WIL" ? "Cyber-Singularity Seeker" : "Redliner";
+                                strReturn = strImprovedSourceName == "SEEKER_WIL"
+                                    ? "Cyber-Singularity Seeker"
+                                    : "Redliner";
                             return strReturn;
                         }
 
@@ -12318,6 +12322,7 @@ namespace Chummer
                         }
 
                         break;
+                    }
 
                     case Improvement.ImprovementSource.MartialArtTechnique:
                         foreach (MartialArtTechnique objTechnique in MartialArts.SelectMany(x => x.Techniques))
@@ -12369,6 +12374,7 @@ namespace Chummer
                                ?.Value ?? "Resonant Stream: Cyberadept";
 
                     default:
+                    {
                         if (objImprovement.ImproveType == Improvement.ImprovementType.ArmorEncumbrancePenalty)
                             return LanguageManager.GetString("String_ArmorEncumbrance", strLanguage, token: token);
                         // If this comes from a custom Improvement, use the name the player gave it instead of showing a GUID.
@@ -12384,6 +12390,7 @@ namespace Chummer
                         }
 
                         return strReturn;
+                    }
                 }
             }
 
@@ -12898,16 +12905,27 @@ namespace Chummer
                         break;
 
                     case Improvement.ImprovementSource.Quality:
+                    {
                         if (strImprovedSourceName.StartsWith("SEEKER", StringComparison.Ordinal))
                         {
-                            if (strImprovedSourceName == "SEEKER_WIL")
-                                return (await (await LoadDataXPathAsync("qualities.xml", token: token).ConfigureAwait(false))
-                                              .SelectSingleNodeAndCacheExpressionAsync(
-                                                  "/chummer/qualities/quality[name = \"Cyber-Singularity Seeker\"]/translate", token).ConfigureAwait(false))
-                                       ?.Value ?? "Cyber-Singularity Seeker";
-                            return (await (await LoadDataXPathAsync("qualities.xml", token: token).ConfigureAwait(false))
-                                          .SelectSingleNodeAndCacheExpressionAsync("/chummer/qualities/quality[name = \"Redliner\"]/translate", token).ConfigureAwait(false))
-                                   ?.Value ?? "Redliner";
+                            string strReturn = string.Empty;
+                            if (GlobalSettings.Language != GlobalSettings.DefaultLanguage)
+                            {
+                                strReturn = (await (await LoadDataXPathAsync("qualities.xml", token: token)
+                                                       .ConfigureAwait(false))
+                                                   .SelectSingleNodeAndCacheExpressionAsync(
+                                                       strImprovedSourceName == "SEEKER_WIL"
+                                                           ? "/chummer/qualities/quality[name = \"Cyber-Singularity Seeker\"]/translate"
+                                                           : "/chummer/qualities/quality[name = \"Redliner\"]/translate",
+                                                       token).ConfigureAwait(false))
+                                    ?.Value;
+                            }
+
+                            if (string.IsNullOrEmpty(strReturn))
+                                strReturn = strImprovedSourceName == "SEEKER_WIL"
+                                    ? "Cyber-Singularity Seeker"
+                                    : "Redliner";
+                            return strReturn;
                         }
 
                         foreach (Quality objQuality in Qualities)
@@ -12919,6 +12937,7 @@ namespace Chummer
                         }
 
                         break;
+                    }
 
                     case Improvement.ImprovementSource.MartialArtTechnique:
                         foreach (MartialArtTechnique objTechnique in MartialArts.SelectMany(x => x.Techniques))
@@ -12970,21 +12989,26 @@ namespace Chummer
                                ?.Value ?? "Resonant Stream: Cyberadept";
 
                     default:
+                    {
                         if (objImprovement.ImproveType == Improvement.ImprovementType.ArmorEncumbrancePenalty)
-                            return await LanguageManager.GetStringAsync("String_ArmorEncumbrance", strLanguage, token: token).ConfigureAwait(false);
+                            return await LanguageManager
+                                         .GetStringAsync("String_ArmorEncumbrance", strLanguage, token: token)
+                                         .ConfigureAwait(false);
                         // If this comes from a custom Improvement, use the name the player gave it instead of showing a GUID.
                         if (!string.IsNullOrEmpty(objImprovement.CustomName))
                             return objImprovement.CustomName;
                         string strReturn = strImprovedSourceName;
                         if (string.IsNullOrEmpty(strReturn) || strReturn.IsGuid())
                         {
-                            string strTemp = await LanguageManager.GetStringAsync("String_" + objImprovement.ImproveSource,
+                            string strTemp = await LanguageManager.GetStringAsync(
+                                "String_" + objImprovement.ImproveSource,
                                 strLanguage, false, token: token).ConfigureAwait(false);
                             if (!string.IsNullOrEmpty(strTemp))
                                 strReturn = strTemp;
                         }
 
                         return strReturn;
+                    }
                 }
             }
 

@@ -343,7 +343,7 @@ namespace Chummer
                                         = (await _objCharacter.LoadDataXPathAsync("metamagic.xml").ConfigureAwait(false))
                                         .TryGetNodeByNameOrId(
                                             "/chummer/metamagics/metamagic", strSelectedId);
-                                    string strMetamagicName = xmlEchoNode != null
+                                    string strMetamagicName = xmlMetamagicNode != null
                                         ? (await xmlMetamagicNode.SelectSingleNodeAndCacheExpressionAsync("name")
                                                                  .ConfigureAwait(false))?.Value
                                         : string.Empty;
