@@ -298,6 +298,9 @@ namespace Chummer
         private static readonly Lazy<string> s_strGetStartupPath = new Lazy<string>(
             () => IsUnitTest ? AppDomain.CurrentDomain.SetupInformation.ApplicationBase : Application.StartupPath);
 
+        private static readonly Lazy<string> s_strGetEscapedStartupPath = new Lazy<string>(
+            () => GetStartupPath.Replace("\\", "\\\\").Replace("\\\\\\\\", "\\\\"));
+
         private static readonly Lazy<string> s_strGetAutosavesFolderPath
             = new Lazy<string>(() => Path.Combine(GetStartupPath, "saves", "autosave"));
 
@@ -320,6 +323,8 @@ namespace Chummer
         /// Returns the actual path of the Chummer-Directory regardless of running as Unit test or not.
         /// </summary>
         public static string GetStartupPath => s_strGetStartupPath.Value;
+
+        public static string GetEscapedStartupPath => s_strGetEscapedStartupPath.Value;
 
         public static string GetAutosavesFolderPath => s_strGetAutosavesFolderPath.Value;
 

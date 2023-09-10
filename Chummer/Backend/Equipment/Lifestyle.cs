@@ -241,10 +241,11 @@ namespace Chummer.Backend.Equipment
                         XmlDocument xmlLifestyleDocument = _objCharacter.LoadData("lifestyles.xml");
                         foreach (XmlNode xmlNode in lstGridNodes)
                         {
-                            XmlNode xmlQuality = xmlLifestyleDocument.SelectSingleNode(
-                                "/chummer/qualities/quality[name = " + xmlNode.InnerText.CleanXPath() + ']');
+                            XmlNode xmlQuality
+                                = xmlLifestyleDocument.TryGetNodeByNameOrId(
+                                    "/chummer/qualities/quality", xmlNode.InnerText);
                             LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-                            string strPush = xmlNode.SelectSingleNode("@select")?.Value;
+                            string strPush = xmlNode.SelectSingleNodeAndCacheExpressionAsNavigator("@select")?.Value;
                             if (!string.IsNullOrWhiteSpace(strPush))
                             {
                                 _objCharacter.PushText.Push(strPush);
@@ -406,10 +407,8 @@ namespace Chummer.Backend.Equipment
                 objNode.TryGetStringFieldQuickly("baselifestyle", ref _strBaseLifestyle);
                 objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
                 XPathNavigator xmlLifestyles = _objCharacter.LoadDataXPath("lifestyles.xml");
-                if (xmlLifestyles.SelectSingleNode("/chummer/lifestyles/lifestyle[name = " + BaseLifestyle.CleanXPath()
-                                                   + ']') == null
-                    && xmlLifestyles.SelectSingleNode("/chummer/lifestyles/lifestyle[name =" + Name.CleanXPath() + ']')
-                    != null)
+                if (xmlLifestyles.TryGetNodeByNameOrId("/chummer/lifestyles/lifestyle", BaseLifestyle) == null
+                    && xmlLifestyles.TryGetNodeByNameOrId("/chummer/lifestyles/lifestyle", Name) != null)
                 {
                     (_strName, _strBaseLifestyle) = (_strBaseLifestyle, _strName);
                 }
@@ -480,30 +479,26 @@ namespace Chummer.Backend.Equipment
                 if (!objNode.TryGetInt32FieldQuickly("lp", ref _intLP))
                 {
                     XPathNavigator xmlLifestyleNode =
-                        xmlLifestyles.SelectSingleNode("/chummer/lifestyles/lifestyle[name = "
-                                                       + BaseLifestyle.CleanXPath() + ']');
+                        xmlLifestyles.TryGetNodeByNameOrId("/chummer/lifestyles/lifestyle", BaseLifestyle);
                     xmlLifestyleNode.TryGetInt32FieldQuickly("lp", ref _intLP);
                 }
 
                 if (!objNode.TryGetInt32FieldQuickly("maxarea", ref _intAreaMaximum))
                 {
                     XPathNavigator xmlLifestyleNode =
-                        xmlLifestyles.SelectSingleNode("/chummer/comforts/comfort[name = " + BaseLifestyle.CleanXPath()
-                                                       + ']');
+                        xmlLifestyles.TryGetNodeByNameOrId("/chummer/comforts/comfort", BaseLifestyle);
                     xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseComforts);
                     xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intComfortsMaximum);
 
                     // Area.
                     xmlLifestyleNode =
-                        xmlLifestyles.SelectSingleNode("/chummer/neighborhoods/neighborhood[name = "
-                                                       + BaseLifestyle.CleanXPath() + ']');
+                        xmlLifestyles.TryGetNodeByNameOrId("/chummer/neighborhoods/neighborhood", BaseLifestyle);
                     xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseArea);
                     xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intAreaMaximum);
 
                     // Security.
                     xmlLifestyleNode =
-                        xmlLifestyles.SelectSingleNode("/chummer/securities/security[name = "
-                                                       + BaseLifestyle.CleanXPath() + ']');
+                        xmlLifestyles.TryGetNodeByNameOrId("/chummer/securities/security", BaseLifestyle);
                     xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseSecurity);
                     xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intSecurityMaximum);
                 }
@@ -594,8 +589,7 @@ namespace Chummer.Backend.Equipment
                     xmlLifestyleNode["costforarea"] != null) return;
                 XPathNavigator objXmlDocument = _objCharacter.LoadDataXPath("lifestyles.xml");
                 XPathNavigator objLifestyleQualityNode
-                    = objXmlDocument.SelectSingleNode("/chummer/lifestyles/lifestyle[name = "
-                                                      + BaseLifestyle.CleanXPath() + ']');
+                    = objXmlDocument.TryGetNodeByNameOrId("/chummer/lifestyles/lifestyle", BaseLifestyle);
                 if (objLifestyleQualityNode != null)
                 {
                     decimal decTemp = 0.0m;
@@ -619,22 +613,19 @@ namespace Chummer.Backend.Equipment
                 // Calculate the limits of the 3 aspects.
                 // Area.
                 XPathNavigator objXmlNode
-                    = objXmlDocument.SelectSingleNode("/chummer/neighborhoods/neighborhood[name = "
-                                                      + BaseLifestyle.CleanXPath() + ']');
+                    = objXmlDocument.TryGetNodeByNameOrId("/chummer/neighborhoods/neighborhood", BaseLifestyle);
                 objXmlNode.TryGetInt32FieldQuickly("minimum", ref intMinArea);
                 objXmlNode.TryGetInt32FieldQuickly("limit", ref intMaxArea);
                 BaseArea = intMinArea;
                 AreaMaximum = Math.Max(intMaxArea, intMinArea);
                 // Comforts.
-                objXmlNode = objXmlDocument.SelectSingleNode(
-                    "/chummer/comforts/comfort[name = " + BaseLifestyle.CleanXPath() + ']');
+                objXmlNode = objXmlDocument.TryGetNodeByNameOrId("/chummer/comforts/comfort", BaseLifestyle);
                 objXmlNode.TryGetInt32FieldQuickly("minimum", ref intMinComfort);
                 objXmlNode.TryGetInt32FieldQuickly("limit", ref intMaxComfort);
                 BaseComforts = intMinComfort;
                 ComfortsMaximum = Math.Max(intMaxComfort, intMinComfort);
                 // Security.
-                objXmlNode = objXmlDocument.SelectSingleNode(
-                    "/chummer/securities/security[name = " + BaseLifestyle.CleanXPath() + ']');
+                objXmlNode = objXmlDocument.TryGetNodeByNameOrId("/chummer/securities/security", BaseLifestyle);
                 objXmlNode.TryGetInt32FieldQuickly("minimum", ref intMinSec);
                 objXmlNode.TryGetInt32FieldQuickly("limit", ref intMaxSec);
                 BaseSecurity = intMinSec;
@@ -1156,8 +1147,7 @@ namespace Chummer.Backend.Equipment
                         }
 
                         XmlNode xmlLifestyle
-                            = xmlLifestyleDocument.SelectSingleNode(
-                                "/chummer/lifestyles/lifestyle[name = " + value.CleanXPath() + ']');
+                            = xmlLifestyleDocument.TryGetNodeByNameOrId("/chummer/lifestyles/lifestyle", value);
                         if (xmlLifestyle != null)
                         {
                             _strBaseLifestyle = string.Empty;
@@ -1834,19 +1824,16 @@ namespace Chummer.Backend.Equipment
                 if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
                     return objReturn;
-                objReturn = (blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ? _objCharacter.LoadData("lifestyles.xml", strLanguage, token: token)
-                        : await _objCharacter.LoadDataAsync("lifestyles.xml", strLanguage, token: token)
-                                             .ConfigureAwait(false))
-                    .SelectSingleNode(SourceID == Guid.Empty
-                                          ? "/chummer/lifestyles/lifestyle[name = "
-                                            + Name.CleanXPath() + ']'
-                                          : "/chummer/lifestyles/lifestyle[id = "
-                                            + SourceIDString.CleanXPath() + " or id = "
-                                            + SourceIDString.ToUpperInvariant()
-                                                            .CleanXPath()
-                                            + ']');
+                XmlNode objDoc = blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadData("lifestyles.xml", strLanguage, token: token)
+                    : await _objCharacter.LoadDataAsync("lifestyles.xml", strLanguage, token: token).ConfigureAwait(false);
+                objReturn = objDoc.TryGetNodeById("/chummer/lifestyles/lifestyle", SourceID);
+                if (objReturn == null && SourceID != Guid.Empty)
+                {
+                    objReturn = objDoc.TryGetNodeByNameOrId("/chummer/lifestyles/gear", Name);
+                    objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                }
                 _objCachedMyXmlNode = objReturn;
                 _strCachedXmlNodeLanguage = strLanguage;
                 return objReturn;
@@ -1865,19 +1852,17 @@ namespace Chummer.Backend.Equipment
                 if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
                     return objReturn;
-                objReturn = (blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ? _objCharacter.LoadDataXPath("lifestyles.xml", strLanguage, token: token)
-                        : await _objCharacter.LoadDataXPathAsync("lifestyles.xml", strLanguage, token: token)
-                                             .ConfigureAwait(false))
-                    .SelectSingleNode(SourceID == Guid.Empty
-                                          ? "/chummer/lifestyles/lifestyle[name = "
-                                            + Name.CleanXPath() + ']'
-                                          : "/chummer/lifestyles/lifestyle[id = "
-                                            + SourceIDString.CleanXPath() + " or id = "
-                                            + SourceIDString.ToUpperInvariant()
-                                                            .CleanXPath()
-                                            + ']');
+                XPathNavigator objDoc = blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadDataXPath("lifestyles.xml", strLanguage, token: token)
+                    : await _objCharacter.LoadDataXPathAsync("lifestyles.xml", strLanguage, token: token).ConfigureAwait(false);
+                if (SourceID != Guid.Empty)
+                    objReturn = objDoc.TryGetNodeById("/chummer/lifestyles/lifestyle", SourceID);
+                if (objReturn == null)
+                {
+                    objReturn = objDoc.TryGetNodeByNameOrId("/chummer/lifestyles/lifestyle", Name);
+                    objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                }
                 _objCachedMyXPathNode = objReturn;
                 _strCachedXPathNodeLanguage = strLanguage;
                 return objReturn;

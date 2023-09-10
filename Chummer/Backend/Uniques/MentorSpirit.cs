@@ -63,13 +63,17 @@ namespace Chummer
             // Create the GUID for the new Mentor Spirit.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
-            XmlNode namenode = xmlNodeMentor?.SelectSingleNode("name");
-            if (namenode != null)
-                Name = namenode.InnerText;
-            XmlNode typenode = xmlNodeMentor?.SelectSingleNode("mentortype");
-            if (typenode != null && Enum.TryParse(typenode.InnerText, true, out Improvement.ImprovementType outEnum))
+            if (xmlNodeMentor != null)
             {
-                _eMentorType = outEnum;
+                string strName = xmlNodeMentor["name"]?.InnerText;
+                if (!string.IsNullOrEmpty(strName))
+                    Name = strName;
+                string strType = xmlNodeMentor["mentortype"]?.InnerText;
+                if (!string.IsNullOrEmpty(strType)
+                    && Enum.TryParse(strType, true, out Improvement.ImprovementType outEnum))
+                {
+                    _eMentorType = outEnum;
+                }
             }
         }
 
@@ -312,7 +316,7 @@ namespace Chummer
                     && objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID) == false)
                 {
                     _objCharacter.LoadDataXPath("qualities.xml")
-                                 .SelectSingleNode("/chummer/mentors/mentor[name = " + Name.CleanXPath() + ']')
+                                 .TryGetNodeByNameOrId("/chummer/mentors/mentor", Name)
                                  ?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
 
@@ -842,24 +846,23 @@ namespace Chummer
                 if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
                     return objReturn;
-                objReturn = (blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ? _objCharacter.LoadData(
-                            _eMentorType == Improvement.ImprovementType.MentorSpirit
-                                ? "mentors.xml"
-                                : "paragons.xml", strLanguage, token: token)
-                        : await _objCharacter.LoadDataAsync(
-                            _eMentorType == Improvement.ImprovementType.MentorSpirit
-                                ? "mentors.xml"
-                                : "paragons.xml", strLanguage, token: token).ConfigureAwait(false))
-                    .SelectSingleNode(SourceID == Guid.Empty
-                                          ? "/chummer/mentors/mentor[name = " + Name.CleanXPath()
-                                                                              + ']'
-                                          : "/chummer/mentors/mentor[id = "
-                                            + SourceIDString.CleanXPath()
-                                            + " or id = " + SourceIDString.ToUpperInvariant()
-                                                                          .CleanXPath()
-                                            + ']');
+                XmlNode objDoc = blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadData(_eMentorType == Improvement.ImprovementType.MentorSpirit
+                                                 ? "mentors.xml"
+                                                 : "paragons.xml", strLanguage, token: token)
+                    : await _objCharacter.LoadDataAsync(_eMentorType == Improvement.ImprovementType.MentorSpirit
+                                                            ? "mentors.xml"
+                                                            : "paragons.xml", strLanguage, token: token)
+                                         .ConfigureAwait(false);
+                if (SourceID != Guid.Empty)
+                    objReturn = objDoc.TryGetNodeById("/chummer/mentors/mentor", SourceID);
+                if (objReturn == null)
+                {
+                    objReturn = objDoc.TryGetNodeByNameOrId("/chummer/mentors/mentor", Name);
+                    objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                }
+
                 _objCachedMyXmlNode = objReturn;
                 _strCachedXmlNodeLanguage = strLanguage;
                 return objReturn;
@@ -880,26 +883,22 @@ namespace Chummer
                 if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
                     return objReturn;
-                objReturn = (blnSync
-                        ? _objCharacter
-                            // ReSharper disable once MethodHasAsyncOverload
-                            .LoadDataXPath(
-                                _eMentorType == Improvement.ImprovementType.MentorSpirit
-                                    ? "mentors.xml"
-                                    : "paragons.xml", strLanguage, token: token)
-                        : await _objCharacter
-                                .LoadDataXPathAsync(
-                                    _eMentorType == Improvement.ImprovementType.MentorSpirit
-                                        ? "mentors.xml"
-                                        : "paragons.xml", strLanguage, token: token).ConfigureAwait(false))
-                    .SelectSingleNode(SourceID == Guid.Empty
-                                          ? "/chummer/mentors/mentor[name = " + Name.CleanXPath()
-                                                                              + ']'
-                                          : "/chummer/mentors/mentor[id = "
-                                            + SourceIDString.CleanXPath()
-                                            + " or id = " + SourceIDString.ToUpperInvariant()
-                                                                          .CleanXPath()
-                                            + ']');
+                XPathNavigator objDoc = blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadDataXPath(_eMentorType == Improvement.ImprovementType.MentorSpirit
+                                                 ? "mentors.xml"
+                                                 : "paragons.xml", strLanguage, token: token)
+                    : await _objCharacter.LoadDataXPathAsync(_eMentorType == Improvement.ImprovementType.MentorSpirit
+                                                            ? "mentors.xml"
+                                                            : "paragons.xml", strLanguage, token: token)
+                                         .ConfigureAwait(false);
+                if (SourceID != Guid.Empty)
+                    objReturn = objDoc.TryGetNodeById("/chummer/mentors/mentor", SourceID);
+                if (objReturn == null)
+                {
+                    objReturn = objDoc.TryGetNodeByNameOrId("/chummer/mentors/mentor", Name);
+                    objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                }
                 _objCachedMyXPathNode = objReturn;
                 _strCachedXPathNodeLanguage = strLanguage;
                 return objReturn;

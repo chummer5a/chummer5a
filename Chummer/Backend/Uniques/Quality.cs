@@ -581,10 +581,13 @@ namespace Chummer
                     if (!strLanguageToPrint.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     {
                         strQualityType =
-                            (await _objCharacter.LoadDataXPathAsync("qualities.xml", strLanguageToPrint, token: token)
-                                                .ConfigureAwait(false))
-                            .SelectSingleNode("/chummer/categories/category[. = " + strQualityType.CleanXPath()
-                                              + "]/@translate")
+                            (await (await _objCharacter
+                                          .LoadDataXPathAsync("qualities.xml", strLanguageToPrint, token: token)
+                                          .ConfigureAwait(false))
+                                   .SelectSingleNodeAndCacheExpressionAsync(
+                                       "/chummer/categories/category[. = " + strQualityType.CleanXPath()
+                                                                           + "]/@translate", token: token)
+                                   .ConfigureAwait(false))
                             ?.Value ?? strQualityType;
                     }
 
@@ -1136,7 +1139,7 @@ namespace Chummer
                 using (EnterReadLock.Enter(LockObject))
                 {
                     return _objCharacter.Qualities.Count(objExistingQuality =>
-                                                             objExistingQuality.SourceIDString == SourceIDString
+                                                             objExistingQuality.SourceID == SourceID
                                                              && objExistingQuality.Extra == Extra &&
                                                              objExistingQuality.SourceName == SourceName
                                                              && objExistingQuality.Type == Type);
@@ -1487,19 +1490,18 @@ namespace Chummer
                 if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
                     return objReturn;
-                objReturn = (blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ? _objCharacter.LoadData("qualities.xml", strLanguage, token: token)
-                        : await _objCharacter.LoadDataAsync("qualities.xml", strLanguage, token: token)
-                                             .ConfigureAwait(false))
-                    .SelectSingleNode(SourceID == Guid.Empty
-                                          ? "/chummer/qualities/quality[name = "
-                                            + Name.CleanXPath() + ']'
-                                          : "/chummer/qualities/quality[id = "
-                                            + SourceIDString.CleanXPath()
-                                            + " or id = " + SourceIDString
-                                                            .ToUpperInvariant().CleanXPath()
-                                            + ']');
+                XmlNode objDoc = blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadData("qualities.xml", strLanguage, token: token)
+                    : await _objCharacter.LoadDataAsync("qualities.xml", strLanguage, token: token)
+                                         .ConfigureAwait(false);
+                if (SourceID != Guid.Empty)
+                    objReturn = objDoc.TryGetNodeById("/chummer/qualities/quality", SourceID);
+                if (objReturn == null)
+                {
+                    objReturn = objDoc.TryGetNodeByNameOrId("/chummer/qualities/quality", Name);
+                    objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                }
                 _objCachedMyXmlNode = objReturn;
                 _strCachedXmlNodeLanguage = strLanguage;
                 return objReturn;
@@ -1517,19 +1519,18 @@ namespace Chummer
                 if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
                     return objReturn;
-                objReturn = (blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ? _objCharacter.LoadDataXPath("qualities.xml", strLanguage, token: token)
-                        : await _objCharacter.LoadDataXPathAsync("qualities.xml", strLanguage, token: token)
-                                             .ConfigureAwait(false))
-                    .SelectSingleNode(SourceID == Guid.Empty
-                                          ? "/chummer/qualities/quality[name = "
-                                            + Name.CleanXPath() + ']'
-                                          : "/chummer/qualities/quality[id = "
-                                            + SourceIDString.CleanXPath()
-                                            + " or id = " + SourceIDString
-                                                            .ToUpperInvariant().CleanXPath()
-                                            + ']');
+                XPathNavigator objDoc = blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadDataXPath("qualities.xml", strLanguage, token: token)
+                    : await _objCharacter.LoadDataXPathAsync("qualities.xml", strLanguage, token: token)
+                                         .ConfigureAwait(false);
+                if (SourceID != Guid.Empty)
+                    objReturn = objDoc.TryGetNodeById("/chummer/qualities/quality", SourceID);
+                if (objReturn == null)
+                {
+                    objReturn = objDoc.TryGetNodeByNameOrId("/chummer/qualities/quality", Name);
+                    objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                }
                 _objCachedMyXPathNode = objReturn;
                 _strCachedXPathNodeLanguage = strLanguage;
                 return objReturn;
@@ -1641,7 +1642,7 @@ namespace Chummer
                 {
                     foreach (Quality objQuality in objCharacter.Qualities)
                     {
-                        if (objQuality.SourceIDString == objXmlQuality["id"]?.InnerText)
+                        if (string.Equals(objQuality.SourceIDString, objXmlQuality["id"]?.InnerText, StringComparison.OrdinalIgnoreCase))
                         {
                             reason |= QualityFailureReasons
                                 .LimitExceeded; //QualityFailureReason is a flag enum, meaning each bit represents a different thing
@@ -1775,7 +1776,7 @@ namespace Chummer
         {
             if (xmlDoc == null)
                 throw new ArgumentNullException(nameof(xmlDoc));
-            XmlNode node = xmlDoc.SelectSingleNode(".//*[id = " + id.CleanXPath() + ']')
+            XmlNode node = xmlDoc.TryGetNodeByNameOrId(".//*", id)
                            ?? throw new ArgumentException("Could not find node " + id + " in xmlDoc " + xmlDoc.Name
                                                           + '.');
             return GetNodeOverrideable(node);
@@ -2110,7 +2111,7 @@ namespace Chummer
                             if (i >= _objCharacter.Qualities.Count)
                                 continue;
                             Quality objLoopQuality = _objCharacter.Qualities[i];
-                            if (objLoopQuality.SourceIDString == SourceIDString
+                            if (objLoopQuality.SourceID == SourceID
                                 && objLoopQuality.Extra == Extra
                                 && objLoopQuality.SourceName == SourceName
                                 && objLoopQuality.Type == Type
@@ -2204,7 +2205,7 @@ namespace Chummer
                             if (i >= _objCharacter.Qualities.Count)
                                 continue;
                             Quality objLoopQuality = _objCharacter.Qualities[i];
-                            if (objLoopQuality.SourceIDString == SourceIDString
+                            if (objLoopQuality.SourceID == SourceID
                                 && objLoopQuality.Extra == Extra
                                 && objLoopQuality.SourceName == SourceName
                                 && objLoopQuality.Type == Type

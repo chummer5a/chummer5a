@@ -568,13 +568,13 @@ namespace Chummer.Backend.Skills
             else
             {
                 XmlDocument xmlSkillsDocument = objCharacter.LoadData("skills.xml");
-                XmlNode xmlSkillDataNode = xmlSkillDataNode = objCharacter.LoadData("skills.xml").TryGetNodeById("/chummer/skills/skill", suid)
+                XmlNode xmlSkillDataNode = objCharacter.LoadData("skills.xml").TryGetNodeById("/chummer/skills/skill", suid)
                     //Some stuff apparently have a guid of 0000-000... (only exotic?)
-                    ?? xmlSkillsDocument.SelectSingleNode("/chummer/skills/skill[name = " + strName.CleanXPath() + ']');
+                    ?? xmlSkillsDocument.TryGetNodeByNameOrId("/chummer/skills/skill", strName);
 
                 bool blnIsKnowledgeSkill = xmlSkillDataNode != null
                                            && xmlSkillsDocument
-                                              .SelectSingleNode(
+                                              .SelectSingleNodeAndCacheExpressionAsNavigator(
                                                   "/chummer/categories/category[. = "
                                                   + xmlSkillDataNode["category"]?.InnerText.CleanXPath() + "]/@type")
                                               ?.Value != "active";
@@ -586,7 +586,7 @@ namespace Chummer.Backend.Skills
                 if (objSkill is ExoticSkill objExoticSkill)
                 {
                     //don't need to do more load then.
-                    objExoticSkill.Specific = xmlSkillNode.SelectSingleNode("skillspecializations/skillspecialization/name")?.Value ?? string.Empty;
+                    objExoticSkill.Specific = xmlSkillNode.SelectSingleNodeAndCacheExpressionAsNavigator("skillspecializations/skillspecialization/name")?.Value ?? string.Empty;
                     return objSkill;
                 }
 
@@ -617,9 +617,9 @@ namespace Chummer.Backend.Skills
             string strName = xmlSkillNode.SelectSingleNodeAndCacheExpression("@name", token)?.Value ?? string.Empty;
 
             XmlNode xmlSkillDataNode = objCharacter.LoadData("skills.xml", token: token)
-                .SelectSingleNode((blnIsKnowledgeSkill
-                    ? "/chummer/knowledgeskills/skill[name = "
-                    : "/chummer/skills/skill[name = ") + strName.CleanXPath() + ']');
+                                                   .TryGetNodeByNameOrId(blnIsKnowledgeSkill
+                                                                             ? "/chummer/knowledgeskills/skill"
+                                                                             : "/chummer/skills/skill", strName);
             if (xmlSkillDataNode == null || !xmlSkillDataNode.TryGetField("id", Guid.TryParse, out Guid suid))
                 suid = Guid.NewGuid();
 
@@ -4778,13 +4778,8 @@ namespace Chummer.Backend.Skills
                         ? CharacterObject.LoadData("skills.xml", strLanguage, token: token)
                         : await CharacterObject.LoadDataAsync("skills.xml", strLanguage, token: token)
                                                .ConfigureAwait(false))
-                    .SelectSingleNode(string.Format(GlobalSettings.InvariantCultureInfo,
-                                                    IsKnowledgeSkill
-                                                        ? "/chummer/knowledgeskills/skill[id = {0} or id = {1}]"
-                                                        : "/chummer/skills/skill[id = {0} or id = {1}]",
-                                                    SkillId.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath(),
-                                                    SkillId.ToString("D", GlobalSettings.InvariantCultureInfo)
-                                                           .ToUpperInvariant().CleanXPath()));
+                    .TryGetNodeById(IsKnowledgeSkill ? "/chummer/knowledgeskills/skill" : "/chummer/skills/skill",
+                                    SkillId);
                 _objCachedMyXmlNode = objReturn;
                 _strCachedXmlNodeLanguage = strLanguage;
                 return objReturn;
@@ -4808,18 +4803,8 @@ namespace Chummer.Backend.Skills
                         ? CharacterObject.LoadDataXPath("skills.xml", strLanguage, token: token)
                         : await CharacterObject.LoadDataXPathAsync("skills.xml", strLanguage, token: token)
                                                .ConfigureAwait(false))
-                    .SelectSingleNode(string.Format(GlobalSettings.InvariantCultureInfo,
-                                                    IsKnowledgeSkill
-                                                        ? "/chummer/knowledgeskills/skill[id = {0} or id = {1}]"
-                                                        : "/chummer/skills/skill[id = {0} or id = {1}]",
-                                                    SkillId.ToString(
-                                                               "D",
-                                                               GlobalSettings.InvariantCultureInfo)
-                                                           .CleanXPath(),
-                                                    SkillId.ToString(
-                                                               "D",
-                                                               GlobalSettings.InvariantCultureInfo)
-                                                           .ToUpperInvariant().CleanXPath()));
+                    .TryGetNodeById(IsKnowledgeSkill ? "/chummer/knowledgeskills/skill" : "/chummer/skills/skill",
+                                    SkillId);
                 _objCachedMyXPathNode = objReturn;
                 _strCachedXPathNodeLanguage = strLanguage;
                 return objReturn;

@@ -343,7 +343,7 @@ namespace Chummer.Backend.Equipment
                         {
                             foreach (XmlNode objXmlVehicleMod in objXmlModList)
                             {
-                                XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/mods/mod[name = " + objXmlVehicleMod.InnerText.CleanXPath() + ']');
+                                XmlNode objXmlMod = objXmlDocument.TryGetNodeByNameOrId("/chummer/mods/mod", objXmlVehicleMod.InnerText);
                                 if (objXmlMod != null)
                                 {
                                     VehicleMod objMod = new VehicleMod(_objCharacter)
@@ -372,14 +372,14 @@ namespace Chummer.Backend.Equipment
                                 string strName = objXmlVehicleMod["name"]?.InnerText;
                                 if (string.IsNullOrEmpty(strName))
                                     continue;
-                                XmlNode objXmlMod = objXmlDocument.SelectSingleNode("/chummer/mods/mod[name = " + strName.CleanXPath() + ']');
+                                XmlNode objXmlMod = objXmlDocument.TryGetNodeByNameOrId("/chummer/mods/mod", strName);
                                 if (objXmlMod != null)
                                 {
                                     VehicleMod objMod = new VehicleMod(_objCharacter)
                                     {
                                         IncludedInVehicle = true
                                     };
-                                    string strForcedValue = objXmlVehicleMod.SelectSingleNode("name/@select")?.Value ?? string.Empty;
+                                    string strForcedValue = objXmlVehicleMod.SelectSingleNodeAndCacheExpressionAsNavigator("name/@select")?.Value ?? string.Empty;
                                     if (!int.TryParse(objXmlVehicleMod["rating"]?.InnerText, out int intRating))
                                         intRating = 0;
 
@@ -400,9 +400,11 @@ namespace Chummer.Backend.Equipment
                                                     string strSubsystemName = objXmlSubsystemNode["name"]?.InnerText;
                                                     if (string.IsNullOrEmpty(strSubsystemName))
                                                         continue;
-                                                    XmlNode objXmlSubsystem = objXmlWareDocument.SelectSingleNode(
-                                                        "/chummer/cyberwares/cyberware[name = " + strSubsystemName.CleanXPath() + ']');
-                                                    if (objXmlSubsystem == null) continue;
+                                                    XmlNode objXmlSubsystem
+                                                        = objXmlWareDocument.TryGetNodeByNameOrId(
+                                                            "/chummer/cyberwares/cyberware", strSubsystemName);
+                                                    if (objXmlSubsystem == null)
+                                                        continue;
                                                     Cyberware objSubsystem = new Cyberware(_objCharacter);
                                                     int.TryParse(objXmlSubsystemNode["rating"]?.InnerText, NumberStyles.Any,
                                                         GlobalSettings.InvariantCultureInfo, out int intSubSystemRating);
@@ -423,8 +425,8 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
-                    XmlNode objAddSlotsNode = objXmlVehicle.SelectSingleNode("mods/addslots");
-                    if (objAddSlotsNode != null && !int.TryParse(objAddSlotsNode.InnerText, out _intAddSlots))
+                    XPathNavigator objAddSlotsNode = objXmlVehicle.SelectSingleNodeAndCacheExpressionAsNavigator("mods/addslots");
+                    if (objAddSlotsNode != null && !int.TryParse(objAddSlotsNode.Value, out _intAddSlots))
                         _intAddSlots = 0;
                 }
 
@@ -488,7 +490,7 @@ namespace Chummer.Backend.Equipment
                         Weapon objWeapon = new Weapon(_objCharacter);
 
                         List<Weapon> objSubWeapons = new List<Weapon>(1);
-                        XmlNode objXmlWeaponNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = " + strWeaponName.CleanXPath() + ']');
+                        XmlNode objXmlWeaponNode = objXmlWeaponDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon", strWeaponName);
                         objWeapon.ParentVehicle = this;
                         objWeapon.Create(objXmlWeaponNode, objSubWeapons, blnCreateChildren, !blnSkipSelectForms && blnCreateImprovements, blnSkipCost);
                         objWeapon.ParentID = InternalId;
@@ -547,7 +549,7 @@ namespace Chummer.Backend.Equipment
                                 string strAccessoryName = objXmlWeapon["name"]?.InnerText;
                                 if (string.IsNullOrEmpty(strAccessoryName))
                                     continue;
-                                XmlNode objXmlAccessoryNode = objXmlWeaponDocument.SelectSingleNode("/chummer/accessories/accessory[name = " + strAccessoryName.CleanXPath() + ']');
+                                XmlNode objXmlAccessoryNode = objXmlWeaponDocument.TryGetNodeByNameOrId("/chummer/accessories/accessory", strAccessoryName);
                                 WeaponAccessory objMod = new WeaponAccessory(_objCharacter);
                                 string strMount = "Internal";
                                 objXmlAccessory.TryGetStringFieldQuickly("mount", ref strMount);
@@ -873,7 +875,7 @@ namespace Chummer.Backend.Equipment
                                         Weapon objWeapon = new Weapon(_objCharacter);
 
                                         List<Weapon> objSubWeapons = new List<Weapon>(1);
-                                        XmlNode objXmlWeaponNode = objXmlWeaponDocument.SelectSingleNode("/chummer/weapons/weapon[name = " + strWeaponName.CleanXPath() + ']');
+                                        XmlNode objXmlWeaponNode = objXmlWeaponDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon", strWeaponName);
                                         objWeapon.ParentVehicle = this;
                                         objWeapon.Create(objXmlWeaponNode, objSubWeapons);
                                         objWeapon.ParentID = InternalId;
@@ -932,7 +934,7 @@ namespace Chummer.Backend.Equipment
                                                 string strAccessoryName = objXmlWeapon["name"]?.InnerText;
                                                 if (string.IsNullOrEmpty(strAccessoryName))
                                                     continue;
-                                                XmlNode objXmlAccessoryNode = objXmlWeaponDocument.SelectSingleNode("/chummer/accessories/accessory[name = " + strAccessoryName.CleanXPath() + ']');
+                                                XmlNode objXmlAccessoryNode = objXmlWeaponDocument.TryGetNodeByNameOrId("/chummer/accessories/accessory", strAccessoryName);
                                                 WeaponAccessory objMod = new WeaponAccessory(_objCharacter);
                                                 string strMount = "Internal";
                                                 objXmlAccessory.TryGetStringFieldQuickly("mount", ref strMount);
@@ -1200,7 +1202,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Category;
 
-            return _objCharacter.LoadDataXPath("vehicles.xml", strLanguage).SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value ?? Category;
+            return _objCharacter.LoadDataXPath("vehicles.xml", strLanguage).SelectSingleNodeAndCacheExpression("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value ?? Category;
         }
 
         /// <summary>
@@ -1211,8 +1213,8 @@ namespace Chummer.Backend.Equipment
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Category;
 
-            return (await _objCharacter.LoadDataXPathAsync("vehicles.xml", strLanguage, token: token).ConfigureAwait(false))
-                   .SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")
+            return (await (await _objCharacter.LoadDataXPathAsync("vehicles.xml", strLanguage, token: token).ConfigureAwait(false))
+                          .SelectSingleNodeAndCacheExpressionAsync("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate", token: token).ConfigureAwait(false))
                    ?.Value ?? Category;
         }
 
@@ -2951,17 +2953,16 @@ namespace Chummer.Backend.Equipment
             if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                   && !GlobalSettings.LiveCustomData)
                 return objReturn;
-            objReturn = (blnSync
-                    // ReSharper disable once MethodHasAsyncOverload
-                    ? _objCharacter.LoadData("vehicles.xml", strLanguage, token: token)
-                    : await _objCharacter.LoadDataAsync("vehicles.xml", strLanguage, token: token).ConfigureAwait(false))
-                .SelectSingleNode(SourceID == Guid.Empty
-                                      ? "/chummer/vehicles/vehicle[name = "
-                                        + Name.CleanXPath() + ']'
-                                      : "/chummer/vehicles/vehicle[id = "
-                                        + SourceIDString.CleanXPath() + " or id = "
-                                        + SourceIDString.ToUpperInvariant().CleanXPath()
-                                        + ']');
+            XmlNode objDoc = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? _objCharacter.LoadData("vehicles.xml", strLanguage, token: token)
+                : await _objCharacter.LoadDataAsync("vehicles.xml", strLanguage, token: token).ConfigureAwait(false);
+            objReturn = objDoc.TryGetNodeById("/chummer/vehicles/vehicle", SourceID);
+            if (objReturn == null && SourceID != Guid.Empty)
+            {
+                objReturn = objDoc.TryGetNodeByNameOrId("/chummer/vehicles/vehicle", Name);
+                objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+            }
             _objCachedMyXmlNode = objReturn;
             _strCachedXmlNodeLanguage = strLanguage;
             return objReturn;
@@ -2976,17 +2977,16 @@ namespace Chummer.Backend.Equipment
             if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
                                   && !GlobalSettings.LiveCustomData)
                 return objReturn;
-            objReturn = (blnSync
-                    // ReSharper disable once MethodHasAsyncOverload
-                    ? _objCharacter.LoadDataXPath("vehicles.xml", strLanguage, token: token)
-                    : await _objCharacter.LoadDataXPathAsync("vehicles.xml", strLanguage, token: token).ConfigureAwait(false))
-                .SelectSingleNode(SourceID == Guid.Empty
-                                      ? "/chummer/vehicles/vehicle[name = "
-                                        + Name.CleanXPath() + ']'
-                                      : "/chummer/vehicles/vehicle[id = "
-                                        + SourceIDString.CleanXPath() + " or id = "
-                                        + SourceIDString.ToUpperInvariant().CleanXPath()
-                                        + ']');
+            XPathNavigator objDoc = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? _objCharacter.LoadDataXPath("vehicles.xml", strLanguage, token: token)
+                : await _objCharacter.LoadDataXPathAsync("vehicles.xml", strLanguage, token: token).ConfigureAwait(false);
+            objReturn = objDoc.TryGetNodeById("/chummer/vehicles/vehicle", SourceID);
+            if (objReturn == null && SourceID != Guid.Empty)
+            {
+                objReturn = objDoc.TryGetNodeByNameOrId("/chummer/vehicles/vehicle", Name);
+                objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+            }
             _objCachedMyXPathNode = objReturn;
             _strCachedXPathNodeLanguage = strLanguage;
             return objReturn;
@@ -3829,7 +3829,7 @@ namespace Chummer.Backend.Equipment
                 {
                     case ClipboardContentType.Gear:
                         {
-                            string strClipboardCategory = GlobalSettings.Clipboard.SelectSingleNode("category")?.Value;
+                            string strClipboardCategory = GlobalSettings.Clipboard.SelectSingleNodeAndCacheExpressionAsNavigator("category")?.Value;
                             if (!string.IsNullOrEmpty(strClipboardCategory))
                             {
                                 XPathNodeIterator xmlAddonCategoryList = this.GetNodeXPath()?.SelectAndCacheExpression("addoncategory");

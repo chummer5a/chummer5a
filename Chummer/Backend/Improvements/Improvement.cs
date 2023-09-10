@@ -3233,7 +3233,7 @@ namespace Chummer
                         foreach (Quality objQuality in _objCharacter.Qualities)
                         {
                             if (objQuality.Name == ImprovedName
-                                || objQuality.SourceIDString == ImprovedName
+                                || string.Equals(objQuality.SourceIDString, ImprovedName, StringComparison.OrdinalIgnoreCase)
                                 || lstExtraImprovedName.Contains(objQuality.Name)
                                 || lstExtraImprovedName.Contains(objQuality.SourceIDString))
                             {
@@ -3247,7 +3247,7 @@ namespace Chummer
                     else
                     {
                         Quality objQuality = _objCharacter.Qualities.FirstOrDefault(x =>
-                            x.Name == ImprovedName || x.SourceIDString == ImprovedName);
+                            x.Name == ImprovedName || string.Equals(x.SourceIDString, ImprovedName, StringComparison.OrdinalIgnoreCase));
                         if (objQuality != null)
                         {
                             yield return new Tuple<INotifyMultiplePropertyChanged, string>(objQuality,
@@ -3266,7 +3266,7 @@ namespace Chummer
                         foreach (Quality objQuality in _objCharacter.Qualities)
                         {
                             if (objQuality.Name == ImprovedName
-                                || objQuality.SourceIDString == ImprovedName
+                                || string.Equals(objQuality.SourceIDString, ImprovedName, StringComparison.OrdinalIgnoreCase)
                                 || lstExtraImprovedName.Contains(objQuality.Name)
                                 || lstExtraImprovedName.Contains(objQuality.SourceIDString))
                             {
@@ -3282,7 +3282,7 @@ namespace Chummer
                     else
                     {
                         Quality objQuality = _objCharacter.Qualities.FirstOrDefault(x =>
-                            x.Name == ImprovedName || x.SourceIDString == ImprovedName);
+                            x.Name == ImprovedName || string.Equals(x.SourceIDString, ImprovedName, StringComparison.OrdinalIgnoreCase));
                         if (objQuality != null)
                         {
                             yield return new Tuple<INotifyMultiplePropertyChanged, string>(objQuality,

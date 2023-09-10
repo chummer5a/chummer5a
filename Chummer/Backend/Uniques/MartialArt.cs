@@ -697,19 +697,17 @@ namespace Chummer
                 if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
                     return objReturn;
-                objReturn = (blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ? _objCharacter.LoadData("martialarts.xml", strLanguage, token: token)
-                        : await _objCharacter.LoadDataAsync("martialarts.xml", strLanguage, token: token)
-                                             .ConfigureAwait(false))
-                    .SelectSingleNode(SourceID == Guid.Empty
-                                          ? "/chummer/martialarts/martialart[name = "
-                                            + Name.CleanXPath() + ']'
-                                          : "/chummer/martialarts/martialart[id = "
-                                            + SourceIDString.CleanXPath()
-                                            + " or id = " + SourceIDString
-                                                            .ToUpperInvariant().CleanXPath()
-                                            + ']');
+                XmlNode objDoc = blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadData("martialarts.xml", strLanguage, token: token)
+                    : await _objCharacter.LoadDataAsync("martialarts.xml", strLanguage, token: token).ConfigureAwait(false);
+                if (SourceID != Guid.Empty)
+                    objReturn = objDoc.TryGetNodeById("/chummer/martialarts/martialart", SourceID);
+                if (objReturn == null)
+                {
+                    objReturn = objDoc.TryGetNodeByNameOrId("/chummer/martialarts/martialart", Name);
+                    objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                }
                 _objCachedMyXmlNode = objReturn;
                 _strCachedXmlNodeLanguage = strLanguage;
                 return objReturn;
@@ -727,19 +725,17 @@ namespace Chummer
                 if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
                     return objReturn;
-                objReturn = (blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ? _objCharacter.LoadDataXPath("martialarts.xml", strLanguage, token: token)
-                        : await _objCharacter.LoadDataXPathAsync("martialarts.xml", strLanguage, token: token)
-                                             .ConfigureAwait(false))
-                    .SelectSingleNode(SourceID == Guid.Empty
-                                          ? "/chummer/martialarts/martialart[name = "
-                                            + Name.CleanXPath() + ']'
-                                          : "/chummer/martialarts/martialart[id = "
-                                            + SourceIDString.CleanXPath()
-                                            + " or id = " + SourceIDString
-                                                            .ToUpperInvariant().CleanXPath()
-                                            + ']');
+                XPathNavigator objDoc = blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadDataXPath("martialarts.xml", strLanguage, token: token)
+                    : await _objCharacter.LoadDataXPathAsync("martialarts.xml", strLanguage, token: token).ConfigureAwait(false);
+                if (SourceID != Guid.Empty)
+                    objReturn = objDoc.TryGetNodeById("/chummer/martialarts/martialart", SourceID);
+                if (objReturn == null)
+                {
+                    objReturn = objDoc.TryGetNodeByNameOrId("/chummer/martialarts/martialart", Name);
+                    objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                }
                 _objCachedMyXPathNode = objReturn;
                 _strCachedXPathNodeLanguage = strLanguage;
                 return objReturn;
@@ -800,9 +796,9 @@ namespace Chummer
                     blnAddAgain = frmPickMartialArt.MyForm.AddAgain;
                     // Open the Martial Arts XML file and locate the selected piece.
                     XmlNode objXmlArt
-                        = (await objCharacter.LoadDataAsync("martialarts.xml", token: token).ConfigureAwait(false)).SelectSingleNode(
-                            "/chummer/martialarts/martialart[id = "
-                            + frmPickMartialArt.MyForm.SelectedMartialArt.CleanXPath() + ']');
+                        = (await objCharacter.LoadDataAsync("martialarts.xml", token: token).ConfigureAwait(false))
+                        .TryGetNodeByNameOrId(
+                            "/chummer/martialarts/martialart", frmPickMartialArt.MyForm.SelectedMartialArt);
 
                     MartialArt objMartialArt = new MartialArt(objCharacter);
                     try

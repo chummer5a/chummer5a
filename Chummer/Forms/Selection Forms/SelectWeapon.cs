@@ -26,6 +26,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
 using Chummer.Backend.Equipment;
 
 // ReSharper disable LocalizableElement
@@ -490,17 +491,17 @@ namespace Chummer
                         if (!await objXmlWeapon.CreateNavigator().RequirementsMetAsync(_objCharacter, ParentWeapon, token: token).ConfigureAwait(false))
                             continue;
 
-                        XmlNode xmlTestNode = objXmlWeapon.SelectSingleNode("forbidden/weapondetails");
+                        XPathNavigator xmlTestNode = await objXmlWeapon.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("forbidden/weapondetails", token).ConfigureAwait(false);
                         if (xmlTestNode != null
-                            && xmlParentWeaponDataNode.ProcessFilterOperationNode(xmlTestNode, false))
+                            && await xmlParentWeaponDataNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
                         {
                             // Assumes topmost parent is an AND node
                             continue;
                         }
 
-                        xmlTestNode = objXmlWeapon.SelectSingleNode("required/weapondetails");
+                        xmlTestNode = await objXmlWeapon.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("required/weapondetails", token).ConfigureAwait(false);
                         if (xmlTestNode != null
-                            && !xmlParentWeaponDataNode.ProcessFilterOperationNode(xmlTestNode, false))
+                            && !await xmlParentWeaponDataNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
                         {
                             // Assumes topmost parent is an AND node
                             continue;
@@ -624,17 +625,17 @@ namespace Chummer
                             if (!await objXmlWeapon.CreateNavigator().RequirementsMetAsync(_objCharacter, ParentWeapon, token: token).ConfigureAwait(false))
                                 continue;
 
-                            XmlNode xmlTestNode = objXmlWeapon.SelectSingleNode("forbidden/weapondetails");
+                            XPathNavigator xmlTestNode = await objXmlWeapon.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("forbidden/weapondetails", token).ConfigureAwait(false);
                             if (xmlTestNode != null
-                                && xmlParentWeaponDataNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                && await xmlParentWeaponDataNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
                             {
                                 // Assumes topmost parent is an AND node
                                 continue;
                             }
 
-                            xmlTestNode = objXmlWeapon.SelectSingleNode("required/weapondetails");
+                            xmlTestNode = await objXmlWeapon.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("required/weapondetails", token).ConfigureAwait(false);
                             if (xmlTestNode != null
-                                && !xmlParentWeaponDataNode.ProcessFilterOperationNode(xmlTestNode, false))
+                                && !await xmlParentWeaponDataNode.ProcessFilterOperationNodeAsync(xmlTestNode, false, token).ConfigureAwait(false))
                             {
                                 // Assumes topmost parent is an AND node
                                 continue;

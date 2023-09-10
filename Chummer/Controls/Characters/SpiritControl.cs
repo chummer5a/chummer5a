@@ -588,7 +588,7 @@ namespace Chummer
             // Code from frmMetatype.
             XmlDocument objXmlDocument = await _objSpirit.CharacterObject.LoadDataAsync("critters.xml", token: token).ConfigureAwait(false);
 
-            XmlNode objXmlMetatype = objXmlDocument.SelectSingleNode("/chummer/metatypes/metatype[name = " + strCritterName.CleanXPath() + ']');
+            XmlNode objXmlMetatype = objXmlDocument.TryGetNodeByNameOrId("/chummer/metatypes/metatype", strCritterName);
 
             // If the Critter could not be found, show an error and get out of here.
             if (objXmlMetatype == null)

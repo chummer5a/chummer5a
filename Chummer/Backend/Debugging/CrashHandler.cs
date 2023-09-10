@@ -42,7 +42,7 @@ namespace Chummer.Backend
         {
             public DumpData(Exception ex)
             {
-                _dicPretendFiles = new Dictionary<string, string> { { "exception.txt", ex?.ToString().Replace(Utils.GetStartupPath, "[Chummer Path]") ?? "No Exception Specified" } };
+                _dicPretendFiles = new Dictionary<string, string> { { "exception.txt", ex?.ToString().Replace(Utils.GetStartupPath, "[Chummer Path]").Replace(Utils.GetEscapedStartupPath, "[Chummer Path]") ?? "No Exception Specified" } };
 
                 _dicAttributes = new Dictionary<string, string>
                 {
@@ -52,13 +52,13 @@ namespace Chummer.Backend
 #else
                     {"visible-build-type", "RELEASE"},
 #endif
-                    {"commandline", Environment.CommandLine},
+                    {"commandline", Environment.CommandLine.Replace(Utils.GetStartupPath, "[Chummer Path]").Replace(Utils.GetEscapedStartupPath, "[Chummer Path]")},
                     {"visible-version", Application.ProductVersion},
                     {"chummer-version", Utils.CurrentChummerVersion.ToString()},
                     {"os-type", Environment.OSVersion.VersionString},
                     {"human-readable-os-version", Utils.HumanReadableOSVersion},
-                    {"visible-error-friendly", ex?.Message.Replace(Utils.GetStartupPath, "[Chummer Path]") ?? "No description available"},
-                    {"visible-stacktrace", ex?.StackTrace.Replace(Utils.GetStartupPath, "[Chummer Path]") ?? "No stack trace available"},
+                    {"visible-error-friendly", ex?.Message.Replace(Utils.GetStartupPath, "[Chummer Path]").Replace(Utils.GetEscapedStartupPath, "[Chummer Path]") ?? "No description available"},
+                    {"visible-stacktrace", ex?.StackTrace.Replace(Utils.GetStartupPath, "[Chummer Path]").Replace(Utils.GetEscapedStartupPath, "[Chummer Path]") ?? "No stack trace available"},
                     {"installation-id", Properties.Settings.Default.UploadClientId.ToString() },
                     {"option-upload-logs-set", GlobalSettings.UseLoggingApplicationInsights.ToString() }
                 };
@@ -166,7 +166,7 @@ namespace Chummer.Backend
 
             internal void AddFile(string strFileName)
             {
-                string strKey = strFileName.Replace(Utils.GetStartupPath, "[Chummer Path]");
+                string strKey = strFileName.Replace(Utils.GetStartupPath, "[Chummer Path]").Replace(Utils.GetEscapedStartupPath, "[Chummer Path]");
                 if (_dicCapturedFiles.ContainsKey(strKey))
                     return;
                 try
@@ -186,7 +186,7 @@ namespace Chummer.Backend
                 {
                     strContents = e.ToString();
                 }
-                _dicCapturedFiles[strKey] = strContents.Replace(Utils.GetStartupPath, "[Chummer Path]");
+                _dicCapturedFiles[strKey] = strContents.Replace(Utils.GetStartupPath, "[Chummer Path]").Replace(Utils.GetEscapedStartupPath, "[Chummer Path]");
             }
 
             public void GetObjectData(SerializationInfo info, StreamingContext context)
@@ -251,7 +251,7 @@ namespace Chummer.Backend
                             + Environment.NewLine + "Chummer crashed with version: " + Utils.CurrentChummerVersion
                             + Environment.NewLine + "Crash Handler crashed with exit code: "
                             + prcCrashHandler.ExitCode + Environment.NewLine + "Crash information:"
-                            + Environment.NewLine + ex.ToString().Replace(Utils.GetStartupPath, "[Chummer Path]"),
+                            + Environment.NewLine + ex.ToString().Replace(Utils.GetStartupPath, "[Chummer Path]").Replace(Utils.GetEscapedStartupPath, "[Chummer Path]"),
                             "Failed to Create Crash Report", MessageBoxButtons.OK, MessageBoxIcon.Error);
                     }
                 }
@@ -263,7 +263,7 @@ namespace Chummer.Backend
                     + Utils.CurrentChummerVersion + Environment.NewLine
                     + "Here is some information to help the developers figure out why:" + Environment.NewLine + nex
                     + Environment.NewLine + "Crash information:" + Environment.NewLine
-                    + ex.ToString().Replace(Utils.GetStartupPath, "[Chummer Path]"),
+                    + ex.ToString().Replace(Utils.GetStartupPath, "[Chummer Path]").Replace(Utils.GetEscapedStartupPath, "[Chummer Path]"),
                     "Failed to Create Crash Report", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

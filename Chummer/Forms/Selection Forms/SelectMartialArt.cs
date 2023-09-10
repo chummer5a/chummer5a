@@ -59,15 +59,21 @@ namespace Chummer
             if (!string.IsNullOrEmpty(_strForcedValue))
             {
                 _blnAddAgain = false;
-                string strSelectedId = _xmlBaseMartialArtsNode.SelectSingleNode("martialart[name = " + _strForcedValue.CleanXPath() + "]/id")?.Value;
-                if (!string.IsNullOrEmpty(strSelectedId))
+                XPathNavigator xmlForcedMartialArtNode
+                    = _xmlBaseMartialArtsNode.TryGetNodeByNameOrId("martialart", _strForcedValue);
+                if (xmlForcedMartialArtNode != null)
                 {
-                    _strSelectedMartialArt = strSelectedId;
-                    await this.DoThreadSafeAsync(x =>
+                    string strSelectedId = (await xmlForcedMartialArtNode.SelectSingleNodeAndCacheExpressionAsync("id")
+                                                                         .ConfigureAwait(false))?.Value;
+                    if (!string.IsNullOrEmpty(strSelectedId))
                     {
-                        x.DialogResult = DialogResult.OK;
-                        x.Close();
-                    }).ConfigureAwait(false);
+                        _strSelectedMartialArt = strSelectedId;
+                        await this.DoThreadSafeAsync(x =>
+                        {
+                            x.DialogResult = DialogResult.OK;
+                            x.Close();
+                        }).ConfigureAwait(false);
+                    }
                 }
             }
 

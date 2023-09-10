@@ -30,6 +30,7 @@ using System.Xml.XPath;
 using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Skills;
+using Microsoft.VisualStudio.Threading;
 
 namespace Chummer
 {
@@ -50,7 +51,7 @@ namespace Chummer
         private readonly XPathNavigator _xmlBaseQualityDataNode;
         private readonly XmlNode _xmlMetatypeDocumentMetatypesNode;
         private readonly XmlNode _xmlQualityDocumentQualitiesNode;
-        private readonly XmlNode _xmlCritterPowerDocumentPowersNode;
+        private readonly AsyncLazy<XmlNode> _xmlCritterPowerDocumentPowersNode;
 
         private CancellationTokenSource _objLoadMetatypesCancellationTokenSource;
         private CancellationTokenSource _objPopulateMetatypesCancellationTokenSource;
@@ -134,7 +135,10 @@ namespace Chummer
             _xmlBaseSkillDataNode = _objCharacter.LoadDataXPath("skills.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _xmlQualityDocumentQualitiesNode = _objCharacter.LoadData("qualities.xml").SelectSingleNode("/chummer/qualities");
             _xmlBaseQualityDataNode = _objCharacter.LoadDataXPath("qualities.xml").SelectSingleNodeAndCacheExpression("/chummer");
-            _xmlCritterPowerDocumentPowersNode = _objCharacter.LoadData("critterpowers.xml").SelectSingleNode("/chummer/powers");
+            _xmlCritterPowerDocumentPowersNode
+                = new AsyncLazy<XmlNode>(
+                    async () => (await _objCharacter.LoadDataAsync("critterpowers.xml").ConfigureAwait(false))
+                        .SelectSingleNode("/chummer/powers"), Utils.JoinableTaskFactory);
             _dicSumtoTenValues = new Dictionary<string, int>(5);
             if (_xmlBasePriorityDataNode != null)
             {
@@ -401,16 +405,37 @@ namespace Chummer
                         using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
                                                                        out List<ListItem> lstMethods))
                         {
-                            lstMethods.Add(new ListItem("Possession",
-                                                        _xmlCritterPowerDocumentPowersNode
-                                                            ?.SelectSingleNode("power[name = \"Possession\"]/translate")
-                                                            ?.InnerText
-                                                        ?? "Possession"));
-                            lstMethods.Add(new ListItem("Inhabitation",
-                                                        _xmlCritterPowerDocumentPowersNode
-                                                            ?.SelectSingleNode("power[name = \"Inhabitation\"]/translate")
-                                                            ?.InnerText
-                                                        ?? "Inhabitation"));
+                            if (GlobalSettings.Language != GlobalSettings.DefaultLanguage)
+                            {
+                                XmlNode objCritterPowersDataNode = await _xmlCritterPowerDocumentPowersNode
+                                                                         .GetValueAsync(_objGenericToken)
+                                                                         .ConfigureAwait(false);
+                                if (objCritterPowersDataNode != null)
+                                {
+                                    lstMethods.Add(new ListItem("Possession",
+                                                                (await objCritterPowersDataNode
+                                                                       .SelectSingleNodeAndCacheExpressionAsNavigatorAsync(
+                                                                           "power[name = \"Possession\"]/translate", _objGenericToken).ConfigureAwait(false))
+                                                                ?.Value
+                                                                ?? "Possession"));
+                                    lstMethods.Add(new ListItem("Inhabitation",
+                                                                (await objCritterPowersDataNode
+                                                                       .SelectSingleNodeAndCacheExpressionAsNavigatorAsync(
+                                                                           "power[name = \"Inhabitation\"]/translate", _objGenericToken).ConfigureAwait(false))
+                                                                ?.Value
+                                                                ?? "Inhabitation"));
+                                }
+                                else
+                                {
+                                    lstMethods.Add(new ListItem("Possession", "Possession"));
+                                    lstMethods.Add(new ListItem("Inhabitation", "Inhabitation"));
+                                }
+                            }
+                            else
+                            {
+                                lstMethods.Add(new ListItem("Possession", "Possession"));
+                                lstMethods.Add(new ListItem("Inhabitation", "Inhabitation"));
+                            }
                             lstMethods.Sort(CompareListItems.CompareNames);
 
                             _strCurrentPossessionMethod = _objCharacter.CritterPowers.Select(x => x.Name)
@@ -1461,7 +1486,7 @@ namespace Chummer
 
                 strSelectedMetatype = objXmlMetatype["id"]?.InnerText ?? Guid.Empty.ToString("D");
 
-                IAsyncDisposable objLocker
+                System.IAsyncDisposable objLocker
                     = await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
@@ -1554,7 +1579,7 @@ namespace Chummer
                         _objCharacter.Create(strSelectedMetatypeCategory, strSelectedMetatype,
                                              strSelectedMetavariant, objXmlMetatype, intForce,
                                              _xmlQualityDocumentQualitiesNode,
-                                             _xmlCritterPowerDocumentPowersNode, null,
+                                             await _xmlCritterPowerDocumentPowersNode.GetValueAsync(token).ConfigureAwait(false), null,
                                              await chkPossessionBased.DoThreadSafeFuncAsync(x => x.Checked, token)
                                                                      .ConfigureAwait(false)
                                                  ? await cboPossessionMethod.DoThreadSafeFuncAsync(
@@ -1741,7 +1766,7 @@ namespace Chummer
                                             // The safe thing would probably be to operate on a duplicate of the character and copy over all data after we know it's final, but that needs
                                             // a lot of backend stuff.
                                             objExistingQuality = lstOldPriorityQualities.Find(
-                                                x => x.SourceIDString == objQuality.SourceIDString
+                                                x => x.SourceID == objQuality.SourceID
                                                      && x.Extra == objQuality.Extra && x.Type == objQuality.Type);
                                             if (objExistingQuality == null)
                                                 await _objCharacter.Qualities.AddAsync(objQuality, token: token)

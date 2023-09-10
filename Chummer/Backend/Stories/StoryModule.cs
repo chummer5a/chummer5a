@@ -50,31 +50,7 @@ namespace Chummer
 
         public void Create(XmlNode xmlStoryModuleDataNode)
         {
-            using (LockObject.EnterWriteLock())
-            {
-                xmlStoryModuleDataNode.TryGetField("id", Guid.TryParse, out _guiSourceID);
-                xmlStoryModuleDataNode.TryGetStringFieldQuickly("name", ref _strName);
-
-                XmlNode xmlTextsNode = xmlStoryModuleDataNode.SelectSingleNode("texts");
-                if (xmlTextsNode != null)
-                {
-                    using (XmlNodeList xmlChildrenList = xmlStoryModuleDataNode.SelectNodes("*"))
-                    {
-                        if (xmlChildrenList != null)
-                        {
-                            foreach (XmlNode xmlText in xmlChildrenList)
-                            {
-                                _dicEnglishTexts.Add(xmlText.Name, xmlText.Value);
-                                if (xmlText.SelectSingleNode("@default")?.Value == bool.TrueString)
-                                    _strDefaultTextKey = xmlText.Name;
-                            }
-
-                            if (string.IsNullOrEmpty(_strDefaultTextKey))
-                                _strDefaultTextKey = _dicEnglishTexts.FirstOrDefault().Key;
-                        }
-                    }
-                }
-            }
+            Create(xmlStoryModuleDataNode.CreateNavigator());
         }
 
         public void Create(XPathNavigator xmlStoryModuleDataNode)
@@ -90,7 +66,7 @@ namespace Chummer
                     foreach (XPathNavigator xmlText in xmlStoryModuleDataNode.SelectChildren(XPathNodeType.Element))
                     {
                         _dicEnglishTexts.Add(xmlText.Name, xmlText.Value);
-                        if (xmlText.SelectSingleNode("@default")?.Value == bool.TrueString)
+                        if (xmlText.SelectSingleNodeAndCacheExpression("@default")?.Value == bool.TrueString)
                             _strDefaultTextKey = xmlText.Name;
                     }
 
@@ -100,40 +76,9 @@ namespace Chummer
             }
         }
 
-        public async Task CreateAsync(XmlNode xmlStoryModuleDataNode, CancellationToken token = default)
+        public Task CreateAsync(XmlNode xmlStoryModuleDataNode, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
-            {
-                xmlStoryModuleDataNode.TryGetField("id", Guid.TryParse, out _guiSourceID);
-                xmlStoryModuleDataNode.TryGetStringFieldQuickly("name", ref _strName);
-
-                XmlNode xmlTextsNode = xmlStoryModuleDataNode.SelectSingleNode("texts");
-                if (xmlTextsNode != null)
-                {
-                    using (XmlNodeList xmlChildrenList = xmlStoryModuleDataNode.SelectNodes("*"))
-                    {
-                        if (xmlChildrenList != null)
-                        {
-                            foreach (XmlNode xmlText in xmlChildrenList)
-                            {
-                                await _dicEnglishTexts.AddAsync(xmlText.Name, xmlText.Value, token)
-                                                      .ConfigureAwait(false);
-                                if (xmlText.SelectSingleNode("@default")?.Value == bool.TrueString)
-                                    _strDefaultTextKey = xmlText.Name;
-                            }
-
-                            if (string.IsNullOrEmpty(_strDefaultTextKey))
-                                _strDefaultTextKey = (await _dicEnglishTexts.FirstOrDefaultAsync(token: token)
-                                                                            .ConfigureAwait(false)).Key;
-                        }
-                    }
-                }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
+            return CreateAsync(xmlStoryModuleDataNode.CreateNavigator(), token);
         }
 
         public async Task CreateAsync(XPathNavigator xmlStoryModuleDataNode, CancellationToken token = default)
@@ -152,7 +97,8 @@ namespace Chummer
                     foreach (XPathNavigator xmlText in xmlStoryModuleDataNode.SelectChildren(XPathNodeType.Element))
                     {
                         await _dicEnglishTexts.AddAsync(xmlText.Name, xmlText.Value, token).ConfigureAwait(false);
-                        if (xmlText.SelectSingleNode("@default")?.Value == bool.TrueString)
+                        if ((await xmlText.SelectSingleNodeAndCacheExpressionAsync("@default", token: token)
+                                          .ConfigureAwait(false))?.Value == bool.TrueString)
                             _strDefaultTextKey = xmlText.Name;
                     }
 
@@ -718,15 +664,16 @@ namespace Chummer
                 if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
                     return objReturn;
-                objReturn = (blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ? _objCharacter.LoadData("stories.xml", strLanguage, token: token)
-                        : await _objCharacter.LoadDataAsync("stories.xml", strLanguage, token: token)
-                                             .ConfigureAwait(false))
-                    .SelectSingleNode(
-                        "/chummer/stories/story[id = " + SourceIDString.CleanXPath()
-                                                       + " or id = " + SourceIDString.ToUpperInvariant().CleanXPath()
-                                                       + ']');
+                XmlNode objDoc = blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadData("stories.xml", strLanguage, token: token)
+                    : await _objCharacter.LoadDataAsync("stories.xml", strLanguage, token: token).ConfigureAwait(false);
+                objReturn = objDoc.TryGetNodeById("/chummer/stories/story", SourceID);
+                if (objReturn == null && SourceID != Guid.Empty)
+                {
+                    objReturn = objDoc.TryGetNodeByNameOrId("/chummer/stories/story", Name);
+                    objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                }
                 _objCachedMyXmlNode = objReturn;
                 _strCachedXmlNodeLanguage = strLanguage;
                 return objReturn;
@@ -747,15 +694,16 @@ namespace Chummer
                 if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
                     return objReturn;
-                objReturn = (blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ? _objCharacter.LoadDataXPath("stories.xml", strLanguage, token: token)
-                        : await _objCharacter.LoadDataXPathAsync("stories.xml", strLanguage, token: token)
-                                             .ConfigureAwait(false))
-                    .SelectSingleNode(
-                        "/chummer/stories/story[id = " + SourceIDString.CleanXPath()
-                                                       + " or id = " + SourceIDString.ToUpperInvariant().CleanXPath()
-                                                       + ']');
+                XPathNavigator objDoc = blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadDataXPath("stories.xml", strLanguage, token: token)
+                    : await _objCharacter.LoadDataXPathAsync("stories.xml", strLanguage, token: token).ConfigureAwait(false);
+                objReturn = objDoc.TryGetNodeById("/chummer/stories/story", SourceID);
+                if (objReturn == null && SourceID != Guid.Empty)
+                {
+                    objReturn = objDoc.TryGetNodeByNameOrId("/chummer/stories/story", Name);
+                    objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                }
                 _objCachedMyXPathNode = objReturn;
                 _strCachedXPathNodeLanguage = strLanguage;
                 return objReturn;

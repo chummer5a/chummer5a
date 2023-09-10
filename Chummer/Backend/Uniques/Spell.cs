@@ -697,8 +697,9 @@ namespace Chummer
             using (EnterReadLock.Enter(LockObject))
             {
                 return _objCharacter.LoadDataXPath("spells.xml", strLanguage)
-                                    .SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath()
-                                                      + "]/@translate")?.Value ?? Category;
+                                    .SelectSingleNodeAndCacheExpression("/chummer/categories/category[. = "
+                                                                        + Category.CleanXPath()
+                                                                        + "]/@translate")?.Value ?? Category;
             }
         }
 
@@ -711,9 +712,11 @@ namespace Chummer
                 return Category;
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                return (await _objCharacter.LoadDataXPathAsync("spells.xml", strLanguage, token: token)
-                                           .ConfigureAwait(false))
-                       .SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")
+                return (await (await _objCharacter.LoadDataXPathAsync("spells.xml", strLanguage, token: token)
+                                                  .ConfigureAwait(false))
+                              .SelectSingleNodeAndCacheExpressionAsync(
+                                  "/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate",
+                                  token: token).ConfigureAwait(false))
                        ?.Value
                        ?? Category;
             }
@@ -1809,19 +1812,18 @@ namespace Chummer
                 if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
                     return objReturn;
-                objReturn = (blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ? _objCharacter.LoadData("spells.xml", strLanguage, token: token)
-                        : await _objCharacter.LoadDataAsync("spells.xml", strLanguage, token: token)
-                                             .ConfigureAwait(false))
-                    .SelectSingleNode(SourceID == Guid.Empty
-                                          ? "/chummer/spells/spell[name = "
-                                            + Name.CleanXPath() + ']'
-                                          : "/chummer/spells/spell[id = "
-                                            + SourceIDString.CleanXPath()
-                                            + " or id = " + SourceIDString
-                                                            .ToUpperInvariant().CleanXPath()
-                                            + ']');
+                XmlNode objDoc = blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadData("spells.xml", strLanguage, token: token)
+                    : await _objCharacter.LoadDataAsync("spells.xml", strLanguage, token: token)
+                                         .ConfigureAwait(false);
+                if (SourceID != Guid.Empty)
+                    objReturn = objDoc.TryGetNodeById("/chummer/spells/spell", SourceID);
+                if (objReturn == null)
+                {
+                    objReturn = objDoc.TryGetNodeByNameOrId("/chummer/spells/spell", Name);
+                    objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                }
                 _objCachedMyXmlNode = objReturn;
                 _strCachedXmlNodeLanguage = strLanguage;
                 return objReturn;
@@ -1840,19 +1842,18 @@ namespace Chummer
                 if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
                     return objReturn;
-                objReturn = (blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ? _objCharacter.LoadDataXPath("spells.xml", strLanguage, token: token)
-                        : await _objCharacter.LoadDataXPathAsync("spells.xml", strLanguage, token: token)
-                                             .ConfigureAwait(false))
-                    .SelectSingleNode(SourceID == Guid.Empty
-                                          ? "/chummer/spells/spell[name = "
-                                            + Name.CleanXPath() + ']'
-                                          : "/chummer/spells/spell[id = "
-                                            + SourceIDString.CleanXPath()
-                                            + " or id = " + SourceIDString
-                                                            .ToUpperInvariant().CleanXPath()
-                                            + ']');
+                XPathNavigator objDoc = blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadDataXPath("spells.xml", strLanguage, token: token)
+                    : await _objCharacter.LoadDataXPathAsync("spells.xml", strLanguage, token: token)
+                                         .ConfigureAwait(false);
+                if (SourceID != Guid.Empty)
+                    objReturn = objDoc.TryGetNodeById("/chummer/spells/spell", SourceID);
+                if (objReturn == null)
+                {
+                    objReturn = objDoc.TryGetNodeByNameOrId("/chummer/spells/spell", Name);
+                    objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                }
                 _objCachedMyXPathNode = objReturn;
                 _strCachedXPathNodeLanguage = strLanguage;
                 return objReturn;

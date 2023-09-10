@@ -47,8 +47,8 @@ namespace Chummer
         private string _strNotes = string.Empty;
         private Color _colNotes = ColorManager.HasNotesColor;
         private string _strExtra = string.Empty;
-        private bool _boolIsAdvancedProgram;
-        private bool _boolCanDelete = true;
+        private bool _blnIsAdvancedProgram;
+        private bool _blnCanDelete = true;
         private readonly Character _objCharacter;
 
         #region Constructor, Create, Save, Load, and Print Methods
@@ -65,8 +65,8 @@ namespace Chummer
         /// </summary>
         /// <param name="objXmlProgramNode">XmlNode to create the object from.</param>
         /// <param name="strExtra">Value to forcefully select for any ImprovementManager prompts.</param>
-        /// <param name="boolCanDelete">Can this AI program be deleted on its own (set to false for Improvement-granted programs).</param>
-        public void Create(XmlNode objXmlProgramNode, string strExtra = "", bool boolCanDelete = true)
+        /// <param name="blnCanDelete">Can this AI program be deleted on its own (set to false for Improvement-granted programs).</param>
+        public void Create(XmlNode objXmlProgramNode, string strExtra = "", bool blnCanDelete = true)
         {
             if (!objXmlProgramNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
@@ -80,8 +80,7 @@ namespace Chummer
                 _objCachedMyXPathNode = null;
             }
 
-            _strRequiresProgram = LanguageManager.GetString("String_None");
-            _boolCanDelete = boolCanDelete;
+            _blnCanDelete = blnCanDelete;
             objXmlProgramNode.TryGetStringFieldQuickly("require", ref _strRequiresProgram);
             objXmlProgramNode.TryGetStringFieldQuickly("source", ref _strSource);
             objXmlProgramNode.TryGetStringFieldQuickly("page", ref _strPage);
@@ -101,7 +100,7 @@ namespace Chummer
             _strExtra = strExtra;
             string strCategory = string.Empty;
             if (objXmlProgramNode.TryGetStringFieldQuickly("category", ref strCategory))
-                _boolIsAdvancedProgram = strCategory == "Advanced Programs";
+                _blnIsAdvancedProgram = strCategory == "Advanced Programs";
         }
 
         private SourceString _objCachedSourceDetail;
@@ -130,13 +129,14 @@ namespace Chummer
             objWriter.WriteElementString("sourceid", SourceIDString);
             objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", _strName);
+            objWriter.WriteElementString("candelete", _blnCanDelete.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("isadvancedprogram", _blnIsAdvancedProgram.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("requiresprogram", _strRequiresProgram);
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
-            objWriter.WriteElementString("isadvancedprogram", _boolIsAdvancedProgram.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteEndElement();
         }
 
@@ -161,7 +161,13 @@ namespace Chummer
                 this.GetNodeXPath()?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
 
+            objNode.TryGetBoolFieldQuickly("candelete", ref _blnCanDelete);
+            objNode.TryGetBoolFieldQuickly("isadvancedprogram", ref _blnIsAdvancedProgram);
             objNode.TryGetStringFieldQuickly("requiresprogram", ref _strRequiresProgram);
+            // Legacy fix for weird, old way of storing this value
+            if (_strRequiresProgram == LanguageManager.GetString("String_None")
+                || _strRequiresProgram == LanguageManager.GetString("String_None", GlobalSettings.DefaultLanguage))
+                _strRequiresProgram = string.Empty;
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
@@ -170,8 +176,6 @@ namespace Chummer
             string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
             objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
-
-            _boolIsAdvancedProgram = objNode.SelectSingleNode("isadvancedprogram")?.InnerText == bool.TrueString;
         }
 
         /// <summary>
@@ -193,10 +197,7 @@ namespace Chummer
                 await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("name_english", Name, token).ConfigureAwait(false);
-                if (string.IsNullOrEmpty(_strRequiresProgram) || _strRequiresProgram == await LanguageManager.GetStringAsync("String_None", strLanguageToPrint, token: token).ConfigureAwait(false))
-                    await objWriter.WriteElementStringAsync("requiresprogram", await LanguageManager.GetStringAsync("String_None", strLanguageToPrint, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
-                else
-                    await objWriter.WriteElementStringAsync("requiresprogram", await DisplayRequiresProgramAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("requiresprogram", await DisplayRequiresProgramAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 if (GlobalSettings.PrintNotes)
@@ -335,7 +336,9 @@ namespace Chummer
             if (strLanguage == GlobalSettings.Language)
                 return RequiresProgram;
 
-            return _objCharacter.LoadDataXPath("programs.xml", strLanguage).SelectSingleNode("/chummer/programs/program[name = " + RequiresProgram.CleanXPath() + "]/translate")?.Value ?? RequiresProgram;
+            return _objCharacter.LoadDataXPath("programs.xml", strLanguage)
+                                .TryGetNodeByNameOrId("/chummer/programs/program", RequiresProgram)
+                                ?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? RequiresProgram;
         }
 
         /// <summary>
@@ -348,7 +351,14 @@ namespace Chummer
             if (strLanguage == GlobalSettings.Language)
                 return RequiresProgram;
 
-            return (await _objCharacter.LoadDataXPathAsync("programs.xml", strLanguage, token: token).ConfigureAwait(false)).SelectSingleNode("/chummer/programs/program[name = " + RequiresProgram.CleanXPath() + "]/translate")?.Value ?? RequiresProgram;
+            XPathNavigator xmlRequiresProgramNode
+                = (await _objCharacter.LoadDataXPathAsync("programs.xml", strLanguage, token: token)
+                                      .ConfigureAwait(false))
+                .TryGetNodeByNameOrId("/chummer/programs/program", RequiresProgram);
+            return xmlRequiresProgramNode != null
+                ? (await xmlRequiresProgramNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token)
+                                               .ConfigureAwait(false))?.Value ?? RequiresProgram
+                : RequiresProgram;
         }
 
         /// <summary>
@@ -356,8 +366,8 @@ namespace Chummer
         /// </summary>
         public bool CanDelete
         {
-            get => _boolCanDelete;
-            set => _boolCanDelete = value;
+            get => _blnCanDelete;
+            set => _blnCanDelete = value;
         }
 
         /// <summary>
@@ -431,7 +441,7 @@ namespace Chummer
         /// <summary>
         /// If the AI Program is an Advanced Program.
         /// </summary>
-        public bool IsAdvancedProgram => _boolIsAdvancedProgram;
+        public bool IsAdvancedProgram => _blnIsAdvancedProgram;
 
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage = string.Empty;
@@ -442,18 +452,17 @@ namespace Chummer
             if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                   && !GlobalSettings.LiveCustomData)
                 return objReturn;
-            objReturn = (blnSync
-                    // ReSharper disable once MethodHasAsyncOverload
-                    ? _objCharacter.LoadData("programs.xml", strLanguage, token: token)
-                    : await _objCharacter.LoadDataAsync("programs.xml", strLanguage, token: token).ConfigureAwait(false))
-                .SelectSingleNode(SourceID == Guid.Empty
-                                      ? "/chummer/programs/program[name = "
-                                        + Name.CleanXPath() + ']'
-                                      : "/chummer/programs/program[id = "
-                                        + SourceIDString.CleanXPath()
-                                        + " or id = " + SourceIDString
-                                                        .ToUpperInvariant().CleanXPath()
-                                        + ']');
+            XmlNode objDoc = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? _objCharacter.LoadData("programs.xml", strLanguage, token: token)
+                : await _objCharacter.LoadDataAsync("programs.xml", strLanguage, token: token).ConfigureAwait(false);
+            if (SourceID != Guid.Empty)
+                objReturn = objDoc.TryGetNodeById("/chummer/programs/program", SourceID);
+            if (objReturn == null)
+            {
+                objReturn = objDoc.TryGetNodeByNameOrId("/chummer/programs/program", Name);
+                objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+            }
             _objCachedMyXmlNode = objReturn;
             _strCachedXmlNodeLanguage = strLanguage;
             return objReturn;
@@ -468,18 +477,17 @@ namespace Chummer
             if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
                                   && !GlobalSettings.LiveCustomData)
                 return objReturn;
-            objReturn = (blnSync
-                    // ReSharper disable once MethodHasAsyncOverload
-                    ? _objCharacter.LoadDataXPath("programs.xml", strLanguage, token: token)
-                    : await _objCharacter.LoadDataXPathAsync("programs.xml", strLanguage, token: token).ConfigureAwait(false))
-                .SelectSingleNode(SourceID == Guid.Empty
-                                      ? "/chummer/programs/program[name = "
-                                        + Name.CleanXPath() + ']'
-                                      : "/chummer/programs/program[id = "
-                                        + SourceIDString.CleanXPath()
-                                        + " or id = " + SourceIDString
-                                                        .ToUpperInvariant().CleanXPath()
-                                        + ']');
+            XPathNavigator objDoc = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? _objCharacter.LoadDataXPath("programs.xml", strLanguage, token: token)
+                : await _objCharacter.LoadDataXPathAsync("programs.xml", strLanguage, token: token).ConfigureAwait(false);
+            if (SourceID != Guid.Empty)
+                objReturn = objDoc.TryGetNodeById("/chummer/programs/program", SourceID);
+            if (objReturn == null)
+            {
+                objReturn = objDoc.TryGetNodeByNameOrId("/chummer/programs/program", Name);
+                objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+            }
             _objCachedMyXPathNode = objReturn;
             _strCachedXPathNodeLanguage = strLanguage;
             return objReturn;

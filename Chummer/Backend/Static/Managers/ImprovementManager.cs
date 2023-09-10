@@ -1628,7 +1628,7 @@ namespace Chummer
                                                                 out HashSet<string>
                                                                     setAllowedCategories))
                 {
-                    string strOnlyCategory = xmlBonusNode.SelectSingleNode("@skillcategory")?.InnerText;
+                    string strOnlyCategory = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@skillcategory")?.Value;
                     if (!string.IsNullOrEmpty(strOnlyCategory))
                     {
                         setAllowedCategories.AddRange(strOnlyCategory
@@ -1653,7 +1653,7 @@ namespace Chummer
                                                                     out HashSet<string>
                                                                         setForbiddenCategories))
                     {
-                        string strExcludeCategory = xmlBonusNode.SelectSingleNode("@excludecategory")?.InnerText;
+                        string strExcludeCategory = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludecategory")?.Value;
                         if (!string.IsNullOrEmpty(strExcludeCategory))
                         {
                             setForbiddenCategories.AddRange(
@@ -1675,7 +1675,7 @@ namespace Chummer
                             }
                             else
                             {
-                                string strLimitToSkill = xmlBonusNode.SelectSingleNode("@limittoskill")?.InnerText;
+                                string strLimitToSkill = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoskill")?.Value;
                                 if (!string.IsNullOrEmpty(strLimitToSkill))
                                 {
                                     setAllowedNames.AddRange(
@@ -1689,7 +1689,7 @@ namespace Chummer
                                                                                 setAllowedLinkedAttributes))
                             {
                                 string strLimitToAttribute
-                                    = xmlBonusNode.SelectSingleNode("@limittoattribute")?.InnerText;
+                                    = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoattribute")?.Value;
                                 if (!string.IsNullOrEmpty(strLimitToAttribute))
                                 {
                                     setAllowedLinkedAttributes.AddRange(
@@ -1909,23 +1909,27 @@ namespace Chummer
                     }
                 }
 
-                XmlNode xmlSkillCategories = xmlBonusNode.SelectSingleNode("skillcategories");
+                XPathNavigator xmlSkillCategories = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("skillcategories");
                 if (xmlSkillCategories != null)
                 {
                     string strCategory = xmlSkillNode.SelectSingleNodeAndCacheExpression("category")?.Value
                                          ?? string.Empty;
                     if (string.IsNullOrWhiteSpace(strCategory))
                         throw new AbortedException();
-                    using (XmlNodeList xmlCategoryList = xmlSkillCategories.SelectNodes("category"))
+                    bool blnAbort = true;
+                    foreach (XPathNavigator xmlCategory in xmlSkillCategories.Select("category"))
                     {
-                        if (xmlCategoryList == null)
-                            throw new AbortedException();
-                        if (xmlCategoryList.Cast<XmlNode>().All(objNode => strCategory != objNode.InnerText))
-                            throw new AbortedException();
+                        if (xmlCategory.Value == strCategory)
+                        {
+                            blnAbort = false;
+                            break;
+                        }
                     }
+                    if (blnAbort)
+                        throw new AbortedException();
                 }
 
-                string strTemp = xmlBonusNode.SelectSingleNode("@skillcategory")?.InnerText;
+                string strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@skillcategory")?.Value;
                 if (!string.IsNullOrEmpty(strTemp))
                 {
                     string strCategory = xmlSkillNode.SelectSingleNodeAndCacheExpression("category")?.Value
@@ -1937,7 +1941,7 @@ namespace Chummer
                         throw new AbortedException();
                 }
 
-                strTemp = xmlBonusNode.SelectSingleNode("@skillgroup")?.InnerText;
+                strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@skillgroup")?.Value;
                 if (!string.IsNullOrEmpty(strTemp))
                 {
                     string strSkillGroup = xmlSkillNode.SelectSingleNodeAndCacheExpression("skillgroup")?.Value
@@ -1949,7 +1953,7 @@ namespace Chummer
                         throw new AbortedException();
                 }
 
-                strTemp = xmlBonusNode.SelectSingleNode("@excludecategory")?.InnerText;
+                strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludecategory")?.Value;
                 if (!string.IsNullOrEmpty(strTemp))
                 {
                     string strCategory = xmlSkillNode.SelectSingleNodeAndCacheExpression("category")?.Value
@@ -1961,7 +1965,7 @@ namespace Chummer
                         throw new AbortedException();
                 }
 
-                strTemp = xmlBonusNode.SelectSingleNode("@excludeskillgroup")?.InnerText;
+                strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludeskillgroup")?.Value;
                 if (!string.IsNullOrEmpty(strTemp))
                 {
                     string strSkillGroup = xmlSkillNode.SelectSingleNodeAndCacheExpression("skillgroup")?.Value
@@ -1973,17 +1977,17 @@ namespace Chummer
                         throw new AbortedException();
                 }
 
-                strTemp = xmlBonusNode.SelectSingleNode("@limittoskill")?.InnerText;
+                strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoskill")?.Value;
                 if (!string.IsNullOrEmpty(strTemp) && !strTemp
                                                        .SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
                                                        .Contains(ForcedValue))
                     throw new AbortedException();
-                strTemp = xmlBonusNode.SelectSingleNode("@excludeskill")?.InnerText;
+                strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludeskill")?.Value;
                 if (!string.IsNullOrEmpty(strTemp) && strTemp
                                                       .SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
                                                       .Contains(ForcedValue))
                     throw new AbortedException();
-                strTemp = xmlBonusNode.SelectSingleNode("@limittoattribute")?.InnerText;
+                strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoattribute")?.Value;
                 if (!string.IsNullOrEmpty(strTemp))
                 {
                     string strAttribute = xmlSkillNode.SelectSingleNodeAndCacheExpression("attribute")?.Value
@@ -2010,35 +2014,35 @@ namespace Chummer
                                : LanguageManager.GetString("String_Improvement_SelectSkill")
                        }))
                 {
-                    string strMinimumRating = xmlBonusNode.Attributes?["minimumrating"]?.InnerText;
+                    string strMinimumRating = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@minimumrating")?.Value;
                     if (!string.IsNullOrWhiteSpace(strMinimumRating))
                         frmPickSkill.MyForm.MinimumRating = ValueToInt(objCharacter, strMinimumRating, intRating);
-                    string strMaximumRating = xmlBonusNode.Attributes?["maximumrating"]?.InnerText;
+                    string strMaximumRating = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@maximumrating")?.Value;
                     if (!string.IsNullOrWhiteSpace(strMaximumRating))
                         frmPickSkill.MyForm.MaximumRating = ValueToInt(objCharacter, strMaximumRating, intRating);
 
-                    XmlNode xmlSkillCategories = xmlBonusNode.SelectSingleNode("skillcategories");
+                    XmlNode xmlSkillCategories = xmlBonusNode["skillcategories"];
                     if (xmlSkillCategories != null)
                         frmPickSkill.MyForm.LimitToCategories = xmlSkillCategories;
-                    string strTemp = xmlBonusNode.SelectSingleNode("@skillcategory")?.InnerText;
+                    string strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@skillcategory")?.Value;
                     if (!string.IsNullOrEmpty(strTemp))
                         frmPickSkill.MyForm.OnlyCategory = strTemp;
-                    strTemp = xmlBonusNode.SelectSingleNode("@skillgroup")?.InnerText;
+                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@skillgroup")?.Value;
                     if (!string.IsNullOrEmpty(strTemp))
                         frmPickSkill.MyForm.OnlySkillGroup = strTemp;
-                    strTemp = xmlBonusNode.SelectSingleNode("@excludecategory")?.InnerText;
+                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludecategory")?.Value;
                     if (!string.IsNullOrEmpty(strTemp))
                         frmPickSkill.MyForm.ExcludeCategory = strTemp;
-                    strTemp = xmlBonusNode.SelectSingleNode("@excludeskillgroup")?.InnerText;
+                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludeskillgroup")?.Value;
                     if (!string.IsNullOrEmpty(strTemp))
                         frmPickSkill.MyForm.ExcludeSkillGroup = strTemp;
-                    strTemp = xmlBonusNode.SelectSingleNode("@limittoskill")?.InnerText;
+                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoskill")?.Value;
                     if (!string.IsNullOrEmpty(strTemp))
                         frmPickSkill.MyForm.LimitToSkill = strTemp;
-                    strTemp = xmlBonusNode.SelectSingleNode("@excludeskill")?.InnerText;
+                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludeskill")?.Value;
                     if (!string.IsNullOrEmpty(strTemp))
                         frmPickSkill.MyForm.ExcludeSkill = strTemp;
-                    strTemp = xmlBonusNode.SelectSingleNode("@limittoattribute")?.InnerText;
+                    strTemp = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@limittoattribute")?.Value;
                     if (!string.IsNullOrEmpty(strTemp))
                         frmPickSkill.MyForm.LinkedAttribute = strTemp;
 
@@ -2239,7 +2243,7 @@ namespace Chummer
                                 }
                                 else if (objCharacter != null)
                                 {
-                                    string strXPath = nodBonus.SelectSingleNode("selecttext/@xpath")?.Value;
+                                    string strXPath = nodBonus.SelectSingleNodeAndCacheExpressionAsNavigator("selecttext/@xpath")?.Value;
                                     if (string.IsNullOrEmpty(strXPath))
                                     {
                                         if (blnSync)
@@ -2252,7 +2256,7 @@ namespace Chummer
                                         return false;
                                     }
 
-                                    string strXmlFile = nodBonus.SelectSingleNode("selecttext/@xml")?.Value
+                                    string strXmlFile = nodBonus.SelectSingleNodeAndCacheExpressionAsNavigator("selecttext/@xml")?.Value
                                                         ?? string.Empty;
                                     XPathNavigator xmlDoc
                                         = blnSync
@@ -2382,7 +2386,14 @@ namespace Chummer
                                                    }, token).ConfigureAwait(false))
                                         {
                                             if (Convert.ToBoolean(
-                                                    nodBonus.SelectSingleNode("selecttext/@allowedit")?.Value,
+                                                    (blnSync
+                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                        ? nodBonus.SelectSingleNodeAndCacheExpressionAsNavigator(
+                                                            "selecttext/@allowedit", token)
+                                                        : await nodBonus
+                                                                .SelectSingleNodeAndCacheExpressionAsNavigatorAsync(
+                                                                    "selecttext/@allowedit", token)
+                                                                .ConfigureAwait(false))?.Value,
                                                     GlobalSettings.InvariantCultureInfo))
                                             {
                                                 lstItems.Insert(0, ListItem.Blank);

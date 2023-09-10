@@ -300,7 +300,7 @@ namespace Chummer.Backend.Skills
             {
                 string strSkillName = GetSkillNameFromData(strInputSkillName);
                 XPathNavigator xmlSkillNode = CharacterObject.LoadDataXPath("skills.xml")
-                    .SelectSingleNode("/chummer/knowledgeskills/skill[name = " + strSkillName.CleanXPath() + ']');
+                    .TryGetNodeByNameOrId("/chummer/knowledgeskills/skill", strSkillName);
 
                 if (xmlSkillNode == null)
                 {
@@ -1261,7 +1261,7 @@ namespace Chummer.Backend.Skills
                 if (SkillId.Equals(Guid.Empty))
                 {
                     XPathNavigator objDataNode = CharacterObject.LoadDataXPath("skills.xml")
-                        .SelectSingleNode("/chummer/knowledgeskills/skill[name = " + Name.CleanXPath() + ']');
+                        .TryGetNodeByNameOrId("/chummer/knowledgeskills/skill", Name);
                     if (objDataNode.TryGetField("id", Guid.TryParse, out Guid guidTemp))
                         SkillId = guidTemp;
                 }

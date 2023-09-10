@@ -480,16 +480,18 @@ namespace Chummer
                 strPath = "/chummer/echoes/echo";
             }
 
-            objReturn = (blnSync
-                    // ReSharper disable once MethodHasAsyncOverload
-                    ? _objCharacter.LoadData(strDoc, strLanguage, token: token)
-                    : await _objCharacter.LoadDataAsync(strDoc, strLanguage, token: token).ConfigureAwait(false))
-                .SelectSingleNode(strPath + (SourceID == Guid.Empty
-                                      ? "[name = " + Name.CleanXPath() + ']'
-                                      : "[id = " + SourceIDString.CleanXPath()
-                                                 + " or id = " + SourceIDString
-                                                                 .ToUpperInvariant().CleanXPath()
-                                                 + ']'));
+            XmlNode objDoc = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? _objCharacter.LoadData(strDoc, strLanguage, token: token)
+                : await _objCharacter.LoadDataAsync(strDoc, strLanguage, token: token)
+                                     .ConfigureAwait(false);
+            if (SourceID != Guid.Empty)
+                objReturn = objDoc.TryGetNodeById(strPath, SourceID);
+            if (objReturn == null)
+            {
+                objReturn = objDoc.TryGetNodeByNameOrId(strPath, Name);
+                objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+            }
             _objCachedMyXmlNode = objReturn;
             _strCachedXmlNodeLanguage = strLanguage;
             return objReturn;
@@ -512,16 +514,18 @@ namespace Chummer
                 strPath = "/chummer/echoes/echo";
             }
 
-            objReturn = (blnSync
-                    // ReSharper disable once MethodHasAsyncOverload
-                    ? _objCharacter.LoadDataXPath(strDoc, strLanguage, token: token)
-                    : await _objCharacter.LoadDataXPathAsync(strDoc, strLanguage, token: token).ConfigureAwait(false))
-                .SelectSingleNode(strPath + (SourceID == Guid.Empty
-                                      ? "[name = " + Name.CleanXPath() + ']'
-                                      : "[id = " + SourceIDString.CleanXPath()
-                                                 + " or id = " + SourceIDString
-                                                                 .ToUpperInvariant().CleanXPath()
-                                                 + ']'));
+            XPathNavigator objDoc = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? _objCharacter.LoadDataXPath(strDoc, strLanguage, token: token)
+                : await _objCharacter.LoadDataXPathAsync(strDoc, strLanguage, token: token)
+                                     .ConfigureAwait(false);
+            if (SourceID != Guid.Empty)
+                objReturn = objDoc.TryGetNodeById(strPath, SourceID);
+            if (objReturn == null)
+            {
+                objReturn = objDoc.TryGetNodeByNameOrId(strPath, Name);
+                objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+            }
             _objCachedMyXPathNode = objReturn;
             _strCachedXPathNodeLanguage = strLanguage;
             return objReturn;

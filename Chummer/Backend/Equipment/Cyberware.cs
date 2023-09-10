@@ -832,15 +832,16 @@ namespace Chummer.Backend.Equipment
                     objXmlCyberware.TryGetStringFieldQuickly("forcegrade", ref _strForceGrade);
 
                     // Add Subsytem information if applicable.
-                    if (objXmlCyberware.InnerXml.Contains("allowsubsystems"))
+                    XPathNavigator xmlCyberwareNavigator = objXmlCyberware.CreateNavigator();
+                    XPathNavigator xmlAllowSubsystems = xmlCyberwareNavigator.SelectSingleNodeAndCacheExpression("allowsubsystems");
+                    if (xmlAllowSubsystems != null)
                     {
                         using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdSubsystem))
                         {
-                            XmlNodeList lstSubSystems = objXmlCyberware.SelectNodes("allowsubsystems/category");
-                            for (int i = 0; i < lstSubSystems?.Count; i++)
+                            foreach (XPathNavigator xmlSubsystem in xmlAllowSubsystems.SelectAndCacheExpression("category"))
                             {
-                                sbdSubsystem.Append(lstSubSystems[i].InnerText).Append(',');
+                                sbdSubsystem.Append(xmlSubsystem.Value).Append(',');
                             }
 
                             if (sbdSubsystem.Length > 0)
@@ -849,47 +850,35 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
-                    XmlNode xmlPairInclude = objXmlCyberware.SelectSingleNode("pairinclude");
+                    XPathNavigator xmlPairInclude = xmlCyberwareNavigator.SelectSingleNodeAndCacheExpression("pairinclude");
                     if (xmlPairInclude != null)
                     {
-                        if (xmlPairInclude.SelectSingleNode("@includeself")?.Value !=
+                        if (xmlPairInclude.SelectSingleNodeAndCacheExpression("@includeself")?.Value !=
                             bool.FalseString)
                         {
                             _lstIncludeInPairBonus.Add(Name);
                         }
 
-                        using (XmlNodeList xmlPairIncludeNames = xmlPairInclude.SelectNodes("name"))
+                        foreach (XPathNavigator objPairNameNode in xmlPairInclude.SelectAndCacheExpression("name"))
                         {
-                            if (xmlPairIncludeNames?.Count > 0)
-                            {
-                                foreach (XmlNode objPairNameNode in xmlPairIncludeNames)
-                                {
-                                    _lstIncludeInPairBonus.Add(objPairNameNode.InnerText);
-                                }
-                            }
+                            _lstIncludeInPairBonus.Add(objPairNameNode.Value);
                         }
                     }
                     else
                         _lstIncludeInPairBonus.Add(Name);
 
-                    xmlPairInclude = objXmlCyberware.SelectSingleNode("wirelesspairinclude");
+                    xmlPairInclude = xmlCyberwareNavigator.SelectSingleNodeAndCacheExpression("wirelesspairinclude");
                     if (xmlPairInclude != null)
                     {
-                        if (xmlPairInclude.SelectSingleNode("@includeself")?.Value !=
+                        if (xmlPairInclude.SelectSingleNodeAndCacheExpression("@includeself")?.Value !=
                             bool.FalseString)
                         {
                             _lstIncludeInWirelessPairBonus.Add(Name);
                         }
 
-                        using (XmlNodeList xmlPairIncludeNames = xmlPairInclude.SelectNodes("name"))
+                        foreach (XPathNavigator objPairNameNode in xmlPairInclude.SelectAndCacheExpression("name"))
                         {
-                            if (xmlPairIncludeNames?.Count > 0)
-                            {
-                                foreach (XmlNode objPairNameNode in xmlPairIncludeNames)
-                                {
-                                    _lstIncludeInWirelessPairBonus.Add(objPairNameNode.InnerText);
-                                }
-                            }
+                            _lstIncludeInPairBonus.Add(objPairNameNode.Value);
                         }
                     }
                     else
@@ -2768,7 +2757,7 @@ namespace Chummer.Backend.Equipment
                        .LoadDataXPath(
                            SourceType == Improvement.ImprovementSource.Cyberware ? "cyberware.xml" : "bioware.xml",
                            strLanguage)
-                       .SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")
+                       .SelectSingleNodeAndCacheExpression("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")
                        ?.Value ?? Category;
             }
         }
@@ -2783,12 +2772,12 @@ namespace Chummer.Backend.Equipment
 
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                return (await _objCharacter
-                              .LoadDataXPathAsync(
-                                  SourceType == Improvement.ImprovementSource.Cyberware
-                                      ? "cyberware.xml"
-                                      : "bioware.xml", strLanguage, token: token).ConfigureAwait(false))
-                       .SelectSingleNode("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")
+                return (await (await _objCharacter
+                                     .LoadDataXPathAsync(
+                                         SourceType == Improvement.ImprovementSource.Cyberware
+                                             ? "cyberware.xml"
+                                             : "bioware.xml", strLanguage, token: token).ConfigureAwait(false))
+                        .SelectSingleNodeAndCacheExpressionAsync("/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate", token).ConfigureAwait(false))
                        ?.Value ?? Category;
             }
         }
@@ -3305,7 +3294,7 @@ namespace Chummer.Backend.Equipment
                     {
                         if (!string.IsNullOrEmpty(WirelessBonus?.InnerText))
                         {
-                            if (WirelessBonus?.SelectSingleNode("@mode")?.Value == "replace")
+                            if (WirelessBonus?.SelectSingleNodeAndCacheExpressionAsNavigator("@mode")?.Value == "replace")
                             {
                                 ImprovementManager.DisableImprovements(_objCharacter,
                                                                        _objCharacter.Improvements
@@ -3356,7 +3345,7 @@ namespace Chummer.Backend.Equipment
 
                             if (intCount % 2 == 1)
                             {
-                                if (WirelessPairBonus?.SelectSingleNode("@mode")?.Value == "replace")
+                                if (WirelessPairBonus?.SelectSingleNodeAndCacheExpressionAsNavigator("@mode")?.Value == "replace")
                                 {
                                     ImprovementManager.DisableImprovements(_objCharacter,
                                                                            _objCharacter.Improvements
@@ -3380,7 +3369,7 @@ namespace Chummer.Backend.Equipment
                             {
                                 ImprovementManager.RemoveImprovements(_objCharacter, objLoopCyberware.SourceType,
                                                                       objLoopCyberware.InternalId + "WirelessPair");
-                                if (objLoopCyberware.WirelessPairBonus?.SelectSingleNode("@mode")?.Value == "replace")
+                                if (objLoopCyberware.WirelessPairBonus?.SelectSingleNodeAndCacheExpressionAsNavigator("@mode")?.Value == "replace")
                                 {
                                     ImprovementManager.DisableImprovements(_objCharacter,
                                                                            _objCharacter.Improvements
@@ -3410,7 +3399,7 @@ namespace Chummer.Backend.Equipment
                     {
                         if (!string.IsNullOrEmpty(WirelessBonus?.InnerText))
                         {
-                            if (WirelessBonus.SelectSingleNode("@mode")?.Value == "replace")
+                            if (WirelessBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode")?.Value == "replace")
                             {
                                 ImprovementManager.EnableImprovements(_objCharacter,
                                                                       _objCharacter.Improvements
@@ -3453,7 +3442,7 @@ namespace Chummer.Backend.Equipment
                                 intCount = Math.Min(intMatchLocationCount, intNotMatchLocationCount) * 2;
                             }
 
-                            if (WirelessPairBonus.SelectSingleNode("@mode")?.Value == "replace")
+                            if (WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode")?.Value == "replace")
                             {
                                 ImprovementManager.EnableImprovements(_objCharacter,
                                                                       _objCharacter.Improvements
@@ -3503,7 +3492,7 @@ namespace Chummer.Backend.Equipment
                     {
                         if (!string.IsNullOrEmpty(WirelessBonus?.InnerText))
                         {
-                            if (WirelessBonus?.SelectSingleNode("@mode")?.Value == "replace")
+                            if (WirelessBonus != null && (await WirelessBonus.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("@mode", token).ConfigureAwait(false))?.Value == "replace")
                             {
                                 await ImprovementManager.DisableImprovementsAsync(_objCharacter,
                                     await _objCharacter.Improvements.ToListAsync(
@@ -3559,7 +3548,7 @@ namespace Chummer.Backend.Equipment
 
                             if (intCount % 2 == 1)
                             {
-                                if (WirelessPairBonus?.SelectSingleNode("@mode")?.Value == "replace")
+                                if (WirelessPairBonus != null && (await WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("@mode", token).ConfigureAwait(false))?.Value == "replace")
                                 {
                                     await ImprovementManager.DisableImprovementsAsync(_objCharacter,
                                         await _objCharacter.Improvements.ToListAsync(
@@ -3593,7 +3582,7 @@ namespace Chummer.Backend.Equipment
                                     _objCharacter, objLoopCyberware.SourceType,
                                     objLoopCyberware.InternalId
                                     + "WirelessPair", token).ConfigureAwait(false);
-                                if (objLoopCyberware.WirelessPairBonus?.SelectSingleNode("@mode")?.Value == "replace")
+                                if (WirelessPairBonus != null && (await objLoopCyberware.WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("@mode", token).ConfigureAwait(false))?.Value == "replace")
                                 {
                                     await ImprovementManager.DisableImprovementsAsync(_objCharacter,
                                         await _objCharacter.Improvements.ToListAsync(
@@ -3627,7 +3616,7 @@ namespace Chummer.Backend.Equipment
                     {
                         if (!string.IsNullOrEmpty(WirelessBonus?.InnerText))
                         {
-                            if (WirelessBonus.SelectSingleNode("@mode")?.Value == "replace")
+                            if ((await WirelessBonus.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("@mode", token).ConfigureAwait(false))?.Value == "replace")
                             {
                                 await ImprovementManager.EnableImprovementsAsync(_objCharacter,
                                     await _objCharacter.Improvements.ToListAsync(
@@ -3674,7 +3663,7 @@ namespace Chummer.Backend.Equipment
                                 intCount = Math.Min(intMatchLocationCount, intNotMatchLocationCount) * 2;
                             }
 
-                            if (WirelessPairBonus.SelectSingleNode("@mode")?.Value == "replace")
+                            if ((await WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigatorAsync("@mode", token).ConfigureAwait(false))?.Value == "replace")
                             {
                                 await ImprovementManager.EnableImprovementsAsync(_objCharacter,
                                                             await _objCharacter.Improvements.ToListAsync(
@@ -5296,9 +5285,9 @@ namespace Chummer.Backend.Equipment
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadData(strDoc, strLanguage, token: token)
                     : await _objCharacter.LoadDataAsync(strDoc, strLanguage, token: token).ConfigureAwait(false);
-                objReturn = objDoc.TryGetNodeById(strPath, SourceID);
-
-                if (objReturn == null && SourceID != Guid.Empty)
+                if (SourceID != Guid.Empty)
+                    objReturn = objDoc.TryGetNodeById(strPath, SourceID);
+                if (objReturn == null)
                 {
                     objReturn = objDoc.TryGetNodeByNameOrId(strPath, Name);
                     objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
@@ -5334,9 +5323,9 @@ namespace Chummer.Backend.Equipment
                     // ReSharper disable once MethodHasAsyncOverload
                     ? _objCharacter.LoadDataXPath(strDoc, strLanguage, token: token)
                     : await _objCharacter.LoadDataXPathAsync(strDoc, strLanguage, token: token).ConfigureAwait(false);
-                objReturn = objDoc.TryGetNodeById(strPath, SourceID);
-
-                if (objReturn == null && SourceID != Guid.Empty)
+                if (SourceID != Guid.Empty)
+                    objReturn = objDoc.TryGetNodeById(strPath, SourceID);
+                if (objReturn == null)
                 {
                     objReturn = objDoc.TryGetNodeByNameOrId(strPath, Name);
                     objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
@@ -7870,7 +7859,7 @@ namespace Chummer.Backend.Equipment
                     {
                         ImprovementManager.RemoveImprovements(_objCharacter, objLoopCyberware.SourceType,
                                                               objLoopCyberware.InternalId + "WirelessPair");
-                        if (objLoopCyberware.WirelessPairBonus?.SelectSingleNode("@mode")?.Value == "replace")
+                        if (objLoopCyberware.WirelessPairBonus?.SelectSingleNodeAndCacheExpressionAsNavigator("@mode")?.Value == "replace")
                         {
                             ImprovementManager.DisableImprovements(_objCharacter,
                                                                    _objCharacter.Improvements
@@ -8168,7 +8157,7 @@ namespace Chummer.Backend.Equipment
                         await ImprovementManager.RemoveImprovementsAsync(_objCharacter, objLoopCyberware.SourceType,
                                                                          objLoopCyberware.InternalId + "WirelessPair",
                                                                          token).ConfigureAwait(false);
-                        if (objLoopCyberware.WirelessPairBonus?.SelectSingleNode("@mode")?.Value == "replace")
+                        if (objLoopCyberware.WirelessPairBonus?.SelectSingleNodeAndCacheExpressionAsNavigator("@mode")?.Value == "replace")
                         {
                             await ImprovementManager.DisableImprovementsAsync(_objCharacter,
                                                                               await _objCharacter.Improvements
@@ -8545,7 +8534,7 @@ namespace Chummer.Backend.Equipment
                         {
                             foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList)
                             {
-                                XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                                XPathNavigator xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/parentdetails");
                                 if (xmlTestNode != null
                                     && xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
                                 {
@@ -8553,7 +8542,7 @@ namespace Chummer.Backend.Equipment
                                     continue;
                                 }
 
-                                xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                                xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/parentdetails");
                                 if (xmlTestNode != null
                                     && !xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
                                 {
@@ -8577,7 +8566,7 @@ namespace Chummer.Backend.Equipment
                             {
                                 foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList)
                                 {
-                                    XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                                    XPathNavigator xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/parentdetails");
                                     if (xmlTestNode != null
                                         && xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
                                     {
@@ -8585,7 +8574,7 @@ namespace Chummer.Backend.Equipment
                                         continue;
                                     }
 
-                                    xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                                    xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/parentdetails");
                                     if (xmlTestNode != null
                                         && !xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
                                     {
@@ -8616,7 +8605,7 @@ namespace Chummer.Backend.Equipment
                                 {
                                     foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList)
                                     {
-                                        XmlNode xmlTestNode = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                                        XPathNavigator xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/parentdetails");
                                         if (xmlTestNode != null
                                             && xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
                                         {
@@ -8624,7 +8613,7 @@ namespace Chummer.Backend.Equipment
                                             continue;
                                         }
 
-                                        xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                                        xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/parentdetails");
                                         if (xmlTestNode != null
                                             && !xmlParentCyberwareNode.ProcessFilterOperationNode(xmlTestNode, false))
                                         {
@@ -8649,8 +8638,8 @@ namespace Chummer.Backend.Equipment
                                             {
                                                 foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList2)
                                                 {
-                                                    XmlNode xmlTestNode
-                                                        = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                                                    XPathNavigator xmlTestNode
+                                                        = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/parentdetails");
                                                     if (xmlTestNode != null
                                                         && xmlParentCyberwareNode
                                                             .ProcessFilterOperationNode(xmlTestNode, false))
@@ -8659,7 +8648,7 @@ namespace Chummer.Backend.Equipment
                                                         continue;
                                                     }
 
-                                                    xmlTestNode = xmlLoopNode.SelectSingleNode(
+                                                    xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator(
                                                         "required/parentdetails");
                                                     if (xmlTestNode != null
                                                         && !xmlParentCyberwareNode.ProcessFilterOperationNode(
@@ -8698,8 +8687,8 @@ namespace Chummer.Backend.Equipment
                                     {
                                         foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList)
                                         {
-                                            XmlNode xmlTestNode
-                                                = xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                                            XPathNavigator xmlTestNode
+                                                = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/parentdetails");
                                             if (xmlTestNode != null
                                                 && xmlParentCyberwareNode
                                                     .ProcessFilterOperationNode(xmlTestNode, false))
@@ -8708,7 +8697,7 @@ namespace Chummer.Backend.Equipment
                                                 continue;
                                             }
 
-                                            xmlTestNode = xmlLoopNode.SelectSingleNode("required/parentdetails");
+                                            xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("required/parentdetails");
                                             if (xmlTestNode != null
                                                 && !xmlParentCyberwareNode.ProcessFilterOperationNode(
                                                     xmlTestNode, false))
@@ -8735,8 +8724,8 @@ namespace Chummer.Backend.Equipment
                                                 {
                                                     foreach (XmlNode xmlLoopNode in xmlCyberwareNodeList2)
                                                     {
-                                                        XmlNode xmlTestNode =
-                                                            xmlLoopNode.SelectSingleNode("forbidden/parentdetails");
+                                                        XPathNavigator xmlTestNode =
+                                                            xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator("forbidden/parentdetails");
                                                         if (xmlTestNode != null
                                                             && xmlParentCyberwareNode.ProcessFilterOperationNode(
                                                                 xmlTestNode, false))
@@ -8745,7 +8734,7 @@ namespace Chummer.Backend.Equipment
                                                             continue;
                                                         }
 
-                                                        xmlTestNode = xmlLoopNode.SelectSingleNode(
+                                                        xmlTestNode = xmlLoopNode.SelectSingleNodeAndCacheExpressionAsNavigator(
                                                             "required/parentdetails");
                                                         if (xmlTestNode != null
                                                             && !xmlParentCyberwareNode.ProcessFilterOperationNode(
@@ -8780,9 +8769,9 @@ namespace Chummer.Backend.Equipment
                                blnCyberware
                                    ? Improvement.ImprovementSource.Cyberware
                                    : Improvement.ImprovementSource.Bioware,
-                               xmlCyberwareImportNode.SelectSingleNode("@rating")?.ValueAsInt ?? 0, lstWeapons,
+                               xmlCyberwareImportNode.SelectSingleNodeAndCacheExpression("@rating")?.ValueAsInt ?? 0, lstWeapons,
                                lstVehicles, true, true, strForceValue);
-                        Notes = xmlCyberwareImportNode.SelectSingleNode("description")?.Value;
+                        Notes = xmlCyberwareImportNode.SelectSingleNodeAndCacheExpression("description")?.Value;
 
                         ProcessHeroLabCyberwarePlugins(xmlCyberwareImportNode, objSelectedGrade, lstWeapons,
                                                        lstVehicles);
@@ -9230,19 +9219,13 @@ namespace Chummer.Backend.Equipment
                 switch (GlobalSettings.ClipboardContentType)
                 {
                     case ClipboardContentType.Gear:
-                        XmlNode objXmlCategoryNode =
-                            GlobalSettings.Clipboard.SelectSingleNode("/character/gear/category");
-                        XmlNode objXmlNameNode =
-                            GlobalSettings.Clipboard.SelectSingleNode("/character/gear/name");
+                        string strCategory =
+                            GlobalSettings.Clipboard.SelectSingleNodeAndCacheExpressionAsNavigator("/character/gear/category")?.Value;
+                        string strName =
+                            GlobalSettings.Clipboard.SelectSingleNodeAndCacheExpressionAsNavigator("/character/gear/name")?.Value;
                         using (EnterReadLock.Enter(LockObject))
                         {
-                            if (AllowGear?.ChildNodes.Cast<XmlNode>().Any(
-                                    objAllowed => (objAllowed.Name == "gearcategory" &&
-                                                   objAllowed.InnerText ==
-                                                   objXmlCategoryNode?.InnerText) ||
-                                                  objAllowed.Name == "gearname" &&
-                                                  objAllowed.InnerText ==
-                                                  objXmlNameNode?.InnerText) == true)
+                            if (AllowGear?.SelectSingleNode("gearcategory[. = " + strCategory.CleanXPath() + "] | gearname[. = " + strName.CleanXPath() + ']') != null)
                             {
                                 return true;
                             }

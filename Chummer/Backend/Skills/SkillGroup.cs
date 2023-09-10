@@ -1483,7 +1483,7 @@ namespace Chummer.Backend.Skills
                 if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     return Name;
                 return _objCharacter.LoadDataXPath("skills.xml", strLanguage)
-                           .SelectSingleNode("/chummer/skillgroups/name[. = " + Name.CleanXPath() + "]/@translate")
+                           .SelectSingleNodeAndCacheExpression("/chummer/skillgroups/name[. = " + Name.CleanXPath() + "]/@translate")
                            ?.Value ??
                        Name;
             }
@@ -1495,9 +1495,11 @@ namespace Chummer.Backend.Skills
             {
                 if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     return Name;
-                return (await _objCharacter.LoadDataXPathAsync("skills.xml", strLanguage, token: token)
-                           .ConfigureAwait(false))
-                       .SelectSingleNode("/chummer/skillgroups/name[. = " + Name.CleanXPath() + "]/@translate")?.Value
+                return (await (await _objCharacter.LoadDataXPathAsync("skills.xml", strLanguage, token: token)
+                                                  .ConfigureAwait(false))
+                              .SelectSingleNodeAndCacheExpressionAsync(
+                                  "/chummer/skillgroups/name[. = " + Name.CleanXPath() + "]/@translate", token: token)
+                              .ConfigureAwait(false))?.Value
                        ?? Name;
             }
         }

@@ -490,7 +490,7 @@ namespace Chummer
                     continue;
                 string strLoopId = objNode.Tag.ToString();
                 setLifestyleQualityIds.Add(strLoopId);
-                if (_objLifestyle.LifestyleQualities.Any(x => x.SourceIDString == strLoopId))
+                if (_objLifestyle.LifestyleQualities.Any(x => string.Equals(x.SourceIDString, strLoopId, StringComparison.OrdinalIgnoreCase)))
                     continue;
                 XmlNode objXmlLifestyleQuality = _objXmlDocument.TryGetNodeByNameOrId("/chummer/qualities/quality", strLoopId);
                 LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
@@ -579,10 +579,7 @@ namespace Chummer
                     {
                         if (objNode.Checked)
                         {
-                            string strCost = _objXmlDocument
-                                             .SelectSingleNode(
-                                                 "/chummer/qualities/quality[id = "
-                                                 + objNode.Tag.ToString().CleanXPath() + "]/cost")?.InnerText;
+                            string strCost = _objXmlDocument.TryGetNodeByNameOrId("/chummer/qualities/quality", objNode.Tag.ToString())?["cost"]?.InnerText;
                             if (!string.IsNullOrEmpty(strCost))
                             {
                                 (bool blnIsSuccess, object objProcess) = await CommonFunctions
@@ -605,8 +602,8 @@ namespace Chummer
                         {
                             if (!objNode.Checked)
                                 continue;
-                            objXmlAspect = _objXmlDocument.SelectSingleNode(
-                                "/chummer/qualities/quality[id = " + objNode.Tag.ToString().CleanXPath() + ']');
+                            objXmlAspect = _objXmlDocument.TryGetNodeByNameOrId(
+                                "/chummer/qualities/quality", objNode.Tag.ToString());
                             if (objXmlAspect == null)
                                 continue;
                             if (objXmlAspect.TryGetDecFieldQuickly("multiplier", ref decTemp))

@@ -502,11 +502,11 @@ namespace Chummer.Backend.Equipment
                     if (!strLanguageToPrint.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     {
                         XPathNavigator objNode
-                            = (await _objCharacter
-                                     .LoadDataXPathAsync("lifestyles.xml", strLanguageToPrint, token: token)
-                                     .ConfigureAwait(false))
-                            .SelectSingleNode("/chummer/categories/category[. = " + strLifestyleQualityType.CleanXPath()
-                                              + ']');
+                            = await (await _objCharacter
+                                           .LoadDataXPathAsync("lifestyles.xml", strLanguageToPrint, token: token)
+                                           .ConfigureAwait(false))
+                                    .SelectSingleNodeAndCacheExpressionAsync("/chummer/categories/category[. = " + strLifestyleQualityType.CleanXPath()
+                                                                             + ']', token: token).ConfigureAwait(false);
                         if (objNode != null)
                             strLifestyleQualityType
                                 = (await objNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token)
@@ -1318,12 +1318,17 @@ namespace Chummer.Backend.Equipment
                 if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
                     return objReturn;
-                objReturn = (blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ? _objCharacter.LoadData("lifestyles.xml", strLanguage, token: token)
-                        : await _objCharacter.LoadDataAsync("lifestyles.xml", strLanguage, token: token)
-                                             .ConfigureAwait(false))
-                    .TryGetNodeByNameOrId("/chummer/qualities/quality", SourceID == Guid.Empty ? Name : SourceIDString);
+                XmlNode objDoc = blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadData("lifestyles.xml", strLanguage, token: token)
+                    : await _objCharacter.LoadDataAsync("lifestyles.xml", strLanguage, token: token).ConfigureAwait(false);
+                if (SourceID != Guid.Empty)
+                    objReturn = objDoc.TryGetNodeById("/chummer/qualities/quality", SourceID);
+                if (objReturn == null)
+                {
+                    objReturn = objDoc.TryGetNodeByNameOrId("/chummer/qualities/quality", Name);
+                    objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                }
                 _objCachedMyXmlNode = objReturn;
                 _strCachedXmlNodeLanguage = strLanguage;
                 return objReturn;
@@ -1346,12 +1351,17 @@ namespace Chummer.Backend.Equipment
                 if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
                                       && !GlobalSettings.LiveCustomData)
                     return objReturn;
-                objReturn = (blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ? _objCharacter.LoadDataXPath("lifestyles.xml", strLanguage, token: token)
-                        : await _objCharacter.LoadDataXPathAsync("lifestyles.xml", strLanguage, token: token)
-                                             .ConfigureAwait(false))
-                    .TryGetNodeByNameOrId("/chummer/qualities/quality", SourceID == Guid.Empty ? Name : SourceIDString);
+                XPathNavigator objDoc = blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadDataXPath("lifestyles.xml", strLanguage, token: token)
+                    : await _objCharacter.LoadDataXPathAsync("lifestyles.xml", strLanguage, token: token).ConfigureAwait(false);
+                if (SourceID != Guid.Empty)
+                    objReturn = objDoc.TryGetNodeById("/chummer/qualities/quality", SourceID);
+                if (objReturn == null)
+                {
+                    objReturn = objDoc.TryGetNodeByNameOrId("/chummer/qualities/quality", Name);
+                    objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                }
                 _objCachedMyXPathNode = objReturn;
                 _strCachedXPathNodeLanguage = strLanguage;
                 return objReturn;

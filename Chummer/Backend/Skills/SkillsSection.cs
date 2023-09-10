@@ -432,7 +432,7 @@ namespace Chummer.Backend.Skills
                             {
                                 bool blnIsKnowledgeSkill
                                     = xmlSkillsDocument
-                                      .SelectSingleNode("/chummer/categories/category[. = "
+                                      .SelectSingleNodeAndCacheExpressionAsNavigator("/chummer/categories/category[. = "
                                                         + xmlSkill["category"]?.InnerText.CleanXPath() + "]/@type")
                                       ?.Value
                                       != "active";
@@ -473,9 +473,9 @@ namespace Chummer.Backend.Skills
                                 else
                                 {
                                     bool blnIsKnowledgeSkill
-                                        = xmlSkillsDocument
-                                          .SelectSingleNode("/chummer/categories/category[. = "
-                                                            + xmlSkill["category"]?.InnerText.CleanXPath() + "]/@type")
+                                        = (await xmlSkillsDocument
+                                              .SelectSingleNodeAndCacheExpressionAsNavigatorAsync("/chummer/categories/category[. = "
+                                                  + xmlSkill["category"]?.InnerText.CleanXPath() + "]/@type", token).ConfigureAwait(false))
                                           ?.Value
                                           != "active";
                                     lstReturn.Add(Skill.FromData(xmlSkill, _objCharacter, blnIsKnowledgeSkill));
@@ -484,9 +484,9 @@ namespace Chummer.Backend.Skills
                             else
                             {
                                 bool blnIsKnowledgeSkill
-                                    = xmlSkillsDocument
-                                      .SelectSingleNode("/chummer/categories/category[. = "
-                                                        + xmlSkill["category"]?.InnerText.CleanXPath() + "]/@type")
+                                    = (await xmlSkillsDocument
+                                          .SelectSingleNodeAndCacheExpressionAsNavigatorAsync("/chummer/categories/category[. = "
+                                              + xmlSkill["category"]?.InnerText.CleanXPath() + "]/@type", token).ConfigureAwait(false))
                                       ?.Value
                                       != "active";
                                 lstReturn.Add(Skill.FromData(xmlSkill, _objCharacter, blnIsKnowledgeSkill));
@@ -559,8 +559,7 @@ namespace Chummer.Backend.Skills
             using (EnterReadLock.Enter(LockObject, token))
             {
                 XmlNode xmlSkillNode = _objCharacter.LoadData("skills.xml", token: token)
-                                                    .SelectSingleNode(
-                                                        "/chummer/skills/skill[name = " + strName.CleanXPath() + ']');
+                                                    .TryGetNodeByNameOrId("/chummer/skills/skill", strName);
                 using (LockObject.EnterWriteLock(token))
                 {
                     ExoticSkill objExoticSkill = new ExoticSkill(_objCharacter, xmlSkillNode)
@@ -577,9 +576,10 @@ namespace Chummer.Backend.Skills
         {
             using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
             {
-                XmlNode xmlSkillNode = (await _objCharacter.LoadDataAsync("skills.xml", token: token).ConfigureAwait(false))
-                                                    .SelectSingleNode(
-                                                        "/chummer/skills/skill[name = " + strName.CleanXPath() + ']');
+                XmlNode xmlSkillNode
+                    = (await _objCharacter.LoadDataAsync("skills.xml", token: token).ConfigureAwait(false))
+                    .TryGetNodeByNameOrId(
+                        "/chummer/skills/skill", strName);
                 IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
@@ -1185,8 +1185,8 @@ namespace Chummer.Backend.Skills
                             foreach (string skillId in setSkillGuids.Where(s => Skills.All(skill => skill.Name != s)))
                             {
                                 XmlNode objXmlSkillNode
-                                    = skillsDoc.SelectSingleNode(
-                                        "/chummer/skills/skill[name = " + skillId.CleanXPath() + ']');
+                                    = skillsDoc.TryGetNodeByNameOrId(
+                                        "/chummer/skills/skill", skillId);
                                 if (objXmlSkillNode != null)
                                 {
                                     Skill objSkill = Skill.FromData(objXmlSkillNode, _objCharacter, false);
@@ -1881,7 +1881,7 @@ namespace Chummer.Backend.Skills
                                         {
                                             bool blnIsKnowledgeSkill
                                                 = xmlSkillsDocument
-                                                  .SelectSingleNode("/chummer/categories/category[. = "
+                                                  .SelectSingleNodeAndCacheExpressionAsNavigator("/chummer/categories/category[. = "
                                                                     + xmlSkill["category"]?.InnerText.CleanXPath()
                                                                     + "]/@type")
                                                   ?.Value
@@ -1948,10 +1948,10 @@ namespace Chummer.Backend.Skills
                                     foreach (XmlNode xmlSkill in xmlSkillList)
                                     {
                                         bool blnIsKnowledgeSkill
-                                            = xmlSkillsDocument
-                                              .SelectSingleNode("/chummer/categories/category[. = "
-                                                                + xmlSkill["category"]?.InnerText.CleanXPath()
-                                                                + "]/@type")
+                                            = (await xmlSkillsDocument
+                                                  .SelectSingleNodeAndCacheExpressionAsNavigatorAsync("/chummer/categories/category[. = "
+                                                      + xmlSkill["category"]?.InnerText.CleanXPath()
+                                                      + "]/@type", token).ConfigureAwait(false))
                                               ?.Value
                                               != "active";
                                         Skill objSkill = Skill.FromData(xmlSkill, _objCharacter,
