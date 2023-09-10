@@ -27,7 +27,7 @@
 - [x] Update build files of Plugins to copy them to the correct spots
 - ChummerHub.Client
     - [ ] I needed to remove the `SecurityProtocolType.Ssl3`, since it is not supported.
-      I'm not certain about the ramifications of this change
+      I'm not certain about the ramifications of this change, maybe it produces the other observed error.
     - [ ] HTTP302 on opening the group search (which leaves chummer in an unusable stat, because the error window is behind the now unresponsive group search window)
 
 ## Not necessarily needed right now
@@ -68,6 +68,7 @@
   - [ ] Test ChummerHub.Client
   - [x] Test ChummerHub -> this builds, but ARCHON needs to test it.
     - There aren't actually any changes done here besides a push from net6 to net7, we could just roll that back.
+  - [ ] Ensure that releases and nightlies still work
 
 
 
