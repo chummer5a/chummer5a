@@ -1,7 +1,7 @@
 # TODO for .NET7 Update
 
 ## Showstoppers
-- [ ] `objTelemetry.TrackException(except);` TrackException crashes Chummer for some weird reason
+- [x] `objTelemetry.TrackException(except);` TrackException crashes Chummer
     ```
     Process terminated. System.Private.CoreLib.resources couldn't be found!  Large parts of the BCL won't work!
     at System.Environment.FailFast(System.String)
@@ -20,6 +20,9 @@
     at Chummer.Plugins.PluginControl.LoadPlugins(Chummer.CustomActivity)
     at Chummer.Program.Main()
     ```
+    This was caused by Chummer trying to translate `System.Private.CoreLib` Exceptions.
+    This is not supported in ASP.NET Core!
+    See [TranslateExceptionTelemetryProcessor.TranslateExceptionMessage](Chummer/Backend/Helpers/Application Insights/TranslateExceptionTelemetryProcessor.cs)
 - [x] It seems like not all the needed dlls are included in the plugin build `Could not load file or assembly 'IdentityModel, Version=6.1.0.0, Culture=neutral, PublicKeyToken=e7877f4675df049f'. The system cannot find the file specified.`
 - [x] Update build files of Plugins to copy them to the correct spots
 - ChummerHub.Client

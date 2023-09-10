@@ -87,8 +87,24 @@ namespace Chummer
         {
             if (exception == null)
                 return string.Empty;
+
+
             Assembly a = exception.GetType().Assembly;
-            ResourceManager rm = new ResourceManager(a.GetName().Name, a);
+            var assemblyName = a.GetName().Name;
+
+
+            if (assemblyName is null or "System.Private.CoreLib")
+            {
+                // The Private CoreLib does not support a translation of Exceptions.
+                // If we wanna translate any of those we would need to wrap them in a custom exception.
+                return exception.Message;
+            }
+
+            ResourceManager rm = new ResourceManager(assemblyName, a);
+
+            // This will throw a ExecutionEngineException (even though it's supposed to be obsolete and not thrown anymore)
+            // if it tries to get the resource of System.Private.CoreLib
+            // This Exception is uncatchable!
             ResourceSet rsOriginal = rm.GetResourceSet(Thread.CurrentThread.CurrentUICulture, true, true);
             ResourceSet rsTranslated = rm.GetResourceSet(targetCulture, true, true);
 
