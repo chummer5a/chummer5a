@@ -28,7 +28,7 @@
 - ChummerHub.Client
     - [ ] I needed to remove the `SecurityProtocolType.Ssl3`, since it is not supported.
       I'm not certain about the ramifications of this change, maybe it produces the other observed error.
-    - [ ] HTTP302 on opening the group search (which leaves chummer in an unusable stat, because the error window is behind the now unresponsive group search window)
+    - [ ] HTTP302 on opening the group search (which leaves chummer in an unusable state, because the error window is behind the now unresponsive group search window)
 
 ## Not necessarily needed right now
 - [ ] Replace obsolete APIs
@@ -49,7 +49,7 @@
 - [x] <Chummer>\bin\Debug\net7.0-windows\Chummer5.dll missing on startup. -> .Net7 changed a bit and passes its dll instead of its executable as a commandline param.
 - [x] Investigate all the .Designer ambiguous reference errors <Chummer>\Forms\Character Creation Forms\SelectMetatypePriority.Designer.cs:56082 Ambiguous reference:$this.Icon $this.Icon match
     - These where caused by Microsoft.CodeAnalysis.Analyzers package and seem to be Rider specific. [YouTrack Issue](https://youtrack.jetbrains.com/issue/RIDER-98374)
-      But those references aren't actually needed for us, because the analyzers are included in >.Net5
+      But those references aren't actually needed for us, because the analyzers are included in .Net5 and above.
 
 ## Testing
 - [ ] Testing
@@ -58,10 +58,10 @@
     - Could not get the MSTest / xUnit hybrids to run.
     So I rewrote them in xUnit.
     Those never run on the main Thread (and Unit Test should be thread agnostic in any way) so some workarounds got included.
-  - [x] Test CrashHandler -> In all the crashes I encountered, while rewriting the unit tests I encountered no problems with this bad boy.
+  - [x] Test CrashHandler -> In all the crashes I encountered, while rewriting the unit tests I encountered no problems with it.
   - [x] Test Translator
   - [x] Test ChummerDataViewer I don't got the AWS keys to test this in depth, but it at least runs. Is it even in use?
-  - [ ] Test ChummerUpdater
+  - [x] Test ChummerUpdater
   - [x] Test TextblockConverter (This was never functional to begin with tbh)
   - [x] Test Chummer.Benchmarks
   - [x] Test SamplePlugin
